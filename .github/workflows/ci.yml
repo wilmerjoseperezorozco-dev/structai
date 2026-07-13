@@ -83,12 +83,6 @@ jobs:
           cache: 'npm'
           cache-dependency-path: apps/web/package-lock.json
       - run: npm ci
-      - name: Diagnóstico temporal (no expone el valor, solo su forma)
-        run: |
-          echo "longitud NEXT_PUBLIC_SUPABASE_URL=${#NEXT_PUBLIC_SUPABASE_URL}"
-          node -e "const u=process.env.NEXT_PUBLIC_SUPABASE_URL; console.log('bytes:', Buffer.byteLength(u||'')); console.log('primer char code:', u ? u.charCodeAt(0) : 'undefined'); console.log('ultimo char code:', u ? u.charCodeAt(u.length-1) : 'undefined'); try { new URL(u); console.log('URL valida: SI'); } catch(e) { console.log('URL valida: NO ->', e.message); }"
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
       - run: npm run build
         env:
           NEXT_PUBLIC_SUPABASE_URL:      ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
