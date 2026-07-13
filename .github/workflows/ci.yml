@@ -48,11 +48,19 @@ jobs:
       - run: npx tsc --noEmit
 
   # ── 2. Auditoría de dependencias (apps/web) ─────────────────
-  # No bloquea el pipeline todavía — hay vulnerabilidades conocidas sin
-  # triage (ver hallazgo real del 2026-07-13: 7 vulnerabilidades, 1
-  # moderada + 6 altas). Se reporta en cada corrida para que no se pierdan
-  # de vista; quitar `continue-on-error` una vez estén resueltas o
-  # explícitamente aceptadas.
+  # No bloquea el pipeline a propósito — decisión explícita del
+  # 2026-07-13, no un olvido. Estado real ese día: 10 vulnerabilidades
+  # (1 moderada + 9 altas), TODAS derivadas de solo 2 paquetes raíz:
+  #   1. next 14.2.35 (arrastra postcss/glob/eslint-config-next) — el
+  #      fix real es next 16.x, que en Next 15+ vuelve async cookies()/
+  #      headers()/params/searchParams. Es una migración con QA propio,
+  #      no un `npm audit fix --force` seguro de correr a ciegas.
+  #   2. next-pwa (sin mantenimiento hace ~3 años) — arrastra
+  #      workbox-build/rollup-plugin-terser/serialize-javascript (RCE).
+  #      El reemplazo es @ducanh2912/next-pwa (fork mantenido), no un
+  #      upgrade del mismo paquete.
+  # Se reporta en cada corrida para que no se pierda de vista; quitar
+  # `continue-on-error` una vez resueltas o explícitamente aceptadas.
   audit-web:
     name: 🛡️ npm audit (informativo)
     runs-on: ubuntu-latest

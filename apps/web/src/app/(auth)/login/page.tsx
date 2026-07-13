@@ -4,6 +4,7 @@ import { useState } from "react";
 import { HardHat, Loader2, MailCheck } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -132,7 +133,15 @@ export default function LoginPage() {
         </div>
 
         <p className="text-center text-xs text-concrete-600 mt-4">
-          Al registrarte aceptas los términos de uso · Construdata 2026
+          Al registrarte aceptas los{" "}
+          <Link href="/terminos" className="text-brand-400 hover:underline">
+            términos de uso
+          </Link>{" "}
+          y la{" "}
+          <Link href="/privacidad" className="text-brand-400 hover:underline">
+            política de privacidad
+          </Link>{" "}
+          · Construdata 2026
         </p>
       </div>
     </div>
