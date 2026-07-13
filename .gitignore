@@ -1,0 +1,37 @@
+# ── Secrets — nunca commitear ──────────────────────────────────
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# ── Node / Next.js ──────────────────────────────────────────────
+node_modules/
+.next/
+out/
+.vercel/
+*.tsbuildinfo
+npm-debug.log*
+
+# ── Python ───────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# ── Modelos locales de embeddings (se descargan en runtime) ──────
+.cache/
+*.gguf
+
+# ── Sistema operativo / editor ────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ── Normativa fuente cruda (privada, no redistribuible) ───────────
+packages/construdata/normativa_raw/

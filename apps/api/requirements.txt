@@ -1,0 +1,28 @@
+# ── FastAPI core ──────────────────────────────────────────────
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+python-multipart==0.0.12       # necesario para UploadFile/Form
+pydantic==2.9.2
+
+# ── RAG / Embeddings ─────────────────────────────────────────
+supabase==2.9.1
+httpx==0.27.2
+sentence-transformers==5.6.0
+
+# ── Síntesis LLM: Groq (rag_multi_norma.py) usa el cliente de OpenAI apuntado
+# a la API de Groq (compatible) — AquAI (rag_normativo.py) también depende de esto ──
+openai==1.54.4
+
+# ── Motor APU / Motor Deformación ───────────────────────────────
+numpy==1.26.4
+scipy==1.13.1
+
+# ── YOLO / Visión (opcional — comentar si no hay GPU/ONNX) ───
+onnxruntime==1.19.2
+opencv-python-headless==4.10.0.84
+
+# ── Motor AquAI ──────────────────────────────────────────────
+reportlab==4.2.5
+
+# ── Utilidades ────────────────────────────────────────────────
+python-dotenv==1.0.1
