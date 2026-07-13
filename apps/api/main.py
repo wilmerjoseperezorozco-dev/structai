@@ -48,6 +48,7 @@ log = logging.getLogger("construdata.api")
 # el RAG. Con Exception el resto de la API sigue viva y /ask queda en 503.
 try:
     from rag_multi_norma import ask as rag_ask, route_query, ask_delegado
+    from rag_multi_norma import sb as supabase_client, groq_client
     RAG_AVAILABLE = True
     log.info("✓ rag_multi_norma cargado")
 except Exception as e:
@@ -425,26 +426,114 @@ async def startup():
 # ════════════════════════════════════════════════════════════════════════════════
 
 # ── Health ────────────────────────────────────────────────────────────────────
+# Distinción liveness/readiness: GET /health (sin parámetros) es barato y
+# rápido — solo confirma que el proceso está vivo y qué módulos cargaron al
+# arrancar (útil para un liveness probe que se llama cada pocos segundos).
+# GET /health?deep=true hace chequeos ACTIVOS contra dependencias externas
+# reales (Supabase, Groq, RAM) — más lento y con costo real (una consulta,
+# una llamada al LLM), pensado para un readiness probe o un dashboard de
+# monitoreo que se consulta con menor frecuencia, no en cada health check.
+
+def _check_supabase_latencia() -> dict:
+    """Ping real a Supabase (no solo '¿se importó el cliente?') — mide latencia."""
+    if not RAG_AVAILABLE:
+        return {"disponible": False, "error": "módulo RAG no cargado (revisar SUPABASE_URL/SUPABASE_SERVICE_KEY)"}
+    t0 = time.perf_counter()
+    try:
+        supabase_client.table("motor_chunks").select("id").limit(1).execute()
+        return {"disponible": True, "latencia_ms": round((time.perf_counter() - t0) * 1000, 1)}
+    except Exception as e:
+        log.error(f"Health check Supabase falló: {e}")
+        return {"disponible": False, "error": str(e)}
+
+
+def _check_llm_provider() -> dict:
+    """
+    Verifica que Groq responda, sin gastar una llamada de chat completo
+    (cara/lenta): lista modelos, que es barato, con timeout corto explícito
+    para que un LLM caído no cuelgue el propio health check.
+    """
+    if not RAG_AVAILABLE:
+        return {"disponible": False, "error": "módulo RAG no cargado (revisar GROQ_API_KEY)"}
+    t0 = time.perf_counter()
+    try:
+        groq_client.models.list(timeout=3.0)
+        return {"disponible": True, "latencia_ms": round((time.perf_counter() - t0) * 1000, 1)}
+    except Exception as e:
+        log.error(f"Health check Groq falló: {e}")
+        return {"disponible": False, "error": str(e)}
+
+
+def _check_memoria() -> dict:
+    """
+    RAM del sistema y del proceso — vital porque una imagen/lote de
+    embeddings grande puede agotar memoria antes de que el proceso crashee
+    visiblemente con otro error.
+    """
+    try:
+        import psutil
+        mem_sistema = psutil.virtual_memory()
+        proceso = psutil.Process(os.getpid())
+        return {
+            "sistema_pct_usado": mem_sistema.percent,
+            "sistema_disponible_mb": round(mem_sistema.available / (1024 * 1024), 1),
+            "proceso_rss_mb": round(proceso.memory_info().rss / (1024 * 1024), 1),
+            "critico": mem_sistema.percent > 90,
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
 
 @app.get("/health", tags=["Sistema"])
-def health():
-    """Health check con estado de cada módulo."""
-    return {
+def health(deep: bool = False):
+    """
+    Health check con estado de cada módulo.
+
+    - `?deep=true` agrega chequeos activos: latencia real de Supabase,
+      disponibilidad del proveedor LLM (Groq) y uso de RAM. Úsalo para
+      monitoreo/alertas, no como liveness probe de alta frecuencia — cada
+      llamada con deep=true golpea servicios externos de verdad.
+    """
+    modulos = {
+        "rag_multi_norma":   RAG_AVAILABLE,
+        "motor_apu":         APU_AVAILABLE,
+        "motor_deformacion": DEFORM_AVAILABLE,
+        "motor_aquai":       AQUAI_AVAILABLE,
+        "motor_geopot":      GEOPOT_AVAILABLE,
+        "motor_vias":        VIAS_AVAILABLE,
+        "motor_gerencia":    GERENCIA_AVAILABLE,
+        "yolo_onnx":         _onnx_session is not None,
+        "yolo_deps":         YOLO_DEPS,
+    }
+
+    resultado = {
         "status": "ok",
         "version": "1.0.0",
-        "modulos": {
-            "rag_multi_norma":   RAG_AVAILABLE,
-            "motor_apu":         APU_AVAILABLE,
-            "motor_deformacion": DEFORM_AVAILABLE,
-            "motor_aquai":       AQUAI_AVAILABLE,
-            "motor_geopot":      GEOPOT_AVAILABLE,
-            "motor_vias":        VIAS_AVAILABLE,
-            "motor_gerencia":    GERENCIA_AVAILABLE,
-            "yolo_onnx":         _onnx_session is not None,
-            "yolo_deps":         YOLO_DEPS,
-        },
+        "modulos": modulos,
         "apu_count": len(CATALOGO_APU) if APU_AVAILABLE else 0,
     }
+
+    if not deep:
+        return resultado
+
+    supabase_check = _check_supabase_latencia()
+    llm_check = _check_llm_provider()
+    memoria_check = _check_memoria()
+
+    resultado["dependencias"] = {
+        "supabase": supabase_check,
+        "llm_groq": llm_check,
+        "memoria": memoria_check,
+    }
+
+    # "degraded" si algo activo falló pero el proceso sigue vivo y sirviendo;
+    # nunca se retorna 5xx aquí — un monitor necesita poder leer el detalle
+    # de QUÉ falló, no solo recibir un error genérico.
+    fallas = not supabase_check.get("disponible", True) or not llm_check.get("disponible", True)
+    if fallas or memoria_check.get("critico"):
+        resultado["status"] = "degraded"
+
+    return resultado
 
 
 # ── /ask — RAG Multi-Norma ───────────────────────────────────────────────────

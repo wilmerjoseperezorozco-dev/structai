@@ -26,3 +26,9 @@ reportlab==4.2.5
 
 # ── Utilidades ────────────────────────────────────────────────
 python-dotenv==1.0.1
+psutil==6.1.0                  # /health avanzado: RAM del proceso y del sistema
+
+# ── Testing / carga (no se instalan en producción, solo dev) ───
+pytest==8.3.3
+pytest-asyncio==0.24.0
+locust==2.32.2
