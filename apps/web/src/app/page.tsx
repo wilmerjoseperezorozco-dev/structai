@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
   MessageSquare,
@@ -60,6 +60,14 @@ function StatusBar({ health }: { health: HealthResponse | null }) {
 const VALID_TABS: Tab[] = ["chat", "detect", "apu"];
 
 export default function Home() {
+  return (
+    <Suspense fallback={<div className="h-full bg-concrete-900" />}>
+      <HomeContent />
+    </Suspense>
+  );
+}
+
+function HomeContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const tabParam = searchParams.get("tab");
