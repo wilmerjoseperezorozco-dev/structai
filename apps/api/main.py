@@ -16,7 +16,15 @@ Wiring:
   packages/yolo/detector.py               → /detect  (stub ONNX si no hay modelo)
 """
 
-from __future__ import annotations
+# NOTA: sin "from __future__ import annotations" a propósito. Con esa
+# importación (PEP 563, anotaciones diferidas como strings), el decorador
+# @limiter.limit() de slowapi rompe la resolución de forward-refs de
+# Pydantic — el wrapper interno de slowapi no expone los globals de este
+# módulo, así que FastAPI no encuentra AskRequest/ConsultarRequest al
+# registrar las rutas (NameError). Reproducido y confirmado en un venv
+# limpio con las versiones exactas pineadas (fastapi==0.115.5,
+# pydantic==2.9.2) antes de quitarla — es la causa raíz real, no una
+# corrección especulativa.
 
 import io
 import os
