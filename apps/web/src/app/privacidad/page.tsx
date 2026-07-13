@@ -131,7 +131,7 @@ export default function PrivacidadPage() {
             <h2 className="text-white font-semibold mb-2">9. Cambios a esta política</h2>
             <p>
               Esta política puede actualizarse para reflejar cambios en el servicio o en la
-              normativa aplicable. La fecha de "última actualización" en la parte superior
+              normativa aplicable. La fecha de &quot;última actualización&quot; en la parte superior
               indica la versión vigente.
             </p>
           </section>

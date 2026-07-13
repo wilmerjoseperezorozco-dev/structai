@@ -105,7 +105,7 @@ export default function TerminosPage() {
           <section>
             <h2 className="text-white font-semibold mb-2">7. Propiedad intelectual</h2>
             <p>
-              El software, las marcas "Construdata" y "StructAI", y los contenidos propios de la
+              El software, las marcas &quot;Construdata&quot; y &quot;StructAI&quot;, y los contenidos propios de la
               plataforma son propiedad de su operador. Los proyectos, cálculos y datos que el
               usuario introduce en la plataforma siguen siendo de su propiedad; el operador no
               reclama derechos sobre ellos más allá de lo necesario para prestar el servicio.
@@ -115,7 +115,7 @@ export default function TerminosPage() {
           <section>
             <h2 className="text-white font-semibold mb-2">8. Disponibilidad y cambios al servicio</h2>
             <p>
-              El servicio se presta "tal cual" y "según disponibilidad". Puede haber
+              El servicio se presta &quot;tal cual&quot; y &quot;según disponibilidad&quot;. Puede haber
               interrupciones por mantenimiento, fallas de proveedores externos (hosting, IA) o
               causas de fuerza mayor. El operador puede modificar, ampliar o descontinuar
               funciones del servicio, notificando cambios relevantes con antelación razonable
