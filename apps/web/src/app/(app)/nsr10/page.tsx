@@ -120,7 +120,7 @@ export default function NSR10Page() {
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
         {filtrados.length === 0 && (
           <div className="text-center py-10 text-concrete-500 text-sm">
-            No se encontraron resultados para "{query}"
+            No se encontraron resultados para &quot;{query}&quot;
           </div>
         )}
         {filtrados.map((titulo) => (

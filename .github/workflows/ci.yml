@@ -1,127 +1,137 @@
 # ══════════════════════════════════════════════════════════════
-# CI/CD — GitHub Actions (GRATIS hasta 2000 min/mes)
-# Trigger: push a main/develop, PRs
-# Deploy: Vercel (web) + Render (api)
+# CI/CD — GitHub Actions (gratis hasta 2000 min/mes en repos privados)
+# Trigger: push a master, Pull Requests
+#
+# Deploy: NO se hace aquí a propósito.
+#   - apps/web ya está conectado por Git directo a Vercel (import nativo,
+#     no vía Action) — cada push a master dispara su propio deploy solo.
+#     Duplicarlo aquí con una acción de deploy causaría dos despliegues
+#     compitiendo por la misma build.
+#   - apps/api todavía no está desplegado (pendiente decidir Render vs
+#     Cloud Run). Cuando se despliegue, se agrega un job de deploy aparte.
+#   - Migraciones de Supabase: NO se automatizan aquí. La carpeta
+#     infra/supabase/migrations/ solo tiene 1 migración vieja mientras el
+#     schema real (motor_chunks, geopot_proyectos, etc.) se creó directo
+#     en Supabase — correr `supabase db push --linked` contra eso sería
+#     inseguro hasta que las migraciones reflejen el estado real.
 # ══════════════════════════════════════════════════════════════
-name: CI/CD Pipeline
+name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [master]
   pull_request:
-    branches: [main]
+    branches: [master]
 
 env:
-  PNPM_VERSION: 9
   NODE_VERSION: 20
-  PYTHON_VERSION: '3.11'
+  PYTHON_VERSION: '3.12'
 
 jobs:
 
-  # ── 1. Lint + Type Check ────────────────────────────────────
-  lint:
-    name: 🔍 Lint & Type Check
+  # ── 1. Lint + Type Check (apps/web) ─────────────────────────
+  lint-web:
+    name: 🔍 Lint & Type Check (web)
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v3
-        with: { version: '${{ env.PNPM_VERSION }}' }
       - uses: actions/setup-node@v4
-        with: { node-version: '${{ env.NODE_VERSION }}', cache: 'pnpm' }
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm lint
-      - run: pnpm exec tsc --noEmit
-        working-directory: apps/web
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: apps/web/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npx tsc --noEmit
 
-  # ── 2. Test Motor APU (Python) ──────────────────────────────
-  test-apu:
-    name: 🧮 Test Motor APU
+  # ── 2. Auditoría de dependencias (apps/web) ─────────────────
+  # No bloquea el pipeline todavía — hay vulnerabilidades conocidas sin
+  # triage (ver hallazgo real del 2026-07-13: 7 vulnerabilidades, 1
+  # moderada + 6 altas). Se reporta en cada corrida para que no se pierdan
+  # de vista; quitar `continue-on-error` una vez estén resueltas o
+  # explícitamente aceptadas.
+  audit-web:
+    name: 🛡️ npm audit (informativo)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '${{ env.NODE_VERSION }}' }
+      - run: npm ci
+      - run: npm audit --audit-level=high
+
+  # ── 3. Build (apps/web) ──────────────────────────────────────
+  build-web:
+    name: 🏗️ Build (web)
+    runs-on: ubuntu-latest
+    needs: [lint-web]
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: apps/web/package-lock.json
+      - run: npm ci
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL:      ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          NEXT_PUBLIC_API_URL:           ${{ secrets.NEXT_PUBLIC_API_URL }}
+
+  # ── 4. Tests Python — motores con cobertura real ────────────
+  # Cada paquete corre en SU PROPIO working-directory: todos tienen una
+  # carpeta llamada literalmente "src", así que correr pytest desde la
+  # raíz del repo colisiona el nombre de módulo entre paquetes (import
+  # cacheado del primer "src" que se procesa, verificado localmente).
+  #
+  # motor-aquai, motor-geopot y motor-vias quedan FUERA a propósito: sus
+  # carpetas tests/ existen pero están vacías — no hay nada que correr
+  # todavía (gap real, no un olvido de este workflow).
+  test-motores:
+    name: 🧮 Tests Python — motores
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        paquete: [motor-apu, motor-deformacion, motor-topovia]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '${{ env.PYTHON_VERSION }}' }
+      - name: Instalar dependencias
+        working-directory: packages/${{ matrix.paquete }}
+        run: |
+          pip install pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Correr pytest
+        working-directory: packages/${{ matrix.paquete }}
+        run: pytest tests/ -v
+
+  # ── 5. Tests de integración — apps/api (RAG, rate limit, health) ──
+  test-api:
+    name: 🧪 Tests de integración (apps/api)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: '${{ env.PYTHON_VERSION }}' }
-      - name: Install dependencies
-        run: |
-          cd packages/motor-apu
-          pip install -r requirements.txt
-          pip install pytest pytest-cov
-      - name: Run APU tests
-        run: |
-          cd packages/motor-apu
-          pytest tests/ -v --cov=. --cov-report=xml
-      - uses: codecov/codecov-action@v4
-        with: { file: packages/motor-apu/coverage.xml }
-
-  # ── 3. Build ────────────────────────────────────────────────
-  build:
-    name: 🏗️ Build
-    runs-on: ubuntu-latest
-    needs: [lint]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v3
-        with: { version: '${{ env.PNPM_VERSION }}' }
-      - uses: actions/setup-node@v4
-        with: { node-version: '${{ env.NODE_VERSION }}', cache: 'pnpm' }
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
+      - name: Instalar dependencias
+        working-directory: apps/api
+        run: pip install -r requirements.txt
+      - name: Correr pytest
+        working-directory: apps/api
+        run: pytest -v
         env:
           SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-          ANTHROPIC_API_KEY:    ${{ secrets.ANTHROPIC_API_KEY }}
-          OPENAI_API_KEY:       ${{ secrets.OPENAI_API_KEY }}
-          API_SECRET:           ${{ secrets.API_SECRET }}
-      - uses: actions/upload-artifact@v4
-        with:
-          name: build-artifacts
-          path: apps/web/.next
-
-  # ── 4. Deploy Web → Vercel (solo main) ─────────────────────
-  deploy-web:
-    name: 🚀 Deploy Web → Vercel
-    runs-on: ubuntu-latest
-    needs: [build, test-apu]
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v3
-        with: { version: '${{ env.PNPM_VERSION }}' }
-      - uses: actions/setup-node@v4
-        with: { node-version: '${{ env.NODE_VERSION }}', cache: 'pnpm' }
-      - run: pnpm install --frozen-lockfile
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token:   ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id:  ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          working-directory: apps/web
-          vercel-args: '--prod'
-
-  # ── 5. Deploy API → Render (solo main) ─────────────────────
-  deploy-api:
-    name: 🚀 Deploy API → Render
-    runs-on: ubuntu-latest
-    needs: [build, test-apu]
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: Trigger Render Deploy
-        run: |
-          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
-        # En Render: Settings → Deploy Hook → copiar URL a RENDER_DEPLOY_HOOK secret
-
-  # ── 6. Supabase Migrations (solo main) ─────────────────────
-  migrate-db:
-    name: 🗄️ Supabase Migrations
-    runs-on: ubuntu-latest
-    needs: [build]
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - uses: actions/checkout@v4
-      - uses: supabase/setup-cli@v1
-        with: { version: latest }
-      - run: supabase db push --linked
-        env:
-          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-          SUPABASE_DB_PASSWORD:  ${{ secrets.SUPABASE_DB_PASSWORD }}
+          GROQ_API_KEY:         ${{ secrets.GROQ_API_KEY }}

@@ -4,7 +4,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from src.models import MaterialItem, ManoObraItem, EquipoItem, UnidadMedida, CategoriaObrero, AIU
 from src.engine import MotorAPU
-from src.catalogue import apu_concreto_columna_3000psi, apu_acero_refuerzo_fy60
+from src.catalogue import apu_concreto_columna_m3 as apu_concreto_columna_3000psi
+from src.catalogue import apu_acero_g60 as apu_acero_refuerzo_fy60
 
 def test_precio_unitario_positivo():
     result = apu_concreto_columna_3000psi()
