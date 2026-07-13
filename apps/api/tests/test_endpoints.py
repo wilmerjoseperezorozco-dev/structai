@@ -18,21 +18,16 @@ Ejecutar: pytest apps/api/tests/ -v
 """
 from __future__ import annotations
 
-import os
 import sys
 import time
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 
 import jwt
 import pytest
+from cryptography.hazmat.primitives.asymmetric import ec
 from httpx import ASGITransport, AsyncClient
-
-# Secreto fijo solo para firmar tokens de prueba — la verificación de JWT es
-# 100% local (PyJWT, sin llamar a Supabase), así que cualquier valor sirve
-# mientras lo usen tanto el token de prueba como auth.py. No es el secreto
-# real de producción (ese vive en el Supabase JWT Secret del dashboard).
-os.environ.setdefault("SUPABASE_JWT_SECRET", "test-secret-solo-para-pytest-no-es-real")
 
 # main.py vive en apps/api/ — se agrega al sys.path para poder importarlo
 # como módulo de test sin necesitar el servidor corriendo.
@@ -40,17 +35,32 @@ API_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(API_DIR))
 
 import main as main_module  # noqa: E402  (import después del sys.path.insert es intencional)
+import auth as auth_module  # noqa: E402  (después de main: main.py ya corrió load_dotenv())
 
 app = main_module.app
 
 TEST_USER_ID = "00000000-0000-4000-8000-000000000001"
 
+# El proyecto real de Supabase firma con ES256 (clave asimétrica, publicada
+# vía JWKS) — no HS256 con secreto compartido. Los tests generan su propio
+# par de claves y monkeypatchean auth._jwks_client para no depender de una
+# llamada de red real al JWKS de Supabase en cada corrida.
+_TEST_PRIVATE_KEY = ec.generate_private_key(ec.SECP256R1())
+_OTRA_CLAVE_PRIVADA = ec.generate_private_key(ec.SECP256R1())  # para simular firma inválida
+
+
+@pytest.fixture(autouse=True)
+def _mock_jwks(monkeypatch):
+    """Todos los tests usan la clave pública de prueba en vez de golpear el JWKS real."""
+    fake_key = SimpleNamespace(key=_TEST_PRIVATE_KEY.public_key())
+    monkeypatch.setattr(auth_module._jwks_client, "get_signing_key_from_jwt", lambda token: fake_key)
+
 
 def _bearer_token(user_id: str = TEST_USER_ID, email: str = "ingeniero@test.com", expired: bool = False) -> str:
-    """Firma un JWT con la misma forma que emite Supabase Auth (HS256, aud=authenticated)."""
+    """Firma un JWT con la misma forma que emite Supabase Auth (ES256, aud=authenticated)."""
     exp = time.time() - 3600 if expired else time.time() + 3600
     payload = {"sub": user_id, "email": email, "aud": "authenticated", "exp": exp}
-    return jwt.encode(payload, os.environ["SUPABASE_JWT_SECRET"], algorithm="HS256")
+    return jwt.encode(payload, _TEST_PRIVATE_KEY, algorithm="ES256")
 
 
 @pytest.fixture
@@ -238,16 +248,16 @@ async def test_ask_sin_token_401():
 
 @pytest.mark.asyncio
 async def test_ask_token_invalido_401():
-    """Token con firma incorrecta (secreto distinto) -> 401."""
+    """Token firmado con una clave privada distinta a la que expone el JWKS -> 401."""
     transport = ASGITransport(app=app)
-    token_con_otro_secreto = jwt.encode(
+    token_con_otra_clave = jwt.encode(
         {"sub": TEST_USER_ID, "aud": "authenticated", "exp": time.time() + 3600},
-        "otro-secreto-que-no-es-el-configurado",
-        algorithm="HS256",
+        _OTRA_CLAVE_PRIVADA,
+        algorithm="ES256",
     )
     async with AsyncClient(
         transport=transport, base_url="http://test",
-        headers={"Authorization": f"Bearer {token_con_otro_secreto}"},
+        headers={"Authorization": f"Bearer {token_con_otra_clave}"},
     ) as ac:
         res = await ac.post("/ask", json={"pregunta": "cualquier cosa"})
     assert res.status_code == 401
