@@ -147,20 +147,78 @@ function Bubble({ msg }: { msg: Message }) {
   );
 }
 
+// ── Historial offline (localStorage) ──────────────────────────────────────────
+// Las respuestas del RAG vienen de un POST /ask, que el Service Worker no
+// puede cachear automáticamente (el Cache API del navegador solo intercepta
+// peticiones GET). Por eso el historial se persiste aquí, a nivel de app, para
+// que un ingeniero sin señal (sótano, zona rural) siga viendo sus consultas
+// previas al reabrir la PWA.
+const HISTORY_KEY = "construdata_chat_history_v1";
+const MENSAJE_BIENVENIDA: Message = {
+  id: "welcome",
+  role: "assistant",
+  text:
+    "Hola, soy tu asistente de ingeniería civil. Puedo consultarte sobre **NTC**, **NSR-10**, normas de seguridad industrial y calcular APUs con precios Construdata 2026 Barranquilla.\n\n¿Qué necesitas saber hoy?",
+};
+
+function cargarHistorial(): Message[] {
+  if (typeof window === "undefined") return [MENSAJE_BIENVENIDA];
+  try {
+    const raw = window.localStorage.getItem(HISTORY_KEY);
+    if (!raw) return [MENSAJE_BIENVENIDA];
+    const parsed = JSON.parse(raw) as Message[];
+    return Array.isArray(parsed) && parsed.length > 0 ? parsed : [MENSAJE_BIENVENIDA];
+  } catch {
+    // localStorage corrupto o inaccesible (modo privado, cuota excedida) —
+    // no debe romper el chat, solo se pierde el historial persistido.
+    return [MENSAJE_BIENVENIDA];
+  }
+}
+
+function guardarHistorial(messages: Message[]) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(HISTORY_KEY, JSON.stringify(messages));
+  } catch {
+    // Cuota de localStorage excedida u otro error de escritura — se ignora,
+    // el chat sigue funcionando en memoria para la sesión actual.
+  }
+}
+
 // ── Chat principal ───────────────────────────────────────────────────────────
 
 export default function Chat() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "welcome",
-      role: "assistant",
-      text:
-        "Hola, soy tu asistente de ingeniería civil. Puedo consultarte sobre **NTC**, **NSR-10**, normas de seguridad industrial y calcular APUs con precios Construdata 2026 Barranquilla.\n\n¿Qué necesitas saber hoy?",
-    },
-  ]);
+  // Inicializador perezoso: lee localStorage UNA vez, en el primer render,
+  // en vez de un useEffect de "carga" separado del de "guardado" — así se
+  // evita la condición de carrera donde el efecto de guardado (con el
+  // estado por defecto) sobreescribe el historial real antes de que el
+  // efecto de carga termine de aplicarlo. Seguro aquí porque este
+  // componente se importa con ssr:false (ver app/page.tsx) — nunca corre
+  // en servidor, `window` siempre existe cuando se monta.
+  const [messages, setMessages] = useState<Message[]>(() => cargarHistorial());
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [offline, setOffline] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  // Persiste cada cambio de historial.
+  useEffect(() => {
+    guardarHistorial(messages);
+  }, [messages]);
+
+  // Detecta estado de conexión para avisar al ingeniero que está viendo
+  // historial cacheado, no pudiendo hacer consultas nuevas.
+  useEffect(() => {
+    setOffline(!navigator.onLine);
+    const onOnline = () => setOffline(false);
+    const onOffline = () => setOffline(true);
+    window.addEventListener("online", onOnline);
+    window.addEventListener("offline", onOffline);
+    return () => {
+      window.removeEventListener("online", onOnline);
+      window.removeEventListener("offline", onOffline);
+    };
+  }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -168,6 +226,21 @@ export default function Chat() {
 
   const send = async (text: string) => {
     if (!text.trim() || loading) return;
+    if (offline) {
+      // Sin señal: no se intenta la consulta (fallaría igual), se avisa
+      // directamente que está viendo historial cacheado.
+      setMessages((m) => [
+        ...m,
+        { id: Date.now().toString(), role: "user", text },
+        {
+          id: Date.now().toString() + "_e",
+          role: "error",
+          text: "📡 Sin conexión — estás viendo tu historial guardado. Esta pregunta no se envió; vuelve a intentarla cuando recuperes señal.",
+        },
+      ]);
+      setInput("");
+      return;
+    }
     const userMsg: Message = { id: Date.now().toString(), role: "user", text };
     setMessages((m) => [...m, userMsg]);
     setInput("");
@@ -199,6 +272,13 @@ export default function Chat() {
 
   return (
     <div className="flex flex-col h-full">
+      {/* Aviso de modo offline — el historial mostrado es el cacheado en localStorage */}
+      {offline && (
+        <div className="flex items-center gap-2 px-4 py-1.5 text-xs bg-yellow-950/40 border-b border-yellow-900/40 text-yellow-400">
+          📡 Sin conexión — viendo historial guardado localmente
+        </div>
+      )}
+
       {/* Historial */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 scrollbar-thin scrollbar-thumb-concrete-700">
         {messages.map((m) => (
@@ -243,13 +323,18 @@ export default function Chat() {
             onKeyDown={onKey}
             minRows={1}
             maxRows={5}
-            placeholder="Pregunta como ingeniero civil... (Enter para enviar)"
+            placeholder={
+              offline
+                ? "Sin conexión — viendo historial guardado"
+                : "Pregunta como ingeniero civil... (Enter para enviar)"
+            }
             className="flex-1 bg-transparent text-sm text-concrete-100 placeholder-concrete-500 resize-none outline-none leading-relaxed"
             disabled={loading}
           />
           <button
             onClick={() => send(input)}
             disabled={!input.trim() || loading}
+            title={offline ? "Sin conexión — la consulta no se puede enviar ahora" : undefined}
             className="flex-shrink-0 w-8 h-8 rounded-xl bg-brand-600 hover:bg-brand-500 disabled:bg-concrete-700 disabled:cursor-not-allowed flex items-center justify-center transition"
           >
             {loading ? (
