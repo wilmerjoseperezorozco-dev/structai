@@ -27,7 +27,8 @@ reportlab==4.2.5
 # ── Utilidades ────────────────────────────────────────────────
 python-dotenv==1.0.1
 psutil==6.1.0                  # /health avanzado: RAM del proceso y del sistema
-slowapi==0.1.9                 # rate limiting por IP en /ask, /consultar, /detect, /apu/calculate
+slowapi==0.1.9                 # rate limiting en /ask, /consultar, /detect, /apu/calculate
+PyJWT==2.9.0                    # verificación de JWT de Supabase Auth (auth.py)
 
 # ── Testing / carga (no se instalan en producción, solo dev) ───
 pytest==8.3.3

@@ -47,8 +47,9 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
-from slowapi.util import get_remote_address
 from starlette.concurrency import run_in_threadpool
+
+from auth import get_current_user, rate_limit_key
 
 from json_logging import setup_logging
 
@@ -186,7 +187,11 @@ app.add_middleware(
 # contador y el límite real efectivo se multiplicaría por el número de
 # instancias — en ese punto hace falta un backend compartido (Redis) vía
 # `storage_uri="redis://..."` en el Limiter.
-limiter = Limiter(key_func=get_remote_address)
+#
+# key_func=rate_limit_key (auth.py): agrupa por user_id si el request trae
+# un JWT válido de Supabase, y cae a IP (get_remote_address) si no — así el
+# límite es real "por usuario" para quien está logueado, no solo por IP.
+limiter = Limiter(key_func=rate_limit_key)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
@@ -586,12 +591,15 @@ def ask_norma(request: Request, req: AskRequest):
     Ejemplo:
         {"pregunta": "¿Qué resistencia mínima necesito para columnas sísmicas?"}
     """
+    user = get_current_user(request)
+
     if not RAG_AVAILABLE:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="Módulo RAG no disponible. Verificar SUPABASE_URL/SUPABASE_SERVICE_KEY y GROQ_API_KEY."
         )
 
+    log.info("Consulta /ask", extra={"user_id": user.id, "endpoint": "/ask"})
     t0 = time.perf_counter()
     try:
         result = rag_ask(
@@ -600,7 +608,7 @@ def ask_norma(request: Request, req: AskRequest):
             top_k=req.top_k,
         )
     except Exception as e:
-        log.error(f"Error RAG: {e}", exc_info=True)
+        log.error(f"Error RAG: {e}", exc_info=True, extra={"user_id": user.id, "endpoint": "/ask"})
         raise HTTPException(status_code=500, detail=f"Error en RAG: {str(e)}")
 
     latencia = int((time.perf_counter() - t0) * 1000)
@@ -642,17 +650,20 @@ def consultar_delegado(request: Request, req: ConsultarRequest):
     Ejemplo:
         {"pregunta": "¿Qué coeficiente C de Hazen-Williams uso para tubería PVC?"}
     """
+    user = get_current_user(request)
+
     if not RAG_AVAILABLE:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="Módulo RAG no disponible. Verificar SUPABASE_URL/SUPABASE_SERVICE_KEY y GROQ_API_KEY."
         )
 
+    log.info("Consulta /consultar", extra={"user_id": user.id, "endpoint": "/consultar"})
     t0 = time.perf_counter()
     try:
         result = ask_delegado(question=req.pregunta, top_k=req.top_k)
     except Exception as e:
-        log.error(f"Error en agente delegador: {e}", exc_info=True)
+        log.error(f"Error en agente delegador: {e}", exc_info=True, extra={"user_id": user.id, "endpoint": "/consultar"})
         raise HTTPException(status_code=500, detail=f"Error en agente delegador: {str(e)}")
 
     latencia = int((time.perf_counter() - t0) * 1000)
@@ -695,6 +706,9 @@ async def detect_structural(
 
     El campo `modo` indica si la respuesta es real (`onnx`) o stub (`stub`).
     """
+    user = get_current_user(request)
+    log.info("Consulta /detect", extra={"user_id": user.id, "endpoint": "/detect"})
+
     # Validar tipo
     content_type = image.content_type or ""
     if not content_type.startswith("image/"):
@@ -850,12 +864,15 @@ def apu_calculate(
     C.ZAP.120, C.PLA.ALIG, C.MUR.10, D.MUR.BLQ15, D.MUR.BLQ10,
     H.EXC.MAN, H.EXC.MAQ, SEG.CER.01, SEG.VAL.PMT
     """
+    user = get_current_user(request)
+
     if not APU_AVAILABLE:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="Módulo motor-apu no disponible."
         )
 
+    log.info("Consulta /apu/calculate", extra={"user_id": user.id, "endpoint": "/apu/calculate", "actividad_id": actividad_id})
     result = get_apu(actividad_id)
     if result is None:
         raise HTTPException(
@@ -884,7 +901,7 @@ def apu_calculate(
             timestamp=datetime.datetime.utcnow().isoformat() + "Z",
         )
     except Exception as e:
-        log.error(f"Error calculando APU {actividad_id}: {e}", exc_info=True)
+        log.error(f"Error calculando APU {actividad_id}: {e}", exc_info=True, extra={"user_id": user.id, "endpoint": "/apu/calculate"})
         raise HTTPException(status_code=500, detail=str(e))
 
 

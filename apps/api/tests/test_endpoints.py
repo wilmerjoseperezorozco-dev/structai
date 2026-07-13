@@ -18,12 +18,21 @@ Ejecutar: pytest apps/api/tests/ -v
 """
 from __future__ import annotations
 
+import os
 import sys
+import time
 from pathlib import Path
 from unittest.mock import patch
 
+import jwt
 import pytest
 from httpx import ASGITransport, AsyncClient
+
+# Secreto fijo solo para firmar tokens de prueba — la verificación de JWT es
+# 100% local (PyJWT, sin llamar a Supabase), así que cualquier valor sirve
+# mientras lo usen tanto el token de prueba como auth.py. No es el secreto
+# real de producción (ese vive en el Supabase JWT Secret del dashboard).
+os.environ.setdefault("SUPABASE_JWT_SECRET", "test-secret-solo-para-pytest-no-es-real")
 
 # main.py vive en apps/api/ — se agrega al sys.path para poder importarlo
 # como módulo de test sin necesitar el servidor corriendo.
@@ -34,12 +43,29 @@ import main as main_module  # noqa: E402  (import después del sys.path.insert e
 
 app = main_module.app
 
+TEST_USER_ID = "00000000-0000-4000-8000-000000000001"
+
+
+def _bearer_token(user_id: str = TEST_USER_ID, email: str = "ingeniero@test.com", expired: bool = False) -> str:
+    """Firma un JWT con la misma forma que emite Supabase Auth (HS256, aud=authenticated)."""
+    exp = time.time() - 3600 if expired else time.time() + 3600
+    payload = {"sub": user_id, "email": email, "aud": "authenticated", "exp": exp}
+    return jwt.encode(payload, os.environ["SUPABASE_JWT_SECRET"], algorithm="HS256")
+
 
 @pytest.fixture
 async def client():
-    """Cliente async contra la app en memoria (ASGITransport) — sin levantar uvicorn."""
+    """
+    Cliente async contra la app en memoria (ASGITransport) — sin levantar uvicorn.
+
+    Trae un JWT válido por default en el header Authorization, porque /ask,
+    /consultar, /detect y /apu/calculate ahora requieren autenticación — los
+    tests que no son sobre auth no deberían tener que preocuparse por eso.
+    Los tests que sí prueban auth pasan su propio header explícito.
+    """
     transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+    headers = {"Authorization": f"Bearer {_bearer_token()}"}
+    async with AsyncClient(transport=transport, base_url="http://test", headers=headers) as ac:
         yield ac
 
 
@@ -195,6 +221,57 @@ async def test_health_responde_ok(client: AsyncClient):
     body = res.json()
     assert body["status"] in ("ok", "degraded")
     assert "modulos" in body
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# AUTENTICACIÓN (JWT de Supabase)
+# ═══════════════════════════════════════════════════════════════════════════
+
+@pytest.mark.asyncio
+async def test_ask_sin_token_401():
+    """Sin header Authorization -> 401, no 422 ni 500 (el cliente `client` sí trae token; este test usa uno propio sin header)."""
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        res = await ac.post("/ask", json={"pregunta": "cualquier cosa"})
+    assert res.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_ask_token_invalido_401():
+    """Token con firma incorrecta (secreto distinto) -> 401."""
+    transport = ASGITransport(app=app)
+    token_con_otro_secreto = jwt.encode(
+        {"sub": TEST_USER_ID, "aud": "authenticated", "exp": time.time() + 3600},
+        "otro-secreto-que-no-es-el-configurado",
+        algorithm="HS256",
+    )
+    async with AsyncClient(
+        transport=transport, base_url="http://test",
+        headers={"Authorization": f"Bearer {token_con_otro_secreto}"},
+    ) as ac:
+        res = await ac.post("/ask", json={"pregunta": "cualquier cosa"})
+    assert res.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_ask_token_expirado_401():
+    """Token con firma válida pero exp en el pasado -> 401, no 500."""
+    transport = ASGITransport(app=app)
+    async with AsyncClient(
+        transport=transport, base_url="http://test",
+        headers={"Authorization": f"Bearer {_bearer_token(expired=True)}"},
+    ) as ac:
+        res = await ac.post("/ask", json={"pregunta": "cualquier cosa"})
+    assert res.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_apu_calculate_requiere_auth(client: AsyncClient):
+    """/apu/calculate con token válido (el del fixture `client`) no debe devolver 401."""
+    if not main_module.APU_AVAILABLE:
+        pytest.skip("APU_AVAILABLE=False en este entorno")
+    res = await client.post("/apu/calculate", data={"actividad_id": "C.COL.40X30", "cantidad": "1"})
+    assert res.status_code != 401
 
 
 # ═══════════════════════════════════════════════════════════════════════════

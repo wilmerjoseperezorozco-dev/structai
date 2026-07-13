@@ -3,6 +3,8 @@
  * Base URL: NEXT_PUBLIC_API_URL (default http://localhost:8000)
  */
 
+import { supabase } from "@/lib/supabase";
+
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -86,9 +88,17 @@ export interface HealthResponse {
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 async function api<T>(path: string, init?: RequestInit): Promise<T> {
+  // /ask, /consultar, /detect y /apu/calculate requieren JWT de Supabase en
+  // el backend — se adjunta acá para no repetirlo en cada función de abajo.
+  // Endpoints que no lo requieren (/health, /apu/list) simplemente lo ignoran.
+  const { data: { session } } = await supabase.auth.getSession();
+  const authHeader: Record<string, string> = session?.access_token
+    ? { Authorization: `Bearer ${session.access_token}` }
+    : {};
+
   const res = await fetch(`${BASE}${path}`, {
     ...init,
-    headers: { "Accept": "application/json", ...init?.headers },
+    headers: { "Accept": "application/json", ...authHeader, ...init?.headers },
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ detail: res.statusText }));
