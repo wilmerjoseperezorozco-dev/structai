@@ -50,7 +50,9 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 from starlette.concurrency import run_in_threadpool
 
-logging.basicConfig(level=logging.INFO, format="%(levelname)s | %(name)s | %(message)s")
+from json_logging import setup_logging
+
+setup_logging(level=logging.INFO)
 log = logging.getLogger("construdata.api")
 
 # ── Importaciones lazy para no fallar si falta algún paquete ──────────────────
