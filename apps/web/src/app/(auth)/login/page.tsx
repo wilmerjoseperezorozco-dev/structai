@@ -129,6 +129,15 @@ export default function LoginPage() {
               {loading && <Loader2 size={15} className="animate-spin" />}
               {mode === "login" ? "Ingresar" : "Crear cuenta gratis"}
             </button>
+
+            {mode === "login" && (
+              <Link
+                href="/recuperar"
+                className="block text-center text-xs text-concrete-400 hover:text-brand-400 transition"
+              >
+                ¿Olvidaste tu contraseña?
+              </Link>
+            )}
           </form>
         </div>
 
