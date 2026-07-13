@@ -1,14 +1,21 @@
 """Verificación de JWT de Supabase — identidad del usuario en el backend.
 
-Este proyecto de Supabase firma los tokens con una clave asimétrica ES256
-(no el HS256 con secreto compartido de proyectos viejos) — confirmado por
-la clave pública real expuesta en el JWKS del proyecto. Eso significa que
-no hace falta ningún secreto propio: PyJWT descarga y cachea las claves
-públicas desde SUPABASE_URL/auth/v1/.well-known/jwks.json (ya expuesto por
-Supabase) y verifica la firma contra la clave pública que corresponda al
-'kid' del token. Como son claves públicas, no hay nada sensible que
-guardar — y si Supabase rota las claves, PyJWKClient las vuelve a pedir
-solas la próxima vez que no encuentra el 'kid'.
+Supabase soporta dos esquemas de firma a la vez durante la transición a
+claves asimétricas: el HS256 con "Legacy JWT secret" (el que usan los
+tokens ya emitidos, y el dashboard lo marca literalmente "still used") y
+las claves ES256/RS256 nuevas publicadas en el JWKS (preparadas para
+cuando el proyecto rote a firma asimétrica). Un token real puede llegar
+firmado con cualquiera de los dos según cuándo se emitió, así que este
+módulo verifica según el 'alg' que declara el header del propio token:
+
+  - alg=HS256  -> se verifica con SUPABASE_JWT_SECRET (secreto compartido).
+  - alg=ES256/RS256 -> se verifica contra la clave pública del JWKS que
+    corresponda al 'kid' del token (SUPABASE_URL/auth/v1/.well-known/jwks.json).
+
+Restringir el algoritmo de verificación al que YA declaraba el token
+(en vez de aceptar cualquiera de la lista) evita el ataque clásico de
+"algorithm confusion" (firmar HS256 usando una clave pública RSA/EC como
+si fuera el secreto compartido).
 
 NOTA: get_current_user() se llama explícitamente dentro del cuerpo de cada
 endpoint (no como Depends() de FastAPI) a propósito — slowapi ya rompió una
@@ -25,8 +32,9 @@ from fastapi import HTTPException, Request, status
 from slowapi.util import get_remote_address
 
 SUPABASE_URL = os.environ["SUPABASE_URL"]
-_JWKS_URL = f"{SUPABASE_URL}/auth/v1/.well-known/jwks.json"
+SUPABASE_JWT_SECRET = os.environ["SUPABASE_JWT_SECRET"]
 
+_JWKS_URL = f"{SUPABASE_URL}/auth/v1/.well-known/jwks.json"
 # cache_keys=True: no vuelve a golpear el JWKS en cada request, solo cuando
 # aparece un 'kid' que no tiene cacheado (ej. tras una rotación de claves).
 _jwks_client = jwt.PyJWKClient(_JWKS_URL, cache_keys=True)
@@ -39,13 +47,16 @@ class AuthenticatedUser:
 
 
 def _verify(token: str) -> dict:
-    signing_key = _jwks_client.get_signing_key_from_jwt(token)
-    return jwt.decode(
-        token,
-        signing_key.key,
-        algorithms=["ES256", "RS256"],
-        audience="authenticated",
-    )
+    alg = jwt.get_unverified_header(token).get("alg")
+
+    if alg == "HS256":
+        return jwt.decode(token, SUPABASE_JWT_SECRET, algorithms=["HS256"], audience="authenticated")
+
+    if alg in ("ES256", "RS256"):
+        signing_key = _jwks_client.get_signing_key_from_jwt(token)
+        return jwt.decode(token, signing_key.key, algorithms=[alg], audience="authenticated")
+
+    raise jwt.InvalidAlgorithmError(f"Algoritmo no soportado: {alg}")
 
 
 def get_current_user(request: Request) -> AuthenticatedUser:

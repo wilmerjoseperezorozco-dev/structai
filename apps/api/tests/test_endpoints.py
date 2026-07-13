@@ -18,6 +18,7 @@ Ejecutar: pytest apps/api/tests/ -v
 """
 from __future__ import annotations
 
+import os
 import sys
 import time
 from pathlib import Path
@@ -28,6 +29,12 @@ import jwt
 import pytest
 from cryptography.hazmat.primitives.asymmetric import ec
 from httpx import ASGITransport, AsyncClient
+
+# Secreto fijo solo para firmar tokens HS256 de prueba (el camino "legacy" que
+# Supabase sigue usando en la práctica) — cualquier valor sirve, no es el
+# secreto real de producción, mientras lo usen tanto el token de prueba como
+# auth.py.
+os.environ.setdefault("SUPABASE_JWT_SECRET", "test-secret-solo-para-pytest-no-es-real")
 
 # main.py vive en apps/api/ — se agrega al sys.path para poder importarlo
 # como módulo de test sin necesitar el servidor corriendo.
@@ -41,25 +48,32 @@ app = main_module.app
 
 TEST_USER_ID = "00000000-0000-4000-8000-000000000001"
 
-# El proyecto real de Supabase firma con ES256 (clave asimétrica, publicada
-# vía JWKS) — no HS256 con secreto compartido. Los tests generan su propio
-# par de claves y monkeypatchean auth._jwks_client para no depender de una
-# llamada de red real al JWKS de Supabase en cada corrida.
+# Supabase soporta dos caminos de firma a la vez (ver auth.py): HS256 con el
+# "Legacy JWT secret" (el que de verdad firma los tokens hoy) y ES256 vía
+# JWKS (la clave nueva, preparada para cuando el proyecto rote). Los tests
+# cubren ambos — el ES256 monkeypatcheando auth._jwks_client para no
+# depender de una llamada de red real al JWKS de Supabase en cada corrida.
 _TEST_PRIVATE_KEY = ec.generate_private_key(ec.SECP256R1())
-_OTRA_CLAVE_PRIVADA = ec.generate_private_key(ec.SECP256R1())  # para simular firma inválida
+_OTRA_CLAVE_PRIVADA = ec.generate_private_key(ec.SECP256R1())  # para simular firma ES256 inválida
 
 
 @pytest.fixture(autouse=True)
 def _mock_jwks(monkeypatch):
-    """Todos los tests usan la clave pública de prueba en vez de golpear el JWKS real."""
+    """Todos los tests usan la clave pública ES256 de prueba en vez de golpear el JWKS real."""
     fake_key = SimpleNamespace(key=_TEST_PRIVATE_KEY.public_key())
     monkeypatch.setattr(auth_module._jwks_client, "get_signing_key_from_jwt", lambda token: fake_key)
 
 
 def _bearer_token(user_id: str = TEST_USER_ID, email: str = "ingeniero@test.com", expired: bool = False) -> str:
-    """Firma un JWT con la misma forma que emite Supabase Auth (ES256, aud=authenticated)."""
+    """Firma un JWT vía el camino legacy HS256 (el que usa Supabase de verdad hoy)."""
     exp = time.time() - 3600 if expired else time.time() + 3600
     payload = {"sub": user_id, "email": email, "aud": "authenticated", "exp": exp}
+    return jwt.encode(payload, os.environ["SUPABASE_JWT_SECRET"], algorithm="HS256")
+
+
+def _bearer_token_es256(user_id: str = TEST_USER_ID, email: str = "ingeniero@test.com") -> str:
+    """Firma un JWT vía el camino ES256/JWKS (la clave nueva, aún no activa en producción)."""
+    payload = {"sub": user_id, "email": email, "aud": "authenticated", "exp": time.time() + 3600}
     return jwt.encode(payload, _TEST_PRIVATE_KEY, algorithm="ES256")
 
 
@@ -247,8 +261,41 @@ async def test_ask_sin_token_401():
 
 
 @pytest.mark.asyncio
-async def test_ask_token_invalido_401():
-    """Token firmado con una clave privada distinta a la que expone el JWKS -> 401."""
+async def test_ask_token_hs256_firma_incorrecta_401():
+    """Token HS256 (camino legacy) firmado con un secreto distinto al configurado -> 401."""
+    transport = ASGITransport(app=app)
+    token_con_otro_secreto = jwt.encode(
+        {"sub": TEST_USER_ID, "aud": "authenticated", "exp": time.time() + 3600},
+        "otro-secreto-que-no-es-el-configurado",
+        algorithm="HS256",
+    )
+    async with AsyncClient(
+        transport=transport, base_url="http://test",
+        headers={"Authorization": f"Bearer {token_con_otro_secreto}"},
+    ) as ac:
+        res = await ac.post("/ask", json={"pregunta": "cualquier cosa"})
+    assert res.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_ask_token_es256_valido_no_da_401():
+    """Camino ES256/JWKS (la clave nueva, aún no activa en producción) también debe aceptarse."""
+    if not main_module.RAG_AVAILABLE:
+        pytest.skip("RAG_AVAILABLE=False en este entorno")
+
+    transport = ASGITransport(app=app)
+    with patch("main.rag_ask", return_value=RESPUESTA_RAG_MOCK):
+        async with AsyncClient(
+            transport=transport, base_url="http://test",
+            headers={"Authorization": f"Bearer {_bearer_token_es256()}"},
+        ) as ac:
+            res = await ac.post("/ask", json={"pregunta": "cualquier cosa"})
+    assert res.status_code != 401
+
+
+@pytest.mark.asyncio
+async def test_ask_token_es256_firma_incorrecta_401():
+    """Token ES256 firmado con una clave privada distinta a la que expone el JWKS -> 401."""
     transport = ASGITransport(app=app)
     token_con_otra_clave = jwt.encode(
         {"sub": TEST_USER_ID, "aud": "authenticated", "exp": time.time() + 3600},
@@ -265,7 +312,7 @@ async def test_ask_token_invalido_401():
 
 @pytest.mark.asyncio
 async def test_ask_token_expirado_401():
-    """Token con firma válida pero exp en el pasado -> 401, no 500."""
+    """Token con firma válida (HS256, camino legacy) pero exp en el pasado -> 401, no 500."""
     transport = ASGITransport(app=app)
     async with AsyncClient(
         transport=transport, base_url="http://test",
