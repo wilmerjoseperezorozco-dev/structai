@@ -4,12 +4,20 @@
  * manejo de errores del backend Construdata.
  */
 
+import { supabase } from "@/lib/supabase";
+
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 async function api<T>(path: string, init?: RequestInit): Promise<T> {
+  // Los endpoints de cálculo de este router exigen JWT de Supabase (auth.py).
+  const { data: { session } } = await supabase.auth.getSession();
+  const authHeader: Record<string, string> = session?.access_token
+    ? { Authorization: `Bearer ${session.access_token}` }
+    : {};
+
   const res = await fetch(`${BASE}${path}`, {
     ...init,
-    headers: { Accept: "application/json", ...init?.headers },
+    headers: { Accept: "application/json", ...authHeader, ...init?.headers },
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ detail: res.statusText }));

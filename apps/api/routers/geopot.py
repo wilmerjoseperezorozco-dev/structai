@@ -11,7 +11,11 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
+
+# apps/api ya está en sys.path para cuando este módulo se importa (main.py lo
+# agrega antes de hacer `from routers.geopot import router`).
+from auth import AuthenticatedUser, get_current_user
 
 ROOT = Path(__file__).resolve().parents[3]  # monorepo/
 
@@ -33,7 +37,7 @@ def salud():
 # ── Sísmica ────────────────────────────────────────────────────────────────
 
 @router.post("/sismica", summary="Clasificación sísmica NSR-10 por departamento")
-def endpoint_sismica(req: motor_geopot.ZonaSismicaRequest):
+def endpoint_sismica(req: motor_geopot.ZonaSismicaRequest, user: AuthenticatedUser = Depends(get_current_user)):
     resultado = motor_geopot.consultar_zona_sismica(req)
     if "error" in resultado:
         raise HTTPException(status_code=404, detail=resultado["error"])
@@ -48,24 +52,24 @@ def endpoint_sismica_resumen():
 # ── Laboratorio: concreto ────────────────────────────────────────────────────
 
 @router.post("/laboratorio/concreto", summary="Informe completo de ensayo de concreto (NTC 673/396, conformidad ACI 318/NSR-10)")
-def endpoint_concreto(req: motor_geopot.ConcretoRequest):
+def endpoint_concreto(req: motor_geopot.ConcretoRequest, user: AuthenticatedUser = Depends(get_current_user)):
     return motor_geopot.analizar_concreto(req)
 
 
 # ── Laboratorio: suelos ───────────────────────────────────────────────────────
 
 @router.post("/laboratorio/suelos/uscs", summary="Clasificación USCS (ASTM D2487)")
-def endpoint_uscs(req: motor_geopot.USCSRequest):
+def endpoint_uscs(req: motor_geopot.USCSRequest, user: AuthenticatedUser = Depends(get_current_user)):
     return motor_geopot.clasificar_suelo_uscs(req)
 
 
 @router.post("/laboratorio/suelos/aashto", summary="Clasificación AASHTO M145")
-def endpoint_aashto(req: motor_geopot.AASHTORequest):
+def endpoint_aashto(req: motor_geopot.AASHTORequest, user: AuthenticatedUser = Depends(get_current_user)):
     return motor_geopot.clasificar_suelo_aashto(req)
 
 
 @router.post("/laboratorio/suelos/proctor", summary="Compactación Proctor (INV E-141/142)")
-def endpoint_proctor(req: motor_geopot.ProctorRequest):
+def endpoint_proctor(req: motor_geopot.ProctorRequest, user: AuthenticatedUser = Depends(get_current_user)):
     resultado = motor_geopot.analizar_proctor(req)
     if "error" in resultado:
         raise HTTPException(status_code=422, detail=resultado["error"])
@@ -73,27 +77,27 @@ def endpoint_proctor(req: motor_geopot.ProctorRequest):
 
 
 @router.post("/laboratorio/suelos/cbr", summary="CBR de laboratorio (INV E-148) + espesor referencial de pavimento")
-def endpoint_cbr(req: motor_geopot.CBRRequest):
+def endpoint_cbr(req: motor_geopot.CBRRequest, user: AuthenticatedUser = Depends(get_current_user)):
     return motor_geopot.analizar_cbr(req)
 
 
 @router.post("/laboratorio/suelos/granulometria", summary="Granulometría por tamizado (INV E-123 / NTC 77)")
-def endpoint_granulometria(req: motor_geopot.GranulometriaRequest):
+def endpoint_granulometria(req: motor_geopot.GranulometriaRequest, user: AuthenticatedUser = Depends(get_current_user)):
     return motor_geopot.analizar_granulometria(req)
 
 
 # ── Laboratorio: agregados y mezcla ──────────────────────────────────────────
 
 @router.post("/laboratorio/agregados/grueso", summary="Verificación de agregado grueso (NTC 174/237/218)")
-def endpoint_agregado_grueso(req: motor_geopot.AgregadoGruesoRequest):
+def endpoint_agregado_grueso(req: motor_geopot.AgregadoGruesoRequest, user: AuthenticatedUser = Depends(get_current_user)):
     return motor_geopot.verificar_agregado_grueso(req)
 
 
 @router.post("/laboratorio/agregados/fino", summary="Verificación de agregado fino / arena (NTC 174/237/77)")
-def endpoint_agregado_fino(req: motor_geopot.AgregadoFinoRequest):
+def endpoint_agregado_fino(req: motor_geopot.AgregadoFinoRequest, user: AuthenticatedUser = Depends(get_current_user)):
     return motor_geopot.verificar_agregado_fino(req)
 
 
 @router.post("/laboratorio/mezcla", summary="Diseño de mezcla de concreto (ACI 211.1, referencial)")
-def endpoint_mezcla(req: motor_geopot.MezclaACIRequest):
+def endpoint_mezcla(req: motor_geopot.MezclaACIRequest, user: AuthenticatedUser = Depends(get_current_user)):
     return motor_geopot.disenar_mezcla_aci(req)

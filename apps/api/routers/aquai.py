@@ -16,8 +16,12 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
+
+# apps/api ya está en sys.path para cuando este módulo se importa (main.py lo
+# agrega antes de hacer `from routers.aquai import router`).
+from auth import AuthenticatedUser, get_current_user
 
 ROOT = Path(__file__).resolve().parents[3]  # monorepo/
 
@@ -37,7 +41,7 @@ def salud():
 
 
 @router.post("/poblacion", response_model=motor_aquai.PoblacionResponse, summary="Proyección de población de diseño")
-def endpoint_poblacion(req: motor_aquai.PoblacionRequest):
+def endpoint_poblacion(req: motor_aquai.PoblacionRequest, user: AuthenticatedUser = Depends(get_current_user)):
     try:
         return motor_aquai.proyectar_poblacion(req)
     except ValueError as e:
@@ -45,7 +49,7 @@ def endpoint_poblacion(req: motor_aquai.PoblacionRequest):
 
 
 @router.post("/caudales", response_model=motor_aquai.CaudalesResponse, summary="Dotación y caudales de diseño (Qmd, Qmh, Qci)")
-def endpoint_caudales(req: motor_aquai.CaudalesRequest):
+def endpoint_caudales(req: motor_aquai.CaudalesRequest, user: AuthenticatedUser = Depends(get_current_user)):
     try:
         return motor_aquai.calcular_caudales(req)
     except ValueError as e:
@@ -53,7 +57,7 @@ def endpoint_caudales(req: motor_aquai.CaudalesRequest):
 
 
 @router.post("/hidraulica", response_model=motor_aquai.HazenWilliamsResponse, summary="Hidráulica de tuberías — Hazen-Williams")
-def endpoint_hidraulica(req: motor_aquai.HazenWilliamsRequest):
+def endpoint_hidraulica(req: motor_aquai.HazenWilliamsRequest, user: AuthenticatedUser = Depends(get_current_user)):
     try:
         return motor_aquai.calcular_hazen_williams(req)
     except ValueError as e:
@@ -61,7 +65,7 @@ def endpoint_hidraulica(req: motor_aquai.HazenWilliamsRequest):
 
 
 @router.post("/hidrologia", response_model=motor_aquai.HidrologiaResponse, summary="Hidrología — caudal de diseño (Método Racional)")
-def endpoint_hidrologia(req: motor_aquai.HidrologiaRequest):
+def endpoint_hidrologia(req: motor_aquai.HidrologiaRequest, user: AuthenticatedUser = Depends(get_current_user)):
     try:
         return motor_aquai.calcular_hidrologia(req)
     except ValueError as e:
@@ -69,7 +73,7 @@ def endpoint_hidrologia(req: motor_aquai.HidrologiaRequest):
 
 
 @router.post("/hidraulica/manning", response_model=motor_aquai.ManningResponse, summary="Manning — alcantarillado a gravedad")
-def endpoint_manning(req: motor_aquai.ManningRequest):
+def endpoint_manning(req: motor_aquai.ManningRequest, user: AuthenticatedUser = Depends(get_current_user)):
     try:
         return motor_aquai.calcular_manning(req)
     except ValueError as e:
@@ -77,7 +81,7 @@ def endpoint_manning(req: motor_aquai.ManningRequest):
 
 
 @router.post("/hidraulica/ariete", response_model=motor_aquai.ArieteResponse, summary="Golpe de ariete (Joukowski)")
-def endpoint_ariete(req: motor_aquai.ArieteRequest):
+def endpoint_ariete(req: motor_aquai.ArieteRequest, user: AuthenticatedUser = Depends(get_current_user)):
     try:
         return motor_aquai.calcular_ariete(req)
     except ValueError as e:
@@ -85,7 +89,7 @@ def endpoint_ariete(req: motor_aquai.ArieteRequest):
 
 
 @router.post("/hidraulica/bombeo", response_model=motor_aquai.BombeoResponse, summary="Estación de bombeo — TDH, potencia y NPSH")
-def endpoint_bombeo(req: motor_aquai.BombeoRequest):
+def endpoint_bombeo(req: motor_aquai.BombeoRequest, user: AuthenticatedUser = Depends(get_current_user)):
     try:
         return motor_aquai.calcular_bombeo(req)
     except ValueError as e:
@@ -93,7 +97,7 @@ def endpoint_bombeo(req: motor_aquai.BombeoRequest):
 
 
 @router.post("/saneamiento/ptap", response_model=motor_aquai.PTAPResponse, summary="Dimensionar PTAP")
-def endpoint_ptap(req: motor_aquai.PTAPRequest):
+def endpoint_ptap(req: motor_aquai.PTAPRequest, user: AuthenticatedUser = Depends(get_current_user)):
     try:
         return motor_aquai.calcular_ptap(req)
     except ValueError as e:
@@ -101,7 +105,7 @@ def endpoint_ptap(req: motor_aquai.PTAPRequest):
 
 
 @router.post("/saneamiento/ptar", response_model=motor_aquai.PTARResponse, summary="Dimensionar PTAR")
-def endpoint_ptar(req: motor_aquai.PTARRequest):
+def endpoint_ptar(req: motor_aquai.PTARRequest, user: AuthenticatedUser = Depends(get_current_user)):
     try:
         return motor_aquai.calcular_ptar(req)
     except ValueError as e:
@@ -109,7 +113,7 @@ def endpoint_ptar(req: motor_aquai.PTARRequest):
 
 
 @router.post("/tarifas/calcular", response_model=motor_aquai.TarifaResponse, summary="Tarifas CRA por estrato")
-def endpoint_tarifa(req: motor_aquai.TarifaRequest):
+def endpoint_tarifa(req: motor_aquai.TarifaRequest, user: AuthenticatedUser = Depends(get_current_user)):
     try:
         return motor_aquai.calcular_tarifa(req)
     except ValueError as e:
@@ -117,7 +121,7 @@ def endpoint_tarifa(req: motor_aquai.TarifaRequest):
 
 
 @router.post("/sui/reporte", response_model=motor_aquai.ReporteSUIResponse, summary="Estructura de reporte para el portal SUI")
-def endpoint_reporte_sui(req: motor_aquai.ReporteSUIRequest):
+def endpoint_reporte_sui(req: motor_aquai.ReporteSUIRequest, user: AuthenticatedUser = Depends(get_current_user)):
     try:
         return motor_aquai.generar_reporte_sui(req)
     except ValueError as e:
@@ -125,7 +129,7 @@ def endpoint_reporte_sui(req: motor_aquai.ReporteSUIRequest):
 
 
 @router.post("/reporte/memoria", summary="Generar memoria de cálculo en PDF")
-def endpoint_memoria_pdf(payload: dict):
+def endpoint_memoria_pdf(payload: dict, user: AuthenticatedUser = Depends(get_current_user)):
     """
     Body: {"meta": {...datos del proyecto...}, "modulos": {...resultados calculados...}, "ingeniero": {...}}
     Ver packages/motor-aquai/src/pdf_memoria.py para el detalle de campos esperados.
@@ -158,7 +162,10 @@ def endpoint_memoria_pdf(payload: dict):
 
 
 @router.post("/normativa/buscar", summary="Búsqueda semántica sobre normativa AquAI (requiere OPENAI_API_KEY + tabla normas_vigentes)")
-async def endpoint_buscar_normas(pregunta: str, threshold: float = 0.70, limite: int = 5, tipo_norma: str | None = None):
+async def endpoint_buscar_normas(
+    pregunta: str, threshold: float = 0.70, limite: int = 5, tipo_norma: str | None = None,
+    user: AuthenticatedUser = Depends(get_current_user),
+):
     try:
         import importlib
         rag_normativo = sys.modules.get("motor_aquai.rag_normativo") or importlib.import_module("motor_aquai.rag_normativo")

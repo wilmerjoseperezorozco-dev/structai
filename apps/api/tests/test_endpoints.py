@@ -332,6 +332,53 @@ async def test_apu_calculate_requiere_auth(client: AsyncClient):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+# ROUTERS PROTEGIDOS (aquai/geopot/vias/gerencia) — mismo patrón que /ask
+# Un endpoint representativo por router alcanza: la protección es el mismo
+# Depends(get_current_user) en los ~44 endpoints de cálculo de estos 4
+# routers, no vale la pena repetir el mismo caso 44 veces. El body puede
+# ser inválido/vacío a propósito — lo que se prueba es que el gate de auth
+# corre ANTES de la validación del body (401 sin token, no 401 con token,
+# nunca 500).
+# ═══════════════════════════════════════════════════════════════════════════
+
+@pytest.mark.parametrize("path", [
+    "/aquai/poblacion",
+    "/geopot/sismica",
+    "/vias/geometrico",
+    "/gerencia/evm/snapshot",
+])
+@pytest.mark.asyncio
+async def test_router_protegido_sin_token_401(path: str):
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        res = await ac.post(path, json={})
+    assert res.status_code == 401, f"{path} debería exigir auth y no lo hace"
+
+
+@pytest.mark.parametrize("path", [
+    "/aquai/poblacion",
+    "/geopot/sismica",
+    "/vias/geometrico",
+    "/gerencia/evm/snapshot",
+])
+@pytest.mark.asyncio
+async def test_router_protegido_con_token_no_da_401(path: str, client: AsyncClient):
+    """Con token válido, el body vacío puede fallar validación (422) pero nunca 401 ni 500."""
+    res = await client.post(path, json={})
+    assert res.status_code not in (401, 500), f"{path} con token válido dio {res.status_code}"
+
+
+@pytest.mark.asyncio
+async def test_router_salud_sigue_publico():
+    """/salud de cada motor es catálogo/status, no requiere auth (igual que /health en main.py)."""
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        for path in ("/aquai/salud", "/geopot/salud", "/vias/salud", "/gerencia/salud"):
+            res = await ac.get(path)
+            assert res.status_code == 200, f"{path} debería seguir público"
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 # RATE LIMITING
 # ═══════════════════════════════════════════════════════════════════════════
 
