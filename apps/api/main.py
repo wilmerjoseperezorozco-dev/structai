@@ -33,10 +33,14 @@ sys.path.insert(0, str(ROOT / "packages" / "construdata"))
 from dotenv import load_dotenv
 load_dotenv(Path(__file__).resolve().parent / ".env")
 
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile, status
+from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
+from starlette.concurrency import run_in_threadpool
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s | %(name)s | %(message)s")
 log = logging.getLogger("construdata.api")
@@ -155,6 +159,26 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ── Rate limiting por IP ──────────────────────────────────────────────────────
+# Hoy la API no valida usuario (no hay verificación de Authorization/JWT de
+# Supabase en ningún endpoint — confirmado al auditar main.py y el cliente
+# del frontend en apps/web/src/lib/api.ts), así que el único identificador
+# disponible para limitar es la IP. Esto protege infraestructura/costo
+# (Groq se paga por token, un scraper podría agotar el presupuesto en
+# minutos) — NO reemplaza el límite freemium de "5 APU/mes" por usuario,
+# que hoy no se aplica en el servidor y requiere primero validar el JWT de
+# Supabase en cada request (tarea aparte).
+#
+# Backend en memoria (default de slowapi): correcto para una sola
+# instancia — que es el plan actual (Render/Cloud Run, 1 proceso). Si en
+# el futuro se escala a múltiples instancias, cada una llevaría su propio
+# contador y el límite real efectivo se multiplicaría por el número de
+# instancias — en ese punto hace falta un backend compartido (Redis) vía
+# `storage_uri="redis://..."` en el Limiter.
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 if AQUAI_AVAILABLE:
     app.include_router(aquai_router)
@@ -539,7 +563,8 @@ def health(deep: bool = False):
 # ── /ask — RAG Multi-Norma ───────────────────────────────────────────────────
 
 @app.post("/ask", response_model=AskResponse, tags=["Normativa"])
-def ask_norma(req: AskRequest):
+@limiter.limit("10/minute")
+def ask_norma(request: Request, req: AskRequest):
     """
     Consulta RAG multi-norma.
 
@@ -593,7 +618,8 @@ def ask_norma(req: AskRequest):
 # ── /consultar — Agente delegador multi-dominio ──────────────────────────────
 
 @app.post("/consultar", response_model=ConsultarResponse, tags=["Normativa"])
-def consultar_delegado(req: ConsultarRequest):
+@limiter.limit("10/minute")
+def consultar_delegado(request: Request, req: ConsultarRequest):
     """
     Punto de entrada único para preguntas de cualquier dominio de ingeniería.
 
@@ -645,7 +671,9 @@ def consultar_delegado(req: ConsultarRequest):
 # ── /detect — YOLO Detección Estructural ─────────────────────────────────────
 
 @app.post("/detect", response_model=DetectResponse, tags=["Detección"])
+@limiter.limit("10/minute")
 async def detect_structural(
+    request: Request,
     image: UploadFile = File(..., description="Foto JPG/PNG del elemento estructural"),
 ):
     """
@@ -671,9 +699,14 @@ async def detect_structural(
 
     t0 = time.perf_counter()
 
+    # run_in_threadpool: la inferencia ONNX (y el stub, aunque es liviano) es
+    # trabajo CPU-bound síncrono. Este endpoint es `async def` (necesario
+    # para `await image.read()`), así que sin esto el event loop entero
+    # queda bloqueado mientras procesa la imagen — no solo esta petición,
+    # TODAS las peticiones concurrentes a la API (RAG, APU, health...).
     if _onnx_session is not None:
         try:
-            detecciones = _detect_onnx(img_bytes, _onnx_session)
+            detecciones = await run_in_threadpool(_detect_onnx, img_bytes, _onnx_session)
             import numpy as np, cv2
             arr = np.frombuffer(img_bytes, np.uint8)
             img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
@@ -681,10 +714,10 @@ async def detect_structural(
             modo = "onnx"
         except Exception as e:
             log.error(f"Error inferencia ONNX: {e}", exc_info=True)
-            detecciones, img_w, img_h = _detect_stub(img_bytes)
+            detecciones, img_w, img_h = await run_in_threadpool(_detect_stub, img_bytes)
             modo = "stub_fallback"
     else:
-        detecciones, img_w, img_h = _detect_stub(img_bytes)
+        detecciones, img_w, img_h = await run_in_threadpool(_detect_stub, img_bytes)
         modo = "stub"
 
     latencia = int((time.perf_counter() - t0) * 1000)
@@ -790,7 +823,9 @@ def apu_list():
 # ── /apu/calculate — Calcular APU específico ─────────────────────────────────
 
 @app.post("/apu/calculate", response_model=APUDesglose, tags=["APU"])
+@limiter.limit("20/minute")
 def apu_calculate(
+    request: Request,
     actividad_id: str = Form(..., description="ID de la actividad APU, ej: C.COL.40X30"),
     cantidad: float = Form(1.0, ge=0.01, description="Cantidad de unidades a calcular"),
 ):

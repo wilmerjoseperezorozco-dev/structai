@@ -195,3 +195,48 @@ async def test_health_responde_ok(client: AsyncClient):
     body = res.json()
     assert body["status"] in ("ok", "degraded")
     assert "modulos" in body
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# RATE LIMITING
+# ═══════════════════════════════════════════════════════════════════════════
+
+@pytest.mark.asyncio
+async def test_rate_limit_ask_bloquea_tras_10_por_minuto(client: AsyncClient):
+    """
+    /ask está limitado a 10/minute por IP (main.py). Bajo ASGITransport
+    todas las peticiones del test comparten la misma IP simulada, así que
+    esto reproduce fielmente el comportamiento real: la petición #11 en la
+    misma ventana debe devolver 429, no colarse ni tumbar el proceso.
+    """
+    if not main_module.RAG_AVAILABLE:
+        pytest.skip("RAG_AVAILABLE=False en este entorno")
+
+    main_module.limiter.reset()  # aísla este test de cualquier otro que ya haya llamado a /ask
+
+    with patch("main.rag_ask", return_value=RESPUESTA_RAG_MOCK):
+        codigos = []
+        for _ in range(11):
+            res = await client.post("/ask", json={"pregunta": "prueba de límite de tasa"})
+            codigos.append(res.status_code)
+
+    assert codigos[:10] == [200] * 10, f"las primeras 10 deberían pasar, se obtuvo: {codigos[:10]}"
+    assert codigos[10] == 429, f"la petición #11 debería bloquearse con 429, se obtuvo: {codigos[10]}"
+
+    main_module.limiter.reset()  # no dejar el contador "sucio" para tests que corran después
+
+
+@pytest.mark.asyncio
+async def test_rate_limit_no_afecta_otros_endpoints(client: AsyncClient):
+    """Agotar el límite de /ask no debe bloquear /health (endpoints sin límite propio)."""
+    main_module.limiter.reset()
+
+    if main_module.RAG_AVAILABLE:
+        with patch("main.rag_ask", return_value=RESPUESTA_RAG_MOCK):
+            for _ in range(10):
+                await client.post("/ask", json={"pregunta": "agotar límite"})
+
+    res = await client.get("/health")
+    assert res.status_code == 200
+
+    main_module.limiter.reset()
