@@ -140,6 +140,11 @@ MOTOR_KEYWORD_MAP = {
         "obras subterraneas", "obras subterráneas", "portal del tunel", "portal del túnel",
         "revestimiento definitivo", "voladura", "tbm", "sostenimiento tunel", "sostenimiento túnel",
         "macizo rocoso", "clasificacion geomecanica", "clasificación geomecánica",
+        "ccp-14", "ccp14", "diseño de puentes", "baranda de trafico", "baranda de tráfico",
+        "estado limite de resistencia", "estado límite de resistencia", "carga viva vehicular",
+        "camion de diseño", "camión de diseño", "estribo de puente", "pila de puente",
+        "tablero del puente", "apoyos del puente", "junta de dilatacion", "junta de dilatación",
+        "lrfd", "factor de carga y resistencia",
     ],
     "gerencia": [
         "cpi", "spi", "qpi", "ppi", "earned value", "valor ganado", "variacion de costo",
