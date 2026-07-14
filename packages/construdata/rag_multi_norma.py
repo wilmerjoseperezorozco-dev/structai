@@ -150,6 +150,11 @@ MOTOR_KEYWORD_MAP = {
         "capacidad estructural de la subrasante", "clasificacion vehicular", "clasificación vehicular",
         "tipo de vehiculo", "tipo de vehículo", "tránsito de diseño", "transito de diseño",
         "ejes equivalentes", "carta de diseño de pavimento",
+        "norma de ensayo", "normas de ensayo", "inv e", "inv-e", "deflectometro",
+        "deflectómetro", "lwd", "estabilizante quimico no tradicional",
+        "estabilizante químico no tradicional", "estabilizacion de suelos",
+        "estabilización de suelos", "resistencia a la compresion inconfinada",
+        "resistencia a la compresión inconfinada",
     ],
     "gerencia": [
         "cpi", "spi", "qpi", "ppi", "earned value", "valor ganado", "variacion de costo",
@@ -185,6 +190,11 @@ MOTOR_KEYWORD_MAP = {
         "facultades de la interventoria", "facultades de la interventoría",
         "obligaciones de la interventoria", "obligaciones de la interventoría",
         "replanteo", "informe semanal de interventoria", "informe mensual de interventoria",
+        "supervision de contratos", "supervisión de contratos", "supervisor del contrato",
+        "designacion del supervisor", "designación del supervisor",
+        "funciones del supervisor", "icociv", "iccp", "indice de costos de la construccion",
+        "índice de costos de la construcción", "ajuste de precios", "reversion de precios",
+        "reversión de precios", "formula de ajuste", "fórmula de ajuste",
     ],
 }
 
