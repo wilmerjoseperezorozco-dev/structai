@@ -118,6 +118,12 @@ MOTOR_KEYWORD_MAP = {
         "conformidad del concreto", "agregado grueso", "agregado fino", "desgaste los angeles",
         "desgaste los ángeles", "diseño de mezcla", "aci 211", "zona sismica", "zona sísmica",
         "aa av fa fv", "microzonificacion", "microzonificación", "laboratorio de suelos",
+        "pot", "plan de ordenamiento territorial", "ordenamiento territorial",
+        "estudios basicos de amenaza", "estudios básicos de amenaza", "amenaza por movimientos en masa",
+        "movimientos en masa", "amenaza por inundacion", "amenaza por inundación",
+        "avenidas torrenciales", "expediente municipal", "determinantes ambientales",
+        "gestion del riesgo", "gestión del riesgo", "vulnerabilidad ambiental",
+        "estabilidad de taludes", "capacidad portante",
     ],
     "vias": [
         "radio minimo", "radio mínimo", "curva horizontal", "peralte", "distancia de visibilidad",
