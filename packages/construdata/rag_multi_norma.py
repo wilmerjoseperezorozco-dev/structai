@@ -107,6 +107,11 @@ MOTOR_KEYWORD_MAP = {
         "sui", "npsh", "coagulante", "floculacion", "floculación", "sedimentador",
         "caudal contra incendio", "hidrante", "dotacion neta", "dotación neta",
         "planta de tratamiento de agua potable", "reactor uasb",
+        "comision de regulacion de agua potable", "comisión de regulación de agua potable",
+        "resolucion cra", "resolución cra", "suspension del servicio de acueducto",
+        "suspensión del servicio de acueducto", "corte del servicio", "barrido y limpieza",
+        "costo de limpieza urbana", "clus", "acuerdo de pago acueducto",
+        "progresividad tarifaria", "servicio publico de aseo", "servicio público de aseo",
     ],
     "geopot": [
         "uscs", "clasificacion de suelos", "clasificación de suelos", "limites de atterberg",

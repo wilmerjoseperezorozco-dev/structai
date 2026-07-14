@@ -35,6 +35,10 @@ DOCS = {
         "raw_file": "asfaltico.txt",
         "titulo_completo": "Manual de Diseño de Pavimentos Asfálticos en Vías con Medios y Altos Volúmenes de Tránsito (INVIAS / Ministerio de Transporte)",
     },
+    "bajos_volumenes": {
+        "raw_file": "bajos_volumenes.txt",
+        "titulo_completo": "Manual de Diseño de Pavimentos Asfálticos para Vías con Bajos Volúmenes de Tránsito (INVIAS / Ministerio de Transporte, abril 2007, adoptado por Resolución 003482/2007)",
+    },
 }
 
 HEADER_RE = re.compile(r'^(\d{1,2}\.\d{1,2}(?:\.\d{1,2})?)\s+([A-ZÁÉÍÓÚÑ][^\n]{2,90})$', re.MULTILINE)
