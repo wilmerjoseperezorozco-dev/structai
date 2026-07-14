@@ -200,6 +200,9 @@ MOTOR_KEYWORD_MAP = {
         "funciones del supervisor", "icociv", "iccp", "indice de costos de la construccion",
         "índice de costos de la construcción", "ajuste de precios", "reversion de precios",
         "reversión de precios", "formula de ajuste", "fórmula de ajuste",
+        "iso 9001", "sistema de gestion de la calidad", "sistema de gestión de la calidad",
+        "gestion de calidad", "gestión de calidad", "auditoria interna", "auditoría interna",
+        "no conformidad", "accion correctiva", "acción correctiva", "mejora continua",
     ],
 }
 
