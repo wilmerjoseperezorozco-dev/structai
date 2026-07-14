@@ -41,6 +41,16 @@ class ChunkResult:
     seccion: str
     contenido: str
     score: float
+    estado_vigencia: Optional[str] = None
+    derogada_por: Optional[str] = None
+    alcance_derogacion: Optional[str] = None
+
+    @property
+    def vigente(self) -> bool:
+        # None (norma_id sin vincular todavía) se trata como vigente por
+        # defecto — no todos los chunks están linkeados a normas_registro
+        # aún, y no hay evidencia de que estén derogados.
+        return self.estado_vigencia in (None, "vigente")
 
 # ─── ROUTER INTELIGENTE ───────────────────────────────────────────────────────
 KEYWORD_MAP = {
@@ -163,16 +173,20 @@ def search(query: str, norma_filter: Optional[str] = None, top_k: int = 6, motor
         "match_count": top_k,
         "p_motor": motor_filter,
     }).execute()
-    return [
-        ChunkResult(
+    chunks = []
+    for r in result.data:
+        meta = r.get("metadata") or {}
+        chunks.append(ChunkResult(
             chunk_id=r["chunk_id"],
             norma=r["norma"],
             seccion=r["seccion"],
             contenido=r["contenido"],
-            score=r["score"]
-        )
-        for r in result.data
-    ]
+            score=r["score"],
+            estado_vigencia=meta.get("estado_vigencia"),
+            derogada_por=meta.get("derogada_por"),
+            alcance_derogacion=meta.get("alcance_derogacion"),
+        ))
+    return chunks
 
 # ─── GENERACIÓN DE RESPUESTA (Groq) ──────────────────────────────────────────
 SYSTEM_PROMPT = """Eres un ingeniero civil experto en normatividad colombiana de construcción.
@@ -188,7 +202,25 @@ INSTRUCCIONES:
 4. Expresa valores técnicos con unidades (MPa, mm, %, m²).
 5. Si el contexto no cubre la pregunta, indícalo claramente y sugiere qué norma consultar.
 6. Cuando corresponda a APU, indica que la trazabilidad normativa ya está embebida en el motor APU.
+7. Si un fragmento de contexto trae una advertencia "⚠️ NORMA DEROGADA/MODIFICADA",
+   adviértelo explícitamente al inicio de tu respuesta y menciona cuál es la norma
+   vigente que la reemplaza (si se indica). Nunca presentes contenido derogado
+   como si fuera la norma vigente hoy — citarlo sin la advertencia induce a error
+   normativo real al usuario.
 """
+
+
+def _format_chunk_context(c: ChunkResult) -> str:
+    """Antepone una advertencia visible cuando el chunk viene de una norma
+    derogada/modificada (normas_registro.estado_vigencia vía search_knowledge) —
+    así el LLM no puede citar texto muerto sin saber que lo es."""
+    header = f"[{c.norma} — {c.seccion}]"
+    if not c.vigente:
+        aviso = f"⚠️ NORMA {(c.estado_vigencia or 'desconocido').upper().replace('_', ' ')}"
+        if c.derogada_por:
+            aviso += f" — reemplazada por {c.derogada_por}"
+        header = f"{header}\n{aviso}"
+    return f"{header}\n{c.contenido}"
 
 def _generar_respuesta(contexto: str, question: str) -> str:
     response = groq_client.chat.completions.create(
@@ -225,11 +257,8 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = 6) -> dict
         # Ordenar por score y tomar top 2×top_k
         chunks = sorted(all_chunks, key=lambda x: x.score, reverse=True)[:top_k * 2]
 
-    # 2. Construir contexto
-    contexto_partes = []
-    for c in chunks:
-        contexto_partes.append(f"[{c.norma} — {c.seccion}]\n{c.contenido}")
-    contexto = "\n\n---\n\n".join(contexto_partes)
+    # 2. Construir contexto (con advertencia de vigencia por chunk cuando aplica)
+    contexto = "\n\n---\n\n".join(_format_chunk_context(c) for c in chunks)
 
     # 3. Síntesis con Ollama local
     respuesta = _generar_respuesta(contexto, question)
@@ -243,7 +272,11 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = 6) -> dict
             {"norma": c.norma, "seccion": c.seccion, "score": round(c.score, 4)}
             for c in chunks
         ],
-        "chunks_usados": len(chunks)
+        "chunks_usados": len(chunks),
+        "advertencias_vigencia": [
+            {"norma": c.norma, "seccion": c.seccion, "estado_vigencia": c.estado_vigencia, "derogada_por": c.derogada_por}
+            for c in chunks if not c.vigente
+        ],
     }
 
 
@@ -289,8 +322,7 @@ def ask_delegado(question: str, top_k: int = 6) -> dict:
         result["dominio_label"] = "RAG normativo general (NSR-10 / NTC / seguridad industrial)"
         return result
 
-    contexto_partes = [f"[{c.norma} — {c.seccion}]\n{c.contenido}" for c in chunks]
-    contexto = "\n\n---\n\n".join(contexto_partes)
+    contexto = "\n\n---\n\n".join(_format_chunk_context(c) for c in chunks)
     respuesta = _generar_respuesta(contexto, question)
 
     return {
@@ -303,6 +335,10 @@ def ask_delegado(question: str, top_k: int = 6) -> dict:
             for c in chunks
         ],
         "chunks_usados": len(chunks),
+        "advertencias_vigencia": [
+            {"norma": c.norma, "seccion": c.seccion, "estado_vigencia": c.estado_vigencia, "derogada_por": c.derogada_por}
+            for c in chunks if not c.vigente
+        ],
     }
 
 
