@@ -9,6 +9,10 @@ YA PORTADO en packages/motor-*/src/ — fórmulas, tablas de referencia y
 citas normativas que ya existen y están verificadas en el motor de cálculo,
 no contenido inventado ni un documento normativo aparte.
 
+Carga GeoPot, Vías y Gerencia. AquAI usa scripts/ingest_ras2000.py, que
+extrae texto oficial real (Resolución 1096 de 2000) en vez de chunks
+redactados a mano.
+
 Uso: python scripts/ingest_motor_chunks.py
 """
 from __future__ import annotations
@@ -25,218 +29,12 @@ from dotenv import load_dotenv
 load_dotenv(ROOT / "apps" / "api" / ".env")
 
 
-# ─── AquAI — RAS 2000 / Resolución 0330 de 2017 ──────────────────────────────
-# Fuente: packages/motor-aquai/src/{poblacion,caudales,hidraulica,ariete,
-#         manning,bombeo,ptap,ptar,tarifario,hidrologia,ras2000_tablas}.py
+# AquAI ya no se carga desde este archivo: scripts/ingest_ras2000.py reemplazó
+# estos 13 chunks redactados a mano por 303 chunks reales extraídos artículo
+# por artículo del texto oficial de la Resolución 1096 de 2000 (RAS 2000
+# Títulos A-H), con la misma trazabilidad que NSR-10/NTC/SGSST. Ver ese
+# script para volver a cargar o actualizar el corpus de AquAI.
 
-AQUAI_CHUNKS: list[dict] = [
-    {
-        "seccion": "RAS B.1 — Proyección de población",
-        "titulo": "Métodos de proyección poblacional",
-        "norma_ref": "RAS 2000 Título B Sección B.1 / Res. 0330-2017 Art. 41",
-        "contenido": (
-            "La proyección de población para diseño de acueducto usa tres métodos: "
-            "Aritmético P(t) = Po + r·Po·t (crecimiento lineal, válido para poblaciones "
-            "estabilizadas o en descenso, puede subestimar zonas de expansión); "
-            "Geométrico P(t) = Po·(1+r)^t (crecimiento proporcional, recomendado por el RAS "
-            "para municipios de nivel de complejidad bajo y medio, más conservador que el "
-            "exponencial); Exponencial P(t) = Po·e^(r·t) (crecimiento continuo compuesto, "
-            "recomendado para ciudades intermedias y altas en expansión, tiende a ser el más "
-            "conservador en horizontes largos). La tasa de crecimiento r se provee o se estima "
-            "por nivel de complejidad; el período de diseño según RAS B.1.4 es de 15 años para "
-            "nivel bajo, 20 para medio, y 25 años para medio-alto y alto."
-        ),
-    },
-    {
-        "seccion": "RAS B.2.1 — Dotación neta",
-        "titulo": "Tabla de dotación neta por nivel de complejidad y clima",
-        "norma_ref": "RAS 2000 / Res. 0330-2017 Tabla B.2.1",
-        "contenido": (
-            "La dotación neta (L/habitante/día) depende del nivel de complejidad del sistema "
-            "y del clima. Nivel bajo: frío 90-120 (rec. 100), templado 100-130 (rec. 110), "
-            "cálido 110-150 (rec. 130). Nivel medio: frío 110-140 (rec. 120), templado "
-            "120-155 (rec. 135), cálido 130-170 (rec. 150). Nivel medio-alto: frío 120-160 "
-            "(rec. 140), templado 135-175 (rec. 155), cálido 150-200 (rec. 170). Nivel alto: "
-            "frío 140-200 (rec. 160), templado 150-225 (rec. 175), cálido 170-250 (rec. 200). "
-            "La dotación bruta incluye pérdidas: dotación_bruta = dotación_neta / (1 - %pérdidas)."
-        ),
-    },
-    {
-        "seccion": "RAS B.2 — Caudales de diseño",
-        "titulo": "Cadena de caudales Qp → Qmd → Qmh y caudal contra incendio",
-        "norma_ref": "RAS 2000 Título B Sección B.2 / Res. 0330-2017",
-        "contenido": (
-            "El caudal promedio diario Qp [L/s] = (dotación_bruta [L/hab/día] × población) / "
-            "86400. El caudal máximo diario Qmd = Qp × fmd, y el caudal máximo horario Qmh = "
-            "Qmd × fmh. Los factores de variación (RAS B.2.3) según nivel de complejidad son: "
-            "bajo fmd=1.30 fmh=2.00; medio fmd=1.25 fmh=1.90; medio-alto fmd=1.20 fmh=1.80; "
-            "alto fmd=1.15 fmh=1.60. El caudal contra incendio Qci (RAS B.7) no aplica para "
-            "nivel bajo (<1000 hab), es 4.0 L/s mínimo por 2 horas en nivel medio, 8.0 L/s en "
-            "medio-alto y 16.0 L/s en nivel alto."
-        ),
-    },
-    {
-        "seccion": "RAS B.6 — Hazen-Williams en tuberías a presión",
-        "titulo": "Fórmula de Hazen-Williams, coeficientes C y límites de velocidad/presión",
-        "norma_ref": "RAS 2000 / Res. 0330-2017 Sección B.6; velocidades B.6.3; presiones B.6.4",
-        "contenido": (
-            "Velocidad V = 0.8492·C·R^0.63·S^0.54 (m/s); pérdida de carga hf = 10.67·L·Q^1.852 / "
-            "(C^1.852·D^4.87) (m), con R el radio hidráulico ≈ D/4 para tubería llena. "
-            "Coeficientes C de Hazen-Williams por material: PVC 150, HDPE 150, ACERO 120, "
-            "AC (asbesto-cemento, histórico, ya no se instala) 110, CONCRETO 100, HIERRO 100, "
-            "GRP 150. El motor calcula el diámetro comercial mínimo (lista nominal 25 a 1000 "
-            "mm) que cumpla simultáneamente velocidad mínima 0.45 m/s (evitar sedimentación), "
-            "velocidad máxima 5.0 m/s (evitar erosión) y presión mínima de entrega, por defecto "
-            "10 m.c.a. mínimo y 60 m.c.a. máximo (RAS B.6.4); presión de salida por encima del "
-            "máximo requiere válvula reductora de presión (VRP)."
-        ),
-    },
-    {
-        "seccion": "RAS B.7 — Golpe de ariete (transitorio hidráulico)",
-        "titulo": "Teoría de Joukowski, celeridad de onda y clasificación del cierre",
-        "norma_ref": "RAS 2000 Título B Sección B.7 — Transitorios hidráulicos",
-        "contenido": (
-            "Sobrepresión por cierre instantáneo (Joukowski): ΔH = a·ΔV/g. Celeridad de onda "
-            "a = √(K/ρ) / √(1 + K·D/(E·e)), donde K es el módulo de compresibilidad del agua "
-            "(2.07 GPa a 20°C) y E el módulo de elasticidad de la tubería: PVC 2.7 GPa, HDPE "
-            "0.8 GPa (más flexible, menor ariete), GRP 35 GPa, gres 70 GPa, concreto 20 GPa, "
-            "concreto reforzado 25 GPa, acero 210 GPa. El cierre se clasifica por el tiempo "
-            "crítico de reflexión Tc = 2L/a: si el tiempo de cierre real es menor que Tc es "
-            "cierre rápido/severo (ΔH = a·V0/g); si es mayor, cierre lento (ΔH = 2L·V0 / "
-            "(g·T_cierre)). Presión máxima H_max = H_estática + ΔH, presión mínima H_min = "
-            "H_estática − ΔH; hay riesgo de cavitación si H_min < −10 m."
-        ),
-    },
-    {
-        "seccion": "RAS Título D — Alcantarillado a gravedad (Manning)",
-        "titulo": "Ecuación de Manning, coeficientes n y restricciones de diseño",
-        "norma_ref": "RAS 2000 Título D / Resolución 0330/2017 Título D",
-        "contenido": (
-            "Caudal Q = (1/n)·A·R^(2/3)·S^(1/2); velocidad V = (1/n)·R^(2/3)·S^(1/2). "
-            "Coeficientes de rugosidad de Manning n: PVC y HDPE 0.010, GRP 0.011, gres 0.012, "
-            "concreto y concreto reforzado 0.013, acero 0.012. Restricciones RAS D.3: tirante "
-            "máximo d/D ≤ 0.75, velocidad mínima de autolimpieza 0.45 m/s (RAS D.3.5), "
-            "velocidad máxima 3.0 m/s en PVC/HDPE hasta 6.0 m/s en concreto reforzado según "
-            "material, diámetro mínimo de colector 200 mm y de ramal domiciliario 150 mm."
-        ),
-    },
-    {
-        "seccion": "RAS B.8 — Estación de bombeo",
-        "titulo": "Curva del sistema, TDH, potencia y NPSH disponible",
-        "norma_ref": "RAS 2000 Título B Sección B.8 — Estaciones de bombeo",
-        "contenido": (
-            "La altura dinámica total TDH = H_sistema = Hg (altura geométrica) + pérdidas por "
-            "fricción en succión y descarga (Hazen-Williams) + pérdidas menores por accesorios "
-            "(codos K=0.9, válvula de cheque K=2.5, válvula de compuerta abierta K=0.3, entrada "
-            "K=0.5, salida K=1.0). Potencia hidráulica P = ρ·g·Q·TDH; potencia al freno = "
-            "P_hidráulica / eficiencia de la bomba; potencia instalada = potencia al freno / "
-            "eficiencia del motor. NPSH disponible = (P_atmosférica − P_vapor)/(ρ·g) + "
-            "altura de succión − pérdidas de succión; regla práctica del Hydraulic Institute: "
-            "NPSHd ≥ NPSHr + 0.5 m de margen. RAS B.8.4 exige siempre bombas de reserva: el "
-            "número de bombas instaladas es el número en operación más al menos 1 de reserva "
-            "(mínimo 100% de reserva instalada)."
-        ),
-    },
-    {
-        "seccion": "Res. 0330/2017 Art. 125-140 — Planta de potabilización (PTAP)",
-        "titulo": "Coagulación, floculación, sedimentación y filtración rápida",
-        "norma_ref": "Resolución 0330 de 2017 Título C Potabilización, Arts. 125-140",
-        "contenido": (
-            "Dosificación de coagulante (Art. 125-127): la dosis depende de la turbiedad y "
-            "color del agua cruda; si el color crudo supera 50 UC con sulfato de alumbre se "
-            "recomienda evaluar sulfato férrico o PAC (Art. 126); pH óptimo de coagulación "
-            "6.0-8.0. Floculación (Art. 128-130): mínimo 3 cámaras hidráulicas de flujo "
-            "horizontal, gradiente de velocidad G=40 s⁻¹, tiempo de retención T=25 min, número "
-            "de Camp GT≈60.000. Sedimentación (Art. 131-134): tasa superficial convencional "
-            "20 m³/m²/día, sedimentación laminar (placas inclinadas) 60 m³/m²/día — se usa "
-            "laminar si la turbiedad cruda supera 200 NTU; relación largo:ancho recomendada "
-            "4:1. Filtración rápida (Art. 135-140): tasa máxima 180 m³/m²/día, mínimo 2 "
-            "unidades, máximo 50 m² por filtro, lecho doble capa arena (0.60 m) + antracita "
-            "(0.30 m), ciclo de lavado cada 24 h con retrolavado de 15 min."
-        ),
-    },
-    {
-        "seccion": "RAS Título E — Tratamiento de aguas residuales (PTAR)",
-        "titulo": "UASB, lodos activados, laguna facultativa y cargas per cápita",
-        "norma_ref": "RAS 2000 Título E — Tratamiento de aguas residuales (VIGENTE)",
-        "contenido": (
-            "Cargas per cápita de diseño (RAS Título E Tabla E.4.1): DBO₅ 50 g/hab/día "
-            "(rango real 40-60), SST 60 g/hab/día (rango real 50-70). UASB — Reactor "
-            "Anaerobio de Flujo Ascendente (RAS Sección E.9, nivel bajo/medio): velocidad "
-            "ascensional 0.5-0.8 m/h, tiempo de retención hidráulica 4-8 h, eficiencia típica "
-            "70% remoción DBO y 65% remoción SST; requiere postratamiento si el cuerpo "
-            "receptor exige DBO < 90 mg/L. Lodos activados — aireación extendida (RAS Sección "
-            "E.7, nivel medio-alto/alto): tiempo de retención celular (SRT) 20 días, "
-            "coeficiente de producción Y=0.5 kg SSV/kg DBO, decaimiento endógeno Kd=0.05 "
-            "1/día, MLSS de diseño 3500 mg/L, DBO efluente objetivo 20 mg/L, eficiencia SST "
-            "92%; el RAS recomienda tiempo de retención hidráulica ≥ 18-24 h en aireación "
-            "extendida. Laguna facultativa de estabilización (RAS Sección E.10, nivel bajo, "
-            "requiere terreno amplio): diseño por carga superficial según temperatura."
-        ),
-    },
-    {
-        "seccion": "Res. 0631/2015 MADS — Límites de vertimiento",
-        "titulo": "Valores máximos permisibles de DBO5, SST y pH por cuerpo receptor",
-        "norma_ref": "Resolución 0631 de 2015 MADS + Decreto 1076/2015 Art. 2.2.3.3",
-        "contenido": (
-            "Límites de vertimiento de aguas residuales tratadas según el cuerpo receptor "
-            "(Res. 0631/2015): a río o quebrada, DBO5 máximo 90 mg/L, SST máximo 90 mg/L, "
-            "pH entre 6.0 y 9.0. A lago, límites más estrictos: DBO5 y SST máximo 30 mg/L, "
-            "pH entre 6.5 y 8.5. A suelo (infiltración/riego), límites más laxos: DBO5 y SST "
-            "hasta 300 mg/L, pH entre 6.0 y 9.0. El permiso de vertimiento se tramita según "
-            "el Decreto 1076/2015 Artículo 2.2.3.3."
-        ),
-    },
-    {
-        "seccion": "CRA — Metodología tarifaria de acueducto y alcantarillado",
-        "titulo": "Costo medio de largo plazo (CMLP), cargo fijo y cargo por consumo",
-        "norma_ref": "Res. CRA 688/2014 · Res. CRA 943/2021 · Res. CRA 825/2017 · Res. CRA 750/2016",
-        "contenido": (
-            "La tarifa se calcula con el Costo Medio de Largo Plazo CMLP = CMI (costo medio de "
-            "inversión) + CMO (costo medio de operación) + CMA_unitario (costo medio de "
-            "administración distribuido). El Cargo Fijo mensual = CMA por suscriptor; el Cargo "
-            "por Consumo = CMI + CMO + CMA distribuido, expresado en $/m³. CMI y CMO se ajustan "
-            "por el factor de pérdidas 1/(1−%pérdidas) para llevarlos a $/m³ facturado. Por "
-            "tipo de prestador: grandes prestadores bajo Res. CRA 688/2014 + Res. CRA 943/2021 "
-            "(período tarifario 2021-2026); pequeños prestadores (≤5.000 suscriptores) bajo "
-            "Res. CRA 825/2017; esquemas diferenciales rurales bajo Res. CRA 750/2016."
-        ),
-    },
-    {
-        "seccion": "CRA — Rangos de consumo y subsidios/contribuciones por estrato",
-        "titulo": "Consumo básico/complementario/suntuario y factores de estrato (Ley 142/1994)",
-        "norma_ref": "Ley 142 de 1994 Art. 99 · Decreto 1013 de 2005 · metodología CRA",
-        "contenido": (
-            "El consumo básico mensual por suscriptor varía por clima: clima frío hasta 11 m³, "
-            "templado hasta 13 m³, cálido hasta 16 m³. El rango complementario va del básico "
-            "hasta el básico × 1.545 (aprox.); por encima es consumo suntuario, con recargo del "
-            "20% sobre la tarifa básica en el rango complementario y 60% en el suntuario. Los "
-            "factores de subsidio/contribución por estrato (Ley 142/1994 Art. 99): estrato 1 "
-            "subsidio máximo 70%, estrato 2 subsidio 40%, estrato 3 sin subsidio ni "
-            "contribución (equilibrio), estrato 4 contribución solidaria 10%, estratos 5 y 6 "
-            "contribución 20%, sector comercial contribución 50%, sector industrial "
-            "contribución 30%, entidades oficiales en equilibrio."
-        ),
-    },
-    {
-        "seccion": "Curvas IDF regionales de Colombia",
-        "titulo": "Intensidad-Duración-Frecuencia por región hidrográfica",
-        "norma_ref": "RAS 2000 Título D / Resolución 0330-2017 — curvas IDF calibradas IDEAM/UNGRD",
-        "contenido": (
-            "La intensidad de lluvia de diseño para alcantarillado pluvial se calcula con "
-            "I = a / (Tc^n + b), donde Tc es el tiempo de concentración en minutos e I resulta "
-            "en mm/h; los coeficientes a, b, n están calibrados por región hidrográfica y "
-            "período de retorno (2, 5, 10, 25, 50 y 100 años). La región Pacífico (Chocó "
-            "biogeográfico) tiene los coeficientes más altos del país por ser la de mayor "
-            "precipitación media del mundo — se recomienda usar sus valores con precaución y "
-            "calibrar con estaciones IDEAM locales. La región Caribe tiene régimen bimodal "
-            "(abril-junio / septiembre-noviembre) con zona seca en La Guajira que requiere "
-            "corrección de +15% en el período de retorno. La Orinoquía tiene régimen unimodal "
-            "(mayo-noviembre) sobre grandes llanuras de pendiente muy baja, y la Amazonía "
-            "régimen ecuatorial casi uniforme con alta infiltración por cobertura vegetal."
-        ),
-    },
-]
 
 # ─── GeoPot — Laboratorio de suelos, concreto, agregados y sismorresistencia ─
 # Fuente: packages/motor-geopot/src/{lab_suelos,lab_concreto,lab_agregados,
@@ -836,7 +634,8 @@ def main():
     print("Cargando modelo de embeddings local...")
     model = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
 
-    todos = [("aquai", AQUAI_CHUNKS), ("geopot", GEOPOT_CHUNKS), ("vias", VIAS_CHUNKS), ("gerencia", GERENCIA_CHUNKS)]
+    # AquAI se carga aparte con scripts/ingest_ras2000.py (corpus real RAS 2000)
+    todos = [("geopot", GEOPOT_CHUNKS), ("vias", VIAS_CHUNKS), ("gerencia", GERENCIA_CHUNKS)]
 
     for motor, chunks in todos:
         if not chunks:
