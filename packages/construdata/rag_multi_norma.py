@@ -136,6 +136,10 @@ MOTOR_KEYWORD_MAP = {
         "geotextil", "cemento hidraulico", "cemento hidráulico", "aditivo para concreto",
         "aire incorporado", "agua para concreto", "ceniza volante", "puzolana", "escoria de alto horno",
         "prefabricados de concreto", "agregado liviano",
+        "tunel", "túnel", "tuneles", "túneles", "diseño de tuneles", "diseño de túneles",
+        "obras subterraneas", "obras subterráneas", "portal del tunel", "portal del túnel",
+        "revestimiento definitivo", "voladura", "tbm", "sostenimiento tunel", "sostenimiento túnel",
+        "macizo rocoso", "clasificacion geomecanica", "clasificación geomecánica",
     ],
     "gerencia": [
         "cpi", "spi", "qpi", "ppi", "earned value", "valor ganado", "variacion de costo",
