@@ -1,5 +1,5 @@
 /**
- * Cliente tipado para Construdata FastAPI Backend
+ * Cliente tipado para el backend FastAPI de StructAI
  * Base URL: NEXT_PUBLIC_API_URL (default http://localhost:8000)
  */
 

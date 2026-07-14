@@ -1,6 +1,6 @@
 {
-  "name": "Construdata — Ingeniero Civil IA",
-  "short_name": "Construdata",
+  "name": "StructAI — Ingeniero Civil IA",
+  "short_name": "StructAI",
   "description": "Asistente normativo NTC/NSR-10 con cálculo APU para ingeniería civil en Colombia",
   "start_url": "/",
   "display": "standalone",

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowLeft, HardHat } from "lucide-react";
 
 export const metadata = {
-  title: "Términos de Uso — Construdata",
+  title: "Términos de Uso — StructAI",
 };
 
 export default function TerminosPage() {
@@ -19,7 +19,7 @@ export default function TerminosPage() {
 
         <div className="inline-flex items-center gap-2 mb-4 px-3 py-1.5 bg-brand-900/50 border border-brand-700/40 rounded-full">
           <HardHat size={14} className="text-brand-400" />
-          <span className="text-xs text-brand-300 font-medium">Construdata · StructAI</span>
+          <span className="text-xs text-brand-300 font-medium">StructAI</span>
         </div>
         <h1 className="text-3xl font-bold text-white mb-2">Términos de Uso</h1>
         <p className="text-concrete-500 text-xs mb-8">Última actualización: 13 de julio de 2026</p>
@@ -29,7 +29,7 @@ export default function TerminosPage() {
           <section>
             <h2 className="text-white font-semibold mb-2">1. Quién presta el servicio</h2>
             <p>
-              Construdata (marca comercial StructAI) es operado por Wilmer José Pérez Orozco,
+              StructAI (nombre de proyecto: Construdata) es operado por Wilmer José Pérez Orozco,
               persona natural, con domicilio en Barranquilla, Atlántico, Colombia. Contacto:{" "}
               <a href="mailto:wilmerjoseperezorozco@gmail.com" className="text-brand-400 hover:underline">
                 wilmerjoseperezorozco@gmail.com
@@ -38,9 +38,9 @@ export default function TerminosPage() {
           </section>
 
           <section>
-            <h2 className="text-white font-semibold mb-2">2. Qué es Construdata</h2>
+            <h2 className="text-white font-semibold mb-2">2. Qué es StructAI</h2>
             <p>
-              Construdata es un asistente de apoyo técnico basado en inteligencia artificial para
+              StructAI es un asistente de apoyo técnico basado en inteligencia artificial para
               ingeniería civil: consulta normativa (NSR-10, NTC), cálculo de Análisis de Precios
               Unitarios (APU), y módulos de cálculo estructural, hidrosanitario, geotécnico, vial
               y de gerencia de proyectos. El servicio se presta bajo un modelo freemium (plan
@@ -51,7 +51,7 @@ export default function TerminosPage() {
           <section>
             <h2 className="text-white font-semibold mb-2">3. Naturaleza del servicio — límite de responsabilidad profesional</h2>
             <p className="mb-2">
-              <strong className="text-white">Construdata es una herramienta de apoyo, no un
+              <strong className="text-white">StructAI es una herramienta de apoyo, no un
               reemplazo del criterio profesional de un ingeniero.</strong> Todos los cálculos,
               interpretaciones normativas y respuestas generadas por el sistema —incluyendo las
               basadas en modelos de lenguaje (IA)— pueden contener errores, omisiones o
@@ -62,7 +62,7 @@ export default function TerminosPage() {
               un diseño, memoria de cálculo o documento firmado, es el único responsable de
               verificar, validar y asumir la responsabilidad técnica y legal de cualquier
               resultado antes de aplicarlo en obra, radicarlo ante una autoridad, o incorporarlo a
-              un documento firmado. Construdata no sustituye la firma, el sello ni la
+              un documento firmado. StructAI no sustituye la firma, el sello ni la
               responsabilidad profesional de un ingeniero matriculado conforme a la ley
               colombiana.
             </p>
@@ -105,7 +105,7 @@ export default function TerminosPage() {
           <section>
             <h2 className="text-white font-semibold mb-2">7. Propiedad intelectual</h2>
             <p>
-              El software, las marcas &quot;Construdata&quot; y &quot;StructAI&quot;, y los contenidos propios de la
+              El software, la marca &quot;StructAI&quot; (y el nombre de proyecto &quot;Construdata&quot;), y los contenidos propios de la
               plataforma son propiedad de su operador. Los proyectos, cálculos y datos que el
               usuario introduce en la plataforma siguen siendo de su propiedad; el operador no
               reclama derechos sobre ellos más allá de lo necesario para prestar el servicio.

@@ -1,7 +1,7 @@
 /**
  * Cliente tipado para el motor AquAI (RAS 2000) — apps/api/routers/aquai.py
  * Mismo helper `api<T>()` y BASE que src/lib/api.ts, para no duplicar el
- * manejo de errores del backend Construdata.
+ * manejo de errores del backend de StructAI.
  */
 
 import { supabase } from "@/lib/supabase";

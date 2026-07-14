@@ -53,7 +53,7 @@ export default function LoginPage() {
           <div className="w-14 h-14 rounded-2xl bg-brand-600 flex items-center justify-center mx-auto mb-4">
             <HardHat size={28} className="text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-white">Construdata</h1>
+          <h1 className="text-2xl font-bold text-white">StructAI</h1>
           <p className="text-concrete-400 text-sm mt-1">
             NSR-10 · NTC · APU 2026 · Barranquilla
           </p>

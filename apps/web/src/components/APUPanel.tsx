@@ -76,7 +76,7 @@ function DesglosePanel({ d, onClose }: { d: APUDesglose; onClose: () => void }) 
             {d.actividad_id} · {d.unidad} · {d.capitulo}
           </p>
           {d.norma_ref && (
-            <p className="text-xs text-brand-400 mt-0.5">📐 {d.norma_ref}</p>
+            <p className="text-xs font-mono text-brand-400 mt-0.5">📐 {d.norma_ref}</p>
           )}
         </div>
         <button
@@ -164,7 +164,7 @@ function DesglosePanel({ d, onClose }: { d: APUDesglose; onClose: () => void }) 
         <p className="text-[10px] font-mono text-concrete-400 break-all mt-0.5">
           {d.uuid_trazabilidad}
         </p>
-        <p className="text-[10px] text-concrete-600 mt-0.5">
+        <p className="text-[10px] font-mono tabular-nums text-concrete-600 mt-0.5">
           {new Date(d.timestamp).toLocaleString("es-CO")}
         </p>
       </div>

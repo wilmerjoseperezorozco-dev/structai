@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowLeft, HardHat } from "lucide-react";
 
 export const metadata = {
-  title: "Política de Privacidad — Construdata",
+  title: "Política de Privacidad — StructAI",
 };
 
 export default function PrivacidadPage() {
@@ -19,7 +19,7 @@ export default function PrivacidadPage() {
 
         <div className="inline-flex items-center gap-2 mb-4 px-3 py-1.5 bg-brand-900/50 border border-brand-700/40 rounded-full">
           <HardHat size={14} className="text-brand-400" />
-          <span className="text-xs text-brand-300 font-medium">Construdata · StructAI</span>
+          <span className="text-xs text-brand-300 font-medium">StructAI</span>
         </div>
         <h1 className="text-3xl font-bold text-white mb-2">Política de Privacidad</h1>
         <p className="text-concrete-500 text-xs mb-1">Última actualización: 13 de julio de 2026</p>
@@ -33,7 +33,7 @@ export default function PrivacidadPage() {
             <h2 className="text-white font-semibold mb-2">1. Responsable del tratamiento</h2>
             <p>
               Wilmer José Pérez Orozco, persona natural, domiciliado en Barranquilla, Atlántico,
-              Colombia, operador de Construdata (marca comercial StructAI). Correo de contacto
+              Colombia, operador de StructAI (nombre de proyecto: Construdata). Correo de contacto
               para asuntos de datos personales:{" "}
               <a href="mailto:wilmerjoseperezorozco@gmail.com" className="text-brand-400 hover:underline">
                 wilmerjoseperezorozco@gmail.com

@@ -40,7 +40,7 @@ function Fuentes({ fuentes, normas }: { fuentes: FuenteChunk[]; normas: string[]
         className="w-full flex items-center gap-2 px-3 py-2 bg-brand-900/30 text-brand-300 hover:bg-brand-900/50 transition"
       >
         <BookOpen size={13} />
-        <span className="font-medium">
+        <span className="font-mono font-medium">
           {normas.slice(0, 3).join(" · ")}
           {normas.length > 3 && ` +${normas.length - 3} más`}
         </span>
@@ -53,9 +53,9 @@ function Fuentes({ fuentes, normas }: { fuentes: FuenteChunk[]; normas: string[]
           {fuentes.map((f, i) => (
             <div key={i} className="px-3 py-2 bg-concrete-900/60">
               <div className="flex justify-between items-center mb-1">
-                <span className="font-semibold text-brand-300">{f.norma}</span>
-                <span className="text-concrete-400">§ {f.seccion}</span>
-                <span className="text-concrete-500">
+                <span className="font-mono font-semibold text-brand-300">{f.norma}</span>
+                <span className="font-mono text-concrete-400">§ {f.seccion}</span>
+                <span className="font-mono tabular-nums text-concrete-500">
                   {(f.score * 100).toFixed(1)}%
                 </span>
               </div>
