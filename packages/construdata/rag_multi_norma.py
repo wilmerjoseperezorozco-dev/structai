@@ -178,6 +178,13 @@ MOTOR_KEYWORD_MAP = {
         "principio de selección objetiva", "veeduria ciudadana", "veeduría ciudadana",
         "entidad estatal", "adicion contractual", "adición contractual",
         "prorroga contractual", "prórroga contractual",
+        "manual de interventoria", "manual de interventoría", "diario de obra",
+        "bitacora de obra", "bitácora de obra", "plan de manejo de transito",
+        "plan de manejo de tránsito", "orden de inicio", "acta de recibo parcial",
+        "recibo definitivo de obra", "planos record", "planos asbuilt",
+        "facultades de la interventoria", "facultades de la interventoría",
+        "obligaciones de la interventoria", "obligaciones de la interventoría",
+        "replanteo", "informe semanal de interventoria", "informe mensual de interventoria",
     ],
 }
 
