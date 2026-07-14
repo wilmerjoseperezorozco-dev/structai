@@ -145,6 +145,11 @@ MOTOR_KEYWORD_MAP = {
         "camion de diseño", "camión de diseño", "estribo de puente", "pila de puente",
         "tablero del puente", "apoyos del puente", "junta de dilatacion", "junta de dilatación",
         "lrfd", "factor de carga y resistencia",
+        "pavimento", "pavimentos", "pavimento de concreto", "pavimentos de concreto",
+        "losa de concreto", "junta de contraccion", "junta de contracción", "dovela",
+        "capacidad estructural de la subrasante", "clasificacion vehicular", "clasificación vehicular",
+        "tipo de vehiculo", "tipo de vehículo", "tránsito de diseño", "transito de diseño",
+        "ejes equivalentes", "carta de diseño de pavimento",
     ],
     "gerencia": [
         "cpi", "spi", "qpi", "ppi", "earned value", "valor ganado", "variacion de costo",
