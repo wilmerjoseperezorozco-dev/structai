@@ -35,4 +35,4 @@ Thumbs.db
 
 # ── Normativa fuente cruda (privada, no redistribuible) ───────────
 packages/construdata/normativa_raw/
-scripts/_ras2000_raw_drive_dump/
+scripts/_*_raw_drive_dump/
