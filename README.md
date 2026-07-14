@@ -1,4 +1,4 @@
-# 🏗️ Plataforma de Ingeniería NSR-10 — Monorepo
+# 🏗️ Plataforma de Ingeniería civil — Monorepo
 
 **Stack:** pnpm + Turborepo | Next.js 14 | FastAPI | Supabase | N8N | GitHub Actions
 
