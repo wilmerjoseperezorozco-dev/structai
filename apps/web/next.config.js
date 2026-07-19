@@ -41,6 +41,10 @@ const withPWA = require("next-pwa")({
 
 const nextConfig = {
   reactStrictMode: true,
+  // shared-types (packages/shared-types) se consume como dependencia local
+  // vía "file:" — no publica JS compilado, así que Next debe transpilar su
+  // TypeScript fuente igual que el resto de la app.
+  transpilePackages: ["shared-types"],
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000",
   },
