@@ -1,0 +1,15 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "motor-vias"
+version = "0.1.0"
+description = "Diseño vial INVIAS: geometría, pavimentos AASHTO-93, mantenimiento, topografía, verificación de 15 normas NTC de materiales"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.9.2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3.3"]

@@ -22,7 +22,7 @@ export default function PrivacidadPage() {
           <span className="text-xs text-brand-300 font-medium">StructAI</span>
         </div>
         <h1 className="text-3xl font-bold text-white mb-2">Política de Privacidad</h1>
-        <p className="text-concrete-500 text-xs mb-1">Última actualización: 13 de julio de 2026</p>
+        <p className="text-concrete-500 text-xs mb-1">Última actualización: 14 de julio de 2026</p>
         <p className="text-concrete-500 text-xs mb-8">
           Aviso de privacidad conforme a la Ley 1581 de 2012 (Habeas Data) y sus decretos reglamentarios.
         </p>
@@ -52,7 +52,32 @@ export default function PrivacidadPage() {
           </section>
 
           <section>
-            <h2 className="text-white font-semibold mb-2">3. Para qué usamos estos datos</h2>
+            <h2 className="text-white font-semibold mb-2">3. Datos de ubicación y sensores (app móvil)</h2>
+            <p className="mb-2">
+              Esta sección aplica a la aplicación móvil de StructAI. Describe con anticipación
+              los datos de ubicación y sensores del dispositivo que la app podrá solicitar
+              cuando esa funcionalidad esté disponible — se publica antes de activarse, para que
+              el consentimiento del usuario sea informado desde el primer uso de esa función,
+              no retroactivo a datos ya recolectados.
+            </p>
+            <ul className="list-disc list-inside space-y-1">
+              <li><strong className="text-white">Ubicación del dispositivo</strong> (GPS), para asociar mediciones o proyectos de campo a una coordenada geográfica real — nunca se recolecta en segundo plano ni sin que el usuario active explícitamente esa función.</li>
+              <li><strong className="text-white">Sensores del dispositivo</strong> (por ejemplo cámara para captura de imágenes, y en fases posteriores otros sensores de campo), solo cuando el usuario inicia una acción que los requiere.</li>
+            </ul>
+            <p className="mt-2">
+              La app solicitará el permiso correspondiente del sistema operativo (Android/iOS)
+              antes de acceder a ubicación o sensores, mostrando para qué se usa en ese momento
+              puntual. El usuario puede revocar estos permisos en cualquier momento desde la
+              configuración de su dispositivo, sin que eso impida usar el resto de la app.
+              Estos datos se usan únicamente para prestar la función de campo solicitada
+              (georreferenciar un proyecto o una medición) — no se venden, no se usan con fines
+              publicitarios, ni se comparten con terceros distintos a los encargados del
+              tratamiento listados en la sección 5.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-white font-semibold mb-2">4. Para qué usamos estos datos</h2>
             <ul className="list-disc list-inside space-y-1">
               <li>Autenticar al usuario y mantener su sesión.</li>
               <li>Prestar el servicio solicitado (cálculos, respuestas normativas, gestión de proyectos).</li>
@@ -63,7 +88,7 @@ export default function PrivacidadPage() {
           </section>
 
           <section>
-            <h2 className="text-white font-semibold mb-2">4. Con quién compartimos datos (encargados del tratamiento)</h2>
+            <h2 className="text-white font-semibold mb-2">5. Con quién compartimos datos (encargados del tratamiento)</h2>
             <p className="mb-2">
               Para operar el servicio usamos proveedores externos que procesan datos por
               encargo nuestro:
@@ -82,7 +107,7 @@ export default function PrivacidadPage() {
           </section>
 
           <section>
-            <h2 className="text-white font-semibold mb-2">5. Cuánto tiempo conservamos los datos</h2>
+            <h2 className="text-white font-semibold mb-2">6. Cuánto tiempo conservamos los datos</h2>
             <p>
               Mientras la cuenta del usuario permanezca activa. Si el usuario solicita la
               eliminación de su cuenta, sus datos personales se eliminan en un plazo razonable,
@@ -91,7 +116,7 @@ export default function PrivacidadPage() {
           </section>
 
           <section>
-            <h2 className="text-white font-semibold mb-2">6. Derechos del titular de los datos (derechos ARCO)</h2>
+            <h2 className="text-white font-semibold mb-2">7. Derechos del titular de los datos (derechos ARCO)</h2>
             <p className="mb-2">Como titular de tus datos personales, tienes derecho a:</p>
             <ul className="list-disc list-inside space-y-1">
               <li><strong className="text-white">Acceso:</strong> conocer qué datos tuyos tenemos.</li>
@@ -110,7 +135,7 @@ export default function PrivacidadPage() {
           </section>
 
           <section>
-            <h2 className="text-white font-semibold mb-2">7. Seguridad de la información</h2>
+            <h2 className="text-white font-semibold mb-2">8. Seguridad de la información</h2>
             <p>
               El acceso a la plataforma se realiza mediante conexión cifrada (HTTPS). Las
               contraseñas se gestionan mediante Supabase Auth, que aplica hash criptográfico y
@@ -119,7 +144,7 @@ export default function PrivacidadPage() {
           </section>
 
           <section>
-            <h2 className="text-white font-semibold mb-2">8. Queja ante la autoridad</h2>
+            <h2 className="text-white font-semibold mb-2">9. Queja ante la autoridad</h2>
             <p>
               Si consideras que el tratamiento de tus datos personales vulnera la ley, puedes
               presentar una queja ante la Superintendencia de Industria y Comercio (SIC),
@@ -128,7 +153,7 @@ export default function PrivacidadPage() {
           </section>
 
           <section>
-            <h2 className="text-white font-semibold mb-2">9. Cambios a esta política</h2>
+            <h2 className="text-white font-semibold mb-2">10. Cambios a esta política</h2>
             <p>
               Esta política puede actualizarse para reflejar cambios en el servicio o en la
               normativa aplicable. La fecha de &quot;última actualización&quot; en la parte superior

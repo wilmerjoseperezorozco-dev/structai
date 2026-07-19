@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "description": "Plataforma de Ingeniería NSR-10 | APU | NTC | Seguridad Industrial",
+  "workspaces": [
+    "apps/native",
+    "packages/shared-types"
+  ],
   "scripts": {
     "dev":         "turbo dev",
     "build":       "turbo build",

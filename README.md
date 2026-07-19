@@ -1,61 +1,89 @@
-# 🏗️ Plataforma de Ingeniería civil — Monorepo
+# StructAI — Plataforma de IA para ingeniería civil en Colombia
 
-**Stack:** pnpm + Turborepo | Next.js 14 | FastAPI | Supabase | N8N | GitHub Actions
+SaaS freemium para ingenieros civiles y maestros de obra: cálculos de ingeniería con trazabilidad normativa real (NSR-10, NTC, RAS 2000/Res. 0330, INVIAS, SGSST) y consultas por IA que citan norma, capítulo/artículo y fuente — nunca inventa contenido normativo.
 
-## Estructura
+`Construdata` es el nombre interno del repositorio/código; **StructAI** es la marca pública.
+
+## Los 6 motores
+
+| Motor | Dominio | Paquete |
+|---|---|---|
+| **APU** | Análisis de Precios Unitarios — catálogo Construdata 2026 Barranquilla | `packages/motor-apu` |
+| **Estructural** | Deformación de vigas (Euler-Bernoulli), pandeo de columnas (Euler/Johnson), incertidumbre Monte Carlo | `packages/motor-deformacion` |
+| **AquAI** | Acueducto y alcantarillado — RAS 2000 / Res. 0330-2017 (11 módulos) | `packages/motor-aquai` |
+| **GeoPot** | Geotecnia y laboratorio: suelos, concreto, agregados, sísmica NSR-10 | `packages/motor-geopot` |
+| **Vías** | Diseño vial INVIAS: geometría, pavimentos, mantenimiento, topografía, NTC de materiales | `packages/motor-vias` |
+| **Gerencia** | Earned Value Management (PMBOK) + ML predictivo sobre avance de obra | `packages/motor-gerencia` |
+
+Cada motor expone su propio router FastAPI (`/apu`, `/deform`, `/aquai`, `/geopot`, `/vias`, `/gerencia`), su propia tabla en Supabase, y su propio corpus RAG en `motor_chunks` — todos comparten el mismo backend y la misma base de datos.
+
+## Estructura del monorepo
 
 ```
-monorepo/
+construdata/
 ├── apps/
-│   ├── web/          → Next.js 14 (Dashboard + PWA YOLO)  → Vercel
-│   └── api/          → FastAPI (Motor APU + RAG NSR-10)   → Render → Cloud Run
+│   ├── web/       → Next.js 14 (App Router) + PWA        → Vercel (desplegado)
+│   ├── native/     → React Native + Expo Router (Fase 0)   → sin publicar aún
+│   └── api/        → FastAPI, los 6 motores + RAG          → sin desplegar aún (Render/Cloud Run)
 ├── packages/
-│   ├── motor-apu/    → Motor APU matemático (Python)
-│   ├── construdata/  → Schema + loader Construdata 2026
-│   ├── knowledge/    → Chunks NSR-10 + NTC + Seg.Ind.
-│   └── ui/           → Componentes Next.js compartidos
-├── infra/
-│   ├── docker/       → Dockerfiles
-│   └── k8s/          → Kubernetes (futuro GCP)
-└── .github/
-    └── workflows/    → CI/CD GitHub Actions (gratis)
+│   ├── motor-apu/, motor-deformacion/, motor-aquai/,
+│   │   motor-geopot/, motor-vias/, motor-gerencia/  → cada uno con su pyproject.toml
+│   ├── shared-types/  → tipos TS + cliente API compartidos entre web y native
+│   ├── construdata/   → schema SQL + pipeline de ingesta RAG general (NSR-10/NTC/SGSST)
+│   ├── knowledge/     → PDFs fuente de NSR-10
+│   ├── ai-gateway/    → gateway multi-proveedor (Claude/Gemini/OpenAI) — experimental
+│   └── bim-intelligence/ → IFC + Qdrant — experimental, no conectado al producto
+├── infra/supabase/  → estado real de las migraciones (ver infra/supabase/migrations/README.md)
+└── .github/workflows/  → CI: lint + tsc, tests Python por motor, build web
 ```
 
-## Coberturas de conocimiento
-- ✅ NSR-10 (Títulos A–K) — 70 chunks + grafos de dependencias
-- 🔄 NTC (Normas Técnicas Colombianas) — cargar desde Drive
-- 🔄 Seguridad Industrial (Decreto 1072, SISO) — cargar desde Drive
-- ✅ Motor APU Construdata 2026 Barranquilla
+**Nota sobre el workspace:** `package.json` raíz declara `"workspaces": ["apps/native", "packages/shared-types"]` — deliberadamente acotado. `apps/web` y `apps/api` se despliegan de forma standalone (no dependen del workspace), así que quedan fuera de esa lista a propósito.
 
-## Comandos
+## RAG — arquitectura real
+
+- **Embeddings**: 100% locales y gratis (`sentence-transformers`, `paraphrase-multilingual-MiniLM-L12-v2`, 384-dim) — no usan OpenAI.
+- **Vectores**: pgvector nativo en Supabase/PostgreSQL (`motor_chunks`, `nsr10_chunks`, `ntc_chunks`), no un servicio de vectores externo.
+- **Síntesis de respuesta**: [Groq](https://groq.com) (`llama-3.3-70b-versatile`) — se evaluó Ollama local (demasiado lento para producción) y se descartó por costo/latencia frente a Groq.
+- **Trazabilidad**: cada respuesta cita `norma_ref` real (documento + sección/artículo). Si el dominio se detecta pero no hay contenido cargado, el sistema lo dice explícitamente — nunca inventa una cita.
+
+## Desarrollo local
 
 ```bash
-# Instalar
-pnpm install
+# Web
+cd apps/web && npm install && npm run dev
 
-# Desarrollo local (todo)
-docker-compose up -d
-pnpm dev
+# API (los 6 motores + RAG)
+cd apps/api && pip install -r requirements.txt && uvicorn main:app --reload
 
-# Correr motor APU
-cd packages/motor-apu
-python3 -c "from src.catalogue import listar_actividades; import json; print(json.dumps(listar_actividades(), indent=2, ensure_ascii=False))"
+# Un motor Python de forma aislada
+cd packages/motor-<nombre> && pip install -e ".[dev]" && pytest tests/ -v
 
-# Tests APU
-cd packages/motor-apu && pytest tests/ -v
-
-# CI/CD
-git push origin main   # dispara GitHub Actions automáticamente
+# App nativa (Fase 0, Expo)
+cd apps/native && npm install && npm start
 ```
 
-## Secrets GitHub Actions
-| Secret | Descripción |
-|--------|-------------|
-| `SUPABASE_URL` | URL del proyecto Supabase |
-| `SUPABASE_SERVICE_KEY` | service_role key |
-| `ANTHROPIC_API_KEY` | Claude API |
-| `OPENAI_API_KEY` | Embeddings |
-| `API_SECRET` | Clave interna API |
-| `VERCEL_TOKEN` | Deploy web |
-| `RENDER_DEPLOY_HOOK` | Deploy API |
-| `SUPABASE_ACCESS_TOKEN` | Migraciones automáticas |
+## Estado de deploy
+
+| Componente | Estado |
+|---|---|
+| `apps/web` | ✅ Desplegado en Vercel, deploy automático en cada push a `master` |
+| `apps/api` | ❌ Sin desplegar — `apps/web` en producción muestra "sin conexión" en toda funcionalidad de IA hasta que esto se resuelva |
+| `apps/native` | 🔄 Fase 0 del roadmap de 12 meses (ver `docs/` o memoria del proyecto) — shell nativo, sin sensores todavía |
+| Supabase | ✅ En producción, RLS activo en todas las tablas |
+
+## Secrets de GitHub Actions (reales, verificados contra `ci.yml`)
+
+| Secret | Uso |
+|---|---|
+| `SUPABASE_URL` / `SUPABASE_SERVICE_KEY` | Backend, tests de integración |
+| `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Build de `apps/web` |
+| `NEXT_PUBLIC_API_URL` | Build de `apps/web` |
+| `GROQ_API_KEY` | Síntesis de respuestas del RAG |
+
+## Convenciones de contribución
+
+Ver [CONTRIBUTING.md](./CONTRIBUTING.md) — formato de commits, cómo instalar un motor en modo desarrollo, y qué decisiones de arquitectura están deliberadamente sin resolver todavía.
+
+## Licencia
+
+Propiedad de Wilmer José Pérez Orozco — ver [LICENSE](./LICENSE). El repositorio es público con fines de demostración técnica/portafolio; no es software de código abierto.
