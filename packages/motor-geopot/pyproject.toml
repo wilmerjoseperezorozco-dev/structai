@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "motor-geopot"
+version = "0.1.0"
+description = "Geotecnia y laboratorio: suelos (USCS/AASHTO/Proctor/CBR), concreto (NSR-10/ACI 318), agregados (NTC 174), sísmica NSR-10 por departamento"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.9.2",
+    "numpy>=1.26.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3.3"]
