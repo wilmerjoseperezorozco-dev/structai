@@ -22,6 +22,9 @@ env/
 *.egg-info/
 .pytest_cache/
 .ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
 
 # ── Modelos locales de embeddings (se descargan en runtime) ──────
 .cache/
