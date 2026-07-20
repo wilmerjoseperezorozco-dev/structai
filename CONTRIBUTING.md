@@ -45,7 +45,7 @@ pytest tests/ --cov=src --cov-report=term-missing -v
 | `motor-aquai` | 70% total (**91.5%** excluyendo `pdf_memoria.py` y `rag_normativo.py`, sin tests propios) | 35 pasan | 2026-07-19 |
 | `motor-geopot` | **82%** (`__init__.py` 100%) | 39 pasan | 2026-07-19 |
 | `motor-vias` | **88%** | 46 pasan | 2026-07-20 |
-| `motor-gerencia` | — | no existe carpeta `tests/` | 2026-07-20 |
+| `motor-gerencia` | **96%** | 38 pasan | 2026-07-20 |
 
 `motor-aquai` pasó de 0% a 70% real (2026-07-19) escribiendo `tests/test_motor_aquai.py` — 35 tests que recalculan el valor esperado con la misma fórmula documentada en el módulo (o contra las tablas normativas de `ras2000_tablas.py`), no con números supuestos. `pdf_memoria.py` (generación de PDF, 0%) y `rag_normativo.py` (módulo desconectado del flujo real, 0%) se dejaron deliberadamente sin cubrir — no aportan valor de regresión de cálculo normativo.
 
@@ -53,7 +53,9 @@ pytest tests/ --cov=src --cov-report=term-missing -v
 
 `motor-vias` pasó de 0% a 88% real (2026-07-20) — es el motor más grande (1814 líneas reales), con 7 verificadores NTC en `ntc_materiales_1.py` y 8 más en `ntc_materiales_2.py` (dos patrones de serialización distintos: dict plano vs. `dataclasses.asdict()`), además de diseño geométrico INVIAS, pavimentos AASHTO-93, mantenimiento y topografía. `tests/test_motor_vias.py`, 46 tests. Un hallazgo real documentado explícitamente en el test (no corregido, solo verificado tal como es): `mantenimiento.py::_determinar_prioridad` compara `prioridad.value < "alto"` como string, no por severidad — "bajo" < "alto" es `False` lexicográficamente, así que un TPD alto nunca sube una prioridad "bajo" directo a "alto", cae a "medio" en su lugar.
 
-No hay un target de 80% fijado todavía porque solo 5 de 6 motores tienen tests reales corriendo — fijar un número ahora sería aspiracional, no una medición. Escribir tests para gerencia es el trabajo pendiente real antes de prometer cualquier cobertura, no un ajuste de configuración.
+`motor-gerencia` pasó de 0% a 96% real (2026-07-20) — no tenía ni carpeta `tests/`. `tests/test_motor_gerencia.py`, 38 tests, todos pasaron en la primera corrida (sin hallazgos que corregir esta vez). Cubre EVM (`models.py::Snapshot`/`Project`, `evm.py`: clasificación de KPIs, score compuesto, tendencia, forecast EAC, resumen cruzado de portafolio) y ML predictivo (`ml_engine.py`: regresión lineal, detección de anomalías por z-score, fecha de término revisada, score de riesgo, forecast de KPIs, correlación de Pearson).
+
+**Con los 6 motores medidos, el piso real hoy es 70% (motor-aquai) y el techo 96% (motor-gerencia)** — se fija **75% como target mínimo por motor** (por debajo del promedio real ~87%, con margen para que futuros motores nuevos no bloqueen CI mientras se estabilizan). `motor-aquai` queda como el único bajo ese target — subirlo pasa por escribir tests para `pdf_memoria.py` o aceptar que ese archivo se excluya explícitamente de la medición de cobertura (`--cov-report` con `omit`), no por inventar tests triviales solo para subir el número.
 
 ## Qué NO se ha estandarizado todavía (a propósito)
 
