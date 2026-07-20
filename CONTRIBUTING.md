@@ -44,14 +44,16 @@ pytest tests/ --cov=src --cov-report=term-missing -v
 | `motor-apu` | 75% | 6 pasan | 2026-07-19 |
 | `motor-aquai` | 70% total (**91.5%** excluyendo `pdf_memoria.py` y `rag_normativo.py`, sin tests propios) | 35 pasan | 2026-07-19 |
 | `motor-geopot` | **82%** (`__init__.py` 100%) | 39 pasan | 2026-07-19 |
-| `motor-vias` | — | `tests/` **vacío** — 0 tests | 2026-07-19 |
-| `motor-gerencia` | — | no existe carpeta `tests/` | 2026-07-19 |
+| `motor-vias` | **88%** | 46 pasan | 2026-07-20 |
+| `motor-gerencia` | — | no existe carpeta `tests/` | 2026-07-20 |
 
 `motor-aquai` pasó de 0% a 70% real (2026-07-19) escribiendo `tests/test_motor_aquai.py` — 35 tests que recalculan el valor esperado con la misma fórmula documentada en el módulo (o contra las tablas normativas de `ras2000_tablas.py`), no con números supuestos. `pdf_memoria.py` (generación de PDF, 0%) y `rag_normativo.py` (módulo desconectado del flujo real, 0%) se dejaron deliberadamente sin cubrir — no aportan valor de regresión de cálculo normativo.
 
 `motor-geopot` pasó de 0% a 82% real (2026-07-19), mismo patrón, `tests/test_motor_geopot.py` — 39 tests cubriendo sismica.py, lab_suelos.py (USCS/AASHTO/Atterberg/Proctor/CBR/Granulometría), lab_concreto.py y lab_agregados.py, más un bloque final que ejercita directamente `src/__init__.py` (los wrappers que consume `apps/api/routers/geopot.py`), llevándolo a 100%. Dos hallazgos reales al correr los tests por primera vez (no se asumió nada): (1) un rango de plasticidad mal citado en el propio test (18% de IP es "Media plasticidad", no "Alta" — el código estaba bien, el test estaba mal); (2) el demo del propio módulo `lab_concreto.py` (`__main__`, cargas 260/268/255 kN sobre cilindros de 152mm) en realidad da fc≈14-15 MPa, muy por debajo del fc_diseño=21 MPa del mismo demo — no ilustra un caso "conforme" como parecía a primera vista. Se corrigieron ambos tests tras verificar el comportamiento real, no el código.
 
-No hay un target de 80% fijado todavía porque solo 4 de 6 motores tienen tests reales corriendo — fijar un número ahora sería aspiracional, no una medición. Escribir tests para vias/gerencia es el trabajo pendiente real antes de prometer cualquier cobertura, no un ajuste de configuración.
+`motor-vias` pasó de 0% a 88% real (2026-07-20) — es el motor más grande (1814 líneas reales), con 7 verificadores NTC en `ntc_materiales_1.py` y 8 más en `ntc_materiales_2.py` (dos patrones de serialización distintos: dict plano vs. `dataclasses.asdict()`), además de diseño geométrico INVIAS, pavimentos AASHTO-93, mantenimiento y topografía. `tests/test_motor_vias.py`, 46 tests. Un hallazgo real documentado explícitamente en el test (no corregido, solo verificado tal como es): `mantenimiento.py::_determinar_prioridad` compara `prioridad.value < "alto"` como string, no por severidad — "bajo" < "alto" es `False` lexicográficamente, así que un TPD alto nunca sube una prioridad "bajo" directo a "alto", cae a "medio" en su lugar.
+
+No hay un target de 80% fijado todavía porque solo 5 de 6 motores tienen tests reales corriendo — fijar un número ahora sería aspiracional, no una medición. Escribir tests para gerencia es el trabajo pendiente real antes de prometer cualquier cobertura, no un ajuste de configuración.
 
 ## Qué NO se ha estandarizado todavía (a propósito)
 
