@@ -87,3 +87,68 @@ Ver [CONTRIBUTING.md](./CONTRIBUTING.md) — formato de commits, cómo instalar 
 ## Licencia
 
 Propiedad de Wilmer José Pérez Orozco — ver [LICENSE](./LICENSE). El repositorio es público con fines de demostración técnica/portafolio; no es software de código abierto.
+
+---
+
+## 🌐 Overview · Resumen
+
+<table>
+<tr>
+<td width="50%">
+
+### 🇬🇧 English
+
+**AI-powered civil engineering SaaS for Colombia** — 6 domain engines with full normative traceability (NSR-10, RAS 2000 / Res. 0330, INVIAS, NTC, SGSST). Public brand: **StructAI**.
+
+**What it solves:** Civil engineers and construction managers in Colombia need calculations that cite the actual norm — chapter, article, source — not generic results that may not apply to local standards. Every StructAI answer is backed by a traceable normative reference; the system never invents a citation.
+
+**At maturity:** Engineers log in via the web PWA → select a domain (unit prices, structural, water/sanitation, geotechnics, roads, or project management) → enter parameters → receive normative-compliant results with explicit citations from a RAG corpus built on local Colombian standards.
+
+| Engine | Domain |
+|--------|--------|
+| **APU** | Unit price analysis — Construdata 2026 Barranquilla catalogue |
+| **Structural** | Beam deflection, column buckling, Monte Carlo uncertainty (NSR-10) |
+| **AquAI** | Water & sanitation — RAS 2000 / Res. 0330-2017 (11 modules) |
+| **GeoPot** | Geotechnics & lab: soils, concrete, aggregates, seismic (NSR-10) |
+| **Roads** | Geometric design, pavements, maintenance, topography (INVIAS) |
+| **Management** | Earned Value Management (PMBOK) + ML predictive progress tracking |
+
+**Quick start:**
+```bash
+cd apps/web  && npm install && npm run dev      # web PWA
+cd apps/api  && pip install -r requirements.txt && uvicorn main:app --reload  # 6 engines + RAG
+```
+
+**Status:** Web live on Vercel · API pending deployment · Supabase (pgvector + RLS) in production · RAG powered by Groq (`llama-3.3-70b-versatile`).
+
+</td>
+<td width="50%">
+
+### 🇨🇴 Español
+
+**SaaS de IA para ingeniería civil en Colombia** — 6 motores de dominio con trazabilidad normativa completa (NSR-10, RAS 2000 / Res. 0330, INVIAS, NTC, SGSST). Marca pública: **StructAI**.
+
+**Qué resuelve:** Los ingenieros civiles y directores de obra en Colombia necesitan cálculos que citen la norma real — capítulo, artículo, fuente — no resultados genéricos que pueden no aplicar a los estándares locales. Cada respuesta de StructAI está respaldada por una referencia normativa trazable; el sistema nunca inventa una cita.
+
+**En fase madura:** Los ingenieros inician sesión en la PWA web → seleccionan un dominio (precios unitarios, estructural, agua/saneamiento, geotecnia, vías o gerencia de proyectos) → ingresan parámetros → reciben resultados con cumplimiento normativo y citas explícitas de un corpus RAG construido sobre normas colombianas reales.
+
+| Motor | Dominio |
+|-------|---------|
+| **APU** | Análisis de precios unitarios — catálogo Construdata 2026 Barranquilla |
+| **Estructural** | Deformación de vigas, pandeo de columnas, incertidumbre Monte Carlo (NSR-10) |
+| **AquAI** | Acueducto y alcantarillado — RAS 2000 / Res. 0330-2017 (11 módulos) |
+| **GeoPot** | Geotecnia y laboratorio: suelos, concreto, agregados, sísmica (NSR-10) |
+| **Vías** | Diseño geométrico, pavimentos, mantenimiento, topografía (INVIAS) |
+| **Gerencia** | Earned Value Management (PMBOK) + seguimiento predictivo ML |
+
+**Inicio rápido:**
+```bash
+cd apps/web  && npm install && npm run dev      # PWA web
+cd apps/api  && pip install -r requirements.txt && uvicorn main:app --reload  # 6 motores + RAG
+```
+
+**Estado:** Web en producción en Vercel · API pendiente de despliegue · Supabase (pgvector + RLS) en producción · RAG con Groq (`llama-3.3-70b-versatile`).
+
+</td>
+</tr>
+</table>
