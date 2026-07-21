@@ -32,7 +32,7 @@ construdata/
 │   ├── construdata/   → schema SQL + pipeline de ingesta RAG general (NSR-10/NTC/SGSST)
 │   ├── knowledge/     → PDFs fuente de NSR-10
 │   ├── ai-gateway/    → gateway multi-proveedor (Claude/Gemini/OpenAI) — experimental
-│   └── bim-intelligence/ → IFC + Qdrant — experimental, no conectado al producto
+│   └── bim-intelligence/ → IFC + Qdrant + InfraCortex (src/infracortex/) — experimental, no conectado al producto
 ├── infra/supabase/  → estado real de las migraciones (ver infra/supabase/migrations/README.md)
 └── .github/workflows/  → CI: lint + tsc, tests Python por motor, build web
 ```

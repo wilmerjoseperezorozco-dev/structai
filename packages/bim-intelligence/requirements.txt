@@ -24,3 +24,9 @@ python-dotenv==1.0.1
 # ── CLI / UI ──────────────────────────────────────────────────
 rich==13.9.4
 typer==0.12.5
+
+# ── InfraCortex (experimental — src/infracortex/) ──────────────
+torch==2.13.0
+ultralytics==8.4.102
+opencv-python==5.0.0.93
+scipy==1.18.0
