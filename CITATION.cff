@@ -1,0 +1,46 @@
+cff-version: 1.2.0
+message: "If you use StructAI in your research or practice, please cite it as below."
+type: software
+title: "StructAI: AI-Powered Civil Engineering Platform for Colombia"
+abstract: >
+  StructAI is a freemium SaaS platform that provides AI-assisted engineering
+  calculations with full normative traceability for Colombian civil engineering
+  standards (NSR-10, RAS 2000 / Res. 0330-2017, INVIAS, NTC, SGSST). It
+  integrates six domain engines — unit price analysis (APU), structural
+  mechanics, water and sanitation (AquAI), geotechnics (GeoPot), road design
+  (Vías), and project management (Gerencia) — with a retrieval-augmented
+  generation (RAG) pipeline that cites the exact norm, chapter, and article
+  for every answer. The system uses local multilingual embeddings (sentence-
+  transformers) stored in pgvector (Supabase/PostgreSQL) and Groq as the
+  LLM synthesis backend.
+authors:
+  - family-names: "Pérez Orozco"
+    given-names: "Wilmer José"
+    email: "wilmerjoseperezorozco@gmail.com"
+    affiliation: "Tubará Labs, Barranquilla, Colombia"
+version: "0.1.0"
+date-released: "2026-07-20"
+license: "LicenseRef-proprietary"
+repository-code: "https://github.com/wilmerjoseperezorozco-dev/structai"
+url: "https://github.com/wilmerjoseperezorozco-dev/structai"
+keywords:
+  - civil engineering
+  - Colombia
+  - artificial intelligence
+  - retrieval-augmented generation
+  - RAG
+  - normative traceability
+  - NSR-10
+  - RAS 2000
+  - INVIAS
+  - NTC
+  - SGSST
+  - SaaS
+  - FastAPI
+  - Next.js
+  - pgvector
+  - construction
+  - infrastructure
+languages:
+  - es
+  - en
