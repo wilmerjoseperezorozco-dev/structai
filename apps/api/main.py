@@ -150,6 +150,14 @@ except Exception as e:
     GERENCIA_AVAILABLE = False
     log.warning(f"✗ motor-gerencia no disponible: {e}")
 
+try:
+    from routers.estructural import router as estructural_router
+    ESTRUCTURAL_AVAILABLE = True
+    log.info("✓ motor-estructural (Infracortex) cargado")
+except Exception as e:
+    ESTRUCTURAL_AVAILABLE = False
+    log.warning(f"✗ motor-estructural no disponible: {e}")
+
 
 # ════════════════════════════════════════════════════════════════════════════════
 # APP
@@ -203,6 +211,8 @@ if VIAS_AVAILABLE:
     app.include_router(vias_router)
 if GERENCIA_AVAILABLE:
     app.include_router(gerencia_router)
+if ESTRUCTURAL_AVAILABLE:
+    app.include_router(estructural_router)
 
 
 # ════════════════════════════════════════════════════════════════════════════════
@@ -541,6 +551,7 @@ def health(deep: bool = False):
         "motor_geopot":      GEOPOT_AVAILABLE,
         "motor_vias":        VIAS_AVAILABLE,
         "motor_gerencia":    GERENCIA_AVAILABLE,
+        "motor_estructural": ESTRUCTURAL_AVAILABLE,
         "yolo_onnx":         _onnx_session is not None,
         "yolo_deps":         YOLO_DEPS,
     }

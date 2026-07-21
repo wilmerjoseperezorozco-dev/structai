@@ -30,11 +30,8 @@ htmlcov/
 .cache/
 *.gguf
 
-# ── InfraCortex / bim-intelligence — pesos y salidas generadas ───
-# (se descargan/generan en runtime, nunca vendorizar aquí)
+# ── InfraCortex / motor-estructural — pesos YOLO (se descargan en runtime) ─
 *.pt
-packages/bim-intelligence/src/infracortex/*.png
-packages/bim-intelligence/src/infracortex/nudo_test.ifc
 
 # ── Sistema operativo / editor ────────────────────────────────────
 .DS_Store

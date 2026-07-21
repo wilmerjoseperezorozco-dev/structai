@@ -24,6 +24,15 @@ opencv-python-headless==4.10.0.84
 # ── Motor AquAI ──────────────────────────────────────────────
 reportlab==4.2.5
 
+# ── Motor Estructural / Infracortex (IFC + PINN + visión) ───────
+# Peso: torch añade ~2GB a la imagen — motor-estructural falla en
+# ESTRUCTURAL_AVAILABLE=False sin romper el resto de la API si algo
+# de esto no está disponible en el entorno de deploy (mismo patrón
+# try/except que los demás motores en main.py).
+ifcopenshell==0.8.5
+torch==2.13.0
+ultralytics==8.4.102
+
 # ── Utilidades ────────────────────────────────────────────────
 python-dotenv==1.0.1
 psutil==6.1.0                  # /health avanzado: RAM del proceso y del sistema

@@ -4,7 +4,7 @@ SaaS freemium para ingenieros civiles y maestros de obra: cálculos de ingenier�
 
 `Construdata` es el nombre interno del repositorio/código; **StructAI** es la marca pública.
 
-## Los 6 motores
+## Los 7 motores
 
 | Motor | Dominio | Paquete |
 |---|---|---|
@@ -14,8 +14,9 @@ SaaS freemium para ingenieros civiles y maestros de obra: cálculos de ingenier�
 | **GeoPot** | Geotecnia y laboratorio: suelos, concreto, agregados, sísmica NSR-10 | `packages/motor-geopot` |
 | **Vías** | Diseño vial INVIAS: geometría, pavimentos, mantenimiento, topografía, NTC de materiales | `packages/motor-vias` |
 | **Gerencia** | Earned Value Management (PMBOK) + ML predictivo sobre avance de obra | `packages/motor-gerencia` |
+| **InfraCortex** | BIM (IFC) → topología del nudo viga-columna → PINN → chequeo por cortante NSR-10 Títulos A/B/C + inspección visual de estribos | `packages/motor-estructural` |
 
-Cada motor expone su propio router FastAPI (`/apu`, `/deform`, `/aquai`, `/geopot`, `/vias`, `/gerencia`), su propia tabla en Supabase, y su propio corpus RAG en `motor_chunks` — todos comparten el mismo backend y la misma base de datos.
+Cada motor expone su propio router FastAPI (`/apu`, `/deform`, `/aquai`, `/geopot`, `/vias`, `/gerencia`, `/estructural`), su propia tabla en Supabase (excepto InfraCortex, que hoy es cómputo puro sin persistencia), y su propio corpus RAG en `motor_chunks` — todos comparten el mismo backend y la misma base de datos.
 
 ## Estructura del monorepo
 
@@ -32,7 +33,8 @@ construdata/
 │   ├── construdata/   → schema SQL + pipeline de ingesta RAG general (NSR-10/NTC/SGSST)
 │   ├── knowledge/     → PDFs fuente de NSR-10
 │   ├── ai-gateway/    → gateway multi-proveedor (Claude/Gemini/OpenAI) — experimental
-│   └── bim-intelligence/ → IFC + Qdrant + InfraCortex (src/infracortex/) — experimental, no conectado al producto
+│   ├── bim-intelligence/ → IFC + Qdrant — experimental, no conectado al producto
+│   └── motor-estructural/ → InfraCortex: IFC + PINN + NSR-10 A/B/C — router `/estructural` conectado
 ├── infra/supabase/  → estado real de las migraciones (ver infra/supabase/migrations/README.md)
 └── .github/workflows/  → CI: lint + tsc, tests Python por motor, build web
 ```

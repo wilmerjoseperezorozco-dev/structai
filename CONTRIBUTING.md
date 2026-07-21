@@ -46,6 +46,7 @@ pytest tests/ --cov=src --cov-report=term-missing -v
 | `motor-geopot` | **82%** (`__init__.py` 100%) | 39 pasan | 2026-07-19 |
 | `motor-vias` | **88%** | 46 pasan | 2026-07-20 |
 | `motor-gerencia` | **96%** | 38 pasan | 2026-07-20 |
+| `motor-estructural` | **86%** | 7 pasan | 2026-07-21 |
 
 `motor-aquai` pasó de 0% a 70% real (2026-07-19) escribiendo `tests/test_motor_aquai.py` — 35 tests que recalculan el valor esperado con la misma fórmula documentada en el módulo (o contra las tablas normativas de `ras2000_tablas.py`), no con números supuestos. `pdf_memoria.py` (generación de PDF, 0%) y `rag_normativo.py` (módulo desconectado del flujo real, 0%) se dejaron deliberadamente sin cubrir — no aportan valor de regresión de cálculo normativo.
 
@@ -55,7 +56,9 @@ pytest tests/ --cov=src --cov-report=term-missing -v
 
 `motor-gerencia` pasó de 0% a 96% real (2026-07-20) — no tenía ni carpeta `tests/`. `tests/test_motor_gerencia.py`, 38 tests, todos pasaron en la primera corrida (sin hallazgos que corregir esta vez). Cubre EVM (`models.py::Snapshot`/`Project`, `evm.py`: clasificación de KPIs, score compuesto, tendencia, forecast EAC, resumen cruzado de portafolio) y ML predictivo (`ml_engine.py`: regresión lineal, detección de anomalías por z-score, fecha de término revisada, score de riesgo, forecast de KPIs, correlación de Pearson).
 
-**Con los 6 motores medidos, el piso real hoy es 70% (motor-aquai) y el techo 96% (motor-gerencia)** — se fija **75% como target mínimo por motor** (por debajo del promedio real ~87%, con margen para que futuros motores nuevos no bloqueen CI mientras se estabilizan). `motor-aquai` queda como el único bajo ese target — subirlo pasa por escribir tests para `pdf_memoria.py` o aceptar que ese archivo se excluya explícitamente de la medición de cobertura (`--cov-report` con `omit`), no por inventar tests triviales solo para subir el número.
+`motor-estructural` (InfraCortex) pasó de 0% a 86% real (2026-07-21) — el motor más reciente, BIM (IFC) → topología del nudo → PINN → chequeo NSR-10 Títulos A/B/C. `tests/test_motor_estructural.py`, 7 tests, valores verificados contra una corrida end-to-end real vía `TestClient` de `/estructural/analizar-nudo` e `/estructural/inspeccion-estribos` antes de escribir las aserciones (no números supuestos). Un bug real encontrado y corregido antes de escribir los tests: `infracortex_core.py::extraer_topologia_nudo` calculaba la matriz de la columna pero nunca la asignaba (llamada sin guardar el resultado) — la función que por nombre extrae la topología del NUDO (viga + columna) en realidad descartaba la columna por completo, retornando solo 2 valores en vez de 3. Sin impacto en el veredicto NSR-10 actual (`chequeo_nsr10_nudo` solo usa propiedades escalares de la sección, no las matrices de rotación), pero sí en el campo `matriz_T12_columna_shape` de la respuesta y en cualquier feature futura que dependa de la rotación real de la columna. Sin cubrir deliberadamente: `MultidisciplinaryPINN` (entrenamiento, no ejercitado en estos tests) y `generar_imagen_anotada` (dibujo/side-effect, sin valor de regresión).
+
+**Con los 7 motores medidos, el piso real hoy es 70% (motor-aquai) y el techo 96% (motor-gerencia)** — se fija **75% como target mínimo por motor** (por debajo del promedio real, con margen para que futuros motores nuevos no bloqueen CI mientras se estabilizan). `motor-aquai` queda como el único bajo ese target — subirlo pasa por escribir tests para `pdf_memoria.py` o aceptar que ese archivo se excluya explícitamente de la medición de cobertura (`--cov-report` con `omit`), no por inventar tests triviales solo para subir el número.
 
 ## Qué NO se ha estandarizado todavía (a propósito)
 
