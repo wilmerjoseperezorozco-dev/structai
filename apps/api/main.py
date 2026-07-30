@@ -480,6 +480,23 @@ def _detect_stub(img_bytes: bytes) -> tuple[list[DeteccionElemento], int, int]:
 async def startup():
     global _onnx_session
     _onnx_session = _load_onnx_model()
+
+    # Precalentar el modelo de embeddings ANTES de aceptar tráfico real.
+    # _embedding_model() es @lru_cache — la primera vez que se llama importa
+    # sentence_transformers/torch desde cero, lo cual dentro de un proceso
+    # que ya cargó FastAPI + Supabase + los 6 motores toma ~17s reales
+    # (medido en producción, no supuesto). Sin este precalentamiento, esa
+    # demora caía sobre la PRIMERA consulta real de un usuario a /ask,
+    # superando el timeout del proxy de DigitalOcean y devolviendo 502/504.
+    if RAG_AVAILABLE:
+        t0 = time.perf_counter()
+        try:
+            from rag_multi_norma import embed_query
+            embed_query("precalentamiento")
+            log.info(f"✓ Modelo de embeddings precalentado en {time.perf_counter() - t0:.1f}s")
+        except Exception as e:
+            log.warning(f"✗ No se pudo precalentar el modelo de embeddings: {e}")
+
     log.info("Construdata API lista ✓")
 
 
