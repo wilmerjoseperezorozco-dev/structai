@@ -52,4 +52,12 @@ ENV PYTHONUNBUFFERED=1
 EXPOSE 8000
 
 # ── Arranque ──────────────────────────────────────────────────────
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
+# 1 worker, no 2: cada worker carga por separado torch + ifcopenshell +
+# opencv + scikit-learn + el modelo de embeddings — con 2 workers en una
+# instancia de 1GB RAM, el proceso que atendía /ask moría (probable
+# OOM-kill del kernel) justo después de cargar el modelo, y uvicorn lo
+# reiniciaba en un ciclo que causaba 502/504 en cada consulta real.
+# Confirmado en el log real de producción: "Waiting for child process
+# [N]" → "Child process [N] died" → reinicio completo de la app,
+# repetido en cada intento de /ask.
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
