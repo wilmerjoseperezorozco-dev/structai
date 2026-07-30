@@ -33,6 +33,17 @@ COPY . .
 WORKDIR /app/apps/api
 RUN pip install --no-cache-dir -r requirements.txt
 
+# ── Hornear el modelo de embeddings en la imagen ──────────────────
+# rag_multi_norma.py fuerza HF_HUB_OFFLINE=1 en tiempo de ejecución
+# (correcto: nunca debe depender de la red para responder /ask), pero
+# eso asume que el modelo YA está en caché local — un contenedor nuevo
+# nunca lo descargó. Causó "Error en RAG: couldn't connect to
+# huggingface.co... and couldn't find them in the cached files" en el
+# primer despliegue real. Se descarga aquí, en build time (con red
+# disponible), para que quede horneado en la imagen y el contenedor en
+# producción nunca necesite salir a internet por esto.
+RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')"
+
 # ── Variables de entorno (se pasan en runtime via --env-file) ────
 ENV PORT=8000
 ENV ENV=production
