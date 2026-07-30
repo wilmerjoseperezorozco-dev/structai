@@ -286,6 +286,12 @@ def _format_chunk_context(c: ChunkResult) -> str:
     return f"{header}\n{c.contenido}"
 
 def _generar_respuesta(contexto: str, question: str) -> str:
+    # max_tokens=1500 (valor original) hacía que una respuesta real tomara
+    # ~25-27s en producción — verificado end-to-end contra Groq real, no
+    # supuesto — suficiente para que el proxy de DigitalOcean (timeout más
+    # corto) devolviera 502/504 antes de que Groq terminara. 700 acota el
+    # peor caso sin cortar respuestas normativas reales a la mitad (las
+    # observadas rondan los 300-500 tokens).
     response = groq_client.chat.completions.create(
         model=GROQ_MODEL,
         messages=[
@@ -293,7 +299,7 @@ def _generar_respuesta(contexto: str, question: str) -> str:
             {"role": "user", "content": f"CONTEXTO NORMATIVO:\n{contexto}\n\nPREGUNTA: {question}"}
         ],
         temperature=0.1,
-        max_tokens=1500,
+        max_tokens=700,
     )
     return response.choices[0].message.content
 
