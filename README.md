@@ -4,7 +4,7 @@ SaaS freemium para ingenieros civiles y maestros de obra: cálculos de ingenier�
 
 `Construdata` es el nombre interno del repositorio/código; **StructAI** es la marca pública.
 
-> **Estado actual: prueba piloto en producción.** El backend está desplegado y operativo (ver [Estado de deploy](#estado-de-deploy)). La cobertura normativa cargada hoy es un **piloto enfocado en NSR-10 (9 de 11 títulos con contenido técnico detallado), NTC (21 normas) y SGSST (Decreto 1072/2015, Ley 1562/2012, Resolución 0312/2019), integrado con el motor de APU** — no es una cobertura completa de toda la normativa colombiana de construcción. Ver [Cobertura normativa actual](#cobertura-normativa-actual-prueba-piloto) para el detalle honesto de qué está cargado y qué falta.
+> **Estado actual: prueba piloto en producción.** El backend está desplegado y operativo (ver [Estado de deploy](#estado-de-deploy)). La cobertura normativa cargada hoy es un **piloto enfocado en NSR-10 (9 de 11 títulos con contenido técnico detallado), NTC (18 normas) y SGSST (Decreto 1072/2015, Ley 1562/2012, Resolución 0312/2019), integrado con el motor de APU** — no es una cobertura completa de toda la normativa colombiana de construcción. Ver [Cobertura normativa actual](#cobertura-normativa-actual-prueba-piloto) para el detalle honesto de qué está cargado y qué falta.
 
 ## Los 7 motores
 
@@ -29,8 +29,8 @@ Estado real verificado en producción el 2026-07-30 (conteo directo contra Supab
 | Fuente | Contenido cargado | Chunks |
 |---|---|---|
 | **NSR-10** | Títulos A, B, C, D, F, G, H, I con contenido técnico detallado (tablas, fórmulas, coeficientes). Títulos E, J, K con resumen de alcance oficial verificado, sin detalle técnico profundo todavía. | 563 |
-| **NTC** | 21 normas técnicas colombianas (NTC 30, 121, 174, 396, 454, 504, 673, 1028, 1032, 1328, 1500, 2289, 2516, 3459, 4026, 4027, 4076, 4595, entre otras) | 265 |
-| **SGSST** | Decreto 1072 de 2015, Ley 1562 de 2012, Resolución 0312 de 2019 | 68 |
+| **NTC** | 18 normas técnicas colombianas (NTC 30, 121, 174, 396, 454, 504, 673, 1028, 1032, 1328, 1500, 2289, 2516, 3459, 4026, 4027, 4076, 4595) | 190 |
+| **SGSST** | Decreto 1072 de 2015, Ley 1562 de 2012, Resolución 0312 de 2019, más contenido genérico SGSST | 75 |
 | **APU** | Catálogo Construdata 2026 Barranquilla | 29 ítems |
 | **AquAI / GeoPot / Vías / Gerencia** | Corpus propio por motor (RAS 2000, USCS/Proctor/CBR, INVIAS + NTC de materiales, EVM) | 3,600 chunks |
 
@@ -43,7 +43,7 @@ construdata/
 ├── apps/
 │   ├── web/       → Next.js 14 (App Router) + PWA        → Vercel (desplegado)
 │   ├── native/     → React Native + Expo Router (Fase 0)   → sin publicar aún
-│   └── api/        → FastAPI, los 6 motores + RAG          → sin desplegar aún (Render/Cloud Run)
+│   └── api/        → FastAPI, los 7 motores + RAG          → DigitalOcean App Platform (desplegado)
 ├── packages/
 │   ├── motor-apu/, motor-deformacion/, motor-aquai/,
 │   │   motor-geopot/, motor-vias/, motor-gerencia/  → cada uno con su pyproject.toml
@@ -72,7 +72,7 @@ construdata/
 # Web
 cd apps/web && npm install && npm run dev
 
-# API (los 6 motores + RAG)
+# API (los 7 motores + RAG)
 cd apps/api && pip install -r requirements.txt && uvicorn main:app --reload
 
 # Un motor Python de forma aislada
@@ -120,7 +120,7 @@ Propiedad de Wilmer José Pérez Orozco — ver [LICENSE](./LICENSE). El reposit
 
 ### 🇬🇧 English
 
-**AI-powered civil engineering SaaS for Colombia** — 6 domain engines with full normative traceability (NSR-10, RAS 2000 / Res. 0330, INVIAS, NTC, SGSST). Public brand: **StructAI**.
+**AI-powered civil engineering SaaS for Colombia** — 7 domain engines (6 active in production, 1 disabled by default for RAM) with full normative traceability (NSR-10, RAS 2000 / Res. 0330, INVIAS, NTC, SGSST). Public brand: **StructAI**.
 
 **What it solves:** Civil engineers and construction managers in Colombia need calculations that cite the actual norm — chapter, article, source — not generic results that may not apply to local standards. Every StructAI answer is backed by a traceable normative reference; the system never invents a citation.
 
@@ -138,17 +138,17 @@ Propiedad de Wilmer José Pérez Orozco — ver [LICENSE](./LICENSE). El reposit
 **Quick start:**
 ```bash
 cd apps/web  && npm install && npm run dev      # web PWA
-cd apps/api  && pip install -r requirements.txt && uvicorn main:app --reload  # 6 engines + RAG
+cd apps/api  && pip install -r requirements.txt && uvicorn main:app --reload  # 7 engines + RAG
 ```
 
-**Status:** Web live on Vercel · API live on DigitalOcean App Platform · Supabase (pgvector + RLS) in production · RAG powered by Groq (`llama-3.3-70b-versatile`). Current pilot content: NSR-10 (9/11 titles with technical detail), 21 NTC standards, SGSST (Decreto 1072/2015, Ley 1562/2012, Res. 0312/2019), APU catalogue.
+**Status:** Web live on Vercel · API live on DigitalOcean App Platform · Supabase (pgvector + RLS) in production · RAG powered by Groq (`llama-3.3-70b-versatile`). Current pilot content: NSR-10 (9/11 titles with technical detail), 18 NTC standards, SGSST (Decreto 1072/2015, Ley 1562/2012, Res. 0312/2019), APU catalogue.
 
 </td>
 <td width="50%">
 
 ### 🇨🇴 Español
 
-**SaaS de IA para ingeniería civil en Colombia** — 6 motores de dominio con trazabilidad normativa completa (NSR-10, RAS 2000 / Res. 0330, INVIAS, NTC, SGSST). Marca pública: **StructAI**.
+**SaaS de IA para ingeniería civil en Colombia** — 7 motores de dominio (6 activos en producción, 1 desactivado por defecto por RAM) con trazabilidad normativa completa (NSR-10, RAS 2000 / Res. 0330, INVIAS, NTC, SGSST). Marca pública: **StructAI**.
 
 **Qué resuelve:** Los ingenieros civiles y directores de obra en Colombia necesitan cálculos que citen la norma real — capítulo, artículo, fuente — no resultados genéricos que pueden no aplicar a los estándares locales. Cada respuesta de StructAI está respaldada por una referencia normativa trazable; el sistema nunca inventa una cita.
 
@@ -166,10 +166,10 @@ cd apps/api  && pip install -r requirements.txt && uvicorn main:app --reload  # 
 **Inicio rápido:**
 ```bash
 cd apps/web  && npm install && npm run dev      # PWA web
-cd apps/api  && pip install -r requirements.txt && uvicorn main:app --reload  # 6 motores + RAG
+cd apps/api  && pip install -r requirements.txt && uvicorn main:app --reload  # 7 motores + RAG
 ```
 
-**Estado:** Web en producción en Vercel · API en producción en DigitalOcean App Platform · Supabase (pgvector + RLS) en producción · RAG con Groq (`llama-3.3-70b-versatile`). Cobertura piloto actual: NSR-10 (9/11 títulos con detalle técnico), 21 normas NTC, SGSST (Decreto 1072/2015, Ley 1562/2012, Res. 0312/2019), catálogo APU.
+**Estado:** Web en producción en Vercel · API en producción en DigitalOcean App Platform · Supabase (pgvector + RLS) en producción · RAG con Groq (`llama-3.3-70b-versatile`). Cobertura piloto actual: NSR-10 (9/11 títulos con detalle técnico), 18 normas NTC, SGSST (Decreto 1072/2015, Ley 1562/2012, Res. 0312/2019), catálogo APU.
 
 </td>
 </tr>
