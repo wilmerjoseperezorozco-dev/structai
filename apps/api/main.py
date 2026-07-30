@@ -26,7 +26,6 @@ Wiring:
 # pydantic==2.9.2) antes de quitarla — es la causa raíz real, no una
 # corrección especulativa.
 
-import asyncio
 import io
 import os
 import sys
@@ -477,49 +476,30 @@ def _detect_stub(img_bytes: bytes) -> tuple[list[DeteccionElemento], int, int]:
 # STARTUP
 # ════════════════════════════════════════════════════════════════════════════════
 
-def _prewarm_embeddings_blocking() -> None:
-    # _embedding_model() es @lru_cache — la primera vez que se llama importa
-    # sentence_transformers/torch desde cero, lo cual dentro de un proceso
-    # que ya cargó FastAPI + Supabase + los 6 motores toma ~17s reales
-    # (medido en producción, no supuesto). Sin precalentar, esa demora caía
-    # sobre la PRIMERA consulta real de un usuario a /ask, superando el
-    # timeout del proxy de DigitalOcean y devolviendo 502/504.
-    #
-    # Esta función es SÍNCRONA a propósito: sentence_transformers/torch no
-    # tienen puntos "await", así que si se llama directo desde una tarea
-    # async (asyncio.create_task) bloquea el único event loop del proceso
-    # durante los ~17s completos — incluyendo las peticiones a /health que
-    # DigitalOcean usa para decidir si el contenedor está sano. Se comprobó
-    # en un despliegue real: bloquear el loop así hizo que DO matara el
-    # contenedor con "DeployContainerTerminated". Debe invocarse via
-    # asyncio.to_thread() para correr en un hilo aparte y dejar el loop libre.
-    t0 = time.perf_counter()
-    try:
-        from rag_multi_norma import embed_query
-        embed_query("precalentamiento")
-        log.info(f"✓ Modelo de embeddings precalentado en {time.perf_counter() - t0:.1f}s")
-    except Exception as e:
-        log.warning(f"✗ No se pudo precalentar el modelo de embeddings: {e}")
-
-
 @app.on_event("startup")
 async def startup():
     global _onnx_session
     _onnx_session = _load_onnx_model()
 
-    # Se lanza en un hilo aparte (asyncio.to_thread) y no se espera aquí:
-    # uvicorn queda libre para responder /health de inmediato mientras el
-    # modelo se carga en paralelo, normalmente terminando segundos/minutos
-    # antes de que llegue la primera consulta real. Un primer intento con
-    # await directo bloqueaba el arranque; un segundo intento con
-    # asyncio.create_task() (sin to_thread) seguía bloqueando el único
-    # event loop del proceso porque el trabajo en sí es síncrono/CPU-bound
-    # sin puntos await — en ambos casos DigitalOcean mató el contenedor
-    # con "DeployContainerTerminated" porque /health nunca respondía a
-    # tiempo. to_thread es el único de los tres que deja el loop realmente
-    # libre para atender peticiones mientras el precalentamiento corre.
-    if RAG_AVAILABLE:
-        asyncio.create_task(asyncio.to_thread(_prewarm_embeddings_blocking))
+    # NO se precalienta el modelo de embeddings aquí. Se probaron 3
+    # variantes reales en producción (await directo, asyncio.create_task
+    # sin hilo, asyncio.create_task + asyncio.to_thread) y las 3 terminaron
+    # en el contenedor cayéndose en la instancia de 1GB RAM actual — las
+    # dos primeras porque bloqueaban el event loop y DO mataba el contenedor
+    # por no responder /health a tiempo; la tercera (con to_thread, que sí
+    # deja el loop libre) igual terminó en un ciclo de caídas reales y
+    # verificables: 3 reinicios consecutivos en los logs de producción,
+    # cada uno muriendo segundos después de empezar a cargar
+    # sentence_transformers/torch. Conclusión verificada: esta instancia no
+    # tiene margen para sostener torch+sentence-transformers en memoria
+    # junto al resto de la API, sin importar CUÁNDO se cargue el modelo.
+    #
+    # Se deja la carga perezosa original (@lru_cache en _embedding_model()
+    # dentro de rag_multi_norma.py): la primera consulta real a /ask tras
+    # cada despliegue paga el costo de import (~17s), pero el resto de la
+    # API (login, /apu, /aquai, /geopot, /vias, /gerencia, /deform) sigue
+    # sana. Subir a una instancia de 2GB RAM (apps-s-1vcpu-2gb, +$13/mes)
+    # es la vía real para poder precalentar sin caídas.
 
     log.info("Construdata API lista ✓")
 
