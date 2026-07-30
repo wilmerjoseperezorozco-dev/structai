@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 import { Send, Loader2, BookOpen, ChevronDown, ChevronUp } from "lucide-react";
 import clsx from "clsx";
 import { askNorma, type AskResponse, type FuenteChunk } from "@/lib/api";
+import { supabase } from "@/lib/supabase";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -241,6 +242,27 @@ export default function Chat() {
       setInput("");
       return;
     }
+
+    // El backend exige un usuario autenticado para /ask (mismo patrón que
+    // /apu/calculate) — sin esto, el chat dejaba escribir la pregunta y
+    // mostraba el error crudo del servidor ("Falta el header Authorization").
+    // Se revisa la sesión ANTES de intentar la llamada para no gastar una
+    // petición condenada a fallar y para dar un mensaje claro y accionable.
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      setMessages((m) => [
+        ...m,
+        { id: Date.now().toString(), role: "user", text },
+        {
+          id: Date.now().toString() + "_e",
+          role: "error",
+          text: "🔒 Necesitas iniciar sesión para hacer consultas. [Inicia sesión aquí](/login) — es gratis y toma un minuto.",
+        },
+      ]);
+      setInput("");
+      return;
+    }
+
     const userMsg: Message = { id: Date.now().toString(), role: "user", text };
     setMessages((m) => [...m, userMsg]);
     setInput("");

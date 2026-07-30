@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import { Camera, Upload, X, Loader2, Scan, AlertCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Camera, Upload, X, Loader2, Scan, AlertCircle, Lock } from "lucide-react";
 import clsx from "clsx";
 import {
   detectImage,
@@ -12,6 +13,7 @@ import {
   CLASE_LABEL,
   formatCOP,
 } from "@/lib/api";
+import { supabase } from "@/lib/supabase";
 
 // ── Tarjeta de elemento detectado ────────────────────────────────────────────
 
@@ -91,6 +93,7 @@ function APUInline({ result }: { result: APUDesglose }) {
 // ── Componente principal ──────────────────────────────────────────────────────
 
 export default function DetectUpload() {
+  const router = useRouter();
   const [preview, setPreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [result, setResult] = useState<DetectResponse | null>(null);
@@ -98,6 +101,15 @@ export default function DetectUpload() {
   const [loadingDetect, setLoadingDetect] = useState(false);
   const [loadingApu, setLoadingApu] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [needsAuth, setNeedsAuth] = useState(false);
+
+  // /detect y /apu/calculate exigen un usuario autenticado — sin este
+  // chequeo, el panel dejaba subir/analizar la foto y mostraba el error
+  // crudo del backend ("Falta el header Authorization").
+  const hasSession = useCallback(async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    return !!session;
+  }, []);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -128,6 +140,11 @@ export default function DetectUpload() {
 
   const analyze = async () => {
     if (!file) return;
+    if (!(await hasSession())) {
+      setNeedsAuth(true);
+      return;
+    }
+    setNeedsAuth(false);
     setLoadingDetect(true);
     setError(null);
     try {
@@ -141,6 +158,11 @@ export default function DetectUpload() {
   };
 
   const calcularAPU = async (id: string) => {
+    if (!(await hasSession())) {
+      setNeedsAuth(true);
+      return;
+    }
+    setNeedsAuth(false);
     setLoadingApu(id);
     try {
       const res = await calculateAPU(id, 1);
@@ -228,6 +250,18 @@ export default function DetectUpload() {
         <div className="flex items-center gap-2 bg-red-900/30 border border-red-700 rounded-xl px-3 py-2 text-xs text-red-300">
           <AlertCircle size={14} />
           {error}
+        </div>
+      )}
+
+      {needsAuth && (
+        <div className="flex items-center justify-between gap-3 bg-brand-900/30 border border-brand-700 rounded-xl px-3 py-2 text-xs text-brand-200">
+          <span className="flex items-center gap-2"><Lock size={14} /> Necesitas iniciar sesión para usar la detección.</span>
+          <button
+            onClick={() => router.push("/login")}
+            className="flex-shrink-0 text-brand-300 hover:text-brand-100 font-semibold underline underline-offset-2"
+          >
+            Ingresar
+          </button>
         </div>
       )}
 

@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Calculator, ChevronDown, ChevronUp, Copy, Check, Loader2 } from "lucide-react";
 import clsx from "clsx";
 import { listAPU, calculateAPU, type APUItem, type APUDesglose, formatCOP } from "@/lib/api";
+import { supabase } from "@/lib/supabase";
 
 // ── Tarjeta catálogo ──────────────────────────────────────────────────────────
 
@@ -175,9 +177,11 @@ function DesglosePanel({ d, onClose }: { d: APUDesglose; onClose: () => void }) 
 // ── Panel principal ───────────────────────────────────────────────────────────
 
 export default function APUPanel() {
+  const router = useRouter();
   const [items, setItems] = useState<APUItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [needsAuth, setNeedsAuth] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
   const [desglose, setDesglose] = useState<APUDesglose | null>(null);
   const [loadingCalc, setLoadingCalc] = useState(false);
@@ -197,6 +201,17 @@ export default function APUPanel() {
       setDesglose(null);
       return;
     }
+
+    // /apu/calculate exige un usuario autenticado (mismo patrón que /ask) —
+    // sin este chequeo, el panel dejaba elegir la actividad y mostraba el
+    // error crudo del backend ("Falta el header Authorization").
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      setNeedsAuth(true);
+      return;
+    }
+
+    setNeedsAuth(false);
     setSelected(id);
     setDesglose(null);
     setLoadingCalc(true);
@@ -256,6 +271,18 @@ export default function APUPanel() {
       {error && (
         <div className="text-xs text-red-300 bg-red-900/30 border border-red-700 rounded-xl px-3 py-2">
           {error}
+        </div>
+      )}
+
+      {needsAuth && (
+        <div className="flex items-center justify-between gap-3 text-xs text-brand-200 bg-brand-900/30 border border-brand-700 rounded-xl px-3 py-2">
+          <span>🔒 Necesitas iniciar sesión para calcular el desglose completo.</span>
+          <button
+            onClick={() => router.push("/login")}
+            className="flex-shrink-0 text-brand-300 hover:text-brand-100 font-semibold underline underline-offset-2"
+          >
+            Ingresar
+          </button>
         </div>
       )}
 
