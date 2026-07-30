@@ -150,13 +150,26 @@ except Exception as e:
     GERENCIA_AVAILABLE = False
     log.warning(f"✗ motor-gerencia no disponible: {e}")
 
-try:
-    from routers.estructural import router as estructural_router
-    ESTRUCTURAL_AVAILABLE = True
-    log.info("✓ motor-estructural (Infracortex) cargado")
-except Exception as e:
+# motor-estructural (InfraCortex) carga torch + ifcopenshell + opencv +
+# scipy en memoria — solo esas librerías rondan 1-1.5GB. En una instancia
+# de 1GB RAM eso deja sin margen al resto de la API (rag_multi_norma con
+# el modelo de embeddings, sentence-transformers, etc.), causando que el
+# proceso muera/se reinicie en peticiones reales a /ask — confirmado en
+# logs de producción. Se apaga por defecto (ENABLE_ESTRUCTURAL=true para
+# prenderlo) hasta que la instancia tenga RAM suficiente o el motor se
+# reestructure para cargar sus dependencias de forma perezosa (solo al
+# primer request a /estructural/*, no al arrancar la API completa).
+if os.getenv("ENABLE_ESTRUCTURAL", "false").lower() == "true":
+    try:
+        from routers.estructural import router as estructural_router
+        ESTRUCTURAL_AVAILABLE = True
+        log.info("✓ motor-estructural (Infracortex) cargado")
+    except Exception as e:
+        ESTRUCTURAL_AVAILABLE = False
+        log.warning(f"✗ motor-estructural no disponible: {e}")
+else:
     ESTRUCTURAL_AVAILABLE = False
-    log.warning(f"✗ motor-estructural no disponible: {e}")
+    log.info("○ motor-estructural desactivado (ENABLE_ESTRUCTURAL=false) — libera RAM para el resto de la API")
 
 
 # ════════════════════════════════════════════════════════════════════════════════
