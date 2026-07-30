@@ -29,12 +29,20 @@ opencv-python-headless==4.10.0.84
 reportlab==4.2.5
 
 # ── Motor Estructural / Infracortex (IFC + PINN + visión) ───────
-# Peso: torch añade ~2GB a la imagen — motor-estructural falla en
-# ESTRUCTURAL_AVAILABLE=False sin romper el resto de la API si algo
-# de esto no está disponible en el entorno de deploy (mismo patrón
-# try/except que los demás motores en main.py).
+# Build CPU-only de torch (--extra-index-url abajo) — la instalación
+# GPU/CUDA por defecto arrastra ~5-6GB de paquetes nvidia-* (cuda-toolkit,
+# nvidia-cudnn, nvidia-cusolver, triton...) totalmente innecesarios: la
+# red del motor es un MLP pequeño que corre bien en CPU, y las instancias
+# de DigitalOcean App Platform no tienen GPU. Ese peso extra fue lo que
+# hizo fallar el build en DigitalOcean con "resource exhaustion" — no era
+# un límite de plan, era instalar CUDA para una instancia sin GPU.
+# motor-estructural falla en ESTRUCTURAL_AVAILABLE=False sin romper el
+# resto de la API si algo de esto no está disponible en el entorno de
+# deploy (mismo patrón try/except que los demás motores en main.py).
+--extra-index-url https://download.pytorch.org/whl/cpu
 ifcopenshell==0.8.5
-torch==2.13.0
+torch==2.13.0+cpu
+torchvision==0.28.0+cpu
 ultralytics==8.4.102
 
 # ── Utilidades ────────────────────────────────────────────────
