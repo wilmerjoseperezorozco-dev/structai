@@ -4,6 +4,8 @@ SaaS freemium para ingenieros civiles y maestros de obra: cálculos de ingenier�
 
 `Construdata` es el nombre interno del repositorio/código; **StructAI** es la marca pública.
 
+> **Estado actual: prueba piloto en producción.** El backend está desplegado y operativo (ver [Estado de deploy](#estado-de-deploy)). La cobertura normativa cargada hoy es un **piloto enfocado en NSR-10 (9 de 11 títulos con contenido técnico detallado), NTC (21 normas) y SGSST (Decreto 1072/2015, Ley 1562/2012, Resolución 0312/2019), integrado con el motor de APU** — no es una cobertura completa de toda la normativa colombiana de construcción. Ver [Cobertura normativa actual](#cobertura-normativa-actual-prueba-piloto) para el detalle honesto de qué está cargado y qué falta.
+
 ## Los 7 motores
 
 | Motor | Dominio | Paquete |
@@ -17,6 +19,22 @@ SaaS freemium para ingenieros civiles y maestros de obra: cálculos de ingenier�
 | **InfraCortex** | BIM (IFC) → topología del nudo viga-columna → PINN → chequeo por cortante NSR-10 Títulos A/B/C + inspección visual de estribos | `packages/motor-estructural` |
 
 Cada motor expone su propio router FastAPI (`/apu`, `/deform`, `/aquai`, `/geopot`, `/vias`, `/gerencia`, `/estructural`), su propia tabla en Supabase (excepto InfraCortex, que hoy es cómputo puro sin persistencia), y su propio corpus RAG en `motor_chunks` — todos comparten el mismo backend y la misma base de datos.
+
+> **InfraCortex desactivado por defecto en producción** (`ENABLE_ESTRUCTURAL=false`): carga torch + ifcopenshell + opencv (~1-1.5GB), y la instancia actual no tenía margen de RAM para sostenerlo junto al resto de la API. El código está completo y probado (7 tests, 86% cobertura) — activarlo es un cambio de una variable de entorno, no de código.
+
+## Cobertura normativa actual (prueba piloto)
+
+Estado real verificado en producción el 2026-07-30 (conteo directo contra Supabase, no estimado):
+
+| Fuente | Contenido cargado | Chunks |
+|---|---|---|
+| **NSR-10** | Títulos A, B, C, D, F, G, H, I con contenido técnico detallado (tablas, fórmulas, coeficientes). Títulos E, J, K con resumen de alcance oficial verificado, sin detalle técnico profundo todavía. | 563 |
+| **NTC** | 21 normas técnicas colombianas (NTC 30, 121, 174, 396, 454, 504, 673, 1028, 1032, 1328, 1500, 2289, 2516, 3459, 4026, 4027, 4076, 4595, entre otras) | 265 |
+| **SGSST** | Decreto 1072 de 2015, Ley 1562 de 2012, Resolución 0312 de 2019 | 68 |
+| **APU** | Catálogo Construdata 2026 Barranquilla | 29 ítems |
+| **AquAI / GeoPot / Vías / Gerencia** | Corpus propio por motor (RAS 2000, USCS/Proctor/CBR, INVIAS + NTC de materiales, EVM) | 3,600 chunks |
+
+**Nota sobre la naturaleza del contenido normativo:** los chunks de NSR-10/NTC/SGSST son una **síntesis técnica de referencia** (tablas, coeficientes, fórmulas y su fuente normativa), preparada a partir de los reglamentos oficiales — no una transcripción literal palabra por palabra de los documentos legales. Toda respuesta cita norma y sección exacta para que el usuario pueda verificar contra el texto oficial. El pipeline para ingerir el texto extraído directamente de los PDF oficiales de NSR-10 (`packages/knowledge/nsr10/`, `scripts/load_nsr10.py`) existe pero no se ha ejecutado todavía.
 
 ## Estructura del monorepo
 
@@ -68,10 +86,12 @@ cd apps/native && npm install && npm start
 
 | Componente | Estado |
 |---|---|
-| `apps/web` | ✅ Desplegado en Vercel, deploy automático en cada push a `master` |
-| `apps/api` | ❌ Sin desplegar — `apps/web` en producción muestra "sin conexión" en toda funcionalidad de IA hasta que esto se resuelva |
+| `apps/web` | ✅ Desplegado en Vercel (PWA), deploy automático en cada push a `master` |
+| `apps/api` | ✅ Desplegado en DigitalOcean App Platform (`apps-s-1vcpu-2gb`), deploy automático en cada push a `master`. Login requerido (Supabase Auth) para `/ask`, `/apu/calculate` y `/detect` |
 | `apps/native` | 🔄 Fase 0 del roadmap de 12 meses (ver `docs/` o memoria del proyecto) — shell nativo, sin sensores todavía |
-| Supabase | ✅ En producción, RLS activo en todas las tablas |
+| Supabase | ✅ En producción, RLS activo en todas las tablas, pgvector para los 3 corpus RAG |
+
+**Verificado en producción (2026-07-30):** login real, `/health` con chequeo profundo de dependencias (Supabase, Groq, memoria), y `/ask` end-to-end citando norma real — respuesta típica ~2-4s tras el arranque del contenedor (el modelo de embeddings se precalienta en background al desplegar, no en la primera consulta de un usuario).
 
 ## Secrets de GitHub Actions (reales, verificados contra `ci.yml`)
 
@@ -121,7 +141,7 @@ cd apps/web  && npm install && npm run dev      # web PWA
 cd apps/api  && pip install -r requirements.txt && uvicorn main:app --reload  # 6 engines + RAG
 ```
 
-**Status:** Web live on Vercel · API pending deployment · Supabase (pgvector + RLS) in production · RAG powered by Groq (`llama-3.3-70b-versatile`).
+**Status:** Web live on Vercel · API live on DigitalOcean App Platform · Supabase (pgvector + RLS) in production · RAG powered by Groq (`llama-3.3-70b-versatile`). Current pilot content: NSR-10 (9/11 titles with technical detail), 21 NTC standards, SGSST (Decreto 1072/2015, Ley 1562/2012, Res. 0312/2019), APU catalogue.
 
 </td>
 <td width="50%">
@@ -149,7 +169,7 @@ cd apps/web  && npm install && npm run dev      # PWA web
 cd apps/api  && pip install -r requirements.txt && uvicorn main:app --reload  # 6 motores + RAG
 ```
 
-**Estado:** Web en producción en Vercel · API pendiente de despliegue · Supabase (pgvector + RLS) en producción · RAG con Groq (`llama-3.3-70b-versatile`).
+**Estado:** Web en producción en Vercel · API en producción en DigitalOcean App Platform · Supabase (pgvector + RLS) en producción · RAG con Groq (`llama-3.3-70b-versatile`). Cobertura piloto actual: NSR-10 (9/11 títulos con detalle técnico), 21 normas NTC, SGSST (Decreto 1072/2015, Ley 1562/2012, Res. 0312/2019), catálogo APU.
 
 </td>
 </tr>
