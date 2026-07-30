@@ -1,0 +1,41 @@
+# ── Frontend — no lo necesita el build de apps/api ──────────────
+apps/web/node_modules
+apps/web/.next
+apps/web/out
+apps/native
+
+# ── Node / npm en general ────────────────────────────────────────
+node_modules
+npm-debug.log*
+
+# ── Control de versiones / editor ────────────────────────────────
+.git
+.github
+.vscode
+.idea
+
+# ── Python ────────────────────────────────────────────────────────
+__pycache__
+*.pyc
+*.pyo
+.venv
+venv
+.pytest_cache
+.ruff_cache
+.coverage
+htmlcov
+
+# ── Secretos — nunca deben entrar a una imagen ───────────────────
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# ── Assets pesados que no usa el backend en runtime ──────────────
+packages/motor-apu/APU_Master_2026_Colombia.xlsx
+packages/construdata/normativa_raw
+scripts/_*_raw_drive_dump
+
+# ── Documentación (no afecta el build, pero reduce contexto) ─────
+*.md
+!README.md

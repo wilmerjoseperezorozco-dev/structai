@@ -1,7 +1,13 @@
 # ══════════════════════════════════════════════════════════════
 # Construdata API — Dockerfile
-# Build: docker build -t construdata-api .
-# Run:   docker run -p 8000:8000 --env-file ../../.env construdata-api
+# El contexto de build DEBE ser la raíz del monorepo (no apps/api),
+# porque el backend importa paquetes hermanos (packages/motor-*,
+# packages/construdata) — COPY no puede salir del contexto de build
+# con rutas "../..", así que este Dockerfile se invoca así:
+#   docker build -f apps/api/Dockerfile -t construdata-api .   (desde la raíz)
+# En DigitalOcean App Platform: source_dir "/" + dockerfile_path
+# "apps/api/Dockerfile" logra lo mismo.
+# Run: docker run -p 8000:8000 --env-file apps/api/.env construdata-api
 # ══════════════════════════════════════════════════════════════
 
 FROM python:3.11-slim
@@ -13,8 +19,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-# ── Copiar todo el monorepo para tener los packages/ disponibles ──
-COPY ../../ .
+# ── Copiar todo el monorepo (contexto = raíz) para tener los packages/ disponibles ──
+COPY . .
 
 # ── Instalar dependencias de la API ──────────────────────────────
 WORKDIR /app/apps/api
