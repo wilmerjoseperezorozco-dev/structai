@@ -26,6 +26,7 @@ Wiring:
 # pydantic==2.9.2) antes de quitarla — es la causa raíz real, no una
 # corrección especulativa.
 
+import asyncio
 import io
 import os
 import sys
@@ -476,30 +477,37 @@ def _detect_stub(img_bytes: bytes) -> tuple[list[DeteccionElemento], int, int]:
 # STARTUP
 # ════════════════════════════════════════════════════════════════════════════════
 
+def _prewarm_embeddings_blocking() -> None:
+    # _embedding_model() es @lru_cache — la primera vez que se llama importa
+    # sentence_transformers/torch desde cero, lo cual toma ~17s reales
+    # dentro de un proceso que ya cargó FastAPI + Supabase + los 6 motores.
+    # Sin precalentar, esa demora caía sobre la PRIMERA consulta real de un
+    # usuario a /ask. Función síncrona a propósito: debe invocarse via
+    # asyncio.to_thread() para no bloquear el event loop (ver startup()).
+    t0 = time.perf_counter()
+    try:
+        from rag_multi_norma import embed_query
+        embed_query("precalentamiento")
+        log.info(f"✓ Modelo de embeddings precalentado en {time.perf_counter() - t0:.1f}s")
+    except Exception as e:
+        log.warning(f"✗ No se pudo precalentar el modelo de embeddings: {e}")
+
+
 @app.on_event("startup")
 async def startup():
     global _onnx_session
     _onnx_session = _load_onnx_model()
 
-    # NO se precalienta el modelo de embeddings aquí. Se probaron 3
-    # variantes reales en producción (await directo, asyncio.create_task
-    # sin hilo, asyncio.create_task + asyncio.to_thread) y las 3 terminaron
-    # en el contenedor cayéndose en la instancia de 1GB RAM actual — las
-    # dos primeras porque bloqueaban el event loop y DO mataba el contenedor
-    # por no responder /health a tiempo; la tercera (con to_thread, que sí
-    # deja el loop libre) igual terminó en un ciclo de caídas reales y
-    # verificables: 3 reinicios consecutivos en los logs de producción,
-    # cada uno muriendo segundos después de empezar a cargar
-    # sentence_transformers/torch. Conclusión verificada: esta instancia no
-    # tiene margen para sostener torch+sentence-transformers en memoria
-    # junto al resto de la API, sin importar CUÁNDO se cargue el modelo.
-    #
-    # Se deja la carga perezosa original (@lru_cache en _embedding_model()
-    # dentro de rag_multi_norma.py): la primera consulta real a /ask tras
-    # cada despliegue paga el costo de import (~17s), pero el resto de la
-    # API (login, /apu, /aquai, /geopot, /vias, /gerencia, /deform) sigue
-    # sana. Subir a una instancia de 2GB RAM (apps-s-1vcpu-2gb, +$13/mes)
-    # es la vía real para poder precalentar sin caídas.
+    # asyncio.to_thread(), NO awaited: deja el event loop libre para
+    # responder /health de inmediato mientras el modelo se carga en
+    # paralelo en un hilo aparte. En la instancia anterior de 1GB RAM esto
+    # causó un ciclo real de caídas (memoria insuficiente para sostener
+    # torch+sentence-transformers junto al resto de la API, confirmado en
+    # logs de producción: 3 reinicios consecutivos). Tras subir a
+    # apps-s-1vcpu-2gb (2026-07-30), memoria disponible verificada vía
+    # /health?deep=true: 1635MB libres (antes 611MB) — margen suficiente.
+    if RAG_AVAILABLE:
+        asyncio.create_task(asyncio.to_thread(_prewarm_embeddings_blocking))
 
     log.info("Construdata API lista ✓")
 
