@@ -12,8 +12,15 @@
 
 FROM python:3.11-slim
 
-# Sistema: libGL para OpenCV headless
+# Sistema: libGL real (paquete libgl1) — el comentario original decía
+# "libGL para OpenCV" pero el paquete instalado era libglib2.0-0, que es
+# una librería distinta (GLib, no OpenGL) y no trae libGL.so.1. Causó
+# "motor-estructural no disponible: libGL.so.1: cannot open shared
+# object file" en el primer despliegue real en DigitalOcean — ultralytics
+# instala opencv-python (no solo -headless), que sí necesita libGL.so.1
+# al importarse aunque no se use ninguna ventana/GUI.
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgl1 \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
