@@ -57,6 +57,61 @@ from json_logging import setup_logging
 setup_logging(level=logging.INFO)
 log = logging.getLogger("construdata.api")
 
+# ── Registro de uso real ───────────────────────────────────────────────────
+# Antes del lanzamiento piloto (2026-08) NO existía captura automática de
+# uso: solo quedaba rastro de lo que un usuario guardaba manualmente en
+# "Proyectos". Con 100 usuarios de prueba entrando hoy, eso significa cero
+# evidencia real de uso salvo que cada quien guarde a mano.
+#
+# `apu_calculations` y `consultas_history` ya existían en el esquema real
+# de Supabase (verificado con list_tables — 0 filas en ambas) con columnas
+# que calzan casi 1:1 con APUDesglose y AskResponse: diseñadas para esto
+# exactamente, pero nunca conectadas desde el backend. Se usan esas en vez
+# de crear una tabla nueva redundante.
+#
+# Ambas funciones son best-effort y nunca bloquean una respuesta real: si
+# el insert falla, se loguea y se sigue — la trazabilidad de uso no puede
+# tumbar un cálculo del usuario.
+try:
+    from supabase import create_client as _create_supabase_client
+    _uso_sb = _create_supabase_client(os.environ["SUPABASE_URL"], os.environ["SUPABASE_SERVICE_KEY"])
+except Exception as e:
+    _uso_sb = None
+    log.warning(f"✗ registro de uso no disponible: {e}")
+
+
+def registrar_consulta(
+    user_id: str, pregunta: str, respuesta: str,
+    normas_citadas: Optional[list] = None, normas_detectadas: Optional[list] = None,
+    chunks_usados: int = 0, latencia_ms: int = 0, norma_hint: Optional[str] = None,
+) -> None:
+    if _uso_sb is None:
+        return
+    try:
+        _uso_sb.table("consultas_history").insert({
+            "user_id": user_id, "pregunta": pregunta[:2000], "respuesta": (respuesta or "")[:4000],
+            "normas_citadas": normas_citadas or [], "normas_detectadas": normas_detectadas or [],
+            "chunks_usados": chunks_usados, "latencia_ms": latencia_ms, "norma_hint": norma_hint,
+        }).execute()
+    except Exception as e:
+        log.warning(f"No se pudo registrar consulta en consultas_history: {e}")
+
+
+def registrar_apu_calculo(user_id: str, actividad_id: str, cantidad: float, d: "APUDesglose") -> None:
+    if _uso_sb is None:
+        return
+    try:
+        _uso_sb.table("apu_calculations").insert({
+            "user_id": user_id, "uuid_trazabilidad": d.uuid_trazabilidad, "actividad_id": actividad_id,
+            "descripcion": d.descripcion, "unidad": d.unidad, "capitulo": d.capitulo, "cantidad": cantidad,
+            "costo_materiales": d.costo_materiales, "costo_mano_obra": d.costo_mano_obra,
+            "costo_equipo": d.costo_equipo, "costo_directo": d.costo_directo, "aiu": d.aiu,
+            "precio_unitario": d.precio_unitario, "pu_p05": d.pu_p05, "pu_p95": d.pu_p95, "pu_std": d.pu_std,
+            "norma_ref": d.norma_ref,
+        }).execute()
+    except Exception as e:
+        log.warning(f"No se pudo registrar cálculo en apu_calculations: {e}")
+
 # ── Importaciones lazy para no fallar si falta algún paquete ──────────────────
 # `except Exception` (no solo ImportError): rag_multi_norma.py lee credenciales
 # con os.environ["..."] a nivel de módulo, que lanza KeyError si falta alguna
@@ -705,6 +760,13 @@ def ask_norma(request: Request, req: AskRequest):
         for f in result.get("fuentes", [])
     ]
 
+    registrar_consulta(
+        user.id, req.pregunta, result.get("respuesta", ""),
+        normas_citadas=result.get("normas_citadas", []),
+        normas_detectadas=result.get("normas_detectadas_router", []),
+        chunks_usados=result.get("chunks_usados", 0), latencia_ms=latencia, norma_hint=req.norma_hint,
+    )
+
     return AskResponse(
         respuesta=result.get("respuesta", ""),
         normas_citadas=result.get("normas_citadas", []),
@@ -759,6 +821,12 @@ def consultar_delegado(request: Request, req: ConsultarRequest):
         )
         for f in result.get("fuentes", [])
     ]
+
+    registrar_consulta(
+        user.id, req.pregunta, result.get("respuesta", ""),
+        normas_citadas=result.get("normas_citadas", []),
+        chunks_usados=result.get("chunks_usados", 0), latencia_ms=latencia,
+    )
 
     return ConsultarResponse(
         dominio=result.get("dominio", ""),
@@ -964,7 +1032,7 @@ def apu_calculate(
 
     try:
         import datetime
-        return APUDesglose(
+        desglose = APUDesglose(
             actividad_id=actividad_id,
             descripcion=result.descripcion,
             unidad=result.unidad.value,
@@ -985,6 +1053,9 @@ def apu_calculate(
     except Exception as e:
         log.error(f"Error calculando APU {actividad_id}: {e}", exc_info=True, extra={"user_id": user.id, "endpoint": "/apu/calculate"})
         raise HTTPException(status_code=500, detail=str(e))
+
+    registrar_apu_calculo(user.id, actividad_id, cantidad, desglose)
+    return desglose
 
 
 # ── /apu/calculate-dinamico — Cantidades desde geometría real (no catálogo) ──
@@ -1058,7 +1129,7 @@ def apu_calculate_dinamico(request: Request, body: APUCantidadesRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
     import datetime
-    return APUDesglose(
+    desglose = APUDesglose(
         actividad_id=result.actividad_id,
         descripcion=result.descripcion,
         unidad=result.unidad.value,
@@ -1076,6 +1147,8 @@ def apu_calculate_dinamico(request: Request, body: APUCantidadesRequest):
         uuid_trazabilidad=result.uuid_trazabilidad,
         timestamp=datetime.datetime.utcnow().isoformat() + "Z",
     )
+    registrar_apu_calculo(user.id, result.actividad_id, 1.0, desglose)
+    return desglose
 
 
 # ── /ask/route — Debug: ver qué normas detecta el router ──────────────────────

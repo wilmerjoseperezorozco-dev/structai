@@ -8,7 +8,15 @@ import clsx from "clsx";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
 
-const NAV_ITEMS = [
+// Lanzamiento piloto (2026-08): navegación enfocada en NSR-10/NTC/SGSST +
+// APU para no dispersar el feedback de los primeros 100 usuarios de
+// prueba. AquAI/GeoPot/Vías/Gerencia siguen 100% funcionales (código,
+// rutas y datos intactos, verificados end-to-end) — solo se ocultan de
+// esta barra. Reactivar: cambiar SOLO_ENFOQUE_PILOTO a false.
+const SOLO_ENFOQUE_PILOTO = true;
+const RUTAS_OCULTAS_EN_PILOTO = new Set(["/aquai", "/geopot", "/vias", "/gerencia"]);
+
+const NAV_ITEMS_COMPLETO = [
   { href: "/dashboard", label: "Inicio", icon: LayoutDashboard },
   { href: "/apu", label: "APU", icon: Calculator },
   { href: "/aquai", label: "AquAI", icon: Droplets },
@@ -19,6 +27,10 @@ const NAV_ITEMS = [
   { href: "/proyectos", label: "Proyectos", icon: FolderOpen },
   { href: "/perfil", label: "Perfil", icon: User },
 ];
+
+const NAV_ITEMS = SOLO_ENFOQUE_PILOTO
+  ? NAV_ITEMS_COMPLETO.filter((item) => !RUTAS_OCULTAS_EN_PILOTO.has(item.href))
+  : NAV_ITEMS_COMPLETO;
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
