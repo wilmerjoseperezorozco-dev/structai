@@ -146,3 +146,9 @@ class APUResult:
     fecha:           str = ""
     ciudad:          str = "Barranquilla"
     fuente_precios:  str = "Construdata 2026"
+    uuid_trazabilidad: str = ""     # identifica este cálculo específico, generado en MotorAPU.calcular_apu
+
+    @property
+    def aiu_total(self) -> float:
+        """Alias de costo_aiu — nombre que espera apps/api/main.py."""
+        return self.costo_aiu

@@ -102,6 +102,7 @@ class MotorAPU:
             capitulo         = capitulo,
             norma_ref        = norma_ref,
             fecha            = time.strftime("%Y-%m-%d"),
+            uuid_trazabilidad = str(uuid.uuid4()),
         )
 
     # ── Monte Carlo ────────────────────────────────────────────
