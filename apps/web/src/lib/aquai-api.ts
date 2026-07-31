@@ -77,7 +77,13 @@ export async function aquaiSalud(): Promise<{ estado: string; motor: string; nor
 
 export const formatNum = (n: unknown, decimals = 2): string => {
   if (typeof n !== "number" || Number.isNaN(n)) return String(n);
-  return n.toLocaleString("es-CO", { maximumFractionDigits: decimals, minimumFractionDigits: 0 });
+  // Valores fraccionarios pequeños (tasas de crecimiento, coeficientes
+  // decimales como 0.035) pierden precisión con solo 2 decimales — se
+  // veían redondeados a "0,04" junto a una fórmula que sí mostraba el
+  // valor real (0.0350), dando la impresión de una tasa distinta a la
+  // usada en el cálculo. Se usa más precisión para |n| < 1.
+  const effectiveDecimals = n !== 0 && Math.abs(n) < 1 ? Math.max(decimals, 4) : decimals;
+  return n.toLocaleString("es-CO", { maximumFractionDigits: effectiveDecimals, minimumFractionDigits: 0 });
 };
 
 export const humanLabel = (key: string): string =>
