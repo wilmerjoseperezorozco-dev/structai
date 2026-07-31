@@ -85,6 +85,13 @@ try:
     get_apu = motor_apu.get_apu
     listar_actividades = motor_apu.listar_actividades
     CATALOGO_APU = motor_apu.CATALOGO_APU
+    from motor_apu.cantidades import (
+        Estribos,
+        GeometriaElementoConcreto,
+        RefuerzoLongitudinal,
+        TipoElementoConcreto,
+        calcular_apu_dinamico,
+    )
     APU_AVAILABLE = True
     log.info(f"✓ motor-apu cargado — {len(CATALOGO_APU)} APUs en catálogo")
 except Exception as e:
@@ -295,6 +302,28 @@ class APUDesglose(BaseModel):
     norma_ref: Optional[str] = None
     uuid_trazabilidad: str
     timestamp: str
+
+class RefuerzoLongitudinalRequest(BaseModel):
+    numero_barras: int = Field(..., gt=0, description="Número de barras longitudinales")
+    diametro_pulg: str = Field(..., description="Clave del diámetro: 3, 4, 5, 6, 7 u 8 (octavos de pulgada)")
+
+class EstribosRequest(BaseModel):
+    diametro_pulg: str = Field(..., description="Clave del diámetro del estribo")
+    espaciamiento_m: float = Field(..., gt=0, description="Separación entre estribos (m)")
+    gancho_desarrollo_m: float = Field(0.10, ge=0, description="Longitud extra por los 2 ganchos a 135°")
+
+class APUCantidadesRequest(BaseModel):
+    tipo: str = Field(..., description="'columna' o 'viga'")
+    base_m: float = Field(..., gt=0, description="Base de la sección (m)")
+    altura_m: float = Field(..., gt=0, description="Altura de la sección (m)")
+    longitud_m: float = Field(..., gt=0, description="Longitud del elemento (m)")
+    recubrimiento_m: float = Field(0.04, gt=0, description="Recubrimiento libre NSR-10 C.7.7 (m)")
+    calidad_concreto: str = Field("3000", description="2000, 2500, 3000 o 4000 (PSI)")
+    refuerzo_longitudinal: Optional[RefuerzoLongitudinalRequest] = None
+    estribos: Optional[EstribosRequest] = None
+    incluye_cara_superior_formaleta: bool = Field(
+        False, description="True si la viga es aislada (se forman las 4 caras)"
+    )
 
 class DeteccionElemento(BaseModel):
     clase: str
@@ -956,6 +985,97 @@ def apu_calculate(
     except Exception as e:
         log.error(f"Error calculando APU {actividad_id}: {e}", exc_info=True, extra={"user_id": user.id, "endpoint": "/apu/calculate"})
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# ── /apu/calculate-dinamico — Cantidades desde geometría real (no catálogo) ──
+
+@app.post("/apu/calculate-dinamico", response_model=APUDesglose, tags=["APU"])
+@limiter.limit("20/minute")
+def apu_calculate_dinamico(request: Request, body: APUCantidadesRequest):
+    """
+    Calcula el APU de una columna o viga de concreto reforzado a partir de
+    su geometría real (base, altura, longitud, refuerzo) en vez de un
+    tamaño fijo de catálogo — las cantidades de concreto, acero y
+    formaleta se calculan con fórmulas geométricas para ESTA sección
+    específica.
+
+    No diseña el refuerzo: el número de barras y el espaciamiento de
+    estribos ya deben venir definidos (de un diseño estructural propio
+    o de /deform). Si se omiten, el cálculo solo incluye concreto y
+    formaleta.
+    """
+    user = get_current_user(request)
+
+    if not APU_AVAILABLE:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Módulo motor-apu no disponible."
+        )
+
+    log.info("Consulta /apu/calculate-dinamico", extra={"user_id": user.id, "endpoint": "/apu/calculate-dinamico"})
+
+    try:
+        tipo = TipoElementoConcreto(body.tipo)
+    except ValueError:
+        raise HTTPException(
+            status_code=422,
+            detail=f"tipo debe ser 'columna' o 'viga', recibido: '{body.tipo}'"
+        )
+
+    refuerzo = None
+    if body.refuerzo_longitudinal is not None:
+        refuerzo = RefuerzoLongitudinal(
+            numero_barras=body.refuerzo_longitudinal.numero_barras,
+            diametro_pulg=body.refuerzo_longitudinal.diametro_pulg,
+        )
+    estribos = None
+    if body.estribos is not None:
+        estribos = Estribos(
+            diametro_pulg=body.estribos.diametro_pulg,
+            espaciamiento_m=body.estribos.espaciamiento_m,
+            gancho_desarrollo_m=body.estribos.gancho_desarrollo_m,
+        )
+
+    try:
+        geo = GeometriaElementoConcreto(
+            tipo=tipo,
+            base_m=body.base_m,
+            altura_m=body.altura_m,
+            longitud_m=body.longitud_m,
+            recubrimiento_m=body.recubrimiento_m,
+            refuerzo_longitudinal=refuerzo,
+            estribos=estribos,
+            incluye_cara_superior_formaleta=body.incluye_cara_superior_formaleta,
+        )
+        result = calcular_apu_dinamico(geo, calidad_concreto=body.calidad_concreto)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+    except Exception as e:
+        log.error(
+            f"Error calculando APU dinámico: {e}", exc_info=True,
+            extra={"user_id": user.id, "endpoint": "/apu/calculate-dinamico"}
+        )
+        raise HTTPException(status_code=500, detail=str(e))
+
+    import datetime
+    return APUDesglose(
+        actividad_id=result.actividad_id,
+        descripcion=result.descripcion,
+        unidad=result.unidad.value,
+        capitulo=result.capitulo,
+        costo_materiales=result.costo_materiales,
+        costo_mano_obra=result.costo_mano_obra,
+        costo_equipo=result.costo_equipo,
+        costo_directo=result.costo_directo,
+        aiu=result.costo_aiu,
+        precio_unitario=result.precio_unitario,
+        pu_p05=result.pu_p05,
+        pu_p95=result.pu_p95,
+        pu_std=result.pu_std,
+        norma_ref=result.norma_ref,
+        uuid_trazabilidad=result.uuid_trazabilidad,
+        timestamp=datetime.datetime.utcnow().isoformat() + "Z",
+    )
 
 
 # ── /ask/route — Debug: ver qué normas detecta el router ──────────────────────
