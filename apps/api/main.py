@@ -13,7 +13,10 @@ Endpoints:
 Wiring:
   packages/construdata/rag_multi_norma.py  → /ask
   packages/motor-apu/src/catalogue.py     → /apu/*
-  packages/yolo/detector.py               → /detect  (stub ONNX si no hay modelo)
+  packages/yolo/model.onnx (entrenar con packages/yolo/train.py) → /detect
+    — la inferencia real (_load_onnx_model/_detect_onnx) vive en este mismo
+    archivo, no en un módulo separado; corre en modo stub si el .onnx no
+    existe todavía (ver packages/yolo/README.md)
 """
 
 # NOTA: sin "from __future__ import annotations" a propósito. Con esa
@@ -386,6 +389,8 @@ class DeteccionElemento(BaseModel):
     bbox: list[float]           # [x1, y1, x2, y2] normalizadas
     apu_sugerido_id: Optional[str] = None
     apu_descripcion: Optional[str] = None
+    alerta_seguridad: Optional[str] = None
+    norma_ref_seguridad: Optional[str] = None
 
 class DetectResponse(BaseModel):
     elementos_detectados: list[DeteccionElemento]
@@ -448,6 +453,31 @@ CLASE_APU_MAP: dict[str, tuple[str, str]] = {
     "excavacion":       ("H.EXC.MAN",    "Excavación manual"),
 }
 
+# Modelo de precauciones de seguridad (packages/yolo/) — 3 clases, entrenado
+# sobre fotos reales de obra. A diferencia de CLASE_APU_MAP (costo), estas
+# clases mapean a una alerta de riesgo con referencia normativa, no a un
+# precio. El orden de STUB_CLASES_SEGURIDAD DEBE coincidir exactamente con
+# el orden de clases del data.yaml exportado de Roboflow al entrenar (ver
+# packages/yolo/train.py, CLASES_SEGURIDAD) — un desajuste de orden hace que
+# el modelo "acierte" internamente pero el backend etiquete mal la clase.
+# Verificar contra el data.yaml real antes de activar el modelo entrenado.
+STUB_CLASES_SEGURIDAD = ["trabajador_con_epp", "excavacion_profunda", "acero_expuesto"]
+
+SEGURIDAD_MAP: dict[str, tuple[str, str]] = {
+    "trabajador_con_epp": (
+        "EPP visible (casco/arnés) — cumple lo básico exigido",
+        "Resolución 0312 de 2019 — EPP mínimo obligatorio",
+    ),
+    "excavacion_profunda": (
+        "Excavación sin entibado visible — riesgo de colapso",
+        "NSR-10 Título H / Resolución 0312 de 2019 — excavaciones",
+    ),
+    "acero_expuesto": (
+        "Acero de refuerzo expuesto sin protección — riesgo de empalamiento",
+        "Resolución 0312 de 2019 — riesgos de punción/empalamiento",
+    ),
+}
+
 # Clases del modelo stub (reemplazar con labels del modelo real)
 STUB_CLASES = list(CLASE_APU_MAP.keys())
 
@@ -488,10 +518,10 @@ def _detect_onnx(img_bytes: bytes, session: "ort.InferenceSession") -> list[Dete
     input_name = session.get_inputs()[0].name
     outputs = session.run(None, {input_name: inp})[0]   # [1, 4+nc, 8400]
 
-    detecciones: list[DeteccionElemento] = []
     predictions = outputs[0].T                          # [8400, 4+nc]
     conf_threshold = 0.4
 
+    candidatos: list[tuple[float, float, float, float, float, int]] = []  # x1,y1,x2,y2,conf,class_id
     for pred in predictions:
         boxes = pred[:4]
         scores = pred[4:]
@@ -505,9 +535,39 @@ def _detect_onnx(img_bytes: bytes, session: "ort.InferenceSession") -> list[Dete
         y1 = max(0.0, (cy - h / 2) / 640)
         x2 = min(1.0, (cx + w / 2) / 640)
         y2 = min(1.0, (cy + h / 2) / 640)
+        candidatos.append((x1, y1, x2, y2, conf, class_id))
 
-        clase = STUB_CLASES[class_id] if class_id < len(STUB_CLASES) else f"clase_{class_id}"
+    # Supresión de no-máximos (NMS): sin esto, un mismo objeto real genera
+    # varias cajas superpuestas casi idénticas en vez de una sola limpia.
+    # Greedy IoU — suficiente para un modelo de 3 clases, no hace falta
+    # traer una librería aparte solo para esto.
+    def iou(a: tuple, b: tuple) -> float:
+        ax1, ay1, ax2, ay2 = a[:4]
+        bx1, by1, bx2, by2 = b[:4]
+        ix1, iy1 = max(ax1, bx1), max(ay1, by1)
+        ix2, iy2 = min(ax2, bx2), min(ay2, by2)
+        inter = max(0.0, ix2 - ix1) * max(0.0, iy2 - iy1)
+        area_a = (ax2 - ax1) * (ay2 - ay1)
+        area_b = (bx2 - bx1) * (by2 - by1)
+        union = area_a + area_b - inter
+        return inter / union if union > 0 else 0.0
+
+    candidatos.sort(key=lambda c: c[4], reverse=True)
+    conservados: list[tuple] = []
+    nms_iou_threshold = 0.5
+    for c in candidatos:
+        if all(iou(c, k) < nms_iou_threshold or c[5] != k[5] for k in conservados):
+            conservados.append(c)
+
+    detecciones: list[DeteccionElemento] = []
+    for x1, y1, x2, y2, conf, class_id in conservados:
+        clase = (
+            STUB_CLASES_SEGURIDAD[class_id]
+            if class_id < len(STUB_CLASES_SEGURIDAD)
+            else f"clase_{class_id}"
+        )
         apu_id, apu_desc = CLASE_APU_MAP.get(clase, (None, None))
+        alerta, norma_ref = SEGURIDAD_MAP.get(clase, (None, None))
 
         detecciones.append(DeteccionElemento(
             clase=clase,
@@ -515,6 +575,8 @@ def _detect_onnx(img_bytes: bytes, session: "ort.InferenceSession") -> list[Dete
             bbox=[round(x1, 4), round(y1, 4), round(x2, 4), round(y2, 4)],
             apu_sugerido_id=apu_id,
             apu_descripcion=apu_desc,
+            alerta_seguridad=alerta,
+            norma_ref_seguridad=norma_ref,
         ))
 
     return sorted(detecciones, key=lambda d: d.confianza, reverse=True)
@@ -537,7 +599,7 @@ def _detect_stub(img_bytes: bytes) -> tuple[list[DeteccionElemento], int, int]:
 
     n = rng.randint(1, 3)
     detecciones: list[DeteccionElemento] = []
-    clases_muestra = ["columna", "viga", "muro_bloque_15"]
+    clases_muestra = STUB_CLASES_SEGURIDAD
 
     for i in range(n):
         clase = clases_muestra[i % len(clases_muestra)]
@@ -547,11 +609,14 @@ def _detect_stub(img_bytes: bytes) -> tuple[list[DeteccionElemento], int, int]:
         x2 = round(min(x1 + rng.uniform(0.1, 0.35), 0.95), 4)
         y2 = round(min(y1 + rng.uniform(0.1, 0.35), 0.95), 4)
         apu_id, apu_desc = CLASE_APU_MAP.get(clase, (None, None))
+        alerta, norma_ref = SEGURIDAD_MAP.get(clase, (None, None))
         detecciones.append(DeteccionElemento(
             clase=clase, confianza=conf,
             bbox=[x1, y1, x2, y2],
             apu_sugerido_id=apu_id,
             apu_descripcion=apu_desc,
+            alerta_seguridad=alerta,
+            norma_ref_seguridad=norma_ref,
         ))
 
     return sorted(detecciones, key=lambda d: d.confianza, reverse=True), img_w, img_h
@@ -848,13 +913,16 @@ async def detect_structural(
     image: UploadFile = File(..., description="Foto JPG/PNG del elemento estructural"),
 ):
     """
-    Detecta elementos estructurales en la imagen.
+    Detecta precauciones de seguridad en obra a partir de una foto: EPP
+    visible, excavaciones sin entibado, acero de refuerzo expuesto.
 
-    Usa YOLOv8 ONNX cuando el modelo está disponible; retorna stub
-    deterministico durante desarrollo. Cada detección incluye la
-    clase (columna, viga, muro...) y el APU sugerido correspondiente.
+    Usa YOLOv8 ONNX (packages/yolo/model.onnx) cuando el modelo está
+    disponible; retorna stub determinístico si aún no se ha entrenado (ver
+    packages/yolo/README.md). Cada detección de riesgo incluye una alerta
+    con referencia normativa (`alerta_seguridad`, `norma_ref_seguridad`).
 
-    El campo `modo` indica si la respuesta es real (`onnx`) o stub (`stub`).
+    El campo `modo` indica si la respuesta es real (`onnx`) o stub (`stub`)
+    — nunca se presenta un stub como si fuera una detección real.
     """
     user = get_current_user(request)
     log.info("Consulta /detect", extra={"user_id": user.id, "endpoint": "/detect"})

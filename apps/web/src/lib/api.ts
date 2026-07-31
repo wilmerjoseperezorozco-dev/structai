@@ -62,6 +62,8 @@ export interface DeteccionElemento {
   bbox: [number, number, number, number];
   apu_sugerido_id?: string;
   apu_descripcion?: string;
+  alerta_seguridad?: string;
+  norma_ref_seguridad?: string;
 }
 
 export interface DetectResponse {
@@ -168,6 +170,12 @@ export const formatCOP = (n: number) =>
   }).format(n);
 
 export const CLASE_LABEL: Record<string, string> = {
+  // Modelo de precauciones de seguridad (packages/yolo/) — foco actual
+  trabajador_con_epp:  "Trabajador con EPP",
+  excavacion_profunda: "Excavación profunda",
+  acero_expuesto:      "Acero expuesto",
+  // Clases estructurales (catálogo APU) — sin modelo entrenado todavía,
+  // ver packages/yolo/README.md
   columna:         "Columna estructural",
   viga:            "Viga estructural",
   placa_aligerada: "Placa aligerada",

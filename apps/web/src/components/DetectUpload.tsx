@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Camera, Upload, X, Loader2, Scan, AlertCircle, Lock } from "lucide-react";
+import { Camera, Upload, X, Loader2, Scan, AlertCircle, AlertTriangle, ShieldCheck, Lock } from "lucide-react";
 import clsx from "clsx";
 import {
   detectImage,
@@ -48,6 +48,31 @@ function ElementoCard({
           {(el.confianza * 100).toFixed(0)}%
         </span>
       </div>
+
+      {el.alerta_seguridad && (
+        <div
+          className={clsx(
+            "mt-2 flex items-start gap-2 rounded-lg px-3 py-2 text-xs",
+            el.clase === "trabajador_con_epp"
+              ? "bg-green-900/30 border border-green-700/50 text-green-200"
+              : "bg-orange-900/30 border border-orange-700/50 text-orange-200"
+          )}
+        >
+          {el.clase === "trabajador_con_epp" ? (
+            <ShieldCheck size={14} className="flex-shrink-0 mt-0.5" />
+          ) : (
+            <AlertTriangle size={14} className="flex-shrink-0 mt-0.5" />
+          )}
+          <div>
+            <p>{el.alerta_seguridad}</p>
+            {el.norma_ref_seguridad && (
+              <p className="mt-0.5 font-mono text-[10px] opacity-80">
+                📐 {el.norma_ref_seguridad}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
 
       {el.apu_sugerido_id && (
         <button

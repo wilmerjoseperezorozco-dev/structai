@@ -42,3 +42,11 @@ Thumbs.db
 # ── Normativa fuente cruda (privada, no redistribuible) ───────────
 packages/construdata/normativa_raw/
 scripts/_*_raw_drive_dump/
+
+# ── Dataset de fotos de obra reales (personas identificables, sitio real) ──
+# El modelo.onnx entrenado SÍ se puede commitear (deliberado, binario
+# pequeño) — lo que NO debe salir al repo público son las fotos originales
+# ni los artefactos de entrenamiento (checkpoints, runs, dataset etiquetado).
+packages/yolo/dataset/
+packages/yolo/runs/
+packages/yolo/*.pt
