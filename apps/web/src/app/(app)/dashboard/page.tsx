@@ -49,7 +49,7 @@ export default function DashboardPage() {
       <div>
         <p className="text-xs text-concrete-500 uppercase tracking-widest mb-1">Buenos días</p>
         <h2 className="text-xl font-bold text-white">Ingeniero</h2>
-        <p className="text-xs text-concrete-400 mt-0.5">Plan Gratis · 5 APU disponibles este mes</p>
+        <p className="text-xs text-concrete-400 mt-0.5">Acceso abierto — sin límite de cálculos durante esta prueba</p>
       </div>
 
       {/* Accesos rápidos */}
