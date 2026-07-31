@@ -45,6 +45,38 @@ const config: Config = {
           800: "#1e293b",
           900: "#0f172a",
         },
+        // Paleta de la landing (hero) — deliberadamente distinta de brand/
+        // concrete (que ya tienen ~200 usos en el resto de la app y no se
+        // tocan aquí). "ink" es un carbón con matiz azul frío (no gris
+        // plano) evocando papel de plano técnico oscuro; "bronze" es el
+        // acento cálido (instrumentos de dibujo, sello oficial) que
+        // reemplaza el azul cian genérico en la superficie de marketing.
+        ink: {
+          50:  "#F6F7FA",
+          100: "#E9ECF2",
+          200: "#CDD3DF",
+          300: "#A7B0C2",
+          400: "#7B879E",
+          500: "#55627A",
+          600: "#3A4557",
+          700: "#262F3D",
+          800: "#1A212C",
+          900: "#10151D",
+          950: "#0A0E14",
+        },
+        bronze: {
+          50:  "#FDF7EC",
+          100: "#FAEED7",
+          200: "#F5DDB2",
+          300: "#EFCB8E",
+          400: "#E6B564",
+          500: "#D99A3F",
+          600: "#B87526",
+          700: "#91591F",
+          800: "#6B4019",
+          900: "#452A14",
+          950: "#2B1B0E",
+        },
       },
       // Variables inyectadas por next/font en layout.tsx — auto-hospedadas,
       // sin @import bloqueante ni parpadeo de fuente (FOUT). "JetBrains
@@ -52,9 +84,13 @@ const config: Config = {
       // citas normativas, timestamps): una tipografía tabular de ingeniero,
       // no decorativa — cada carácter ocupa el mismo ancho, así que un
       // uuid_trazabilidad o un código NTC se lee sin ambigüedad visual.
+      // "display" (Fraunces) se usa solo en la landing/hero: un serif con
+      // carácter editorial que le da autoridad institucional al titular,
+      // en contraste deliberado con Inter (cuerpo) y JetBrains Mono (datos).
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
         mono: ["var(--font-mono)", "monospace"],
+        display: ["var(--font-display)", "Georgia", "serif"],
       },
     },
   },

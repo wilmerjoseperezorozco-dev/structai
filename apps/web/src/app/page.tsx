@@ -15,6 +15,7 @@ import clsx from "clsx";
 import dynamic from "next/dynamic";
 import { healthCheck, type HealthResponse } from "@/lib/api";
 import { supabase } from "@/lib/supabase";
+import { Hero } from "@/components/Hero";
 
 // Lazy-load panels (evita SSR de componentes client-only)
 const Chat         = dynamic(() => import("@/components/Chat"),         { ssr: false });
@@ -86,6 +87,14 @@ function HomeContent() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setHasSession(!!data.session));
   }, []);
+
+  // Landing (hero) para visitantes sin sesión que llegan a "/" sin un tab
+  // explícito. Enlaces existentes como "/?tab=chat" (desde /dashboard) y
+  // cualquier usuario ya autenticado siguen viendo la app de tabs de siempre
+  // — el hero no reemplaza ese flujo, solo cubre la primera impresión.
+  if (!hasSession && !tabParam) {
+    return <Hero />;
+  }
 
   return (
     <div className="flex flex-col h-full bg-concrete-900">
