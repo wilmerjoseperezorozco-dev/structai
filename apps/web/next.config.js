@@ -1,10 +1,17 @@
 /** @type {import('next').NextConfig} */
 
+// next-pwa (original) no se actualiza desde agosto de 2022 y arrastraba
+// vulnerabilidades reales en su cadena workbox-build/rollup-plugin-terser/
+// serialize-javascript (RCE, CVSS 8.1 — build-time, no explotable en runtime,
+// pero igual deuda real). Migrado a @ducanh2912/next-pwa, el fork
+// activamente mantenido de la comunidad (auditoría de seguridad 2026-08-01).
+//
 // Estrategias de caché del Service Worker (Workbox, vía next-pwa).
-// runtimeCachingDefecto trae las reglas por defecto de next-pwa (fuentes,
+// runtimeCachingDefecto trae las reglas por defecto del paquete (fuentes,
 // imágenes, JS/CSS) — se conservan y se antepone la regla propia para el
 // backend FastAPI.
-const runtimeCachingDefecto = require("next-pwa/cache");
+const withPWAInit = require("@ducanh2912/next-pwa").default;
+const { runtimeCaching: runtimeCachingDefecto } = require("@ducanh2912/next-pwa");
 
 const runtimeCaching = [
   {
@@ -31,12 +38,13 @@ const runtimeCaching = [
   ...runtimeCachingDefecto,
 ];
 
-const withPWA = require("next-pwa")({
+const withPWA = withPWAInit({
   dest: "public",
   register: true,
-  skipWaiting: true,
   disable: process.env.NODE_ENV === "development",
-  runtimeCaching,
+  workboxOptions: {
+    runtimeCaching,
+  },
 });
 
 const nextConfig = {
