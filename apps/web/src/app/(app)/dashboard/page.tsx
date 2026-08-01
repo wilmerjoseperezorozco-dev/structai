@@ -41,6 +41,15 @@ const ACCESOS_RAPIDOS = [
   },
 ];
 
+// Auditoría 2026-08-01: la tarjeta de upgrade decía "APU ilimitados" justo
+// debajo del saludo que dice "sin límite de cálculos durante esta prueba"
+// — se contradicen en la misma pantalla. Wompi tampoco está conectado
+// todavía, así que "Ver planes" llevaba a un botón de compra que no
+// procesa nada real. Oculto durante el piloto de acceso abierto (mismo
+// patrón que SOLO_ENFOQUE_PILOTO en layout.tsx) — no se borró nada,
+// reactivar cuando el piloto termine y el pago esté conectado.
+const MOSTRAR_UPGRADE_CTA = false;
+
 export default function DashboardPage() {
   return (
     <div className="flex flex-col gap-6 px-4 py-6">
@@ -71,24 +80,26 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      {/* Upgrade CTA */}
-      <div className="bg-brand-950 border border-brand-700/50 rounded-2xl p-4">
-        <div className="flex items-start gap-3">
-          <TrendingUp size={20} className="text-brand-400 mt-0.5 flex-shrink-0" />
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-white">Activa Pro por $19.900/mes</p>
-            <p className="text-xs text-concrete-400 mt-0.5">
-              APU ilimitados · PDF trazable · Historial completo
-            </p>
+      {/* Upgrade CTA — oculto durante el piloto de acceso abierto, ver nota arriba */}
+      {MOSTRAR_UPGRADE_CTA && (
+        <div className="bg-brand-950 border border-brand-700/50 rounded-2xl p-4">
+          <div className="flex items-start gap-3">
+            <TrendingUp size={20} className="text-brand-400 mt-0.5 flex-shrink-0" />
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-white">Activa Pro por $19.900/mes</p>
+              <p className="text-xs text-concrete-400 mt-0.5">
+                APU ilimitados · PDF trazable · Historial completo
+              </p>
+            </div>
           </div>
+          <Link
+            href="/pricing"
+            className="block mt-3 w-full text-center bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold py-2.5 rounded-xl transition"
+          >
+            Ver planes
+          </Link>
         </div>
-        <Link
-          href="/pricing"
-          className="block mt-3 w-full text-center bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold py-2.5 rounded-xl transition"
-        >
-          Ver planes
-        </Link>
-      </div>
+      )}
     </div>
   );
 }
