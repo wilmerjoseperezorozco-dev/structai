@@ -19,7 +19,13 @@ from supabase import create_client
 sb = create_client(os.environ["SUPABASE_URL"], os.environ["SUPABASE_SERVICE_KEY"])
 
 EMBEDDING_MODEL_NAME = "paraphrase-multilingual-MiniLM-L12-v2"  # 384-dim, multilingüe — debe calzar con nsr10_chunks/ntc_chunks.embedding vector(384)
-GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+# llama-3.3-70b-versatile fue reemplazado el 2026-07-31 — Groq lo deprecó
+# (apagado programado 2026-08-16 para cuentas free/developer). gpt-oss-120b
+# es el reemplazo recomendado por Groq y, a diferencia de llama-3.3, sí
+# soporta prompt caching automático (50% descuento en tokens de prefijo
+# repetido, sin cambios de código — el SYSTEM_PROMPT ya va fijo primero en
+# cada llamada en _generar_respuesta, así que se cachea solo).
+GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
 
 groq_client = OpenAI(api_key=os.environ["GROQ_API_KEY"], base_url="https://api.groq.com/openai/v1")
 
@@ -68,7 +74,10 @@ KEYWORD_MAP = {
     "NTC 454":  ["muestra concreto","toma de muestra","muestra compuesta"],
     "NTC 2289": ["acero refuerzo","barra corrugada","fy","ASTM A706","Grado 60"],
     "NTC 1500": ["instalacion hidraulica","fontaneria","desague","sanitaria"],
-    "NSR-10":   ["sismorresistente","sismo","zona sismica","espectro","NSR-10"],
+    "NSR-10":   ["sismorresistente","sismo","zona sismica","espectro","NSR-10",
+                 "recubrimiento","relacion agua","a/mc","durabilidad concreto",
+                 "exposicion concreto","contacto con el suelo","tipo de mortero",
+                 "coeficiente r0","disipacion de energia"],
     "Resolución 1409 de 2012": ["trabajo alturas","caida","arnés","linea vida","andamio"],
     "Decreto 1072 de 2015":    ["SGSST","seguridad salud trabajo","SG-SST","PHVA","politica sst","copasst","vigia sst","investigacion de accidentes","indicadores sst","matriz ipvr"],
     "Resolución 0312 de 2019": ["estandares minimos","autoevaluacion sst","plan de mejoramiento","semaforo sst","calificacion sg-sst"],
@@ -260,16 +269,45 @@ Licencias Urbanísticas (Res. 3232) y precios APU Barranquilla 2026.
 
 INSTRUCCIONES:
 1. Responde SOLO con base en el contexto normativo proporcionado.
-2. SIEMPRE cita el código de la norma y el artículo/sección cuando corresponda.
+2. Cita el código de la norma y el artículo/sección SOLO si ese número o
+   identificador aparece LITERALMENTE en el contexto proporcionado (por
+   ejemplo en el encabezado "[norma — sección]" de cada fragmento). Si
+   necesitas referirte a una parte de la norma pero no tienes el número
+   exacto en el contexto, di "la sección correspondiente de [Norma]" o
+   "el artículo pertinente de [Norma]" — NUNCA inventes un número de
+   artículo, sección o ecuación que no esté escrito en el contexto. Un
+   número de cita inventado es peor que no citar nada: parece verificable
+   y no lo es.
 3. Si hay múltiples normas relevantes, interconéctalas en tu respuesta.
 4. Expresa valores técnicos con unidades (MPa, mm, %, m²).
-5. Si el contexto no cubre la pregunta, indícalo claramente y sugiere qué norma consultar.
-6. Cuando corresponda a APU, indica que la trazabilidad normativa ya está embebida en el motor APU.
-7. Si un fragmento de contexto trae una advertencia "⚠️ NORMA DEROGADA/MODIFICADA",
-   adviértelo explícitamente al inicio de tu respuesta y menciona cuál es la norma
-   vigente que la reemplaza (si se indica). Nunca presentes contenido derogado
-   como si fuera la norma vigente hoy — citarlo sin la advertencia induce a error
-   normativo real al usuario.
+5. Si el contexto no cubre la pregunta, indícalo claramente y sugiere qué
+   norma consultar — sin inventar valores, artículos ni fórmulas de esa
+   norma que no estén en el contexto.
+6. Si el contexto recuperado pertenece a una norma de un dominio distinto
+   al que trata la pregunta (por ejemplo, la pregunta es sobre estructuras
+   de edificaciones y el contexto es de diseño de puentes o tuberías
+   enterradas), dilo explícitamente ("el contexto disponible es de [norma],
+   que trata [dominio distinto] — puede no aplicar directamente a tu
+   pregunta"). Nunca mezcles ese contenido como si respondiera la pregunta
+   original sin esa advertencia.
+7. Cuando corresponda a APU, indica que la trazabilidad normativa ya está
+   embebida en el motor APU.
+8. Menciona la advertencia "⚠️ NORMA DEROGADA/MODIFICADA" ÚNICAMENTE si esa
+   frase exacta aparece en el contexto proporcionado (headers de fragmentos
+   marcados así). NUNCA la uses como forma genérica de expresar duda,
+   desactualización o incertidumbre sobre un tema — es una advertencia
+   legal específica, no una muletilla. Si la frase aparece, adviértelo al
+   inicio de tu respuesta y menciona la norma vigente que la reemplaza si
+   se indica.
+9. NUNCA agregues una cita "de respaldo" a una norma/sección que sí aparece
+   en el contexto pero afirmando que dice algo que su texto NO dice
+   literalmente. Citar un identificador real con contenido inventado es
+   igual de grave que inventar el identificador — verifica que la
+   afirmación esté explícitamente en el texto del fragmento antes de
+   atribuírsela. Si tu respuesta ya está completa y verificada con las
+   fuentes que sí la respaldan, no busques citas adicionales "de más peso"
+   para reforzarla — menos citas correctas es mejor que más citas con una
+   inventada.
 """
 
 
@@ -292,6 +330,17 @@ def _generar_respuesta(contexto: str, question: str) -> str:
     # corto) devolviera 502/504 antes de que Groq terminara. 700 acota el
     # peor caso sin cortar respuestas normativas reales a la mitad (las
     # observadas rondan los 300-500 tokens).
+    #
+    # reasoning_effort="low": gpt-oss-120b (modelo actual desde 2026-07-31)
+    # es un modelo de razonamiento — a diferencia de llama-3.3-70b-versatile
+    # (el anterior), gasta parte de max_tokens en una cadena de razonamiento
+    # interna ANTES de escribir la respuesta visible. Encontrado en
+    # producción real durante la auditoría 2026-08-01: preguntas técnicas
+    # complejas devolvían `content=""` con `finish_reason="length"` — el
+    # razonamiento consumía los 700 tokens completos sin dejar nada para la
+    # respuesta. "low" acota el razonamiento interno (no aplica a preguntas
+    # de RAG con contexto ya recuperado — no hace falta razonamiento
+    # profundo, solo síntesis fiel del contexto).
     response = groq_client.chat.completions.create(
         model=GROQ_MODEL,
         messages=[
@@ -300,6 +349,7 @@ def _generar_respuesta(contexto: str, question: str) -> str:
         ],
         temperature=0.1,
         max_tokens=700,
+        extra_body={"reasoning_effort": "low"},
     )
     return response.choices[0].message.content
 
