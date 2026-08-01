@@ -28,6 +28,9 @@ opencv-python-headless==4.10.0.84
 # ── Motor AquAI ──────────────────────────────────────────────
 reportlab==4.2.5
 
+# ── APU por lote (Excel) ──────────────────────────────────────
+openpyxl==3.1.5
+
 # ── Motor Estructural / Infracortex (IFC + PINN + visión) ───────
 # Build CPU-only de torch (--extra-index-url abajo) — la instalación
 # GPU/CUDA por defecto arrastra ~5-6GB de paquetes nvidia-* (cuda-toolkit,

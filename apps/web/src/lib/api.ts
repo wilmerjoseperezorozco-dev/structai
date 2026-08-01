@@ -109,6 +109,36 @@ async function api<T>(path: string, init?: RequestInit): Promise<T> {
   return res.json() as Promise<T>;
 }
 
+/** Como api(), pero para respuestas binarias (.xlsx) en vez de JSON. */
+async function apiBlob(path: string, init?: RequestInit): Promise<Blob> {
+  const { data: { session } } = await supabase.auth.getSession();
+  const authHeader: Record<string, string> = session?.access_token
+    ? { Authorization: `Bearer ${session.access_token}` }
+    : {};
+
+  const res = await fetch(`${BASE}${path}`, {
+    ...init,
+    headers: { ...authHeader, ...init?.headers },
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: res.statusText }));
+    throw new Error(err.detail ?? `Error ${res.status}`);
+  }
+  return res.blob();
+}
+
+/** Dispara la descarga de un Blob en el navegador con el nombre dado. */
+export function descargarBlob(blob: Blob, filename: string): void {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
 // ── Endpoints ────────────────────────────────────────────────────────────────
 
 /** Consulta normativa RAG multi-norma NTC/NSR-10 */
@@ -147,6 +177,18 @@ export async function calculateAPU(
   return api<APUDesglose>("/apu/calculate", { method: "POST", body: form });
 }
 
+/** Descarga la plantilla .xlsx para calcular APU en lote */
+export async function descargarPlantillaAPU(): Promise<Blob> {
+  return apiBlob("/apu/plantilla");
+}
+
+/** Sube una plantilla .xlsx llena y devuelve el .xlsx con el presupuesto calculado */
+export async function calcularLoteAPU(file: File): Promise<Blob> {
+  const form = new FormData();
+  form.append("archivo", file);
+  return apiBlob("/apu/calculate-batch", { method: "POST", body: form });
+}
+
 /** Health check del backend */
 export async function healthCheck(): Promise<HealthResponse> {
   return api<HealthResponse>("/health");
@@ -170,19 +212,21 @@ export const formatCOP = (n: number) =>
   }).format(n);
 
 export const CLASE_LABEL: Record<string, string> = {
-  // Modelo de precauciones de seguridad (packages/yolo/) — foco actual
-  trabajador_con_epp:  "Trabajador con EPP",
-  excavacion_profunda: "Excavación profunda",
-  acero_expuesto:      "Acero expuesto",
-  // Clases estructurales (catálogo APU) — sin modelo entrenado todavía,
-  // ver packages/yolo/README.md
-  columna:         "Columna estructural",
-  viga:            "Viga estructural",
+  // Modelo de elementos estructurales (packages/yolo/) — 7 clases, foco
+  // actual. Ver packages/yolo/README.md para el estado del dataset/entrenamiento.
+  acero_refuerzo: "Acero de refuerzo",
+  viga:           "Viga estructural",
+  columna:        "Columna estructural",
+  muro:           "Muro",
+  formaleta:      "Formaleta / encofrado",
+  tuberia:        "Tubería",
+  trabajador:     "Trabajador",
+  // Clases de un catálogo APU más amplio sin modelo entrenado correspondiente
+  // (no forman parte de CLASES_MODELO en apps/api/main.py todavía)
   placa_aligerada: "Placa aligerada",
   muro_bloque_15:  "Muro bloque e=15 cm",
   muro_bloque_10:  "Muro bloque e=10 cm",
   muro_concreto:   "Muro concreto 10 cm",
   zapata:          "Zapata aislada",
-  acero_refuerzo:  "Acero de refuerzo",
   excavacion:      "Excavación",
 };
