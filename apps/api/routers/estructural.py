@@ -57,7 +57,7 @@ chequeo_nsr10_nudo = _le.chequeo_nsr10_nudo
 _api_path = Path(__file__).resolve().parents[1]
 if str(_api_path) not in sys.path:
     sys.path.insert(0, str(_api_path))
-from auth import get_current_user  # noqa: E402
+from auth import AuthenticatedUser, get_current_user  # noqa: E402
 
 router = APIRouter(prefix="/estructural", tags=["Estructural – Infracortex"])
 
@@ -100,6 +100,7 @@ async def analizar_nudo(
     Av:           float      = Form(56.5, description="Área estribos [mm²]"),
     s:            float      = Form(75.0, description="Separación estribos [mm]"),
     num_pisos:    int        = Form(3,    description="Pisos que convergen al nudo"),
+    user:         AuthenticatedUser = Depends(get_current_user),
 ):
     """
     Pipeline completo:
@@ -175,6 +176,7 @@ async def inspeccion_estribos(
     posiciones_y_csv:   str        = Form(...,   description="Posiciones Y de estribos en px, separadas por coma: '60,130,200'"),
     s_max_diseno_mm:    float      = Form(75.0,  description="Separación máxima de diseño [mm] (del modelo IFC)"),
     escala_mm_por_px:   float      = Form(1.0,   description="Calibración: mm por pixel de la imagen"),
+    user:               AuthenticatedUser = Depends(get_current_user),
 ):
     """
     Valida que la separación real de estribos en obra cumpla con la

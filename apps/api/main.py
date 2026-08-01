@@ -47,13 +47,14 @@ load_dotenv(Path(__file__).resolve().parent / ".env")
 
 from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 from pydantic import BaseModel, Field
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from starlette.concurrency import run_in_threadpool
 
 from auth import get_current_user, rate_limit_key
+import apu_excel
 
 from json_logging import setup_logging
 
@@ -250,9 +251,22 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
+# allow_origins=["*"] + allow_credentials=True es una combinación insegura
+# real (cualquier sitio puede hacer peticiones autenticadas con las cookies/
+# headers del usuario) — encontrado en la auditoría de seguridad 2026-08-01,
+# el comentario original ya decía "en producción: dominio específico" pero
+# nunca se hizo. CORS_ORIGINS (coma-separado) permite ajustar sin tocar
+# código si se agrega un dominio propio más adelante.
+_CORS_ORIGINS = [
+    o.strip() for o in os.getenv(
+        "CORS_ORIGINS",
+        "https://structai-wilmer-perez-s-projects.vercel.app,http://localhost:3000",
+    ).split(",") if o.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],          # en producción: dominio Vercel específico
+    allow_origins=_CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -440,7 +454,12 @@ class DeformResponse(BaseModel):
 # YOLO DETECTOR (ONNX o stub)
 # ════════════════════════════════════════════════════════════════════════════════
 
-# Mapa clase → APU sugerido (ajustar cuando el modelo YOLOv8 esté entrenado)
+# Mapa clase → APU sugerido. Solo columna/viga/acero_refuerzo tienen match
+# 1:1 con el modelo real (packages/yolo/, ver abajo) — el resto son clases
+# de un catálogo más amplio que no tiene todavía elemento entrenado
+# correspondiente (placa_aligerada/zapata/excavación) o son deliberadamente
+# ambiguas desde una foto sola (muro_bloque_15 vs muro_concreto: el material
+# exacto no se puede inferir de una imagen, ver CLASES_MODELO/"muro").
 CLASE_APU_MAP: dict[str, tuple[str, str]] = {
     "columna":          ("C.COL.40X30",  "Columna estructural 40×30 cm"),
     "viga":             ("C.VIG.30X40",  "Viga estructural 30×40 cm"),
@@ -453,27 +472,44 @@ CLASE_APU_MAP: dict[str, tuple[str, str]] = {
     "excavacion":       ("H.EXC.MAN",    "Excavación manual"),
 }
 
-# Modelo de precauciones de seguridad (packages/yolo/) — 3 clases, entrenado
-# sobre fotos reales de obra. A diferencia de CLASE_APU_MAP (costo), estas
-# clases mapean a una alerta de riesgo con referencia normativa, no a un
-# precio. El orden de STUB_CLASES_SEGURIDAD DEBE coincidir exactamente con
-# el orden de clases del data.yaml exportado de Roboflow al entrenar (ver
-# packages/yolo/train.py, CLASES_SEGURIDAD) — un desajuste de orden hace que
-# el modelo "acierte" internamente pero el backend etiquete mal la clase.
-# Verificar contra el data.yaml real antes de activar el modelo entrenado.
-STUB_CLASES_SEGURIDAD = ["trabajador_con_epp", "excavacion_profunda", "acero_expuesto"]
+# Modelo de elementos estructurales (packages/yolo/) — 7 clases, dataset real
+# de obra (18/59 fotos etiquetadas al momento de escribir esto, ver
+# packages/yolo/README.md para el estado exacto y cómo completar el resto).
+# El orden de CLASES_MODELO DEBE coincidir exactamente con el orden de
+# clases de packages/yolo/dataset/data.yaml (índices 0-6) — un desajuste de
+# orden hace que el modelo "acierte" internamente pero el backend etiquete
+# mal la clase. Verificar contra el data.yaml real antes de activar el
+# modelo entrenado.
+CLASES_MODELO = [
+    "acero_refuerzo",
+    "viga",
+    "columna",
+    "muro",
+    "formaleta",
+    "tuberia",
+    "trabajador",
+]
 
-SEGURIDAD_MAP: dict[str, tuple[str, str]] = {
-    "trabajador_con_epp": (
-        "EPP visible (casco/arnés) — cumple lo básico exigido",
+# Descripción legible para clases sin match de costo en CLASE_APU_MAP
+# (material/uso ambiguo desde una sola foto — no se fuerza un id de APU).
+CLASE_DESCRIPCION_SIN_APU: dict[str, str] = {
+    "muro":     "Muro (verificar material y espesor en sitio)",
+    "formaleta": "Formaleta / encofrado",
+    "tuberia":  "Tubería (verificar diámetro y uso en sitio)",
+}
+
+# Recordatorios de seguridad — deliberadamente formulados como "verificar",
+# no como afirmación de cumplimiento: el modelo detecta la presencia del
+# elemento, no si cumple la norma (p.ej. "trabajador" no distingue si trae
+# EPP puesto). Ver origen de la funcionalidad: idea inicial de la app era
+# documentar precauciones de obra con fotos.
+NOTAS_SEGURIDAD: dict[str, tuple[str, str]] = {
+    "trabajador": (
+        "Trabajador detectado — verificar EPP visible (casco, arnés, chaleco)",
         "Resolución 0312 de 2019 — EPP mínimo obligatorio",
     ),
-    "excavacion_profunda": (
-        "Excavación sin entibado visible — riesgo de colapso",
-        "NSR-10 Título H / Resolución 0312 de 2019 — excavaciones",
-    ),
-    "acero_expuesto": (
-        "Acero de refuerzo expuesto sin protección — riesgo de empalamiento",
+    "acero_refuerzo": (
+        "Acero de refuerzo visible — verificar protección contra empalamiento si hay tránsito de personal cerca",
         "Resolución 0312 de 2019 — riesgos de punción/empalamiento",
     ),
 }
@@ -501,7 +537,7 @@ def _load_onnx_model() -> Optional["ort.InferenceSession"]:  # type: ignore[name
 
 
 def _detect_onnx(img_bytes: bytes, session: "ort.InferenceSession") -> list[DeteccionElemento]:  # type: ignore[name-defined]
-    """Inferencia real con YOLOv8 ONNX — output shape [1, num_classes+4, anchors]"""
+    """Inferencia real con YOLOv8/v11 ONNX — misma cabeza anchor-free, output shape [1, num_classes+4, anchors]"""
     import numpy as np
     import cv2
 
@@ -539,7 +575,7 @@ def _detect_onnx(img_bytes: bytes, session: "ort.InferenceSession") -> list[Dete
 
     # Supresión de no-máximos (NMS): sin esto, un mismo objeto real genera
     # varias cajas superpuestas casi idénticas en vez de una sola limpia.
-    # Greedy IoU — suficiente para un modelo de 3 clases, no hace falta
+    # Greedy IoU — suficiente para un modelo de 7 clases, no hace falta
     # traer una librería aparte solo para esto.
     def iou(a: tuple, b: tuple) -> float:
         ax1, ay1, ax2, ay2 = a[:4]
@@ -562,12 +598,12 @@ def _detect_onnx(img_bytes: bytes, session: "ort.InferenceSession") -> list[Dete
     detecciones: list[DeteccionElemento] = []
     for x1, y1, x2, y2, conf, class_id in conservados:
         clase = (
-            STUB_CLASES_SEGURIDAD[class_id]
-            if class_id < len(STUB_CLASES_SEGURIDAD)
+            CLASES_MODELO[class_id]
+            if class_id < len(CLASES_MODELO)
             else f"clase_{class_id}"
         )
-        apu_id, apu_desc = CLASE_APU_MAP.get(clase, (None, None))
-        alerta, norma_ref = SEGURIDAD_MAP.get(clase, (None, None))
+        apu_id, apu_desc = CLASE_APU_MAP.get(clase, (None, CLASE_DESCRIPCION_SIN_APU.get(clase)))
+        alerta, norma_ref = NOTAS_SEGURIDAD.get(clase, (None, None))
 
         detecciones.append(DeteccionElemento(
             clase=clase,
@@ -599,7 +635,7 @@ def _detect_stub(img_bytes: bytes) -> tuple[list[DeteccionElemento], int, int]:
 
     n = rng.randint(1, 3)
     detecciones: list[DeteccionElemento] = []
-    clases_muestra = STUB_CLASES_SEGURIDAD
+    clases_muestra = CLASES_MODELO
 
     for i in range(n):
         clase = clases_muestra[i % len(clases_muestra)]
@@ -608,8 +644,8 @@ def _detect_stub(img_bytes: bytes) -> tuple[list[DeteccionElemento], int, int]:
         y1 = round(rng.uniform(0.05, 0.4), 4)
         x2 = round(min(x1 + rng.uniform(0.1, 0.35), 0.95), 4)
         y2 = round(min(y1 + rng.uniform(0.1, 0.35), 0.95), 4)
-        apu_id, apu_desc = CLASE_APU_MAP.get(clase, (None, None))
-        alerta, norma_ref = SEGURIDAD_MAP.get(clase, (None, None))
+        apu_id, apu_desc = CLASE_APU_MAP.get(clase, (None, CLASE_DESCRIPCION_SIN_APU.get(clase)))
+        alerta, norma_ref = NOTAS_SEGURIDAD.get(clase, (None, None))
         detecciones.append(DeteccionElemento(
             clase=clase, confianza=conf,
             bbox=[x1, y1, x2, y2],
@@ -913,13 +949,17 @@ async def detect_structural(
     image: UploadFile = File(..., description="Foto JPG/PNG del elemento estructural"),
 ):
     """
-    Detecta precauciones de seguridad en obra a partir de una foto: EPP
-    visible, excavaciones sin entibado, acero de refuerzo expuesto.
+    Detecta elementos estructurales en obra a partir de una foto: acero de
+    refuerzo, viga, columna, muro, formaleta, tubería, trabajador (7 clases,
+    ver CLASES_MODELO). Cuando aplica, sugiere el APU de costo correspondiente
+    (`apu_sugerido_id`) y/o un recordatorio de seguridad con referencia
+    normativa (`alerta_seguridad`, `norma_ref_seguridad`) — el recordatorio
+    es una verificación sugerida, no una afirmación de cumplimiento (el
+    modelo detecta presencia del elemento, no si cumple la norma).
 
-    Usa YOLOv8 ONNX (packages/yolo/model.onnx) cuando el modelo está
+    Usa YOLOv11 ONNX (packages/yolo/model.onnx) cuando el modelo está
     disponible; retorna stub determinístico si aún no se ha entrenado (ver
-    packages/yolo/README.md). Cada detección de riesgo incluye una alerta
-    con referencia normativa (`alerta_seguridad`, `norma_ref_seguridad`).
+    packages/yolo/README.md).
 
     El campo `modo` indica si la respuesta es real (`onnx`) o stub (`stub`)
     — nunca se presenta un stub como si fuera una detección real.
@@ -968,7 +1008,7 @@ async def detect_structural(
         elementos_detectados=detecciones,
         imagen_ancho=img_w,
         imagen_alto=img_h,
-        modelo_version="yolov8n-construdata-v1" if modo == "onnx" else "stub-v1",
+        modelo_version="yolo11n-construdata-v1" if modo == "onnx" else "stub-v1",
         latencia_ms=latencia,
         modo=modo,
     )
@@ -1217,6 +1257,197 @@ def apu_calculate_dinamico(request: Request, body: APUCantidadesRequest):
     )
     registrar_apu_calculo(user.id, result.actividad_id, 1.0, desglose)
     return desglose
+
+
+# ── /apu/plantilla y /apu/calculate-batch — APU por lote (Excel) ─────────────
+# Reusan get_apu()/calcular_apu_dinamico() exactamente igual que los
+# endpoints de arriba — no se tocó /apu/calculate ni /apu/calculate-dinamico,
+# esto solo agrega una capa de Excel encima (ver apu_excel.py).
+
+def _calcular_fila_apu(fila: dict) -> tuple[dict, Optional["APUDesglose"]]:
+    """Calcula una fila de la plantilla. Nunca lanza — captura cualquier
+    error y lo devuelve como resultado 'ERROR' para no tumbar el lote
+    completo por una fila mal llenada."""
+    import datetime as _dt
+
+    resultado: dict = {k: None for k in apu_excel.COLUMNAS_SALIDA}
+    try:
+        if fila["modo"] == "catalogo":
+            actividad_id = fila["actividad_id"]
+            cantidad = fila["cantidad"]
+            result = get_apu(actividad_id)
+            if result is None:
+                raise ValueError(f"actividad_id '{actividad_id}' no existe en el catálogo (ver hoja Catalogo_APU)")
+            desglose = APUDesglose(
+                actividad_id=actividad_id,
+                descripcion=result.descripcion,
+                unidad=result.unidad.value,
+                capitulo=result.capitulo,
+                costo_materiales=round(result.costo_materiales * cantidad, 2),
+                costo_mano_obra=round(result.costo_mano_obra * cantidad, 2),
+                costo_equipo=round(result.costo_equipo * cantidad, 2),
+                costo_directo=round(result.costo_directo * cantidad, 2),
+                aiu=round(result.aiu_total * cantidad, 2),
+                precio_unitario=round(result.precio_unitario, 2),
+                pu_p05=round(result.pu_p05, 2),
+                pu_p95=round(result.pu_p95, 2),
+                pu_std=round(result.pu_std, 2),
+                norma_ref=result.norma_ref,
+                uuid_trazabilidad=result.uuid_trazabilidad,
+                timestamp=_dt.datetime.utcnow().isoformat() + "Z",
+            )
+            costo_total_fila = round(desglose.precio_unitario * cantidad, 2)
+        else:
+            tipo = TipoElementoConcreto(fila["tipo"])
+            refuerzo = (
+                RefuerzoLongitudinal(numero_barras=fila["refuerzo"]["numero_barras"], diametro_pulg=fila["refuerzo"]["diametro_pulg"])
+                if fila.get("refuerzo") else None
+            )
+            estribos = (
+                Estribos(
+                    diametro_pulg=fila["estribos"]["diametro_pulg"],
+                    espaciamiento_m=fila["estribos"]["espaciamiento_m"],
+                    gancho_desarrollo_m=fila["estribos"]["gancho_desarrollo_m"],
+                )
+                if fila.get("estribos") else None
+            )
+            geo = GeometriaElementoConcreto(
+                tipo=tipo,
+                base_m=fila["base_m"],
+                altura_m=fila["altura_m"],
+                longitud_m=fila["longitud_m"],
+                recubrimiento_m=fila["recubrimiento_m"],
+                refuerzo_longitudinal=refuerzo,
+                estribos=estribos,
+                incluye_cara_superior_formaleta=fila["incluye_cara_superior_formaleta"],
+            )
+            result = calcular_apu_dinamico(geo, calidad_concreto=fila["calidad_concreto"])
+            desglose = APUDesglose(
+                actividad_id=result.actividad_id,
+                descripcion=result.descripcion,
+                unidad=result.unidad.value,
+                capitulo=result.capitulo,
+                costo_materiales=result.costo_materiales,
+                costo_mano_obra=result.costo_mano_obra,
+                costo_equipo=result.costo_equipo,
+                costo_directo=result.costo_directo,
+                aiu=result.costo_aiu,
+                precio_unitario=result.precio_unitario,
+                pu_p05=result.pu_p05,
+                pu_p95=result.pu_p95,
+                pu_std=result.pu_std,
+                norma_ref=result.norma_ref,
+                uuid_trazabilidad=result.uuid_trazabilidad,
+                timestamp=_dt.datetime.utcnow().isoformat() + "Z",
+            )
+            costo_total_fila = round(desglose.precio_unitario * fila["cantidad"], 2)
+
+        resultado.update({
+            "estado": "OK",
+            "descripcion": desglose.descripcion,
+            "unidad": desglose.unidad,
+            "capitulo": desglose.capitulo,
+            "costo_materiales": desglose.costo_materiales,
+            "costo_mano_obra": desglose.costo_mano_obra,
+            "costo_equipo": desglose.costo_equipo,
+            "costo_directo": desglose.costo_directo,
+            "aiu": desglose.aiu,
+            "precio_unitario": desglose.precio_unitario,
+            "costo_total_fila": costo_total_fila,
+            "pu_p05": desglose.pu_p05,
+            "pu_p95": desglose.pu_p95,
+            "pu_std": desglose.pu_std,
+            "norma_ref": desglose.norma_ref,
+            "uuid_trazabilidad": desglose.uuid_trazabilidad,
+        })
+        return resultado, desglose
+    except (ValueError, KeyError, TypeError) as e:
+        resultado["estado"] = "ERROR"
+        resultado["error_detalle"] = str(e)
+        return resultado, None
+    except Exception as e:
+        log.error(f"Error inesperado calculando fila de lote APU: {e}", exc_info=True)
+        resultado["estado"] = "ERROR"
+        resultado["error_detalle"] = f"Error interno: {e}"
+        return resultado, None
+
+
+@app.get("/apu/plantilla", tags=["APU"])
+@limiter.limit("10/minute")
+def apu_plantilla(request: Request):
+    """Descarga la plantilla .xlsx para calcular APU en lote (catálogo y/o geometría dinámica)."""
+    user = get_current_user(request)
+    if not APU_AVAILABLE:
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Módulo motor-apu no disponible.")
+    log.info("Descarga /apu/plantilla", extra={"user_id": user.id, "endpoint": "/apu/plantilla"})
+    catalogo = listar_actividades()
+    xlsx_bytes = apu_excel.generar_plantilla(catalogo)
+    return Response(
+        content=xlsx_bytes,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": "attachment; filename=plantilla_apu_construdata.xlsx"},
+    )
+
+
+@app.post("/apu/calculate-batch", tags=["APU"])
+@limiter.limit("5/minute")
+def apu_calculate_batch(
+    request: Request,
+    archivo: UploadFile = File(..., description="Plantilla .xlsx llenada (ver GET /apu/plantilla)"),
+):
+    """
+    Calcula APU para todas las filas de una plantilla Excel subida (hasta
+    200 filas, catálogo y/o geometría dinámica mezclados) y devuelve un
+    .xlsx con el presupuesto completo: costos, AIU, IC90, trazabilidad
+    normativa por fila, y una fila de total al final.
+
+    Una fila con error (actividad_id inválido, geometría inconsistente)
+    no tumba el lote — queda marcada en rojo con el detalle del error, el
+    resto de filas se calculan igual.
+    """
+    user = get_current_user(request)
+    if not APU_AVAILABLE:
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Módulo motor-apu no disponible.")
+
+    filename = archivo.filename or ""
+    if not filename.lower().endswith(".xlsx"):
+        raise HTTPException(status_code=422, detail="Se esperaba un archivo .xlsx")
+
+    file_bytes = archivo.file.read()
+    if len(file_bytes) > 5 * 1024 * 1024:  # 5 MB — una plantilla de 200 filas pesa unos KB
+        raise HTTPException(status_code=413, detail="Archivo demasiado grande (máx 5 MB)")
+
+    log.info("Consulta /apu/calculate-batch", extra={"user_id": user.id, "endpoint": "/apu/calculate-batch"})
+
+    try:
+        filas = apu_excel.leer_filas(file_bytes)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+
+    # Cálculo síncrono CPU-bound (Monte Carlo N=5000 por fila) — este
+    # endpoint no es async, FastAPI ya lo corre en threadpool automáticamente
+    # (a diferencia de /detect, que es async def y necesita run_in_threadpool
+    # explícito porque await bloquearía el loop entero).
+    resultados: list[dict] = []
+    for fila in filas:
+        resultado, desglose = _calcular_fila_apu(fila)
+        resultados.append(resultado)
+        if desglose is not None:
+            cantidad_registrada = fila.get("cantidad", 1.0)
+            registrar_apu_calculo(user.id, desglose.actividad_id, cantidad_registrada, desglose)
+
+    out_bytes = apu_excel.generar_resultado(filas, resultados)
+    log.info(
+        f"/apu/calculate-batch: {len(filas)} filas, "
+        f"{sum(1 for r in resultados if r['estado'] == 'OK')} OK, "
+        f"{sum(1 for r in resultados if r['estado'] == 'ERROR')} con error",
+        extra={"user_id": user.id, "endpoint": "/apu/calculate-batch"},
+    )
+    return Response(
+        content=out_bytes,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": "attachment; filename=presupuesto_apu_construdata.xlsx"},
+    )
 
 
 # ── /ask/route — Debug: ver qué normas detecta el router ──────────────────────
