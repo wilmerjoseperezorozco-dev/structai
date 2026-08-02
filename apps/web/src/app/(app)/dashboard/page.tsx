@@ -41,14 +41,14 @@ const ACCESOS_RAPIDOS = [
   },
 ];
 
-// Auditoría 2026-08-01: la tarjeta de upgrade decía "APU ilimitados" justo
+// Reactivado 2026-08-01: estaba oculto porque decía "APU ilimitados" justo
 // debajo del saludo que dice "sin límite de cálculos durante esta prueba"
-// — se contradicen en la misma pantalla. Wompi tampoco está conectado
-// todavía, así que "Ver planes" llevaba a un botón de compra que no
-// procesa nada real. Oculto durante el piloto de acceso abierto (mismo
-// patrón que SOLO_ENFOQUE_PILOTO en layout.tsx) — no se borró nada,
-// reactivar cuando el piloto termine y el pago esté conectado.
-const MOSTRAR_UPGRADE_CTA = false;
+// (se contradecían) y porque Wompi no estaba conectado ("Ver planes" no
+// llevaba a nada real). Ya arreglado: el texto ahora resalta beneficios que
+// NO están cubiertos por el acceso abierto del piloto (PDF trazable,
+// proyectos ilimitados, seguridad industrial), y "Ver planes" → /pricing
+// tiene el botón "Activar Pro" conectado al checkout de Wompi.
+const MOSTRAR_UPGRADE_CTA = true;
 
 export default function DashboardPage() {
   return (
@@ -88,7 +88,7 @@ export default function DashboardPage() {
             <div className="flex-1">
               <p className="text-sm font-semibold text-white">Activa Pro por $19.900/mes</p>
               <p className="text-xs text-concrete-400 mt-0.5">
-                APU ilimitados · PDF trazable · Historial completo
+                PDF trazable · Proyectos ilimitados · Seguridad industrial
               </p>
             </div>
           </div>

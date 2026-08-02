@@ -6,15 +6,12 @@ import {
   MessageSquare,
   Scan,
   Calculator,
-  Wifi,
-  WifiOff,
   HardHat,
   LayoutDashboard,
   Loader2,
 } from "lucide-react";
 import clsx from "clsx";
 import dynamic from "next/dynamic";
-import { healthCheck, type HealthResponse } from "@/lib/api";
 import { supabase } from "@/lib/supabase";
 import { Hero } from "@/components/Hero";
 
@@ -32,30 +29,6 @@ const TABS: { id: Tab; label: string; icon: React.ReactNode; short: string }[] =
   { id: "detect", label: "Detección foto",     short: "Foto",    icon: <Scan size={18} /> },
   { id: "apu",    label: "Catálogo APU",       short: "APU",     icon: <Calculator size={18} /> },
 ];
-
-// ── Status bar superior ───────────────────────────────────────────────────────
-
-function StatusBar({ health }: { health: HealthResponse | null }) {
-  if (!health) return null;
-  const allOk = health.modulos.rag_multi_norma && health.modulos.motor_apu;
-  return (
-    <div className={clsx(
-      "flex items-center gap-2 px-4 py-1.5 text-xs border-b",
-      allOk
-        ? "bg-green-950/40 border-green-900/40 text-green-400"
-        : "bg-yellow-950/40 border-yellow-900/40 text-yellow-400"
-    )}>
-      {allOk ? <Wifi size={11} /> : <WifiOff size={11} />}
-      <span>
-        RAG {health.modulos.rag_multi_norma ? "✓" : "✗"} ·
-        APU {health.modulos.motor_apu ? "✓" : "✗"} ·
-        YOLO {health.modulos.yolo_onnx ? "ONNX" : "stub"} ·
-        {health.apu_count} actividades
-      </span>
-      <span className="ml-auto text-green-600">v{health.version}</span>
-    </div>
-  );
-}
 
 // ── Página principal ──────────────────────────────────────────────────────────
 
@@ -76,15 +49,8 @@ function HomeContent() {
   const initialTab: Tab = VALID_TABS.includes(tabParam as Tab) ? (tabParam as Tab) : "chat";
 
   const [tab, setTab] = useState<Tab>(initialTab);
-  const [health, setHealth] = useState<HealthResponse | null>(null);
   const [hasSession, setHasSession] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
-
-  useEffect(() => {
-    healthCheck()
-      .then(setHealth)
-      .catch(() => setHealth(null));
-  }, []);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -136,9 +102,6 @@ function HomeContent() {
           {hasSession ? "Mi cuenta" : "Ingresar"}
         </button>
       </header>
-
-      {/* ── Status backend ── */}
-      <StatusBar health={health} />
 
       {/* ── Panel activo ── */}
       <main className="flex-1 overflow-hidden">
