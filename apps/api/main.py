@@ -125,6 +125,20 @@ def registrar_consulta(
         log.warning(f"No se pudo registrar consulta en consultas_history: {e}")
 
 
+def _construir_registro_apu(
+    user_id: str, actividad_id: str, cantidad: float, d: "APUDesglose",
+    proyecto_nombre: Optional[str] = None,
+) -> dict:
+    return {
+        "user_id": user_id, "uuid_trazabilidad": d.uuid_trazabilidad, "actividad_id": actividad_id,
+        "descripcion": d.descripcion, "unidad": d.unidad, "capitulo": d.capitulo, "cantidad": cantidad,
+        "costo_materiales": d.costo_materiales, "costo_mano_obra": d.costo_mano_obra,
+        "costo_equipo": d.costo_equipo, "costo_directo": d.costo_directo, "aiu": d.aiu,
+        "precio_unitario": d.precio_unitario, "pu_p05": d.pu_p05, "pu_p95": d.pu_p95, "pu_std": d.pu_std,
+        "norma_ref": d.norma_ref, "proyecto_nombre": proyecto_nombre,
+    }
+
+
 def registrar_apu_calculo(
     user_id: str, actividad_id: str, cantidad: float, d: "APUDesglose",
     proyecto_nombre: Optional[str] = None,
@@ -132,16 +146,25 @@ def registrar_apu_calculo(
     if _uso_sb is None:
         return
     try:
-        _uso_sb.table("apu_calculations").insert({
-            "user_id": user_id, "uuid_trazabilidad": d.uuid_trazabilidad, "actividad_id": actividad_id,
-            "descripcion": d.descripcion, "unidad": d.unidad, "capitulo": d.capitulo, "cantidad": cantidad,
-            "costo_materiales": d.costo_materiales, "costo_mano_obra": d.costo_mano_obra,
-            "costo_equipo": d.costo_equipo, "costo_directo": d.costo_directo, "aiu": d.aiu,
-            "precio_unitario": d.precio_unitario, "pu_p05": d.pu_p05, "pu_p95": d.pu_p95, "pu_std": d.pu_std,
-            "norma_ref": d.norma_ref, "proyecto_nombre": proyecto_nombre,
-        }).execute()
+        _uso_sb.table("apu_calculations").insert(
+            _construir_registro_apu(user_id, actividad_id, cantidad, d, proyecto_nombre)
+        ).execute()
     except Exception as e:
         log.warning(f"No se pudo registrar cálculo en apu_calculations: {e}")
+
+
+def registrar_apu_calculos_lote(registros: list[dict]) -> None:
+    """Inserta muchos cálculos de una sola vez (batch de Excel) — una única
+    llamada de red a Supabase en vez de una por fila. Con un lote de 200
+    filas, insertar una por una era el verdadero cuello de botella (el
+    cálculo en sí toma ~1-3ms/fila, medido en vivo; 200 llamadas de red
+    secuenciales a Supabase pesan muchísimo más que eso)."""
+    if _uso_sb is None or not registros:
+        return
+    try:
+        _uso_sb.table("apu_calculations").insert(registros).execute()
+    except Exception as e:
+        log.warning(f"No se pudo registrar lote de {len(registros)} cálculos en apu_calculations: {e}")
 
 
 # ── Límite freemium: proyectos simultáneos ──────────────────────────────────
@@ -201,26 +224,29 @@ def verificar_limite_proyectos(user_id: str, proyecto_nombre: Optional[str]) -> 
 LIMITE_APU_MES_FREE = 5
 
 
-def verificar_limite_apu_mes(user_id: str) -> None:
-    """Lanza 402 si un usuario del plan free ya agotó su cupo de APU del mes.
+def _cupo_apu_mes_restante(user_id: str) -> Optional[int]:
+    """Cuántos cálculos de APU más puede hacer este usuario este mes.
 
-    Usa apu_calculations (ya poblada por registrar_apu_calculo) como fuente
-    de verdad del conteo real — evita mantener un contador denormalizado
-    (profiles.consultas_mes existe pero no se usa aquí a propósito: no
-    tiene lógica de reseteo mensual verificada, y contar filas reales es
-    más confiable que confiar en un contador que puede desincronizarse).
-    Los planes pro/pro_anual no tienen límite — se retorna de inmediato.
-    Si _uso_sb no está disponible (mismo modo best-effort que el registro
-    de uso) no se bloquea el cálculo: preferible dejar pasar a tumbar el
-    piloto por un problema de infraestructura de trazabilidad.
+    None = sin límite (plan pro/pro_anual, o _uso_sb no disponible — mismo
+    modo best-effort que el registro de uso: preferible dejar pasar a
+    tumbar el piloto por un problema de infraestructura de trazabilidad).
+    int >= 0 = cupo real restante del plan free, contando filas reales de
+    apu_calculations (no un contador denormalizado — profiles.consultas_mes
+    existe pero no tiene lógica de reseteo mensual verificada).
+
+    Extraído como función propia (antes vivía inline en
+    verificar_limite_apu_mes) porque /apu/calculate-batch necesita el
+    número exacto, no solo un sí/no — un lote de 200 filas debe poder
+    calcular las primeras N que sí caben en el cupo y marcar el resto como
+    omitidas, en vez de bloquear el archivo completo o dejarlo pasar entero.
     """
     if _uso_sb is None:
-        return
+        return None
     try:
         perfil = _uso_sb.table("profiles").select("plan").eq("id", user_id).maybe_single().execute()
         plan = (perfil.data or {}).get("plan", "free") if perfil else "free"
         if plan != "free":
-            return
+            return None
 
         import datetime
         inicio_mes = datetime.datetime.now(datetime.timezone.utc).replace(
@@ -229,11 +255,16 @@ def verificar_limite_apu_mes(user_id: str) -> None:
         conteo = _uso_sb.table("apu_calculations").select("id", count="exact") \
             .eq("user_id", user_id).gte("created_at", inicio_mes).execute()
         usados = conteo.count or 0
+        return max(0, LIMITE_APU_MES_FREE - usados)
     except Exception as e:
-        log.warning(f"No se pudo verificar límite de APU/mes (se deja pasar): {e}")
-        return
+        log.warning(f"No se pudo calcular cupo restante de APU/mes (se deja pasar): {e}")
+        return None
 
-    if usados >= LIMITE_APU_MES_FREE:
+
+def verificar_limite_apu_mes(user_id: str) -> None:
+    """Lanza 402 si un usuario del plan free ya agotó su cupo de APU del mes."""
+    restante = _cupo_apu_mes_restante(user_id)
+    if restante is not None and restante <= 0:
         raise HTTPException(
             status_code=status.HTTP_402_PAYMENT_REQUIRED,
             detail=(
@@ -1612,10 +1643,13 @@ def apu_calculate_batch(
 
     Una fila con error (actividad_id inválido, geometría inconsistente)
     no tumba el lote — queda marcada en rojo con el detalle del error, el
-    resto de filas se calculan igual.
+    resto de filas se calculan igual. Si el plan gratis se queda sin cupo
+    mensual a mitad del archivo, las filas restantes quedan marcadas
+    "OMITIDO" (no se calculan ni se cobran) en vez de bloquear el archivo
+    completo — el usuario recibe igual su Excel con lo que sí alcanzó a
+    calcular y ve exactamente cuántas filas quedaron pendientes.
     """
     user = get_current_user(request)
-    verificar_limite_apu_mes(user.id)
     if not APU_AVAILABLE:
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Módulo motor-apu no disponible.")
 
@@ -1634,23 +1668,50 @@ def apu_calculate_batch(
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e))
 
+    # None = plan pro (sin límite). int = cupo real restante del plan free
+    # este mes — hallazgo de la auditoría de seguridad 2026-08-02: antes se
+    # chequeaba el límite UNA vez antes del lote completo, así que subir 200
+    # filas de un tirón daba 200 cálculos reales sin importar el plan.
+    cupo_restante = _cupo_apu_mes_restante(user.id)
+
     # Cálculo síncrono CPU-bound (Monte Carlo N=5000 por fila) — este
     # endpoint no es async, FastAPI ya lo corre en threadpool automáticamente
     # (a diferencia de /detect, que es async def y necesita run_in_threadpool
-    # explícito porque await bloquearía el loop entero).
+    # explícito porque await bloquearía el loop entero). Medido en vivo:
+    # ~1-3ms/fila, 200 filas es <1s de cómputo — el cuello de botella real
+    # era escribir a Supabase fila por fila (ver registrar_apu_calculos_lote).
     resultados: list[dict] = []
+    registros_para_insertar: list[dict] = []
+    calculadas = 0
     for fila in filas:
+        if cupo_restante is not None and calculadas >= cupo_restante:
+            resultado = {k: None for k in apu_excel.COLUMNAS_SALIDA}
+            resultado["estado"] = "OMITIDO"
+            resultado["error_detalle"] = (
+                f"Límite de {LIMITE_APU_MES_FREE} cálculos/mes del plan gratis alcanzado "
+                f"({calculadas} calculados en este archivo). Activa Pro en /pricing para "
+                "procesar el resto de este archivo sin límite."
+            )
+            resultados.append(resultado)
+            continue
+
         resultado, desglose = _calcular_fila_apu(fila)
         resultados.append(resultado)
         if desglose is not None:
             cantidad_registrada = fila.get("cantidad", 1.0)
-            registrar_apu_calculo(user.id, desglose.actividad_id, cantidad_registrada, desglose)
+            registros_para_insertar.append(
+                _construir_registro_apu(user.id, desglose.actividad_id, cantidad_registrada, desglose)
+            )
+            calculadas += 1
+
+    registrar_apu_calculos_lote(registros_para_insertar)
 
     out_bytes = apu_excel.generar_resultado(filas, resultados)
     log.info(
         f"/apu/calculate-batch: {len(filas)} filas, "
         f"{sum(1 for r in resultados if r['estado'] == 'OK')} OK, "
-        f"{sum(1 for r in resultados if r['estado'] == 'ERROR')} con error",
+        f"{sum(1 for r in resultados if r['estado'] == 'ERROR')} con error, "
+        f"{sum(1 for r in resultados if r['estado'] == 'OMITIDO')} omitidas por límite del plan",
         extra={"user_id": user.id, "endpoint": "/apu/calculate-batch"},
     )
     return Response(

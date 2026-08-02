@@ -151,6 +151,9 @@ def generar_plantilla(catalogo: list[dict]) -> bytes:
         "5. No modifique los nombres de columna de la fila 1.",
         "6. Al subir el archivo calculado en la app, recibirá de vuelta este mismo archivo",
         "   con las columnas de resultado agregadas (costos, precio unitario, trazabilidad NSR-10/NTC).",
+        "7. Columna 'estado': OK (calculado), ERROR (fila mal llenada, en rojo — corrija y vuelva a subir),",
+        "   OMITIDO (en ámbar — el plan gratis llegó a su límite mensual de cálculos a mitad del archivo;",
+        "   active Pro para procesar el resto sin volver a subirlo).",
     ]
     for row, texto in enumerate(instrucciones, start=1):
         c = ws3.cell(row=row, column=1, value=texto)
@@ -248,6 +251,11 @@ def generar_resultado(filas: list[dict], resultados: list[dict]) -> bytes:
     ws.freeze_panes = "A2"
 
     fill_error = PatternFill(start_color="FEE2E2", end_color="FEE2E2", fill_type="solid")
+    # Amarillo/ámbar, distinto del rojo de error: "OMITIDO" no es un dato mal
+    # llenado por el usuario, es una fila que no se calculó porque el plan
+    # gratis se quedó sin cupo mensual a mitad del archivo — visualmente debe
+    # leerse como "pendiente por plan", no como "corrija esto".
+    fill_omitido = PatternFill(start_color="FEF3C7", end_color="FEF3C7", fill_type="solid")
     total = 0.0
     for row_idx, (fila, resultado) in enumerate(zip(filas, resultados), start=2):
         col = 1
@@ -257,9 +265,13 @@ def generar_resultado(filas: list[dict], resultados: list[dict]) -> bytes:
         for nombre in COLUMNAS_SALIDA:
             ws.cell(row=row_idx, column=col, value=resultado.get(nombre))
             col += 1
-        if resultado.get("estado") == "ERROR":
+        estado = resultado.get("estado")
+        if estado == "ERROR":
             for c in range(1, len(columnas) + 1):
                 ws.cell(row=row_idx, column=c).fill = fill_error
+        elif estado == "OMITIDO":
+            for c in range(1, len(columnas) + 1):
+                ws.cell(row=row_idx, column=c).fill = fill_omitido
         else:
             total += resultado.get("costo_total_fila") or 0.0
 
