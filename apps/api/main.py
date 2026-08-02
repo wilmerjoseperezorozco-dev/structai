@@ -49,11 +49,12 @@ from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile, sta
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, Response
 from pydantic import BaseModel, Field
-from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from starlette.concurrency import run_in_threadpool
 
-from auth import get_current_user, rate_limit_key
+from auth import get_current_user
+from rate_limit import limiter
 import apu_excel
 
 from json_logging import setup_logging
@@ -429,7 +430,13 @@ app.add_middleware(
 # key_func=rate_limit_key (auth.py): agrupa por user_id si el request trae
 # un JWT válido de Supabase, y cae a IP (get_remote_address) si no — así el
 # límite es real "por usuario" para quien está logueado, no solo por IP.
-limiter = Limiter(key_func=rate_limit_key)
+#
+# limiter importado desde rate_limit.py (no creado acá): los routers de los
+# motores (aquai/geopot/vias/gerencia/estructural) también necesitan esta
+# misma instancia para poder decorar sus propios endpoints con
+# @limiter.limit(...) — main.py los importa ANTES de este punto, así que
+# crear el Limiter acá y que los routers hicieran `from main import limiter`
+# sería un import circular contra un módulo a medio inicializar.
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
@@ -1210,7 +1217,8 @@ async def detect_structural(
 # ── /deform — Motor Deformación (clasificación → análisis estructural) ────────
 
 @app.post("/deform", response_model=DeformResponse, tags=["Deformación"])
-def deform_analyze(req: DeformRequest):
+@limiter.limit("20/minute")
+def deform_analyze(request: Request, req: DeformRequest):
     """
     Cierra el pipeline clasificación→deformación: toma la `clase` que
     devolvió /detect (columna, viga, placa_aligerada, muro_bloque_15,
@@ -1220,6 +1228,9 @@ def deform_analyze(req: DeformRequest):
     con simulación Monte Carlo (N=5000) para acotar el margen de error real
     en vez de reportar un único número "exacto".
     """
+    user = get_current_user(request)
+    log.info("Consulta /deform", extra={"user_id": user.id, "endpoint": "/deform"})
+
     if not DEFORM_AVAILABLE:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,

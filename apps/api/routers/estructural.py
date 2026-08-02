@@ -11,15 +11,23 @@ Endpoints:
 Patrón: carga motor-estructural vía importlib (mismo estilo motor-aquai).
 ══════════════════════════════════════════════════════════════
 """
-from __future__ import annotations
+# NOTA: sin "from __future__ import annotations" a proposito (igual que
+# main.py) -- con PEP 563 activo, @limiter.limit() de slowapi rompe la
+# resolucion de forward-refs de FastAPI para tipos no builtin (UploadFile,
+# los *Request de motor_*). Reproducido en vivo el 2026-08-02 al agregar
+# rate limiting a este router: analizar_nudo() (UploadFile) fallaba con
+# FastAPIError en el import; los endpoints con tipos custom (motor_X.Y)
+# "funcionaban" solo por coincidencia de que Python 3.10+ ya resuelve
+# list/dict/X|None nativamente sin necesitar el future import de todos modos.
 
 import io
+import os
 import sys
 import tempfile
 from pathlib import Path
 
 import numpy as np
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import Response
 
 ROOT = Path(__file__).resolve().parents[3]  # monorepo/
@@ -58,8 +66,15 @@ _api_path = Path(__file__).resolve().parents[1]
 if str(_api_path) not in sys.path:
     sys.path.insert(0, str(_api_path))
 from auth import AuthenticatedUser, get_current_user  # noqa: E402
+from rate_limit import limiter  # noqa: E402
 
 router = APIRouter(prefix="/estructural", tags=["Estructural – Infracortex"])
+
+# Mismo límite que /detect en main.py (20 MB) — sin esto, un IFC o imagen sin
+# tope de tamaño es un vector de agotamiento de disco/memoria fácil de
+# automatizar (hallazgo de la auditoría de seguridad 2026-08-02). Corregido
+# ANTES de activar ENABLE_ESTRUCTURAL=true, no después.
+_MAX_UPLOAD_BYTES = 20 * 1024 * 1024
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -88,7 +103,9 @@ def salud():
     response_model=AnalisisNudoResponse,
     summary="Análisis completo BIM → PINN → NSR-10 de un nudo estructural",
 )
+@limiter.limit("10/minute")
 async def analizar_nudo(
+    request:      Request,
     ifc_file:     UploadFile = File(...,  description="Archivo .ifc del modelo BIM"),
     guid_viga:    str        = Form(...,  description="GlobalId IFC de la viga"),
     guid_columna: str        = Form(...,  description="GlobalId IFC de la columna"),
@@ -111,55 +128,64 @@ async def analizar_nudo(
 
     Retorna el veredicto estructural (PASA / FALLA) con todos los valores.
     """
-    # Guardar IFC en archivo temporal
     contenido = await ifc_file.read()
+    if len(contenido) > _MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail="Archivo IFC demasiado grande (máx 20 MB)")
+
+    # delete=False + limpieza explícita en finally (no context manager): el
+    # archivo debe seguir existiendo mientras InfracortexEngine lo lee más
+    # abajo, fuera del bloque `with`. Antes esto nunca se borraba, dejando
+    # temporales acumulándose en disco en cada llamada.
     with tempfile.NamedTemporaryFile(suffix=".ifc", delete=False) as tmp:
         tmp.write(contenido)
         ruta_ifc = tmp.name
 
     try:
-        motor = InfracortexEngine(ruta_ifc)
-    except Exception as e:
-        raise HTTPException(status_code=422, detail=f"Error abriendo IFC: {e}")
+        try:
+            motor = InfracortexEngine(ruta_ifc)
+        except Exception as e:
+            raise HTTPException(status_code=422, detail=f"Error abriendo IFC: {e}")
 
-    try:
-        rotacion_viga, rotacion_columna, posicion_mm = motor.extraer_topologia_nudo(guid_viga, guid_columna)
-    except Exception as e:
-        raise HTTPException(status_code=404, detail=f"GUIDs no encontrados en el IFC: {e}")
+        try:
+            rotacion_viga, rotacion_columna, posicion_mm = motor.extraer_topologia_nudo(guid_viga, guid_columna)
+        except Exception as e:
+            raise HTTPException(status_code=404, detail=f"GUIDs no encontrados en el IFC: {e}")
 
-    T12_viga = motor.ensamblar_rigidez_local(rotacion_viga)
-    T12_columna = motor.ensamblar_rigidez_local(rotacion_columna)
+        T12_viga = motor.ensamblar_rigidez_local(rotacion_viga)
+        T12_columna = motor.ensamblar_rigidez_local(rotacion_columna)
 
-    # Cargas y demanda sísmica
-    cargas = {**CARGAS_DEFAULT, "numero_pisos": num_pisos}
-    resultado = calcular_demanda_cortante(cargas, ZONA_SISMICA, altura_piso_mm=float(posicion_mm[2]))
+        # Cargas y demanda sísmica
+        cargas = {**CARGAS_DEFAULT, "numero_pisos": num_pisos}
+        resultado = calcular_demanda_cortante(cargas, ZONA_SISMICA, altura_piso_mm=float(posicion_mm[2]))
 
-    # Chequeo NSR-10
-    props = {"fc": fc, "fy": fy, "b": b, "h": h, "d": d, "Av": Av, "s": s}
-    chequeo = chequeo_nsr10_nudo(props, resultado["Vu_diseno_N"])
+        # Chequeo NSR-10
+        props = {"fc": fc, "fy": fy, "b": b, "h": h, "d": d, "Av": Av, "s": s}
+        chequeo = chequeo_nsr10_nudo(props, resultado["Vu_diseno_N"])
 
-    esp = resultado["espectro"]
-    veredicto = "PASA" if chequeo["cumple"] else "FALLA"
+        esp = resultado["espectro"]
+        veredicto = "PASA" if chequeo["cumple"] else "FALLA"
 
-    return AnalisisNudoResponse(
-        posicion_nudo_mm=[float(x) for x in posicion_mm],
-        matriz_T12_shape=list(T12_viga.shape),
-        matriz_T12_columna_shape=list(T12_columna.shape),
-        periodo_T_seg=round(resultado["T_seg"], 4),
-        Sa_g=round(resultado["Sa"], 4),
-        espectro={
-            "SDS": round(esp["SDS"], 4),
-            "SD1": round(esp["SD1"], 4),
-            "T0":  round(esp["T0"],  4),
-            "Ts":  round(esp["Ts"],  4),
-        },
-        Vs_basal_kN=round(resultado["Vs_basal_N"] / 1000, 2),
-        Vu_sismo_kN=round(resultado["Vu_sismo_N"] / 1000, 2),
-        Vu_gravedad_kN=round(resultado["Vu_gravedad_N"] / 1000, 2),
-        chequeo_nsr10={**chequeo, "combinacion_governa": resultado["combinacion_governa"]},
-        veredicto=veredicto,
-        norma_referencia="NSR-10 Títulos A (A.2.6, A.4.1, A.4.3) y C (C.11.3, C.11.4, C.21.7)",
-    )
+        return AnalisisNudoResponse(
+            posicion_nudo_mm=[float(x) for x in posicion_mm],
+            matriz_T12_shape=list(T12_viga.shape),
+            matriz_T12_columna_shape=list(T12_columna.shape),
+            periodo_T_seg=round(resultado["T_seg"], 4),
+            Sa_g=round(resultado["Sa"], 4),
+            espectro={
+                "SDS": round(esp["SDS"], 4),
+                "SD1": round(esp["SD1"], 4),
+                "T0":  round(esp["T0"],  4),
+                "Ts":  round(esp["Ts"],  4),
+            },
+            Vs_basal_kN=round(resultado["Vs_basal_N"] / 1000, 2),
+            Vu_sismo_kN=round(resultado["Vu_sismo_N"] / 1000, 2),
+            Vu_gravedad_kN=round(resultado["Vu_gravedad_N"] / 1000, 2),
+            chequeo_nsr10={**chequeo, "combinacion_governa": resultado["combinacion_governa"]},
+            veredicto=veredicto,
+            norma_referencia="NSR-10 Títulos A (A.2.6, A.4.1, A.4.3) y C (C.11.3, C.11.4, C.21.7)",
+        )
+    finally:
+        os.unlink(ruta_ifc)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -171,7 +197,9 @@ async def analizar_nudo(
     response_model=InspeccionEstribosResponse,
     summary="Inspección visual de estribos: imagen → separación real → NSR-10 C.21.4.4",
 )
+@limiter.limit("20/minute")
 async def inspeccion_estribos(
+    request:            Request,
     imagen:             UploadFile = File(...,   description="Foto JPG/PNG de la armadura"),
     posiciones_y_csv:   str        = Form(...,   description="Posiciones Y de estribos en px, separadas por coma: '60,130,200'"),
     s_max_diseno_mm:    float      = Form(75.0,  description="Separación máxima de diseño [mm] (del modelo IFC)"),
@@ -187,6 +215,8 @@ async def inspeccion_estribos(
     """
     # Leer imagen
     img_bytes = await imagen.read()
+    if len(img_bytes) > _MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail="Imagen demasiado grande (máx 20 MB)")
     arr = np.frombuffer(img_bytes, np.uint8)
     img = None
     try:
