@@ -496,16 +496,26 @@ async def _unhandled_exception_handler(request: Request, exc: Exception):
         content={"error": "Error interno del servidor", "detail": str(exc) if os.getenv("DEBUG") == "true" else None},
     )
 
+# Cada router se monta dos veces: en su ruta original (ej. /aquai/...) y de
+# nuevo bajo /v1 (ej. /v1/aquai/...) — mismo objeto router, FastAPI permite
+# incluir el mismo router más de una vez con prefijos distintos sin duplicar
+# lógica ni romper nada de lo que ya llama a la ruta sin prefijo. Ver nota de
+# versionado /v1 arriba de /health.
 if AQUAI_AVAILABLE:
     app.include_router(aquai_router)
+    app.include_router(aquai_router, prefix="/v1")
 if GEOPOT_AVAILABLE:
     app.include_router(geopot_router)
+    app.include_router(geopot_router, prefix="/v1")
 if VIAS_AVAILABLE:
     app.include_router(vias_router)
+    app.include_router(vias_router, prefix="/v1")
 if GERENCIA_AVAILABLE:
     app.include_router(gerencia_router)
+    app.include_router(gerencia_router, prefix="/v1")
 if ESTRUCTURAL_AVAILABLE:
     app.include_router(estructural_router)
+    app.include_router(estructural_router, prefix="/v1")
 
 
 # ════════════════════════════════════════════════════════════════════════════════
@@ -982,8 +992,19 @@ def _check_memoria() -> dict:
         return {"error": str(e)}
 
 
+# ── Versionado /v1 ────────────────────────────────────────────────────────────
+# Cada endpoint queda registrado dos veces: en su ruta original (sin prefijo,
+# la que ya usa apps/web hoy — nunca se toca, cero riesgo de romper el
+# frontend actual) y en /v1/<misma-ruta> (para el día en que haya que romper
+# un contrato y necesitemos poder mover clientes nuevos a /v1 mientras /v2
+# se estabiliza, sin tumbar a nadie que siga en la ruta vieja). Apilar varios
+# decoradores @app.X(...) sobre la misma función es el mismo patrón que ya
+# usaba /health con GET+HEAD — FastAPI registra rutas adicionales apuntando
+# al mismo handler, no crea una copia ni cambia el comportamiento.
 @app.get("/health", tags=["Sistema"])
 @app.head("/health", tags=["Sistema"])
+@app.get("/v1/health", tags=["Sistema"])
+@app.head("/v1/health", tags=["Sistema"])
 def health(deep: bool = False):
     """
     Health check con estado de cada módulo.
@@ -1059,6 +1080,7 @@ def _clave_cache_ask(pregunta: str, norma_hint: Optional[str], top_k: int) -> st
 
 
 @app.post("/ask", response_model=AskResponse, tags=["Normativa"])
+@app.post("/v1/ask", response_model=AskResponse, tags=["Normativa"])
 @limiter.limit("10/minute")
 def ask_norma(request: Request, req: AskRequest):
     """
@@ -1139,6 +1161,7 @@ _cache_consultar = TTLCache(ttl_seconds=6 * 3600, max_size=1000)
 
 
 @app.post("/consultar", response_model=ConsultarResponse, tags=["Normativa"])
+@app.post("/v1/consultar", response_model=ConsultarResponse, tags=["Normativa"])
 @limiter.limit("10/minute")
 def consultar_delegado(request: Request, req: ConsultarRequest):
     """
@@ -1213,6 +1236,7 @@ def consultar_delegado(request: Request, req: ConsultarRequest):
 # ── /detect — YOLO Detección Estructural ─────────────────────────────────────
 
 @app.post("/detect", response_model=DetectResponse, tags=["Detección"])
+@app.post("/v1/detect", response_model=DetectResponse, tags=["Detección"])
 @limiter.limit("10/minute")
 async def detect_structural(
     request: Request,
@@ -1287,6 +1311,7 @@ async def detect_structural(
 # ── /deform — Motor Deformación (clasificación → análisis estructural) ────────
 
 @app.post("/deform", response_model=DeformResponse, tags=["Deformación"])
+@app.post("/v1/deform", response_model=DeformResponse, tags=["Deformación"])
 @limiter.limit("20/minute")
 def deform_analyze(request: Request, req: DeformRequest):
     """
@@ -1364,6 +1389,7 @@ _cache_apu_list = TTLCache(ttl_seconds=3600, max_size=1)
 
 
 @app.get("/apu/list", response_model=list[APUItem], tags=["APU"])
+@app.get("/v1/apu/list", response_model=list[APUItem], tags=["APU"])
 def apu_list():
     """
     Lista todos los APUs disponibles en el catálogo Construdata 2026 Barranquilla.
@@ -1394,6 +1420,7 @@ def apu_list():
 # ── /apu/calculate — Calcular APU específico ─────────────────────────────────
 
 @app.post("/apu/calculate", response_model=APUDesglose, tags=["APU"])
+@app.post("/v1/apu/calculate", response_model=APUDesglose, tags=["APU"])
 @limiter.limit("20/minute")
 def apu_calculate(
     request: Request,
@@ -1461,6 +1488,7 @@ def apu_calculate(
 # ── /apu/calculate-dinamico — Cantidades desde geometría real (no catálogo) ──
 
 @app.post("/apu/calculate-dinamico", response_model=APUDesglose, tags=["APU"])
+@app.post("/v1/apu/calculate-dinamico", response_model=APUDesglose, tags=["APU"])
 @limiter.limit("20/minute")
 def apu_calculate_dinamico(request: Request, body: APUCantidadesRequest):
     """
@@ -1667,6 +1695,7 @@ def _calcular_fila_apu(fila: dict) -> tuple[dict, Optional["APUDesglose"]]:
 
 
 @app.get("/apu/plantilla", tags=["APU"])
+@app.get("/v1/apu/plantilla", tags=["APU"])
 @limiter.limit("10/minute")
 def apu_plantilla(request: Request):
     """Descarga la plantilla .xlsx para calcular APU en lote (catálogo y/o geometría dinámica)."""
@@ -1684,6 +1713,7 @@ def apu_plantilla(request: Request):
 
 
 @app.post("/apu/calculate-batch", tags=["APU"])
+@app.post("/v1/apu/calculate-batch", tags=["APU"])
 @limiter.limit("5/minute")
 def apu_calculate_batch(
     request: Request,
@@ -1778,6 +1808,7 @@ def apu_calculate_batch(
 # ── /ask/route — Debug: ver qué normas detecta el router ──────────────────────
 
 @app.get("/ask/route", tags=["Debug"])
+@app.get("/v1/ask/route", tags=["Debug"])
 def debug_route(q: str):
     """
     Muestra qué normas detectaría el router para una query dada.
