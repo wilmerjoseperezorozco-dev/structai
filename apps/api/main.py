@@ -797,61 +797,42 @@ def _check_llm_provider() -> dict:
         return {"disponible": False, "error": str(e)}
 
 
-def _limite_memoria_cgroup() -> Optional[int]:
-    """
-    Bytes disponibles para ESTE contenedor, no del host físico que lo aloja.
-    Encontrado el 2026-08-01: psutil.virtual_memory() en DigitalOcean App
-    Platform reporta memoria del host compartido (no tiene awareness de
-    cgroups), lo que hizo que /health marcara "critico": true con 97% de uso
-    mientras el panel real de DO mostraba 58% — una falsa alarma real,
-    verificada comparando ambas fuentes en producción. cgroup v2 primero
-    (mas comun en runtimes recientes), v1 como fallback.
-    """
-    for ruta in ("/sys/fs/cgroup/memory.max", "/sys/fs/cgroup/memory/memory.limit_in_bytes"):
-        try:
-            with open(ruta) as f:
-                valor = f.read().strip()
-            if valor and valor != "max":
-                limite = int(valor)
-                # cgroup sin límite real configurado reporta un número
-                # absurdamente alto (ej. 2^63) — se descarta, no es un límite útil
-                if limite < (1 << 62):
-                    return limite
-        except (FileNotFoundError, ValueError, PermissionError):
-            continue
-    return None
-
-
 def _check_memoria() -> dict:
     """
-    RAM del contenedor y del proceso — vital porque una imagen/lote de
-    embeddings grande puede agotar memoria antes de que el proceso crashee
-    visiblemente con otro error.
+    RAM del proceso, comparada contra el límite real de la instancia.
+
+    Encontrado el 2026-08-01: tanto psutil.virtual_memory() como la lectura
+    directa de /sys/fs/cgroup/memory.max reportan memoria del host
+    compartido en DigitalOcean App Platform, no del contenedor real (el
+    panel oficial de DO mostraba 58% de uso mientras esto marcaba 97%,
+    verificado dos veces) — el runtime de contenedores de DO no expone el
+    límite real por ninguna de las dos vías estándar. En vez de seguir
+    adivinando rutas de cgroup sin poder verificarlas contra el contenedor
+    real, se usa proceso_rss_mb (consistente y confiable en todas las
+    mediciones) comparado contra RAM_INSTANCIA_MB, que el operador configura
+    a mano con el tamaño real del plan (ej. 2048 para una instancia de 2GB,
+    visible en el panel de DO). Sin esa env var, no se afirma "critico" —
+    mejor no dar una señal que reportar una falsa otra vez.
     """
     try:
         import psutil
         proceso = psutil.Process(os.getpid())
         proceso_rss_mb = round(proceso.memory_info().rss / (1024 * 1024), 1)
 
-        limite_cgroup = _limite_memoria_cgroup()
-        if limite_cgroup:
-            disponible_mb = round((limite_cgroup - proceso.memory_info().rss) / (1024 * 1024), 1)
-            pct_usado = round(proceso.memory_info().rss / limite_cgroup * 100, 1)
-            fuente = "cgroup"
+        limite_mb = os.getenv("RAM_INSTANCIA_MB")
+        if limite_mb:
+            limite_mb = float(limite_mb)
+            pct_usado = round(proceso_rss_mb / limite_mb * 100, 1)
+            critico = pct_usado > 85
         else:
-            # Fallback para entornos sin cgroups (dev local Windows/Mac) —
-            # aqui si refleja el sistema real, no un host compartido
-            mem_sistema = psutil.virtual_memory()
-            disponible_mb = round(mem_sistema.available / (1024 * 1024), 1)
-            pct_usado = mem_sistema.percent
-            fuente = "sistema (dev local)"
+            pct_usado = None
+            critico = False
 
         return {
-            "fuente": fuente,
-            "pct_usado": pct_usado,
-            "disponible_mb": disponible_mb,
             "proceso_rss_mb": proceso_rss_mb,
-            "critico": pct_usado > 90,
+            "ram_instancia_mb": limite_mb,
+            "pct_usado": pct_usado,
+            "critico": critico,
         }
     except Exception as e:
         return {"error": str(e)}
