@@ -61,6 +61,29 @@ from json_logging import setup_logging
 setup_logging(level=logging.INFO)
 log = logging.getLogger("construdata.api")
 
+# ── Sentry: captura de errores en producción ───────────────────────────────
+# Se activa solo si SENTRY_DSN está seteado (no rompe dev local sin cuenta
+# configurada). traces_sample_rate bajo (10%) porque el plan free de Sentry
+# tiene cuota mensual de eventos — con 100 usuarios piloto no hace falta
+# tracear el 100% de requests para detectar errores, solo una muestra
+# representativa de performance.
+_SENTRY_DSN = os.getenv("SENTRY_DSN", "").strip()
+if _SENTRY_DSN:
+    import sentry_sdk
+    from sentry_sdk.integrations.fastapi import FastApiIntegration
+    from sentry_sdk.integrations.starlette import StarletteIntegration
+
+    sentry_sdk.init(
+        dsn=_SENTRY_DSN,
+        integrations=[StarletteIntegration(), FastApiIntegration()],
+        environment=os.getenv("SENTRY_ENVIRONMENT", "production"),
+        traces_sample_rate=0.1,
+        send_default_pii=False,
+    )
+    log.info("✓ Sentry inicializado")
+else:
+    log.warning("✗ SENTRY_DSN no configurado — errores no se reportan a Sentry")
+
 # ── Registro de uso real ───────────────────────────────────────────────────
 # Antes del lanzamiento piloto (2026-08) NO existía captura automática de
 # uso: solo quedaba rastro de lo que un usuario guardaba manualmente en
@@ -159,9 +182,20 @@ except Exception as e:
 
 try:
     import numpy as np
-    import cv2
-    import onnxruntime as ort
-    YOLO_DEPS = True
+    # cv2 (opencv-python-headless) + onnxruntime pesan ~200-300MB residentes
+    # combinados, y hoy /detect corre en modo stub (no existe un .onnx
+    # entrenado real, ver packages/yolo/README.md) — cargarlos igual en una
+    # instancia de 2GB es gastar RAM en una función que todavía no entrega
+    # valor real. ENABLE_YOLO=true (default false) los prende cuando el
+    # modelo esté entrenado o la instancia suba a 4GB+. Mismo patrón que
+    # ENABLE_ESTRUCTURAL más abajo.
+    if os.getenv("ENABLE_YOLO", "false").lower() == "true":
+        import cv2
+        import onnxruntime as ort
+        YOLO_DEPS = True
+    else:
+        YOLO_DEPS = False
+        log.info("○ YOLO desactivado (ENABLE_YOLO=false) — libera RAM, /detect en modo stub")
 except ImportError:
     YOLO_DEPS = False
     log.warning("✗ onnxruntime/cv2 no instalados — /detect en modo stub")
@@ -295,6 +329,29 @@ app.add_middleware(
 limiter = Limiter(key_func=rate_limit_key)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+
+# ── Manejador global de excepciones ────────────────────────────────────────
+# Antes de esto: una excepción no prevista en cualquier endpoint devolvía el
+# 500 crudo de Starlette (o, en el peor caso, dejaba el traceback sin
+# loguear con contexto). Con --workers 1 (ver Dockerfile) un solo proceso
+# sirve toda la API, así que un error mal manejado en un endpoint no debería
+# nunca tumbar el proceso completo — este handler evita que una excepción
+# no capturada escale más allá del request que la disparó, y la deja
+# logueada con el path/método para poder diagnosticarla. Sentry (si está
+# configurado) ya captura el evento automáticamente vía su integración de
+# Starlette; este handler es lo que ve el CLIENTE (JSON limpio, sin
+# traceback filtrado) y lo que queda en logs si Sentry no está activo.
+@app.exception_handler(Exception)
+async def _unhandled_exception_handler(request: Request, exc: Exception):
+    log.error(
+        f"Excepción no manejada en {request.method} {request.url.path}: {exc}",
+        exc_info=True,
+    )
+    return JSONResponse(
+        status_code=500,
+        content={"error": "Error interno del servidor", "detail": str(exc) if os.getenv("DEBUG") == "true" else None},
+    )
 
 if AQUAI_AVAILABLE:
     app.include_router(aquai_router)

@@ -2,7 +2,8 @@
 
 import { Check, X, HardHat, Zap } from "lucide-react";
 import clsx from "clsx";
-import { PLANES } from "@/lib/freemium";
+import Link from "next/link";
+import { PLANES, WOMPI_CHECKOUT_URL, WOMPI_ES_MODO_PRUEBA } from "@/lib/freemium";
 
 const FEATURES = [
   { label: "NSR-10 completa (11 títulos)", free: true,  pro: true  },
@@ -53,9 +54,12 @@ export default function PricingPage() {
               <span className="text-4xl font-bold text-white">$0</span>
             </div>
             <p className="text-xs text-concrete-500 mb-6">Para siempre</p>
-            <button className="w-full py-3 rounded-xl border border-concrete-600 text-sm text-concrete-300 hover:border-concrete-500 transition">
+            <Link
+              href="/login"
+              className="block w-full py-3 rounded-xl border border-concrete-600 text-sm text-concrete-300 hover:border-concrete-500 transition text-center"
+            >
               Empezar gratis
-            </button>
+            </Link>
           </div>
 
           {/* Pro */}
@@ -75,9 +79,19 @@ export default function PricingPage() {
             <p className="text-xs text-brand-400 mb-6">
               o $159K/año · ahorras 33%
             </p>
-            <button className="w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold transition">
+            <a
+              href={WOMPI_CHECKOUT_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold transition text-center"
+            >
               Activar Pro
-            </button>
+            </a>
+            {WOMPI_ES_MODO_PRUEBA && (
+              <p className="text-center text-[10px] text-yellow-500 mt-2">
+                ⚠ Pago en modo prueba — reemplazar por el link de producción antes de cobrar real
+              </p>
+            )}
           </div>
         </div>
 

@@ -367,9 +367,23 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = 6) -> dict
         # Buscar en todas las normas relevantes en paralelo
         all_chunks: list[ChunkResult] = []
         seen_ids: set[str] = set()
+        # route_query() por keywords es un filtro de PRIORIDAD, no exclusivo — una
+        # pregunta con vocabulario técnico compartido entre normas (p.ej. "resistencia
+        # a compresión" aparece tanto en NTC 673 como en NSR-10 Título E) puede hacer
+        # que la norma correcta nunca sea detectada por keyword y, si el filtro fuera
+        # exclusivo, jamás se buscaría — encontrado auditando Título E: 2 de 4
+        # preguntas piloto fallaban porque route_query() nunca incluía "NSR-10" pese a
+        # existir contenido real y correcto. Por eso SIEMPRE se agrega también una
+        # búsqueda global (norma_filter=None) al pool de candidatos, sin importar si
+        # hubo normas detectadas por keyword.
         for norma in (target_normas or [None]):
-            results = search(question, norma_filter=norma if target_normas else None, top_k=top_k)
+            results = search(question, norma_filter=norma, top_k=top_k)
             for c in results:
+                if c.chunk_id not in seen_ids:
+                    all_chunks.append(c)
+                    seen_ids.add(c.chunk_id)
+        if target_normas:
+            for c in search(question, norma_filter=None, top_k=top_k):
                 if c.chunk_id not in seen_ids:
                     all_chunks.append(c)
                     seen_ids.add(c.chunk_id)

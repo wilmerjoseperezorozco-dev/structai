@@ -10,6 +10,7 @@ import {
   WifiOff,
   HardHat,
   LayoutDashboard,
+  Loader2,
 } from "lucide-react";
 import clsx from "clsx";
 import dynamic from "next/dynamic";
@@ -77,6 +78,7 @@ function HomeContent() {
   const [tab, setTab] = useState<Tab>(initialTab);
   const [health, setHealth] = useState<HealthResponse | null>(null);
   const [hasSession, setHasSession] = useState(false);
+  const [checkingSession, setCheckingSession] = useState(true);
 
   useEffect(() => {
     healthCheck()
@@ -85,8 +87,25 @@ function HomeContent() {
   }, []);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setHasSession(!!data.session));
+    supabase.auth.getSession().then(({ data }) => {
+      setHasSession(!!data.session);
+      setCheckingSession(false);
+    });
   }, []);
+
+  // Mientras se resuelve la sesión (async) no se puede saber todavía si
+  // corresponde mostrar el Hero o la app de tabs — mostrar cualquiera de
+  // los dos a ciegas causaba un flash real: el Hero aparecía primero y
+  // saltaba a la app en cuanto getSession() resolvía para un usuario ya
+  // logueado. Mismo patrón que (app)/layout.tsx: un estado neutral
+  // mientras se verifica, nunca contenido que después se descarta.
+  if (checkingSession) {
+    return (
+      <div className="flex h-full items-center justify-center bg-concrete-900">
+        <Loader2 size={22} className="animate-spin text-brand-400" />
+      </div>
+    );
+  }
 
   // Landing (hero) para visitantes sin sesión que llegan a "/" sin un tab
   // explícito. Enlaces existentes como "/?tab=chat" (desde /dashboard) y

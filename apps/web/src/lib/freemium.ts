@@ -1,5 +1,17 @@
 import type { UserPlan } from "./supabase";
 
+// Wompi payment link — activación manual del plan Pro (2026-08-01): el botón
+// "Activar Pro" abre este link de pago; cuando Wompi confirma el pago, el
+// plan se activa a mano en Supabase desde el panel del owner. Webhook
+// automático queda para cuando haya volumen suficiente para justificarlo
+// (ver notas de la sesión). El link por defecto es de MODO PRUEBA
+// (test_VPOS) — antes de cobrar dinero real hay que reemplazar
+// NEXT_PUBLIC_WOMPI_CHECKOUT_URL por el link de producción desde el panel
+// de Wompi (Cobros > Links de pago).
+export const WOMPI_CHECKOUT_URL =
+  process.env.NEXT_PUBLIC_WOMPI_CHECKOUT_URL || "https://checkout.wompi.co/l/test_VPOS_dYJ3Uh";
+export const WOMPI_ES_MODO_PRUEBA = WOMPI_CHECKOUT_URL.includes("/l/test_");
+
 export const PLANES = {
   free: {
     nombre: "Gratis",

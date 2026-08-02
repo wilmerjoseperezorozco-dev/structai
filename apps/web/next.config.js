@@ -12,6 +12,7 @@
 // backend FastAPI.
 const withPWAInit = require("@ducanh2912/next-pwa").default;
 const { runtimeCaching: runtimeCachingDefecto } = require("@ducanh2912/next-pwa");
+const { withSentryConfig } = require("@sentry/nextjs");
 
 const runtimeCaching = [
   {
@@ -58,4 +59,19 @@ const nextConfig = {
   },
 };
 
-module.exports = withPWA(nextConfig);
+// withSentryConfig sube sourcemaps a Sentry en build (traces legibles con
+// nombres de archivo/línea reales en vez de código minificado) — solo
+// funciona con SENTRY_AUTH_TOKEN configurado (org/project en Sentry, no el
+// DSN). Sin esas env vars el plugin se desactiva solo (silent: true evita
+// que el build falle o llene la consola de warnings mientras tanto).
+module.exports = withSentryConfig(withPWA(nextConfig), {
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  silent: true,
+  disableLogger: true,
+  widenClientFileUpload: false,
+  sourcemaps: {
+    disable: !process.env.SENTRY_AUTH_TOKEN,
+  },
+});
