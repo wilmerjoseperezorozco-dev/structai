@@ -68,6 +68,57 @@ class RespuestaIAIndisponibleError(RuntimeError):
     """Ni Groq ni el respaldo NVIDIA pudieron generar una respuesta."""
 
 
+# ─── Alerta de cuota diaria de Groq ───────────────────────────────────────────
+# Encontrado el 2026-08-01: la cuota free de Groq (200K tokens/día) se agotó
+# solo con el volumen de pruebas de una sesión, y nadie se enteró hasta que
+# el pipeline empezó a fallar de verdad. Antes de hoy no se registraba ni un
+# solo token real consumido — esto lo corrige: cuenta tokens reales de cada
+# respuesta exitosa de Groq (response.usage.total_tokens, viene gratis en
+# cada respuesta, no hay que estimarlo) y dispara UNA alerta a Sentry cuando
+# se cruza el umbral, no una por cada request restante del día (eso solo
+# generaría ruido). Contador en memoria del proceso — se reinicia solo (no
+# hace falta lógica de reset explícita) porque compara la fecha en cada
+# actualización.
+GROQ_LIMITE_DIARIO_TOKENS = int(os.getenv("GROQ_LIMITE_DIARIO_TOKENS", "200000"))
+GROQ_UMBRAL_ALERTA_PCT = float(os.getenv("GROQ_UMBRAL_ALERTA_PCT", "0.8"))
+
+_uso_groq_hoy = {"fecha": None, "tokens": 0, "alertado": False}
+
+
+def _registrar_uso_groq(tokens_usados: int) -> None:
+    import datetime
+
+    hoy = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+    if _uso_groq_hoy["fecha"] != hoy:
+        _uso_groq_hoy["fecha"] = hoy
+        _uso_groq_hoy["tokens"] = 0
+        _uso_groq_hoy["alertado"] = False
+
+    _uso_groq_hoy["tokens"] += tokens_usados
+    umbral = GROQ_LIMITE_DIARIO_TOKENS * GROQ_UMBRAL_ALERTA_PCT
+
+    if not _uso_groq_hoy["alertado"] and _uso_groq_hoy["tokens"] >= umbral:
+        _uso_groq_hoy["alertado"] = True
+        mensaje = (
+            f"Cuota de Groq al {_uso_groq_hoy['tokens'] / GROQ_LIMITE_DIARIO_TOKENS * 100:.0f}% "
+            f"del límite diario ({_uso_groq_hoy['tokens']}/{GROQ_LIMITE_DIARIO_TOKENS} tokens). "
+            "El respaldo NVIDIA entra automáticamente si Groq se agota, pero es mucho más lento."
+        )
+        log.warning(mensaje)
+        try:
+            import sentry_sdk
+            sentry_sdk.capture_message(mensaje, level="warning")
+        except Exception:
+            # sentry_sdk no instalado/configurado — el log.warning de arriba
+            # ya deja rastro en los logs de DigitalOcean aunque no llegue a Sentry.
+            pass
+
+
+def uso_groq_hoy() -> dict:
+    """Para exponer en /health?deep=true — visibilidad sin esperar la alerta."""
+    return dict(_uso_groq_hoy)
+
+
 @lru_cache(maxsize=1)
 def _embedding_model():
     # Fuerza modo offline: el modelo ya está en caché local (~/.cache/huggingface).
@@ -433,6 +484,8 @@ def _generar_respuesta(contexto: str, question: str) -> str:
             max_tokens=700,
             extra_body={"reasoning_effort": "low"},
         )
+        if response.usage is not None:
+            _registrar_uso_groq(response.usage.total_tokens)
         return response.choices[0].message.content
     except (RateLimitError, APIConnectionError, InternalServerError) as e:
         # Solo se cae a NVIDIA en fallos de capacidad/red/servidor de Groq —

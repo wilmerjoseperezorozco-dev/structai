@@ -283,6 +283,7 @@ try:
     from rag_multi_norma import ask as rag_ask, route_query, ask_delegado
     from rag_multi_norma import sb as supabase_client, groq_client
     from rag_multi_norma import RespuestaIAIndisponibleError
+    from rag_multi_norma import uso_groq_hoy as _uso_groq_hoy_fn
     RAG_AVAILABLE = True
     log.info("✓ rag_multi_norma cargado")
 except Exception as e:
@@ -1022,11 +1023,13 @@ def health(deep: bool = False):
     supabase_check = _check_supabase_latencia()
     llm_check = _check_llm_provider()
     memoria_check = _check_memoria()
+    uso_groq = _uso_groq_hoy_fn() if RAG_AVAILABLE else {"error": "rag_multi_norma no disponible"}
 
     resultado["dependencias"] = {
         "supabase": supabase_check,
         "llm_groq": llm_check,
         "memoria": memoria_check,
+        "uso_groq_hoy": uso_groq,
     }
 
     # "degraded" si algo activo falló pero el proceso sigue vivo y sirviendo;
