@@ -74,10 +74,35 @@ KEYWORD_MAP = {
     "NTC 454":  ["muestra concreto","toma de muestra","muestra compuesta"],
     "NTC 2289": ["acero refuerzo","barra corrugada","fy","ASTM A706","Grado 60"],
     "NTC 1500": ["instalacion hidraulica","fontaneria","desague","sanitaria"],
-    "NSR-10":   ["sismorresistente","sismo","zona sismica","espectro","NSR-10",
+    # search_knowledge() filtra por ILIKE '%p_norma%' contra nsr10_chunks.capitulo
+    # (ej. "NSR-10 Título A — Requisitos Generales (A.2 ...)"). Un filtro genérico
+    # "NSR-10" agrupa los 11 títulos en un solo balde y deja que compitan por
+    # similitud de coseno sin ninguna otra señal — exactamente la causa de que
+    # contenido de un título gane el top-k para preguntas de otro título
+    # (confirmado repetidas veces auditando Títulos E/F/G/B/A esta sesión).
+    # Palabras clave específicas de título (abajo) permiten un norma_filter más
+    # preciso ("NSR-10 Título A") cuando la pregunta lo amerita — sin dejar de
+    # tener también la búsqueda global de respaldo (ver ask(), que SIEMPRE
+    # agrega norma_filter=None al pool además de estos candidatos).
+    # Solo se agregan entradas por título para los que ya tienen contenido real
+    # verbatim cargado (A parcial, B) — para los que aún no (C/D/F/G/H/I) no
+    # tiene sentido enrutar con precisión a un corpus vacío/sintético.
+    "NSR-10 Título A": ["sismorresistente","zona de amenaza sismica","aceleracion pico efectiva",
+                 "coeficiente r0","phi_a","phi_p","phi_r","disipacion de energia",
+                 "espectro elastico","perfil de suelo","coeficiente de importancia",
+                 "sistema de muros de carga","sistema combinado","sistema de portico",
+                 "sistema dual","sistema estructural","sistemas estructurales",
+                 "resistencia sismica","fuerza horizontal equivalente","analisis dinamico",
+                 "deriva maxima","cortante sismico en la base","periodo fundamental",
+                 "grado de capacidad de disipacion","des dmo dmi","microzonificacion sismica",
+                 "valores de aa","valores de av","coeficiente aa","coeficiente av",
+                 "movimientos sismicos de diseño","diseño sismo resistente","diseño sismico"],
+    "NSR-10 Título B": ["carga muerta","carga viva","empuje de tierra","fuerzas de viento",
+                 "combinacion de carga","esfuerzos de trabajo","reduccion de carga viva",
+                 "densidad de materiales de construccion"],
+    "NSR-10":   ["sismo","zona sismica","espectro","NSR-10",
                  "recubrimiento","relacion agua","a/mc","durabilidad concreto",
-                 "exposicion concreto","contacto con el suelo","tipo de mortero",
-                 "coeficiente r0","disipacion de energia"],
+                 "exposicion concreto","contacto con el suelo","tipo de mortero"],
     "Resolución 1409 de 2012": ["trabajo alturas","caida","arnés","linea vida","andamio"],
     "Decreto 1072 de 2015":    ["SGSST","seguridad salud trabajo","SG-SST","PHVA","politica sst","copasst","vigia sst","investigacion de accidentes","indicadores sst","matriz ipvr"],
     "Resolución 0312 de 2019": ["estandares minimos","autoevaluacion sst","plan de mejoramiento","semaforo sst","calificacion sg-sst"],
