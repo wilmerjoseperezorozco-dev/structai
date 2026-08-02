@@ -9,12 +9,15 @@ por respuesta, inviable para un SaaS con usuarios reales).
 Uso: from rag_multi_norma import ask, route_query
 ══════════════════════════════════════════════════════════════════
 """
+import logging
 import os
 from dataclasses import dataclass
 from functools import lru_cache
 from typing import Optional
-from openai import OpenAI
+from openai import APIConnectionError, InternalServerError, OpenAI, RateLimitError
 from supabase import create_client
+
+log = logging.getLogger(__name__)
 
 sb = create_client(os.environ["SUPABASE_URL"], os.environ["SUPABASE_SERVICE_KEY"])
 
@@ -28,6 +31,41 @@ EMBEDDING_MODEL_NAME = "paraphrase-multilingual-MiniLM-L12-v2"  # 384-dim, multi
 GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
 
 groq_client = OpenAI(api_key=os.environ["GROQ_API_KEY"], base_url="https://api.groq.com/openai/v1")
+
+# ─── Respaldo NVIDIA NIM ──────────────────────────────────────────────────────
+# Encontrado el 2026-08-02: Groq bloqueó la compra de Dev Tier hace ~6 días
+# sin ETA ("Developer tier upgrades are temporarily unavailable due to high
+# demand"), y la cuota free de 200K tokens/día se agota con uso real del
+# piloto. NVIDIA NIM (build.nvidia.com) da créditos gratis sin tarjeta y
+# expone una API compatible con el SDK de OpenAI — mismo patrón que groq_client,
+# solo cambia base_url/modelo. Probado en vivo el 2026-08-02 contra la cuenta
+# real: "meta/llama-3.3-70b-instruct" responde bien (a diferencia de
+# "openai/gpt-oss-120b" en NVIDIA, que devolvió content=None — mismo bug de
+# modelo-de-razonamiento-consume-max_tokens documentado arriba, así que NO
+# usar un modelo "reasoning" aquí). Latencia real observada: ~20s (vs 1-3s de
+# Groq — hardware de NVIDIA NIM free tier no es LPU) — solo se usa cuando
+# Groq ya falló, así que 20s es mejor que un 500 crudo.
+NVIDIA_MODEL = os.getenv("NVIDIA_MODEL", "meta/llama-3.3-70b-instruct")
+_nvidia_api_key = os.getenv("NVIDIA_API_KEY")
+# timeout=15s (no más): 4 llamadas reales de prueba el 2026-08-02 dieron
+# 20s / timeout / timeout / 199s — la capacidad gratuita de NVIDIA NIM es
+# demasiado inconsistente para tratarla como rescate garantizado. Dejarla
+# esperar minutos sería PEOR que fallar rápido: el usuario quedaría con la
+# petición colgada en vez de un mensaje claro. Con 15s, en el peor caso el
+# respaldo no ayuda pero tampoco cuelga nada; en el mejor caso (como la
+# primera prueba, 20s… ligeramente por encima incluso de este límite) puede
+# rescatar la respuesta. max_retries=0: reintentar la MISMA llamada lenta
+# solo duplica la espera sin arreglar nada.
+nvidia_client = (
+    OpenAI(api_key=_nvidia_api_key, base_url="https://integrate.api.nvidia.com/v1", timeout=15.0, max_retries=0)
+    if _nvidia_api_key else None
+)
+if nvidia_client is None:
+    log.warning("NVIDIA_API_KEY no configurada — sin respaldo si Groq se queda sin cuota.")
+
+
+class RespuestaIAIndisponibleError(RuntimeError):
+    """Ni Groq ni el respaldo NVIDIA pudieron generar una respuesta."""
 
 
 @lru_cache(maxsize=1)
@@ -383,17 +421,54 @@ def _generar_respuesta(contexto: str, question: str) -> str:
     # respuesta. "low" acota el razonamiento interno (no aplica a preguntas
     # de RAG con contexto ya recuperado — no hace falta razonamiento
     # profundo, solo síntesis fiel del contexto).
-    response = groq_client.chat.completions.create(
-        model=GROQ_MODEL,
-        messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": f"CONTEXTO NORMATIVO:\n{contexto}\n\nPREGUNTA: {question}"}
-        ],
-        temperature=0.1,
-        max_tokens=700,
-        extra_body={"reasoning_effort": "low"},
-    )
-    return response.choices[0].message.content
+    messages = [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user", "content": f"CONTEXTO NORMATIVO:\n{contexto}\n\nPREGUNTA: {question}"}
+    ]
+    try:
+        response = groq_client.chat.completions.create(
+            model=GROQ_MODEL,
+            messages=messages,
+            temperature=0.1,
+            max_tokens=700,
+            extra_body={"reasoning_effort": "low"},
+        )
+        return response.choices[0].message.content
+    except (RateLimitError, APIConnectionError, InternalServerError) as e:
+        # Solo se cae a NVIDIA en fallos de capacidad/red/servidor de Groq —
+        # nunca en BadRequestError/AuthenticationError/NotFoundError, que son
+        # bugs propios que NVIDIA fallaría igual (o peor, enmascarando el error real).
+        log.warning(f"Groq no disponible ({type(e).__name__}), intentando respaldo NVIDIA: {e}")
+
+    if nvidia_client is None:
+        raise RespuestaIAIndisponibleError(
+            "Groq no disponible (cuota agotada o caído) y no hay respaldo NVIDIA configurado."
+        )
+
+    try:
+        # max_tokens más bajo que Groq (400 vs 700): NVIDIA NIM free tier no
+        # tiene hardware LPU, cada token adicional pesa más en latencia real
+        # y el proxy de DigitalOcean ya demostró cortar respuestas lentas
+        # (ver nota de max_tokens de Groq arriba) — prioriza terminar rápido
+        # sobre una respuesta más larga cuando ya estamos en el camino de respaldo.
+        response = nvidia_client.chat.completions.create(
+            model=NVIDIA_MODEL,
+            messages=messages,
+            temperature=0.1,
+            max_tokens=400,
+        )
+        contenido = response.choices[0].message.content
+        if not contenido:
+            raise RespuestaIAIndisponibleError("El respaldo NVIDIA devolvió una respuesta vacía.")
+        log.info(f"Respuesta generada con respaldo NVIDIA ({NVIDIA_MODEL}) porque Groq no estaba disponible.")
+        return contenido
+    except RespuestaIAIndisponibleError:
+        raise
+    except Exception as e:
+        log.error(f"Respaldo NVIDIA también falló: {e}", exc_info=True)
+        raise RespuestaIAIndisponibleError(
+            "Groq y el respaldo NVIDIA fallaron. Intenta de nuevo en unos minutos."
+        ) from e
 
 def ask(question: str, norma_hint: Optional[str] = None, top_k: int = 6) -> dict:
     """

@@ -249,6 +249,7 @@ def verificar_limite_apu_mes(user_id: str) -> None:
 try:
     from rag_multi_norma import ask as rag_ask, route_query, ask_delegado
     from rag_multi_norma import sb as supabase_client, groq_client
+    from rag_multi_norma import RespuestaIAIndisponibleError
     RAG_AVAILABLE = True
     log.info("✓ rag_multi_norma cargado")
 except Exception as e:
@@ -1031,6 +1032,9 @@ def ask_norma(request: Request, req: AskRequest):
             norma_hint=req.norma_hint,
             top_k=req.top_k,
         )
+    except RespuestaIAIndisponibleError as e:
+        log.error(f"IA no disponible (Groq + respaldo NVIDIA): {e}", extra={"user_id": user.id, "endpoint": "/ask"})
+        raise HTTPException(status_code=503, detail="Servicio de IA saturado temporalmente. Intenta de nuevo en unos minutos.")
     except Exception as e:
         log.error(f"Error RAG: {e}", exc_info=True, extra={"user_id": user.id, "endpoint": "/ask"})
         raise HTTPException(status_code=500, detail=f"Error en RAG: {str(e)}")
@@ -1093,6 +1097,9 @@ def consultar_delegado(request: Request, req: ConsultarRequest):
     t0 = time.perf_counter()
     try:
         result = ask_delegado(question=req.pregunta, top_k=req.top_k)
+    except RespuestaIAIndisponibleError as e:
+        log.error(f"IA no disponible (Groq + respaldo NVIDIA): {e}", extra={"user_id": user.id, "endpoint": "/consultar"})
+        raise HTTPException(status_code=503, detail="Servicio de IA saturado temporalmente. Intenta de nuevo en unos minutos.")
     except Exception as e:
         log.error(f"Error en agente delegador: {e}", exc_info=True, extra={"user_id": user.id, "endpoint": "/consultar"})
         raise HTTPException(status_code=500, detail=f"Error en agente delegador: {str(e)}")
