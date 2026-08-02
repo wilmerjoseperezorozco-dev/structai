@@ -54,6 +54,7 @@ from slowapi.errors import RateLimitExceeded
 from starlette.concurrency import run_in_threadpool
 
 from auth import get_current_user
+from cache import TTLCache
 from rate_limit import limiter
 import apu_excel
 
@@ -1040,6 +1041,20 @@ def health(deep: bool = False):
 
 # ── /ask — RAG Multi-Norma ───────────────────────────────────────────────────
 
+# Cachea la respuesta COMPLETA de rag_ask() (texto + fuentes + normas
+# citadas), no solo el texto — así una pregunta repetida se salta embedding
+# + búsqueda híbrida en Supabase + la llamada real a Groq/NVIDIA por
+# completo, no solo el último paso. TTL de 6h: el contenido normativo que
+# respalda la respuesta cambia poco (se actualiza a mano vía scripts de
+# ingesta), y esto además reduce consumo real de tokens de Groq — ver
+# hallazgo de cuota diaria agotándose con uso real.
+_cache_ask = TTLCache(ttl_seconds=6 * 3600, max_size=1000)
+
+
+def _clave_cache_ask(pregunta: str, norma_hint: Optional[str], top_k: int) -> str:
+    return f"{pregunta.strip().lower()}|{(norma_hint or '').strip().lower()}|{top_k}"
+
+
 @app.post("/ask", response_model=AskResponse, tags=["Normativa"])
 @limiter.limit("10/minute")
 def ask_norma(request: Request, req: AskRequest):
@@ -1062,22 +1077,31 @@ def ask_norma(request: Request, req: AskRequest):
             detail="Módulo RAG no disponible. Verificar SUPABASE_URL/SUPABASE_SERVICE_KEY y GROQ_API_KEY."
         )
 
-    log.info("Consulta /ask", extra={"user_id": user.id, "endpoint": "/ask"})
-    t0 = time.perf_counter()
-    try:
-        result = rag_ask(
-            question=req.pregunta,
-            norma_hint=req.norma_hint,
-            top_k=req.top_k,
-        )
-    except RespuestaIAIndisponibleError as e:
-        log.error(f"IA no disponible (Groq + respaldo NVIDIA): {e}", extra={"user_id": user.id, "endpoint": "/ask"})
-        raise HTTPException(status_code=503, detail="Servicio de IA saturado temporalmente. Intenta de nuevo en unos minutos.")
-    except Exception as e:
-        log.error(f"Error RAG: {e}", exc_info=True, extra={"user_id": user.id, "endpoint": "/ask"})
-        raise HTTPException(status_code=500, detail=f"Error en RAG: {str(e)}")
+    clave_cache = _clave_cache_ask(req.pregunta, req.norma_hint, req.top_k)
+    result = _cache_ask.get(clave_cache)
+    cache_hit = result is not None
 
-    latencia = int((time.perf_counter() - t0) * 1000)
+    if cache_hit:
+        log.info("Consulta /ask (cache hit)", extra={"user_id": user.id, "endpoint": "/ask"})
+        latencia = 0
+    else:
+        log.info("Consulta /ask", extra={"user_id": user.id, "endpoint": "/ask"})
+        t0 = time.perf_counter()
+        try:
+            result = rag_ask(
+                question=req.pregunta,
+                norma_hint=req.norma_hint,
+                top_k=req.top_k,
+            )
+        except RespuestaIAIndisponibleError as e:
+            log.error(f"IA no disponible (Groq + respaldo NVIDIA): {e}", extra={"user_id": user.id, "endpoint": "/ask"})
+            raise HTTPException(status_code=503, detail="Servicio de IA saturado temporalmente. Intenta de nuevo en unos minutos.")
+        except Exception as e:
+            log.error(f"Error RAG: {e}", exc_info=True, extra={"user_id": user.id, "endpoint": "/ask"})
+            raise HTTPException(status_code=500, detail=f"Error en RAG: {str(e)}")
+
+        latencia = int((time.perf_counter() - t0) * 1000)
+        _cache_ask.set(clave_cache, result)
 
     fuentes = [
         FuenteChunk(
@@ -1108,6 +1132,9 @@ def ask_norma(request: Request, req: AskRequest):
 
 # ── /consultar — Agente delegador multi-dominio ──────────────────────────────
 
+_cache_consultar = TTLCache(ttl_seconds=6 * 3600, max_size=1000)
+
+
 @app.post("/consultar", response_model=ConsultarResponse, tags=["Normativa"])
 @limiter.limit("10/minute")
 def consultar_delegado(request: Request, req: ConsultarRequest):
@@ -1131,18 +1158,27 @@ def consultar_delegado(request: Request, req: ConsultarRequest):
             detail="Módulo RAG no disponible. Verificar SUPABASE_URL/SUPABASE_SERVICE_KEY y GROQ_API_KEY."
         )
 
-    log.info("Consulta /consultar", extra={"user_id": user.id, "endpoint": "/consultar"})
-    t0 = time.perf_counter()
-    try:
-        result = ask_delegado(question=req.pregunta, top_k=req.top_k)
-    except RespuestaIAIndisponibleError as e:
-        log.error(f"IA no disponible (Groq + respaldo NVIDIA): {e}", extra={"user_id": user.id, "endpoint": "/consultar"})
-        raise HTTPException(status_code=503, detail="Servicio de IA saturado temporalmente. Intenta de nuevo en unos minutos.")
-    except Exception as e:
-        log.error(f"Error en agente delegador: {e}", exc_info=True, extra={"user_id": user.id, "endpoint": "/consultar"})
-        raise HTTPException(status_code=500, detail=f"Error en agente delegador: {str(e)}")
+    clave_cache = f"{req.pregunta.strip().lower()}|{req.top_k}"
+    result = _cache_consultar.get(clave_cache)
+    cache_hit = result is not None
 
-    latencia = int((time.perf_counter() - t0) * 1000)
+    if cache_hit:
+        log.info("Consulta /consultar (cache hit)", extra={"user_id": user.id, "endpoint": "/consultar"})
+        latencia = 0
+    else:
+        log.info("Consulta /consultar", extra={"user_id": user.id, "endpoint": "/consultar"})
+        t0 = time.perf_counter()
+        try:
+            result = ask_delegado(question=req.pregunta, top_k=req.top_k)
+        except RespuestaIAIndisponibleError as e:
+            log.error(f"IA no disponible (Groq + respaldo NVIDIA): {e}", extra={"user_id": user.id, "endpoint": "/consultar"})
+            raise HTTPException(status_code=503, detail="Servicio de IA saturado temporalmente. Intenta de nuevo en unos minutos.")
+        except Exception as e:
+            log.error(f"Error en agente delegador: {e}", exc_info=True, extra={"user_id": user.id, "endpoint": "/consultar"})
+            raise HTTPException(status_code=500, detail=f"Error en agente delegador: {str(e)}")
+
+        latencia = int((time.perf_counter() - t0) * 1000)
+        _cache_consultar.set(clave_cache, result)
 
     fuentes = [
         FuenteChunk(
@@ -1316,6 +1352,14 @@ def deform_analyze(request: Request, req: DeformRequest):
 
 # ── /apu/list — Catálogo APU ──────────────────────────────────────────────────
 
+# listar_actividades() recorre el catálogo completo (29 ítems) y recalcula
+# cada uno (incluye Monte Carlo para el IC90) en cada llamada — el catálogo
+# es un dict estático en Python, no cambia entre deploys, así que cachearlo
+# 1h evita recomputar lo mismo en cada carga del panel de APU sin arriesgar
+# servir datos desactualizados por mucho tiempo si algún día sí cambia.
+_cache_apu_list = TTLCache(ttl_seconds=3600, max_size=1)
+
+
 @app.get("/apu/list", response_model=list[APUItem], tags=["APU"])
 def apu_list():
     """
@@ -1328,13 +1372,20 @@ def apu_list():
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="Módulo motor-apu no disponible."
         )
+
+    cacheado = _cache_apu_list.get("catalogo")
+    if cacheado is not None:
+        return cacheado
+
     try:
         items = listar_actividades()
     except Exception as e:
         log.error(f"Error listando APUs: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
-    return [APUItem(**item) for item in items]
+    resultado = [APUItem(**item) for item in items]
+    _cache_apu_list.set("catalogo", resultado)
+    return resultado
 
 
 # ── /apu/calculate — Calcular APU específico ─────────────────────────────────

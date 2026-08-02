@@ -23,6 +23,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 # apps/api ya está en sys.path para cuando este módulo se importa (main.py lo
 # agrega antes de hacer `from routers.geopot import router`).
 from auth import AuthenticatedUser, get_current_user
+from cache import TTLCache
 from rate_limit import limiter
 
 ROOT = Path(__file__).resolve().parents[3]  # monorepo/
@@ -53,10 +54,21 @@ def endpoint_sismica(request: Request, req: motor_geopot.ZonaSismicaRequest, use
     return resultado
 
 
+# resumen_zonas_sismicas() es tabla de referencia estática (32 departamentos,
+# NSR-10) — no depende de ningún input ni de datos de usuario, así que
+# cachearla es seguro sin ninguna clave más que "la única respuesta posible".
+_cache_sismica_resumen = TTLCache(ttl_seconds=24 * 3600, max_size=1)
+
+
 @router.get("/sismica/resumen", summary="Resumen nacional de zonas sísmicas")
 @limiter.limit("60/minute")
 def endpoint_sismica_resumen(request: Request):
-    return motor_geopot.resumen_zonas_sismicas()
+    cacheado = _cache_sismica_resumen.get("resumen")
+    if cacheado is not None:
+        return cacheado
+    resultado = motor_geopot.resumen_zonas_sismicas()
+    _cache_sismica_resumen.set("resumen", resultado)
+    return resultado
 
 
 # ── Laboratorio: concreto ────────────────────────────────────────────────────
