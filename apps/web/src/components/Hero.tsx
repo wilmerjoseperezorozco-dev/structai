@@ -83,8 +83,8 @@ export function Hero() {
             <div className="mt-6 inline-flex items-center gap-3 rounded-xl border border-ink-700 bg-ink-900/70 px-4 py-3">
               <ShieldCheck size={16} className="flex-shrink-0 text-bronze-400" />
               <code className="font-mono text-xs text-ink-200">
-                NSR-10 C.9.2 — f&apos;c ≥ 21 MPa{" "}
-                <span className="text-ink-500">(zona sísmica alta)</span>
+                NSR-10 C.21.1.4.2 — f&apos;c ≥ 21 MPa{" "}
+                <span className="text-ink-500">(estructuras DMO/DES)</span>
               </code>
             </div>
 

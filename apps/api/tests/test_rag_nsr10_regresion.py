@@ -88,8 +88,36 @@ CASOS_TITULO_A = [
     ),
 ]
 
+CASOS_TITULO_C = [
+    pytest.param(
+        "Cual es la resistencia minima a la compresion f'c que exige la NSR-10 para el concreto estructural?",
+        ["17"],
+        id="C-fc-minimo-general-17MPa",
+    ),
+    pytest.param(
+        "Cual es la resistencia minima a la compresion del concreto para estructuras con capacidad de disipacion de energia especial DES o moderada DMO?",
+        ["21"],
+        id="C-fc-minimo-DMO-DES-21MPa",
+    ),
+    pytest.param(
+        "Cual es el recubrimiento minimo cuando el concreto esta colocado contra el suelo y expuesto permanentemente a el?",
+        ["75"],
+        id="C-recubrimiento-contacto-suelo-75mm",
+    ),
+    pytest.param(
+        "Cuales son los factores de reduccion de resistencia phi para secciones controladas por traccion y para cortante?",
+        ["0.90", "0,90"],
+        id="C-factor-phi-traccion-090",
+    ),
+    pytest.param(
+        "Cual es el angulo de doblez de los ganchos sismicos en estribos de confinamiento para estructuras DMO y DES?",
+        ["135"],
+        id="C-ganchos-sismicos-135grados",
+    ),
+]
 
-@pytest.mark.parametrize("pregunta,variantes_esperadas", CASOS_TITULO_B + CASOS_TITULO_A)
+
+@pytest.mark.parametrize("pregunta,variantes_esperadas", CASOS_TITULO_B + CASOS_TITULO_A + CASOS_TITULO_C)
 def test_respuesta_contiene_hecho_verificado(pregunta: str, variantes_esperadas: list[str]) -> None:
     resultado = ask(pregunta, top_k=4)
     respuesta = resultado["respuesta"]

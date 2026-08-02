@@ -85,8 +85,9 @@ KEYWORD_MAP = {
     # tener también la búsqueda global de respaldo (ver ask(), que SIEMPRE
     # agrega norma_filter=None al pool además de estos candidatos).
     # Solo se agregan entradas por título para los que ya tienen contenido real
-    # verbatim cargado (A parcial, B) — para los que aún no (C/D/F/G/H/I) no
-    # tiene sentido enrutar con precisión a un corpus vacío/sintético.
+    # verbatim cargado (A parcial, B, C parcial) — para los que aún no
+    # (D/F/G/H/I) no tiene sentido enrutar con precisión a un corpus vacío/
+    # sintético.
     "NSR-10 Título A": ["sismorresistente","zona de amenaza sismica","aceleracion pico efectiva",
                  "coeficiente r0","phi_a","phi_p","phi_r","disipacion de energia",
                  "espectro elastico","perfil de suelo","coeficiente de importancia",
@@ -100,9 +101,19 @@ KEYWORD_MAP = {
     "NSR-10 Título B": ["carga muerta","carga viva","empuje de tierra","fuerzas de viento",
                  "combinacion de carga","esfuerzos de trabajo","reduccion de carga viva",
                  "densidad de materiales de construccion"],
-    "NSR-10":   ["sismo","zona sismica","espectro","NSR-10",
-                 "recubrimiento","relacion agua","a/mc","durabilidad concreto",
-                 "exposicion concreto","contacto con el suelo","tipo de mortero"],
+    # Palabras clave de durabilidad/recubrimiento estaban antes en el balde
+    # generico "NSR-10" pese a ser especificas de concreto estructural (Titulo
+    # C) — corregido junto con la carga del contenido real de C esta sesion.
+    "NSR-10 Título C": ["concreto estructural","recubrimiento","recubrimiento minimo",
+                 "relacion agua","a/mc","durabilidad concreto","exposicion concreto",
+                 "contacto con el suelo","clase de exposicion","resistencia a la compresion",
+                 "f'c minimo","f'c no debe ser menor","resistencia promedio requerida",
+                 "resistencia minima a la compresion","factor de reduccion de resistencia",
+                 "factores de reduccion de resistencia","factores phi","gancho sismico",
+                 "porticos especiales resistentes a momento","muros estructurales especiales",
+                 "combinacion de carga mayorada","ganchos estandar","cuantia de temperatura",
+                 "diametro de doblado","estribos de confinamiento"],
+    "NSR-10":   ["sismo","zona sismica","espectro","NSR-10","tipo de mortero"],
     "Resolución 1409 de 2012": ["trabajo alturas","caida","arnés","linea vida","andamio"],
     "Decreto 1072 de 2015":    ["SGSST","seguridad salud trabajo","SG-SST","PHVA","politica sst","copasst","vigia sst","investigacion de accidentes","indicadores sst","matriz ipvr"],
     "Resolución 0312 de 2019": ["estandares minimos","autoevaluacion sst","plan de mejoramiento","semaforo sst","calificacion sg-sst"],
