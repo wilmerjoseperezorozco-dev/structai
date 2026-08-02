@@ -169,11 +169,13 @@ export async function listAPU(): Promise<APUItem[]> {
 /** Calcula APU completo con Monte Carlo para una actividad */
 export async function calculateAPU(
   actividad_id: string,
-  cantidad = 1
+  cantidad = 1,
+  proyecto_nombre?: string
 ): Promise<APUDesglose> {
   const form = new FormData();
   form.append("actividad_id", actividad_id);
   form.append("cantidad", String(cantidad));
+  if (proyecto_nombre) form.append("proyecto_nombre", proyecto_nombre);
   return api<APUDesglose>("/apu/calculate", { method: "POST", body: form });
 }
 

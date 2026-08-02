@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FolderOpen, Calculator, FileText, Loader2, AlertCircle } from "lucide-react";
+import { FolderOpen, Calculator, Loader2, AlertCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { formatCOP } from "@/lib/api";
 
@@ -15,19 +15,16 @@ interface ApuCalculo {
   created_at: string;
 }
 
-interface PlanAnalysis {
-  id: string;
-  nombre_archivo: string;
-  formato: string;
-  presupuesto_total: number;
-  cumplimiento_pct: number | null;
-  proyecto_nombre: string | null;
-  created_at: string;
-}
+// "Análisis de planos" (tabla plan_analyses) se quitó de esta página:
+// auditoría 2026-08-02 confirmó que ningún endpoint del backend escribe en
+// esa tabla — ni /detect (YOLO, sigue en modo stub) ni ningún otro, así que
+// la sección quedaba siempre vacía y la llamada al empty-state ("Empieza
+// desde Detección foto") prometía algo que esa función no produce. Cuando
+// exista un análisis de planos real, se reactiva mostrando la tabla real
+// detrás en vez de una promesa vacía.
 
 export default function ProyectosPage() {
   const [apus, setApus] = useState<ApuCalculo[]>([]);
-  const [planos, setPlanos] = useState<PlanAnalysis[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,26 +36,18 @@ export default function ProyectosPage() {
       const userId = session.session?.user.id;
       if (!userId) return;
 
-      const [apuRes, planRes] = await Promise.all([
-        supabase
-          .from("apu_calculations")
-          .select("id, actividad_id, descripcion, precio_unitario, cantidad, proyecto_nombre, created_at")
-          .eq("user_id", userId)
-          .order("created_at", { ascending: false }),
-        supabase
-          .from("plan_analyses")
-          .select("id, nombre_archivo, formato, presupuesto_total, cumplimiento_pct, proyecto_nombre, created_at")
-          .eq("user_id", userId)
-          .order("created_at", { ascending: false }),
-      ]);
+      const { data, error: apuError } = await supabase
+        .from("apu_calculations")
+        .select("id, actividad_id, descripcion, precio_unitario, cantidad, proyecto_nombre, created_at")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false });
 
       if (cancelled) return;
 
-      if (apuRes.error || planRes.error) {
-        setError(apuRes.error?.message ?? planRes.error?.message ?? "Error cargando proyectos");
+      if (apuError) {
+        setError(apuError.message);
       } else {
-        setApus(apuRes.data ?? []);
-        setPlanos(planRes.data ?? []);
+        setApus(data ?? []);
       }
       setLoading(false);
     }
@@ -69,7 +58,7 @@ export default function ProyectosPage() {
     };
   }, []);
 
-  const vacio = !loading && !error && apus.length === 0 && planos.length === 0;
+  const vacio = !loading && !error && apus.length === 0;
 
   return (
     <div className="flex flex-col gap-6 px-4 py-6">
@@ -77,7 +66,7 @@ export default function ProyectosPage() {
         <h2 className="text-xl font-bold text-white flex items-center gap-2">
           <FolderOpen size={20} className="text-green-400" /> Mis proyectos
         </h2>
-        <p className="text-xs text-concrete-400 mt-0.5">APU guardados y análisis de planos, con trazabilidad completa</p>
+        <p className="text-xs text-concrete-400 mt-0.5">APU guardados, agrupados por proyecto</p>
       </div>
 
       {loading && (
@@ -95,10 +84,10 @@ export default function ProyectosPage() {
 
       {vacio && (
         <div className="text-center py-16 text-concrete-500 text-sm">
-          Todavía no tienes APU calculados ni planos analizados.
+          Todavía no tienes APU calculados.
           <br />
-          Empieza desde <span className="text-brand-400">Calcular APU</span> o{" "}
-          <span className="text-brand-400">Detección foto</span>.
+          Empieza desde <span className="text-brand-400">Calcular APU</span> y asígnale un nombre de proyecto
+          para agruparlos aquí.
         </div>
       )}
 
@@ -119,31 +108,6 @@ export default function ProyectosPage() {
                   <p className="text-sm font-bold text-white tabular-nums">{formatCOP(a.precio_unitario)}</p>
                   <p className="text-xs text-concrete-500 tabular-nums">× {a.cantidad}</p>
                 </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {planos.length > 0 && (
-        <div className="space-y-2">
-          <p className="text-xs font-semibold text-orange-400 uppercase tracking-wide">Planos analizados</p>
-          {planos.map((p) => (
-            <div key={p.id} className="bg-concrete-800 border border-concrete-700 rounded-xl p-3">
-              <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0 flex items-center gap-2">
-                  <FileText size={16} className="text-concrete-500 flex-shrink-0" />
-                  <div>
-                    <p className="text-sm text-concrete-100 leading-snug">{p.nombre_archivo}</p>
-                    <p className="text-xs text-concrete-500 mt-0.5">
-                      {p.formato}
-                      {p.cumplimiento_pct != null && ` · Cumplimiento NSR-10: ${p.cumplimiento_pct}%`}
-                    </p>
-                  </div>
-                </div>
-                <p className="text-sm font-bold text-white tabular-nums flex-shrink-0">
-                  {formatCOP(p.presupuesto_total)}
-                </p>
               </div>
             </div>
           ))}

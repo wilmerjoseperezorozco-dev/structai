@@ -187,6 +187,17 @@ export default function APUPanel() {
   const [loadingCalc, setLoadingCalc] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const [cantidad, setCantidad] = useState(1);
+  // Persistido en localStorage (no en Supabase) — es solo comodidad para no
+  // reescribirlo en cada cálculo dentro de la misma sesión de trabajo, el
+  // nombre real que cuenta para el límite freemium y el agrupamiento en
+  // /proyectos es el que viaja al backend en cada llamada.
+  const [proyectoNombre, setProyectoNombre] = useState(() =>
+    typeof window === "undefined" ? "" : window.localStorage.getItem("structai_proyecto_actual") ?? ""
+  );
+
+  useEffect(() => {
+    window.localStorage.setItem("structai_proyecto_actual", proyectoNombre);
+  }, [proyectoNombre]);
 
   useEffect(() => {
     listAPU()
@@ -216,7 +227,7 @@ export default function APUPanel() {
     setDesglose(null);
     setLoadingCalc(true);
     try {
-      const res = await calculateAPU(id, cantidad);
+      const res = await calculateAPU(id, cantidad, proyectoNombre.trim() || undefined);
       setDesglose(res);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Error");
@@ -243,6 +254,18 @@ export default function APUPanel() {
           <Calculator size={14} /> Catálogo APU
         </h2>
         <span className="text-xs text-concrete-500">Construdata 2026 · Barranquilla</span>
+      </div>
+
+      {/* Proyecto (opcional) — agrupa este cálculo en /proyectos */}
+      <div className="flex items-center gap-3 bg-concrete-800 border border-concrete-700 rounded-xl px-3 py-2">
+        <span className="text-xs text-concrete-400 flex-shrink-0">Proyecto:</span>
+        <input
+          type="text"
+          placeholder="Sin asignar (opcional)"
+          value={proyectoNombre}
+          onChange={(e) => setProyectoNombre(e.target.value)}
+          className="flex-1 min-w-0 bg-transparent text-sm text-white outline-none placeholder:text-concrete-600"
+        />
       </div>
 
       {/* Cantidad multiplicador */}

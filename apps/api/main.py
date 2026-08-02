@@ -124,7 +124,10 @@ def registrar_consulta(
         log.warning(f"No se pudo registrar consulta en consultas_history: {e}")
 
 
-def registrar_apu_calculo(user_id: str, actividad_id: str, cantidad: float, d: "APUDesglose") -> None:
+def registrar_apu_calculo(
+    user_id: str, actividad_id: str, cantidad: float, d: "APUDesglose",
+    proyecto_nombre: Optional[str] = None,
+) -> None:
     if _uso_sb is None:
         return
     try:
@@ -134,10 +137,56 @@ def registrar_apu_calculo(user_id: str, actividad_id: str, cantidad: float, d: "
             "costo_materiales": d.costo_materiales, "costo_mano_obra": d.costo_mano_obra,
             "costo_equipo": d.costo_equipo, "costo_directo": d.costo_directo, "aiu": d.aiu,
             "precio_unitario": d.precio_unitario, "pu_p05": d.pu_p05, "pu_p95": d.pu_p95, "pu_std": d.pu_std,
-            "norma_ref": d.norma_ref,
+            "norma_ref": d.norma_ref, "proyecto_nombre": proyecto_nombre,
         }).execute()
     except Exception as e:
         log.warning(f"No se pudo registrar cálculo en apu_calculations: {e}")
+
+
+# ── Límite freemium: proyectos simultáneos ──────────────────────────────────
+# Encontrado el 2026-08-02 auditando /proyectos: la página agrupa cálculos
+# por apu_calculations.proyecto_nombre, pero ningún endpoint del backend
+# escribía ese campo nunca — todo cálculo quedaba con proyecto_nombre=NULL,
+# así que "Mis proyectos" nunca podía agrupar nada aunque el usuario
+# pensara que estaba usando la función. Igual que el límite de APU/mes,
+# "1 proyecto" del plan free (apps/web/src/lib/freemium.ts) estaba en la UI
+# pero no se hacía cumplir en ningún lado.
+LIMITE_PROYECTOS_FREE = 1
+
+
+def verificar_limite_proyectos(user_id: str, proyecto_nombre: Optional[str]) -> None:
+    """Lanza 402 si un usuario free intenta crear un proyecto NUEVO (nombre
+    distinto a los que ya tiene) por encima del límite. Agregar más cálculos
+    a un proyecto YA existente (mismo nombre) siempre se permite — el límite
+    es sobre proyectos simultáneos, no sobre cálculos dentro de uno.
+    Sin nombre de proyecto (cálculo suelto, no asignado) no cuenta contra el
+    límite — solo los proyectos nombrados explícitamente se consideran.
+    """
+    if _uso_sb is None or not proyecto_nombre:
+        return
+    try:
+        perfil = _uso_sb.table("profiles").select("plan").eq("id", user_id).maybe_single().execute()
+        plan = (perfil.data or {}).get("plan", "free") if perfil else "free"
+        if plan != "free":
+            return
+
+        existentes = _uso_sb.table("apu_calculations").select("proyecto_nombre") \
+            .eq("user_id", user_id).execute()
+        nombres = {r["proyecto_nombre"] for r in (existentes.data or []) if r.get("proyecto_nombre")}
+        if proyecto_nombre in nombres:
+            return
+    except Exception as e:
+        log.warning(f"No se pudo verificar límite de proyectos (se deja pasar): {e}")
+        return
+
+    if len(nombres) >= LIMITE_PROYECTOS_FREE:
+        raise HTTPException(
+            status_code=status.HTTP_402_PAYMENT_REQUIRED,
+            detail=(
+                f"El plan gratis permite {LIMITE_PROYECTOS_FREE} proyecto simultáneo. "
+                "Activa Pro en /pricing para proyectos ilimitados."
+            ),
+        )
 
 
 # ── Límite freemium: APU/mes ────────────────────────────────────────────────
@@ -506,6 +555,7 @@ class APUCantidadesRequest(BaseModel):
     incluye_cara_superior_formaleta: bool = Field(
         False, description="True si la viga es aislada (se forman las 4 caras)"
     )
+    proyecto_nombre: Optional[str] = Field(None, description="Nombre opcional del proyecto para agrupar en /proyectos")
 
 class DeteccionElemento(BaseModel):
     clase: str
@@ -1246,6 +1296,7 @@ def apu_calculate(
     request: Request,
     actividad_id: str = Form(..., description="ID de la actividad APU, ej: C.COL.40X30"),
     cantidad: float = Form(1.0, ge=0.01, description="Cantidad de unidades a calcular"),
+    proyecto_nombre: Optional[str] = Form(None, description="Nombre opcional del proyecto para agrupar en /proyectos"),
 ):
     """
     Calcula el APU completo con desglose Mat + MO + Equipo + AIU.
@@ -1260,6 +1311,7 @@ def apu_calculate(
     """
     user = get_current_user(request)
     verificar_limite_apu_mes(user.id)
+    verificar_limite_proyectos(user.id, proyecto_nombre)
 
     if not APU_AVAILABLE:
         raise HTTPException(
@@ -1299,7 +1351,7 @@ def apu_calculate(
         log.error(f"Error calculando APU {actividad_id}: {e}", exc_info=True, extra={"user_id": user.id, "endpoint": "/apu/calculate"})
         raise HTTPException(status_code=500, detail=str(e))
 
-    registrar_apu_calculo(user.id, actividad_id, cantidad, desglose)
+    registrar_apu_calculo(user.id, actividad_id, cantidad, desglose, proyecto_nombre)
     return desglose
 
 
@@ -1322,6 +1374,7 @@ def apu_calculate_dinamico(request: Request, body: APUCantidadesRequest):
     """
     user = get_current_user(request)
     verificar_limite_apu_mes(user.id)
+    verificar_limite_proyectos(user.id, body.proyecto_nombre)
 
     if not APU_AVAILABLE:
         raise HTTPException(
@@ -1393,7 +1446,7 @@ def apu_calculate_dinamico(request: Request, body: APUCantidadesRequest):
         uuid_trazabilidad=result.uuid_trazabilidad,
         timestamp=datetime.datetime.utcnow().isoformat() + "Z",
     )
-    registrar_apu_calculo(user.id, result.actividad_id, 1.0, desglose)
+    registrar_apu_calculo(user.id, result.actividad_id, 1.0, desglose, body.proyecto_nombre)
     return desglose
 
 
