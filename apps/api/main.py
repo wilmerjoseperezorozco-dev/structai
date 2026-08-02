@@ -139,6 +139,59 @@ def registrar_apu_calculo(user_id: str, actividad_id: str, cantidad: float, d: "
     except Exception as e:
         log.warning(f"No se pudo registrar cálculo en apu_calculations: {e}")
 
+
+# ── Límite freemium: APU/mes ────────────────────────────────────────────────
+# Encontrado el 2026-08-01, auditando qué tan "terminado" está el SaaS: el
+# límite de "5 APU/mes" del plan gratis está definido en
+# apps/web/src/lib/freemium.ts (PLANES.free.apu_por_mes) y se MUESTRA en la
+# UI, pero nunca se hace cumplir aquí — cualquiera con el token de un
+# usuario free puede llamar /apu/calculate sin límite. Debe mantenerse en
+# sync manualmente con ese archivo hasta que exista una fuente única de
+# verdad (ej. una tabla de planes en Supabase).
+LIMITE_APU_MES_FREE = 5
+
+
+def verificar_limite_apu_mes(user_id: str) -> None:
+    """Lanza 402 si un usuario del plan free ya agotó su cupo de APU del mes.
+
+    Usa apu_calculations (ya poblada por registrar_apu_calculo) como fuente
+    de verdad del conteo real — evita mantener un contador denormalizado
+    (profiles.consultas_mes existe pero no se usa aquí a propósito: no
+    tiene lógica de reseteo mensual verificada, y contar filas reales es
+    más confiable que confiar en un contador que puede desincronizarse).
+    Los planes pro/pro_anual no tienen límite — se retorna de inmediato.
+    Si _uso_sb no está disponible (mismo modo best-effort que el registro
+    de uso) no se bloquea el cálculo: preferible dejar pasar a tumbar el
+    piloto por un problema de infraestructura de trazabilidad.
+    """
+    if _uso_sb is None:
+        return
+    try:
+        perfil = _uso_sb.table("profiles").select("plan").eq("id", user_id).maybe_single().execute()
+        plan = (perfil.data or {}).get("plan", "free") if perfil else "free"
+        if plan != "free":
+            return
+
+        import datetime
+        inicio_mes = datetime.datetime.now(datetime.timezone.utc).replace(
+            day=1, hour=0, minute=0, second=0, microsecond=0
+        ).isoformat()
+        conteo = _uso_sb.table("apu_calculations").select("id", count="exact") \
+            .eq("user_id", user_id).gte("created_at", inicio_mes).execute()
+        usados = conteo.count or 0
+    except Exception as e:
+        log.warning(f"No se pudo verificar límite de APU/mes (se deja pasar): {e}")
+        return
+
+    if usados >= LIMITE_APU_MES_FREE:
+        raise HTTPException(
+            status_code=status.HTTP_402_PAYMENT_REQUIRED,
+            detail=(
+                f"Alcanzaste el límite de {LIMITE_APU_MES_FREE} cálculos de APU "
+                "del plan gratis este mes. Activa Pro en /pricing para cálculos ilimitados."
+            ),
+        )
+
 # ── Importaciones lazy para no fallar si falta algún paquete ──────────────────
 # `except Exception` (no solo ImportError): rag_multi_norma.py lee credenciales
 # con os.environ["..."] a nivel de módulo, que lanza KeyError si falta alguna
@@ -1206,6 +1259,7 @@ def apu_calculate(
     H.EXC.MAN, H.EXC.MAQ, SEG.CER.01, SEG.VAL.PMT
     """
     user = get_current_user(request)
+    verificar_limite_apu_mes(user.id)
 
     if not APU_AVAILABLE:
         raise HTTPException(
@@ -1267,6 +1321,7 @@ def apu_calculate_dinamico(request: Request, body: APUCantidadesRequest):
     formaleta.
     """
     user = get_current_user(request)
+    verificar_limite_apu_mes(user.id)
 
     if not APU_AVAILABLE:
         raise HTTPException(
@@ -1489,6 +1544,7 @@ def apu_calculate_batch(
     resto de filas se calculan igual.
     """
     user = get_current_user(request)
+    verificar_limite_apu_mes(user.id)
     if not APU_AVAILABLE:
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Módulo motor-apu no disponible.")
 
