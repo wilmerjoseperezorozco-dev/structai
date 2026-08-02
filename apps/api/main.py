@@ -797,27 +797,68 @@ def _check_llm_provider() -> dict:
         return {"disponible": False, "error": str(e)}
 
 
+def _limite_memoria_cgroup() -> Optional[int]:
+    """
+    Bytes disponibles para ESTE contenedor, no del host físico que lo aloja.
+    Encontrado el 2026-08-01: psutil.virtual_memory() en DigitalOcean App
+    Platform reporta memoria del host compartido (no tiene awareness de
+    cgroups), lo que hizo que /health marcara "critico": true con 97% de uso
+    mientras el panel real de DO mostraba 58% — una falsa alarma real,
+    verificada comparando ambas fuentes en producción. cgroup v2 primero
+    (mas comun en runtimes recientes), v1 como fallback.
+    """
+    for ruta in ("/sys/fs/cgroup/memory.max", "/sys/fs/cgroup/memory/memory.limit_in_bytes"):
+        try:
+            with open(ruta) as f:
+                valor = f.read().strip()
+            if valor and valor != "max":
+                limite = int(valor)
+                # cgroup sin límite real configurado reporta un número
+                # absurdamente alto (ej. 2^63) — se descarta, no es un límite útil
+                if limite < (1 << 62):
+                    return limite
+        except (FileNotFoundError, ValueError, PermissionError):
+            continue
+    return None
+
+
 def _check_memoria() -> dict:
     """
-    RAM del sistema y del proceso — vital porque una imagen/lote de
+    RAM del contenedor y del proceso — vital porque una imagen/lote de
     embeddings grande puede agotar memoria antes de que el proceso crashee
     visiblemente con otro error.
     """
     try:
         import psutil
-        mem_sistema = psutil.virtual_memory()
         proceso = psutil.Process(os.getpid())
+        proceso_rss_mb = round(proceso.memory_info().rss / (1024 * 1024), 1)
+
+        limite_cgroup = _limite_memoria_cgroup()
+        if limite_cgroup:
+            disponible_mb = round((limite_cgroup - proceso.memory_info().rss) / (1024 * 1024), 1)
+            pct_usado = round(proceso.memory_info().rss / limite_cgroup * 100, 1)
+            fuente = "cgroup"
+        else:
+            # Fallback para entornos sin cgroups (dev local Windows/Mac) —
+            # aqui si refleja el sistema real, no un host compartido
+            mem_sistema = psutil.virtual_memory()
+            disponible_mb = round(mem_sistema.available / (1024 * 1024), 1)
+            pct_usado = mem_sistema.percent
+            fuente = "sistema (dev local)"
+
         return {
-            "sistema_pct_usado": mem_sistema.percent,
-            "sistema_disponible_mb": round(mem_sistema.available / (1024 * 1024), 1),
-            "proceso_rss_mb": round(proceso.memory_info().rss / (1024 * 1024), 1),
-            "critico": mem_sistema.percent > 90,
+            "fuente": fuente,
+            "pct_usado": pct_usado,
+            "disponible_mb": disponible_mb,
+            "proceso_rss_mb": proceso_rss_mb,
+            "critico": pct_usado > 90,
         }
     except Exception as e:
         return {"error": str(e)}
 
 
 @app.get("/health", tags=["Sistema"])
+@app.head("/health", tags=["Sistema"])
 def health(deep: bool = False):
     """
     Health check con estado de cada módulo.
@@ -826,6 +867,10 @@ def health(deep: bool = False):
       disponibilidad del proveedor LLM (Groq) y uso de RAM. Úsalo para
       monitoreo/alertas, no como liveness probe de alta frecuencia — cada
       llamada con deep=true golpea servicios externos de verdad.
+    - También responde HEAD (no solo GET): UptimeRobot y la mayoría de
+      monitores HTTP usan HEAD por defecto, no GET — encontrado el
+      2026-08-01, causaba 405 en cada chequeo y 4 "incidentes" falsos en
+      24h (37.8% uptime reportado, sitio real nunca estuvo caído).
     """
     modulos = {
         "rag_multi_norma":   RAG_AVAILABLE,
