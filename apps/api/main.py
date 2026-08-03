@@ -428,10 +428,22 @@ app = FastAPI(
 # el comentario original ya decía "en producción: dominio específico" pero
 # nunca se hizo. CORS_ORIGINS (coma-separado) permite ajustar sin tocar
 # código si se agrega un dominio propio más adelante.
+#
+# Bug real encontrado el 2026-08-03: el default solo traía el dominio largo
+# (...-wilmer-perez-s-projects.vercel.app). El proyecto de Vercel expone 3
+# dominios (verificado vía API de Vercel: get_project sobre
+# prj_BiuMRQKMMo5MJuKxk3jBbvyYGyXg) y el usuario entra por el alias corto
+# structai-pi.vercel.app, que no estaba en la lista — cada llamada a la API
+# desde ese dominio se rechazaba en el preflight CORS ("Failed to fetch" en
+# el navegador, sin ningún log de error en el backend porque la petición
+# nunca llega a la ruta).
 _CORS_ORIGINS = [
     o.strip() for o in os.getenv(
         "CORS_ORIGINS",
-        "https://structai-wilmer-perez-s-projects.vercel.app,http://localhost:3000",
+        "https://structai-pi.vercel.app,"
+        "https://structai-wilmer-perez-s-projects.vercel.app,"
+        "https://structai-git-master-wilmer-perez-s-projects.vercel.app,"
+        "http://localhost:3000",
     ).split(",") if o.strip()
 ]
 
