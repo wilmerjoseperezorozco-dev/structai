@@ -234,7 +234,7 @@ def route_query(query: str) -> list[str]:
 # ─── AGENTE DELEGADOR — routing por dominio de ingeniería ────────────────────
 # Cada motor tiene su propio corpus de chunks en motor_chunks (columna `motor`).
 # Solo se registra aquí un dominio cuando YA tiene chunks reales ingestados
-# (ver scripts/ingest_motor_chunks.py) — si no, el routing lo dejaría cayendo
+# (ver scripts/ingesta/motores/ingest_motor_chunks.py) — si no, el routing lo dejaría cayendo
 # a una búsqueda vacía en vez de al RAG normativo general, que sí tiene contenido.
 MOTOR_KEYWORD_MAP = {
     "aquai": [

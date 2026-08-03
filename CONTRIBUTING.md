@@ -42,13 +42,13 @@ pytest tests/ --cov=src --cov-report=term-missing -v
 |---|---|---|---|
 | `motor-deformacion` | 93% | 40 pasan | 2026-07-19 |
 | `motor-apu` | 75% | 6 pasan | 2026-07-19 |
-| `motor-aquai` | 70% total (**91.5%** excluyendo `pdf_memoria.py` y `rag_normativo.py`, sin tests propios) | 35 pasan | 2026-07-19 |
+| `motor-aquai` | 70% total (**91.5%** excluyendo `pdf_memoria.py`, sin tests propios) | 35 pasan | 2026-07-19 |
 | `motor-geopot` | **82%** (`__init__.py` 100%) | 39 pasan | 2026-07-19 |
 | `motor-vias` | **88%** | 46 pasan | 2026-07-20 |
 | `motor-gerencia` | **96%** | 38 pasan | 2026-07-20 |
 | `motor-estructural` | **86%** | 7 pasan | 2026-07-21 |
 
-`motor-aquai` pasó de 0% a 70% real (2026-07-19) escribiendo `tests/test_motor_aquai.py` — 35 tests que recalculan el valor esperado con la misma fórmula documentada en el módulo (o contra las tablas normativas de `ras2000_tablas.py`), no con números supuestos. `pdf_memoria.py` (generación de PDF, 0%) y `rag_normativo.py` (módulo desconectado del flujo real, 0%) se dejaron deliberadamente sin cubrir — no aportan valor de regresión de cálculo normativo.
+`motor-aquai` pasó de 0% a 70% real (2026-07-19) escribiendo `tests/test_motor_aquai.py` — 35 tests que recalculan el valor esperado con la misma fórmula documentada en el módulo (o contra las tablas normativas de `ras2000_tablas.py`), no con números supuestos. `pdf_memoria.py` (generación de PDF, 0%) se dejó deliberadamente sin cubrir — no aporta valor de regresión de cálculo normativo. `rag_normativo.py` (búsqueda semántica sobre una tabla `normas_vigentes` que nunca se creó en Supabase, nunca conectado al flujo real) se eliminó por completo el 2026-08-02 junto con el endpoint `/aquai/normativa/buscar` que lo exponía — ver limpieza de código muerto de esa fecha.
 
 `motor-geopot` pasó de 0% a 82% real (2026-07-19), mismo patrón, `tests/test_motor_geopot.py` — 39 tests cubriendo sismica.py, lab_suelos.py (USCS/AASHTO/Atterberg/Proctor/CBR/Granulometría), lab_concreto.py y lab_agregados.py, más un bloque final que ejercita directamente `src/__init__.py` (los wrappers que consume `apps/api/routers/geopot.py`), llevándolo a 100%. Dos hallazgos reales al correr los tests por primera vez (no se asumió nada): (1) un rango de plasticidad mal citado en el propio test (18% de IP es "Media plasticidad", no "Alta" — el código estaba bien, el test estaba mal); (2) el demo del propio módulo `lab_concreto.py` (`__main__`, cargas 260/268/255 kN sobre cilindros de 152mm) en realidad da fc≈14-15 MPa, muy por debajo del fc_diseño=21 MPa del mismo demo — no ilustra un caso "conforme" como parecía a primera vista. Se corrigieron ambos tests tras verificar el comportamiento real, no el código.
 

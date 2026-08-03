@@ -3,7 +3,7 @@ Tests de integración end-to-end para la API de Construdata.
 
 Cubre lo que existe de verdad en este backend (no ChromaDB/FAISS ni un
 endpoint de carga de PDF en runtime — el corpus normativo se ingesta con
-scripts/ingest_*.py, offline; los endpoints de consulta son /ask y
+scripts/ingesta/**/ingest_*.py, offline; los endpoints de consulta son /ask y
 /consultar sobre Supabase pgvector + Groq):
 
   - Flujo feliz: POST /ask devuelve el shape correcto (respuesta, fuentes,

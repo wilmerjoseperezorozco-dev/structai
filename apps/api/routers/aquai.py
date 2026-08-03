@@ -23,7 +23,7 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import FileResponse
 
 # apps/api ya está en sys.path para cuando este módulo se importa (main.py lo
@@ -179,19 +179,3 @@ def endpoint_memoria_pdf(request: Request, payload: dict, user: AuthenticatedUse
         )
     except Exception as ex:
         raise HTTPException(status_code=500, detail=f"Error generando PDF: {str(ex)}")
-
-
-@router.post("/normativa/buscar", summary="Búsqueda semántica sobre normativa AquAI (requiere OPENAI_API_KEY + tabla normas_vigentes)")
-@limiter.limit("10/minute")
-async def endpoint_buscar_normas(
-    request: Request,
-    pregunta: str = Query(..., max_length=500),
-    threshold: float = 0.70, limite: int = 5, tipo_norma: str | None = None,
-    user: AuthenticatedUser = Depends(get_current_user),
-):
-    try:
-        import importlib
-        rag_normativo = sys.modules.get("motor_aquai.rag_normativo") or importlib.import_module("motor_aquai.rag_normativo")
-        return await rag_normativo.buscar_normas_rag(pregunta, threshold, limite, tipo_norma)
-    except Exception as e:
-        raise HTTPException(status_code=502, detail=str(e))
