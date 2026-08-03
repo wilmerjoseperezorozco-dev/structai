@@ -63,4 +63,22 @@ pytest tests/ --cov=src --cov-report=term-missing -v
 ## Qué NO se ha estandarizado todavía (a propósito)
 
 - **Formato de respuesta de API** (`{ data, error?, metadata? }`): no está aplicado todavía en los routers de `apps/api` — cambiarlo requiere tocar `apps/web` en el mismo commit porque los clientes ya parsean la forma actual de cada endpoint. Pendiente, no urgente.
-- **Versionado de rutas** (`/api/v1/`): las rutas actuales no están versionadas. No se adopta sin una razón concreta (aún no hay clientes externos de la API que necesiten esa garantía de compatibilidad).
+
+## Versionado de rutas (`/v1/`)
+
+Actualizado 2026-08-02 — ya no es cierto que las rutas no estén versionadas.
+
+Cada endpoint de `apps/api` está registrado dos veces: en su ruta original sin prefijo (la que usa `apps/web` hoy) y en `/v1/<misma-ruta>`. Apilar un segundo decorador `@app.X("/v1/...")` sobre la misma función, o incluir el mismo `APIRouter` una segunda vez con `prefix="/v1"` — ninguna de las dos rutas cambia de comportamiento, es puro alias aditivo.
+
+Por qué: cuando en algún momento haya que romper un contrato de un endpoint, los clientes nuevos pueden moverse a `/v1` (o a un futuro `/v2`) mientras la ruta sin prefijo sigue sirviendo a quien no haya migrado — sin necesitar coordinar un deploy simultáneo de frontend y backend para cada cambio incompatible.
+
+## Flujo de staging
+
+`apps/web` en Vercel: cualquier rama que no sea `master` genera un Preview Deployment automático al abrir un Pull Request (URL propia, aislada de producción, comentada directo en el PR por el bot de Vercel).
+
+Para un cambio grande/riesgoso en el frontend:
+1. Trabajar en una rama (`staging` u otra) en vez de directo en `master`.
+2. Abrir un PR hacia `master` — el preview aparece solo, sin config adicional.
+3. Revisar el preview, y recién ahí mergear.
+
+`apps/api` en DigitalOcean no tiene este flujo todavía (solo despliega automático al pushear `master`) — un ambiente de staging real de backend requeriría una segunda app de DO (costo mensual real) y, para no arriesgar datos de producción, un segundo proyecto de Supabase — evaluado, no implementado por costo/complejidad frente al beneficio en esta etapa del piloto.
