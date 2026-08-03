@@ -7,20 +7,11 @@ version: '3.9'
 services:
 
   # ── Frontend Next.js ──────────────────────────────────────
-  web:
-    build:
-      context: ./apps/web
-      dockerfile: Dockerfile
-    ports: ["3000:3000"]
-    environment:
-      - NEXT_PUBLIC_API_URL=http://api:8000
-      - SUPABASE_URL=${SUPABASE_URL}
-      - SUPABASE_SERVICE_KEY=${SUPABASE_SERVICE_KEY}
-    depends_on: [api]
-    volumes:
-      - ./apps/web:/app
-      - /app/node_modules
-      - /app/.next
+  # NO se dockeriza a propósito: apps/web está conectado directo a Vercel
+  # (import nativo de Git, ver comentario en .github/workflows/ci.yml) y
+  # nunca tuvo un apps/web/Dockerfile real -- el servicio "web" que
+  # existía aquí referenciaba un Dockerfile que nunca se creó. Correr el
+  # frontend en local: `npm run dev` dentro de apps/web.
 
   # ── API FastAPI (Motor APU + RAG) ─────────────────────────
   api:
@@ -40,19 +31,9 @@ services:
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
   # ── N8N (Bot Telegram + Workflows) ────────────────────────
-  n8n:
-    image: n8nio/n8n:latest
-    ports: ["5678:5678"]
-    environment:
-      - N8N_BASIC_AUTH_ACTIVE=true
-      - N8N_BASIC_AUTH_USER=admin
-      - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD:-admin123}
-      - WEBHOOK_URL=http://localhost:5678
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
-      - NSR10_API_SECRET=${API_SECRET}
-    volumes:
-      - n8n_data:/home/node/.n8n
-      - ./n8n/workflows:/home/node/.n8n/workflows
+  # Removido 2026-08-02: montaba ./n8n/workflows, carpeta que nunca
+  # existió en el repo (huérfano desde el commit inicial). El n8n real
+  # del proyecto de "Agentes empresa" corre self-hosted aparte, no aquí.
 
   # ── Redis (caché Motor APU) ────────────────────────────────
   redis:
@@ -74,6 +55,5 @@ services:
       - QDRANT__SERVICE__GRPC_PORT=6334
 
 volumes:
-  n8n_data:
   redis_data:
   qdrant_data:

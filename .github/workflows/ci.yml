@@ -103,15 +103,19 @@ jobs:
   # raíz del repo colisiona el nombre de módulo entre paquetes (import
   # cacheado del primer "src" que se procesa, verificado localmente).
   #
-  # motor-aquai, motor-geopot y motor-vias quedan FUERA a propósito: sus
-  # carpetas tests/ existen pero están vacías — no hay nada que correr
-  # todavía (gap real, no un olvido de este workflow).
+  # Actualizado 2026-08-02: la matriz solo corría motor-apu, motor-
+  # deformacion y motor-topovia (prototipo abandonado, ver limpieza de
+  # hoy — nunca se volvió a tocar desde el commit inicial). El comentario
+  # viejo decía que aquai/geopot/vias quedaban fuera porque sus tests/
+  # estaban vacíos — eso ya no es cierto: los 5 motores de abajo tienen
+  # tests reales (70%-96% cobertura, ver CONTRIBUTING.md) que CI nunca
+  # había corrido ni una sola vez.
   test-motores:
     name: 🧮 Tests Python — motores
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        paquete: [motor-apu, motor-deformacion, motor-topovia]
+        paquete: [motor-apu, motor-deformacion, motor-aquai, motor-geopot, motor-vias, motor-gerencia, motor-estructural]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -120,7 +124,17 @@ jobs:
         working-directory: packages/${{ matrix.paquete }}
         run: |
           pip install pytest
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          elif [ -f pyproject.toml ]; then
+            # motor-aquai/geopot/vias/gerencia/estructural solo declaran deps
+            # en pyproject.toml (sin requirements.txt) -- pip install -e no
+            # funciona todavía en estos paquetes (ver CONTRIBUTING.md), así
+            # que se extraen las dependencias declaradas e instalan directo,
+            # mismo patrón documentado ahí para instalación manual.
+            python -c "import tomllib; d = tomllib.load(open('pyproject.toml','rb')); print('\n'.join(d['project'].get('dependencies', [])))" > /tmp/deps.txt
+            [ -s /tmp/deps.txt ] && pip install -r /tmp/deps.txt
+          fi
       - name: Correr pytest
         working-directory: packages/${{ matrix.paquete }}
         run: pytest tests/ -v
