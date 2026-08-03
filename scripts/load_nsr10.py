@@ -1,18 +1,30 @@
 """
 Script para cargar los PDFs NSR-10 (Títulos A-K) a Supabase pgvector.
-Uso: python scripts/load_nsr10.py
+Uso: python scripts/load_nsr10.py [--dry-run] [--titulos D,H,I]
 
 Requiere:
   - SUPABASE_URL y SUPABASE_SERVICE_KEY en .env
-  - OPENAI_API_KEY para embeddings
-  - pypdf, openai, supabase-py instalados
+  - sentence-transformers instalado (embeddings locales, sin costo — NO usa
+    OpenAI. Corregido 2026-08-03: la versión original generaba embeddings de
+    1536 dim con text-embedding-3-small, pero nsr10_chunks.embedding es
+    vector(384) — el tamaño real de paraphrase-multilingual-MiniLM-L12-v2,
+    el mismo modelo que usa rag_multi_norma.py para las consultas. Mezclar
+    espacios de embedding distintos habría roto la similitud coseno para
+    cualquier chunk cargado con este script.)
+  - pypdf, supabase-py instalados
 
 Los PDFs están en: packages/knowledge/nsr10/
 Formato esperado: RAG+CAG Capitulo X.pdf
+
+Por defecto SOLO procesa D, H, I: son los únicos títulos sin ningún trabajo
+de curación real en curso (verificado contra Supabase el 2026-08-03 — A, B,
+E, G, J, K ya tienen contenido sustancial; C, F tienen núcleos verbatim
+insertados a mano en sesiones previas). Correr esto sobre C/E/F metería
+contenido automático sin curar encima de contenido ya verificado a mano.
+Pasa --titulos para procesar otro subconjunto explícitamente.
 """
 
 import os
-import json
 import pathlib
 import re
 import time
@@ -35,8 +47,12 @@ TITULOS = {
     "K": "Requisitos Complementarios",
 }
 
-CHUNK_SIZE   = 800   # tokens aproximados por chunk
+TITULOS_DEFAULT = {"D", "H", "I"}
+
+CHUNK_SIZE   = 800   # palabras aproximadas por chunk
 CHUNK_OVERLAP = 100  # overlap entre chunks
+
+EMBEDDING_MODEL_NAME = "paraphrase-multilingual-MiniLM-L12-v2"  # 384-dim, debe calzar con nsr10_chunks.embedding vector(384)
 
 
 def extract_pdf_text(pdf_path: pathlib.Path) -> str:
@@ -64,20 +80,14 @@ def chunk_text(text: str, chunk_size: int = CHUNK_SIZE, overlap: int = CHUNK_OVE
     return [c for c in chunks if len(c.strip()) > 50]
 
 
-def get_embeddings(texts: list[str], api_key: str) -> list[list[float]]:
-    from openai import OpenAI
-    client = OpenAI(api_key=api_key)
-    embeddings = []
-    batch_size = 20
-    for i in range(0, len(texts), batch_size):
-        batch = texts[i:i + batch_size]
-        response = client.embeddings.create(
-            model="text-embedding-3-small",
-            input=batch,
-        )
-        embeddings.extend([e.embedding for e in response.data])
-        time.sleep(0.2)
-    return embeddings
+def get_embeddings(texts: list[str]) -> list[list[float]]:
+    # HF_HUB_OFFLINE evita que sentence-transformers intente contactar HF Hub
+    # para revisar actualizaciones (puede colgarse por rate-limit sin token) —
+    # mismo fix ya aplicado en rag_multi_norma.py.
+    os.environ.setdefault("HF_HUB_OFFLINE", "1")
+    from sentence_transformers import SentenceTransformer
+    model = SentenceTransformer(EMBEDDING_MODEL_NAME)
+    return model.encode(texts, normalize_embeddings=True, batch_size=32).tolist()
 
 
 def detect_seccion(chunk: str, titulo: str) -> str:
@@ -87,12 +97,13 @@ def detect_seccion(chunk: str, titulo: str) -> str:
     return f"{titulo}.x"
 
 
-def load_nsr10(dry_run: bool = False):
+def load_nsr10(dry_run: bool = False, titulos_a_procesar: set[str] = None):
     from supabase import create_client
+
+    titulos_a_procesar = titulos_a_procesar or TITULOS_DEFAULT
 
     supabase_url = os.environ.get("SUPABASE_URL", "")
     supabase_key = os.environ.get("SUPABASE_SERVICE_KEY", "")
-    openai_key   = os.environ.get("OPENAI_API_KEY", "")
 
     if not supabase_url or not supabase_key:
         print("ERROR: Configura SUPABASE_URL y SUPABASE_SERVICE_KEY en .env")
@@ -105,22 +116,33 @@ def load_nsr10(dry_run: bool = False):
         print(f"No se encontraron PDFs en {NSR10_DIR}")
         return
 
-    print(f"Encontrados {len(pdfs)} PDFs NSR-10\n")
+    print(f"Encontrados {len(pdfs)} PDFs NSR-10 — procesando solo: {sorted(titulos_a_procesar)}\n")
 
     total_chunks = 0
 
     for pdf in pdfs:
-        # Detectar letra del título del nombre de archivo
-        m = re.search(r'Capitulo?\s+([A-K])', pdf.name, re.IGNORECASE)
+        # Detectar letra del título del nombre de archivo. \s* (no \s+): el
+        # PDF de Título H se llama "RAG+CAGcapituloH.pdf", sin ningún espacio
+        # -- con \s+ nunca matcheaba. \b evita que la letra capturada sea el
+        # inicio de otra palabra (ej. "capituloAlgo").
+        m = re.search(r'Capitulo?\s*([A-K])\b', pdf.name, re.IGNORECASE)
         if not m:
             print(f"  [skip] No se pudo detectar título en: {pdf.name}")
             continue
 
         titulo = m.group(1).upper()
-        norma  = f"NSR-10 Título {titulo}"
-        nombre = TITULOS.get(titulo, f"Título {titulo}")
+        if titulo not in titulos_a_procesar:
+            print(f"  [skip] Título {titulo} no está en el subconjunto a procesar")
+            continue
 
-        print(f"  Procesando {norma} — {nombre}")
+        nombre = TITULOS.get(titulo, f"Título {titulo}")
+        # Capitulo con sufijo explícito: distingue este contenido (troceo
+        # mecánico automático del PDF, sin curar) del contenido verbatim
+        # insertado a mano para otros títulos -- mismo patrón ya usado para
+        # marcar el contenido pendiente de reauditoría del Título F.
+        capitulo_label = f"NSR-10 Título {titulo} — {nombre} (extracción automática del PDF oficial, sin curar — pendiente reauditoría)"
+
+        print(f"  Procesando NSR-10 Título {titulo} — {nombre}")
 
         text = extract_pdf_text(pdf)
         if not text:
@@ -135,17 +157,19 @@ def load_nsr10(dry_run: bool = False):
             total_chunks += len(chunks)
             continue
 
-        embeddings = get_embeddings(chunks, openai_key)
+        embeddings = get_embeddings(chunks)
 
         # Columnas reales de public.nsr10_chunks: id (PK, sin default), capitulo,
         # seccion, titulo, texto, embedding — NO norma/contenido/chunk_idx, que
         # es lo que este script escribía antes (fallaba en el primer upsert).
+        # id con prefijo NSR10- (distinto del esquema {titulo}-SEC*/{titulo}-TAB*
+        # usado en la curación manual) -- evita colisión de upsert.
         rows = []
         for i, (chunk, emb) in enumerate(zip(chunks, embeddings)):
             seccion = detect_seccion(chunk, titulo)
             rows.append({
                 "id":        f"NSR10-{titulo}-{i:04d}",
-                "capitulo":  titulo,
+                "capitulo":  capitulo_label,
                 "titulo":    nombre,
                 "seccion":   seccion,
                 "texto":     chunk,
