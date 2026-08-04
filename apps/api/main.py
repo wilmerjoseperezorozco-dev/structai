@@ -35,6 +35,7 @@ import os
 import sys
 import logging
 import time
+import zipfile
 from pathlib import Path
 from typing import Optional
 
@@ -1763,6 +1764,16 @@ def apu_calculate_batch(
         filas = apu_excel.leer_filas(file_bytes)
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except zipfile.BadZipFile:
+        # load_workbook() lanza esto (no ValueError) cuando el archivo no es
+        # un .xlsx real -- ej. un usuario sube un .csv renombrado, un archivo
+        # corrupto, o un .doc. Encontrado sin manejar el 2026-08-04 (crash
+        # real reportado por Sentry): un archivo no-xlsx tumbaba el endpoint
+        # con 500 en vez de un 422 claro.
+        raise HTTPException(
+            status_code=422,
+            detail="El archivo no es un .xlsx válido — descargue la plantilla desde 'Descargar plantilla' y no cambie su formato al guardarlo.",
+        )
 
     # None = plan pro (sin límite). int = cupo real restante del plan free
     # este mes — hallazgo de la auditoría de seguridad 2026-08-02: antes se
