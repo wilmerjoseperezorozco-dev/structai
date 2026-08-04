@@ -9,24 +9,28 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Escala "sky" de Tailwind — ya se usaba parcialmente (50/100/500/
-        // 600/700/900 son valores literales de esa escala); completada aquí
-        // con los stops reales que faltaban (200/300/400/800/950), no
-        // inventados. Sin esto, ~60 usos de brand-200/300/400/950 en todo
-        // el sitio no pintaban ningún color (Tailwind no genera CSS para
-        // una clase de un shade no declarado).
+        // Unificación de tema 2026-08-04: "brand" era la escala "sky" (azul)
+        // usada en login/dashboard/los 4 motores — visualmente inconsistente
+        // con el negro+dorado (ink/bronze) de la landing (Hero.tsx), que el
+        // usuario ve primero. Ahora "brand" reutiliza los mismos valores que
+        // "bronze" (mismo dorado, no un tono aparte) para que todo el sitio
+        // comparta un único acento tras entrar. Con esto, todo lo que usa la
+        // clase brand-* cambia de azul a dorado sin tocar cada componente —
+        // solo los botones de fondo sólido (brand-600/500 + texto blanco)
+        // se ajustaron aparte a texto oscuro (ink-950) porque blanco sobre
+        // dorado pierde legibilidad.
         brand: {
-          50:  "#f0f9ff",
-          100: "#e0f2fe",
-          200: "#bae6fd",
-          300: "#7dd3fc",
-          400: "#38bdf8",
-          500: "#0ea5e9",
-          600: "#0284c7",
-          700: "#0369a1",
-          800: "#075985",
-          900: "#0c4a6e",
-          950: "#082f49",
+          50:  "#FDF7EC",
+          100: "#FAEED7",
+          200: "#F5DDB2",
+          300: "#EFCB8E",
+          400: "#E6B564",
+          500: "#D99A3F",
+          600: "#B87526",
+          700: "#91591F",
+          800: "#6B4019",
+          900: "#452A14",
+          950: "#2B1B0E",
         },
         // Escala "slate" de Tailwind — mismo caso: 50/100/200/700/800/900
         // ya eran valores literales de slate. Completada con 300/400/500/

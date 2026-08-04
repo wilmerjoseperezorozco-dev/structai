@@ -216,7 +216,7 @@ export default function ViasPanel() {
       <button
         onClick={handleCalcular}
         disabled={loading}
-        className="bg-brand-600 hover:bg-brand-500 disabled:opacity-50 text-white text-sm font-medium rounded-xl py-2.5 flex items-center justify-center gap-2 transition"
+        className="bg-brand-600 hover:bg-brand-500 disabled:opacity-50 text-ink-950 text-sm font-medium rounded-xl py-2.5 flex items-center justify-center gap-2 transition"
       >
         {loading ? <Loader2 size={16} className="animate-spin" /> : null}
         {loading ? "Calculando…" : "Calcular"}

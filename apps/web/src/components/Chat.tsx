@@ -85,7 +85,7 @@ function Bubble({ msg }: { msg: Message }) {
         className={clsx(
           "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold mt-1",
           isUser
-            ? "bg-brand-600 text-white"
+            ? "bg-brand-600 text-ink-950"
             : isError
             ? "bg-red-700 text-white"
             : "bg-concrete-700 text-brand-300"
@@ -100,7 +100,7 @@ function Bubble({ msg }: { msg: Message }) {
           className={clsx(
             "rounded-2xl px-4 py-3 text-sm leading-relaxed max-w-[85%]",
             isUser
-              ? "bg-brand-600 text-white rounded-tr-sm"
+              ? "bg-brand-600 text-ink-950 rounded-tr-sm"
               : isError
               ? "bg-red-900/50 border border-red-700 text-red-300 rounded-tl-sm"
               : "bg-concrete-800 text-concrete-100 rounded-tl-sm"
@@ -360,9 +360,9 @@ export default function Chat() {
             className="flex-shrink-0 w-8 h-8 rounded-xl bg-brand-600 hover:bg-brand-500 disabled:bg-concrete-700 disabled:cursor-not-allowed flex items-center justify-center transition"
           >
             {loading ? (
-              <Loader2 size={15} className="animate-spin text-white" />
+              <Loader2 size={15} className="animate-spin text-concrete-400" />
             ) : (
-              <Send size={15} className="text-white" />
+              <Send size={15} className={input.trim() ? "text-ink-950" : "text-concrete-400"} />
             )}
           </button>
         </div>

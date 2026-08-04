@@ -19,6 +19,10 @@ const COLOR_MAP: Record<string, string> = {
   teal:   "bg-teal-900/40 border-teal-700/50 text-teal-300",
 };
 
+const LETRA_TEXT: Record<string, string> = {
+  brand: "text-ink-950",
+};
+
 const LETRA_BG: Record<string, string> = {
   brand:  "bg-brand-600",
   orange: "bg-orange-600",
@@ -40,6 +44,7 @@ function TituloCard({ titulo, expanded, onToggle }: {
 }) {
   const cc = COLOR_MAP[titulo.color] ?? COLOR_MAP.brand;
   const lb = LETRA_BG[titulo.color] ?? "bg-brand-600";
+  const lt = LETRA_TEXT[titulo.color] ?? "text-white";
 
   return (
     <div className={clsx("border rounded-2xl overflow-hidden transition-all", cc)}>
@@ -48,7 +53,7 @@ function TituloCard({ titulo, expanded, onToggle }: {
         className="w-full flex items-center gap-3 p-4 text-left"
       >
         <div className={clsx("w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0", lb)}>
-          <span className="text-white font-bold text-lg leading-none">{titulo.letra}</span>
+          <span className={clsx(lt, "font-bold text-lg leading-none")}>{titulo.letra}</span>
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-white leading-snug">{titulo.nombre}</p>

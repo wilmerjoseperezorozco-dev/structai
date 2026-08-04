@@ -94,7 +94,7 @@ export default function DashboardPage() {
           </div>
           <Link
             href="/pricing"
-            className="block mt-3 w-full text-center bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold py-2.5 rounded-xl transition"
+            className="block mt-3 w-full text-center bg-brand-600 hover:bg-brand-500 text-ink-950 text-sm font-semibold py-2.5 rounded-xl transition"
           >
             Ver planes
           </Link>

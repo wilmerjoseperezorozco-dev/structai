@@ -86,7 +86,7 @@ function HomeContent() {
       {/* ── Header ── */}
       <header className="flex items-center gap-3 px-4 py-3 bg-concrete-900 border-b border-concrete-800">
         <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center">
-          <HardHat size={18} className="text-white" />
+          <HardHat size={18} className="text-ink-950" />
         </div>
         <div className="flex-1 min-w-0">
           <h1 className="text-sm font-bold text-white leading-none">StructAI</h1>

@@ -68,7 +68,7 @@ export default function RestablecerPage() {
 
         <div className="text-center mb-8">
           <div className="w-14 h-14 rounded-2xl bg-brand-600 flex items-center justify-center mx-auto mb-4">
-            <HardHat size={28} className="text-white" />
+            <HardHat size={28} className="text-ink-950" />
           </div>
           <h1 className="text-2xl font-bold text-white">Nueva contraseña</h1>
           <p className="text-concrete-400 text-sm mt-1">
@@ -133,7 +133,7 @@ export default function RestablecerPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-brand-600 hover:bg-brand-500 disabled:opacity-60 text-white font-semibold py-3 rounded-xl text-sm transition flex items-center justify-center gap-2"
+                className="w-full bg-brand-600 hover:bg-brand-500 disabled:opacity-60 text-ink-950 font-semibold py-3 rounded-xl text-sm transition flex items-center justify-center gap-2"
               >
                 {loading && <Loader2 size={15} className="animate-spin" />}
                 Guardar contraseña

@@ -284,7 +284,7 @@ export default function DetectUpload() {
         <button
           onClick={analyze}
           disabled={loadingDetect}
-          className="w-full flex items-center justify-center gap-2 bg-brand-600 hover:bg-brand-500 disabled:bg-concrete-700 disabled:cursor-not-allowed text-white font-semibold text-sm rounded-xl py-3 transition"
+          className="w-full flex items-center justify-center gap-2 bg-brand-600 hover:bg-brand-500 disabled:bg-concrete-700 disabled:cursor-not-allowed text-ink-950 disabled:text-concrete-400 font-semibold text-sm rounded-xl py-3 transition"
         >
           {loadingDetect ? (
             <><Loader2 size={16} className="animate-spin" /> Analizando con IA…</>

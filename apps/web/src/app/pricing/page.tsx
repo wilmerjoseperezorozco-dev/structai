@@ -65,7 +65,7 @@ export default function PricingPage() {
           {/* Pro */}
           <div className="bg-brand-950 border border-brand-700/60 rounded-2xl p-6 relative">
             <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-              <span className="inline-flex items-center gap-1 bg-brand-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
+              <span className="inline-flex items-center gap-1 bg-brand-600 text-ink-950 text-xs font-semibold px-3 py-1 rounded-full">
                 <Zap size={11} /> Recomendado
               </span>
             </div>
@@ -83,7 +83,7 @@ export default function PricingPage() {
               href={WOMPI_CHECKOUT_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="block w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold transition text-center"
+              className="block w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-ink-950 text-sm font-semibold transition text-center"
             >
               Activar Pro
             </a>

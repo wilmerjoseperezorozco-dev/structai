@@ -55,7 +55,7 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="w-14 h-14 rounded-2xl bg-brand-600 flex items-center justify-center mx-auto mb-4">
-            <HardHat size={28} className="text-white" />
+            <HardHat size={28} className="text-ink-950" />
           </div>
           <h1 className="text-2xl font-bold text-white">StructAI</h1>
           <p className="text-concrete-400 text-sm mt-1">
@@ -72,7 +72,7 @@ export default function LoginPage() {
                 onClick={() => setMode(m)}
                 className={`flex-1 py-2 text-sm font-medium rounded-lg transition ${
                   mode === m
-                    ? "bg-brand-600 text-white"
+                    ? "bg-brand-600 text-ink-950"
                     : "text-concrete-400 hover:text-concrete-200"
                 }`}
               >
@@ -128,7 +128,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-brand-600 hover:bg-brand-500 disabled:opacity-60 text-white font-semibold py-3 rounded-xl text-sm transition flex items-center justify-center gap-2"
+              className="w-full bg-brand-600 hover:bg-brand-500 disabled:opacity-60 text-ink-950 font-semibold py-3 rounded-xl text-sm transition flex items-center justify-center gap-2"
             >
               {loading && <Loader2 size={15} className="animate-spin" />}
               {mode === "login" ? "Ingresar" : "Crear cuenta gratis"}

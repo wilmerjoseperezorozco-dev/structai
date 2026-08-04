@@ -80,7 +80,7 @@ export default function PerfilPage() {
     <div className="flex flex-col gap-6 px-4 py-6">
       <div className="flex items-center gap-4">
         <div className="w-14 h-14 rounded-2xl bg-brand-600 flex items-center justify-center flex-shrink-0">
-          <User size={26} className="text-white" />
+          <User size={26} className="text-ink-950" />
         </div>
         <div className="min-w-0">
           <h2 className="text-lg font-bold text-white truncate">{perfil?.nombre || perfil?.email}</h2>
@@ -115,7 +115,7 @@ export default function PerfilPage() {
       {perfil?.plan === "free" && (
         <a
           href="/pricing"
-          className="block w-full text-center bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold py-3 rounded-xl transition"
+          className="block w-full text-center bg-brand-600 hover:bg-brand-500 text-ink-950 text-sm font-semibold py-3 rounded-xl transition"
         >
           Activa Pro por $19.900/mes
         </a>
