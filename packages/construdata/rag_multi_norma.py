@@ -14,7 +14,7 @@ import os
 from dataclasses import dataclass
 from functools import lru_cache
 from typing import Optional
-from openai import APIConnectionError, InternalServerError, OpenAI, RateLimitError
+from openai import APIConnectionError, APIStatusError, InternalServerError, OpenAI, RateLimitError
 from supabase import create_client
 
 log = logging.getLogger(__name__)
@@ -492,6 +492,21 @@ def _generar_respuesta(contexto: str, question: str) -> str:
         # nunca en BadRequestError/AuthenticationError/NotFoundError, que son
         # bugs propios que NVIDIA fallaría igual (o peor, enmascarando el error real).
         log.warning(f"Groq no disponible ({type(e).__name__}), intentando respaldo NVIDIA: {e}")
+    except APIStatusError as e:
+        # Groq responde 413 (no 429) cuando el contexto+prompt de UNA sola
+        # petición supera el límite de tokens-por-minuto de la cuenta (cuerpo
+        # real: code="rate_limit_exceeded" pese al status 413) — el SDK de
+        # OpenAI solo mapea 429 a RateLimitError, así que este caso se colaba
+        # sin activar el respaldo NVIDIA pese a ser, en la práctica, la misma
+        # situación de "Groq sin capacidad para esta petición". Encontrado
+        # real 2026-08-04 corriendo la batería de motores: una pregunta con
+        # mucho contexto recuperado moría sin respuesta con NVIDIA ya
+        # configurado y disponible. El resto de status errors (400/401/403/
+        # 404/409/422) siguen sin caer a NVIDIA — son bugs propios que el
+        # respaldo fallaría igual (o peor, enmascarando el error real).
+        if e.status_code != 413:
+            raise
+        log.warning(f"Groq rechazó la petición por tamaño de contexto (413), intentando respaldo NVIDIA: {e}")
 
     if nvidia_client is None:
         raise RespuestaIAIndisponibleError(
