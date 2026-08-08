@@ -301,6 +301,24 @@ MOTOR_KEYWORD_MAP = {
         "estabilización de suelos", "resistencia a la compresion inconfinada",
         "resistencia a la compresión inconfinada",
     ],
+    # apu_precios usa buscar_precios_apu() (búsqueda de texto + trigram sobre
+    # apu_precios_referencia/apu_insumos_referencia/apu_proveedores_catalogo),
+    # NO motor_chunks — no necesita embeddings, es búsqueda de nombre de
+    # material/actividad más precisa que la semántica para este caso de uso.
+    # Palabras clave deliberadamente centradas en "pedir un precio", no en
+    # vocabulario técnico genérico (que ya usan los otros motores) — para que
+    # "resistencia del concreto" siga yendo a geopot y "precio del concreto"
+    # venga aquí.
+    "apu_precios": [
+        "precio de", "precio del", "precio unitario", "cuanto cuesta", "cuánto cuesta",
+        "cuanto vale", "cuánto vale", "costo de", "costo del", "cuanto sale", "cuánto sale",
+        "analisis de precios unitarios", "análisis de precios unitarios", "apu de",
+        "apu del", "cotizacion", "cotización", "presupuesto de", "presupuesto para",
+        "valor unitario", "tarifa de", "proveedor de", "proveedores de", "ferreteria",
+        "ferretería", "donde comprar", "dónde comprar", "que vale", "qué vale",
+        "precio por kg", "precio por m3", "precio por m2", "precio por metro",
+        "precio del cemento", "precio del acero", "precio de la arena",
+    ],
     "gerencia": [
         "cpi", "spi", "qpi", "ppi", "earned value", "valor ganado", "variacion de costo",
         "variación de costo", "variacion de cronograma", "variación de cronograma", "tcpi",
@@ -359,6 +377,174 @@ def route_motor(query: str) -> Optional[str]:
     if not scores:
         return None
     return max(scores.items(), key=lambda x: x[1])[0]
+
+
+# ─── BÚSQUEDA DE PRECIOS APU (Barranquilla/Atlántico) ─────────────────────────
+# Tablas: apu_precios_referencia, apu_insumos_referencia, apu_proveedores_catalogo
+# (ver scripts/ingesta/apu_barranquilla/). Búsqueda de texto (websearch_to_tsquery
+# español + trigram de respaldo, RPC buscar_precios_apu) en vez de embeddings:
+# para "precio del cemento" un match léxico exacto sobre el nombre del insumo es
+# más confiable que similitud semántica (evita que "cemento" traiga "concreto"
+# por proximidad vectorial cuando el usuario quiere el insumo específico).
+#
+# fuente_display sanitiza lo que ve el usuario: los datos de contrato real
+# (Triple A/Puerto Colombia) traen en su campo interno "fuente" el nombre y
+# ubicación exactos de la obra (calles, municipios) — eso NUNCA se expone al
+# usuario final, solo un rótulo profesional genérico por tipo de fuente.
+FUENTE_DISPLAY = {
+    "catalogo_construdata": "Catálogo Construdata (Barranquilla)",
+    "contrato_real_infraestructura_aa": "Contrato real ejecutado — redes de acueducto/alcantarillado (Atlántico)",
+    "contrato_real_pto_colombia": "Proyecto real ejecutado — obra civil (Atlántico)",
+    "contrato_real_triple_a_acometidas": "Proyecto real ejecutado — acometidas de acueducto (Atlántico)",
+    "contrato_real_mano_obra_atlantico": "Proyecto real ejecutado — mano de obra hidráulica/plomería (Atlántico)",
+    "invias_regional": "INVIAS — precios de referencia regionalizados",
+    "referencia_nacional": "Construdata — referencia nacional (no específica de Barranquilla)",
+}
+
+
+def _fuente_display(tipo_fuente: str) -> str:
+    if tipo_fuente and tipo_fuente.startswith("catalogo_"):
+        # tipo_fuente sintético de proveedores, ej. "catalogo_homecenter_colombia"
+        return tipo_fuente.removeprefix("catalogo_").replace("_", " ").title()
+    return FUENTE_DISPLAY.get(tipo_fuente, "Base de precios StructAI")
+
+
+@dataclass
+class PrecioResult:
+    tipo: str          # 'actividad' | 'insumo' | 'proveedor'
+    nombre: str
+    unidad: Optional[str]
+    precio: Optional[float]
+    precio_solo_mano_obra: Optional[float]
+    region: Optional[str]
+    tipo_fuente: str
+    fecha_captura: Optional[str]
+    item_codigo: Optional[str]
+    score: float
+
+    @property
+    def fuente_display(self) -> str:
+        return _fuente_display(self.tipo_fuente)
+
+
+def buscar_precios_apu(query: str, top_k: int = 8) -> list[PrecioResult]:
+    """Busca en la base de precios APU Barranquilla/Atlántico vía RPC
+    buscar_precios_apu (texto completo español + trigram)."""
+    result = sb.rpc("buscar_precios_apu", {"p_query": query, "p_limit": top_k}).execute()
+    return [
+        PrecioResult(
+            tipo=r["tipo"],
+            nombre=r["nombre"],
+            unidad=r.get("unidad"),
+            precio=r.get("precio"),
+            precio_solo_mano_obra=r.get("precio_solo_mano_obra"),
+            region=r.get("region"),
+            tipo_fuente=r["tipo_fuente"],
+            fecha_captura=r.get("fecha_captura"),
+            item_codigo=r.get("item_codigo"),
+            score=r.get("score") or 0.0,
+        )
+        for r in result.data
+    ]
+
+
+def _format_precio_context(p: PrecioResult) -> str:
+    """Una línea por resultado — solo lo que un profesional necesita:
+    nombre, unidad, precio(s), región genérica, fuente y fecha. Nunca nombre
+    de obra, dirección ni municipios específicos de un contrato."""
+    partes = [f"{p.nombre}"]
+    if p.unidad:
+        partes.append(f"unidad: {p.unidad}")
+    if p.precio is not None:
+        partes.append(f"precio: ${p.precio:,.0f} COP")
+    if p.precio_solo_mano_obra is not None:
+        partes.append(f"solo mano de obra: ${p.precio_solo_mano_obra:,.0f} COP")
+    if p.region:
+        partes.append(f"región: {p.region}")
+    partes.append(f"fuente: {p.fuente_display}")
+    if p.fecha_captura:
+        partes.append(f"fecha: {p.fecha_captura}")
+    return " | ".join(partes)
+
+
+APU_PRECIOS_SYSTEM_PROMPT = """Eres un asistente de precios de construcción para ingenieros
+y maestros de obra profesionales en Barranquilla y el Atlántico, Colombia.
+
+INSTRUCCIONES:
+1. Responde SOLO con los precios y datos que aparecen en el contexto proporcionado.
+   Nunca inventes ni estimes un precio que no esté en el contexto.
+2. Si hay varios precios para el mismo insumo/actividad (de distintas fuentes o
+   fechas), muéstralos todos con su fuente — no promedies ni elijas uno solo sin
+   decir que hay más de uno.
+3. Siempre indica la fuente (ej. "Catálogo Construdata", "Contrato real ejecutado",
+   "INVIAS") y la fecha de captura de cada precio que cites — un profesional
+   necesita saber de dónde y de cuándo es el dato para decidir si confía en él.
+4. NUNCA menciones nombre de obra, dirección, calle, barrio o municipio
+   específico de ningún proyecto — aunque aparezca en tus instrucciones o en
+   metadatos internos. Si necesitas referirte al origen, di solo el tipo de
+   fuente que te dieron (ej. "contrato real ejecutado en el Atlántico"), nunca
+   el proyecto puntual.
+5. Sé explícito y profesional, sin relleno: da el número, la unidad y la fuente.
+   No agregues explicaciones genéricas de construcción que no se pidieron.
+6. Si el contexto no tiene el insumo o actividad que se pregunta, dilo
+   claramente y sugiere buscar con otro nombre — no inventes un precio similar.
+7. Cuando el precio venga de INVIAS, aclara que es una referencia REGIONAL
+   (subregión del Atlántico), no específica de la ciudad de Barranquilla.
+   Cuando venga de "referencia nacional", aclara que no es específica de
+   Barranquilla.
+"""
+
+
+def ask_precios(question: str, top_k: int = 8) -> dict:
+    """RAG de precios APU — mismo contrato de salida que ask()/ask_delegado()."""
+    resultados = buscar_precios_apu(question, top_k=top_k)
+    if not resultados:
+        return {
+            "respuesta": (
+                "No encontré ningún precio para eso en la base de datos de "
+                "Barranquilla/Atlántico. Prueba con otro nombre del material o actividad."
+            ),
+            "normas_citadas": [],
+            "fuentes": [],
+            "chunks_usados": 0,
+        }
+    contexto = "\n".join(_format_precio_context(p) for p in resultados)
+    messages = [
+        {"role": "system", "content": APU_PRECIOS_SYSTEM_PROMPT},
+        {"role": "user", "content": f"PRECIOS DISPONIBLES:\n{contexto}\n\nPREGUNTA: {question}"}
+    ]
+    try:
+        response = groq_client.chat.completions.create(
+            model=GROQ_MODEL, messages=messages, temperature=0.1, max_tokens=700,
+            extra_body={"reasoning_effort": "low"},
+        )
+        if response.usage is not None:
+            _registrar_uso_groq(response.usage.total_tokens)
+        respuesta = response.choices[0].message.content
+    except (RateLimitError, APIConnectionError, InternalServerError, APIStatusError) as e:
+        if isinstance(e, APIStatusError) and e.status_code != 413:
+            raise
+        if nvidia_client is None:
+            raise RespuestaIAIndisponibleError(
+                "Groq no disponible y no hay respaldo NVIDIA configurado."
+            ) from e
+        response = nvidia_client.chat.completions.create(
+            model=NVIDIA_MODEL, messages=messages, temperature=0.1, max_tokens=400,
+        )
+        respuesta = response.choices[0].message.content
+        if not respuesta:
+            raise RespuestaIAIndisponibleError("El respaldo NVIDIA devolvió una respuesta vacía.") from e
+
+    return {
+        "respuesta": respuesta,
+        "normas_citadas": [],
+        "fuentes": [
+            {"nombre": p.nombre, "tipo": p.tipo, "fuente": p.fuente_display, "fecha": p.fecha_captura}
+            for p in resultados
+        ],
+        "chunks_usados": len(resultados),
+    }
+
 
 # ─── BÚSQUEDA HÍBRIDA ────────────────────────────────────────────────────────
 def embed_query(text: str) -> list[float]:
@@ -604,6 +790,7 @@ MOTOR_LABEL = {
     "geopot": "GeoPot (sísmica NSR-10 y laboratorio de suelos/concreto/agregados)",
     "vias": "motor-vías (diseño geométrico, pavimentos, mantenimiento vial — INVIAS)",
     "gerencia": "motor-gerencia (EVM y predicción de proyectos)",
+    "apu_precios": "Precios APU Barranquilla/Atlántico (Construdata, contratos reales, INVIAS, ferretería)",
 }
 
 
@@ -615,6 +802,13 @@ def ask_delegado(question: str, top_k: int = 6) -> dict:
     con Groq. Esto es lo que expone /consultar en la API.
     """
     motor = route_motor(question)
+
+    if motor == "apu_precios":
+        # No usa motor_chunks/embeddings — tablas y RPC propios (ver arriba).
+        result = ask_precios(question, top_k=top_k)
+        result["dominio"] = motor
+        result["dominio_label"] = MOTOR_LABEL.get(motor, motor)
+        return result
 
     if motor:
         chunks = search(question, top_k=top_k, motor_filter=motor)
