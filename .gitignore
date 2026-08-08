@@ -42,6 +42,9 @@ Thumbs.db
 # ── Normativa fuente cruda (privada, no redistribuible) ───────────
 packages/construdata/normativa_raw/
 scripts/ingesta/*/raw/
+scripts/ingesta/sgsst_raw/
+scripts/ingesta/ras_audit/
+scripts/ingesta/preview_*.txt
 
 # ── Dataset de fotos de obra reales (personas identificables, sitio real) ──
 # El modelo.onnx entrenado SÍ se puede commitear (deliberado, binario
