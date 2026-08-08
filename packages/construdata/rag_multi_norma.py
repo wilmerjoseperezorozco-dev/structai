@@ -399,6 +399,19 @@ FUENTE_DISPLAY = {
     "contrato_real_mano_obra_atlantico": "Proyecto real ejecutado — mano de obra hidráulica/plomería (Atlántico)",
     "invias_regional": "INVIAS — precios de referencia regionalizados",
     "referencia_nacional": "Construdata — referencia nacional (no específica de Barranquilla)",
+    # Fuentes adicionales cargadas 2026-08-08 (triage de archivos reales del PC
+    # del usuario — ver project_apu_precios_barranquilla.md).
+    "contrato_real_pto_colombia_calle15": "Contrato real ejecutado — vía urbana Puerto Colombia (catálogo 2017-2019)",
+    "contrato_real_pto_colombia_2016": "Contrato real ejecutado — demoliciones y pavimentos, Puerto Colombia (2016)",
+    "contrato_real_gobernacion_atlantico": "Presupuesto real — Secretaría de Infraestructura, Gobernación del Atlántico",
+    "cotizacion_real_cerca_seguridad": "Cotización real de proveedor — cerca de seguridad/concertina (Atlántico)",
+    "contrato_real_obras_civiles_demoliciones": "Contrato real ejecutado — obras civiles y demoliciones (Atlántico)",
+    "contrato_real_medidores_agua": "Contrato real ejecutado — instalación de medidores de agua (Atlántico)",
+    "contrato_real_impermeabilizacion": "Contrato real ejecutado — impermeabilización (Atlántico)",
+    "contrato_real_box_culvert": "Contrato real ejecutado — box culvert / estructura de drenaje (Atlántico)",
+    "catalogo_iad_mipymes": "Catálogo IAD MIPYMES — Colombia Compra Eficiente (mediana de cotizaciones nacionales)",
+    "cotizacion_real_ptar": "Cotización real — planta de tratamiento de aguas residuales (Atlántico)",
+    "contrato_real_edar_humedales": "Contrato real ejecutado — EDAR / humedales artificiales (Atlántico)",
 }
 
 
