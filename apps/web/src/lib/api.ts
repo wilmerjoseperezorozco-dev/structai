@@ -25,6 +25,18 @@ export interface AskResponse {
   latencia_ms: number;
 }
 
+/** Respuesta del agente delegador (/consultar) — cualquier dominio de
+ * ingeniería (normativa general, aquai, geopot, vías, gerencia, precios APU). */
+export interface ConsultarResponse {
+  dominio: string;
+  dominio_label: string;
+  respuesta: string;
+  normas_citadas: string[];
+  fuentes: FuenteChunk[];
+  chunks_usados: number;
+  latencia_ms: number;
+}
+
 export interface APUItem {
   id: string;
   descripcion: string;
@@ -141,7 +153,9 @@ export function descargarBlob(blob: Blob, filename: string): void {
 
 // ── Endpoints ────────────────────────────────────────────────────────────────
 
-/** Consulta normativa RAG multi-norma NTC/NSR-10 */
+/** Consulta normativa RAG multi-norma NTC/NSR-10 (sin enrutamiento de dominio —
+ * usar consultarDelegado() para el chat principal, este queda para casos que
+ * necesiten forzar una norma específica vía norma_hint). */
 export async function askNorma(
   pregunta: string,
   norma_hint?: string,
@@ -151,6 +165,20 @@ export async function askNorma(
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ pregunta, norma_hint, top_k }),
+  });
+}
+
+/** Punto de entrada único del chat: detecta el dominio de la pregunta
+ * (normativa general, aquai, geopot, vías, gerencia, precios APU
+ * Barranquilla/Atlántico) y responde con la fuente correcta. */
+export async function consultarDelegado(
+  pregunta: string,
+  top_k = 6
+): Promise<ConsultarResponse> {
+  return api<ConsultarResponse>("/consultar", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ pregunta, top_k }),
   });
 }
 

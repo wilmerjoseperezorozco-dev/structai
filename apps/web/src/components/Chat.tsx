@@ -3,9 +3,9 @@
 import { useState, useRef, useEffect, KeyboardEvent } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import ReactMarkdown from "react-markdown";
-import { Send, Loader2, BookOpen, ChevronDown, ChevronUp } from "lucide-react";
+import { Send, Loader2, BookOpen, Coins, ChevronDown, ChevronUp } from "lucide-react";
 import clsx from "clsx";
-import { askNorma, type AskResponse, type FuenteChunk } from "@/lib/api";
+import { consultarDelegado, type ConsultarResponse, type FuenteChunk } from "@/lib/api";
 import { supabase } from "@/lib/supabase";
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -16,12 +16,13 @@ interface Message {
   id: string;
   role: Role;
   text: string;
-  meta?: AskResponse;
+  meta?: ConsultarResponse;
 }
 
 // ── Sugerencias rápidas (preguntas tipo ingeniero civil) ──────────────────────
 
 const SUGERENCIAS = [
+  "¿Cuánto cuesta el cemento en Barranquilla?",
   "¿Qué resistencia mínima de concreto exige NSR-10 para columnas sísmicas?",
   "¿Cuál es el recubrimiento mínimo para vigas expuestas a la intemperie?",
   "¿Qué norma regula el acero corrugado grado 60 en Colombia?",
@@ -31,19 +32,38 @@ const SUGERENCIAS = [
 
 // ── Fuentes colapsables ──────────────────────────────────────────────────────
 
-function Fuentes({ fuentes, normas }: { fuentes: FuenteChunk[]; normas: string[] }) {
+function Fuentes({
+  fuentes,
+  normas,
+  dominio,
+  dominioLabel,
+}: {
+  fuentes: FuenteChunk[];
+  normas: string[];
+  dominio?: string;
+  dominioLabel?: string;
+}) {
   const [open, setOpen] = useState(false);
   if (!fuentes.length) return null;
+
+  // Precios APU (dominio="apu_precios") usa un rótulo y estilo distinto al
+  // de citas normativas: acá "norma" es en realidad la fuente del precio
+  // (Construdata, contrato real, INVIAS...) y "seccion" ya trae el ítem con
+  // su precio formateado — no tiene sentido mostrar "§" como si fuera un
+  // artículo de norma.
+  const esPrecios = dominio === "apu_precios";
+
   return (
     <div className="mt-2 border border-brand-700/30 rounded-lg overflow-hidden text-xs">
       <button
         onClick={() => setOpen((o) => !o)}
         className="w-full flex items-center gap-2 px-3 py-2 bg-brand-900/30 text-brand-300 hover:bg-brand-900/50 transition"
       >
-        <BookOpen size={13} />
+        {esPrecios ? <Coins size={13} /> : <BookOpen size={13} />}
         <span className="font-mono font-medium">
-          {normas.slice(0, 3).join(" · ")}
-          {normas.length > 3 && ` +${normas.length - 3} más`}
+          {esPrecios
+            ? dominioLabel ?? "Precios APU Barranquilla"
+            : normas.slice(0, 3).join(" · ") + (normas.length > 3 ? ` +${normas.length - 3} más` : "")}
         </span>
         <span className="ml-auto text-brand-500">{fuentes.length} fuentes</span>
         {open ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
@@ -53,17 +73,29 @@ function Fuentes({ fuentes, normas }: { fuentes: FuenteChunk[]; normas: string[]
         <div className="divide-y divide-concrete-700/30">
           {fuentes.map((f, i) => (
             <div key={i} className="px-3 py-2 bg-concrete-900/60">
-              <div className="flex justify-between items-center mb-1">
-                <span className="font-mono font-semibold text-brand-300">{f.norma}</span>
-                <span className="font-mono text-concrete-400">§ {f.seccion}</span>
-                <span className="font-mono tabular-nums text-concrete-500">
-                  {(f.score * 100).toFixed(1)}%
-                </span>
-              </div>
-              <p className="text-concrete-300 leading-relaxed">
-                {f.contenido_preview}
-                {f.contenido_preview.length >= 200 && "…"}
-              </p>
+              {esPrecios ? (
+                <>
+                  <p className="font-mono font-semibold text-brand-200 mb-0.5">{f.seccion}</p>
+                  <p className="text-concrete-400">{f.norma}</p>
+                  {f.contenido_preview && (
+                    <p className="text-concrete-500 mt-0.5">{f.contenido_preview}</p>
+                  )}
+                </>
+              ) : (
+                <>
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="font-mono font-semibold text-brand-300">{f.norma}</span>
+                    <span className="font-mono text-concrete-400">§ {f.seccion}</span>
+                    <span className="font-mono tabular-nums text-concrete-500">
+                      {(f.score * 100).toFixed(1)}%
+                    </span>
+                  </div>
+                  <p className="text-concrete-300 leading-relaxed">
+                    {f.contenido_preview}
+                    {f.contenido_preview.length >= 200 && "…"}
+                  </p>
+                </>
+              )}
             </div>
           ))}
         </div>
@@ -137,6 +169,8 @@ function Bubble({ msg }: { msg: Message }) {
             <Fuentes
               fuentes={msg.meta.fuentes}
               normas={msg.meta.normas_citadas}
+              dominio={msg.meta.dominio}
+              dominioLabel={msg.meta.dominio_label}
             />
             <p className="text-xs text-concrete-500 mt-1 px-1">
               {msg.meta.chunks_usados} chunks · {msg.meta.latencia_ms} ms
@@ -159,7 +193,7 @@ const MENSAJE_BIENVENIDA: Message = {
   id: "welcome",
   role: "assistant",
   text:
-    "Hola, soy tu asistente de ingeniería civil. Puedo consultarte sobre **NTC**, **NSR-10**, normas de seguridad industrial y calcular APUs con precios Construdata 2026 Barranquilla.\n\n¿Qué necesitas saber hoy?",
+    "Hola, soy tu asistente de ingeniería civil. Puedo consultarte sobre **NTC**, **NSR-10**, normas de seguridad industrial, y responderte **precios reales de materiales y actividades en Barranquilla/Atlántico** (Construdata, contratos ejecutados, INVIAS).\n\n¿Qué necesitas saber hoy?",
 };
 
 function cargarHistorial(): Message[] {
@@ -269,7 +303,7 @@ export default function Chat() {
     setLoading(true);
 
     try {
-      const res = await askNorma(text);
+      const res = await consultarDelegado(text);
       setMessages((m) => [
         ...m,
         { id: Date.now().toString() + "_r", role: "assistant", text: res.respuesta, meta: res },

@@ -403,9 +403,9 @@ FUENTE_DISPLAY = {
 
 
 def _fuente_display(tipo_fuente: str) -> str:
-    if tipo_fuente and tipo_fuente.startswith("catalogo_"):
-        # tipo_fuente sintético de proveedores, ej. "catalogo_homecenter_colombia"
-        return tipo_fuente.removeprefix("catalogo_").replace("_", " ").title()
+    if tipo_fuente and tipo_fuente.startswith("proveedor_"):
+        # tipo_fuente sintético de proveedores, ej. "proveedor_homecenter_colombia"
+        return tipo_fuente.removeprefix("proveedor_").replace("_", " ").title()
     return FUENTE_DISPLAY.get(tipo_fuente, "Base de precios StructAI")
 
 
@@ -508,6 +508,26 @@ def ask_precios(question: str, top_k: int = 8) -> dict:
             "fuentes": [],
             "chunks_usados": 0,
         }
+    # Reutiliza el mismo contrato de "fuentes" que ChunkResult (norma/seccion/
+    # contenido_preview/score) para que /consultar y el frontend (componente
+    # Fuentes en Chat.tsx) no necesiten un tipo aparte — norma pasa a ser el
+    # rótulo de fuente sanitizado, seccion el nombre+precio del ítem.
+    fuentes_formato_chunk = [
+        {
+            "norma": p.fuente_display,
+            "seccion": (
+                f"{p.nombre} — ${p.precio:,.0f} COP/{p.unidad or 'un'}"
+                if p.precio is not None else p.nombre
+            ),
+            "contenido": (
+                f"Fecha de captura: {p.fecha_captura or 'sin fecha'}"
+                + (f" · Región: {p.region}" if p.region else "")
+            ),
+            "score": p.score,
+        }
+        for p in resultados
+    ]
+    normas_citadas = list(dict.fromkeys(p.fuente_display for p in resultados))[:4]
     contexto = "\n".join(_format_precio_context(p) for p in resultados)
     messages = [
         {"role": "system", "content": APU_PRECIOS_SYSTEM_PROMPT},
@@ -537,11 +557,8 @@ def ask_precios(question: str, top_k: int = 8) -> dict:
 
     return {
         "respuesta": respuesta,
-        "normas_citadas": [],
-        "fuentes": [
-            {"nombre": p.nombre, "tipo": p.tipo, "fuente": p.fuente_display, "fecha": p.fecha_captura}
-            for p in resultados
-        ],
+        "normas_citadas": normas_citadas,
+        "fuentes": fuentes_formato_chunk,
         "chunks_usados": len(resultados),
     }
 
