@@ -19,10 +19,18 @@ authors:
     email: "wilmerjoseperezorozco@gmail.com"
     affiliation: "Tubará Labs, Barranquilla, Colombia"
 version: "1.0.0"
-date-released: "2026-08-05"
+date-released: "2026-08-08"
 license: "LicenseRef-proprietary"
 repository-code: "https://github.com/wilmerjoseperezorozco-dev/structai"
 url: "https://github.com/wilmerjoseperezorozco-dev/structai"
+# DOI "concepto" (10.5281/zenodo.21851529) -- Zenodo lo mantiene apuntando
+# siempre a la última versión archivada, a diferencia del DOI de una versión
+# específica (ej. 10.5281/zenodo.21851530 para v1.0.0), que queda fijo.
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.21851529"
+    description: "DOI concepto — siempre resuelve a la última versión publicada en Zenodo"
+doi: "10.5281/zenodo.21851529"
 keywords:
   - civil engineering
   - Colombia

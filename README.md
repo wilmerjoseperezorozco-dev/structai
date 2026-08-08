@@ -1,5 +1,7 @@
 # StructAI — Plataforma de IA para ingeniería civil en Colombia
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21851529.svg)](https://doi.org/10.5281/zenodo.21851529)
+
 SaaS freemium para ingenieros civiles y maestros de obra: cálculos de ingeniería con trazabilidad normativa real (NSR-10, NTC, RAS 2000/Res. 0330, INVIAS, SGSST) y consultas por IA que citan norma, capítulo/artículo y fuente — nunca inventa contenido normativo.
 
 `Construdata` es el nombre interno del repositorio/código; **StructAI** es la marca pública.
