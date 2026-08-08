@@ -13,7 +13,7 @@ import pytest
 from pydantic import ValidationError
 
 from src.schemas import (
-    PoblacionRequest, MetodoPoblacion, NivelComplejidad, ClimaRegion,
+    PoblacionRequest, MetodoPoblacion, NivelComplejidad, ZonaIncendio,
     CaudalesRequest, HazenWilliamsRequest, HidrologiaRequest, MetodoConcentracion,
 )
 from src.schemas_hidraulica_avanzada import (
@@ -39,8 +39,8 @@ from src.tarifario import calcular_tarifa
 from src.sui_reporte import calcular_indicadores, generar_reporte_sui, categoria_irca, cumple_irca
 
 from src.ras2000_tablas import (
-    DOTACION_RAS, FACTORES_CONSUMO, CAUDAL_INCENDIO, PERIODO_DISENO,
-    TASA_CRECIMIENTO_DEFAULT, CURVAS_IDF,
+    dotacion_neta_maxima, factores_consumo_maximos, caudal_incendio_minimo,
+    PERIODO_DISENO_ANIOS, TASA_CRECIMIENTO_DEFAULT, CURVAS_IDF,
 )
 
 
@@ -86,7 +86,7 @@ def test_poblacion_tasa_y_periodo_por_defecto():
     )
     resp = proyectar_poblacion(req)
     assert resp.tasa_usada == TASA_CRECIMIENTO_DEFAULT["bajo"]
-    assert resp.periodo_diseno == PERIODO_DISENO["bajo"]
+    assert resp.periodo_diseno == PERIODO_DISENO_ANIOS
 
 
 def test_poblacion_anio_diseno_debe_ser_mayor():
@@ -99,33 +99,61 @@ def test_poblacion_anio_diseno_debe_ser_mayor():
 
 # ─── caudales.py ───────────────────────────────────────────────────────────
 
-def test_caudales_tabla_ras_dotacion_recomendada():
+def test_caudales_dotacion_neta_maxima_por_altura():
     req = CaudalesRequest(
         poblacion_diseno=10_000,
-        nivel_complejidad=NivelComplejidad.MEDIO,
-        clima=ClimaRegion.CALIDO,
+        altura_msnm=800,   # < 1000 msnm -> tope 140 L/hab/dia (Art. 43 Tabla 1)
+        zona_incendio=ZonaIncendio.UNIFAMILIAR,
     )
     resp = calcular_caudales(req)
-    _min, _max, rec = DOTACION_RAS["medio"]["calido"]
-    assert resp.dotacion_lhd == rec
+    esperado = dotacion_neta_maxima(800)
+    assert resp.dotacion_lhd == esperado
+    assert esperado == 140.0
 
-    dot_bruta = rec / (1 - 0.25)   # perdidas_pct default = 25.0
+    dot_bruta = esperado / (1 - 0.25)   # perdidas_pct default = 25.0
     Qp = (dot_bruta * 10_000) / 86_400
-    fmd, fmh = FACTORES_CONSUMO["medio"]["fmd"], FACTORES_CONSUMO["medio"]["fmh"]
+    fmd, fmh = factores_consumo_maximos(10_000)   # <=12500 hab -> K1=1.3, K2=1.6
     assert resp.Qp_ls == pytest.approx(Qp, rel=1e-4)
     assert resp.Qmd_ls == pytest.approx(Qp * fmd, rel=1e-4)
     assert resp.Qmh_ls == pytest.approx(Qp * fmd * fmh, rel=1e-4)
-    assert resp.Qci_ls == CAUDAL_INCENDIO["medio"]
+    assert resp.Qci_ls == caudal_incendio_minimo(10_000, "unifamiliar")
+
+
+def test_caudales_dotacion_neta_maxima_limites_altura():
+    assert dotacion_neta_maxima(2500) == 120.0   # > 2000 msnm
+    assert dotacion_neta_maxima(2000) == 130.0   # frontera: cae en el rango 1000-2000
+    assert dotacion_neta_maxima(1500) == 130.0   # 1000-2000 msnm
+    assert dotacion_neta_maxima(500) == 140.0    # < 1000 msnm
 
 
 def test_caudales_dotacion_manual_omite_tabla():
     req = CaudalesRequest(
-        poblacion_diseno=1_000, nivel_complejidad=NivelComplejidad.BAJO,
-        clima=ClimaRegion.FRIO, dotacion_manual=100.0, perdidas_pct=20.0,
+        poblacion_diseno=1_000,
+        altura_msnm=2800, dotacion_manual=100.0, perdidas_pct=20.0,
     )
     resp = calcular_caudales(req)
     assert resp.dotacion_lhd == 100.0
     assert resp.dotacion_bruta_lhd == pytest.approx(100.0 / 0.8, rel=1e-6)
+
+
+def test_caudales_factores_consumo_por_tamano_poblacion():
+    # Poblacion <= 12500 -> K1=1.3, K2=1.6 ; > 12500 -> K1=1.2, K2=1.5 (Art. 47 Par. 2)
+    assert factores_consumo_maximos(12_500) == (1.3, 1.6)
+    assert factores_consumo_maximos(12_501) == (1.2, 1.5)
+
+
+def test_caudales_incendio_minimo_por_poblacion_y_zona():
+    # < 12500 hab: 1 hidrante de 5 L/s, sin distincion de zona (Art. 70 num. 1-2)
+    assert caudal_incendio_minimo(8_000, "unifamiliar") == 5.0
+    assert caudal_incendio_minimo(8_000, "densa_multifamiliar_comercial_industrial") == 5.0
+
+    # 12500-60000 hab: hidrantes de 10 L/s; 1 unifamiliar, 3 simultaneos zona densa (Art. 70 num. 3)
+    assert caudal_incendio_minimo(30_000, "unifamiliar") == 10.0
+    assert caudal_incendio_minimo(30_000, "densa_multifamiliar_comercial_industrial") == 30.0
+
+    # > 60000 hab: hidrantes de 10 L/s; 2 unifamiliar, 3 simultaneos zona densa (Art. 70 num. 4)
+    assert caudal_incendio_minimo(100_000, "unifamiliar") == 20.0
+    assert caudal_incendio_minimo(100_000, "densa_multifamiliar_comercial_industrial") == 30.0
 
 
 # ─── hidraulica.py — Hazen-Williams ─────────────────────────────────────────

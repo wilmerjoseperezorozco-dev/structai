@@ -59,6 +59,11 @@ const NIVEL_COMPLEJIDAD: FieldOption[] = [
   { value: "alto", label: "Alto" },
 ];
 
+const ZONA_INCENDIO: FieldOption[] = [
+  { value: "unifamiliar", label: "Residencial unifamiliar" },
+  { value: "densa_multifamiliar_comercial_industrial", label: "Densa / multifamiliar / comercial / industrial" },
+];
+
 const CLIMA: FieldOption[] = [
   { value: "frio", label: "Frío (< 12°C)" },
   { value: "templado", label: "Templado (12–24°C)" },
@@ -167,14 +172,14 @@ export const AQUAI_MODULES: ModuleSpec[] = [
     label: "2. Caudales",
     grupo: "Demanda",
     descripcion: "Dotación neta/bruta y caudales de diseño Qmd, Qmh y contra incendio.",
-    normaRef: "RAS 2000 Título B.2–B.7",
+    normaRef: "Resolución 0330 de 2017 Arts. 43, 44, 47 y 70",
     submit: calcularCaudales,
     fields: [
       { key: "poblacion_diseno", label: "Población de diseño", type: "number", default: 13784 },
-      { key: "nivel_complejidad", label: "Nivel de complejidad", type: "select", options: NIVEL_COMPLEJIDAD, default: "medio_alto" },
-      { key: "clima", label: "Clima", type: "select", options: CLIMA, default: "calido" },
-      { key: "dotacion_manual", label: "Dotación manual (L/hab/día)", type: "number", required: false, help: "Si se provee, omite la tabla RAS." },
-      { key: "perdidas_pct", label: "Pérdidas en la red (%)", type: "number", default: 25 },
+      { key: "altura_msnm", label: "Altura s.n.m. de la zona atendida (m)", type: "number", default: 1200, help: "Determina el tope legal de dotación neta (Art. 43, Tabla 1): >2000m → 120 L/hab·día, 1000-2000m → 130, <1000m → 140." },
+      { key: "zona_incendio", label: "Tipo de zona (hidrantes)", type: "select", options: ZONA_INCENDIO, default: "unifamiliar", help: "Determina hidrantes simultáneos exigidos para el caudal contra incendio (Art. 70)." },
+      { key: "dotacion_manual", label: "Dotación manual (L/hab/día)", type: "number", required: false, help: "Si se provee, omite la tabla normativa (debe sustentarse en datos históricos reales de consumo)." },
+      { key: "perdidas_pct", label: "Pérdidas en la red (%)", type: "number", default: 25, max: 25, help: "Tope legal 25% (Art. 44, Parágrafo)." },
     ],
   },
   {

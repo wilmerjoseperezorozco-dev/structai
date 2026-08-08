@@ -1,21 +1,23 @@
 """
 AquaAI — Módulo dotación y caudales de diseño
-Referencia: RAS 2000 Título B, Sección B.2 / Resolución 0330-2017
+Referencia: Resolución 0330 de 2017, Arts. 43-44 (dotación), 47 (factores K1/K2)
+            y 70 (caudal contra incendio)
 
 Caudales calculados:
   Qp   — Caudal promedio diario (L/s)
-  Qmd  — Caudal máximo diario   (L/s)  = Qp × fmd
-  Qmh  — Caudal máximo horario  (L/s)  = Qmd × fmh
-  Qci  — Caudal contra incendio (L/s)  — RAS Título B sección B.7
+  Qmd  — Caudal máximo diario   (L/s)  = Qp × fmd (K1)
+  Qmh  — Caudal máximo horario  (L/s)  = Qmd × fmh (K2)
+  Qci  — Caudal mínimo contra incendio (L/s) — Art. 70. No es adicional a Qmh:
+         la red debe poder entregarlo durante el período de diseño.
 
 Ningún valor se pide a un LLM. Toda la lógica es determinística.
 """
 
 from .schemas import CaudalesRequest, CaudalesResponse
 from .ras2000_tablas import (
-    DOTACION_RAS,
-    FACTORES_CONSUMO,
-    CAUDAL_INCENDIO,
+    dotacion_neta_maxima,
+    factores_consumo_maximos,
+    caudal_incendio_minimo,
 )
 
 # Conversión: L/hab/día  →  L/s  para N habitantes
@@ -24,20 +26,20 @@ _SEG_POR_DIA = 86_400
 
 
 def calcular_caudales(req: CaudalesRequest) -> CaudalesResponse:
-    nivel = req.nivel_complejidad.value
-    clima = req.clima.value
-
-    # 1. Dotación neta (tabla RAS o valor manual)
+    # 1. Dotación neta (tope legal por altura, Art. 43 Tabla 1, o valor manual)
     if req.dotacion_manual is not None:
         dot_neta = req.dotacion_manual
-        norma_ref = "RAS 2000 B.2.1 — Dotación ingresada manualmente por el usuario"
-    else:
-        _min, _max, _rec = DOTACION_RAS[nivel][clima]
-        dot_neta = _rec
         norma_ref = (
-            f"RAS 2000 / Res. 0330-2017 Tabla B.2.1 — "
-            f"Nivel {nivel} / Clima {clima}: rango {_min}–{_max} L/hab/día, "
-            f"valor recomendado {_rec} L/hab/día"
+            "Res. 0330-2017 Art. 43 — Dotación ingresada manualmente por el "
+            "usuario (debe sustentarse en datos históricos reales de consumo)"
+        )
+    else:
+        dot_neta = dotacion_neta_maxima(req.altura_msnm)
+        norma_ref = (
+            f"Res. 0330-2017 Art. 43, Tabla 1 — Altura {req.altura_msnm:.0f} "
+            f"m s.n.m.: dotación neta máxima {dot_neta:.0f} L/hab/día "
+            f"(tope legal; use datos históricos reales del SUI o del "
+            f"prestador cuando estén disponibles)"
         )
 
     # 2. Dotación bruta (incluye pérdidas)
@@ -47,15 +49,13 @@ def calcular_caudales(req: CaudalesRequest) -> CaudalesResponse:
     # 3. Caudal promedio diario
     Qp = (dot_bruta * req.poblacion_diseno) / _SEG_POR_DIA
 
-    # 4. Factores y caudales máximos
-    f = FACTORES_CONSUMO[nivel]
-    fmd = f["fmd"]
-    fmh = f["fmh"]
+    # 4. Factores de mayoración K1/K2 y caudales máximos (Art. 47, Parágrafo 2)
+    fmd, fmh = factores_consumo_maximos(req.poblacion_diseno)
     Qmd = Qp * fmd
     Qmh = Qmd * fmh
 
-    # 5. Caudal contra incendio
-    Qci = CAUDAL_INCENDIO[nivel]
+    # 5. Caudal mínimo contra incendio (Art. 70)
+    Qci = caudal_incendio_minimo(req.poblacion_diseno, req.zona_incendio.value)
 
     return CaudalesResponse(
         dotacion_lhd=round(dot_neta, 2),

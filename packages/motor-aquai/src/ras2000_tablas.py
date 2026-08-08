@@ -1,66 +1,106 @@
 """
-AquaAI — Tablas normativas RAS 2000 embebidas como constantes
-Fuente: Reglamento Técnico del Sector de Agua Potable y Saneamiento Básico
-        Resolución 0330 de 2017 (actualización) + RAS 2000 Título B
+AquaAI — Tablas normativas embebidas como constantes
+Fuente: Reglamento Técnico del Sector de Agua Potable y Saneamiento Básico (RAS)
+        Resolución 0330 de 2017, modificada por las Resoluciones 799 y 908 de 2021.
 
 IMPORTANTE: estos valores son fijos por norma. NO se modifican con lógica de negocio.
 La recalibración regional del bucle ↻ se aplica como factor externo, no tocando estas tablas.
+
+NOTA DE VIGENCIA (auditoría 2026-08-08): RAS 2000 (Resolución 1096 de 2000) fue
+derogada en su totalidad por la Resolución 0330 de 2017. Su metodología central
+de "nivel de complejidad del sistema" (bajo/medio/medio_alto/alto) — usada antes
+para derivar período de diseño, dotación neta y factores de consumo — NO existe
+en el texto vigente (0 ocurrencias verificadas en el reglamento actual). La ley
+vigente reemplazó ese esquema por criterios directos: altura sobre el nivel del
+mar (dotación), tamaño de población (factores K1/K2), y un período de diseño
+único para todos los sistemas. PERIODO_DISENO_ANIOS y DOTACION_NETA_MAXIMA_MSNM
+FACTORES_CONSUMO y CAUDAL_INCENDIO fueron revisados en la misma auditoría y
+reemplazados por factores_consumo_maximos() y caudal_incendio_minimo(),
+basados en tamaño de población (Arts. 47 y 70) en vez de nivel de complejidad.
 """
 
-from typing import Dict, Tuple
+from typing import Dict, List, Tuple
 
-# ─── Tabla B.2.1 — Dotación neta por nivel de complejidad y clima ─────────────
-# Valores en L/habitante/día
-# Estructura: {nivel_complejidad: {clima: (min, max, recomendado)}}
-DOTACION_RAS: Dict[str, Dict[str, Tuple[float, float, float]]] = {
-    "bajo": {
-        "frio":     (90,  120, 100),
-        "templado": (100, 130, 110),
-        "calido":   (110, 150, 130),
-    },
-    "medio": {
-        "frio":     (110, 140, 120),
-        "templado": (120, 155, 135),
-        "calido":   (130, 170, 150),
-    },
-    "medio_alto": {
-        "frio":     (120, 160, 140),
-        "templado": (135, 175, 155),
-        "calido":   (150, 200, 170),
-    },
-    "alto": {
-        "frio":     (140, 200, 160),
-        "templado": (150, 225, 175),
-        "calido":   (170, 250, 200),
-    },
+# ─── Dotación neta máxima por altura s.n.m. (Res. 0330/2017 Art. 43, Tabla 1) ─
+# Valores en L/habitante/día. Reemplaza la extinta Tabla RAS 2000 B.2.1
+# (nivel de complejidad × clima — concepto eliminado de la norma vigente).
+# La ley exige usar PRIMERO datos históricos reales de consumo (SUI o del
+# prestador); estos valores son el TOPE MÁXIMO permitido, no un "recomendado".
+DOTACION_NETA_MAXIMA_MSNM: List[Tuple[float, float]] = [
+    # (altura_minima_m_incluida, dotacion_maxima_L_hab_dia), evaluar de mayor a menor
+    (2000.0, 120.0),   # > 2000 m s.n.m.
+    (1000.0, 130.0),   # 1000 - 2000 m s.n.m.
+    (0.0,    140.0),   # < 1000 m s.n.m.
+]
+
+
+def dotacion_neta_maxima(altura_msnm: float) -> float:
+    """Dotación neta máxima L/hab/día según altura de la zona atendida
+    (Res. 0330/2017 Art. 43, Tabla 1)."""
+    if altura_msnm > 2000.0:
+        return 120.0
+    if altura_msnm >= 1000.0:
+        return 130.0
+    return 140.0
+
+# ─── Factores de mayoración de consumo K1/K2 (Res. 0330/2017 Art. 47, Parágrafo 2) ─
+# fmd (K1): factor día máximo | fmh (K2): factor hora máxima.
+# Reemplaza la extinta tabla RAS 2000 B.2.3 (por nivel de complejidad).
+# La ley exige calcularlos PRIMERO con registros históricos reales de
+# macromedición; estos valores son el TOPE MÁXIMO permitido para diseño,
+# clasificado por tamaño de población al período de diseño — no por
+# nivel de complejidad.
+def factores_consumo_maximos(poblacion_diseno: int) -> Tuple[float, float]:
+    """(fmd, fmh) máximos según tamaño de población al período de diseño
+    (Res. 0330/2017 Art. 47, Parágrafo 2)."""
+    if poblacion_diseno <= 12_500:
+        return 1.30, 1.60
+    return 1.20, 1.50
+
+
+# ─── Caudal mínimo contra incendio (Res. 0330/2017 Art. 70) ──────────────────
+# Reemplaza la extinta tabla RAS B.7 (por nivel de complejidad, sin sustento
+# en la norma vigente). El caudal real depende de: caudal mínimo por hidrante
+# (según tamaño de población) × número de hidrantes exigidos en uso
+# simultáneo (según tamaño de población y tipo de zona).
+CAUDAL_POR_HIDRANTE_LS: Dict[str, float] = {
+    "menor_12500":  5.0,    # Art. 70 num. 1
+    "mayor_12500": 10.0,
 }
 
-# ─── Factores de variación de consumo (RAS B.2.3) ────────────────────────────
-# fmd: factor máximo día | fmh: factor máxima hora
-FACTORES_CONSUMO: Dict[str, Dict[str, float]] = {
-    "bajo":       {"fmd": 1.30, "fmh": 2.00},
-    "medio":      {"fmd": 1.25, "fmh": 1.90},
-    "medio_alto": {"fmd": 1.20, "fmh": 1.80},
-    "alto":       {"fmd": 1.15, "fmh": 1.60},
+# Número de hidrantes en uso simultáneo exigidos, por tramo de población y zona.
+# zona: "unifamiliar" | "densa_multifamiliar_comercial_industrial"
+N_HIDRANTES_SIMULTANEOS: Dict[str, Dict[str, int]] = {
+    "menor_12500":            {"unifamiliar": 1, "densa_multifamiliar_comercial_industrial": 1},  # Art. 70 num. 2 — 1 hidrante, sin distinción de zona
+    "entre_12500_y_60000":    {"unifamiliar": 1, "densa_multifamiliar_comercial_industrial": 3},   # Art. 70 num. 3
+    "mayor_60000":            {"unifamiliar": 2, "densa_multifamiliar_comercial_industrial": 3},   # Art. 70 num. 4
 }
 
-# ─── Caudal contra incendio (RAS B.7) ────────────────────────────────────────
-# Según nivel de complejidad, en L/s
-CAUDAL_INCENDIO: Dict[str, float] = {
-    "bajo":       0.0,    # No aplica (< 1000 hab)
-    "medio":      4.0,    # Mínimo 4 L/s por 2 horas
-    "medio_alto": 8.0,
-    "alto":       16.0,
-}
 
-# ─── Períodos de diseño por nivel de complejidad (RAS B.1.4) ─────────────────
-# en años
-PERIODO_DISENO: Dict[str, int] = {
-    "bajo":       15,
-    "medio":      20,
-    "medio_alto": 25,
-    "alto":       25,
-}
+def caudal_incendio_minimo(poblacion_diseno: int, zona: str) -> float:
+    """Caudal mínimo contra incendio (L/s) = caudal por hidrante × hidrantes
+    simultáneos exigidos, según tamaño de población y tipo de zona
+    (Res. 0330/2017 Art. 70). No es un caudal adicional al Qmh de diseño de
+    la red — se debe verificar que la red pueda entregarlo durante el
+    período de diseño (Art. 70, definición de "Caudal de incendio")."""
+    tramo_hidrante = "menor_12500" if poblacion_diseno < 12_500 else "mayor_12500"
+    caudal_hidrante = CAUDAL_POR_HIDRANTE_LS[tramo_hidrante]
+
+    if poblacion_diseno < 12_500:
+        tramo_zona = "menor_12500"
+    elif poblacion_diseno <= 60_000:
+        tramo_zona = "entre_12500_y_60000"
+    else:
+        tramo_zona = "mayor_60000"
+    n_hidrantes = N_HIDRANTES_SIMULTANEOS[tramo_zona][zona]
+
+    return caudal_hidrante * n_hidrantes
+
+# ─── Período de diseño (Res. 0330/2017 Art. 40) ──────────────────────────────
+# Uniforme para TODOS los componentes de acueducto, alcantarillado y aseo,
+# sin distinción por nivel de complejidad (a diferencia de la extinta tabla
+# RAS 2000 B.1.4, que variaba entre 15 y 25 años según complejidad).
+PERIODO_DISENO_ANIOS: int = 25
 
 # ─── Tasas de crecimiento por defecto (cuando no hay dato censal) ─────────────
 TASA_CRECIMIENTO_DEFAULT: Dict[str, float] = {

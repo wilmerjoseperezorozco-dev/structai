@@ -32,6 +32,15 @@ class ClimaRegion(str, Enum):
     CALIDO     = "calido"      # T > 24°C   — Costa Caribe, Llanos, Amazonia, valles bajos
 
 
+class ZonaIncendio(str, Enum):
+    """
+    Tipo de zona servida, para determinar el número de hidrantes en uso
+    simultáneo exigido por el Art. 70 de la Res. 0330/2017.
+    """
+    UNIFAMILIAR = "unifamiliar"
+    DENSA_MULTIFAMILIAR_COMERCIAL_INDUSTRIAL = "densa_multifamiliar_comercial_industrial"
+
+
 class MetodoPoblacion(str, Enum):
     ARITMETICO   = "aritmetico"
     GEOMETRICO   = "geometrico"
@@ -77,26 +86,32 @@ class PoblacionResponse(BaseModel):
 
 class CaudalesRequest(BaseModel):
     poblacion_diseno: int          = Field(..., gt=0)
-    nivel_complejidad: NivelComplejidad
-    clima: ClimaRegion
+    altura_msnm: float = Field(
+        ..., ge=0, le=6000,
+        description="Altura sobre el nivel del mar de la zona atendida (m). Determina el tope de dotación neta — Res. 0330/2017 Art. 43, Tabla 1."
+    )
+    zona_incendio: ZonaIncendio = Field(
+        default=ZonaIncendio.UNIFAMILIAR,
+        description="Tipo de zona servida. Determina el número de hidrantes en uso simultáneo exigido — Res. 0330/2017 Art. 70."
+    )
     dotacion_manual: Optional[float] = Field(
         None,
-        description="L/hab/día. Si se provee, omite la tabla RAS y usa este valor directamente."
+        description="L/hab/día. Si se provee, omite la tabla normativa y usa este valor directamente (debe sustentarse en datos históricos reales de consumo — Art. 43)."
     )
     perdidas_pct: float = Field(
-        default=25.0, ge=0, le=60,
-        description="% de pérdidas en la red (RAS recomienda ≤25% para sistema nuevo)"
+        default=25.0, ge=0, le=25,
+        description="% de pérdidas técnicas máximas para diseño — tope legal 25% (Res. 0330/2017 Art. 44, Parágrafo)"
     )
 
 class CaudalesResponse(BaseModel):
-    dotacion_lhd: float            = Field(description="Dotación neta L/hab/día (tabla RAS B.2.1)")
+    dotacion_lhd: float            = Field(description="Dotación neta L/hab/día (Res. 0330/2017 Art. 43, Tabla 1)")
     dotacion_bruta_lhd: float      = Field(description="Dotación bruta incluyendo pérdidas")
     Qp_ls: float                   = Field(description="Caudal promedio diario (L/s)")
     Qmd_ls: float                  = Field(description="Caudal máximo diario (L/s)")
     Qmh_ls: float                  = Field(description="Caudal máximo horario (L/s)")
-    Qci_ls: float                  = Field(description="Caudal contra incendio (L/s) — RAS B.7")
-    fmd: float                     = Field(description="Factor día máximo usado")
-    fmh: float                     = Field(description="Factor hora máxima usado")
+    Qci_ls: float                  = Field(description="Caudal mínimo contra incendio (L/s) — Res. 0330/2017 Art. 70")
+    fmd: float                     = Field(description="Factor día máximo K1 usado — Res. 0330/2017 Art. 47")
+    fmh: float                     = Field(description="Factor hora máxima K2 usado — Res. 0330/2017 Art. 47")
     norma_ref: str                 = Field(description="Referencia normativa aplicada")
 
 

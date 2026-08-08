@@ -1,18 +1,23 @@
 """
 AquaAI — Módulo de proyección de población
-Referencia: RAS 2000 Título B, Sección B.1 / Resolución 0330-2017 Art. 41
+Referencia: Resolución 0330 de 2017, Art. 40 (período de diseño) y Art. 41
+            (métodos de proyección)
 
 Métodos implementados:
   - Aritmético   : P(t) = Po + r·t
-  - Geométrico   : P(t) = Po·(1 + r)^t          ← recomendado RAS para municipios pequeños
-  - Exponencial  : P(t) = Po·e^(r·t)             ← recomendado RAS para ciudades en crecimiento
+  - Geométrico   : P(t) = Po·(1 + r)^t          ← recomendado para municipios pequeños
+  - Exponencial  : P(t) = Po·e^(r·t)             ← recomendado para ciudades en crecimiento
 
-La tasa r se puede proveer explícitamente o se estima por nivel de complejidad.
+La tasa r se puede proveer explícitamente o se estima por nivel de complejidad
+(TASA_CRECIMIENTO_DEFAULT — tabla aún pendiente de revisión, ver auditoría
+2026-08-08). El período de diseño, en cambio, ya NO depende del nivel de
+complejidad: el Art. 40 de la Res. 0330/2017 fija 25 años para todos los
+componentes de acueducto, alcantarillado y aseo.
 """
 
 import math
 from .schemas import PoblacionRequest, PoblacionResponse, MetodoPoblacion
-from .ras2000_tablas import TASA_CRECIMIENTO_DEFAULT, PERIODO_DISENO
+from .ras2000_tablas import TASA_CRECIMIENTO_DEFAULT, PERIODO_DISENO_ANIOS
 
 
 def proyectar_poblacion(req: PoblacionRequest) -> PoblacionResponse:
@@ -23,7 +28,9 @@ def proyectar_poblacion(req: PoblacionRequest) -> PoblacionResponse:
     r = req.tasa_crecimiento if req.tasa_crecimiento is not None \
         else TASA_CRECIMIENTO_DEFAULT[req.nivel_complejidad.value]
 
-    periodo_diseno = PERIODO_DISENO[req.nivel_complejidad.value]
+    # Período de diseño: uniforme por ley (Res. 0330/2017 Art. 40), no depende
+    # del nivel de complejidad.
+    periodo_diseno = PERIODO_DISENO_ANIOS
 
     if req.metodo == MetodoPoblacion.ARITMETICO:
         Pd = Po + r * Po * t          # r como fracción decimal anual

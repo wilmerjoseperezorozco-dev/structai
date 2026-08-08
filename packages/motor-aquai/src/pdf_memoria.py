@@ -235,20 +235,22 @@ def _bloque_poblacion(datos: dict, e) -> list:
 def _bloque_caudales(datos: dict, e) -> list:
     story = _seccion_header("2. Dotación y Caudales de Diseño", e)
     story.append(Paragraph(
-        "Dotación neta según nivel de complejidad y clima (RAS Tabla B.2.1). "
-        "Factores de día máximo (Fmd) y hora máxima (Fmh) aplicados.",
+        "Dotación neta máxima según altura s.n.m. de la zona atendida "
+        "(Res. 0330/2017 Art. 43, Tabla 1). Factores de día máximo K1 (Fmd) y "
+        "hora máxima K2 (Fmh) según tamaño de población (Art. 47). Caudal "
+        "contra incendio según tamaño de población y tipo de zona (Art. 70).",
         e["normal"]))
     story.append(Spacer(1, 6))
     filas = [
-        ("Nivel de complejidad", datos.get("nivel_complejidad", "—")),
-        ("Clima",                datos.get("clima_region", "—")),
+        ("Altura s.n.m.",        f"{datos.get('altura_msnm', '—')} m"),
+        ("Zona (hidrantes)",     datos.get("zona_incendio", "—")),
         ("Dotación neta",       f"{datos.get('dotacion_neta_lhd', '—')} L/hab·día"),
         ("Pérdidas sistema",    f"{datos.get('perdidas_pct', '—')} %"),
         ("Dotación bruta",      f"{datos.get('dotacion_bruta_lhd', '—')} L/hab·día"),
         ("Caudal promedio Qp",  f"{datos.get('caudal_promedio_ls', '—')} L/s"),
         ("Caudal máx. diario Qmd",   f"{datos.get('caudal_max_diario_ls', '—')} L/s"),
         ("Caudal máx. horario Qmh",  f"{datos.get('caudal_max_horario_ls', '—')} L/s"),
-        ("Caudal incendio Qci",      f"{datos.get('caudal_incendio_ls', '—')} L/s"),
+        ("Caudal mínimo incendio Qci", f"{datos.get('caudal_incendio_ls', '—')} L/s"),
     ]
     story.append(_tabla_kv(filas, e))
     story.append(Spacer(1, 5))
