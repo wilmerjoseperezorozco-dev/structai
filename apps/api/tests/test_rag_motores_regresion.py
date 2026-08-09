@@ -39,11 +39,21 @@ load_dotenv(API_DIR / ".env")
 from rag_multi_norma import ask_delegado  # noqa: E402
 
 
+_ESPACIOS_UNICODE = ("\u202f", "\u00a0", "\u2009", "\u2007")  # narrow/no-break/thin/figure space
+
+
 def _contiene_alguna(texto: str, variantes: list[str]) -> bool:
     """True si el texto contiene al menos una de las variantes (insensible a
     mayúsculas) — tolera que el LLM use coma o punto decimal, o pequeñas
-    diferencias de formato, sin dejar de exigir el hecho numérico real."""
+    diferencias de formato, sin dejar de exigir el hecho numérico real.
+    También normaliza espacios unicode (ej. \\u202f narrow no-break space, que
+    Groq usa consistentemente entre número/unidad y alrededor de "/" en
+    fórmulas como "EV / AC") a espacio ASCII normal — encontrado real corriendo
+    esta batería (2026-08-09): la respuesta decía "EV\\u202f=\\u202fEV/AC",
+    técnicamente correcta, pero "ev / ac" con espacio normal no calzaba."""
     texto_low = texto.lower()
+    for esp in _ESPACIOS_UNICODE:
+        texto_low = texto_low.replace(esp, " ")
     return any(v.lower() in texto_low for v in variantes)
 
 
@@ -51,7 +61,18 @@ CASOS_AQUAI = [
     pytest.param(
         "aquai",
         "Que es la dotacion neta en un sistema de acueducto?",
-        ["litros por habitante", "l/hab", "l/hab-dia", "l/hab-día"],
+        # El corpus tiene DOS definiciones válidas de "dotación neta" en
+        # motor_chunks: el Artículo 43 (numérica, con unidades L/hab-día) y el
+        # Artículo 253 (glosario legal, en prosa: "cantidad de agua requerida
+        # para satisfacer las necesidades básicas de un habitante sin
+        # considerar las pérdidas técnicas"). Al dividir el chunk gigante del
+        # Artículo 253 en sub-chunks más pequeños (2026-08-09, fix del 413 de
+        # Groq) su embedding se volvió más preciso y ahora a veces gana el
+        # ranking sobre el Artículo 43 para preguntas genéricas "qué es X" —
+        # ambas respuestas son correctas, se amplían las variantes aceptadas
+        # en vez de forzar una redacción específica.
+        ["litros por habitante", "l/hab", "l/hab-dia", "l/hab-día",
+         "sin considerar", "necesidades básicas", "necesidades basicas"],
         id="aquai-dotacion-neta-definicion",
     ),
     pytest.param(
