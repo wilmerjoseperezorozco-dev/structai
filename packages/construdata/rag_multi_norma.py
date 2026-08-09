@@ -367,18 +367,36 @@ MOTOR_KEYWORD_MAP = {
 }
 
 
-def route_motor(query: str) -> Optional[str]:
-    """Detecta si la pregunta pertenece al dominio de un motor específico
-    (aquai, geopot, vias, gerencia...) en vez del RAG normativo general."""
+def _score_motores(query: str) -> dict[str, int]:
     q = query.lower()
     scores: dict[str, int] = {}
     for motor, keywords in MOTOR_KEYWORD_MAP.items():
         for kw in keywords:
             if kw in q:
                 scores[motor] = scores.get(motor, 0) + (2 if len(kw) > 10 else 1)
+    return scores
+
+
+def route_motor(query: str) -> Optional[str]:
+    """Detecta si la pregunta pertenece al dominio de un motor específico
+    (aquai, geopot, vias, gerencia...) en vez del RAG normativo general."""
+    scores = _score_motores(query)
     if not scores:
         return None
     return max(scores.items(), key=lambda x: x[1])[0]
+
+
+def route_motores_multiples(query: str) -> list[str]:
+    """Como route_motor() pero devuelve TODOS los dominios con score > 0,
+    ordenados de mayor a menor. Detecta preguntas compuestas — ej. "precio
+    del cemento + qué es la dotación neta" — que antes se enrutaban
+    completas a un solo dominio (el de mayor score) y perdían la otra mitad
+    de la pregunta aunque el dato sí existiera. Bug real encontrado
+    2026-08-09 con captura de pantalla del usuario: "dotación neta" (3 pts
+    en aquai) le ganaba a "precio de" (1 pt en apu_precios), y la respuesta
+    de precio de cemento se perdía por completo pese a estar en la base."""
+    scores = _score_motores(query)
+    return [m for m, _ in sorted(scores.items(), key=lambda x: -x[1])]
 
 
 # ─── BÚSQUEDA DE PRECIOS APU (Barranquilla/Atlántico) ─────────────────────────
@@ -439,6 +457,7 @@ class PrecioResult:
     tipo_fuente: str
     fecha_captura: Optional[str]
     item_codigo: Optional[str]
+    categoria_fuente: Optional[str]
     score: float
 
     @property
@@ -461,6 +480,7 @@ def buscar_precios_apu(query: str, top_k: int = 8) -> list[PrecioResult]:
             tipo_fuente=r["tipo_fuente"],
             fecha_captura=r.get("fecha_captura"),
             item_codigo=r.get("item_codigo"),
+            categoria_fuente=r.get("categoria_fuente"),
             score=r.get("score") or 0.0,
         )
         for r in result.data
@@ -470,7 +490,16 @@ def buscar_precios_apu(query: str, top_k: int = 8) -> list[PrecioResult]:
 def _format_precio_context(p: PrecioResult) -> str:
     """Una línea por resultado — solo lo que un profesional necesita:
     nombre, unidad, precio(s), región genérica, fuente y fecha. Nunca nombre
-    de obra, dirección ni municipios específicos de un contrato."""
+    de obra, dirección ni municipios específicos de un contrato.
+
+    categoria_fuente incluye, para el catálogo IAD MIPYMES, el rango real
+    min-max observado entre las cotizaciones de proveedores que promediaron
+    ese precio (ej. "Mediana de 60 cotizaciones reales (rango $925–
+    $2.513.440 COP)") — variabilidad real de mercado, no simulada. Antes
+    quedaba guardada en la base pero la RPC nunca la seleccionaba, así que
+    el chat nunca la mencionaba (encontrado 2026-08-09 revisando cómo dar
+    una noción de incertidumbre con lo que ya hay, sin inventar una
+    distribución que no está respaldada por suficientes datos)."""
     partes = [f"{p.nombre}"]
     if p.unidad:
         partes.append(f"unidad: {p.unidad}")
@@ -483,6 +512,8 @@ def _format_precio_context(p: PrecioResult) -> str:
     partes.append(f"fuente: {p.fuente_display}")
     if p.fecha_captura:
         partes.append(f"fecha: {p.fecha_captura}")
+    if p.categoria_fuente and "rango $" in p.categoria_fuente:
+        partes.append(f"variabilidad real de mercado: {p.categoria_fuente}")
     return " | ".join(partes)
 
 
@@ -528,6 +559,12 @@ INSTRUCCIONES:
    (subregión del Atlántico), no específica de la ciudad de Barranquilla.
    Cuando venga de "referencia nacional", aclara que no es específica de
    Barranquilla.
+8. Cuando un ítem traiga "variabilidad real de mercado" (rango mín-máx entre
+   varias cotizaciones reales de proveedores), MENCIÓNALO siempre en tu
+   respuesta — es información valiosa para un profesional que va a cotizar:
+   le dice qué tanto varía el precio según el proveedor, no solo el número
+   mediano. Dilo de forma natural ("el precio mediano es $X, pero entre
+   proveedores varía de $Y a $Z"), nunca lo omitas si está en el contexto.
 """
 
 
@@ -873,14 +910,100 @@ MOTOR_LABEL = {
 }
 
 
+def _ask_delegado_compuesto(question: str, motores: list[str], top_k: int) -> dict:
+    """Pregunta compuesta detectada (ej. 'precio del cemento + definición de
+    dotación neta'): apu_precios y al menos otro dominio puntúan ambos por
+    encima de 0. En vez de forzar todo al dominio ganador (perdiendo la otra
+    mitad de la pregunta pese a que el dato sí existe), se consulta AMBAS
+    fuentes y se sintetiza una sola respuesta con trazabilidad de norma +
+    precio. Ver route_motores_multiples() para el detalle del bug original."""
+    otro_motor = next((m for m in motores if m != "apu_precios"), None)
+    mitad = max(3, top_k // 2)
+
+    precios = buscar_precios_apu(question, top_k=mitad)
+    chunks = search(question, top_k=mitad, motor_filter=otro_motor) if otro_motor else []
+
+    partes = []
+    if chunks:
+        partes.append(
+            "CONTEXTO NORMATIVO:\n" + "\n\n---\n\n".join(_format_chunk_context(c) for c in chunks)
+        )
+    if precios:
+        partes.append(
+            "PRECIOS DISPONIBLES:\n" + "\n".join(_format_precio_context(p) for p in precios)
+        )
+
+    if not partes:
+        dominio_label = " + ".join(MOTOR_LABEL.get(m, m) for m in motores)
+        return {
+            "dominio": "+".join(motores),
+            "dominio_label": dominio_label,
+            "respuesta": (
+                f"La pregunta parece cubrir {dominio_label}, pero no encontré "
+                "contenido cargado para ninguna de las dos partes todavía. "
+                "No genero una respuesta para evitar inventar información."
+            ),
+            "normas_citadas": [],
+            "fuentes": [],
+            "chunks_usados": 0,
+        }
+
+    contexto = "\n\n===\n\n".join(partes)
+    respuesta = _generar_respuesta(contexto, question)
+
+    fuentes = [
+        {
+            "norma": c.norma,
+            "seccion": c.seccion,
+            "contenido": c.contenido[:400],
+            "score": round(c.score, 4),
+        }
+        for c in chunks
+    ] + [
+        {
+            "norma": p.fuente_display,
+            "seccion": (
+                f"{p.nombre} — ${p.precio:,.0f} COP/{p.unidad or 'un'}"
+                if p.precio is not None else p.nombre
+            ),
+            "contenido": (
+                f"Fecha de captura: {p.fecha_captura or 'sin fecha'}"
+                + (f" · Región: {p.region}" if p.region else "")
+            ),
+            "score": p.score,
+        }
+        for p in precios
+    ]
+    normas_citadas = list(dict.fromkeys(
+        [c.norma for c in chunks] + [p.fuente_display for p in precios]
+    ))[:6]
+
+    return {
+        "dominio": "+".join(motores),
+        "dominio_label": " + ".join(MOTOR_LABEL.get(m, m) for m in motores),
+        "respuesta": respuesta,
+        "normas_citadas": normas_citadas,
+        "fuentes": fuentes,
+        "chunks_usados": len(chunks) + len(precios),
+    }
+
+
 def ask_delegado(question: str, top_k: int = 6) -> dict:
     """
     Punto de entrada único: detecta si la pregunta pertenece al dominio de un
     motor específico (aquai/geopot/vias/gerencia) o al RAG normativo general
     (NSR-10/NTC/seguridad industrial), busca en la fuente correcta y sintetiza
     con Groq. Esto es lo que expone /consultar en la API.
+
+    Si la pregunta es compuesta (ej. mezcla precio + normativa) y apu_precios
+    puntúa junto a otro dominio, delega a _ask_delegado_compuesto() para no
+    perder ninguna de las dos mitades — ver route_motores_multiples().
     """
-    motor = route_motor(question)
+    motores = route_motores_multiples(question)
+    if "apu_precios" in motores and len(motores) > 1:
+        return _ask_delegado_compuesto(question, motores, top_k)
+
+    motor = motores[0] if motores else None
 
     if motor == "apu_precios":
         # No usa motor_chunks/embeddings — tablas y RPC propios (ver arriba).
