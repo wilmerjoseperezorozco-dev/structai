@@ -414,6 +414,10 @@ FUENTE_DISPLAY = {
     "catalogo_iad_mipymes": "Catálogo IAD MIPYMES — Colombia Compra Eficiente (mediana de cotizaciones nacionales)",
     "cotizacion_real_ptar": "Cotización real — planta de tratamiento de aguas residuales (Atlántico)",
     "contrato_real_edar_humedales": "Contrato real ejecutado — EDAR / humedales artificiales (Atlántico)",
+    "contrato_real_sabanagrande_acabados": "Contrato real ejecutado — acabados y recubrimientos protectores (Atlántico)",
+    "contrato_real_planta2_etap": "Contrato real ejecutado — planta de tratamiento de agua potable, optimización ETAP (Atlántico)",
+    "historico_mano_obra_medidores_2019": "Histórico real de nómina — instalación de medidores de agua (Barranquilla, 2019)",
+    "cotizacion_real_huacales_cba": "Cotización real — obra civil e hidráulica menor (Atlántico)",
 }
 
 

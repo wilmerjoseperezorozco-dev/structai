@@ -364,6 +364,132 @@ def cargar_edar_humedales() -> list[dict]:
     return filas
 
 
+# ── 10. Acabados/impermeabilización — Sabanagrande (Triple A, oficinas) ───────
+
+def cargar_sabanagrande_acabados() -> list[dict]:
+    path = Path.home() / "Desktop" / "Elementos varios" / "Documentos de Obra" / "Corte2_SOLPED Sabanagrande.xlsx"
+    if not path.exists():
+        return []
+    wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
+    ws = wb["Corte_2"]
+    filas = []
+    for r in ws.iter_rows(min_row=4, values_only=True):
+        if r[1] is None or r[6] in (None, 0):
+            continue
+        filas.append({
+            "actividad": _txt(r[1]),
+            "unidad": _txt(r[2]),
+            "disciplina": "Acabados / impermeabilización",
+            "precio_todo_costo": _num(r[6]),
+            "desglose_confiable": False,
+            "region": "Barranquilla",
+            "categoria_fuente": "Acabados y recubrimientos protectores",
+            "tipo_fuente": "contrato_real_sabanagrande_acabados",
+            "fuente": "Contrato real ejecutado — acabados y recubrimientos protectores, oficinas Triple A (Sabanagrande / Atlántico)",
+            "fecha_captura": HOY,
+        })
+    return filas
+
+
+# ── 11. Demoliciones/impermeabilización — Planta N°2 ETAP (Triple A) ──────────
+
+def cargar_planta2_etap() -> list[dict]:
+    path = Path.home() / "Desktop" / "Elementos varios" / "MANO OBRA FLOCULADORES.xlsx"
+    if not path.exists():
+        return []
+    wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
+    ws = wb["Formulario 1 OC"]
+    filas = []
+    for r in ws.iter_rows(min_row=9, values_only=True):
+        if r[2] is None or r[5] in (None, 0):
+            continue
+        filas.append({
+            "actividad": _txt(r[2]),
+            "unidad": _txt(r[3]),
+            "disciplina": "Obra civil / impermeabilización",
+            "precio_todo_costo": _num(r[5]),
+            "desglose_confiable": False,
+            "region": "Barranquilla",
+            "categoria_fuente": "Optimización floculación/sedimentación — ETAP",
+            "item_codigo": _txt(r[1]),
+            "tipo_fuente": "contrato_real_planta2_etap",
+            "fuente": "Contrato real ejecutado — optimización módulos de floculación/sedimentación, Planta N°2 ETAP (Triple A / Atlántico)",
+            "fecha_captura": HOY,
+        })
+    return filas
+
+
+# ── 12. Mano de obra instalación de medidores (histórico 2019, sin PII) ───────
+# El archivo fuente (ACTIVIDADES.xlsx) tiene hojas con datos personales reales
+# de clientes de Triple A (nombre, dirección, estrato — registros de
+# instalación de medidores 2019) — el usuario confirmó que es real y autorizó
+# usarlo, "pero hay que tener cuidado con los nombres de terceros". Por eso
+# NO se toca esa hoja de detalle: solo se extrae la tarifa de mano de obra por
+# unidad instalada (agregada por mes), sin ningún nombre, dirección ni número
+# de póliza/cliente.
+
+def cargar_mano_obra_medidores_2019() -> list[dict]:
+    path = Path.home() / "Desktop" / "Elementos varios" / "ACTIVIDADES.xlsx"
+    if not path.exists():
+        return []
+    # Valores dominantes verificados manualmente contra las hojas TOTAL ACT EJEC
+    # EN JULIO / TOTAL AGOSTO (moda de la columna VALOR PAGADO/valor, sin tocar
+    # ninguna columna de identificación de cliente/operario).
+    filas = []
+    filas.append({
+        "actividad": "Instalación de medidor de agua (mano de obra por unidad, cuadrilla de campo)",
+        "unidad": "Un",
+        "disciplina": "Hidráulica y Sanitaria",
+        "precio_todo_costo": 7000.0,
+        "desglose_confiable": False,
+        "region": "Barranquilla",
+        "categoria_fuente": "Mano de obra instalación de medidores — histórico 2019",
+        "tipo_fuente": "historico_mano_obra_medidores_2019",
+        "fuente": "Histórico real de nómina por producción — instalación de medidores de agua, Barranquilla (julio 2019)",
+        "fecha_captura": "2019-07-01",
+    })
+    filas.append({
+        "actividad": "Instalación de medidor de agua (mano de obra por unidad, cuadrilla de campo)",
+        "unidad": "Un",
+        "disciplina": "Hidráulica y Sanitaria",
+        "precio_todo_costo": 40565.0,
+        "desglose_confiable": False,
+        "region": "Barranquilla",
+        "categoria_fuente": "Mano de obra instalación de medidores — histórico 2019",
+        "tipo_fuente": "historico_mano_obra_medidores_2019",
+        "fuente": "Histórico real de nómina por producción — instalación de medidores de agua, Barranquilla (agosto 2019)",
+        "fecha_captura": "2019-08-01",
+    })
+    return filas
+
+
+# ── 13. Cotización real — construcción de huacales CBA Juan Mina ──────────────
+
+def cargar_huacales_cba() -> list[dict]:
+    path = Path.home() / "Desktop" / "Elementos varios" / "Cotizaciones y Presupuestos" / "COTIZACION DE HUACALES EN EL CBA 1.xlsx"
+    if not path.exists():
+        return []
+    wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
+    ws = wb["PRESUPUESTO"]
+    filas = []
+    for r in ws.iter_rows(min_row=3, values_only=True):
+        if not isinstance(r[0], (int, float)) or r[1] is None or r[4] in (None, 0):
+            continue
+        filas.append({
+            "actividad": _txt(r[1]),
+            "unidad": _txt(r[2]),
+            "disciplina": "Obra civil / hidráulica menor",
+            "precio_todo_costo": _num(r[4]),
+            "desglose_confiable": False,
+            "region": "Barranquilla",
+            "categoria_fuente": "Construcción de huacales (CBA Juan Mina)",
+            "tipo_fuente": "cotizacion_real_huacales_cba",
+            "fuente": "Cotización real — construcción de huacales para animales, CBA Juan Mina (Atlántico)",
+            "fecha_captura": HOY,
+        })
+    return filas
+
+
 # ── 9. Box culvert / estructura de drenaje (PII del cliente descartada) ───────
 
 def cargar_box_culvert() -> list[dict]:
@@ -417,6 +543,10 @@ def cargar(dry_run: bool = False):
         "Catálogo IAD MIPYMES (ferretería, multi-proveedor nacional)": cargar_iad_mipymes(),
         "Cotización PTAR Piojo (bombeo/UASB)": cargar_solped_ptar_piojo(),
         "EDAR / humedales artificiales (Triple A)": cargar_edar_humedales(),
+        "Acabados/impermeabilización Sabanagrande (Triple A)": cargar_sabanagrande_acabados(),
+        "Demoliciones/impermeabilización Planta N°2 ETAP (Triple A)": cargar_planta2_etap(),
+        "Mano de obra instalación medidores (histórico 2019)": cargar_mano_obra_medidores_2019(),
+        "Cotización huacales CBA Juan Mina": cargar_huacales_cba(),
     }
 
     todas = []
