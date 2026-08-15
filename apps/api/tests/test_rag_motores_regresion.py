@@ -29,6 +29,14 @@ from dotenv import load_dotenv
 
 API_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(API_DIR))
+
+# Cada caso hace una llamada real a Groq -- el LLM a veces redacta la misma
+# respuesta correcta con palabras distintas entre corridas (encontrado real
+# en CI 2026-08-15: gerencia-spi-formula-ev-pv y geopot-coeficiente-
+# uniformidad-cu, ambos ya arreglados dos veces antes por variantes Unicode/
+# fraseo distintas). Reintentar 1 vez filtra ese ruido sin ocultar una
+# regresión real de contenido, que fallaría en ambos intentos.
+pytestmark = pytest.mark.flaky(reruns=1, reruns_delay=3)
 sys.path.insert(0, str(API_DIR.parents[1] / "packages" / "construdata"))
 
 # rag_multi_norma.py lee credenciales de os.environ a nivel de módulo — igual

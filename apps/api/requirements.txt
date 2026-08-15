@@ -1,3 +1,12 @@
+# ── Testing ───────────────────────────────────────────────────
+# pytest-rerunfailures: los tests de test_rag_*_regresion.py hacen una
+# llamada real a Groq y comparan la respuesta contra substrings esperados —
+# el LLM a veces redacta la misma respuesta correcta con palabras distintas
+# entre corridas (encontrado real 2026-08-09/2026-08-15, ver pytest.ini).
+# Reintentar 1 vez antes de fallar filtra ese ruido sin ocultar una
+# regresión real (que fallaría en ambos intentos, no solo en uno).
+pytest-rerunfailures==14.0
+
 # ── FastAPI core ──────────────────────────────────────────────
 fastapi==0.115.5
 # starlette es dependencia transitiva de fastapi — sin pin explícito, un

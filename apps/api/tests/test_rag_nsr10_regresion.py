@@ -38,6 +38,13 @@ load_dotenv(API_DIR / ".env")
 
 from rag_multi_norma import ask  # noqa: E402
 
+# Cada caso hace una llamada real a Groq -- el LLM a veces redacta la misma
+# respuesta correcta con palabras distintas entre corridas (encontrado real
+# en CI 2026-08-15: B-biblioteca-estanterias-7kNm2 esperaba "7.0"/"7,0" y la
+# respuesta usó otro formato). Reintentar 1 vez filtra ese ruido sin ocultar
+# una regresión real de contenido, que fallaría en ambos intentos.
+pytestmark = pytest.mark.flaky(reruns=1, reruns_delay=3)
+
 
 def _contiene_alguna(texto: str, variantes: list[str]) -> bool:
     """True si el texto contiene al menos una de las variantes (insensible a
