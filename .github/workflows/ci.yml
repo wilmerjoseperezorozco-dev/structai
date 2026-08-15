@@ -150,6 +150,22 @@ jobs:
       - name: Instalar dependencias
         working-directory: apps/api
         run: pip install -r requirements.txt
+      # rag_multi_norma.py fuerza HF_HUB_OFFLINE=1 al importarse (correcto:
+      # /ask y /consultar nunca deben depender de la red en producción — el
+      # Dockerfile ya hornea el modelo en la imagen por el mismo motivo, ver
+      # apps/api/Dockerfile). Un runner de CI nuevo nunca lo descargó, así
+      # que cada test que importa rag_multi_norma fallaba con
+      # LocalEntryNotFoundError -- causa real de que CI llevara varios días
+      # en rojo (encontrado 2026-08-09, confirmado en los logs reales de la
+      # corrida fallida). Se cachea entre corridas para que esto solo pese
+      # la primera vez.
+      - name: Cachear modelo de embeddings (HF)
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-paraphrase-multilingual-MiniLM-L12-v2
+      - name: Descargar modelo de embeddings (si no está en caché)
+        run: python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')"
       - name: Correr pytest
         working-directory: apps/api
         run: pytest -v
