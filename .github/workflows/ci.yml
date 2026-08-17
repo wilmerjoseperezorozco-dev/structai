@@ -173,3 +173,13 @@ jobs:
           SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           GROQ_API_KEY:         ${{ secrets.GROQ_API_KEY }}
+          # Sin esto, si Groq se queda sin cuota a mitad de la corrida (pasó
+          # real el 2026-08-17, run 32051968035: "Groq no disponible ...
+          # y no hay respaldo NVIDIA configurado" en 9 tests) el respaldo
+          # NVIDIA que sí existe en rag_multi_norma.py (ver task #114) no
+          # tiene credencial en CI y no puede activarse. Si el secret
+          # NVIDIA_API_KEY no está creado en el repo, esta línea sencillamente
+          # queda vacía y el comportamiento es el mismo de antes (sin romper
+          # nada) -- crear el secret en Settings > Secrets and variables >
+          # Actions es lo que activa el respaldo real.
+          NVIDIA_API_KEY:       ${{ secrets.NVIDIA_API_KEY }}
