@@ -28,8 +28,19 @@ if (dsn) {
       // interno de Facebook/Instagram (?fbclid= en la URL). No rompe la app,
       // se descarta aquí para no generar ruido con cada visitante que entre
       // desde un enlace social.
+      //
+      // Bug real encontrado 2026-08-15 revisando Sentry: este filtro NUNCA
+      // coincidió desde que se instaló — comparaba contra "ServiceWorker"
+      // (mayúscula) con .includes(), sensible a mayúsculas, pero el frame
+      // real del stack en runtime es "navigator.serviceWorker.register"
+      // (minúscula). El issue PYTHON-FASTAPI-2 siguió acumulando eventos
+      // reales 10+ días después del "fix" (último visto 2026-08-14) sin que
+      // el filtro los tocara. Se compara en minúsculas para no depender de
+      // la capitalización exacta que use el minificador de turno.
       const frames = event.exception?.values?.[0]?.stacktrace?.frames ?? [];
-      const esRegistroServiceWorker = frames.some((f) => f.function?.includes("ServiceWorker"));
+      const esRegistroServiceWorker = frames.some((f) =>
+        f.function?.toLowerCase().includes("serviceworker")
+      );
       if (esRegistroServiceWorker && event.exception?.values?.[0]?.value === "Rejected") {
         return null;
       }
