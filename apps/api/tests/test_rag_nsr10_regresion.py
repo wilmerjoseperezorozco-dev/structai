@@ -46,11 +46,21 @@ from rag_multi_norma import ask  # noqa: E402
 pytestmark = pytest.mark.flaky(reruns=1, reruns_delay=3)
 
 
+# narrow/no-break/thin/figure space -- encontrado real en CI 2026-08-17: Groq
+# respondió "7 kN/m²" (espacio angosto entre el número y la unidad) y
+# esta función, a diferencia de su hermana en test_rag_motores_regresion.py,
+# nunca normalizaba espacios unicode -- pasaba de largo aunque el rerun de
+# pytest-rerunfailures ya se hubiera gastado en otro caso de la misma corrida.
+_ESPACIOS_UNICODE = (" ", " ", " ", " ")
+
+
 def _contiene_alguna(texto: str, variantes: list[str]) -> bool:
     """True si el texto contiene al menos una de las variantes (insensible a
     mayúsculas) — tolera que el LLM use coma o punto decimal, o pequeñas
     diferencias de formato, sin dejar de exigir el hecho numérico real."""
     texto_low = texto.lower()
+    for esp in _ESPACIOS_UNICODE:
+        texto_low = texto_low.replace(esp, " ")
     return any(v.lower() in texto_low for v in variantes)
 
 
@@ -62,7 +72,12 @@ CASOS_TITULO_B = [
     ),
     pytest.param(
         "Segun la tabla de carga viva de la NSR-10, cual es la carga viva para estanterias en una biblioteca?",
-        ["7.0", "7,0"],
+        # El corpus real dice "7.0 kN/m²" pero Groq a veces redondea a un
+        # entero en la redacción ("7 kN/m²", sin decimales) -- mismo hecho
+        # numérico, otra forma de escribirlo. Se acepta también "7 kn/m"
+        # (tras normalizar espacios unicode) para no depender de que el LLM
+        # siempre incluya el ".0"/",0".
+        ["7.0", "7,0", "7 kn/m"],
         id="B-biblioteca-estanterias-7kNm2",
     ),
     pytest.param(
