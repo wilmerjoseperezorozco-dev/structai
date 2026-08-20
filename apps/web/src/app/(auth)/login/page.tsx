@@ -1,17 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { HardHat, Loader2, MailCheck } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
+// Mensajes para ?error=... que llega desde /auth/callback cuando el enlace
+// de confirmación/recuperación falla o expiró -- antes de esto, un enlace
+// roto rebotaba en silencio a /login sin que el usuario supiera por qué.
+const MENSAJE_ERROR_CALLBACK: Record<string, string> = {
+  enlace_invalido: "El enlace no incluía la información esperada. Intenta de nuevo desde el correo.",
+  enlace_expirado: "El enlace ya expiró o ya fue usado. Solicita uno nuevo.",
+};
+
 export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginContent />
+    </Suspense>
+  );
+}
+
+function LoginContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const errorCallback = searchParams.get("error");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(errorCallback ? MENSAJE_ERROR_CALLBACK[errorCallback] ?? "El enlace no es válido." : null);
   const [confirmacionPendiente, setConfirmacionPendiente] = useState(false);
   const [mode, setMode] = useState<"login" | "registro">("login");
 
@@ -30,7 +48,11 @@ export default function LoginPage() {
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo: `${window.location.origin}/dashboard` },
+          // Debe apuntar a /auth/callback, NO directo a /dashboard — con
+          // flowType=pkce (default de @supabase/ssr) el enlace del correo
+          // llega como "?code=XXXX" y necesita exchangeCodeForSession()
+          // antes de que exista una sesión real. Ver app/auth/callback/route.ts.
+          options: { emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard` },
         });
         if (error) throw error;
         if (!data.session) {

@@ -16,8 +16,12 @@ export default function RecuperarPage() {
     setLoading(true);
     setError(null);
 
+    // Debe apuntar a /auth/callback, NO directo a /restablecer — mismo
+    // motivo que en login/page.tsx (signUp): flowType=pkce necesita
+    // exchangeCodeForSession() antes de que exista sesión. Ver
+    // app/auth/callback/route.ts.
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/restablecer`,
+      redirectTo: `${window.location.origin}/auth/callback?next=/restablecer`,
     });
 
     setLoading(false);
