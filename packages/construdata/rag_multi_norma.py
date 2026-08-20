@@ -17,6 +17,8 @@ from typing import Optional
 from openai import APIConnectionError, APIStatusError, InternalServerError, OpenAI, RateLimitError
 from supabase import create_client
 
+import sgc_amenaza_sismica
+
 log = logging.getLogger(__name__)
 
 sb = create_client(os.environ["SUPABASE_URL"], os.environ["SUPABASE_SERVICE_KEY"])
@@ -880,18 +882,33 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = 6) -> dict
     # 2. Construir contexto (con advertencia de vigencia por chunk cuando aplica)
     contexto = "\n\n---\n\n".join(_format_chunk_context(c) for c in chunks)
 
+    # Enriquecimiento con dato oficial en vivo del SGC (ver sgc_amenaza_sismica.py):
+    # muchas preguntas de "zona sísmica de <municipio>" caen en este camino general
+    # (NSR-10 Título A) en vez del motor geopot -- se aplica aquí también, no solo
+    # en ask_delegado(), para cubrir ambos caminos. Nunca reemplaza la búsqueda
+    # semántica normal, solo la complementa; si el servicio del SGC no responde o
+    # no hay match de municipio, sigue exactamente igual que antes.
+    sgc_registro = sgc_amenaza_sismica.detectar_municipio_en_texto(question)
+    if sgc_registro:
+        contexto = f"DATO OFICIAL EN VIVO (SGC):\n{sgc_amenaza_sismica.formatear_respuesta(sgc_registro)}\n\n---\n\n{contexto}"
+
     # 3. Síntesis con Ollama local
     respuesta = _generar_respuesta(contexto, question)
     normas_citadas = list({c.norma for c in chunks})
+    fuentes = [
+        {"norma": c.norma, "seccion": c.seccion, "score": round(c.score, 4)}
+        for c in chunks
+    ]
+    if sgc_registro:
+        fuente_sgc = "SGC — Servicio Geológico Colombiano (amenaza sísmica en vivo)"
+        normas_citadas = [fuente_sgc] + normas_citadas
+        fuentes = [{"norma": fuente_sgc, "seccion": sgc_registro["municipio"], "score": 1.0}] + fuentes
 
     return {
         "respuesta": respuesta,
         "normas_citadas": normas_citadas,
         "normas_detectadas_router": target_normas,
-        "fuentes": [
-            {"norma": c.norma, "seccion": c.seccion, "score": round(c.score, 4)}
-            for c in chunks
-        ],
+        "fuentes": fuentes,
         "chunks_usados": len(chunks),
         "advertencias_vigencia": [
             {"norma": c.norma, "seccion": c.seccion, "estado_vigencia": c.estado_vigencia, "derogada_por": c.derogada_por}
@@ -1036,18 +1053,37 @@ def ask_delegado(question: str, top_k: int = 6) -> dict:
         result["dominio_label"] = "RAG normativo general (NSR-10 / NTC / seguridad industrial)"
         return result
 
+    # Enriquecimiento con dato oficial en vivo del SGC: si la pregunta de
+    # geopot menciona un municipio de Colombia, se consulta el servicio
+    # geográfico real del SGC (Aa/Av/zona de amenaza sísmica NSR-10) y se
+    # antepone al contexto -- cobertura de los 1.122 municipios del país,
+    # no solo las ciudades ya troceadas a mano en motor_chunks/nsr10_chunks.
+    # Nunca reemplaza la búsqueda semántica normal, solo la complementa; si
+    # el servicio del SGC falla o no hay match, sigue exactamente el mismo
+    # camino de siempre. Ver sgc_amenaza_sismica.py para el detalle.
+    sgc_registro = sgc_amenaza_sismica.detectar_municipio_en_texto(question) if motor == "geopot" else None
+
     contexto = "\n\n---\n\n".join(_format_chunk_context(c) for c in chunks)
+    if sgc_registro:
+        contexto = f"DATO OFICIAL EN VIVO (SGC):\n{sgc_amenaza_sismica.formatear_respuesta(sgc_registro)}\n\n---\n\n{contexto}"
     respuesta = _generar_respuesta(contexto, question)
+
+    normas_citadas = list({c.norma for c in chunks})
+    fuentes = [
+        {"norma": c.norma, "seccion": c.seccion, "score": round(c.score, 4)}
+        for c in chunks
+    ]
+    if sgc_registro:
+        fuente_sgc = "SGC — Servicio Geológico Colombiano (amenaza sísmica en vivo)"
+        normas_citadas = [fuente_sgc] + normas_citadas
+        fuentes = [{"norma": fuente_sgc, "seccion": sgc_registro["municipio"], "score": 1.0}] + fuentes
 
     return {
         "dominio": motor,
         "dominio_label": MOTOR_LABEL.get(motor, motor),
         "respuesta": respuesta,
-        "normas_citadas": list({c.norma for c in chunks}),
-        "fuentes": [
-            {"norma": c.norma, "seccion": c.seccion, "score": round(c.score, 4)}
-            for c in chunks
-        ],
+        "normas_citadas": normas_citadas,
+        "fuentes": fuentes,
         "chunks_usados": len(chunks),
         "advertencias_vigencia": [
             {"norma": c.norma, "seccion": c.seccion, "estado_vigencia": c.estado_vigencia, "derogada_por": c.derogada_por}
