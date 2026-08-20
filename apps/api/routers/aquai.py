@@ -31,6 +31,12 @@ from fastapi.responses import FileResponse
 from auth import AuthenticatedUser, get_current_user
 from rate_limit import limiter
 
+# packages/construdata ya está en sys.path (main.py lo agrega antes de
+# cargar este router, igual que para rag_multi_norma). ideam_client expone
+# los datos abiertos hidrometeorológicos del IDEAM (datos.gov.co, API
+# pública sin key) — ver packages/construdata/ideam_client.py.
+import ideam_client
+
 ROOT = Path(__file__).resolve().parents[3]  # monorepo/
 
 import importlib.util as _ilu
@@ -82,6 +88,78 @@ def endpoint_hidrologia(request: Request, req: motor_aquai.HidrologiaRequest, us
         return motor_aquai.calcular_hidrologia(req)
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e))
+
+
+@router.get(
+    "/hidrologia/estaciones-ideam",
+    summary="Estaciones IDEAM cercanas al proyecto (dato real de referencia)",
+)
+@limiter.limit("30/minute")
+def endpoint_estaciones_ideam(
+    request: Request,
+    municipio: str,
+    departamento: str | None = None,
+    user: AuthenticatedUser = Depends(get_current_user),
+):
+    """Consulta el catálogo nacional de estaciones del IDEAM (datos abiertos,
+    datos.gov.co) para el municipio/departamento del proyecto. Es información
+    de REFERENCIA para que el ingeniero verifique qué estaciones reales
+    existen cerca y qué miden (pluviométrica, climatológica, limnigráfica) —
+    NO reemplaza las curvas IDF regionales oficiales que usa /aquai/hidrologia
+    para el caudal de diseño (esas son series estadísticas de eventos
+    extremos ya validadas, no observaciones crudas puntuales)."""
+    try:
+        estaciones = ideam_client.buscar_estaciones(
+            departamento=departamento, municipio=municipio, limit=15
+        )
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"IDEAM (datos.gov.co) no disponible: {e}")
+    return {
+        "municipio": municipio,
+        "departamento": departamento,
+        "total_estaciones": len(estaciones),
+        "estaciones": estaciones,
+        "nota": (
+            "Fuente: Catálogo Nacional de Estaciones del IDEAM, datos abiertos "
+            "(datos.gov.co). Uso de referencia para el ingeniero — no reemplaza "
+            "las curvas IDF regionales oficiales usadas en el cálculo de "
+            "caudal de diseño."
+        ),
+    }
+
+
+@router.get(
+    "/hidrologia/precipitacion-ideam",
+    summary="Observaciones recientes de precipitación IDEAM (dato real, sin validar)",
+)
+@limiter.limit("30/minute")
+def endpoint_precipitacion_ideam(
+    request: Request,
+    municipio: str,
+    limit: int = 50,
+    user: AuthenticatedUser = Depends(get_current_user),
+):
+    """Observaciones crudas de precipitación (mm) del IDEAM para el
+    municipio dado — dato en tiempo casi real, SIN validar oficialmente por
+    IDEAM (aclaración obligatoria de la propia fuente). Útil para dar
+    contexto de campo, no para sustituir la intensidad de diseño I (mm/h)
+    de la curva IDF regional que calcula /aquai/hidrologia."""
+    limit = max(1, min(limit, 500))
+    try:
+        obs = ideam_client.precipitacion_por_municipio(municipio, limit=limit)
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"IDEAM (datos.gov.co) no disponible: {e}")
+    return {
+        "municipio": municipio,
+        "total_observaciones": len(obs),
+        "observaciones": obs,
+        "nota": (
+            "Fuente: IDEAM, datos abiertos (datos.gov.co), NO validados "
+            "oficialmente. Dato de referencia/contexto — el caudal de diseño "
+            "de /aquai/hidrologia usa las curvas IDF regionales oficiales de "
+            "RAS 2000, no esta observación cruda."
+        ),
+    }
 
 
 @router.post("/hidraulica/manning", response_model=motor_aquai.ManningResponse, summary="Manning — alcantarillado a gravedad")
