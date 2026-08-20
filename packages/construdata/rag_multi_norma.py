@@ -19,6 +19,7 @@ from supabase import create_client
 
 import sgc_amenaza_sismica
 import sgc_movimientos_masa
+import noticias_colombia
 
 log = logging.getLogger(__name__)
 
@@ -843,6 +844,45 @@ def _generar_respuesta(contexto: str, question: str) -> str:
             "Groq y el respaldo NVIDIA fallaron. Intenta de nuevo en unos minutos."
         ) from e
 
+# Palabras que indican que la pregunta busca algo vigente AHORA, no un
+# hecho normativo permanente -- evita meter noticias en cada pregunta de
+# cálculo (sería ruido puro), solo cuando de verdad hay intención temporal.
+_PALABRAS_ACTUALIDAD = (
+    "noticia", "noticias", "reciente", "recientes", "ultima hora", "última hora",
+    "hoy", "esta semana", "actualidad", "que esta pasando", "qué está pasando",
+    "novedad", "novedades", "actualizacion", "actualización",
+)
+
+
+def _quiere_actualidad(pregunta: str) -> bool:
+    q = pregunta.lower()
+    return any(p in q for p in _PALABRAS_ACTUALIDAD)
+
+
+def _bloque_contexto_noticias() -> Optional[str]:
+    """Si hay noticias guardadas (ver noticias_colombia.py, alimentado por
+    el scheduler de apps/api), arma un bloque de contexto con las más
+    recientes de cada categoría. None si no hay datos o Supabase no
+    responde -- nunca lanza."""
+    try:
+        desastres = noticias_colombia.noticias_recientes(sb, categoria="desastre", limite=3)
+        regulatorias = noticias_colombia.noticias_recientes(sb, categoria="regulatoria", limite=2)
+    except Exception:
+        return None
+    items = desastres + regulatorias
+    if not items:
+        return None
+    lineas = [
+        f"- [{it['categoria']}] {it['titulo']} ({it['fuente']}, {it.get('fecha_publicacion') or 'fecha desconocida'})"
+        for it in items
+    ]
+    return (
+        "NOTICIAS RECIENTES DE COLOMBIA (vía Google News, no verificadas por StructAI "
+        "más allá del titular -- citar la fuente y la fecha, no afirmar como hecho propio):\n"
+        + "\n".join(lineas)
+    )
+
+
 def _bloque_contexto_sgc(sgc_registro: dict) -> str:
     """Arma el bloque de contexto en vivo del SGC a partir de un registro de
     sgc_amenaza_sismica.detectar_municipio_en_texto(): siempre incluye la
@@ -909,6 +949,16 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = 6) -> dict
     sgc_registro = sgc_amenaza_sismica.detectar_municipio_en_texto(question)
     if sgc_registro:
         contexto = f"DATO OFICIAL EN VIVO (SGC):\n{_bloque_contexto_sgc(sgc_registro)}\n\n---\n\n{contexto}"
+
+    # Enriquecimiento con noticias recientes (ver noticias_colombia.py): solo
+    # cuando la pregunta tiene intención temporal explícita ("noticias",
+    # "hoy", "última hora"...) -- meter esto en TODA pregunta sería ruido
+    # puro para cálculos normativos normales, que son atemporales por
+    # naturaleza.
+    if _quiere_actualidad(question):
+        bloque_noticias = _bloque_contexto_noticias()
+        if bloque_noticias:
+            contexto = f"{bloque_noticias}\n\n---\n\n{contexto}"
 
     # 3. Síntesis con Ollama local
     respuesta = _generar_respuesta(contexto, question)

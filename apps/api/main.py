@@ -304,6 +304,19 @@ except Exception as e:
     log.warning(f"✗ sgc_amenaza_sismica/sgc_movimientos_masa no disponible: {e}")
 
 try:
+    # Requiere Supabase (RAG_AVAILABLE trae supabase_client) para guardar/leer
+    # noticias_relevantes, pero no depende de Groq -- solo Google News RSS.
+    import noticias_colombia
+    NOTICIAS_AVAILABLE = RAG_AVAILABLE
+    if NOTICIAS_AVAILABLE:
+        log.info("✓ noticias_colombia cargado")
+    else:
+        log.warning("✗ noticias_colombia cargado pero RAG_AVAILABLE=False (necesita supabase_client)")
+except Exception as e:
+    NOTICIAS_AVAILABLE = False
+    log.warning(f"✗ noticias_colombia no disponible: {e}")
+
+try:
     # motor-apu usa imports relativos internos (from .models import ...), por
     # eso se carga como paquete real vía importlib en vez de sys.path — mismo
     # patrón que motor-deformacion, evita "attempted relative import with no
@@ -914,10 +927,34 @@ def _prewarm_embeddings_blocking() -> None:
         log.warning(f"✗ No se pudo precalentar el modelo de embeddings: {e}")
 
 
+_INTERVALO_NOTICIAS_SEGUNDOS = 3 * 3600  # cada 3 horas -- suficiente para "en vivo"
+# real sin golpear Google News RSS con una frecuencia que parezca abuso
+
+
+async def _ciclo_noticias():
+    """Loop en background que actualiza noticias_relevantes cada
+    _INTERVALO_NOTICIAS_SEGUNDOS. asyncio.create_task() en vez de un cron
+    externo -- no agrega infraestructura nueva (nada de APScheduler ni un
+    job separado en DigitalOcean), vive dentro del mismo proceso que ya
+    está corriendo 24/7. httpx (síncrono) se corre en un hilo aparte vía
+    asyncio.to_thread() para no bloquear el event loop mientras trae los
+    9 feeds RSS."""
+    while True:
+        try:
+            resumen = await asyncio.to_thread(noticias_colombia.actualizar_noticias, supabase_client)
+            log.info(f"Noticias Colombia actualizadas: {resumen}")
+        except Exception as e:
+            log.warning(f"Ciclo de noticias falló, se reintenta en el próximo intervalo: {e}")
+        await asyncio.sleep(_INTERVALO_NOTICIAS_SEGUNDOS)
+
+
 @app.on_event("startup")
 async def startup():
     global _onnx_session
     _onnx_session = _load_onnx_model()
+
+    if NOTICIAS_AVAILABLE:
+        asyncio.create_task(_ciclo_noticias())
 
     # asyncio.to_thread(), NO awaited: deja el event loop libre para
     # responder /health de inmediato mientras el modelo se carga en
@@ -1866,6 +1903,24 @@ def amenaza_sismica_municipio(request: Request, municipio: str):
     if lat is not None and lon is not None:
         resultado["movimientos_masa"] = sgc_movimientos_masa.consultar_movimientos_cercanos(lat, lon)
     return resultado
+
+
+# ── /noticias — noticias recientes de Colombia (desastres/regulatorio) ────────
+
+@app.get("/noticias", tags=["Noticias"])
+@app.get("/v1/noticias", tags=["Noticias"])
+@limiter.limit("30/minute")
+def noticias(request: Request, categoria: Optional[str] = None, limite: int = 10):
+    """Lee las noticias ya guardadas en noticias_relevantes (actualizadas
+    cada 3h por el ciclo en background, ver _ciclo_noticias()) -- esto NO
+    consulta Google News en vivo por request, solo lee lo último guardado.
+    `categoria` opcional: 'desastre' o 'regulatoria'. Sin filtro, trae
+    ambas mezcladas por fecha."""
+    if not NOTICIAS_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Servicio de noticias no disponible")
+    if categoria not in (None, "desastre", "regulatoria"):
+        raise HTTPException(status_code=422, detail="categoria debe ser 'desastre' o 'regulatoria'")
+    return noticias_colombia.noticias_recientes(supabase_client, categoria=categoria, limite=min(limite, 50))
 
 
 # ── /ask/route — Debug: ver qué normas detecta el router ──────────────────────
