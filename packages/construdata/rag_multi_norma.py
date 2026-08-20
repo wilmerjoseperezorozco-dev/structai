@@ -67,6 +67,82 @@ nvidia_client = (
 if nvidia_client is None:
     log.warning("NVIDIA_API_KEY no configurada — sin respaldo si Groq se queda sin cuota.")
 
+# ─── Respaldo OpenAI (tercer nivel) ───────────────────────────────────────────
+# Agregado 2026-08-20: Groq se agota casi a diario con el volumen real del
+# piloto (200K TPD, confirmado agotado múltiples veces en la misma sesión) y
+# NVIDIA NIM es inconsistente en latencia (20s a 199s en pruebas reales, ver
+# nota arriba) — dos capas de respaldo no bastaban para garantizar que la app
+# nunca se quede muda. El usuario financia esto con crédito propio de OpenAI
+# ($9, comprado explícitamente para este uso). gpt-4o-mini (no gpt-4o): basta
+# para síntesis fiel de un contexto RAG ya recuperado -- no requiere
+# razonamiento profundo -- y es ~15x más barato que gpt-4o, así que $9 rinde
+# meses de uso ocasional como respaldo, no como motor principal.
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+_openai_api_key = os.getenv("OPENAI_API_KEY")
+openai_client = (
+    OpenAI(api_key=_openai_api_key, timeout=20.0, max_retries=0)
+    if _openai_api_key else None
+)
+if openai_client is None:
+    log.warning("OPENAI_API_KEY no configurada — sin tercer respaldo si Groq y NVIDIA fallan.")
+
+
+def _llamar_llm_con_respaldo(messages: list, max_tokens_groq: int = 700) -> str:
+    """Intenta Groq, luego NVIDIA, luego OpenAI, en ese orden -- cada nivel
+    solo se prueba si el anterior falló por capacidad/red/tamaño (nunca por
+    un bug propio como 400/401/403/404/422, que el respaldo fallaría igual o
+    peor, enmascarando el error real). Usado por _generar_respuesta() y
+    ask_precios() -- antes cada uno reimplementaba Groq->NVIDIA por separado;
+    unificado aquí para no duplicar la lógica de 3 niveles en dos sitios.
+    Lanza RespuestaIAIndisponibleError solo si los tres fallan o no hay
+    ninguno configurado más allá de Groq."""
+    try:
+        response = groq_client.chat.completions.create(
+            model=GROQ_MODEL, messages=messages, temperature=0.1,
+            max_tokens=max_tokens_groq, extra_body={"reasoning_effort": "low"},
+        )
+        if response.usage is not None:
+            _registrar_uso_groq(response.usage.total_tokens)
+        contenido = response.choices[0].message.content
+        if contenido:
+            return contenido
+        log.warning("Groq devolvió respuesta vacía, intentando respaldo NVIDIA.")
+    except (RateLimitError, APIConnectionError, InternalServerError) as e:
+        log.warning(f"Groq no disponible ({type(e).__name__}), intentando respaldo NVIDIA: {e}")
+    except APIStatusError as e:
+        if e.status_code != 413:
+            raise
+        log.warning(f"Groq rechazó la petición por tamaño de contexto (413), intentando respaldo NVIDIA: {e}")
+
+    if nvidia_client is not None:
+        try:
+            response = nvidia_client.chat.completions.create(
+                model=NVIDIA_MODEL, messages=messages, temperature=0.1, max_tokens=400,
+            )
+            contenido = response.choices[0].message.content
+            if contenido:
+                log.info(f"Respuesta generada con respaldo NVIDIA ({NVIDIA_MODEL}) porque Groq no estaba disponible.")
+                return contenido
+            log.warning("NVIDIA devolvió respuesta vacía, intentando respaldo OpenAI.")
+        except Exception as e:
+            log.warning(f"Respaldo NVIDIA falló ({type(e).__name__}), intentando respaldo OpenAI: {e}")
+
+    if openai_client is not None:
+        try:
+            response = openai_client.chat.completions.create(
+                model=OPENAI_MODEL, messages=messages, temperature=0.1, max_tokens=500,
+            )
+            contenido = response.choices[0].message.content
+            if contenido:
+                log.info(f"Respuesta generada con respaldo OpenAI ({OPENAI_MODEL}) porque Groq y NVIDIA fallaron.")
+                return contenido
+        except Exception as e:
+            log.error(f"Respaldo OpenAI también falló: {e}", exc_info=True)
+
+    raise RespuestaIAIndisponibleError(
+        "Groq y los respaldos configurados (NVIDIA/OpenAI) no pudieron generar una respuesta. Intenta de nuevo en unos minutos."
+    )
+
 
 class RespuestaIAIndisponibleError(RuntimeError):
     """Ni Groq ni el respaldo NVIDIA pudieron generar una respuesta."""
@@ -610,27 +686,7 @@ def ask_precios(question: str, top_k: int = 8) -> dict:
         {"role": "system", "content": APU_PRECIOS_SYSTEM_PROMPT},
         {"role": "user", "content": f"PRECIOS DISPONIBLES:\n{contexto}\n\nPREGUNTA: {question}"}
     ]
-    try:
-        response = groq_client.chat.completions.create(
-            model=GROQ_MODEL, messages=messages, temperature=0.1, max_tokens=700,
-            extra_body={"reasoning_effort": "low"},
-        )
-        if response.usage is not None:
-            _registrar_uso_groq(response.usage.total_tokens)
-        respuesta = response.choices[0].message.content
-    except (RateLimitError, APIConnectionError, InternalServerError, APIStatusError) as e:
-        if isinstance(e, APIStatusError) and e.status_code != 413:
-            raise
-        if nvidia_client is None:
-            raise RespuestaIAIndisponibleError(
-                "Groq no disponible y no hay respaldo NVIDIA configurado."
-            ) from e
-        response = nvidia_client.chat.completions.create(
-            model=NVIDIA_MODEL, messages=messages, temperature=0.1, max_tokens=400,
-        )
-        respuesta = response.choices[0].message.content
-        if not respuesta:
-            raise RespuestaIAIndisponibleError("El respaldo NVIDIA devolvió una respuesta vacía.") from e
+    respuesta = _llamar_llm_con_respaldo(messages, max_tokens_groq=700)
 
     return {
         "respuesta": respuesta,
@@ -778,71 +834,14 @@ def _generar_respuesta(contexto: str, question: str) -> str:
     # respuesta. "low" acota el razonamiento interno (no aplica a preguntas
     # de RAG con contexto ya recuperado — no hace falta razonamiento
     # profundo, solo síntesis fiel del contexto).
+    #
+    # El fallback de 3 niveles (Groq -> NVIDIA -> OpenAI) vive en
+    # _llamar_llm_con_respaldo(), compartido con ask_precios().
     messages = [
         {"role": "system", "content": SYSTEM_PROMPT},
         {"role": "user", "content": f"CONTEXTO NORMATIVO:\n{contexto}\n\nPREGUNTA: {question}"}
     ]
-    try:
-        response = groq_client.chat.completions.create(
-            model=GROQ_MODEL,
-            messages=messages,
-            temperature=0.1,
-            max_tokens=700,
-            extra_body={"reasoning_effort": "low"},
-        )
-        if response.usage is not None:
-            _registrar_uso_groq(response.usage.total_tokens)
-        return response.choices[0].message.content
-    except (RateLimitError, APIConnectionError, InternalServerError) as e:
-        # Solo se cae a NVIDIA en fallos de capacidad/red/servidor de Groq —
-        # nunca en BadRequestError/AuthenticationError/NotFoundError, que son
-        # bugs propios que NVIDIA fallaría igual (o peor, enmascarando el error real).
-        log.warning(f"Groq no disponible ({type(e).__name__}), intentando respaldo NVIDIA: {e}")
-    except APIStatusError as e:
-        # Groq responde 413 (no 429) cuando el contexto+prompt de UNA sola
-        # petición supera el límite de tokens-por-minuto de la cuenta (cuerpo
-        # real: code="rate_limit_exceeded" pese al status 413) — el SDK de
-        # OpenAI solo mapea 429 a RateLimitError, así que este caso se colaba
-        # sin activar el respaldo NVIDIA pese a ser, en la práctica, la misma
-        # situación de "Groq sin capacidad para esta petición". Encontrado
-        # real 2026-08-04 corriendo la batería de motores: una pregunta con
-        # mucho contexto recuperado moría sin respuesta con NVIDIA ya
-        # configurado y disponible. El resto de status errors (400/401/403/
-        # 404/409/422) siguen sin caer a NVIDIA — son bugs propios que el
-        # respaldo fallaría igual (o peor, enmascarando el error real).
-        if e.status_code != 413:
-            raise
-        log.warning(f"Groq rechazó la petición por tamaño de contexto (413), intentando respaldo NVIDIA: {e}")
-
-    if nvidia_client is None:
-        raise RespuestaIAIndisponibleError(
-            "Groq no disponible (cuota agotada o caído) y no hay respaldo NVIDIA configurado."
-        )
-
-    try:
-        # max_tokens más bajo que Groq (400 vs 700): NVIDIA NIM free tier no
-        # tiene hardware LPU, cada token adicional pesa más en latencia real
-        # y el proxy de DigitalOcean ya demostró cortar respuestas lentas
-        # (ver nota de max_tokens de Groq arriba) — prioriza terminar rápido
-        # sobre una respuesta más larga cuando ya estamos en el camino de respaldo.
-        response = nvidia_client.chat.completions.create(
-            model=NVIDIA_MODEL,
-            messages=messages,
-            temperature=0.1,
-            max_tokens=400,
-        )
-        contenido = response.choices[0].message.content
-        if not contenido:
-            raise RespuestaIAIndisponibleError("El respaldo NVIDIA devolvió una respuesta vacía.")
-        log.info(f"Respuesta generada con respaldo NVIDIA ({NVIDIA_MODEL}) porque Groq no estaba disponible.")
-        return contenido
-    except RespuestaIAIndisponibleError:
-        raise
-    except Exception as e:
-        log.error(f"Respaldo NVIDIA también falló: {e}", exc_info=True)
-        raise RespuestaIAIndisponibleError(
-            "Groq y el respaldo NVIDIA fallaron. Intenta de nuevo en unos minutos."
-        ) from e
+    return _llamar_llm_con_respaldo(messages, max_tokens_groq=700)
 
 # Palabras que indican que la pregunta busca algo vigente AHORA, no un
 # hecho normativo permanente -- evita meter noticias en cada pregunta de
