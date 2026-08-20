@@ -292,6 +292,17 @@ except Exception as e:
     log.warning(f"✗ rag_multi_norma no disponible: {e}")
 
 try:
+    # Independiente de RAG_AVAILABLE: no necesita Supabase ni Groq, solo el
+    # servicio geográfico del SGC (con su propio manejo de errores interno,
+    # ver sgc_amenaza_sismica.py — nunca lanza).
+    import sgc_amenaza_sismica
+    SGC_AVAILABLE = True
+    log.info("✓ sgc_amenaza_sismica cargado")
+except Exception as e:
+    SGC_AVAILABLE = False
+    log.warning(f"✗ sgc_amenaza_sismica no disponible: {e}")
+
+try:
     # motor-apu usa imports relativos internos (from .models import ...), por
     # eso se carga como paquete real vía importlib en vez de sys.path — mismo
     # patrón que motor-deformacion, evita "attempted relative import with no
@@ -1826,6 +1837,28 @@ def apu_calculate_batch(
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={"Content-Disposition": "attachment; filename=presupuesto_apu_construdata.xlsx"},
     )
+
+
+# ── /amenaza-sismica — dato en vivo del SGC por municipio ─────────────────────
+# Endpoint público (sin auth, sin Groq) para el diagnóstico de vulnerabilidad
+# y cualquier otro uso que necesite Aa/Av/zona de un municipio sin pasar por
+# el chat completo. Ver packages/construdata/sgc_amenaza_sismica.py.
+
+@app.get("/amenaza-sismica", tags=["GeoPot"])
+@app.get("/v1/amenaza-sismica", tags=["GeoPot"])
+@limiter.limit("30/minute")
+def amenaza_sismica_municipio(request: Request, municipio: str):
+    """Busca el municipio mencionado en `municipio` (texto libre, ej. 'Sincelejo'
+    o 'Tuchín, Córdoba') contra el servicio geográfico del SGC y devuelve
+    Aa/Av/Ae/Ad/zona de amenaza sísmica NSR-10. 404 si no hay match o el
+    servicio del SGC no respondió -- nunca 500, sgc_amenaza_sismica.py está
+    diseñado para no lanzar."""
+    if not SGC_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Servicio de amenaza sísmica no disponible")
+    registro = sgc_amenaza_sismica.detectar_municipio_en_texto(municipio)
+    if not registro:
+        raise HTTPException(status_code=404, detail=f"No se encontró un municipio de Colombia en '{municipio}'")
+    return registro
 
 
 # ── /ask/route — Debug: ver qué normas detecta el router ──────────────────────

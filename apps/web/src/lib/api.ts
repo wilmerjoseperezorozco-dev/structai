@@ -87,6 +87,18 @@ export interface DetectResponse {
   modo: "onnx" | "stub" | "stub_fallback";
 }
 
+/** Registro de amenaza sísmica NSR-10 de un municipio, en vivo desde el
+ * servicio geográfico del SGC (Servicio Geológico Colombiano). */
+export interface AmenazaSismicaMunicipio {
+  municipio: string;
+  departamento: string;
+  aa: number;
+  av: number;
+  ae: number | null;
+  ad: number | null;
+  zona: string | null;
+}
+
 export interface HealthResponse {
   status: string;
   version: string;
@@ -229,6 +241,17 @@ export async function debugRoute(q: string) {
   return api<{ query: string; normas_detectadas: string[]; total: number }>(
     `/ask/route?q=${encodeURIComponent(q)}`
   );
+}
+
+/** Zona de amenaza sísmica NSR-10 de un municipio, en vivo desde el SGC.
+ * Devuelve null si el municipio no se reconoce (404) en vez de lanzar —
+ * es un dato de contexto opcional, nunca debe tumbar el flujo que lo usa. */
+export async function getAmenazaSismica(municipio: string): Promise<AmenazaSismicaMunicipio | null> {
+  try {
+    return await api<AmenazaSismicaMunicipio>(`/amenaza-sismica?municipio=${encodeURIComponent(municipio)}`);
+  } catch {
+    return null;
+  }
 }
 
 // ── Formatters ───────────────────────────────────────────────────────────────
