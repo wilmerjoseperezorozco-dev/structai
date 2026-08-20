@@ -87,6 +87,16 @@ export interface DetectResponse {
   modo: "onnx" | "stub" | "stub_fallback";
 }
 
+/** Inventario de movimientos en masa (SIMMA) cercanos a un municipio, en
+ * vivo desde el SGC -- null si no había coordenadas o el servicio no
+ * respondió (nunca bloquea el resto del resultado). */
+export interface MovimientosMasaCercanos {
+  total: number;
+  truncado: boolean;
+  por_tipo: Record<string, number>;
+  radio_km: number;
+}
+
 /** Registro de amenaza sísmica NSR-10 de un municipio, en vivo desde el
  * servicio geográfico del SGC (Servicio Geológico Colombiano). */
 export interface AmenazaSismicaMunicipio {
@@ -97,6 +107,9 @@ export interface AmenazaSismicaMunicipio {
   ae: number | null;
   ad: number | null;
   zona: string | null;
+  latitud?: number | null;
+  longitud?: number | null;
+  movimientos_masa?: MovimientosMasaCercanos | null;
 }
 
 export interface HealthResponse {

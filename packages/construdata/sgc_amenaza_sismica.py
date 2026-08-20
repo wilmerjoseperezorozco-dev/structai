@@ -74,7 +74,7 @@ def _cargar_cache() -> dict[str, dict]:
                 _SERVICE_URL,
                 params={
                     "where": "1=1",
-                    "outFields": "NOMBRE_MUNICIPIO,NOMBRE_DEPARTAMENTO,AA,AV,AE,AD,ZONA_AMENAZA_SÍSMICA",
+                    "outFields": "NOMBRE_MUNICIPIO,NOMBRE_DEPARTAMENTO,AA,AV,AE,AD,ZONA_AMENAZA_SÍSMICA,LONGITUD,LATITUD",
                     "f": "json",
                     "returnGeometry": "false",
                     "resultOffset": offset,
@@ -111,6 +111,12 @@ def _cargar_cache() -> dict[str, dict]:
                 "ae": attrs.get("AE"),
                 "ad": attrs.get("AD"),
                 "zona": zona,
+                # Coordenadas del municipio -- se reutilizan para la consulta
+                # espacial de movimientos en masa (SIMMA), que no tiene campo
+                # de municipio propio, solo geometría de punto. Ver
+                # sgc_movimientos_masa.py.
+                "longitud": attrs.get("LONGITUD"),
+                "latitud": attrs.get("LATITUD"),
             }
         if not cache:
             log.warning("SGC amenaza sísmica: respuesta sin features, no se cachea vacío")

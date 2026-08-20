@@ -18,6 +18,7 @@ from openai import APIConnectionError, APIStatusError, InternalServerError, Open
 from supabase import create_client
 
 import sgc_amenaza_sismica
+import sgc_movimientos_masa
 
 log = logging.getLogger(__name__)
 
@@ -842,6 +843,23 @@ def _generar_respuesta(contexto: str, question: str) -> str:
             "Groq y el respaldo NVIDIA fallaron. Intenta de nuevo en unos minutos."
         ) from e
 
+def _bloque_contexto_sgc(sgc_registro: dict) -> str:
+    """Arma el bloque de contexto en vivo del SGC a partir de un registro de
+    sgc_amenaza_sismica.detectar_municipio_en_texto(): siempre incluye la
+    amenaza sísmica, y si el registro trae coordenadas (lo trae desde
+    2026-08-20) suma también el inventario de movimientos en masa cercano
+    (SIMMA, ver sgc_movimientos_masa.py). Cada pieza es independiente --
+    si SIMMA no responde, la amenaza sísmica se sigue mostrando igual, y
+    viceversa."""
+    partes = [sgc_amenaza_sismica.formatear_respuesta(sgc_registro)]
+    lat, lon = sgc_registro.get("latitud"), sgc_registro.get("longitud")
+    if lat is not None and lon is not None:
+        movimientos = sgc_movimientos_masa.consultar_movimientos_cercanos(lat, lon)
+        if movimientos:
+            partes.append(sgc_movimientos_masa.formatear_respuesta(movimientos, sgc_registro["municipio"]))
+    return "\n\n".join(partes)
+
+
 def ask(question: str, norma_hint: Optional[str] = None, top_k: int = 6) -> dict:
     """
     RAG multi-norma completo.
@@ -890,7 +908,7 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = 6) -> dict
     # no hay match de municipio, sigue exactamente igual que antes.
     sgc_registro = sgc_amenaza_sismica.detectar_municipio_en_texto(question)
     if sgc_registro:
-        contexto = f"DATO OFICIAL EN VIVO (SGC):\n{sgc_amenaza_sismica.formatear_respuesta(sgc_registro)}\n\n---\n\n{contexto}"
+        contexto = f"DATO OFICIAL EN VIVO (SGC):\n{_bloque_contexto_sgc(sgc_registro)}\n\n---\n\n{contexto}"
 
     # 3. Síntesis con Ollama local
     respuesta = _generar_respuesta(contexto, question)
@@ -1065,7 +1083,7 @@ def ask_delegado(question: str, top_k: int = 6) -> dict:
 
     contexto = "\n\n---\n\n".join(_format_chunk_context(c) for c in chunks)
     if sgc_registro:
-        contexto = f"DATO OFICIAL EN VIVO (SGC):\n{sgc_amenaza_sismica.formatear_respuesta(sgc_registro)}\n\n---\n\n{contexto}"
+        contexto = f"DATO OFICIAL EN VIVO (SGC):\n{_bloque_contexto_sgc(sgc_registro)}\n\n---\n\n{contexto}"
     respuesta = _generar_respuesta(contexto, question)
 
     normas_citadas = list({c.norma for c in chunks})

@@ -294,13 +294,14 @@ except Exception as e:
 try:
     # Independiente de RAG_AVAILABLE: no necesita Supabase ni Groq, solo el
     # servicio geográfico del SGC (con su propio manejo de errores interno,
-    # ver sgc_amenaza_sismica.py — nunca lanza).
+    # ver sgc_amenaza_sismica.py / sgc_movimientos_masa.py — ninguno lanza).
     import sgc_amenaza_sismica
+    import sgc_movimientos_masa
     SGC_AVAILABLE = True
-    log.info("✓ sgc_amenaza_sismica cargado")
+    log.info("✓ sgc_amenaza_sismica + sgc_movimientos_masa cargados")
 except Exception as e:
     SGC_AVAILABLE = False
-    log.warning(f"✗ sgc_amenaza_sismica no disponible: {e}")
+    log.warning(f"✗ sgc_amenaza_sismica/sgc_movimientos_masa no disponible: {e}")
 
 try:
     # motor-apu usa imports relativos internos (from .models import ...), por
@@ -1850,15 +1851,21 @@ def apu_calculate_batch(
 def amenaza_sismica_municipio(request: Request, municipio: str):
     """Busca el municipio mencionado en `municipio` (texto libre, ej. 'Sincelejo'
     o 'Tuchín, Córdoba') contra el servicio geográfico del SGC y devuelve
-    Aa/Av/Ae/Ad/zona de amenaza sísmica NSR-10. 404 si no hay match o el
-    servicio del SGC no respondió -- nunca 500, sgc_amenaza_sismica.py está
-    diseñado para no lanzar."""
+    Aa/Av/Ae/Ad/zona de amenaza sísmica NSR-10, más (si hay coordenadas)
+    el inventario de movimientos en masa cercano (SIMMA, radio 15 km) en
+    `movimientos_masa`. 404 si no hay match de municipio o el servicio del
+    SGC no respondió -- nunca 500, ninguno de los dos módulos lanza."""
     if not SGC_AVAILABLE:
         raise HTTPException(status_code=503, detail="Servicio de amenaza sísmica no disponible")
     registro = sgc_amenaza_sismica.detectar_municipio_en_texto(municipio)
     if not registro:
         raise HTTPException(status_code=404, detail=f"No se encontró un municipio de Colombia en '{municipio}'")
-    return registro
+
+    resultado = dict(registro)
+    lat, lon = registro.get("latitud"), registro.get("longitud")
+    if lat is not None and lon is not None:
+        resultado["movimientos_masa"] = sgc_movimientos_masa.consultar_movimientos_cercanos(lat, lon)
+    return resultado
 
 
 # ── /ask/route — Debug: ver qué normas detecta el router ──────────────────────

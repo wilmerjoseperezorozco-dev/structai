@@ -109,12 +109,28 @@ export default function DiagnosticoVulnerabilidad() {
         </div>
 
         {zonaSismica && (
-          <div className="bg-concrete-900 border border-concrete-700 rounded-xl p-3">
+          <div className="bg-concrete-900 border border-concrete-700 rounded-xl p-3 flex flex-col gap-2">
             <p className="text-xs text-concrete-400">
               📍 {zonaSismica.municipio}, {zonaSismica.departamento}: zona de amenaza sísmica{" "}
               <span className="font-semibold text-concrete-200">{zonaSismica.zona ?? "no especificada"}</span>{" "}
               (Aa={zonaSismica.aa}, Av={zonaSismica.av}) — dato oficial del Servicio Geológico Colombiano.
             </p>
+            {zonaSismica.movimientos_masa && (
+              <p className="text-xs text-concrete-400 border-t border-concrete-800 pt-2">
+                ⛰️{" "}
+                {zonaSismica.movimientos_masa.total === 0 ? (
+                  <>Sin antecedentes de deslizamientos catalogados en un radio de {zonaSismica.movimientos_masa.radio_km.toFixed(0)} km.</>
+                ) : (
+                  <>
+                    <span className="font-semibold text-concrete-200">
+                      {zonaSismica.movimientos_masa.truncado ? `${zonaSismica.movimientos_masa.total}+` : zonaSismica.movimientos_masa.total}
+                    </span>{" "}
+                    antecedente(s) de movimientos en masa (deslizamientos/flujos) registrados en un radio de{" "}
+                    {zonaSismica.movimientos_masa.radio_km.toFixed(0)} km — Inventario SIMMA del SGC.
+                  </>
+                )}
+              </p>
+            )}
           </div>
         )}
 
