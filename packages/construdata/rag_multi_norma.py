@@ -510,6 +510,11 @@ FUENTE_DISPLAY = {
     "contrato_real_impermeabilizacion": "Contrato real ejecutado — impermeabilización (Atlántico)",
     "contrato_real_box_culvert": "Contrato real ejecutado — box culvert / estructura de drenaje (Atlántico)",
     "catalogo_iad_mipymes": "Catálogo IAD MIPYMES — Colombia Compra Eficiente (mediana de cotizaciones nacionales)",
+    # Granularidad de proveedor individual del mismo catálogo IAD MIPYMES,
+    # cargada 2026-08-20 (apu_proveedores_nacional/apu_items_nacional/
+    # apu_precios_nacional_detalle) — antes solo existía la mediana de
+    # arriba, sin poder decir qué proveedor concreto tenía el mejor precio.
+    "catalogo_iad_mipymes_detalle": "Catálogo IAD MIPYMES — Colombia Compra Eficiente (proveedor real con el mejor precio, de 78 proveedores mipyme nacionales)",
     "cotizacion_real_ptar": "Cotización real — planta de tratamiento de aguas residuales (Atlántico)",
     "contrato_real_edar_humedales": "Contrato real ejecutado — EDAR / humedales artificiales (Atlántico)",
     "contrato_real_sabanagrande_acabados": "Contrato real ejecutado — acabados y recubrimientos protectores (Atlántico)",
@@ -645,6 +650,13 @@ INSTRUCCIONES:
    le dice qué tanto varía el precio según el proveedor, no solo el número
    mediano. Dilo de forma natural ("el precio mediano es $X, pero entre
    proveedores varía de $Y a $Z"), nunca lo omitas si está en el contexto.
+9. Cuando la fuente sea "Catálogo IAD MIPYMES — ... (proveedor real con el
+   mejor precio...)", el nombre del ítem ya trae "— mejor precio real: NOMBRE
+   DEL PROVEEDOR". Dile al usuario el nombre de ese proveedor específico
+   (es una empresa mipyme real registrada a nivel nacional, no un dato
+   inventado) y menciona cuántos proveedores se compararon y el rango de
+   precios — esto le permite al profesional identificar la opción más barata
+   entre proveedores reales de todo el país, no solo ver un promedio.
 """
 
 
