@@ -131,6 +131,18 @@ def _cargar_cache() -> dict[str, dict]:
 
 _VENTANA_MAX_PALABRAS = 4  # el municipio compuesto más largo (ej. "San Jose De Ure") cabe en 4 palabras
 
+# Nombres de un municipio real que coinciden con una palabra tan común en
+# cualquier pregunta sobre el país que el match nunca es el que el usuario
+# quiso decir. Bug real encontrado 2026-08-20 con Groq en vivo: existe un
+# municipio llamado "Colombia" (Huila) -- una pregunta como "noticias
+# recientes de desastres en Colombia... cerca de Barranquilla" matcheaba
+# "COLOMBIA" (por aparecer primero en el texto) en vez de "BARRANQUILLA",
+# devolviendo Aa/Av de un municipio de Huila irrelevante y silenciando la
+# pregunta real. "Colombia" como nombre de país nunca debe interceptarse
+# como municipio -- si alguna vez alguien pregunta específicamente por el
+# municipio de Colombia, Huila, tendrá que ser más explícito.
+_EXCLUIDOS = {"COLOMBIA"}
+
 
 def detectar_municipio_en_texto(texto: str) -> Optional[dict]:
     """Busca si alguno de los 1.123 municipios de Colombia aparece
@@ -161,6 +173,8 @@ def detectar_municipio_en_texto(texto: str) -> Optional[dict]:
             candidato = " ".join(palabras[i:i + tam])
             if tam == 1 and len(candidato) < 4:
                 continue  # nombres de 1-2-3 letras dan demasiados falsos positivos
+            if candidato in _EXCLUIDOS:
+                continue
             registro = cache.get(candidato)
             if registro:
                 return registro

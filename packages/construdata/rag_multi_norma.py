@@ -1134,6 +1134,16 @@ def ask_delegado(question: str, top_k: int = 6) -> dict:
     contexto = "\n\n---\n\n".join(_format_chunk_context(c) for c in chunks)
     if sgc_registro:
         contexto = f"DATO OFICIAL EN VIVO (SGC):\n{_bloque_contexto_sgc(sgc_registro)}\n\n---\n\n{contexto}"
+
+    # Mismo enriquecimiento de noticias que ask() -- faltaba aquí (bug real
+    # encontrado 2026-08-20 con Groq en vivo: una pregunta de geopot con
+    # intención temporal nunca traía noticias porque solo estaba conectado
+    # en ask(), no en este branch).
+    if _quiere_actualidad(question):
+        bloque_noticias = _bloque_contexto_noticias()
+        if bloque_noticias:
+            contexto = f"{bloque_noticias}\n\n---\n\n{contexto}"
+
     respuesta = _generar_respuesta(contexto, question)
 
     normas_citadas = list({c.norma for c in chunks})
