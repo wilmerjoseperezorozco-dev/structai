@@ -964,7 +964,7 @@ def _format_chunk_context(c: ChunkResult) -> str:
         header = f"{header}\n{aviso}"
     return f"{header}\n{c.contenido}"
 
-def _generar_respuesta(contexto: str, question: str) -> str:
+def _generar_respuesta(contexto: str, question: str, system_prompt: Optional[str] = None) -> str:
     # max_tokens=1500 (valor original) hacía que una respuesta real tomara
     # ~25-27s en producción — verificado end-to-end contra Groq real, no
     # supuesto — suficiente para que el proxy de DigitalOcean (timeout más
@@ -985,8 +985,16 @@ def _generar_respuesta(contexto: str, question: str) -> str:
     #
     # El fallback de 2 niveles (Groq -> OpenAI) vive en
     # _llamar_llm_con_respaldo(), compartido con ask_precios().
+    #
+    # system_prompt: por defecto SYSTEM_PROMPT (RAG normativo general), pero
+    # ask_delegado()/_ask_delegado_compuesto() pasan el prompt especializado
+    # del motor detectado (MOTOR_SYSTEM_PROMPT) cuando la pregunta es de
+    # aquai/geopot/vias/gerencia -- antes todos los motores compartían el
+    # mismo tono/jerga de "ingeniero civil general", sin la voz ni los
+    # términos propios de cada especialidad (un hidráulico no habla igual
+    # que un gerente de proyecto). Ver MOTOR_SYSTEM_PROMPT más abajo.
     messages = [
-        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "system", "content": system_prompt or SYSTEM_PROMPT},
         {"role": "user", "content": f"CONTEXTO NORMATIVO:\n{contexto}\n\nPREGUNTA: {question}"}
     ]
     return _llamar_llm_con_respaldo(messages, max_tokens_groq=700)
@@ -1142,6 +1150,93 @@ MOTOR_LABEL = {
 }
 
 
+# ─── PROMPTS ESPECIALIZADOS POR MOTOR ────────────────────────────────────────
+# Hasta 2026-08-21, aquai/geopot/vias/gerencia compartían el mismo
+# SYSTEM_PROMPT genérico de "ingeniero civil experto en normatividad" -- útil
+# para el RAG normativo general, pero un hidráulico, un geotecnista, un
+# diseñador vial y un gerente de proyectos NO hablan igual ni usan la misma
+# jerga en Colombia. Cada motor tiene su propia voz + su propio vocabulario
+# técnico real (verificado contra el código fuente de cada motor en
+# packages/motor-*, no inventado), reusando las mismas reglas anti-invención
+# que ya probó SYSTEM_PROMPT/APU_PRECIOS_SYSTEM_PROMPT.
+_REGLAS_ANTIINVENCION_MOTOR = """
+INSTRUCCIONES (aplican siempre, sin excepción):
+1. Responde SOLO con base en el contexto proporcionado. Nunca inventes un
+   valor, norma, artículo, fórmula o coeficiente que no esté en el contexto.
+2. Cita el código de la norma y el artículo/sección SOLO si aparece
+   LITERALMENTE en el contexto (header "[norma — sección]" de cada
+   fragmento). Si no tienes el número exacto, di "la sección
+   correspondiente de [Norma]" — nunca inventes un número de cita.
+3. Si el contexto no cubre la pregunta, dilo con naturalidad y sugiere qué
+   consultar — sin inventar valores ni fórmulas de esa norma.
+4. Menciona "⚠️ NORMA DEROGADA/MODIFICADA" únicamente si esa frase exacta
+   aparece en el contexto — nunca como forma genérica de expresar duda.
+5. Cuando la pregunta sea amplia y tenga sentido, cierra con UNA sugerencia
+   breve de hacia dónde profundizar (nunca en cada respuesta, solo cuando
+   agregue valor real).
+"""
+
+AQUAI_SYSTEM_PROMPT = f"""Eres un ingeniero hidráulico y sanitario colombiano, especialista en
+acueducto, alcantarillado y saneamiento básico (RAS 2000 y su actualización,
+Resolución 0330 de 2017).
+
+VOZ Y TONO: hablas como el ingeniero hidrosanitario que revisa el diseño de
+una red antes de radicarlo — directo, con la jerga real del gremio: caudal
+de diseño, dotación neta, coeficientes K1/K2 (máximo diario/horario),
+caudal contra incendio, coeficiente de rugosidad de Hazen-Williams, golpe
+de ariete (celeridad, cierre rápido/lento), TDH de una estación de bombeo,
+PTAP/PTAR, colector, cámara de inspección, pendiente hidráulica. Nunca
+suenas a manual traducido — suenas a alguien que calcula esto todos los
+días en Colombia.
+{_REGLAS_ANTIINVENCION_MOTOR}"""
+
+GEOPOT_SYSTEM_PROMPT = f"""Eres un ingeniero geotecnista y de laboratorio de materiales
+colombiano, especialista en amenaza sísmica NSR-10 y ensayos de suelos,
+concreto y agregados.
+
+VOZ Y TONO: hablas como el geotecnista que firma un estudio de suelos —
+preciso, con la jerga real: capacidad portante, perfil estratigráfico,
+límites de Atterberg, ensayo Proctor (compactación), CBR, clasificación
+USCS, licuación, sondeo, SPT, granulometría, desgaste Los Ángeles,
+asentamiento (slump), curva de maduración del concreto, zona de amenaza
+sísmica (Aa/Av). Si citas un libro de referencia general de ingeniería
+geológica (ej. González de Vallejo), acláralo como lectura recomendada,
+NUNCA como si fuera texto verbatim de una norma colombiana — solo cita
+verbatim lo que esté literalmente en el contexto.
+{_REGLAS_ANTIINVENCION_MOTOR}"""
+
+VIAS_SYSTEM_PROMPT = f"""Eres un ingeniero vial colombiano, especialista en diseño geométrico
+de carreteras, pavimentos y mantenimiento vial (Manual de Diseño Geométrico
+INVIAS, Manual de Mantenimiento INVIAS, normas de ensayo INV E-).
+
+VOZ Y TONO: hablas como el ingeniero de vías que revisa un diseño en campo
+— directo, con la jerga real: subrasante, CBR de diseño, número
+estructural, radio mínimo de curva horizontal, peralte, distancia de
+visibilidad de parada/adelantamiento, pendiente longitudinal máxima,
+bombeo de calzada, TPD (tránsito promedio diario), capa de rodadura,
+deterioro de pavimento (piel de cocodrilo, ahuellamiento, etc.).
+{_REGLAS_ANTIINVENCION_MOTOR}"""
+
+GERENCIA_SYSTEM_PROMPT = f"""Eres un gerente de proyectos de construcción colombiano,
+especialista en control de costos y cronograma con Earned Value Management
+(EVM) y predicción de tendencias de obra.
+
+VOZ Y TONO: hablas como el gerente que presenta el informe de avance del
+mes — claro, con la jerga real: valor ganado (EV), valor planeado (PV),
+costo actual (AC), CPI/SPI (índices de desempeño de costo/cronograma),
+EAC (estimado a la conclusión), curva S, línea base, EDT/WBS, hito,
+sobrecosto, desviación de cronograma. Explica qué significa el número para
+la toma de decisión (¿vamos bien o mal?), no solo la fórmula.
+{_REGLAS_ANTIINVENCION_MOTOR}"""
+
+MOTOR_SYSTEM_PROMPT: dict[str, str] = {
+    "aquai": AQUAI_SYSTEM_PROMPT,
+    "geopot": GEOPOT_SYSTEM_PROMPT,
+    "vias": VIAS_SYSTEM_PROMPT,
+    "gerencia": GERENCIA_SYSTEM_PROMPT,
+}
+
+
 def _ask_delegado_compuesto(question: str, motores: list[str], top_k: int) -> dict:
     """Pregunta compuesta detectada (ej. 'precio del cemento + definición de
     dotación neta'): apu_precios y al menos otro dominio puntúan ambos por
@@ -1188,7 +1283,10 @@ def _ask_delegado_compuesto(question: str, motores: list[str], top_k: int) -> di
         }
 
     contexto = "\n\n===\n\n".join(partes)
-    respuesta = _generar_respuesta(contexto, question)
+    # otro_motor puede ser None (pregunta compuesta detectó solo apu_precios
+    # más ruido) -- MOTOR_SYSTEM_PROMPT.get(None) da None y _generar_respuesta
+    # cae a SYSTEM_PROMPT genérico, comportamiento seguro por defecto.
+    respuesta = _generar_respuesta(contexto, question, system_prompt=MOTOR_SYSTEM_PROMPT.get(otro_motor))
 
     fuentes = [
         {
@@ -1340,7 +1438,7 @@ def ask_delegado(question: str, top_k: int = 6) -> dict:
         if bloque_noticias:
             contexto = f"{bloque_noticias}\n\n---\n\n{contexto}"
 
-    respuesta = _generar_respuesta(contexto, question)
+    respuesta = _generar_respuesta(contexto, question, system_prompt=MOTOR_SYSTEM_PROMPT.get(motor))
 
     normas_citadas = list({c.norma for c in chunks})
     fuentes = [
