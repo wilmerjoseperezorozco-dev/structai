@@ -1125,6 +1125,123 @@ def health(deep: bool = False):
     return resultado
 
 
+# ── /data-status — escala real de datos, público a propósito ────────────────
+# Sin auth (Depends(get_current_user)) DELIBERADAMENTE: es para que cualquiera
+# (inversor, socio, institución) pueda verificar la escala real del proyecto
+# sin pedir acceso — issue #3 (auditoría externa de visibilidad, 2026-08-20).
+# Todos los conteos son consultas en vivo contra Supabase (count="exact"),
+# nunca cifras hardcodeadas en el código — si un corpus crece o se corrige,
+# esto refleja el cambio de inmediato sin necesitar deploy.
+
+def _contar_filas(tabla: str) -> Optional[int]:
+    try:
+        r = supabase_client.table(tabla).select("id", count="exact").limit(1).execute()
+        return r.count
+    except Exception as e:
+        log.warning(f"/data-status: no se pudo contar '{tabla}': {e}")
+        return None
+
+
+def _ultima_fila(tabla: str) -> Optional[str]:
+    try:
+        r = (
+            supabase_client.table(tabla)
+            .select("created_at")
+            .order("created_at", desc=True)
+            .limit(1)
+            .execute()
+        )
+        return r.data[0]["created_at"] if r.data else None
+    except Exception as e:
+        log.warning(f"/data-status: no se pudo leer última fecha de '{tabla}': {e}")
+        return None
+
+
+@app.get("/data-status", tags=["Sistema"])
+@app.get("/v1/data-status", tags=["Sistema"])
+def data_status():
+    """
+    Estado real y verificable de los datos cargados en StructAI — público,
+    sin autenticación a propósito, para demostrar escala sin requerir login.
+
+    No reemplaza /health (eso es salud técnica del servicio); esto es
+    "cuántos datos normativos/de precios hay realmente cargados y cuándo se
+    actualizaron por última vez", pensado para inversores/socios/instituciones.
+    """
+    if not RAG_AVAILABLE:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Módulo de datos no disponible. Verificar SUPABASE_URL/SUPABASE_SERVICE_KEY.",
+        )
+
+    corpus_normativo = {
+        "nsr10_chunks": {
+            "descripcion": "NSR-10 — Reglamento colombiano de construcción sismo resistente",
+            "chunks": _contar_filas("nsr10_chunks"),
+            "ultima_actualizacion": _ultima_fila("nsr10_chunks"),
+        },
+        "ntc_chunks": {
+            "descripcion": "NTC (ICONTEC) + SGSST (Decreto 1072, Ley 1562, Res. 0312)",
+            "chunks": _contar_filas("ntc_chunks"),
+            "ultima_actualizacion": _ultima_fila("ntc_chunks"),
+        },
+        "motor_chunks": {
+            "descripcion": "Corpus propio por motor: AquAI/RAS 2000, GeoPot, Vías/INVIAS, Gerencia",
+            "chunks": _contar_filas("motor_chunks"),
+            "ultima_actualizacion": _ultima_fila("motor_chunks"),
+        },
+    }
+
+    base_de_precios = {
+        "apu_precios_referencia": {
+            "descripcion": "Actividades de construcción con precio de referencia",
+            "filas": _contar_filas("apu_precios_referencia"),
+        },
+        "apu_insumos_referencia": {
+            "descripcion": "Insumos (material/mano de obra/equipo) desglosados por actividad",
+            "filas": _contar_filas("apu_insumos_referencia"),
+        },
+        "apu_proveedores_catalogo": {
+            "descripcion": "SKU con precio verificado de proveedores locales (Atlántico)",
+            "filas": _contar_filas("apu_proveedores_catalogo"),
+        },
+        "apu_proveedores_nacional": {
+            "descripcion": "Proveedores mipyme reales a nivel nacional (IAD MIPYMES, Colombia Compra Eficiente)",
+            "filas": _contar_filas("apu_proveedores_nacional"),
+        },
+        "apu_precios_nacional_detalle": {
+            "descripcion": "Precios individuales por proveedor nacional (permite comparar, no solo mediana)",
+            "filas": _contar_filas("apu_precios_nacional_detalle"),
+        },
+    }
+
+    motores_activos = [
+        nombre
+        for nombre, disponible in {
+            "apu": APU_AVAILABLE,
+            "deformacion": DEFORM_AVAILABLE,
+            "aquai": AQUAI_AVAILABLE,
+            "geopot": GEOPOT_AVAILABLE,
+            "vias": VIAS_AVAILABLE,
+            "gerencia": GERENCIA_AVAILABLE,
+            "estructural": ESTRUCTURAL_AVAILABLE,
+        }.items()
+        if disponible
+    ]
+
+    return {
+        "fuente": "conteos en vivo contra Supabase — no son cifras fijas en el código",
+        "corpus_normativo": corpus_normativo,
+        "base_de_precios": base_de_precios,
+        "motores_activos": motores_activos,
+        "regiones_cubiertas": {
+            "detallado": ["Atlántico"],
+            "referencia_nacional": ["Colombia (vía IAD MIPYMES / Colombia Compra Eficiente)"],
+        },
+        "roadmap": "https://github.com/wilmerjoseperezorozco-dev/structai/milestone/1",
+    }
+
+
 # ── /ask — RAG Multi-Norma ───────────────────────────────────────────────────
 
 # Cachea la respuesta COMPLETA de rag_ask() (texto + fuentes + normas
