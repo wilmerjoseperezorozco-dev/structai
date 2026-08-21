@@ -38,7 +38,9 @@ Estado real verificado en producción el 2026-08-20 (conteo directo contra Supab
 | **APU — precios y proveedores reales** | Base de precios de referencia del Atlántico: 4.566 actividades, 10.281 insumos, 24 proveedores/ferreterías catalogados, con trazabilidad de fuente (Construdata, contratos reales, INVIAS) | 14,871 filas |
 | **AquAI / GeoPot / Vías / Gerencia** | Corpus propio por motor (RAS 2000, USCS/Proctor/CBR, INVIAS + NTC de materiales, EVM) | 4,060 chunks |
 
-**Nota sobre la naturaleza del contenido normativo:** los chunks de NSR-10/NTC/SGSST son una **síntesis técnica de referencia** (tablas, coeficientes, fórmulas y su fuente normativa), preparada a partir de los reglamentos oficiales — no una transcripción literal palabra por palabra de los documentos legales. Los documentos de origen privado pero de acceso público usados como base histórica (AIS 2004, Build Change) se resumen en palabras propias con atribución explícita a su autor y nunca se distribuyen como PDF a través de la app. Toda respuesta cita norma/documento y sección exacta para que el usuario pueda verificar contra el texto oficial. El pipeline para ingerir el texto extraído directamente de los PDF oficiales de NSR-10 (`packages/knowledge/nsr10/`, `scripts/load_nsr10.py`) existe pero no se ha ejecutado todavía.
+**Nota sobre la naturaleza del contenido normativo:** el corpus de NSR-10/NTC/SGSST mezcla dos niveles de profundidad — varios capítulos ya tienen núcleo **verbatim real**, extraído directamente de los PDF oficiales (Título F completo en su capítulo sísmico F.3, Título I completo, K.4, y trabajo previo en C/D/E/G/H/J), mientras otros conservan una **síntesis técnica de referencia** (tablas, coeficientes, fórmulas y su fuente normativa) preparada a partir del reglamento oficial pero no transcrita palabra por palabra todavía. Los documentos de origen privado pero de acceso público usados como base histórica (AIS 2004, Build Change) se resumen en palabras propias con atribución explícita a su autor y nunca se distribuyen como PDF a través de la app. Toda respuesta cita norma/documento y sección exacta para que el usuario pueda verificar contra el texto oficial.
+
+**Nota de integridad de fuente:** un primer intento de pipeline automático (`packages/knowledge/nsr10/`, PDFs "RAG+CAG") resultó ser un export roto de un sistema RAG anterior, con títulos desplazados desde el origen — se descartó como fuente confiable y quedó archivado (`packages/knowledge/_archivo/`), no en uso. El corpus real se construye extrayendo directo de los PDF oficiales de NSR-10 (Google Drive, catálogo verificado página por página), nunca de esa fuente descartada.
 
 ## Hacia dónde vamos
 
@@ -64,7 +66,7 @@ construdata/
 │   │   motor-geopot/, motor-vias/, motor-gerencia/  → cada uno con su pyproject.toml
 │   ├── shared-types/  → tipos TS + cliente API compartidos entre web y native
 │   ├── construdata/   → schema SQL + pipeline de ingesta RAG general (NSR-10/NTC/SGSST)
-│   ├── knowledge/     → PDFs fuente de NSR-10
+│   ├── knowledge/     → _archivo/ con una fuente PDF descartada (ver nota de integridad arriba); el corpus real se ingiere directo desde Google Drive, no desde esta carpeta
 │   ├── ai-gateway/    → gateway multi-proveedor (Claude/Gemini/OpenAI) — experimental
 │   ├── bim-intelligence/ → IFC + Qdrant — experimental, no conectado al producto
 │   └── motor-estructural/ → InfraCortex: IFC + PINN + NSR-10 A/B/C — router `/estructural` conectado

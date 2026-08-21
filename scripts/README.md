@@ -28,6 +28,6 @@ Reorganizado el 2026-08-02 (antes vivían sueltos en `scripts/`, ~35 archivos en
 | `motores/` | `ingest_motor_chunks.py` — carga GeoPot, Vías y Gerencia en `motor_chunks` (AquAI se carga aparte desde `ras2000/`) |
 | `normativa_general/` | SGSST (Decreto 1072, Ley 1562), ISO 9001, NTC 1500, y el corpus general de `ingest_normativa.py` |
 
-## `load_nsr10.py` (queda en la raíz, a propósito)
+## `load_nsr10.py` — archivado 2026-08-20
 
-**No se ha ejecutado todavía** — es el pipeline pendiente para ingerir el texto extraído directamente de los PDF oficiales de NSR-10 (`packages/knowledge/nsr10/`). Ver la nota correspondiente en el `README.md` raíz. No se archivó junto con los demás porque no es historial: es la siguiente tarea pendiente sobre este corpus.
+**Corrección de una nota anterior de este mismo archivo**, que decía que este script era "la siguiente tarea pendiente" sobre el corpus NSR-10 — eso era un error de framing: su fuente (`packages/knowledge/nsr10/`, PDFs "RAG+CAG") resultó ser un export roto de un sistema RAG anterior, con títulos desplazados desde el origen (ver `packages/knowledge/_archivo/nsr10-rag-cag-roto/README.md`). No era "pendiente de ejecutar", era una fuente que no debía usarse. Movido a `_archivo/load_nsr10.OBSOLETO.py`. El corpus real de NSR-10 se construye directo desde los PDF oficiales de Google Drive, con los scripts activos de `ingesta/nsr10/`.
