@@ -7,11 +7,18 @@
 #     no vía Action) — cada push a master dispara su propio deploy solo.
 #     Duplicarlo aquí con una acción de deploy causaría dos despliegues
 #     compitiendo por la misma build.
-#   - apps/api todavía no está desplegado (pendiente decidir Render vs
-#     Cloud Run). Cuando se despliegue, se agrega un job de deploy aparte.
-#   - Migraciones de Supabase: NO se automatizan aquí. La carpeta
-#     infra/supabase/migrations/ solo tiene 1 migración vieja mientras el
-#     schema real (motor_chunks, geopot_proyectos, etc.) se creó directo
+#   - apps/api está desplegado en DigitalOcean App Platform, con
+#     auto-deploy nativo en cada push a master (no vía Action) — mismo
+#     motivo que apps/web, no duplicar el disparador aquí.
+#   - Migraciones de Supabase: NO se automatizan aquí (nota actualizada
+#     2026-08-20 — la nota anterior de "solo 1 migración vieja" quedó
+#     obsoleta: infra/supabase/migrations/ ya tiene las 65 migraciones
+#     reales versionadas, ver infra/supabase/SCHEMA.md). Se sigue sin
+#     automatizar `supabase db push` aquí porque cualquier cambio de
+#     schema nuevo se aplica primero vía MCP contra la base real y
+#     verificado a mano — automatizarlo en CI aplicaría cambios de
+#     schema sin ese paso de verificación humana antes de tocar
+#     producción.
 #     en Supabase — correr `supabase db push --linked` contra eso sería
 #     inseguro hasta que las migraciones reflejen el estado real.
 # ══════════════════════════════════════════════════════════════
