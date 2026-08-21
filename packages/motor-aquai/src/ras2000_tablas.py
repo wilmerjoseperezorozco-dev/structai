@@ -189,11 +189,32 @@ CURVAS_IDF: Dict[str, Dict[int, Dict[str, float]]] = {
 
 PERIODOS_RETORNO_DISPONIBLES = [2, 5, 10, 25, 50, 100]
 
+# Auditoría 2026-08-20 (issue #5, sub-ítem IDEAM/Pacífico): revisando qué
+# faltaba de cobertura regional se encontró que las 6 regiones climáticas de
+# Colombia YA estaban en CURVAS_IDF (no era un hueco real) -- pero también se
+# encontró que los coeficientes a/b/n no tienen una cita verificable a un
+# estudio IDEAM/UNGRD específico por región (documentados solo como
+# "calibrados por región del IDEAM / estudios UNGRD" sin referencia
+# comprobable, y con progresiones numéricas sospechosamente uniformes entre
+# periodos de retorno). Mientras no se reemplacen por curvas oficiales
+# digitalizadas, se marcan explícitamente como valores de referencia/
+# ilustrativos en TODAS las regiones (antes solo "pacífico" tenía una
+# advertencia parcial) -- honestidad de fuente, mismo estándar que
+# docs/comparacion.md.
+_ADVERTENCIA_IDF_NO_VERIFICADA = (
+    " ADVERTENCIA: los coeficientes IDF (a, b, n) de esta región son valores "
+    "de referencia/ilustrativos, sin cita verificable a un estudio IDEAM/"
+    "UNGRD específico -- NO sustituyen la curva IDF oficial de la estación "
+    "más cercana. Para un diseño real, verificar contra estaciones IDEAM "
+    "reales vía GET /aquai/hidrologia/estaciones-ideam y "
+    "/aquai/hidrologia/precipitacion-ideam antes de usar este caudal en obra."
+)
+
 NOTAS_REGIONALES: Dict[str, str] = {
-    "caribe":       "Régimen bimodal (abr–jun / sep–nov). Zona seca en Guajira (TR corregido +15%).",
-    "andina_norte": "Cuencas Magdalena medio y bajo Cauca. Lluvias orográficas intensas.",
-    "andina_sur":   "Macizo colombiano, alto Cauca y Patía. Alta variabilidad altitudinal.",
-    "pacifico":     "Mayor precipitación media del mundo (Chocó). Usar valores con precaución; calibrar con IDEAM local.",
-    "orinoquia":    "Régimen unimodal (may–nov). Grandes llanuras; pendientes muy bajas.",
-    "amazonia":     "Régimen ecuatorial casi uniforme. Cobertura vegetal alta, infiltración elevada.",
+    "caribe":       "Régimen bimodal (abr–jun / sep–nov). Zona seca en Guajira (TR corregido +15%)." + _ADVERTENCIA_IDF_NO_VERIFICADA,
+    "andina_norte": "Cuencas Magdalena medio y bajo Cauca. Lluvias orográficas intensas." + _ADVERTENCIA_IDF_NO_VERIFICADA,
+    "andina_sur":   "Macizo colombiano, alto Cauca y Patía. Alta variabilidad altitudinal." + _ADVERTENCIA_IDF_NO_VERIFICADA,
+    "pacifico":     "Mayor precipitación media del mundo (Chocó)." + _ADVERTENCIA_IDF_NO_VERIFICADA,
+    "orinoquia":    "Régimen unimodal (may–nov). Grandes llanuras; pendientes muy bajas." + _ADVERTENCIA_IDF_NO_VERIFICADA,
+    "amazonia":     "Régimen ecuatorial casi uniforme. Cobertura vegetal alta, infiltración elevada." + _ADVERTENCIA_IDF_NO_VERIFICADA,
 }
