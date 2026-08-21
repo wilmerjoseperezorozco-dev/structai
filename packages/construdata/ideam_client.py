@@ -90,6 +90,17 @@ def _where_ilike(campo: str, valor: str) -> str:
     )
 
 
+def _where_exacto(campo: str, valor: str) -> str:
+    """Igualdad exacta (no LIKE) -- usar SOLO cuando 'valor' ya es la forma
+    canónica exacta almacenada (ej. la salida de _resolver_departamento).
+    Un LIKE '%valor%' sobre un nombre de departamento es un riesgo real de
+    falso positivo por substring: 'Cauca' matchea 'Valle Del Cauca',
+    'Santander' matchea 'Norte De Santander' -- confirmado en vivo con
+    Cauca/Valle Del Cauca 2026-08-21."""
+    escapado = valor.replace("'", "''")
+    return f"upper({campo}) = upper('{escapado}')"
+
+
 def _resolver_departamento(valor: str) -> str:
     """Resuelve 'valor' (como lo escribió quien llama, con o sin tilde) a la
     forma EXACTA almacenada en el catálogo de estaciones (ej. 'Narino' ->
@@ -154,7 +165,13 @@ def buscar_estaciones(
     params: dict = {"$limit": limit}
     wheres = []
     if departamento:
-        wheres.append(_where_ilike("departamento", departamento))
+        # Igualdad EXACTA, no LIKE: _resolver_departamento ya dio la forma
+        # canónica exacta almacenada, así que un LIKE '%...%' aquí es
+        # innecesario Y peligroso -- bug real encontrado en vivo 2026-08-21:
+        # buscar departamento="Cauca" con LIKE devolvía estaciones de "Valle
+        # Del Cauca" (Cauca es substring literal de Valle Del Cauca). Mismo
+        # riesgo existe para "Santander" vs "Norte De Santander".
+        wheres.append(_where_exacto("departamento", departamento))
     if municipio:
         wheres.append(_where_ilike("municipio", municipio))
     if categoria:
@@ -169,7 +186,12 @@ def buscar_estaciones(
     candidatos = _get(DATASETS["estaciones"], {"$q": termino_q, "$limit": max(limit * 6, 200)})
     filtrados = [
         fila for fila in candidatos
-        if (not departamento or _coincide(fila.get("departamento"), departamento))
+        # Departamento: igualdad exacta (mismo motivo que _where_exacto
+        # arriba -- _coincide es substring y "Cauca" in "Valle Del Cauca"
+        # da True). Municipio/categoría sí quedan como substring a propósito
+        # (conveniencia real: buscar "Repelón" debe encontrar variantes de
+        # escritura del mismo municipio).
+        if (not departamento or _sin_tildes(departamento).upper() == _sin_tildes(fila.get("departamento") or "").upper())
         and (not municipio or _coincide(fila.get("municipio"), municipio))
         and (not categoria or _coincide(fila.get("categoria"), categoria))
     ]
