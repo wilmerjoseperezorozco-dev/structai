@@ -1,0 +1,18 @@
+# ── YOLO / Visión — instalación OPCIONAL ─────────────────────────
+# Se instala aparte de requirements.txt, solo cuando se necesita.
+# Corresponde exactamente a lo que main.py importa dentro de
+# `if os.getenv("ENABLE_YOLO", "false").lower() == "true":` — si esa
+# variable de entorno sigue en false (default), estos paquetes nunca se
+# importan aunque estén instalados; si no están instalados y alguien
+# activa ENABLE_YOLO=true, main.py lo captura con ImportError y deja
+# YOLO_DEPS=False sin tumbar el resto de la API (mismo patrón try/except
+# que el resto de los motores).
+#
+# Instalar junto al core:
+#   pip install -r requirements.txt -r requirements-vision.txt
+#
+# Ver Dockerfile (ARG INSTALL_VISION) para habilitarlo en el build de
+# producción de DigitalOcean.
+
+onnxruntime==1.19.2
+opencv-python-headless==4.10.0.84

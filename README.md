@@ -89,8 +89,12 @@ construdata/
 # Web
 cd apps/web && npm install && npm run dev
 
-# API (los 7 motores + RAG)
+# API (6 motores activos + RAG; InfraCortex/YOLO opcionales, ver abajo)
 cd apps/api && pip install -r requirements.txt && uvicorn main:app --reload
+
+# Habilitar InfraCortex (motor-estructural) o YOLO localmente además de lo anterior:
+#   pip install -r requirements-estructural.txt && export ENABLE_ESTRUCTURAL=true
+#   pip install -r requirements-vision.txt      && export ENABLE_YOLO=true
 
 # Un motor Python de forma aislada
 cd packages/motor-<nombre> && pip install -e ".[dev]" && pytest tests/ -v

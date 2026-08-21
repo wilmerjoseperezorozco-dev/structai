@@ -38,32 +38,27 @@ openai==1.54.4
 numpy==1.26.4
 scipy==1.13.1
 
-# ── YOLO / Visión (opcional — comentar si no hay GPU/ONNX) ───
-onnxruntime==1.19.2
-opencv-python-headless==4.10.0.84
+# ── YOLO / Visión y Motor Estructural / Infracortex ──────────────
+# 2026-08-20: separados a requirements-vision.txt y
+# requirements-estructural.txt (opcionales, NO se instalan por defecto).
+# Motivo real, no cosmético: cv2/onnxruntime (~200-300MB) y torch/
+# ifcopenshell (~1-1.5GB) solo se IMPORTAN en main.py dentro de
+# `if ENABLE_YOLO=="true"` / `if ENABLE_ESTRUCTURAL=="true"` — con ambos
+# flags en false (default actual en producción), el código nunca los
+# toca, así que instalarlos en cada build es puro peso muerto: build más
+# lento, imagen más pesada, sin ningún beneficio mientras sigan apagados.
+# Ver Dockerfile (ARGs INSTALL_VISION/INSTALL_ESTRUCTURAL) para cómo
+# habilitarlos cuando haga falta. `ultralytics` y `torchvision` NO se
+# reinstalan en ningún archivo: confirmado que ningún código de apps/api
+# ni de los motores los importa (ultralytics solo lo usa
+# packages/yolo/train.py, un script de entrenamiento local que nunca
+# corre en el servidor; torchvision no se usa en ningún lado del repo).
 
 # ── Motor AquAI ──────────────────────────────────────────────
 reportlab==4.2.5
 
 # ── APU por lote (Excel) ──────────────────────────────────────
 openpyxl==3.1.5
-
-# ── Motor Estructural / Infracortex (IFC + PINN + visión) ───────
-# Build CPU-only de torch (--extra-index-url abajo) — la instalación
-# GPU/CUDA por defecto arrastra ~5-6GB de paquetes nvidia-* (cuda-toolkit,
-# nvidia-cudnn, nvidia-cusolver, triton...) totalmente innecesarios: la
-# red del motor es un MLP pequeño que corre bien en CPU, y las instancias
-# de DigitalOcean App Platform no tienen GPU. Ese peso extra fue lo que
-# hizo fallar el build en DigitalOcean con "resource exhaustion" — no era
-# un límite de plan, era instalar CUDA para una instancia sin GPU.
-# motor-estructural falla en ESTRUCTURAL_AVAILABLE=False sin romper el
-# resto de la API si algo de esto no está disponible en el entorno de
-# deploy (mismo patrón try/except que los demás motores en main.py).
---extra-index-url https://download.pytorch.org/whl/cpu
-ifcopenshell==0.8.5
-torch==2.13.0+cpu
-torchvision==0.28.0+cpu
-ultralytics==8.4.102
 
 # ── Utilidades ────────────────────────────────────────────────
 python-dotenv==1.0.1
