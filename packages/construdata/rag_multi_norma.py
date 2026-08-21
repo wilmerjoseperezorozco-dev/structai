@@ -666,7 +666,49 @@ def _format_precio_context(p: PrecioResult) -> str:
     return " | ".join(partes)
 
 
-APU_PRECIOS_SYSTEM_PROMPT = """Eres un asistente de precios de construcción para ingenieros
+# ─── CONTEXTO COMPARTIDO: JERGA REGIONAL, ENTIDADES/TRÁMITES, REGISTRO ──────
+# Agregado 2026-08-21 a pedido del usuario ("diccionario de sinónimos y
+# jergas de obra... clasificación por entidades públicas y trámites POT/
+# curaduría... roles y arquetipos"). Se reusa en los 6 prompts (normativa,
+# precios, y los 4 motores especializados) en vez de duplicarlo — mismo
+# patrón que _REGLAS_ANTIINVENCION_MOTOR.
+#
+# El glosario regional es vocabulario general del gremio de la construcción
+# en español (Colombia + variantes comunes de Sudamérica), NO un glosario
+# oficial de ninguna norma — se marca así explícitamente para que el modelo
+# nunca lo cite como si fuera normativo. Las entidades/trámites SÍ están
+# verificados contra fuentes reales (Decreto 1077 de 2015, Ley 388 de 1997 —
+# ver project_structai_roadmap_visibilidad.md para las URLs consultadas).
+_CONTEXTO_COLOMBIA_COMPARTIDO = """
+JERGA REGIONAL (vocabulario del gremio, NO texto normativo — úsalo solo
+para reconocer sinónimos, nunca lo cites como oficial): concreto=hormigón
+(Arg/Chile/Perú/Esp); formaleta=encofrado(Esp/Arg/Chile)=cimbra(México);
+varilla/cabilla/hierro=acero de refuerzo; placa=losa; friso/pañete=revoque
+(Arg)=aplanado(Méx)=enlucido; andén=acera(Esp)=vereda(Arg/Chile/Perú); obra
+negra=estructura sin acabados; cercha=cabreada(Chile)=armadura de techo;
+recebo=base granular; puntilla=clavo; interventor/supervisor
+técnico=fiscalizador(Ecuador); maestro de obra=capataz. Si no reconoces un
+término regional con certeza, pregunta — nunca inventes la equivalencia.
+
+ENTIDADES Y TRÁMITES (Colombia, verificado — Decreto 1077/2015, Ley
+388/1997): Curaduría Urbana (o Planeación Municipal donde no hay curador)
+tramita licencias urbanísticas (construcción/urbanización/reforzamiento/
+demolición), plazo legal 45 días hábiles. POT (Plan de Ordenamiento
+Territorial, Ley 388/1997) define usos del suelo por municipio; su revisión
+inicia 6 meses antes de vencer, y si no se renueva a tiempo sigue vigente
+el actual. Supervisión técnica de obra (NSR-10 Título I) es DISTINTA de la
+licencia urbanística. CAR = licencias ambientales cuando aplica. No
+inventes plazos/decretos que no estén arriba — remite a la entidad
+competente para el detalle exacto de un trámite.
+
+REGISTRO: si la pregunta suena a alguien de campo (lenguaje coloquial/
+regional), explica con el mismo rigor pero en lenguaje directo, menos
+denso en jerga académica; si suena técnica (ingeniero/curador), sé más
+denso. El valor técnico nunca cambia según quién pregunte, solo la forma.
+"""
+
+
+APU_PRECIOS_SYSTEM_PROMPT = f"""Eres un asistente de precios de construcción para ingenieros
 y maestros de obra profesionales en Colombia.
 
 COBERTURA REAL DE PRECIOS (actualizada 2026-08-21 — dilo con seguridad, no
@@ -744,7 +786,7 @@ INSTRUCCIONES:
     exacto") en vez de mezclar todo como si fuera un solo precio nacional.
     Si el contexto ya viene filtrado a una sola provincia/departamento
     (porque la pregunta la mencionó), no hace falta pedir nada más.
-"""
+{_CONTEXTO_COLOMBIA_COMPARTIDO}"""
 
 
 def ask_precios(question: str, top_k: int = 8) -> dict:
@@ -836,7 +878,7 @@ def search(query: str, norma_filter: Optional[str] = None, top_k: int = 6, motor
     return chunks
 
 # ─── GENERACIÓN DE RESPUESTA (Groq) ──────────────────────────────────────────
-SYSTEM_PROMPT = """Eres un ingeniero civil experto en normatividad colombiana de construcción.
+SYSTEM_PROMPT = f"""Eres un ingeniero civil experto en normatividad colombiana de construcción.
 Tu conocimiento abarca: NSR-10 completa (los 11 títulos, A a K, verbatim),
 NTC (normas técnicas colombianas), Código Colombiano de Instalaciones
 Hidráulicas (NTC 1500), Reglamentos de Seguridad Industrial (Res. 1409,
@@ -949,7 +991,7 @@ INSTRUCCIONES:
     el general"). No lo hagas en cada respuesta ni lo fuerces en preguntas
     puntuales que ya quedaron completamente resueltas — es una guía
     ocasional, no una muletilla de cierre.
-"""
+{_CONTEXTO_COLOMBIA_COMPARTIDO}"""
 
 
 def _format_chunk_context(c: ChunkResult) -> str:
@@ -1159,7 +1201,7 @@ MOTOR_LABEL = {
 # técnico real (verificado contra el código fuente de cada motor en
 # packages/motor-*, no inventado), reusando las mismas reglas anti-invención
 # que ya probó SYSTEM_PROMPT/APU_PRECIOS_SYSTEM_PROMPT.
-_REGLAS_ANTIINVENCION_MOTOR = """
+_REGLAS_ANTIINVENCION_MOTOR = f"""
 INSTRUCCIONES (aplican siempre, sin excepción):
 1. Responde SOLO con base en el contexto proporcionado. Nunca inventes un
    valor, norma, artículo, fórmula o coeficiente que no esté en el contexto.
@@ -1174,7 +1216,7 @@ INSTRUCCIONES (aplican siempre, sin excepción):
 5. Cuando la pregunta sea amplia y tenga sentido, cierra con UNA sugerencia
    breve de hacia dónde profundizar (nunca en cada respuesta, solo cuando
    agregue valor real).
-"""
+{_CONTEXTO_COLOMBIA_COMPARTIDO}"""
 
 AQUAI_SYSTEM_PROMPT = f"""Eres un ingeniero hidráulico y sanitario colombiano, especialista en
 acueducto, alcantarillado y saneamiento básico (RAS 2000 y su actualización,
