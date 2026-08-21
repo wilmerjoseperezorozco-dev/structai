@@ -74,6 +74,16 @@ REGION_POR_DEPTO: dict[str, str] = {
     "18": "Amazonía",    # Caquetá
     "86": "Amazonía",    # Putumayo
     "97": "Amazonía",    # Vaupés
+    "05": "Andina",      # Antioquia
+    "15": "Andina",      # Boyacá
+    "17": "Andina",      # Caldas
+    "25": "Andina",      # Cundinamarca
+    "41": "Andina",      # Huila
+    "54": "Andina",      # Norte de Santander
+    "63": "Andina",      # Quindío
+    "66": "Andina",      # Risaralda
+    "68": "Andina",      # Santander
+    "73": "Andina",      # Tolima
 }
 
 FILENAME_RE = re.compile(
