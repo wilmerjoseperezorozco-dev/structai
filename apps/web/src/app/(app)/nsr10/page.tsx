@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Search, BookOpen, ChevronRight } from "lucide-react";
-import { TITULOS_NSR10, type TituloNSR } from "@/lib/nsr10";
+import { TITULOS_NSR10, TOTAL_FRAGMENTOS_NSR10, type TituloNSR } from "@/lib/nsr10";
 import clsx from "clsx";
 
 const COLOR_MAP: Record<string, string> = {
@@ -76,8 +76,8 @@ function TituloCard({ titulo, expanded, onToggle }: {
                 <span className="text-xs font-mono text-concrete-400 mr-2">{cap.codigo}</span>
                 <span className="text-sm text-concrete-200">{cap.nombre}</span>
               </div>
-              <span className="text-xs text-concrete-500 flex-shrink-0 ml-2">
-                {cap.articulos_count} arts.
+              <span className="text-xs text-concrete-500 flex-shrink-0 ml-2 tabular-nums">
+                {cap.articulos_count} fragmentos
               </span>
             </button>
           ))}
@@ -114,9 +114,9 @@ export default function NSR10Page() {
           />
         </div>
         <div className="flex items-center gap-2 mt-2">
-          <BookOpen size={11} className="text-concrete-500" />
-          <span className="text-xs text-concrete-500">
-            NSR-10 · {TITULOS_NSR10.length} títulos · Reglamento Sismo Resistente Colombia
+          <BookOpen size={11} className="text-concrete-500 flex-shrink-0" />
+          <span className="text-xs text-concrete-500 tabular-nums">
+            NSR-10 · {TITULOS_NSR10.length} títulos · {TOTAL_FRAGMENTOS_NSR10.toLocaleString("es-CO")} fragmentos verbatim reales
           </span>
         </div>
       </div>
