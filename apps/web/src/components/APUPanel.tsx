@@ -6,6 +6,7 @@ import { Calculator, ChevronDown, ChevronUp, Copy, Check, Loader2 } from "lucide
 import clsx from "clsx";
 import { listAPU, calculateAPU, type APUItem, type APUDesglose, formatCOP } from "@/lib/api";
 import { supabase } from "@/lib/supabase";
+import { formatearFechaColombia } from "@/lib/fecha";
 
 // ── Tarjeta catálogo ──────────────────────────────────────────────────────────
 
@@ -167,7 +168,7 @@ function DesglosePanel({ d, onClose }: { d: APUDesglose; onClose: () => void }) 
           {d.uuid_trazabilidad}
         </p>
         <p className="text-[10px] font-mono tabular-nums text-concrete-600 mt-0.5">
-          {new Date(d.timestamp).toLocaleString("es-CO")}
+          {formatearFechaColombia(d.timestamp)}
         </p>
       </div>
     </div>
