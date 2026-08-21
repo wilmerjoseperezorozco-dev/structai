@@ -1246,7 +1246,7 @@ def data_status():
 
 # Cachea la respuesta COMPLETA de rag_ask() (texto + fuentes + normas
 # citadas), no solo el texto — así una pregunta repetida se salta embedding
-# + búsqueda híbrida en Supabase + la llamada real a Groq/NVIDIA por
+# + búsqueda híbrida en Supabase + la llamada real a Groq/OpenAI por
 # completo, no solo el último paso. TTL de 6h: el contenido normativo que
 # respalda la respuesta cambia poco (se actualiza a mano vía scripts de
 # ingesta), y esto además reduce consumo real de tokens de Groq — ver
@@ -1298,7 +1298,7 @@ def ask_norma(request: Request, req: AskRequest):
                 top_k=req.top_k,
             )
         except RespuestaIAIndisponibleError as e:
-            log.error(f"IA no disponible (Groq + respaldo NVIDIA): {e}", extra={"user_id": user.id, "endpoint": "/ask"})
+            log.error(f"IA no disponible (Groq + respaldo OpenAI): {e}", extra={"user_id": user.id, "endpoint": "/ask"})
             raise HTTPException(status_code=503, detail="Servicio de IA saturado temporalmente. Intenta de nuevo en unos minutos.")
         except Exception as e:
             log.error(f"Error RAG: {e}", exc_info=True, extra={"user_id": user.id, "endpoint": "/ask"})
@@ -1376,7 +1376,7 @@ def consultar_delegado(request: Request, req: ConsultarRequest):
         try:
             result = ask_delegado(question=req.pregunta, top_k=req.top_k)
         except RespuestaIAIndisponibleError as e:
-            log.error(f"IA no disponible (Groq + respaldo NVIDIA): {e}", extra={"user_id": user.id, "endpoint": "/consultar"})
+            log.error(f"IA no disponible (Groq + respaldo OpenAI): {e}", extra={"user_id": user.id, "endpoint": "/consultar"})
             raise HTTPException(status_code=503, detail="Servicio de IA saturado temporalmente. Intenta de nuevo en unos minutos.")
         except Exception as e:
             log.error(f"Error en agente delegador: {e}", exc_info=True, extra={"user_id": user.id, "endpoint": "/consultar"})

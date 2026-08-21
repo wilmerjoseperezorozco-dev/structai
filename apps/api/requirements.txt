@@ -30,7 +30,7 @@ supabase>=2.15.0
 httpx==0.27.2
 sentence-transformers==5.6.0
 
-# ── Síntesis LLM: Groq y el respaldo NVIDIA (rag_multi_norma.py) usan el
+# ── Síntesis LLM: Groq y el respaldo OpenAI (rag_multi_norma.py) usan el
 # cliente de OpenAI apuntado a esas APIs (ambas compatibles con su SDK) ──
 openai==1.54.4
 
