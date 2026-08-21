@@ -81,7 +81,7 @@ function LoginContent() {
           </div>
           <h1 className="text-2xl font-bold text-white">StructAI</h1>
           <p className="text-concrete-400 text-sm mt-1">
-            NSR-10 · NTC · APU 2026 · Barranquilla
+            Normativa · Precios · Sismo · Colombia
           </p>
         </div>
 
@@ -176,7 +176,7 @@ function LoginContent() {
           <Link href="/privacidad" className="text-brand-400 hover:underline">
             política de privacidad
           </Link>{" "}
-          · Construdata 2026
+          · StructAI 2026
         </p>
       </div>
     </div>

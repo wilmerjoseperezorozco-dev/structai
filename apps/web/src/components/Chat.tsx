@@ -1,10 +1,23 @@
 "use client";
 
-import { useState, useRef, useEffect, KeyboardEvent } from "react";
+import { useState, useRef, useEffect, KeyboardEvent, ReactNode } from "react";
+import { useRouter } from "next/navigation";
 import TextareaAutosize from "react-textarea-autosize";
 import ReactMarkdown from "react-markdown";
-import { Send, Loader2, BookOpen, Coins, ChevronDown, ChevronUp } from "lucide-react";
-import clsx from "clsx";
+import {
+  Send,
+  Loader2,
+  BookOpen,
+  Coins,
+  ShieldAlert,
+  Mountain,
+  ChevronDown,
+  ChevronUp,
+  Sparkles,
+  LogIn,
+  ArrowRight,
+} from "lucide-react";
+import type { Session } from "@supabase/supabase-js";
 import { consultarDelegado, type ConsultarResponse, type FuenteChunk } from "@/lib/api";
 import { supabase } from "@/lib/supabase";
 
@@ -19,15 +32,51 @@ interface Message {
   meta?: ConsultarResponse;
 }
 
-// ── Sugerencias rápidas (preguntas tipo ingeniero civil) ──────────────────────
+// ── Sugerencias agrupadas por dominio ───────────────────────────────────────
+// Reflejan la cobertura real de StructAI (verificada 2026-08-21): normativa
+// NSR-10/NTC completa, precios Barranquilla + INVIAS nacional (140
+// provincias), seguridad industrial, y sismo/clima en vivo (SGC/IDEAM).
+// Agrupar por categoría (en vez de una sola lista plana) es lo que le
+// enseña al usuario, de un vistazo, TODO lo que puede preguntar — antes
+// solo se veían ejemplos de normativa y precios locales, dando la
+// impresión de una herramienta más limitada de lo que realmente es.
 
-const SUGERENCIAS = [
-  "¿Cuánto cuesta el cemento en Barranquilla?",
-  "¿Qué resistencia mínima de concreto exige NSR-10 para columnas sísmicas?",
-  "¿Cuál es el recubrimiento mínimo para vigas expuestas a la intemperie?",
-  "¿Qué norma regula el acero corrugado grado 60 en Colombia?",
-  "¿Cuándo es obligatorio el uso de arnés en trabajos en altura?",
-  "¿Qué esparcimiento máximo de estribos se permite en zona de confinamiento?",
+interface GrupoSugerencias {
+  label: string;
+  icon: ReactNode;
+  preguntas: string[];
+}
+
+const GRUPOS_SUGERENCIAS: GrupoSugerencias[] = [
+  {
+    label: "Normativa NSR-10 / NTC",
+    icon: <BookOpen size={13} />,
+    preguntas: [
+      "¿Qué resistencia mínima de concreto exige NSR-10 para columnas sísmicas?",
+      "¿Cuál es el recubrimiento mínimo para vigas expuestas a la intemperie?",
+    ],
+  },
+  {
+    label: "Precios de construcción",
+    icon: <Coins size={13} />,
+    preguntas: [
+      "¿Cuánto cuesta el cemento en Barranquilla?",
+      "Precio de excavación mecánica en Chocó (INVIAS)",
+    ],
+  },
+  {
+    label: "Seguridad industrial",
+    icon: <ShieldAlert size={13} />,
+    preguntas: ["¿Cuándo es obligatorio el uso de arnés en trabajos en altura?"],
+  },
+  {
+    label: "Sismo y clima",
+    icon: <Mountain size={13} />,
+    preguntas: [
+      "¿Cuál es la amenaza sísmica (Aa/Av) de Sincelejo?",
+      "¿StructAI me sirve para evaluar riesgo sísmico en mi proyecto?",
+    ],
+  },
 ];
 
 // ── Fuentes colapsables ──────────────────────────────────────────────────────
@@ -54,43 +103,43 @@ function Fuentes({
   const esPrecios = dominio === "apu_precios";
 
   return (
-    <div className="mt-2 border border-brand-700/30 rounded-lg overflow-hidden text-xs">
+    <div className="mt-2 rounded-xl border border-concrete-800 overflow-hidden text-xs">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="w-full flex items-center gap-2 px-3 py-2 bg-brand-900/30 text-brand-300 hover:bg-brand-900/50 transition"
+        className="w-full flex items-center gap-2 px-3 py-2 bg-concrete-800/50 text-concrete-300 hover:bg-concrete-800 transition"
       >
-        {esPrecios ? <Coins size={13} /> : <BookOpen size={13} />}
-        <span className="font-mono font-medium">
+        {esPrecios ? <Coins size={13} className="text-brand-400 flex-shrink-0" /> : <BookOpen size={13} className="text-brand-400 flex-shrink-0" />}
+        <span className="font-medium truncate text-left">
           {esPrecios
-            ? dominioLabel ?? "Precios APU Barranquilla"
+            ? dominioLabel ?? "Precios de construcción"
             : normas.slice(0, 3).join(" · ") + (normas.length > 3 ? ` +${normas.length - 3} más` : "")}
         </span>
-        <span className="ml-auto text-brand-500">{fuentes.length} fuentes</span>
-        {open ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+        <span className="ml-auto flex-shrink-0 text-concrete-500 tabular-nums">{fuentes.length}</span>
+        {open ? <ChevronUp size={13} className="flex-shrink-0" /> : <ChevronDown size={13} className="flex-shrink-0" />}
       </button>
 
       {open && (
-        <div className="divide-y divide-concrete-700/30">
+        <div className="divide-y divide-concrete-800">
           {fuentes.map((f, i) => (
-            <div key={i} className="px-3 py-2 bg-concrete-900/60">
+            <div key={i} className="px-3 py-2.5 bg-concrete-900/40">
               {esPrecios ? (
                 <>
-                  <p className="font-mono font-semibold text-brand-200 mb-0.5">{f.seccion}</p>
-                  <p className="text-concrete-400">{f.norma}</p>
+                  <p className="font-mono font-medium text-concrete-100 mb-0.5">{f.seccion}</p>
+                  <p className="text-concrete-500">{f.norma}</p>
                   {f.contenido_preview && (
                     <p className="text-concrete-500 mt-0.5">{f.contenido_preview}</p>
                   )}
                 </>
               ) : (
                 <>
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="font-mono font-semibold text-brand-300">{f.norma}</span>
-                    <span className="font-mono text-concrete-400">§ {f.seccion}</span>
-                    <span className="font-mono tabular-nums text-concrete-500">
-                      {(f.score * 100).toFixed(1)}%
+                  <div className="flex justify-between items-center gap-2 mb-1">
+                    <span className="font-mono font-medium text-brand-300 truncate">{f.norma}</span>
+                    <span className="font-mono text-concrete-500 flex-shrink-0">§ {f.seccion}</span>
+                    <span className="font-mono tabular-nums text-concrete-600 flex-shrink-0">
+                      {(f.score * 100).toFixed(0)}%
                     </span>
                   </div>
-                  <p className="text-concrete-300 leading-relaxed">
+                  <p className="text-concrete-400 leading-relaxed">
                     {f.contenido_preview}
                     {f.contenido_preview.length >= 200 && "…"}
                   </p>
@@ -105,79 +154,92 @@ function Fuentes({
 }
 
 // ── Burbuja de mensaje ───────────────────────────────────────────────────────
+// Sin avatares circulares ni bubbles con cola: el rol se distingue por
+// alineación + un rótulo de texto liviano, no por un ícono decorativo —
+// más cerca de una interfaz de lectura que de un chat de mensajería.
+
+const MARKDOWN_COMPONENTS = {
+  p: ({ children }: { children?: ReactNode }) => <p className="mb-2 last:mb-0">{children}</p>,
+  strong: ({ children }: { children?: ReactNode }) => (
+    <strong className="font-semibold text-brand-300">{children}</strong>
+  ),
+  em: ({ children }: { children?: ReactNode }) => <em className="text-concrete-200">{children}</em>,
+  code: ({ children }: { children?: ReactNode }) => (
+    <code className="bg-concrete-900 px-1 py-0.5 rounded text-brand-200 font-mono text-xs">{children}</code>
+  ),
+  ul: ({ children }: { children?: ReactNode }) => (
+    <ul className="list-disc list-inside space-y-1 mb-2">{children}</ul>
+  ),
+  ol: ({ children }: { children?: ReactNode }) => (
+    <ol className="list-decimal list-inside space-y-1 mb-2">{children}</ol>
+  ),
+  li: ({ children }: { children?: ReactNode }) => <li className="text-concrete-200">{children}</li>,
+  h1: ({ children }: { children?: ReactNode }) => (
+    <h1 className="text-base font-bold text-white mt-3 mb-1.5 first:mt-0">{children}</h1>
+  ),
+  h2: ({ children }: { children?: ReactNode }) => (
+    <h2 className="text-sm font-bold text-white mt-3 mb-1.5 first:mt-0">{children}</h2>
+  ),
+  h3: ({ children }: { children?: ReactNode }) => (
+    <h3 className="text-sm font-semibold text-brand-200 mt-2.5 mb-1 first:mt-0">{children}</h3>
+  ),
+  a: ({ href, children }: { href?: string; children?: ReactNode }) => (
+    <a
+      href={href}
+      target={href?.startsWith("http") ? "_blank" : undefined}
+      rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}
+      className="text-brand-400 underline underline-offset-2 hover:text-brand-300"
+    >
+      {children}
+    </a>
+  ),
+};
 
 function Bubble({ msg }: { msg: Message }) {
   const isUser = msg.role === "user";
   const isError = msg.role === "error";
 
-  return (
-    <div className={clsx("flex gap-3", isUser && "flex-row-reverse")}>
-      {/* Avatar */}
-      <div
-        className={clsx(
-          "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold mt-1",
-          isUser
-            ? "bg-brand-600 text-ink-950"
-            : isError
-            ? "bg-red-700 text-white"
-            : "bg-concrete-700 text-brand-300"
-        )}
-      >
-        {isUser ? "TÚ" : isError ? "!" : "IA"}
-      </div>
-
-      {/* Contenido */}
-      <div className={clsx("flex-1 min-w-0", isUser && "items-end flex flex-col")}>
-        <div
-          className={clsx(
-            "rounded-2xl px-4 py-3 text-sm leading-relaxed max-w-[85%]",
-            isUser
-              ? "bg-brand-600 text-ink-950 rounded-tr-sm"
-              : isError
-              ? "bg-red-900/50 border border-red-700 text-red-300 rounded-tl-sm"
-              : "bg-concrete-800 text-concrete-100 rounded-tl-sm"
-          )}
-        >
-          {isUser ? (
-            <p>{msg.text}</p>
-          ) : (
-            <ReactMarkdown
-              components={{
-                p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
-                strong: ({ children }) => (
-                  <strong className="font-semibold text-brand-300">{children}</strong>
-                ),
-                code: ({ children }) => (
-                  <code className="bg-concrete-900 px-1 py-0.5 rounded text-brand-200 font-mono text-xs">
-                    {children}
-                  </code>
-                ),
-                ul: ({ children }) => (
-                  <ul className="list-disc list-inside space-y-1 mb-2">{children}</ul>
-                ),
-                li: ({ children }) => <li className="text-concrete-200">{children}</li>,
-              }}
-            >
-              {msg.text}
-            </ReactMarkdown>
-          )}
+  if (isUser) {
+    return (
+      <div className="flex justify-end">
+        <div className="max-w-[85%] rounded-2xl rounded-tr-sm bg-brand-600 text-ink-950 px-4 py-2.5 text-sm leading-relaxed">
+          <p>{msg.text}</p>
         </div>
-
-        {/* Metadatos RAG */}
-        {msg.meta && (
-          <div className="mt-1 max-w-[85%] w-full">
-            <Fuentes
-              fuentes={msg.meta.fuentes}
-              normas={msg.meta.normas_citadas}
-              dominio={msg.meta.dominio}
-              dominioLabel={msg.meta.dominio_label}
-            />
-            <p className="text-xs text-concrete-500 mt-1 px-1">
-              {msg.meta.chunks_usados} chunks · {msg.meta.latencia_ms} ms
-            </p>
-          </div>
-        )}
       </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="rounded-xl border border-red-800/50 bg-red-950/30 text-red-300 px-4 py-3 text-sm leading-relaxed">
+        {msg.text}
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full">
+      <p className="text-[11px] font-semibold uppercase tracking-wider text-brand-400 mb-1.5">
+        StructAI
+      </p>
+      <div className="rounded-xl bg-concrete-800/40 px-4 py-3 text-sm leading-relaxed text-concrete-100">
+        <ReactMarkdown components={MARKDOWN_COMPONENTS}>{msg.text}</ReactMarkdown>
+      </div>
+
+      {/* Metadatos RAG */}
+      {msg.meta && (
+        <div className="mt-1.5">
+          <Fuentes
+            fuentes={msg.meta.fuentes}
+            normas={msg.meta.normas_citadas}
+            dominio={msg.meta.dominio}
+            dominioLabel={msg.meta.dominio_label}
+          />
+          <p className="text-[11px] text-concrete-600 mt-1 px-1 tabular-nums">
+            {msg.meta.chunks_usados} fuentes consultadas · {(msg.meta.latencia_ms / 1000).toFixed(1)}s
+          </p>
+        </div>
+      )}
     </div>
   );
 }
@@ -193,7 +255,7 @@ const MENSAJE_BIENVENIDA: Message = {
   id: "welcome",
   role: "assistant",
   text:
-    "Hola, soy tu asistente de ingeniería civil. Puedo consultarte sobre **NTC**, **NSR-10**, normas de seguridad industrial, y responderte **precios reales de materiales y actividades en Barranquilla/Atlántico** (Construdata, contratos ejecutados, INVIAS).\n\n¿Qué necesitas saber hoy?",
+    "Hola, soy el asistente de ingeniería civil de StructAI. Consúltame la **NSR-10** y **NTC** completas (artículo por artículo, con cita exacta), **seguridad industrial**, **precios reales** de Barranquilla/Atlántico y de las **140 provincias de Colombia** (INVIAS), y **amenaza sísmica en vivo** por municipio.\n\n¿Qué necesitas resolver hoy?",
 };
 
 function cargarHistorial(): Message[] {
@@ -223,6 +285,8 @@ function guardarHistorial(messages: Message[]) {
 // ── Chat principal ───────────────────────────────────────────────────────────
 
 export default function Chat() {
+  const router = useRouter();
+
   // Inicializador perezoso: lee localStorage UNA vez, en el primer render,
   // en vez de un useEffect de "carga" separado del de "guardado" — así se
   // evita la condición de carrera donde el efecto de guardado (con el
@@ -235,6 +299,21 @@ export default function Chat() {
   const [loading, setLoading] = useState(false);
   const [offline, setOffline] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  // Sesión rastreada de forma reactiva (undefined = verificando, null = sin
+  // sesión) en vez de consultarla solo al enviar — así el aviso de "inicia
+  // sesión" aparece ANTES de que el ingeniero escriba y pierda su pregunta,
+  // no como un error sorpresa después de intentar enviarla. Mismo patrón
+  // que (app)/layout.tsx.
+  const [session, setSession] = useState<Session | null | undefined>(undefined);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setSession(data.session));
+    const { data: subscription } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession);
+    });
+    return () => subscription.subscription.unsubscribe();
+  }, []);
 
   // Persiste cada cambio de historial.
   useEffect(() => {
@@ -261,6 +340,23 @@ export default function Chat() {
 
   const send = async (text: string) => {
     if (!text.trim() || loading) return;
+
+    // session === undefined: todavía verificando (llamada async recién
+    // disparada) — no se sabe aún si hay sesión, así que no se hace nada
+    // en vez de redirigir de más a un usuario que sí está logueado pero
+    // cuya verificación no ha resuelto todavía.
+    if (session === undefined) return;
+
+    // session === null: sin sesión confirmada. Se avisa con el banner
+    // persistente de arriba, así que acá solo se redirige a /login en vez
+    // de simular un envío que el backend rechazaría — no tiene sentido
+    // meter la pregunta al historial para luego mostrar un error, cuando
+    // ya se le avisó antes de escribir.
+    if (session === null) {
+      router.push("/login");
+      return;
+    }
+
     if (offline) {
       // Sin señal: no se intenta la consulta (fallaría igual), se avisa
       // directamente que está viendo historial cacheado.
@@ -271,26 +367,6 @@ export default function Chat() {
           id: Date.now().toString() + "_e",
           role: "error",
           text: "📡 Sin conexión — estás viendo tu historial guardado. Esta pregunta no se envió; vuelve a intentarla cuando recuperes señal.",
-        },
-      ]);
-      setInput("");
-      return;
-    }
-
-    // El backend exige un usuario autenticado para /ask (mismo patrón que
-    // /apu/calculate) — sin esto, el chat dejaba escribir la pregunta y
-    // mostraba el error crudo del servidor ("Falta el header Authorization").
-    // Se revisa la sesión ANTES de intentar la llamada para no gastar una
-    // petición condenada a fallar y para dar un mensaje claro y accionable.
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      setMessages((m) => [
-        ...m,
-        { id: Date.now().toString(), role: "user", text },
-        {
-          id: Date.now().toString() + "_e",
-          role: "error",
-          text: "🔒 Necesitas iniciar sesión para hacer consultas. [Inicia sesión aquí](/login) — es gratis y toma un minuto.",
         },
       ]);
       setInput("");
@@ -326,12 +402,29 @@ export default function Chat() {
     }
   };
 
+  const sinSesion = session === null;
+
   return (
     <div className="flex flex-col h-full">
       {/* Aviso de modo offline — el historial mostrado es el cacheado en localStorage */}
       {offline && (
         <div className="flex items-center gap-2 px-4 py-1.5 text-xs bg-yellow-950/40 border-b border-yellow-900/40 text-yellow-400">
           📡 Sin conexión — viendo historial guardado localmente
+        </div>
+      )}
+
+      {/* Aviso de sesión requerida — visible desde el inicio, no solo tras
+          intentar enviar una pregunta (ver comentario en send()). */}
+      {sinSesion && !offline && (
+        <div className="flex items-center gap-2 px-4 py-2 text-xs bg-brand-950/50 border-b border-brand-800/40 text-brand-200">
+          <LogIn size={13} className="flex-shrink-0 text-brand-400" />
+          <span className="flex-1 min-w-0">Inicia sesión para hacer consultas — es gratis.</span>
+          <button
+            onClick={() => router.push("/login")}
+            className="flex-shrink-0 flex items-center gap-1 font-semibold text-ink-950 bg-brand-500 hover:bg-brand-400 rounded-lg px-2.5 py-1 transition"
+          >
+            Ingresar <ArrowRight size={12} />
+          </button>
         </div>
       )}
 
@@ -342,11 +435,11 @@ export default function Chat() {
         ))}
 
         {loading && (
-          <div className="flex gap-3">
-            <div className="w-8 h-8 rounded-full bg-concrete-700 flex items-center justify-center text-xs font-bold text-brand-300 mt-1">
-              IA
-            </div>
-            <div className="bg-concrete-800 rounded-2xl rounded-tl-sm px-4 py-3">
+          <div className="w-full">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-brand-400 mb-1.5">
+              StructAI
+            </p>
+            <div className="rounded-xl bg-concrete-800/40 px-4 py-3">
               <Loader2 size={16} className="animate-spin text-brand-400" />
             </div>
           </div>
@@ -355,18 +448,37 @@ export default function Chat() {
         <div ref={bottomRef} />
       </div>
 
-      {/* Sugerencias rápidas (solo al inicio) */}
+      {/* Sugerencias agrupadas por dominio + guía de cómo preguntar (solo al inicio) */}
       {messages.length <= 1 && (
-        <div className="px-4 pb-2 flex flex-wrap gap-2">
-          {SUGERENCIAS.map((s, i) => (
-            <button
-              key={i}
-              onClick={() => send(s)}
-              className="text-xs bg-concrete-800 hover:bg-brand-900/60 border border-concrete-700 hover:border-brand-600 text-concrete-300 hover:text-brand-200 px-3 py-1.5 rounded-full transition-all"
-            >
-              {s.length > 55 ? s.slice(0, 55) + "…" : s}
-            </button>
+        <div className="px-4 pb-3 space-y-2.5">
+          {GRUPOS_SUGERENCIAS.map((g) => (
+            <div key={g.label}>
+              <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-concrete-500 mb-1.5">
+                {g.icon}
+                {g.label}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {g.preguntas.map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => send(s)}
+                    className="text-xs bg-concrete-800/60 hover:bg-brand-900/50 border border-concrete-700 hover:border-brand-600 text-concrete-300 hover:text-brand-200 px-3 py-1.5 rounded-full transition-all text-left"
+                  >
+                    {s.length > 60 ? s.slice(0, 60) + "…" : s}
+                  </button>
+                ))}
+              </div>
+            </div>
           ))}
+
+          <p className="flex items-start gap-1.5 text-[11px] text-concrete-500 pt-1">
+            <Sparkles size={12} className="flex-shrink-0 mt-0.5 text-brand-500" />
+            <span>
+              <b className="text-concrete-400">Así preguntas mejor:</b> menciona la ciudad o región
+              para precios, el título de la norma (ej. &quot;Título E&quot;) para respuestas puntuales,
+              y el municipio si necesitas amenaza sísmica exacta.
+            </span>
+          </p>
         </div>
       )}
 
@@ -382,6 +494,8 @@ export default function Chat() {
             placeholder={
               offline
                 ? "Sin conexión — viendo historial guardado"
+                : sinSesion
+                ? "Inicia sesión para preguntar — es gratis"
                 : "Pregunta como ingeniero civil... (Enter para enviar)"
             }
             className="flex-1 bg-transparent text-sm text-concrete-100 placeholder-concrete-500 resize-none outline-none leading-relaxed"
@@ -401,7 +515,7 @@ export default function Chat() {
           </button>
         </div>
         <p className="text-xs text-concrete-500 mt-1.5 text-center">
-          NTC · NSR-10 · Seg. Industrial · Construdata 2026 Barranquilla
+          NSR-10 · NTC · Seg. Industrial · Precios nacional (INVIAS) · Sismo en vivo (SGC)
         </p>
       </div>
     </div>

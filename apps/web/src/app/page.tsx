@@ -91,7 +91,7 @@ function HomeContent() {
         <div className="flex-1 min-w-0">
           <h1 className="text-sm font-bold text-white leading-none">StructAI</h1>
           <p className="text-[10px] text-concrete-500 leading-none mt-0.5">
-            Ingeniero Civil IA · NTC/NSR-10 · APU 2026
+            Normativa · Precios · Sismo · Colombia
           </p>
         </div>
         <button
