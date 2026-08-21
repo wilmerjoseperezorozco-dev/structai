@@ -535,6 +535,38 @@ def buscar_precios_apu(query: str, top_k: int = 8) -> list[PrecioResult]:
     ]
 
 
+def buscar_precios_invias_vias(query: str, top_k: int = 4) -> list[PrecioResult]:
+    """Busca en la base de precios regionalizados de INVIAS (tablas
+    invias_actividades/invias_actividad_costos/invias_provincias, cargadas
+    por scripts/ingesta/invias_apu/) vía RPC buscar_precios_invias — mismo
+    patrón de texto completo español + trigram que buscar_precios_apu(), pero
+    esta fuente es normativa vial (numerales de INVIAS), no Barranquilla.
+
+    Cobertura real hoy: solo Orinoquía (Meta, Arauca, Casanare, Guainía,
+    Guaviare, Vichada) — 9 de las 140 provincias del país. Si la pregunta no
+    tiene match, simplemente devuelve lista vacía; no es un error."""
+    result = sb.rpc("buscar_precios_invias", {"p_query": query, "p_limit": top_k}).execute()
+    return [
+        PrecioResult(
+            tipo="actividad",
+            # La descripción real trae una nota entre paréntesis muy larga
+            # (alcance técnico del ítem) -- se muestra solo la primera línea
+            # como nombre, el resto ya no cabe en un contexto de una línea.
+            nombre=r["descripcion"].split("\n")[0].strip()[:200],
+            unidad=r.get("unidad"),
+            precio=r.get("costo_directo_total"),
+            precio_solo_mano_obra=None,
+            region=f"{r['provincia']} ({r['departamento']})" if r.get("provincia") else None,
+            tipo_fuente="invias_regional",
+            fecha_captura=r.get("periodo"),
+            item_codigo=r.get("numeral"),
+            categoria_fuente=None,
+            score=r.get("relevancia") or 0.0,
+        )
+        for r in result.data
+    ]
+
+
 def _format_precio_context(p: PrecioResult) -> str:
     """Una línea por resultado — solo lo que un profesional necesita:
     nombre, unidad, precio(s), región genérica, fuente y fecha. Nunca nombre
@@ -626,6 +658,15 @@ INSTRUCCIONES:
 def ask_precios(question: str, top_k: int = 8) -> dict:
     """RAG de precios APU — mismo contrato de salida que ask()/ask_delegado()."""
     resultados = buscar_precios_apu(question, top_k=top_k)
+    # Suma también los precios regionalizados de INVIAS (numerales de
+    # carretera/vías, cobertura hoy: Orinoquía) -- son una fuente distinta a
+    # apu_precios_referencia (Barranquilla/Atlántico), así que se agregan en
+    # vez de reemplazar, y se reordenan juntos por relevancia. No depende de
+    # que el motor detectado haya sido "vias": cualquier pregunta de precio
+    # puede coincidir con un numeral INVIAS aunque no use vocabulario vial.
+    resultados_invias = buscar_precios_invias_vias(question, top_k=top_k)
+    if resultados_invias:
+        resultados = sorted(resultados + resultados_invias, key=lambda p: -p.score)[:top_k]
     if not resultados:
         return {
             "respuesta": (
@@ -980,6 +1021,13 @@ def _ask_delegado_compuesto(question: str, motores: list[str], top_k: int) -> di
     mitad = max(3, top_k // 2)
 
     precios = buscar_precios_apu(question, top_k=mitad)
+    # Cuando el otro dominio es "vias", la pregunta de precio probablemente
+    # se refiere a un ítem de carretera/INVIAS (ej. "relleno granular",
+    # "señalización", numerales 6xx/7xx/8xx) -- se suma la base regionalizada
+    # de INVIAS a la de Barranquilla/Atlántico en vez de reemplazarla, ya que
+    # cubren cosas distintas (Orinoquía por provincia vs. Atlántico general).
+    if otro_motor == "vias":
+        precios = precios + buscar_precios_invias_vias(question, top_k=mitad)
     chunks = search(question, top_k=mitad, motor_filter=otro_motor) if otro_motor else []
 
     partes = []
@@ -1073,7 +1121,14 @@ def ask_delegado(question: str, top_k: int = 6) -> dict:
 
     if motor:
         chunks = search(question, top_k=top_k, motor_filter=motor)
-        if not chunks:
+        # Para vias, un precio INVIAS encontrado también cuenta como "sí hay
+        # contenido" -- calculado aquí (antes del early-return de abajo) para
+        # no descartar la pregunta solo porque motor_chunks no tuvo match,
+        # cuando la base de precios regionalizados sí lo tiene.
+        precios_invias_disponibilidad = (
+            motor == "vias" and _score_motores(question).get("apu_precios", 0) > 0
+        )
+        if not chunks and not precios_invias_disponibilidad:
             # El dominio se detectó pero aún no tiene chunks cargados —
             # no fabricar respuesta, avisar y devolver dominio vacío en vez
             # de responder con contexto de otro dominio.
@@ -1105,9 +1160,44 @@ def ask_delegado(question: str, top_k: int = 6) -> dict:
     # camino de siempre. Ver sgc_amenaza_sismica.py para el detalle.
     sgc_registro = sgc_amenaza_sismica.detectar_municipio_en_texto(question) if motor == "geopot" else None
 
+    # Enriquecimiento con precios regionalizados de INVIAS: mismo espíritu que
+    # el enriquecimiento SGC de arriba -- nunca reemplaza la búsqueda semántica
+    # normal de motor_chunks (contenido normativo/técnico de vías), solo la
+    # complementa cuando la pregunta también tiene intención de precio (se
+    # reusa el mismo scoring de apu_precios ya probado en route_motores_multiples,
+    # no una heurística nueva). Cobertura real hoy: solo Orinoquía (9 de 140
+    # provincias) -- si no hay match, la lista simplemente viene vacía.
+    precios_invias = (
+        buscar_precios_invias_vias(question, top_k=4)
+        if motor == "vias" and _score_motores(question).get("apu_precios", 0) > 0
+        else []
+    )
+    if not chunks and not precios_invias:
+        # precios_invias_disponibilidad predijo que había precio (evitó el
+        # early-return de arriba), pero la RPC no encontró match real -- caer
+        # al mismo mensaje honesto de "no hay contenido" en vez de llamar al
+        # LLM con un contexto vacío.
+        return {
+            "dominio": motor,
+            "dominio_label": MOTOR_LABEL.get(motor, motor),
+            "respuesta": (
+                f"La pregunta parece pertenecer al dominio {MOTOR_LABEL.get(motor, motor)}, "
+                "pero no encontré contenido normativo ni precios de INVIAS que coincidan. "
+                "No se genera una respuesta para evitar inventar información."
+            ),
+            "normas_citadas": [],
+            "fuentes": [],
+            "chunks_usados": 0,
+        }
+
     contexto = "\n\n---\n\n".join(_format_chunk_context(c) for c in chunks)
     if sgc_registro:
         contexto = f"DATO OFICIAL EN VIVO (SGC):\n{_bloque_contexto_sgc(sgc_registro)}\n\n---\n\n{contexto}"
+    if precios_invias:
+        bloque_precios = "PRECIOS INVIAS REGIONALIZADOS (vías/carreteras):\n" + "\n".join(
+            _format_precio_context(p) for p in precios_invias
+        )
+        contexto = f"{bloque_precios}\n\n---\n\n{contexto}" if contexto else bloque_precios
 
     # Mismo enriquecimiento de noticias que ask() -- faltaba aquí (bug real
     # encontrado 2026-08-20 con Groq en vivo: una pregunta de geopot con
@@ -1129,6 +1219,16 @@ def ask_delegado(question: str, top_k: int = 6) -> dict:
         fuente_sgc = "SGC — Servicio Geológico Colombiano (amenaza sísmica en vivo)"
         normas_citadas = [fuente_sgc] + normas_citadas
         fuentes = [{"norma": fuente_sgc, "seccion": sgc_registro["municipio"], "score": 1.0}] + fuentes
+    if precios_invias:
+        normas_citadas = [p.fuente_display for p in precios_invias] + normas_citadas
+        fuentes = [
+            {
+                "norma": p.fuente_display,
+                "seccion": f"{p.nombre} — ${p.precio:,.0f} COP/{p.unidad or 'un'} ({p.region})" if p.precio is not None else p.nombre,
+                "score": p.score,
+            }
+            for p in precios_invias
+        ] + fuentes
 
     return {
         "dominio": motor,
@@ -1136,7 +1236,7 @@ def ask_delegado(question: str, top_k: int = 6) -> dict:
         "respuesta": respuesta,
         "normas_citadas": normas_citadas,
         "fuentes": fuentes,
-        "chunks_usados": len(chunks),
+        "chunks_usados": len(chunks) + len(precios_invias),
         "advertencias_vigencia": [
             {"norma": c.norma, "seccion": c.seccion, "estado_vigencia": c.estado_vigencia, "derogada_por": c.derogada_por}
             for c in chunks if not c.vigente
