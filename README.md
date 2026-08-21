@@ -123,6 +123,10 @@ cd apps/native && npm install && npm start
 | `NEXT_PUBLIC_API_URL` | Build de `apps/web` |
 | `GROQ_API_KEY` | Síntesis de respuestas del RAG |
 
+## StructAI frente a un asistente de IA genérico
+
+Ver [docs/comparacion.md](./docs/comparacion.md) — comparación verificable (no marketing) contra la alternativa real que la mayoría de ingenieros ya prueba primero: preguntarle directamente a ChatGPT/Claude/Gemini sin ninguna base normativa o de precios conectada.
+
 ## Convenciones de contribución
 
 Ver [CONTRIBUTING.md](./CONTRIBUTING.md) — formato de commits, cómo instalar un motor en modo desarrollo, y qué decisiones de arquitectura están deliberadamente sin resolver todavía.
