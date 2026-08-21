@@ -51,7 +51,7 @@ StructAI empezó como una herramienta para Barranquilla y el Atlántico. La base
 - **Datos climáticos e hidrológicos reales.** Motores como AquAI (acueducto y alcantarillado, RAS 2000) dependen de series de precipitación, caudales y clima confiables. Estamos explorando cómo integrar datos abiertos del IDEAM al pipeline de cálculo, para que los diseños hidráulicos se apoyen en información meteorológica real del sitio del proyecto y no solo en valores de norma. Es una intención de trabajo en desarrollo, no una integración cerrada todavía.
 - **Más proveedores y regiones en la base de precios.** Los 24 proveedores/ferreterías catalogados hoy son el piloto; el objetivo es una red de precios verificados que cubra más ciudades y más categorías de insumos.
 
-Si tienes datos técnicos, normativos o de precios que puedan sumar a esta base — o si representas una entidad con interés en colaborar en alguno de estos frentes — el repositorio está abierto para revisión y el contacto está en el perfil del autor.
+Si tienes datos técnicos, normativos o de precios que puedan sumar a esta base — o si representas una universidad, un gremio o una entidad con interés en colaborar en alguno de estos frentes — ver [`docs/contacto-institucional.md`](docs/contacto-institucional.md) para los canales concretos y qué tipo de colaboración estoy buscando.
 
 ## Estructura del monorepo
 
