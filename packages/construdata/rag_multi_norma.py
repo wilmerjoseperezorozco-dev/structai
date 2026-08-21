@@ -11,6 +11,7 @@ Uso: from rag_multi_norma import ask, route_query
 """
 import logging
 import os
+import unicodedata
 from dataclasses import dataclass
 from functools import lru_cache
 from typing import Optional
@@ -535,6 +536,63 @@ def buscar_precios_apu(query: str, top_k: int = 8) -> list[PrecioResult]:
     ]
 
 
+_INVIAS_UBICACIONES_CACHE: list[dict] | None = None
+
+
+def _cargar_ubicaciones_invias() -> list[dict]:
+    """Carga (una sola vez por proceso) el catálogo de provincias/departamentos
+    de INVIAS para poder detectar menciones de ubicación en la pregunta.
+    Ordenado por longitud de nombre descendente para que un match de
+    provincia específica ("Ariari") se intente antes que uno de departamento
+    ("Meta") si el texto contuviera ambos por coincidencia."""
+    global _INVIAS_UBICACIONES_CACHE
+    if _INVIAS_UBICACIONES_CACHE is not None:
+        return _INVIAS_UBICACIONES_CACHE
+
+    result = sb.table("invias_provincias").select(
+        "codigo,codigo_departamento,departamento,provincia"
+    ).execute()
+    ubicaciones = []
+    for r in result.data:
+        ubicaciones.append({"nombre": r["provincia"], "codigo": r["codigo"], "especificidad": 2})
+        ubicaciones.append(
+            {"nombre": r["departamento"], "codigo": r["codigo_departamento"], "especificidad": 1}
+        )
+    # Dedup por (nombre, especificidad) -- varios departamentos con múltiples
+    # provincias repiten el mismo nombre de departamento varias veces.
+    vistos = set()
+    unicos = []
+    for u in ubicaciones:
+        clave = (u["nombre"].strip().lower(), u["especificidad"])
+        if clave not in vistos:
+            vistos.add(clave)
+            unicos.append(u)
+    unicos.sort(key=lambda u: (-u["especificidad"], -len(u["nombre"])))
+    _INVIAS_UBICACIONES_CACHE = unicos
+    return unicos
+
+
+def _detectar_ubicacion_invias(query: str) -> str | None:
+    """Busca en el texto de la pregunta el nombre de una provincia o
+    departamento real de INVIAS (sin tildes, insensible a mayúsculas) y
+    devuelve su código -- provincia (4 dígitos) tiene prioridad sobre
+    departamento (2 dígitos) si ambos aparecen. None si no se menciona
+    ninguna ubicación reconocible; en ese caso la búsqueda queda sin filtro
+    de ubicación (mismo comportamiento que antes de este fix)."""
+    q = _slug_sin_tildes_query(query)
+    for ubicacion in _cargar_ubicaciones_invias():
+        nombre = _slug_sin_tildes_query(ubicacion["nombre"])
+        if nombre and nombre in q:
+            return ubicacion["codigo"]
+    return None
+
+
+def _slug_sin_tildes_query(s: str) -> str:
+    return "".join(
+        c for c in unicodedata.normalize("NFD", s.lower()) if unicodedata.category(c) != "Mn"
+    )
+
+
 def buscar_precios_invias_vias(query: str, top_k: int = 4) -> list[PrecioResult]:
     """Busca en la base de precios regionalizados de INVIAS (tablas
     invias_actividades/invias_actividad_costos/invias_provincias, cargadas
@@ -542,10 +600,21 @@ def buscar_precios_invias_vias(query: str, top_k: int = 4) -> list[PrecioResult]
     patrón de texto completo español + trigram que buscar_precios_apu(), pero
     esta fuente es normativa vial (numerales de INVIAS), no Barranquilla.
 
-    Cobertura real hoy: solo Orinoquía (Meta, Arauca, Casanare, Guainía,
-    Guaviare, Vichada) — 9 de las 140 provincias del país. Si la pregunta no
-    tiene match, simplemente devuelve lista vacía; no es un error."""
-    result = sb.rpc("buscar_precios_invias", {"p_query": query, "p_limit": top_k}).execute()
+    Fix real 2026-08-21 (encontrado al probar con 43 provincias cargadas):
+    la descripción de una actividad es IDÉNTICA en todo el país (mismo
+    numeral INVIAS) -- sin detectar la ubicación mencionada en la pregunta,
+    el ranking por texto devolvía provincias arbitrarias, no la que el
+    usuario pidió. Ahora se detecta el nombre de provincia/departamento en
+    la pregunta y se pasa como filtro de prefijo a la RPC.
+
+    Cobertura real hoy: Orinoquía completa + Caribe completo (43 de las 140
+    provincias del país). Si la pregunta no tiene match, simplemente
+    devuelve lista vacía; no es un error."""
+    codigo_ubicacion = _detectar_ubicacion_invias(query)
+    params = {"p_query": query, "p_limit": top_k}
+    if codigo_ubicacion:
+        params["p_provincia_codigo"] = codigo_ubicacion
+    result = sb.rpc("buscar_precios_invias", params).execute()
     return [
         PrecioResult(
             tipo="actividad",
