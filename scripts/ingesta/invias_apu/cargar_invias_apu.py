@@ -59,6 +59,13 @@ REGION_POR_DEPTO: dict[str, str] = {
     "94": "Orinoquía",  # Guainía
     "95": "Orinoquía",  # Guaviare
     "08": "Caribe",      # Atlántico
+    "13": "Caribe",      # Bolívar
+    "20": "Caribe",      # Cesar
+    "23": "Caribe",      # Córdoba
+    "44": "Caribe",      # La Guajira
+    "47": "Caribe",      # Magdalena
+    "70": "Caribe",      # Sucre
+    "88": "Caribe",      # San Andrés y Providencia
 }
 
 FILENAME_RE = re.compile(
