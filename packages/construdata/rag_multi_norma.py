@@ -1088,6 +1088,106 @@ def _bloque_contexto_noticias() -> Optional[str]:
     )
 
 
+def _comparar_caudal_historico(registro: dict) -> Optional[dict]:
+    """Compara un registro de caudal ACTUAL (de
+    ideam_client.caudal_por_municipio(), siempre en vivo) contra las
+    estadísticas históricas de ESE MISMO mes calendario para esa estación
+    (tabla ideam_caudal_estadisticas_mes, calculada una vez a partir del
+    histórico real cargado por scripts/ingesta/ideam_caudal/, ver
+    infra/supabase/migrations/20260822123425_...). Devuelve None si esa
+    estación todavía no tiene estadística cargada (carga masiva en curso o
+    estación nueva sin historia suficiente) o si el caudal actual no es
+    numérico -- nunca inventa una comparación sin datos reales de ambos
+    lados."""
+    try:
+        caudal_actual = float(registro.get("caudal_m3s"))
+        mes = int((registro.get("fecha") or "")[5:7])
+    except (TypeError, ValueError):
+        return None
+    if not (1 <= mes <= 12):
+        return None
+    resultado = (
+        sb.table("ideam_caudal_estadisticas_mes")
+        .select("promedio_m3s, p90_m3s, n_observaciones")
+        .eq("codigo_estacion", registro["codigo_estacion"])
+        .eq("mes", mes)
+        .execute()
+    )
+    if not resultado.data:
+        return None
+    stats = resultado.data[0]
+    promedio = stats.get("promedio_m3s")
+    if not promedio:
+        return None
+    return {
+        "caudal_actual": caudal_actual,
+        "promedio_historico": promedio,
+        "pct_diferencia": (caudal_actual - promedio) / promedio * 100,
+        "excede_p90": stats.get("p90_m3s") is not None and caudal_actual > stats["p90_m3s"],
+        "n_anos_historicos": stats.get("n_observaciones"),
+    }
+
+
+def _bloque_caudal_con_anomalia(registros: list[dict]) -> str:
+    """Igual que ideam_client.formatear_caudal(), pero suma la comparación
+    contra el histórico real cuando está disponible (ver
+    _comparar_caudal_historico) -- esto es lo que convierte "el caudal es
+    177 m³/s" en "el caudal es 177 m³/s, un 14% por debajo de lo normal
+    para julio según 42 años de registro". Si una estación no tiene
+    estadística cargada todavía, cae de forma segura al formato simple sin
+    comparación -- nunca bloquea ni inventa."""
+    if not registros:
+        return ""
+    por_estacion: dict[str, list[dict]] = {}
+    for r in registros:
+        por_estacion.setdefault(r["codigo_estacion"], []).append(r)
+
+    lineas = ["Caudal medio mensual reciente (IDEAM, estaciones hidrológicas en vivo):"]
+    hay_anomalia_alta = False
+    for codigo, filas in por_estacion.items():
+        ultimo = sorted(filas, key=lambda f: f["fecha"] or "")[-1]
+        rio = ultimo.get("corriente") or "río sin identificar"
+        nombre_est = ultimo.get("nombre_estacion") or codigo
+        fecha = (ultimo.get("fecha") or "")[:7]
+        estado = ultimo.get("estado_aprobacion") or "sin estado"
+        comparacion = _comparar_caudal_historico(ultimo)
+        if comparacion:
+            caudal_txt = f"{comparacion['caudal_actual']:.1f}"
+            pct = comparacion["pct_diferencia"]
+            signo = "por encima del" if pct >= 0 else "por debajo del"
+            anomalia = " ⚠️ (supera el percentil 90 histórico)" if comparacion["excede_p90"] else ""
+            if comparacion["excede_p90"]:
+                hay_anomalia_alta = True
+            lineas.append(
+                f"- Río {rio} (estación {nombre_est}, {ultimo.get('municipio')}): "
+                f"{caudal_txt} m³/s en {fecha} [{estado}] — {abs(pct):.0f}% {signo} "
+                f"promedio histórico de ese mes ({comparacion['promedio_historico']:.0f} m³/s, "
+                f"{comparacion['n_anos_historicos']} años de registro){anomalia}"
+            )
+        else:
+            try:
+                caudal_txt = f"{float(ultimo.get('caudal_m3s')):.1f}"
+            except (TypeError, ValueError):
+                caudal_txt = ultimo.get("caudal_m3s")
+            lineas.append(
+                f"- Río {rio} (estación {nombre_est}, {ultimo.get('municipio')}): "
+                f"{caudal_txt} m³/s en {fecha} [{estado}] — sin comparación histórica todavía"
+            )
+    if hay_anomalia_alta:
+        lineas.append(
+            "Uno o más ríos están por encima de su percentil 90 histórico para este mes -- "
+            "señal ESTADÍSTICA de caudal anómalo, NO una alerta oficial de inundación. "
+            "Para alertas oficiales consulta directamente al IDEAM/UNGRD."
+        )
+    else:
+        lineas.append(
+            "Un caudal muy por encima de lo típico para ese mes/río es indicio de crecida "
+            "-- esto NO es una alerta oficial de inundación, para eso consulta directamente "
+            "al IDEAM/UNGRD."
+        )
+    return "\n".join(lineas)
+
+
 def _bloque_contexto_sgc(sgc_registro: dict) -> str:
     """Arma el bloque de contexto en vivo del SGC/IGAC/IDEAM a partir de un
     registro de sgc_amenaza_sismica.detectar_municipio_en_texto(): siempre
@@ -1116,7 +1216,7 @@ def _bloque_contexto_sgc(sgc_registro: dict) -> str:
             partes.append(bloque_suelo)
     caudales = ideam_client.caudal_por_municipio(sgc_registro["municipio"], sgc_registro.get("departamento"))
     if caudales:
-        bloque_caudal = ideam_client.formatear_caudal(caudales)
+        bloque_caudal = _bloque_caudal_con_anomalia(caudales)
         if bloque_caudal:
             partes.append(bloque_caudal)
     return "\n\n".join(partes)
