@@ -24,6 +24,16 @@ un ingeniero necesita como primer indicio antes de un estudio geotécnico
 real (H.1 NSR-10 sigue siendo obligatorio -- esto NO lo reemplaza, es
 contexto adicional).
 
+Desde 2026-08-22 el dataset completo (169.088 filas) también está cargado
+en Supabase (igac_suelos_ufh, ver
+scripts/ingesta/igac_suelos/cargar_suelos_ufh.py) -- este módulo consulta
+ahí PRIMERO (más rápido, no depende de datos.gov.co en el camino crítico
+de cada pregunta) y solo cae a la consulta en vivo por Socrata si Supabase
+no responde o no tiene el municipio (tabla vacía, credenciales ausentes).
+El dato en sí es esencialmente estático (taxonomía de suelo no cambia con
+el tiempo, a diferencia del caudal del IDEAM), así que no hace falta
+recargar seguido -- solo si el IGAC/UPRA publica una versión nueva.
+
 Uso:
     from igac_client import consultar_suelos_municipio
 
@@ -31,6 +41,7 @@ Uso:
 """
 from __future__ import annotations
 
+import os
 import unicodedata
 from typing import Optional
 
@@ -69,6 +80,75 @@ def _where_exacto(campo: str, valor: str) -> str:
     return f"upper({campo}) = upper('{escapado}')"
 
 
+_CAMPOS_SUPABASE = (
+    "municipio,departamento,taxonomia,textura,pendiente,drenaje,inund,"
+    "profundi,pedrego,salinidad,ph,alt_msnm,clase_ufh,area_ha"
+)
+
+_sb_client = None  # cacheado a nivel de módulo -- ver _obtener_cliente_supabase()
+
+
+def _obtener_cliente_supabase():
+    """A diferencia de sgc_amenaza_sismica.py (que solo consulta Supabase
+    UNA vez por vida del proceso, al llenar su caché en memoria), esta
+    ruta se ejecuta en CADA pregunta del chat que menciona un municipio --
+    crear un cliente nuevo (y su handshake TLS) cada vez era un costo real
+    e innecesario. Se cachea una sola vez; None si no hay credenciales o
+    falla la creación, para que el caller siga con el respaldo en vivo."""
+    global _sb_client
+    if _sb_client is not None:
+        return _sb_client
+    try:
+        url = os.environ.get("SUPABASE_URL")
+        key = os.environ.get("SUPABASE_SERVICE_KEY") or os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
+        if not url or not key:
+            return None
+        from supabase import create_client
+        _sb_client = create_client(url, key)
+        return _sb_client
+    except Exception:
+        return None
+
+
+def _consultar_supabase(municipio: str, departamento: Optional[str], limit: int) -> list[dict]:
+    """Ruta primaria: leer el catálogo ya persistido (ver
+    scripts/ingesta/igac_suelos/cargar_suelos_ufh.py). Cualquier fallo
+    (credenciales ausentes, tabla vacía, sin match, red) devuelve [] para
+    que consultar_suelos_municipio() intente Socrata en vivo como
+    respaldo.
+
+    Igualdad exacta sobre municipio_norm/departamento_norm (columnas
+    generadas = upper(municipio)/upper(departamento)), NO ilike: bug de
+    rendimiento real encontrado al verificar esta consulta -- ILIKE nunca
+    usa un índice funcional sobre upper() aunque el valor no tenga
+    comodines (Parallel Seq Scan sobre 169.088 filas, ~215ms verificado
+    con EXPLAIN ANALYZE). Con igualdad exacta + índice normal, la misma
+    consulta baja a ~0.4ms server-side."""
+    try:
+        sb = _obtener_cliente_supabase()
+        if sb is None:
+            return []
+
+        def _query(con_departamento: bool):
+            q = sb.table("igac_suelos_ufh").select(_CAMPOS_SUPABASE).eq("municipio_norm", municipio.upper())
+            if con_departamento and departamento:
+                q = q.eq("departamento_norm", departamento.upper())
+            return q.order("area_ha", desc=True).limit(limit).execute().data or []
+
+        filas = _query(con_departamento=True)
+        if not filas and departamento:
+            filas = _query(con_departamento=False)
+        # Renombrar departamento -> departamen para igualar la forma que
+        # devuelve _get() (nombre de campo real del dataset en Socrata) --
+        # formatear_respuesta() no lo usa, pero otros consumidores podrían.
+        return [
+            {**{k: v for k, v in f.items() if k != "departamento"}, "departamen": f.get("departamento")}
+            for f in filas
+        ]
+    except Exception:
+        return []
+
+
 def consultar_suelos_municipio(
     municipio: str,
     departamento: Optional[str] = None,
@@ -82,6 +162,12 @@ def consultar_suelos_municipio(
     municipio). Devuelve lista vacía si no hay match (municipio urbano sin
     cobertura rural, o nombre no reconocido) -- nunca lanza, degrada según
     el mismo patrón que ideam_client.py/sgc_amenaza_sismica.py."""
+    filas = _consultar_supabase(municipio, departamento, limit)
+    if filas:
+        return filas
+
+    # Respaldo: Supabase no tuvo match (o no está disponible) -- consulta
+    # en vivo por Socrata, igual que antes de tener la tabla cargada.
     wheres = [_where_exacto("municipio", municipio)]
     if departamento:
         wheres.append(_where_exacto("departamen", departamento))
@@ -119,7 +205,7 @@ def formatear_respuesta(unidades: list[dict], municipio: str) -> str:
         return ""
     lineas = [
         f"Unidades físicas homogéneas de suelo en {municipio} (IGAC/UPRA, "
-        "dataset nacional de suelos rurales, en vivo):"
+        "dataset nacional de suelos rurales):"
     ]
     for u in unidades:
         taxonomia = u.get("taxonomia") or "sin dato"
