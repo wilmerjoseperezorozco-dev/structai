@@ -19,16 +19,31 @@ test_rag_nsr10_regresion.py::A-Aa-Av-Barranquilla.
 Riesgo real y por qué este módulo nunca puede romper nada: es un
 endpoint no documentado oficialmente (srvags.sgc.gov.co, HTTP no HTTPS,
 fuera del dominio datos.sgc.gov.co que sí es soportado), puede cambiar o
-caerse sin aviso. Por eso: (a) caché en memoria del proceso -- los
-valores de Aa/Av por municipio no cambian en la práctica, así que basta
-con traerlos una vez por vida del proceso; (b) timeout corto; (c) NUNCA
+caerse sin aviso. Por eso: (a) el dato se lee primero de Supabase
+(sgc_amenaza_sismica_municipios, cargada una vez por
+scripts/ingesta/sgc_amenaza_sismica/cargar_municipios.py) -- rápido y no
+depende de ese endpoint en el camino crítico; el endpoint en vivo queda
+solo como respaldo si la tabla estuviera vacía; (b) una vez leído (de
+donde sea), caché en memoria del proceso -- los valores de Aa/Av por
+municipio no cambian en la práctica, así que basta con traerlos una vez
+por vida del proceso; (c) timeout corto en la ruta en vivo; (d) NUNCA
 lanza una excepción hacia el caller -- cualquier fallo (timeout, 404,
-JSON inválido, servicio caído) devuelve None/{} y quien llama sigue con
-el camino normal de motor_chunks/RAG sin este dato adicional.
+JSON inválido, servicio caído, Supabase no disponible) devuelve None/{}
+y quien llama sigue con el camino normal de motor_chunks/RAG sin este
+dato adicional.
+
+Bug real encontrado 2026-08-22 al cargar esta tabla por primera vez: el
+servicio del SGC reporta 1.123 municipios, pero 68 nombres se repiten en
+más de un departamento (Candelaria existe en Valle del Cauca Y Atlántico;
+Armenia en Quindío Y Antioquia; etc.) -- una clave de caché por nombre
+solamente pierde silenciosamente 86 de esos 1.123. Por eso el caché
+agrupa por nombre pero guarda una LISTA de registros (uno por
+departamento) en vez de sobrescribir.
 """
 from __future__ import annotations
 
 import logging
+import os
 import unicodedata
 from typing import Optional
 
@@ -42,7 +57,7 @@ _SERVICE_URL = (
 )
 _TIMEOUT_SEGUNDOS = 6.0
 
-_cache: Optional[dict[str, dict]] = None  # nombre normalizado -> registro
+_cache: Optional[dict[str, list[dict]]] = None  # nombre normalizado -> [registro, ...]
 
 
 def _normalizar(texto: str) -> str:
@@ -62,10 +77,59 @@ def _normalizar(texto: str) -> str:
 _PAGINA = 1000  # el servicio reporta maxRecordCount=1000 pese a tener 1.123 registros
 
 
-def _cargar_cache() -> dict[str, dict]:
-    global _cache
-    if _cache is not None:
-        return _cache
+def _agrupar(registros: list[dict]) -> dict[str, list[dict]]:
+    """Agrupa por nombre de municipio normalizado, preservando TODOS los
+    registros por nombre (no solo el último) -- 68 nombres de municipio se
+    repiten entre departamentos, sobrescribir con una clave simple pierde
+    86 de los 1.123 municipios reales (bug encontrado 2026-08-22)."""
+    agrupado: dict[str, list[dict]] = {}
+    for r in registros:
+        agrupado.setdefault(_normalizar(r["municipio"]), []).append(r)
+    return agrupado
+
+
+def _cargar_desde_supabase() -> dict[str, list[dict]]:
+    """Ruta primaria: leer el catálogo ya persistido (ver
+    scripts/ingesta/sgc_amenaza_sismica/cargar_municipios.py). Rápido y no
+    depende del endpoint no oficial del SGC en el camino crítico. Cualquier
+    fallo (credenciales ausentes, tabla vacía, red) devuelve {} para que
+    _cargar_cache() intente la ruta en vivo como respaldo."""
+    try:
+        url = os.environ.get("SUPABASE_URL")
+        key = os.environ.get("SUPABASE_SERVICE_KEY") or os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
+        if not url or not key:
+            return {}
+        from supabase import create_client
+        sb = create_client(url, key)
+        resultado = sb.table("sgc_amenaza_sismica_municipios").select("*").execute()
+        filas = resultado.data or []
+        if not filas:
+            return {}
+        registros = [
+            {
+                "municipio": f["municipio"],
+                "departamento": f.get("departamento") or "",
+                "aa": f.get("aa"),
+                "av": f.get("av"),
+                "ae": f.get("ae"),
+                "ad": f.get("ad"),
+                "zona": f.get("zona"),
+                "longitud": f.get("longitud"),
+                "latitud": f.get("latitud"),
+            }
+            for f in filas
+        ]
+        cache = _agrupar(registros)
+        log.info(f"SGC amenaza sísmica: {len(filas)} municipios cargados desde Supabase (caché persistido)")
+        return cache
+    except Exception as e:
+        log.warning(f"SGC amenaza sísmica: Supabase no disponible ({e}) -- se intenta el servicio en vivo")
+        return {}
+
+
+def _cargar_desde_servicio_vivo() -> dict[str, list[dict]]:
+    """Ruta de respaldo: el endpoint no oficial srvags.sgc.gov.co, solo si
+    Supabase no tiene el dato (tabla vacía o sin credenciales)."""
     try:
         features: list[dict] = []
         offset = 0
@@ -92,7 +156,7 @@ def _cargar_cache() -> dict[str, dict]:
             if not data.get("exceededTransferLimit") or not pagina:
                 break
             offset += _PAGINA
-        cache: dict[str, dict] = {}
+        registros: list[dict] = []
         for feat in features:
             attrs = feat.get("attributes", {})
             nombre = attrs.get("NOMBRE_MUNICIPIO")
@@ -103,7 +167,7 @@ def _cargar_cache() -> dict[str, dict]:
                 if k.upper().startswith("ZONA_AMENAZA"):
                     zona = v
                     break
-            cache[_normalizar(nombre)] = {
+            registros.append({
                 "municipio": nombre.title(),
                 "departamento": (attrs.get("NOMBRE_DEPARTAMENTO") or "").title(),
                 "aa": attrs.get("AA"),
@@ -117,16 +181,26 @@ def _cargar_cache() -> dict[str, dict]:
                 # sgc_movimientos_masa.py.
                 "longitud": attrs.get("LONGITUD"),
                 "latitud": attrs.get("LATITUD"),
-            }
-        if not cache:
+            })
+        if not registros:
             log.warning("SGC amenaza sísmica: respuesta sin features, no se cachea vacío")
             return {}
-        _cache = cache
-        log.info(f"SGC amenaza sísmica: {len(cache)} municipios cacheados desde srvags.sgc.gov.co")
+        cache = _agrupar(registros)
+        log.info(f"SGC amenaza sísmica: {len(registros)} municipios cacheados desde srvags.sgc.gov.co (servicio en vivo)")
         return cache
     except Exception as e:
         log.warning(f"SGC amenaza sísmica: servicio no disponible ({e}) -- se sigue sin este dato")
         return {}
+
+
+def _cargar_cache() -> dict[str, list[dict]]:
+    global _cache
+    if _cache is not None:
+        return _cache
+    cache = _cargar_desde_supabase() or _cargar_desde_servicio_vivo()
+    if cache:
+        _cache = cache
+    return cache
 
 
 _VENTANA_MAX_PALABRAS = 4  # el municipio compuesto más largo (ej. "San Jose De Ure") cabe en 4 palabras
@@ -167,7 +241,8 @@ def detectar_municipio_en_texto(texto: str) -> Optional[dict]:
     cache = _cargar_cache()
     if not cache:
         return None
-    palabras = _normalizar(texto).split()
+    texto_normalizado = _normalizar(texto)
+    palabras = texto_normalizado.split()
     for i in range(len(palabras)):
         for tam in range(min(_VENTANA_MAX_PALABRAS, len(palabras) - i), 0, -1):
             candidato = " ".join(palabras[i:i + tam])
@@ -175,10 +250,26 @@ def detectar_municipio_en_texto(texto: str) -> Optional[dict]:
                 continue  # nombres de 1-2-3 letras dan demasiados falsos positivos
             if candidato in _EXCLUIDOS:
                 continue
-            registro = cache.get(candidato)
-            if registro:
-                return registro
+            registros = cache.get(candidato)
+            if registros:
+                return _desambiguar(registros, texto_normalizado)
     return None
+
+
+def _desambiguar(registros: list[dict], texto_normalizado: str) -> dict:
+    """Cuando un nombre de municipio existe en más de un departamento (68
+    casos reales, ver docstring del módulo), busca si el departamento
+    correcto también aparece en el texto (patrón real: 'Tuchín, Córdoba')
+    para elegir el registro correcto. Si no hay match de departamento (o
+    solo hay un registro), devuelve el primero -- mismo comportamiento que
+    antes de este fix, ahora explícito en vez de accidental."""
+    if len(registros) == 1:
+        return registros[0]
+    for r in registros:
+        depto_normalizado = _normalizar(r.get("departamento") or "")
+        if depto_normalizado and depto_normalizado in texto_normalizado:
+            return r
+    return registros[0]
 
 
 def formatear_respuesta(registro: dict) -> str:
@@ -195,8 +286,9 @@ def formatear_respuesta(registro: dict) -> str:
         partes.append(f", Ad = {registro['ad']}")
     partes.append(
         ". Fuente: servicio geográfico oficial del SGC "
-        "(Zonas_amenaza_Sismica_NR10), consultado en vivo -- cubre los "
-        "1.122 municipios de Colombia, no solo las ciudades cargadas "
-        "manualmente en el resto del corpus."
+        "(Zonas_amenaza_Sismica_NR10) -- cubre 1.121 municipios de "
+        "Colombia (catálogo cargado en Supabase, con el servicio en vivo "
+        "como respaldo), no solo las ciudades cargadas manualmente en el "
+        "resto del corpus."
     )
     return "".join(partes)
