@@ -20,6 +20,7 @@ from supabase import create_client
 
 import sgc_amenaza_sismica
 import sgc_movimientos_masa
+import igac_client
 import noticias_colombia
 
 log = logging.getLogger(__name__)
@@ -1081,19 +1082,28 @@ def _bloque_contexto_noticias() -> Optional[str]:
 
 
 def _bloque_contexto_sgc(sgc_registro: dict) -> str:
-    """Arma el bloque de contexto en vivo del SGC a partir de un registro de
-    sgc_amenaza_sismica.detectar_municipio_en_texto(): siempre incluye la
-    amenaza sísmica, y si el registro trae coordenadas (lo trae desde
-    2026-08-20) suma también el inventario de movimientos en masa cercano
-    (SIMMA, ver sgc_movimientos_masa.py). Cada pieza es independiente --
-    si SIMMA no responde, la amenaza sísmica se sigue mostrando igual, y
-    viceversa."""
+    """Arma el bloque de contexto en vivo del SGC/IGAC a partir de un
+    registro de sgc_amenaza_sismica.detectar_municipio_en_texto(): siempre
+    incluye la amenaza sísmica; si el registro trae coordenadas (lo trae
+    desde 2026-08-20) suma el inventario de movimientos en masa cercano
+    (SIMMA, sgc_movimientos_masa.py); y desde 2026-08-21 suma también las
+    unidades físicas homogéneas de suelo del IGAC/UPRA (taxonomía, drenaje,
+    inundabilidad, profundidad -- ver igac_client.py, dataset nacional
+    fy2r-gwsd). Cada pieza es independiente -- si una fuente no responde o
+    no tiene datos para ese municipio, las demás se siguen mostrando igual."""
     partes = [sgc_amenaza_sismica.formatear_respuesta(sgc_registro)]
     lat, lon = sgc_registro.get("latitud"), sgc_registro.get("longitud")
     if lat is not None and lon is not None:
         movimientos = sgc_movimientos_masa.consultar_movimientos_cercanos(lat, lon)
         if movimientos:
             partes.append(sgc_movimientos_masa.formatear_respuesta(movimientos, sgc_registro["municipio"]))
+    unidades_suelo = igac_client.consultar_suelos_municipio(
+        sgc_registro["municipio"], sgc_registro.get("departamento")
+    )
+    if unidades_suelo:
+        bloque_suelo = igac_client.formatear_respuesta(unidades_suelo, sgc_registro["municipio"])
+        if bloque_suelo:
+            partes.append(bloque_suelo)
     return "\n\n".join(partes)
 
 
