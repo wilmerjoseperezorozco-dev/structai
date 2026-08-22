@@ -18,19 +18,33 @@ cobertura nacional incluyendo Atlantico):
   municipio de cada estacion -- clave para encontrar la estacion mas
   cercana a un proyecto)
 
-Encontrados pero SIN verificar (la URL no respondio con datos tabulares en
-la prueba, pendiente investigar antes de usarlos):
-- Caudales medios mensuales de los rios de Colombia: gih4-w7rj
+Caudales medios mensuales de los rios de Colombia -- verificado en vivo
+2026-08-22 (el dataset gih4-w7rj de datos.gov.co en si NO es tabular via
+Socrata, da 403 "no row or column access to non-tabular tables" -- pero
+la pagina real del dataset apunta a un bucket S3 PUBLICO real y sin
+autenticacion en datos.ideam.gov.co, API estandar ListObjectsV2, con un
+archivo CSV por estacion hidrologica). El codigo de estacion de estos CSV
+coincide exactamente con el campo "codigo" del catalogo hp9r-jxuu para
+estaciones categoria "Limnimétrica"/"Limnigráfica" (medicion de
+nivel/caudal de rio) -- confirmado en vivo con la estacion 0011017010
+(Aguasal, Chocó, Lloró): serie historica real 1965-2026, estado de
+aprobacion Preliminar/En revisión/Definitivo por dato. Ver
+caudal_por_municipio() más abajo.
+
+Encontrado pero SIN verificar (pendiente investigar antes de usarlo):
 - Humedad relativa: xh2z-7kiv
 
 Uso:
-    from ideam_client import buscar_estaciones, precipitacion_por_municipio
+    from ideam_client import buscar_estaciones, precipitacion_por_municipio, caudal_por_municipio
 
     estaciones = buscar_estaciones(departamento="Atlántico")
     precip = precipitacion_por_municipio("REPELÓN", limit=100)
+    caudal = caudal_por_municipio("Lloró", "Chocó")
 """
 from __future__ import annotations
 
+import csv
+import io
 import unicodedata
 from typing import Optional
 
@@ -44,7 +58,16 @@ DATASETS = {
     "estaciones": "hp9r-jxuu",
 }
 
+# Bucket S3 público del IDEAM (sin API key, sin autenticación -- verificado
+# en vivo 2026-08-22 vía la interfaz "Objects Browser" de datos.ideam.gov.co,
+# que internamente pega directo contra la API estándar de S3
+# ListObjectsV2). Los archivos vienen organizados por variable
+# (Q_MEDIA_M = caudal medio mensual) y por estación.
+S3_BASE = "https://datos.ideam.gov.co/s3-estacionesideam"
+S3_PREFIJO_CAUDAL = "observaciones/historicos/csv/Q_MEDIA_M/"
+
 _TIMEOUT = 15.0
+_TIMEOUT_S3 = 20.0  # los CSV historicos pueden pesar varias decenas de KB
 
 # Cache en memoria de proceso del valor REAL almacenado para cada
 # departamento (con o sin tilde según el dato original) -- ver
@@ -215,8 +238,130 @@ def temperatura_por_municipio(municipio: str, limit: int = 100) -> list[dict]:
     )
 
 
+def _descargar_csv_caudal(codigo_estacion: str) -> Optional[list[dict]]:
+    """Descarga y parsea el CSV histórico de caudal (Q_MEDIA_M, m³/s) de UNA
+    estación desde el bucket S3 público del IDEAM. None si la estación no
+    tiene archivo de caudal (404 -- pasa con estaciones que están en el
+    catálogo pero no miden caudal pese a la categoría, o cuyo código no
+    tiene datos publicados todavía), nunca lanza.
+
+    codigo_estacion se rellena a 10 dígitos con ceros a la izquierda antes
+    de armar la URL -- bug real encontrado en vivo 2026-08-22: el catálogo
+    hp9r-jxuu trae la MISMA estación duplicada con dos formatos de código
+    ('11017010' y '0011017010'), pero el bucket S3 solo usa la forma
+    rellenada a 10 dígitos ('0011017010-Q_MEDIA_M.csv') -- sin este zfill,
+    la mitad de las estaciones devolvían 404 según qué duplicado llegara
+    primero en la lista."""
+    codigo_estacion = codigo_estacion.zfill(10)
+    url = f"{S3_BASE}/{S3_PREFIJO_CAUDAL}{codigo_estacion}-Q_MEDIA_M.csv"
+    try:
+        with httpx.Client(timeout=_TIMEOUT_S3) as client:
+            resp = client.get(url)
+            if resp.status_code == 404:
+                return None
+            resp.raise_for_status()
+    except httpx.HTTPError:
+        return None
+    lector = csv.DictReader(io.StringIO(resp.text))
+    return list(lector)
+
+
+def caudal_por_municipio(
+    municipio: str,
+    departamento: Optional[str] = None,
+    max_estaciones: int = 2,
+    meses_recientes: int = 6,
+) -> list[dict]:
+    """Caudal medio mensual (m³/s) reciente de los ríos monitoreados cerca
+    de un municipio -- útil para contexto de riesgo de inundación (un
+    caudal muy por encima del histórico del mismo mes es indicio de
+    crecida). Busca estaciones categoría Limnimétrica/Limnigráfica
+    (medición de nivel/caudal, ver buscar_estaciones) en el municipio dado,
+    y para cada una descarga su serie histórica real del bucket S3 del
+    IDEAM, devolviendo solo los últimos `meses_recientes` registros.
+
+    Devuelve lista vacía si no hay estación de caudal en ese municipio (la
+    red hidrológica es más rala que la de precipitación/temperatura -- esto
+    es normal, no un error) o si ninguna de las estaciones candidatas tiene
+    archivo publicado. Nunca lanza ni inventa un caudal."""
+    estaciones = buscar_estaciones(departamento=departamento, municipio=municipio, categoria="Limn")
+
+    # El catálogo duplica cada estación con dos formatos de código (ver
+    # _descargar_csv_caudal) -- deduplicar por código normalizado (10
+    # dígitos) antes de recortar a max_estaciones, para no gastar 2 de los
+    # cupos en la MISMA estación dos veces.
+    vistos: set[str] = set()
+    estaciones_unicas = []
+    for est in estaciones:
+        codigo = (est.get("codigo") or "").zfill(10)
+        if codigo and codigo not in vistos:
+            vistos.add(codigo)
+            estaciones_unicas.append(est)
+
+    resultado: list[dict] = []
+    for est in estaciones_unicas[:max_estaciones]:
+        codigo = est.get("codigo")
+        if not codigo:
+            continue
+        filas = _descargar_csv_caudal(codigo)
+        if not filas:
+            continue
+        recientes = filas[-meses_recientes:]
+        for f in recientes:
+            resultado.append({
+                "codigo_estacion": codigo,
+                "nombre_estacion": est.get("nombre"),
+                "corriente": est.get("corriente"),  # nombre del río
+                "municipio": est.get("municipio"),
+                "departamento": est.get("departamento"),
+                "fecha": f.get("fechaObservacion"),
+                "caudal_m3s": f.get("valorObservado"),
+                "estado_aprobacion": f.get("nivelAprobacion"),
+            })
+    return resultado
+
+
+def formatear_caudal(registros: list[dict]) -> str:
+    """Arma un bloque de texto legible para inyectar en el RAG -- mismo
+    espíritu que los formatear_respuesta() de sgc_amenaza_sismica.py/
+    igac_client.py. Agrupa por estación/río, muestra solo el dato más
+    reciente de cada una más el estado de aprobación (Preliminar/En
+    revisión/Definitivo -- un dato Preliminar puede cambiar)."""
+    if not registros:
+        return ""
+    por_estacion: dict[str, list[dict]] = {}
+    for r in registros:
+        por_estacion.setdefault(r["codigo_estacion"], []).append(r)
+
+    lineas = ["Caudal medio mensual reciente (IDEAM, estaciones hidrológicas en vivo):"]
+    for codigo, filas in por_estacion.items():
+        filas_ordenadas = sorted(filas, key=lambda f: f["fecha"] or "")
+        ultimo = filas_ordenadas[-1]
+        rio = ultimo.get("corriente") or "río sin identificar"
+        nombre_est = ultimo.get("nombre_estacion") or codigo
+        fecha = (ultimo.get("fecha") or "")[:7]  # solo año-mes
+        try:
+            caudal = f"{float(ultimo.get('caudal_m3s')):.1f}"
+        except (TypeError, ValueError):
+            caudal = ultimo.get("caudal_m3s")  # dato crudo no numérico -- mostrar tal cual, no ocultarlo
+        estado = ultimo.get("estado_aprobacion") or "sin estado"
+        lineas.append(
+            f"- Río {rio} (estación {nombre_est}, {ultimo.get('municipio')}): "
+            f"{caudal} m³/s en {fecha} [{estado}]"
+        )
+    lineas.append(
+        "Un caudal muy por encima de lo típico para ese mes/río es indicio de "
+        "crecida -- esto NO es una alerta oficial de inundación, para eso "
+        "consulta directamente al IDEAM/UNGRD."
+    )
+    return "\n".join(lineas)
+
+
 if __name__ == "__main__":
     import json
 
     print("Estaciones en Atlántico:")
     print(json.dumps(buscar_estaciones(departamento="Atlántico", limit=5), ensure_ascii=False, indent=2))
+
+    print("\nCaudal reciente en Lloró, Chocó:")
+    print(formatear_caudal(caudal_por_municipio("Lloró", "Chocó")))

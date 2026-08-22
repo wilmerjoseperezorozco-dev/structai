@@ -21,6 +21,7 @@ from supabase import create_client
 import sgc_amenaza_sismica
 import sgc_movimientos_masa
 import igac_client
+import ideam_client
 import noticias_colombia
 
 log = logging.getLogger(__name__)
@@ -1088,15 +1089,18 @@ def _bloque_contexto_noticias() -> Optional[str]:
 
 
 def _bloque_contexto_sgc(sgc_registro: dict) -> str:
-    """Arma el bloque de contexto en vivo del SGC/IGAC a partir de un
+    """Arma el bloque de contexto en vivo del SGC/IGAC/IDEAM a partir de un
     registro de sgc_amenaza_sismica.detectar_municipio_en_texto(): siempre
     incluye la amenaza sísmica; si el registro trae coordenadas (lo trae
     desde 2026-08-20) suma el inventario de movimientos en masa cercano
-    (SIMMA, sgc_movimientos_masa.py); y desde 2026-08-21 suma también las
+    (SIMMA, sgc_movimientos_masa.py); desde 2026-08-21 suma también las
     unidades físicas homogéneas de suelo del IGAC/UPRA (taxonomía, drenaje,
     inundabilidad, profundidad -- ver igac_client.py, dataset nacional
-    fy2r-gwsd). Cada pieza es independiente -- si una fuente no responde o
-    no tiene datos para ese municipio, las demás se siguen mostrando igual."""
+    fy2r-gwsd); y desde 2026-08-22 suma el caudal reciente de ríos del IDEAM
+    (contexto de riesgo de inundación -- ver ideam_client.caudal_por_municipio(),
+    bucket S3 público del IDEAM). Cada pieza es independiente -- si una
+    fuente no responde o no tiene datos para ese municipio, las demás se
+    siguen mostrando igual."""
     partes = [sgc_amenaza_sismica.formatear_respuesta(sgc_registro)]
     lat, lon = sgc_registro.get("latitud"), sgc_registro.get("longitud")
     if lat is not None and lon is not None:
@@ -1110,6 +1114,11 @@ def _bloque_contexto_sgc(sgc_registro: dict) -> str:
         bloque_suelo = igac_client.formatear_respuesta(unidades_suelo, sgc_registro["municipio"])
         if bloque_suelo:
             partes.append(bloque_suelo)
+    caudales = ideam_client.caudal_por_municipio(sgc_registro["municipio"], sgc_registro.get("departamento"))
+    if caudales:
+        bloque_caudal = ideam_client.formatear_caudal(caudales)
+        if bloque_caudal:
+            partes.append(bloque_caudal)
     return "\n\n".join(partes)
 
 
@@ -1438,15 +1447,23 @@ def ask_delegado(question: str, top_k: int = 6) -> dict:
         result["dominio_label"] = "RAG normativo general (NSR-10 / NTC / seguridad industrial)"
         return result
 
-    # Enriquecimiento con dato oficial en vivo del SGC: si la pregunta de
-    # geopot menciona un municipio de Colombia, se consulta el servicio
-    # geográfico real del SGC (Aa/Av/zona de amenaza sísmica NSR-10) y se
-    # antepone al contexto -- cobertura de los 1.122 municipios del país,
-    # no solo las ciudades ya troceadas a mano en motor_chunks/nsr10_chunks.
-    # Nunca reemplaza la búsqueda semántica normal, solo la complementa; si
-    # el servicio del SGC falla o no hay match, sigue exactamente el mismo
-    # camino de siempre. Ver sgc_amenaza_sismica.py para el detalle.
-    sgc_registro = sgc_amenaza_sismica.detectar_municipio_en_texto(question) if motor == "geopot" else None
+    # Enriquecimiento con dato oficial en vivo del SGC/IGAC/IDEAM: si la
+    # pregunta de geopot O aquai menciona un municipio de Colombia, se
+    # consulta el servicio geográfico real del SGC (Aa/Av/zona de amenaza
+    # sísmica NSR-10) y se antepone al contexto -- cobertura de los 1.122
+    # municipios del país, no solo las ciudades ya troceadas a mano en
+    # motor_chunks/nsr10_chunks. aquai se agregó 2026-08-22: el mismo
+    # bloque ahora también trae caudal de ríos IDEAM (ver
+    # _bloque_contexto_sgc), directamente relevante para preguntas
+    # hidráulicas/de riesgo de inundación, no solo para geopot. Nunca
+    # reemplaza la búsqueda semántica normal, solo la complementa; si el
+    # servicio falla o no hay match, sigue exactamente el mismo camino de
+    # siempre. Ver sgc_amenaza_sismica.py para el detalle.
+    sgc_registro = (
+        sgc_amenaza_sismica.detectar_municipio_en_texto(question)
+        if motor in ("geopot", "aquai")
+        else None
+    )
 
     # Enriquecimiento con precios regionalizados de INVIAS: mismo espíritu que
     # el enriquecimiento SGC de arriba -- nunca reemplaza la búsqueda semántica

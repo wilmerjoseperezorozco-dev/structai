@@ -162,6 +162,43 @@ def endpoint_precipitacion_ideam(
     }
 
 
+@router.get(
+    "/hidrologia/caudal-ideam",
+    summary="Caudal medio mensual reciente de ríos IDEAM (contexto de riesgo de inundación)",
+)
+@limiter.limit("30/minute")
+def endpoint_caudal_ideam(
+    request: Request,
+    municipio: str,
+    departamento: str | None = None,
+    user: AuthenticatedUser = Depends(get_current_user),
+):
+    """Caudal medio mensual (m³/s) reciente de estaciones hidrológicas
+    (Limnimétrica/Limnigráfica) del IDEAM cercanas al municipio dado —
+    series históricas reales descargadas en vivo del bucket público del
+    IDEAM (ver packages/construdata/ideam_client.py, verificado en vivo
+    2026-08-22). Útil como contexto de riesgo de inundación (un caudal muy
+    por encima de lo típico para ese mes/río es indicio de crecida) — NO es
+    una alerta oficial ni reemplaza el monitoreo del IDEAM/UNGRD. La red
+    hidrológica es más rala que la de precipitación: es normal que un
+    municipio sin río monitoreado directamente devuelva lista vacía."""
+    try:
+        registros = ideam_client.caudal_por_municipio(municipio, departamento)
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"IDEAM (bucket S3 público) no disponible: {e}")
+    return {
+        "municipio": municipio,
+        "departamento": departamento,
+        "total_registros": len(registros),
+        "registros": registros,
+        "nota": (
+            "Fuente: IDEAM, bucket público de datos abiertos hidrológicos. "
+            "Contexto de riesgo de inundación, NO una alerta oficial — para "
+            "eso consulta directamente al IDEAM/UNGRD."
+        ),
+    }
+
+
 @router.post("/hidraulica/manning", response_model=motor_aquai.ManningResponse, summary="Manning — alcantarillado a gravedad")
 @limiter.limit("30/minute")
 def endpoint_manning(request: Request, req: motor_aquai.ManningRequest, user: AuthenticatedUser = Depends(get_current_user)):
