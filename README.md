@@ -77,9 +77,9 @@ StructAI empezó como una herramienta para Barranquilla y el Atlántico. La base
 - **Cobertura normativa y de precios verdaderamente nacional**, con la misma exigencia de verificación que hoy se aplica al Atlántico, no una versión diluida.
 - **Investigación aplicada, no solo producto.** El diseño de StructAI —extracción verificada, citación literal, honestidad ante la ausencia de datos— es en sí mismo un objeto de estudio para quien investigue sistemas de IA confiables en dominios de alto riesgo (ingeniería, salud, derecho). Es la pregunta de fondo detrás de mi trabajo de grado, y una línea que me interesa seguir más allá de él.
 
-## Colaboración con universidades y gremios
+## Colaboración con universidades, gremios y Cámaras de Comercio
 
-Esto es una invitación concreta, no una frase de cierre. Si diriges o participas en un programa de ingeniería civil, si representas a la Asociación Colombiana de Ingeniería Sísmica (AIS) —cuya metodología de rehabilitación sísmica ya cito con atribución explícita— o a cualquier entidad con interés real en cómo se está citando y verificando la normativa colombiana con IA, quiero hablar contigo. Ofrezco acceso educativo gratuito para estudiantes y docentes, y estoy buscando activamente:
+Esto es una invitación concreta, no una frase de cierre. Si diriges o participas en un programa de ingeniería civil, si representas a la Asociación Colombiana de Ingeniería Sísmica (AIS) —cuya metodología de rehabilitación sísmica ya cito con atribución explícita—, a una Cámara de Comercio —cuyo registro público (RUES) ya cruzo hoy para darle ciudad real a 58 de los 78 proveedores nacionales—, o a cualquier entidad con interés real en cómo se está citando y verificando la normativa colombiana con IA, quiero hablar contigo. Ofrezco acceso educativo gratuito para estudiantes y docentes, y estoy buscando activamente:
 
 - Revisión externa de la metodología de extracción del corpus por parte de un ingeniero estructural certificado.
 - Datos técnicos, normativos o de precios reales que puedan sumar a esta base, siempre con atribución documentada.

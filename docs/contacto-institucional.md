@@ -3,7 +3,7 @@
 StructAI nació como una herramienta para ingenieros civiles y maestros de
 obra del Atlántico. La base normativa y de precios que hemos construido ya
 no tiene ese límite técnico, y quiero que tampoco lo tenga a nivel
-institucional. Este documento es el punto de entrada para tres tipos de
+institucional. Este documento es el punto de entrada para cuatro tipos de
 colaboración concreta — no una lista de intenciones genéricas.
 
 ## Para universidades y programas de ingeniería civil
@@ -34,6 +34,44 @@ cómo lo hacemos — el código de las reglas de citación es público
 (`packages/construdata/rag_multi_norma.py`), y la cobertura real (no
 proyectada) es verificable en vivo en [`GET
 /data-status`](https://plankton-app-9qinh.ondigitalocean.app/data-status).
+
+## Para Cámaras de Comercio
+
+Esta no es una relación hipotética — ya existe una de hecho, solo que
+todavía no está formalizada. Los 78 proveedores mipyme nacionales que
+StructAI cita con precio real (catálogo IAD MIPYMES / Colombia Compra
+Eficiente) se enriquecen hoy con ciudad y departamento cruzando el
+registro público consolidado de Cámaras de Comercio de Colombia (RUES) —
+58 de esos 78 ya tienen ubicación real verificada así, sin que ninguna
+Cámara haya sido contactada todavía. Formalizar esa relación abriría
+varias cosas que hoy hacemos "desde afuera", con más fricción y menos
+frescura de la necesaria:
+
+- **Verificación en vivo de matrícula activa.** Hoy consulto el dato
+  público de RUES en lote, con la latencia y los huecos de un dataset
+  abierto (20 de los 78 proveedores no aparecen bajo un nombre que pueda
+  cruzar con confianza). Con una relación directa, StructAI podría
+  verificar "matriculado y activo hoy" con la misma frescura que ya
+  ofrezco para matrícula profesional de ingenieros vía COPNIA.
+- **Proveedores reales, con su consentimiento.** El catálogo nacional
+  actual es un cruce de datos públicos, no una relación con las empresas
+  mismas. Una Cámara tiene contacto directo con sus afiliados del sector
+  construcción — podría invitarlos a aparecer en StructAI con marca,
+  especificación técnica y ficha de producto real, el mismo nivel de
+  detalle que hoy solo tienen los 24 proveedores del Atlántico.
+- **Contraste con el observatorio económico regional**, si la Cámara
+  publica uno (varias lo hacen para el sector construcción) — una
+  segunda fuente independiente para verificar los precios que ya
+  tenemos, en cualquier dirección.
+- **Canal de distribución hacia quien ya construye.** Una Cámara agrupa
+  exactamente al usuario objetivo de StructAI — constructores,
+  ferreterías, contratistas — en un espacio de confianza institucional
+  ya establecido, no una red social fría.
+
+Si representas a una Cámara de Comercio (empezando naturalmente por la de
+Barranquilla, de donde nació este proyecto) y quieres ver el cruce real
+que ya hacemos con tu dato público antes de hablar de nada más, el código
+es público: `scripts/ingesta/apu_barranquilla/enriquecer_ubicacion_proveedores_rues.py`.
 
 ## Para quien tenga datos técnicos, normativos o de precios reales
 
