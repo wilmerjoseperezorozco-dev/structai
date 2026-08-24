@@ -79,15 +79,16 @@ todavía no está formalizada. Los 78 proveedores mipyme nacionales que
 StructAI cita con precio real (catálogo IAD MIPYMES / Colombia Compra
 Eficiente) se enriquecen hoy con ciudad y departamento cruzando el
 registro público consolidado de Cámaras de Comercio de Colombia (RUES) —
-58 de esos 78 ya tienen ubicación real verificada así, sin que ninguna
-Cámara haya sido contactada todavía. Formalizar esa relación abriría
-varias cosas que hoy hacemos "desde afuera", con más fricción y menos
-frescura de la necesaria:
+70 de esos 78 (90%) ya tienen ubicación real verificada así, sin que
+ninguna Cámara haya sido contactada todavía. Formalizar esa relación
+abriría varias cosas que hoy hacemos "desde afuera", con más fricción y
+menos frescura de la necesaria:
 
 - **Verificación en vivo de matrícula activa.** Hoy consulto el dato
   público de RUES en lote, con la latencia y los huecos de un dataset
-  abierto (20 de los 78 proveedores no aparecen bajo un nombre que pueda
-  cruzar con confianza). Con una relación directa, StructAI podría
+  abierto (los 8 restantes son casos genuinamente ambiguos — homónimos
+  reales, uniones temporales que no se registran como empresa regular —
+  no un límite de esfuerzo). Con una relación directa, StructAI podría
   verificar "matriculado y activo hoy" con la misma frescura que ya
   ofrezco para matrícula profesional de ingenieros vía COPNIA.
 - **Proveedores reales, con su consentimiento.** El catálogo nacional
@@ -119,6 +120,72 @@ señal de que esto es una práctica extendida, no una excepción. Y en vez
 de escribirle a cada una por separado, **Confecámaras** (la confederación
 nacional de las 57 cámaras de Colombia) es el punto de entrada que las
 agrupa a todas.
+
+## Visión de largo plazo — interoperabilidad estatal (X-Road)
+
+Esto es explícitamente **aspiracional, no un próximo paso técnico de esta
+semana** — lo dejo escrito para que quede el mapa, no para prometer una
+fecha. Colombia está construyendo la interoperabilidad real del Estado
+sobre **X-Road** (la misma plataforma open-source que usa Estonia),
+coordinada por la Agencia Nacional Digital y MinTIC. De las entidades ya
+conectadas, estas son las que reforzarían StructAI de verdad si algún
+día hay un convenio formal (conectarse a X-Road requiere eso, no es una
+API que se activa sola):
+
+**Refuerzo directo de motores:**
+- **IGAC** — ya integrado hoy vía datos abiertos (suelos, motor GeoPot);
+  X-Road sería la vía técnicamente correcta a futuro, y además IGAC
+  maneja catastro nacional multipropósito — terreno sin tocar todavía,
+  podría abrir un motor nuevo de predios/avalúo catastral.
+- **Ministerio de Vivienda** — política de vivienda VIS/VIP, normativa
+  de construcción — refuerza APU, GeoPot y Estructural a la vez.
+- **Ministerio de Transporte** — INVIAS depende de este ministerio;
+  dato nacional de infraestructura vial más allá de los APU
+  regionalizados que ya tenemos (motor Vías).
+- **Superintendencia de Notariado y Registro** — folios de matrícula
+  inmobiliaria; relevante si StructAI conecta un cálculo a un predio
+  real, no solo a un municipio (motor APU/proyectos).
+- **Contraloría General de la República** — auditoría real de obra
+  pública (sobrecostos, atrasos, hallazgos fiscales) — casos reales
+  para el motor Gerencia (EVM/PMBOK), no solo teoría.
+
+**Investigación/semilleros:**
+- **Contraloría General** (doble uso) — los hallazgos de auditoría son
+  material de investigación aplicada real: ¿por qué se sobrecostean los
+  proyectos en Colombia?
+- **Superintendencia de Notariado y Registro** (doble uso) —
+  informalidad de tenencia de tierra, mercado inmobiliario real.
+- **Ministerio de Educación** — canal institucional para reconocimiento
+  formal de StructAI como herramienta educativa/de investigación (vía
+  SNIES o similar), en la misma línea que ACOFI y Uninorte arriba.
+
+**Nota honesta**: ninguna de las entidades conectadas a X-Road hoy es
+**MinCiencias** (Ministerio de Ciencia, Tecnología e Innovación), que es
+la entidad real que financia/reconoce semilleros de investigación en
+Colombia — no está en la lista, así que no aparece forzado aquí. Las
+demás entidades conectadas (ICA, ICBF, Cancillería, Ministerio del
+Interior, DAFP, MinTIC, Unidad para las Víctimas, entre otras) no tienen
+una conexión real con ingeniería civil/construcción — se dejan fuera
+deliberadamente en vez de estirar la relevancia.
+
+## Prioridad de ejecución
+
+Para quien lea esto y se pregunte "¿por dónde empiezo yo, el autor,
+a tocar puertas?" — este es el orden real, de más a menos accionable
+ahora mismo:
+
+1. **CAMACOL Atlántico** y **Universidad del Norte (GIEG)** — mismo
+   terreno donde nació StructAI, menor fricción, mayor probabilidad de
+   respuesta rápida. Empezar aquí.
+2. **ACOFI** y **Confecámaras** — un solo contacto abre decenas de
+   facultades o las 57 cámaras del país a la vez. Alto apalancamiento.
+3. **SCI**, **SCG**, y las Cámaras de Comercio con observatorio propio
+   (Bogotá, Medellín, Cali) — peso institucional nacional real, pero
+   ciclos de respuesta más lentos. Vale la pena, sin prisa.
+4. **X-Road / entidades estatales** (IGAC, Min Vivienda, Min Transporte,
+   Notariado y Registro, Contraloría, Min Educación) — visión de largo
+   plazo, requiere convenio formal, no es ejecutable como los tres
+   niveles anteriores. Tenerlo en el radar, no perseguirlo todavía.
 
 ## Para quien tenga datos técnicos, normativos o de precios reales
 
