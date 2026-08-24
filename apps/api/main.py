@@ -285,6 +285,7 @@ try:
     from rag_multi_norma import sb as supabase_client, groq_client
     from rag_multi_norma import RespuestaIAIndisponibleError
     from rag_multi_norma import uso_groq_hoy as _uso_groq_hoy_fn
+    from rag_multi_norma import AVISO_RESPONSABILIDAD_PROFESIONAL, aviso_responsabilidad_para_dominio
     RAG_AVAILABLE = True
     log.info("✓ rag_multi_norma cargado")
 except Exception as e:
@@ -578,6 +579,10 @@ class AskResponse(BaseModel):
     fuentes: list[FuenteChunk]
     chunks_usados: int
     latencia_ms: int
+    # Garantía determinística (issue #18) -- SIEMPRE presente en /ask (todo
+    # su corpus es normativa_general), nunca generado por el LLM. Ver
+    # rag_multi_norma.AVISO_RESPONSABILIDAD_PROFESIONAL.
+    aviso_responsabilidad: Optional[str] = None
 
 
 class ConsultarRequest(BaseModel):
@@ -592,6 +597,10 @@ class ConsultarResponse(BaseModel):
     fuentes: list[FuenteChunk]
     chunks_usados: int
     latencia_ms: int
+    # Garantía determinística (issue #18) -- solo para dominios de diseño
+    # (normativa_general/geopot/aquai/vias), None para apu_precios/gerencia.
+    # Nunca generado por el LLM. Ver rag_multi_norma.aviso_responsabilidad_para_dominio().
+    aviso_responsabilidad: Optional[str] = None
 
 
 class APUItem(BaseModel):
@@ -1331,6 +1340,10 @@ def ask_norma(request: Request, req: AskRequest):
         fuentes=fuentes,
         chunks_usados=result.get("chunks_usados", 0),
         latencia_ms=latencia,
+        # /ask es SIEMPRE normativa_general -- el aviso aplica al 100% de
+        # sus respuestas, garantizado aquí, no depende de que el LLM lo
+        # mencione (issue #18).
+        aviso_responsabilidad=AVISO_RESPONSABILIDAD_PROFESIONAL,
     )
 
 
@@ -1409,6 +1422,9 @@ def consultar_delegado(request: Request, req: ConsultarRequest):
         fuentes=fuentes,
         chunks_usados=result.get("chunks_usados", 0),
         latencia_ms=latencia,
+        # Determinístico por dominio (issue #18) -- None para apu_precios/
+        # gerencia, el aviso fijo para normativa_general/geopot/aquai/vias.
+        aviso_responsabilidad=aviso_responsabilidad_para_dominio(result.get("dominio", "")),
     )
 
 

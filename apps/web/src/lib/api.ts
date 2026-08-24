@@ -23,6 +23,10 @@ export interface AskResponse {
   fuentes: FuenteChunk[];
   chunks_usados: number;
   latencia_ms: number;
+  // Garantía determinística (issue #18): /ask siempre consulta normativa
+  // general, así que el backend siempre la incluye (nunca null acá, a
+  // diferencia de ConsultarResponse). Ver ConsultarResponse para el detalle.
+  aviso_responsabilidad: string;
 }
 
 /** Respuesta del agente delegador (/consultar) — cualquier dominio de
@@ -35,6 +39,11 @@ export interface ConsultarResponse {
   fuentes: FuenteChunk[];
   chunks_usados: number;
   latencia_ms: number;
+  // Garantía determinística (issue #18): null para apu_precios/gerencia,
+  // texto fijo (nunca generado por el LLM) para dominios de diseño. El
+  // componente que renderiza esto debe mostrarlo aparte del markdown de
+  // `respuesta`, nunca mezclado con el texto generado.
+  aviso_responsabilidad: string | null;
 }
 
 export interface APUItem {

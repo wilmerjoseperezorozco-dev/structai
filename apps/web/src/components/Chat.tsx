@@ -195,6 +195,23 @@ const MARKDOWN_COMPONENTS = {
   ),
 };
 
+// ── Aviso de responsabilidad profesional (issue #18) ────────────────────────
+// Texto FIJO que viene del backend (rag_multi_norma.AVISO_RESPONSABILIDAD_PROFESIONAL),
+// nunca generado por el LLM — por eso se renderiza en un bloque aparte del
+// markdown de `respuesta`, con estilo propio, y no se le pasa por
+// ReactMarkdown. Solo aparece cuando el dominio de la respuesta es de
+// diseño/cálculo (normativa_general, geopot, aquai, vías); en apu_precios y
+// gerencia el backend manda `aviso_responsabilidad: null` y este bloque no
+// se pinta.
+function AvisoResponsabilidad({ texto }: { texto: string }) {
+  return (
+    <div className="mt-2 flex gap-2 rounded-xl border border-amber-800/40 bg-amber-950/20 px-3 py-2.5 text-xs leading-relaxed text-amber-200/90">
+      <ShieldAlert size={14} className="mt-0.5 flex-shrink-0 text-amber-400" />
+      <p>{texto}</p>
+    </div>
+  );
+}
+
 function Bubble({ msg }: { msg: Message }) {
   const isUser = msg.role === "user";
   const isError = msg.role === "error";
@@ -229,6 +246,9 @@ function Bubble({ msg }: { msg: Message }) {
       {/* Metadatos RAG */}
       {msg.meta && (
         <div className="mt-1.5">
+          {msg.meta.aviso_responsabilidad && (
+            <AvisoResponsabilidad texto={msg.meta.aviso_responsabilidad} />
+          )}
           <Fuentes
             fuentes={msg.meta.fuentes}
             normas={msg.meta.normas_citadas}

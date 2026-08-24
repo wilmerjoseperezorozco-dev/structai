@@ -1444,6 +1444,55 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = 6) -> dict
     }
 
 
+# ─── AVISO DE RESPONSABILIDAD PROFESIONAL (issue #18) ────────────────────────
+# Intento anterior (2026-08-21): pedirle al LLM por prompt que cerrara la
+# respuesta con este recordatorio. Probado en vivo con una pregunta real de
+# f'c para columna en zona sísmica alta -- el modelo dio el valor correcto
+# (21 MPa) pero se saltó el recordatorio por completo, pese a la instrucción
+# explícita (con max_tokens=700 y reasoning_effort="low" el modelo prioriza
+# concisión sobre instrucciones "de cierre" al final de un prompt largo).
+# Revertido a pedido del usuario ese mismo día.
+#
+# Esta vez: garantía DETERMINÍSTICA, no depende de que el LLM "se acuerde".
+# El backend (apps/api/main.py) agrega este campo SIEMPRE al dict de
+# respuesta para los dominios que producen valores de diseño -- nunca es
+# texto generado, nunca puede faltar porque el modelo lo omitió. El
+# frontend debe renderizarlo de forma fija (no como parte del markdown de
+# la respuesta), para que sea visualmente imposible de perder de vista.
+#
+# Dominios con aviso: normativa_general, geopot, aquai, vias -- producen
+# valores de diseño (dimensiones, coeficientes, resistencias) que alguien
+# podría llevar directo a obra. apu_precios y gerencia quedan fuera: dan
+# precios/indicadores de gestión, no valores de diseño estructural.
+DOMINIOS_CON_AVISO_RESPONSABILIDAD = frozenset({"normativa_general", "geopot", "aquai", "vias"})
+
+AVISO_RESPONSABILIDAD_PROFESIONAL = (
+    "Este valor es una referencia técnica basada en la norma citada, no un "
+    "diseño aprobado para construcción. Todo cálculo o especificación que "
+    "vaya a obra debe ser revisado y firmado por un ingeniero matriculado "
+    "(COPNIA), conforme a la Ley 842 de 2003."
+)
+
+
+def aviso_responsabilidad_para_dominio(dominio: str) -> Optional[str]:
+    """None si el dominio no maneja valores de diseño (apu_precios, gerencia,
+    o cualquier dominio futuro no listado explícitamente) -- nunca se
+    adivina, solo los 4 dominios ya evaluados devuelven el aviso.
+
+    _ask_delegado_compuesto() (preguntas que mezclan apu_precios + otro
+    dominio, ej. "precio del cemento" + "resistencia mínima de columnas")
+    devuelve `dominio` como cadena compuesta "apu_precios+geopot" -- un
+    match exacto contra el frozenset nunca la reconoce, así que se revisa
+    cada componente por separado (split en "+"). Si CUALQUIER componente es
+    de diseño, la respuesta lleva el aviso: la mitad normativa/geopot/aquai/
+    vías de una respuesta compuesta sigue siendo una referencia técnica, no
+    un diseño aprobado, sin importar que la otra mitad sea solo precio."""
+    componentes = dominio.split("+")
+    if any(c in DOMINIOS_CON_AVISO_RESPONSABILIDAD for c in componentes):
+        return AVISO_RESPONSABILIDAD_PROFESIONAL
+    return None
+
+
 # ─── AGENTE DELEGADOR — endpoint /consultar ──────────────────────────────────
 MOTOR_LABEL = {
     "aquai": "AquAI (acueducto, alcantarillado y saneamiento — RAS 2000)",
