@@ -1249,6 +1249,68 @@ def _bloque_vulnerabilidad_vivienda(municipio: str, departamento: Optional[str])
     )
 
 
+def _bloque_historico_emergencias(municipio: str, departamento: Optional[str]) -> str:
+    """Resumen HISTÓRICO real de emergencias reportadas a la UNGRD para
+    ese municipio (2019-2024, ver ungrd_emergencias / issue #21) --
+    fallecidos, viviendas destruidas/averiadas y conteo por tipo de
+    evento. Esto es lo que YA PASÓ, nunca un pronóstico ni una alerta --
+    complementa (no reemplaza) las señales pre-evento de amenaza sísmica/
+    caudal/vulnerabilidad de vivienda ya conectadas. Cadena vacía si no
+    hay eventos registrados para ese municipio."""
+    if not municipio:
+        return ""
+    # El dato crudo de UNGRD viene en MAYÚSCULAS SIN TILDE ("ATLANTICO",
+    # "CHOCO") -- ilike es insensible a mayúsculas pero NO a tildes, así
+    # que "Atlántico" (como lo entrega sgc_amenaza_sismica) nunca
+    # matcheaba contra "ATLANTICO" -- bug real encontrado probando este
+    # bloque en vivo con Barranquilla/Riosucio, corregido quitando tildes
+    # del término de búsqueda antes de consultar.
+    query = sb.table("ungrd_emergencias").select(
+        "evento, fecha, fallecidos, viviendas_destruidas, viviendas_averiadas"
+    ).ilike("municipio", _slug_sin_tildes_query(municipio))
+    if departamento:
+        query = query.ilike("departamento", _slug_sin_tildes_query(departamento))
+    resultado = query.limit(500).execute()
+    eventos = resultado.data or []
+    if not eventos:
+        return ""
+
+    conteo_por_tipo: dict[str, int] = {}
+    total_fallecidos = 0
+    total_viv_destruidas = 0
+    total_viv_averiadas = 0
+    fechas = []
+    for e in eventos:
+        conteo_por_tipo[e["evento"]] = conteo_por_tipo.get(e["evento"], 0) + 1
+        total_fallecidos += e.get("fallecidos") or 0
+        total_viv_destruidas += e.get("viviendas_destruidas") or 0
+        total_viv_averiadas += e.get("viviendas_averiadas") or 0
+        if e.get("fecha"):
+            fechas.append(e["fecha"])
+
+    top_tipos = sorted(conteo_por_tipo.items(), key=lambda kv: -kv[1])[:4]
+    resumen_tipos = ", ".join(f"{tipo.lower()} ({n})" for tipo, n in top_tipos)
+    rango = f"{min(fechas)} a {max(fechas)}" if fechas else "sin fecha registrada"
+
+    partes = [
+        f"Histórico real de emergencias reportadas a la UNGRD en {municipio} "
+        f"({rango}): {len(eventos)} eventos registrados -- {resumen_tipos}."
+    ]
+    if total_fallecidos:
+        partes.append(f"{total_fallecidos} fallecidos acumulados en esos eventos.")
+    if total_viv_destruidas or total_viv_averiadas:
+        partes.append(
+            f"{total_viv_destruidas} viviendas destruidas y "
+            f"{total_viv_averiadas} averiadas, acumulado."
+        )
+    partes.append(
+        "Esto es histórico de lo YA ocurrido (fuente: UNGRD), NO una alerta "
+        "ni un pronóstico -- para riesgo actual consulta las señales de "
+        "amenaza sísmica/caudal/vulnerabilidad de vivienda de este mismo contexto."
+    )
+    return " ".join(partes)
+
+
 def _bloque_contexto_sgc(sgc_registro: dict) -> str:
     """Arma el bloque de contexto en vivo del SGC/IGAC/IDEAM a partir de un
     registro de sgc_amenaza_sismica.detectar_municipio_en_texto(): siempre
@@ -1261,9 +1323,11 @@ def _bloque_contexto_sgc(sgc_registro: dict) -> str:
     (contexto de riesgo de inundación -- ver ideam_client.caudal_por_municipio(),
     bucket S3 público del IDEAM); y desde 2026-08-24 suma la señal
     estadística de vulnerabilidad de vivienda por material de pared
-    (muestra Sisbén IV, ver _bloque_vulnerabilidad_vivienda()). Cada pieza
-    es independiente -- si una fuente no responde o no tiene datos para
-    ese municipio, las demás se siguen mostrando igual."""
+    (muestra Sisbén IV, ver _bloque_vulnerabilidad_vivienda()) y el
+    histórico real de emergencias reportadas a la UNGRD (post-evento, ver
+    _bloque_historico_emergencias()). Cada pieza es independiente -- si
+    una fuente no responde o no tiene datos para ese municipio, las demás
+    se siguen mostrando igual."""
     partes = [sgc_amenaza_sismica.formatear_respuesta(sgc_registro)]
     lat, lon = sgc_registro.get("latitud"), sgc_registro.get("longitud")
     if lat is not None and lon is not None:
@@ -1287,6 +1351,11 @@ def _bloque_contexto_sgc(sgc_registro: dict) -> str:
     )
     if bloque_vulnerabilidad:
         partes.append(bloque_vulnerabilidad)
+    bloque_historico = _bloque_historico_emergencias(
+        sgc_registro["municipio"], sgc_registro.get("departamento")
+    )
+    if bloque_historico:
+        partes.append(bloque_historico)
     return "\n\n".join(partes)
 
 
