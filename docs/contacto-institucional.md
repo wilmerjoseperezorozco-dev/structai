@@ -159,14 +159,29 @@ API que se activa sola):
   formal de StructAI como herramienta educativa/de investigación (vía
   SNIES o similar), en la misma línea que ACOFI y Uninorte arriba.
 
-**Nota honesta**: ninguna de las entidades conectadas a X-Road hoy es
-**MinCiencias** (Ministerio de Ciencia, Tecnología e Innovación), que es
-la entidad real que financia/reconoce semilleros de investigación en
-Colombia — no está en la lista, así que no aparece forzado aquí. Las
-demás entidades conectadas (ICA, ICBF, Cancillería, Ministerio del
-Interior, DAFP, MinTIC, Unidad para las Víctimas, entre otras) no tienen
-una conexión real con ingeniería civil/construcción — se dejan fuera
-deliberadamente en vez de estirar la relevancia.
+**Nota honesta y corrección**: ninguna de las entidades conectadas a
+X-Road hoy es **MinCiencias** (Ministerio de Ciencia, Tecnología e
+Innovación) — no está en esa lista específica, así que no aparece
+forzado ahí. Pero investigando más a fondo (2026-08-24) encontré algo
+que sí vale la pena tener presente: por el **CONPES 4144** (Política
+Nacional de Inteligencia Artificial, aprobada 2025), **MinCiencias es
+hoy la Autoridad Nacional en IA de Colombia** — no es solo el ministerio
+de ciencia genérico, es literalmente quien gobierna la política pública
+de IA del país, con seis ejes (ética y gobernanza, datos e
+infraestructura, investigación e innovación, entre otros) y una
+inversión proyectada de $479.273 millones COP hasta 2030. Es, de lejos,
+el contacto de mayor peso institucional si el objetivo es visibilidad
+de IA aplicada en Colombia, no solo ingeniería civil — y además sigue
+siendo la entidad real de fondeo/reconocimiento de semilleros de
+investigación. MinCiencias corre convocatorias de fondeo para proyectos
+de IA con regularidad (ver minciencias.gov.co/convocatorias) — vale la
+pena vigilarlas, aunque ninguna convocatoria activa encontrada hasta
+ahora encaja limpio con construcción/ingeniería civil todavía.
+
+Las demás entidades conectadas a X-Road (ICA, ICBF, Cancillería,
+Ministerio del Interior, DAFP, Unidad para las Víctimas, entre otras) no
+tienen una conexión real con ingeniería civil/construcción — se dejan
+fuera deliberadamente en vez de estirar la relevancia.
 
 ## Prioridad de ejecución
 
@@ -182,10 +197,17 @@ ahora mismo:
 3. **SCI**, **SCG**, y las Cámaras de Comercio con observatorio propio
    (Bogotá, Medellín, Cali) — peso institucional nacional real, pero
    ciclos de respuesta más lentos. Vale la pena, sin prisa.
-4. **X-Road / entidades estatales** (IGAC, Min Vivienda, Min Transporte,
-   Notariado y Registro, Contraloría, Min Educación) — visión de largo
-   plazo, requiere convenio formal, no es ejecutable como los tres
-   niveles anteriores. Tenerlo en el radar, no perseguirlo todavía.
+4. **MinCiencias** (Autoridad Nacional en IA de Colombia) — a diferencia
+   de X-Road, esto sí es vigilable de forma concreta: corre
+   convocatorias públicas de fondeo para IA con fechas reales
+   (minciencias.gov.co/convocatorias). Ninguna convocatoria actual
+   encaja limpio con construcción/ingeniería civil todavía, pero es el
+   contacto de mayor peso si el objetivo es visibilidad de IA aplicada
+   en Colombia a nivel país, no solo el sector construcción.
+5. **X-Road / entidades estatales** (IGAC, Min Vivienda, Min Transporte,
+   Notariado y Registro, Contraloría) — visión de largo plazo, requiere
+   convenio formal, no es ejecutable como los niveles anteriores.
+   Tenerlo en el radar, no perseguirlo todavía.
 
 ## Para quien tenga datos técnicos, normativos o de precios reales
 
