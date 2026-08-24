@@ -1217,6 +1217,38 @@ def _bloque_caudal_con_anomalia(registros: list[dict]) -> str:
     return "\n".join(lineas)
 
 
+def _bloque_vulnerabilidad_vivienda(municipio: str, departamento: Optional[str]) -> str:
+    """Señal estadística de vulnerabilidad de vivienda por material de
+    pared (tapia/adobe/bahareque/madera burda/etc.), derivada de la
+    muestra anonimizada Sisbén IV (corte SIV_2022, ver
+    scripts/ingesta/sisben_vulnerabilidad/cargar_vulnerabilidad_vivienda.py).
+    Cadena vacía si no hay dato para ese municipio -- nunca inventa.
+    Disclaimer explícito SIEMPRE, mismo criterio que la anomalía de caudal
+    del IDEAM: esto NUNCA es una evaluación estructural real."""
+    if not municipio:
+        return ""
+    query = sb.table("sisben_vulnerabilidad_vivienda_municipio").select(
+        "pct_material_vulnerable, n_viviendas_muestra, corte"
+    ).ilike("municipio", municipio)
+    if departamento:
+        query = query.ilike("departamento", departamento)
+    resultado = query.limit(1).execute()
+    if not resultado.data:
+        return ""
+    fila = resultado.data[0]
+    pct = fila["pct_material_vulnerable"]
+    return (
+        f"Vulnerabilidad de vivienda por material de pared en {municipio} "
+        f"(señal estadística, muestra Sisbén {fila['corte']}, "
+        f"{fila['n_viviendas_muestra']} viviendas muestreadas): "
+        f"{pct:.0f}% con material de pared típicamente vulnerable en sismo "
+        f"(tapia, adobe, bahareque, madera burda u otro no resistente). "
+        f"Esto es un indicador socioeconómico de 2022, NO una evaluación "
+        f"estructural ni un censo de vivienda actual -- nunca reemplaza una "
+        f"inspección técnica real (NSR-10 Título A.10)."
+    )
+
+
 def _bloque_contexto_sgc(sgc_registro: dict) -> str:
     """Arma el bloque de contexto en vivo del SGC/IGAC/IDEAM a partir de un
     registro de sgc_amenaza_sismica.detectar_municipio_en_texto(): siempre
@@ -1225,11 +1257,13 @@ def _bloque_contexto_sgc(sgc_registro: dict) -> str:
     (SIMMA, sgc_movimientos_masa.py); desde 2026-08-21 suma también las
     unidades físicas homogéneas de suelo del IGAC/UPRA (taxonomía, drenaje,
     inundabilidad, profundidad -- ver igac_client.py, dataset nacional
-    fy2r-gwsd); y desde 2026-08-22 suma el caudal reciente de ríos del IDEAM
+    fy2r-gwsd); desde 2026-08-22 suma el caudal reciente de ríos del IDEAM
     (contexto de riesgo de inundación -- ver ideam_client.caudal_por_municipio(),
-    bucket S3 público del IDEAM). Cada pieza es independiente -- si una
-    fuente no responde o no tiene datos para ese municipio, las demás se
-    siguen mostrando igual."""
+    bucket S3 público del IDEAM); y desde 2026-08-24 suma la señal
+    estadística de vulnerabilidad de vivienda por material de pared
+    (muestra Sisbén IV, ver _bloque_vulnerabilidad_vivienda()). Cada pieza
+    es independiente -- si una fuente no responde o no tiene datos para
+    ese municipio, las demás se siguen mostrando igual."""
     partes = [sgc_amenaza_sismica.formatear_respuesta(sgc_registro)]
     lat, lon = sgc_registro.get("latitud"), sgc_registro.get("longitud")
     if lat is not None and lon is not None:
@@ -1248,6 +1282,11 @@ def _bloque_contexto_sgc(sgc_registro: dict) -> str:
         bloque_caudal = _bloque_caudal_con_anomalia(caudales)
         if bloque_caudal:
             partes.append(bloque_caudal)
+    bloque_vulnerabilidad = _bloque_vulnerabilidad_vivienda(
+        sgc_registro["municipio"], sgc_registro.get("departamento")
+    )
+    if bloque_vulnerabilidad:
+        partes.append(bloque_vulnerabilidad)
     return "\n\n".join(partes)
 
 

@@ -28,8 +28,8 @@ Uso:
 
     m = resolver_municipio("repelon", "atlantico")
     # {"municipio": "Repelón", "departamento": "Atlántico",
-    #  "codigo_municipio": "08573", "codigo_departamento": "08",
-    #  "latitud": 10.4926, "longitud": -75.1349}
+    #  "codigo_municipio": "08606", "codigo_departamento": "08",
+    #  "latitud": 10.493357, "longitud": -75.125534}
 """
 from __future__ import annotations
 
@@ -50,6 +50,7 @@ _TIMEOUT = 20.0
 _CACHE: Optional[list[dict]] = None
 _INDICE_MUNICIPIO: Optional[dict[str, list[dict]]] = None
 _INDICE_DEPARTAMENTO: Optional[dict[str, str]] = None
+_INDICE_CODIGO: Optional[dict[str, dict]] = None
 
 
 def _sin_tildes(s: str) -> str:
@@ -79,7 +80,7 @@ def _titulo(s: str) -> str:
 
 
 def _cargar_cache() -> list[dict]:
-    global _CACHE, _INDICE_MUNICIPIO, _INDICE_DEPARTAMENTO
+    global _CACHE, _INDICE_MUNICIPIO, _INDICE_DEPARTAMENTO, _INDICE_CODIGO
     if _CACHE is not None:
         return _CACHE
 
@@ -92,6 +93,7 @@ def _cargar_cache() -> list[dict]:
     filas: list[dict] = []
     indice_municipio: dict[str, list[dict]] = {}
     indice_departamento: dict[str, str] = {}
+    indice_codigo: dict[str, dict] = {}
 
     for f in filas_crudas:
         try:
@@ -118,6 +120,12 @@ def _cargar_cache() -> list[dict]:
         clave_depto = _clave(depto_canon)
         indice_departamento[clave_depto] = depto_canon
 
+        if registro["codigo_municipio"]:
+            # Código DIVIPOLA de municipio (5 dígitos, 2 de depto + 3 de
+            # mpio) ya es único a nivel nacional -- no necesita depto para
+            # desambiguar, a diferencia de resolver_municipio() por nombre.
+            indice_codigo[registro["codigo_municipio"]] = registro
+
     # Alias reales que DANE no cubre con el nombre oficial tal cual: la
     # capital casi nunca se escribe con el sufijo ", D.C." en una pregunta
     # normal ("Bogota", "Bogotá") -- es demasiado importante (capital,
@@ -131,7 +139,23 @@ def _cargar_cache() -> list[dict]:
     _CACHE = filas
     _INDICE_MUNICIPIO = indice_municipio
     _INDICE_DEPARTAMENTO = indice_departamento
+    _INDICE_CODIGO = indice_codigo
     return _CACHE
+
+
+def resolver_por_codigo(codigo_municipio: str) -> Optional[dict]:
+    """Resuelve un código DIVIPOLA de municipio (5 dígitos, ej. '08573') a
+    su registro canónico completo -- para fuentes externas (SISBEN, censos,
+    cualquier dataset del DANE/DNP) que identifican municipio por código en
+    vez de nombre, donde no hace falta desambiguar por departamento porque
+    el código ya es único a nivel nacional. Acepta el código con o sin
+    ceros a la izquierda ('8573' o '08573') porque algunas fuentes externas
+    lo devuelven como entero, perdiendo el cero inicial. None si el código
+    no existe -- nunca inventa."""
+    _cargar_cache()
+    assert _INDICE_CODIGO is not None
+    codigo = str(codigo_municipio).strip().zfill(5)
+    return _INDICE_CODIGO.get(codigo)
 
 
 def resolver_departamento(nombre: str) -> Optional[str]:
