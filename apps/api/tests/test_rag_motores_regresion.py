@@ -21,6 +21,7 @@ Ejecutar: pytest apps/api/tests/test_rag_motores_regresion.py -v
 """
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -49,6 +50,10 @@ from rag_multi_norma import ask_delegado  # noqa: E402
 
 _ESPACIOS_UNICODE = ("\u202f", "\u00a0", "\u2009", "\u2007")  # narrow/no-break/thin/figure space
 _SUBINDICES_UNICODE = str.maketrans("₀₁₂₃₄₅₆₇₈₉", "0123456789")  # D₆₀ -> D60
+# \frac{EV}{AC} -> EV/AC (también \dfrac, \tfrac)
+_LATEX_FRAC = re.compile(r"\\d?t?frac\{([^{}]*)\}\{([^{}]*)\}")
+_LATEX_TEXT = re.compile(r"\\text\{([^{}]*)\}")  # \text{EV} -> EV
+_LATEX_DELIMITADORES = ("\\[", "\\]", "\\(", "\\)")  # delimitadores de bloque/inline math
 
 
 def _contiene_alguna(texto: str, variantes: list[str]) -> bool:
@@ -62,8 +67,19 @@ def _contiene_alguna(texto: str, variantes: list[str]) -> bool:
     técnicamente correcta, pero "ev / ac" con espacio normal no calzaba.
     Y subíndices unicode (D₆₀/D₁₀ en vez de D60/D10) a dígitos normales —
     mismo día, mismo patrón: Groq usa tipografía correcta y el test exigía
-    el dígito plano."""
+    el dígito plano. También normaliza notación LaTeX de fórmulas (ej.
+    "\\[ \\text{CPI} = \\frac{\\text{EV}}{\\text{AC}} \\]" -> "cpi = ev/ac") —
+    encontrado real en CI (2026-08-21, respaldo OpenAI por cuota de Groq
+    agotada): el respaldo a veces redacta la misma fórmula correcta en LaTeX
+    en vez de texto plano, y el test comparaba contra texto plano únicamente."""
     texto_low = texto.lower().translate(_SUBINDICES_UNICODE)
+    # \text{} se desenvuelve ANTES que \frac{}{}: en "\frac{\text{EV}}{\text{AC}}"
+    # el contenido de cada argumento de \frac trae llaves anidadas de \text, y
+    # _LATEX_FRAC (sin soporte de anidamiento) no matchea si van primero.
+    texto_low = _LATEX_TEXT.sub(r"\1", texto_low)
+    texto_low = _LATEX_FRAC.sub(r"\1/\2", texto_low)
+    for delim in _LATEX_DELIMITADORES:
+        texto_low = texto_low.replace(delim, "")
     for esp in _ESPACIOS_UNICODE:
         texto_low = texto_low.replace(esp, " ")
     return any(v.lower() in texto_low for v in variantes)
