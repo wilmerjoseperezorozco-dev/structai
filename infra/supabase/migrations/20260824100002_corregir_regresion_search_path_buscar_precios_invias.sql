@@ -1,0 +1,16 @@
+-- Corrige una regresion real introducida por la propia migracion
+-- 20260824000001 (fix de advisor "search_path mutable"): se fijo
+-- buscar_precios_invias() a search_path=public UNICAMENTE, pero
+-- similarity() (funcion de la extension pg_trgm) vive en el schema
+-- 'extensions' en Supabase, no en 'public' -- la funcion completa
+-- quedo rota ("function similarity(text, text) does not exist"),
+-- encontrado probando una pregunta real end-to-end del chat.
+-- buscar_precios_apu() (funcion hermana, mismo patron) SI incluye
+-- 'extensions' correctamente -- este fix iguala ese mismo patron.
+--
+-- Lección real: el fix original solo verificó que el ALTER FUNCTION no
+-- lanzara error, nunca se probó la función con una llamada real después
+-- del cambio -- mismo principio de "verificar con retrieval real, no
+-- solo que el insert no falló" documentado en CLAUDE.md, ahora aplicado
+-- también a cambios de configuración de funciones, no solo a datos.
+alter function public.buscar_precios_invias set search_path = public, extensions;

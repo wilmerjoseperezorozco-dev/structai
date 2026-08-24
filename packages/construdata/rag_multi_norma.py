@@ -11,6 +11,7 @@ Uso: from rag_multi_norma import ask, route_query
 """
 import logging
 import os
+import re
 import unicodedata
 from dataclasses import dataclass
 from functools import lru_cache
@@ -490,6 +491,27 @@ FUENTE_DISPLAY = {
 }
 
 
+_VOCAL_SIN_TILDE_A_ACENTUADA = {"a": "Á", "e": "É", "i": "Í", "o": "Ó", "u": "Ú"}
+_MOJIBAKE_SECOP = re.compile(r"(?<=[A-ZÑ])([aeiou])(?=[A-ZÑ]|\b)")
+
+
+def _reparar_ubicacion_secop(texto: Optional[str]) -> Optional[str]:
+    """SECOP II (registro público, ver apu_proveedores_nacional.departamento/
+    municipio) devuelve nombres de ciudad/departamento con la vocal tildada
+    en minúscula SIN tilde en vez de mayúscula CON tilde -- ej. "BOGOTa" en
+    vez de "BOGOTÁ", "CuCUTA" en vez de "CÚCUTA", "IBAGUe" en vez de
+    "IBAGUÉ". Es un defecto real de la fuente (confirmado consultando el
+    dataset directo, no un typo nuestro) -- se guarda tal cual en Supabase
+    (ver enriquecer_ubicacion_proveedores_secop.py), pero se repara aquí
+    solo para lo que ve el usuario final: dentro de un nombre en mayúsculas,
+    una vocal minúscula sin tilde entre letras mayúsculas (o al final de
+    palabra) es inequívocamente esa misma vocal con tilde."""
+    if not texto:
+        return texto
+    reparado = _MOJIBAKE_SECOP.sub(lambda m: _VOCAL_SIN_TILDE_A_ACENTUADA[m.group(1)], texto)
+    return reparado.title()
+
+
 def _fuente_display(tipo_fuente: str) -> str:
     if tipo_fuente and tipo_fuente.startswith("proveedor_"):
         # tipo_fuente sintético de proveedores, ej. "proveedor_homecenter_colombia"
@@ -527,7 +549,14 @@ def buscar_precios_apu(query: str, top_k: int = 8) -> list[PrecioResult]:
             unidad=r.get("unidad"),
             precio=r.get("precio"),
             precio_solo_mano_obra=r.get("precio_solo_mano_obra"),
-            region=r.get("region"),
+            # Solo el branch de proveedor nacional viene de SECOP II (ver
+            # _reparar_ubicacion_secop) -- el resto de fuentes (region de
+            # Atlántico/INVIAS) ya trae texto limpio, no tocar.
+            region=(
+                _reparar_ubicacion_secop(r.get("region"))
+                if r["tipo_fuente"] == "catalogo_iad_mipymes_detalle"
+                else r.get("region")
+            ),
             tipo_fuente=r["tipo_fuente"],
             fecha_captura=r.get("fecha_captura"),
             item_codigo=r.get("item_codigo"),
