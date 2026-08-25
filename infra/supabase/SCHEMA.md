@@ -97,6 +97,12 @@ RLS está **habilitado en todas las tablas de `public`**, sin excepción
    `consultas_history`, `plan_analyses`, `compliance_checks`,
    `agent_results`, `*_proyectos`): CRUD completo (`SELECT`/`INSERT`/
    `UPDATE`/`DELETE`) filtrado por `auth.uid() = user_id` (o equivalente).
+   Toda política de `UPDATE` lleva `USING` **y** `WITH CHECK` con la misma
+   condición (repaso de RLS 2026-08-25: 4 tablas — `agent_results`,
+   `geopot_proyectos`, `gerencia_proyectos`, `vias_proyectos` — tenían
+   `USING` sin `WITH CHECK`, lo que permitía a un usuario reasignar el
+   `user_id` de su propia fila; cerrado en la migración
+   `agregar_with_check_faltante_en_update_own`, mismo patrón que las demás).
 
 ## Cómo mantener esto actualizado
 
