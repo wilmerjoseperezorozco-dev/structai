@@ -26,10 +26,23 @@ const fraunces = Fraunces({
   display: "swap",
 });
 
+const TITULO = "StructAI — Cálculos con trazabilidad normativa";
+const DESCRIPCION =
+  "NSR-10, NTC y SGSST citados con norma, título y sección exacta. Precios unitarios, estructuras, acueducto, geotecnia, vías y gerencia de obra para ingeniería civil en Colombia.";
+
 export const metadata: Metadata = {
-  title: "StructAI — Cálculos con trazabilidad normativa",
-  description:
-    "NSR-10, NTC y SGSST citados con norma, título y sección exacta. Precios unitarios, estructuras, acueducto, geotecnia, vías y gerencia de obra para ingeniería civil en Colombia.",
+  // metadataBase resuelve las URLs relativas de openGraph/twitter (og:image,
+  // canonical) a absolutas -- sin esto Next.js las deja relativas y la
+  // mayoría de crawlers sociales (LinkedIn, WhatsApp, Google) las ignoran.
+  metadataBase: new URL("https://www.structai.online"),
+  title: TITULO,
+  description: DESCRIPCION,
+  keywords: [
+    "NSR-10", "norma sismo resistente Colombia", "ingeniería civil Colombia",
+    "cálculo estructural", "APU precios unitarios", "diagnóstico vulnerabilidad sísmica",
+    "RAS 2000", "SGSST", "INVIAS", "diseño sismorresistente",
+  ],
+  authors: [{ name: "Wilmer José Pérez Orozco" }],
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -39,6 +52,24 @@ export const metadata: Metadata = {
   icons: {
     icon: "/icon-192.png",
     apple: "/icon-192.png",
+  },
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "es_CO",
+    url: "https://www.structai.online",
+    siteName: "StructAI",
+    title: TITULO,
+    description: DESCRIPCION,
+    images: [{ url: "/icon-512.png", width: 512, height: 512, alt: "StructAI" }],
+  },
+  twitter: {
+    card: "summary",
+    title: TITULO,
+    description: DESCRIPCION,
+    images: ["/icon-512.png"],
   },
 };
 
