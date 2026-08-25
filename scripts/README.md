@@ -36,6 +36,7 @@ Reorganizado el 2026-08-02 (antes vivían sueltos en `scripts/`, ~35 archivos en
 | `tuneles/` | Contenido técnico de túneles |
 | `motores/` | `ingest_motor_chunks.py` — carga GeoPot, Vías y Gerencia en `motor_chunks` (AquAI se carga aparte desde `ras2000/`) |
 | `normativa_general/` | SGSST (Decreto 1072, Ley 1562), ISO 9001, NTC 1500, y el corpus general de `ingest_normativa.py` |
+| `peru_e030/` | Primer corpus del programa de replicabilidad internacional — E.030 "Diseño Sismorresistente" de Perú, tabla propia `peru_e030_chunks` (espejo de `nsr10_chunks`, no reutilizada porque la numeración de artículos es incompatible entre normas). Base legal para citar verbatim: Art. 9(b) del Decreto Legislativo N° 822 (Ley de Derecho de Autor de Perú) excluye los textos oficiales legislativos/administrativos/judiciales del copyright — verificado 2026-08-24, misma categoría legal que NSR-10 en Colombia. |
 
 ## `load_nsr10.py` — archivado 2026-08-20
 
