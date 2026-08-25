@@ -75,7 +75,9 @@ exactos que similitud semántica.
 | Función | Uso |
 |---|---|
 | `match_nsr10_chunks(query_embedding, match_count, filter_caps, min_similarity)` | Búsqueda semántica sobre `nsr10_chunks` |
-| `search_knowledge(...)` (2 overloads) | Búsqueda híbrida RRF sobre `nsr10_chunks`+`ntc_chunks`+`motor_chunks` |
+| `search_knowledge(...)` (2 overloads) | Búsqueda híbrida RRF sobre `nsr10_chunks`+`ntc_chunks`+`motor_chunks` — el overload con `p_motor` (el que llama `search()` en `rag_multi_norma.py`) usa lexemas con OR (`unnest(to_tsvector(...))` + `string_agg`, fix `20260809114440_fix_search_knowledge_or_tsquery.sql`), no `plainto_tsquery` AND-estricto |
+| `match_peru_e030_chunks(...)` / `search_knowledge_peru_e030(...)` | Ídem para `peru_e030_chunks` — la segunda es la híbrida (RRF, OR lematizado vía `plainto_tsquery` reescrito a `\|`), usarla en vez de la primera cuando se wiree al chat |
+| `match_ecuador_nec_se_ds_chunks(...)` / `search_knowledge_ecuador_nec_se_ds(...)` | Ídem para `ecuador_nec_se_ds_chunks` |
 | `search_nsr10_fulltext(query_text, match_count, filter_caps)` | Búsqueda de texto completo (respaldo/complemento de la semántica) |
 | `buscar_precios_apu(p_query, p_limit)` | Búsqueda de precios (4 fuentes: actividades, insumos, proveedores locales, proveedores nacionales) |
 | `save_apu_calculation(...)`, `save_consulta(...)`, `save_plan_analysis(...)` | Persistencia de historial por usuario |
