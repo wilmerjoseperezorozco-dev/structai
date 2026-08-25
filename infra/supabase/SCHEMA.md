@@ -43,7 +43,7 @@ endpoint público `GET /data-status` de `apps/api` en vez de este documento.
 | `profiles` | Perfil + plan (free/pro/enterprise) + contador de consultas del mes |
 | `apu_calculations` | Historial de cálculos APU guardados por el usuario |
 | `consultas_history` | Historial de chat (RAG) por usuario |
-| `consultas` | (legado/en desuso — 0 filas) |
+| `consultas` | (legado/en desuso — 0 filas; política pública de lectura para `authenticated` cerrada 2026-08-25 en repaso de RLS, ver migración `cerrar_lectura_publica_tabla_consultas_legado`) |
 | `plan_analyses` | Análisis de planos subidos (motor de detección) |
 | `compliance_checks` | Verificaciones de cumplimiento normativo |
 | `agent_results` | Resultados de agentes/automatizaciones |
