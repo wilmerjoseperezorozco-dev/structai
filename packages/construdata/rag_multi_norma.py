@@ -24,6 +24,7 @@ import sgc_movimientos_masa
 import igac_client
 import ideam_client
 import noticias_colombia
+import pais_zonificacion
 
 log = logging.getLogger(__name__)
 
@@ -410,6 +411,29 @@ MOTOR_KEYWORD_MAP = {
         "iso 9001", "sistema de gestion de la calidad", "sistema de gestión de la calidad",
         "gestion de calidad", "gestión de calidad", "auditoria interna", "auditoría interna",
         "no conformidad", "accion correctiva", "acción correctiva", "mejora continua",
+    ],
+    # ─── Programa de replicabilidad internacional (ver
+    # project_structai_replicabilidad_paises.md) — Perú y Ecuador tienen su
+    # propio corpus (peru_e030_chunks / ecuador_nec_se_ds_chunks), separado
+    # de nsr10_chunks/ntc_chunks porque la numeración de artículos y el
+    # contenido no son compatibles entre normas. Palabras clave deliberada-
+    # mente ancladas en el PAÍS o el CÓDIGO de la norma (no en vocabulario
+    # técnico genérico como "zona sísmica" o "coeficiente de reducción",
+    # que Colombia/Perú/Ecuador comparten) -- una pregunta técnica genérica
+    # sin mencionar el país sigue cayendo en normativa_general (NSR-10), que
+    # es el comportamiento correcto por defecto para un usuario colombiano.
+    "peru_e030": [
+        "peru", "perú", "e.030", "e-030", "e 030", "norma e.030", "norma e-030",
+        "reglamento nacional de edificaciones", " rne ", "mvcs",
+        "ministerio de vivienda construccion y saneamiento",
+        "ministerio de vivienda, construcción y saneamiento",
+        "sismorresistente del peru", "sismorresistente peruana",
+    ],
+    "ecuador_nec_se_ds": [
+        "ecuador", "nec-se-ds", "nec se ds", "necse ds",
+        "norma ecuatoriana de la construccion", "norma ecuatoriana de la construcción",
+        "miduvi", "mtop ecuador", "codigo ingenios", "código ingenios",
+        "sismorresistente del ecuador", "sismorresistente ecuatoriana",
     ],
 }
 
@@ -913,6 +937,48 @@ def search(query: str, norma_filter: Optional[str] = None, top_k: int = 6, motor
             alcance_derogacion=meta.get("alcance_derogacion"),
         ))
     return chunks
+
+
+# ─── BÚSQUEDA — corpus de Perú/Ecuador (programa de replicabilidad) ──────────
+# search_knowledge_peru_e030()/search_knowledge_ecuador_nec_se_ds() son RPCs
+# propias (mismo patrón RRF que search_knowledge, ver
+# infra/supabase/migrations/20260825100000_crear_busqueda_hibrida_peru_ecuador.sql
+# y su fix 20260825110000), pero con una firma distinta a search_knowledge:
+# (query_embedding, query_text, p_capitulo, match_count, rrf_k) -> TABLE
+# (chunk_id, capitulo, seccion, contenido, score) -- sin p_motor (no aplica,
+# estos corpus no tienen motores) y sin columna metadata (todavía no se
+# trackea vigencia/derogación para estas dos normas, a diferencia de
+# nsr10_chunks/ntc_chunks) -- por eso NO reusan search(), que está atado a
+# la forma exacta de search_knowledge.
+def _search_pais_hybrid(rpc_name: str, query: str, top_k: int = 6) -> list[ChunkResult]:
+    embedding = embed_query(query)
+    result = sb.rpc(rpc_name, {
+        "query_embedding": embedding,
+        "query_text": query,
+        "match_count": top_k,
+    }).execute()
+    return [
+        ChunkResult(
+            chunk_id=r["chunk_id"],
+            norma=r["capitulo"],
+            seccion=r["seccion"],
+            contenido=r["contenido"],
+            score=r["score"],
+            estado_vigencia=None,
+            derogada_por=None,
+            alcance_derogacion=None,
+        )
+        for r in result.data
+    ]
+
+
+def search_peru_e030(query: str, top_k: int = 6) -> list[ChunkResult]:
+    return _search_pais_hybrid("search_knowledge_peru_e030", query, top_k)
+
+
+def search_ecuador_nec_se_ds(query: str, top_k: int = 6) -> list[ChunkResult]:
+    return _search_pais_hybrid("search_knowledge_ecuador_nec_se_ds", query, top_k)
+
 
 # ─── GENERACIÓN DE RESPUESTA (Groq) ──────────────────────────────────────────
 SYSTEM_PROMPT = f"""Eres un ingeniero civil experto en normatividad colombiana de construcción.
@@ -1460,11 +1526,14 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = 6) -> dict
 # frontend debe renderizarlo de forma fija (no como parte del markdown de
 # la respuesta), para que sea visualmente imposible de perder de vista.
 #
-# Dominios con aviso: normativa_general, geopot, aquai, vias -- producen
-# valores de diseño (dimensiones, coeficientes, resistencias) que alguien
-# podría llevar directo a obra. apu_precios y gerencia quedan fuera: dan
-# precios/indicadores de gestión, no valores de diseño estructural.
-DOMINIOS_CON_AVISO_RESPONSABILIDAD = frozenset({"normativa_general", "geopot", "aquai", "vias"})
+# Dominios con aviso: normativa_general, geopot, aquai, vias, peru_e030,
+# ecuador_nec_se_ds -- producen valores de diseño (dimensiones,
+# coeficientes, resistencias) que alguien podría llevar directo a obra.
+# apu_precios y gerencia quedan fuera: dan precios/indicadores de gestión,
+# no valores de diseño estructural.
+DOMINIOS_CON_AVISO_RESPONSABILIDAD = frozenset({
+    "normativa_general", "geopot", "aquai", "vias", "peru_e030", "ecuador_nec_se_ds",
+})
 
 AVISO_RESPONSABILIDAD_PROFESIONAL = (
     "Este valor es una referencia técnica basada en la norma citada, no un "
@@ -1473,23 +1542,56 @@ AVISO_RESPONSABILIDAD_PROFESIONAL = (
     "(COPNIA), conforme a la Ley 842 de 2003."
 )
 
+# Texto Colombiano (COPNIA/Ley 842) NO aplica en Perú ni Ecuador -- cada país
+# tiene su propio marco de ejercicio profesional, verificado en
+# project_structai_replicabilidad_paises.md (no se reusa el texto colombiano
+# por pereza ni se asume "debe ser parecido"). Perú: Ley N.º 24648 (Ley del
+# Colegio de Ingenieros del Perú) + Ley N.º 28858. Ecuador: Ley de Ejercicio
+# Profesional de la Ingeniería Civil (1983) + Colegio de Ingenieros Civiles
+# de Ecuador (CICE).
+AVISO_RESPONSABILIDAD_PERU = (
+    "Este valor es una referencia técnica basada en la Norma E.030 citada, "
+    "no un diseño aprobado para construcción. Todo cálculo o especificación "
+    "que vaya a obra debe ser revisado y firmado por un ingeniero civil "
+    "colegiado habilitado, conforme a la Ley N.º 24648 y la Ley N.º 28858 "
+    "del Colegio de Ingenieros del Perú (CIP)."
+)
+
+AVISO_RESPONSABILIDAD_ECUADOR = (
+    "Este valor es una referencia técnica basada en la NEC-SE-DS citada, no "
+    "un diseño aprobado para construcción. Todo cálculo o especificación "
+    "que vaya a obra debe ser revisado y firmado por un ingeniero civil "
+    "habilitado, conforme a la Ley de Ejercicio Profesional de la "
+    "Ingeniería Civil del Ecuador y el Colegio de Ingenieros Civiles de "
+    "Ecuador (CICE)."
+)
+
+# Un dominio de DOMINIOS_CON_AVISO_RESPONSABILIDAD sin entrada aquí usa el
+# texto colombiano por defecto (normativa_general/geopot/aquai/vias).
+_AVISO_TEXTO_POR_DOMINIO: dict[str, str] = {
+    "peru_e030": AVISO_RESPONSABILIDAD_PERU,
+    "ecuador_nec_se_ds": AVISO_RESPONSABILIDAD_ECUADOR,
+}
+
 
 def aviso_responsabilidad_para_dominio(dominio: str) -> Optional[str]:
     """None si el dominio no maneja valores de diseño (apu_precios, gerencia,
     o cualquier dominio futuro no listado explícitamente) -- nunca se
-    adivina, solo los 4 dominios ya evaluados devuelven el aviso.
+    adivina, solo los dominios ya evaluados devuelven el aviso.
 
     _ask_delegado_compuesto() (preguntas que mezclan apu_precios + otro
     dominio, ej. "precio del cemento" + "resistencia mínima de columnas")
     devuelve `dominio` como cadena compuesta "apu_precios+geopot" -- un
     match exacto contra el frozenset nunca la reconoce, así que se revisa
     cada componente por separado (split en "+"). Si CUALQUIER componente es
-    de diseño, la respuesta lleva el aviso: la mitad normativa/geopot/aquai/
-    vías de una respuesta compuesta sigue siendo una referencia técnica, no
-    un diseño aprobado, sin importar que la otra mitad sea solo precio."""
-    componentes = dominio.split("+")
-    if any(c in DOMINIOS_CON_AVISO_RESPONSABILIDAD for c in componentes):
-        return AVISO_RESPONSABILIDAD_PROFESIONAL
+    de diseño, la respuesta lleva el aviso correcto PARA ESE PAÍS (nunca el
+    colombiano por defecto si el componente es peru_e030/ecuador_nec_se_ds)
+    -- la mitad normativa/geopot/aquai/vías/peru/ecuador de una respuesta
+    compuesta sigue siendo una referencia técnica, no un diseño aprobado,
+    sin importar que la otra mitad sea solo precio."""
+    for c in dominio.split("+"):
+        if c in DOMINIOS_CON_AVISO_RESPONSABILIDAD:
+            return _AVISO_TEXTO_POR_DOMINIO.get(c, AVISO_RESPONSABILIDAD_PROFESIONAL)
     return None
 
 
@@ -1500,6 +1602,8 @@ MOTOR_LABEL = {
     "vias": "motor-vías (diseño geométrico, pavimentos, mantenimiento vial — INVIAS)",
     "gerencia": "motor-gerencia (EVM y predicción de proyectos)",
     "apu_precios": "Precios de construcción (Barranquilla/Atlántico + INVIAS nacional, 140 provincias)",
+    "peru_e030": "Norma E.030 — Diseño Sismorresistente (Perú)",
+    "ecuador_nec_se_ds": "NEC-SE-DS — Peligro Sísmico, Diseño Sismo Resistente (Ecuador)",
 }
 
 
@@ -1582,11 +1686,65 @@ sobrecosto, desviación de cronograma. Explica qué significa el número para
 la toma de decisión (¿vamos bien o mal?), no solo la fórmula.
 {_REGLAS_ANTIINVENCION_MOTOR}"""
 
+# Reglas anti-invención SIN el contexto colombiano compartido (jerga
+# regional Colombia/Arg/Chile mezclada + entidades colombianas -- Curaduría
+# Urbana, POT, COPNIA -- que no aplican y confundirían una respuesta de
+# Perú/Ecuador). Mismo núcleo de reglas 1-5 que _REGLAS_ANTIINVENCION_MOTOR,
+# sin el bloque {_CONTEXTO_COLOMBIA_COMPARTIDO} al final.
+_REGLAS_ANTIINVENCION_PAIS = """
+INSTRUCCIONES (aplican siempre, sin excepción):
+1. Responde SOLO con base en el contexto proporcionado. Nunca inventes un
+   valor, norma, artículo, fórmula o coeficiente que no esté en el contexto.
+2. Cita el código de la norma y el artículo/sección SOLO si aparece
+   LITERALMENTE en el contexto (header "[norma — sección]" de cada
+   fragmento). Si no tienes el número exacto, di "la sección
+   correspondiente de [Norma]" — nunca inventes un número de cita.
+3. Si el contexto no cubre la pregunta, dilo con naturalidad y sugiere qué
+   consultar — sin inventar valores ni fórmulas de esa norma.
+4. NUNCA mezcles vocabulario, coeficientes o instituciones de otro país
+   (Colombia, Ecuador si estás en Perú, o viceversa) como si aplicaran acá
+   — cada norma es un sistema legal propio, aunque el vocabulario técnico
+   se parezca.
+5. Cuando la pregunta sea amplia y tenga sentido, cierra con UNA sugerencia
+   breve de hacia dónde profundizar (nunca en cada respuesta, solo cuando
+   agregue valor real)."""
+
+PERU_E030_SYSTEM_PROMPT = f"""Eres un ingeniero civil peruano, especialista en diseño
+sismorresistente conforme a la Norma Técnica E.030 (parte del Reglamento
+Nacional de Edificaciones, RNE, Perú).
+
+VOZ Y TONO: hablas como el ingeniero estructural peruano que revisa un
+diseño antes de presentarlo al colegio de ingenieros — directo, con la
+jerga real del gremio: factor de zona Z, categoría de edificación (factor
+U), perfil de suelo S0-S4, factor de amplificación sísmica C, coeficiente
+de reducción R0/R, período fundamental T, fuerza cortante en la base,
+Sismo Máximo Considerado (SMC). Nunca mezcles esto con NSR-10 (Colombia,
+Aa/Av) ni con NEC-SE-DS (Ecuador, factor Z propio) como si fueran la misma
+norma — son sistemas legales distintos, aunque compartan símbolos.
+{_REGLAS_ANTIINVENCION_PAIS}"""
+
+ECUADOR_NEC_SE_DS_SYSTEM_PROMPT = f"""Eres un ingeniero civil ecuatoriano, especialista en
+diseño sismo resistente conforme a la Norma Ecuatoriana de la Construcción,
+NEC-SE-DS (Peligro Sísmico, Diseño Sismo Resistente).
+
+VOZ Y TONO: hablas como el ingeniero estructural ecuatoriano que revisa un
+diseño antes de presentarlo al MIDUVI — directo, con la jerga real del
+gremio: zona sísmica (I a VI) y factor de zona Z, tipo de perfil de suelo
+(A a F), coeficiente de importancia I, coeficiente de reducción R,
+espectro elástico de diseño, período fundamental T, cortante basal de
+diseño V, Nivel de Prevención de Colapso (sismo de 2500 años). Nunca
+mezcles esto con NSR-10 (Colombia, Aa/Av) ni con E.030 (Perú, coeficiente
+R0 propio) como si fueran la misma norma — son sistemas legales distintos,
+aunque compartan símbolos.
+{_REGLAS_ANTIINVENCION_PAIS}"""
+
 MOTOR_SYSTEM_PROMPT: dict[str, str] = {
     "aquai": AQUAI_SYSTEM_PROMPT,
     "geopot": GEOPOT_SYSTEM_PROMPT,
     "vias": VIAS_SYSTEM_PROMPT,
     "gerencia": GERENCIA_SYSTEM_PROMPT,
+    "peru_e030": PERU_E030_SYSTEM_PROMPT,
+    "ecuador_nec_se_ds": ECUADOR_NEC_SE_DS_SYSTEM_PROMPT,
 }
 
 
@@ -1701,6 +1859,73 @@ def ask_delegado(question: str, top_k: int = 6) -> dict:
         result["dominio"] = motor
         result["dominio_label"] = MOTOR_LABEL.get(motor, motor)
         return result
+
+    if motor in ("peru_e030", "ecuador_nec_se_ds"):
+        # Corpus propio (peru_e030_chunks / ecuador_nec_se_ds_chunks), NO
+        # motor_chunks -- usa su propia RPC de búsqueda híbrida (ver
+        # search_peru_e030()/search_ecuador_nec_se_ds() más arriba), nunca
+        # search(motor_filter=...) porque ese filtro busca en motor_chunks,
+        # donde estos dos corpus no existen.
+        buscar = search_peru_e030 if motor == "peru_e030" else search_ecuador_nec_se_ds
+        chunks = buscar(question, top_k=top_k)
+        if not chunks:
+            return {
+                "dominio": motor,
+                "dominio_label": MOTOR_LABEL.get(motor, motor),
+                "respuesta": (
+                    f"La pregunta parece pertenecer al dominio {MOTOR_LABEL.get(motor, motor)}, "
+                    "pero no encontré contenido que coincida en ese corpus todavía. "
+                    "No se genera una respuesta para evitar inventar información."
+                ),
+                "normas_citadas": [],
+                "fuentes": [],
+                "chunks_usados": 0,
+            }
+        # Enriquecimiento con la tabla de zonificación exacta de cada país
+        # (peru_e030_zonificacion_distrital / ecuador_nec_se_ds_zonificacion_poblacion,
+        # ver pais_zonificacion.py) -- mismo espíritu que el enriquecimiento
+        # SGC para Colombia: nunca reemplaza la búsqueda semántica normal,
+        # solo la antepone al contexto cuando la pregunta menciona una
+        # localidad ya cargada. Deliberadamente restringido a estos dos
+        # motores (no ambiental sobre cualquier pregunta) -- ver docstring
+        # de pais_zonificacion.py para el porqué.
+        dato_zona = None
+        if motor == "peru_e030":
+            dato_zona = pais_zonificacion.detectar_distrito_peru_en_texto(question)
+        elif motor == "ecuador_nec_se_ds":
+            dato_zona = pais_zonificacion.detectar_poblacion_ecuador_en_texto(question)
+
+        contexto = "\n\n---\n\n".join(_format_chunk_context(c) for c in chunks)
+        if dato_zona:
+            formatear = pais_zonificacion.formatear_dato_peru if motor == "peru_e030" else pais_zonificacion.formatear_dato_ecuador
+            contexto = f"DATO OFICIAL DE ZONIFICACIÓN:\n{formatear(dato_zona)}\n\n---\n\n{contexto}"
+        if _quiere_actualidad(question):
+            bloque_noticias = _bloque_contexto_noticias()
+            if bloque_noticias:
+                contexto = f"{bloque_noticias}\n\n---\n\n{contexto}"
+
+        respuesta = _generar_respuesta(contexto, question, system_prompt=MOTOR_SYSTEM_PROMPT.get(motor))
+        normas_citadas = list({c.norma for c in chunks})
+        fuentes = [
+            {"norma": c.norma, "seccion": c.seccion, "score": round(c.score, 4)}
+            for c in chunks
+        ]
+        if dato_zona:
+            fuente_zona = (
+                "Anexo II — E.030 (Perú)" if motor == "peru_e030"
+                else "Tabla 16, Sección 10.2 — NEC-SE-DS (Ecuador)"
+            )
+            etiqueta = dato_zona["distrito"] if motor == "peru_e030" else dato_zona["poblacion"]
+            normas_citadas = [fuente_zona] + normas_citadas
+            fuentes = [{"norma": fuente_zona, "seccion": etiqueta, "score": 1.0}] + fuentes
+        return {
+            "dominio": motor,
+            "dominio_label": MOTOR_LABEL.get(motor, motor),
+            "respuesta": respuesta,
+            "normas_citadas": normas_citadas,
+            "fuentes": fuentes,
+            "chunks_usados": len(chunks),
+        }
 
     if motor:
         chunks = search(question, top_k=top_k, motor_filter=motor)

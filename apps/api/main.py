@@ -1360,10 +1360,11 @@ def consultar_delegado(request: Request, req: ConsultarRequest):
     Punto de entrada único para preguntas de cualquier dominio de ingeniería.
 
     Detecta si la pregunta pertenece al corpus de un motor específico
-    (por ahora: AquAI — acueducto/alcantarillado RAS 2000) y busca ahí;
-    si no, cae al RAG normativo general (NSR-10/NTC/seguridad industrial),
-    el mismo que usa /ask. GeoPot, motor-vías y motor-gerencia se suman a
-    este delegador a medida que se ingesta su corpus de chunks reales.
+    (AquAI, GeoPot, motor-vías, motor-gerencia, precios) o a la norma de
+    otro país (E.030 — Perú, NEC-SE-DS — Ecuador, ver
+    rag_multi_norma.MOTOR_KEYWORD_MAP) y busca ahí; si no, cae al RAG
+    normativo general (NSR-10/NTC/seguridad industrial), el mismo que usa
+    /ask.
 
     Ejemplo:
         {"pregunta": "¿Qué coeficiente C de Hazen-Williams uso para tubería PVC?"}
