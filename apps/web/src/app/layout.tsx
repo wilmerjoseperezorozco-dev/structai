@@ -81,9 +81,51 @@ export const viewport: Viewport = {
   themeColor: "#0A0E14",
 };
 
+// Datos estructurados (schema.org) -- le dicen a Google explícitamente que
+// StructAI, el perfil de GitHub y el de LinkedIn son la misma persona/marca
+// (propiedad "sameAs" = el mecanismo real que usan los buscadores para
+// enlazar identidades, no solo un link visual). Contenido 100% estático,
+// sin ningún dato de usuario -- por eso dangerouslySetInnerHTML es seguro
+// aquí (ver rules/react/security.md: fuente bajo control total, nunca
+// entrada externa).
+const JSON_LD = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://www.structai.online/#persona",
+      name: "Wilmer José Pérez Orozco",
+      jobTitle: "Ingeniero civil · Polímata en IA aplicada",
+      url: "https://www.structai.online",
+      sameAs: [
+        "https://github.com/wilmerjoseperezorozco-dev",
+        "https://www.linkedin.com/in/wilmerperez-ai/",
+      ],
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://www.structai.online/#software",
+      name: "StructAI",
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web",
+      url: "https://www.structai.online",
+      description: DESCRIPCION,
+      author: { "@id": "https://www.structai.online/#persona" },
+      offers: { "@type": "Offer", availability: "https://schema.org/InStock" },
+    },
+  ],
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className={`h-full ${inter.variable} ${jetbrainsMono.variable} ${fraunces.variable}`}>
+      <head>
+        <script
+          type="application/ld+json"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }}
+        />
+      </head>
       <body className="h-full font-sans">{children}</body>
     </html>
   );
