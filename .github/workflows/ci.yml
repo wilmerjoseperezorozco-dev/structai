@@ -55,19 +55,25 @@ jobs:
       - run: npx tsc --noEmit
 
   # ── 2. Auditoría de dependencias (apps/web) ─────────────────
-  # No bloquea el pipeline a propósito — decisión explícita del
-  # 2026-07-13, no un olvido. Estado real ese día: 10 vulnerabilidades
-  # (1 moderada + 9 altas), TODAS derivadas de solo 2 paquetes raíz:
-  #   1. next 14.2.35 (arrastra postcss/glob/eslint-config-next) — el
-  #      fix real es next 16.x, que en Next 15+ vuelve async cookies()/
-  #      headers()/params/searchParams. Es una migración con QA propio,
-  #      no un `npm audit fix --force` seguro de correr a ciegas.
-  #   2. next-pwa (sin mantenimiento hace ~3 años) — arrastra
-  #      workbox-build/rollup-plugin-terser/serialize-javascript (RCE).
-  #      El reemplazo es @ducanh2912/next-pwa (fork mantenido), no un
-  #      upgrade del mismo paquete.
-  # Se reporta en cada corrida para que no se pierda de vista; quitar
-  # `continue-on-error` una vez resueltas o explícitamente aceptadas.
+  # No bloquea el pipeline a propósito. Actualizado 2026-08-26 (repaso
+  # general de la app) — la nota anterior, del 2026-07-13, ya estaba
+  # desactualizada: hablaba de 10 vulnerabilidades de 2 paquetes y de una
+  # migración (next 14→"next-pwa mantenido") que YA se hizo. Estado real
+  # verificado hoy: 30 vulnerabilidades (26 moderadas + 4 altas),
+  # confirmado con `npm audit fix --dry-run` que NINGUNA tiene un fix sin
+  # breaking change hoy — las 30 salen de 3 paquetes raíz:
+  #   1. next (arrastra postcss con XSS/path-traversal) — fix real es
+  #      next 16.x.
+  #   2. @sentry/nextjs (arrastra rollup/uuid con path-traversal) — fix
+  #      real es @sentry/nextjs 10.x.
+  #   3. @ducanh2912/next-pwa (el fork mantenido que reemplazó al next-pwa
+  #      original, arrastra workbox-build/serialize-javascript) — sigue
+  #      con una RCE real (GHSA-5c6j-r48x-rmvq) pese a la migración.
+  # Ninguna es un `npm audit fix` seguro de correr a ciegas — las tres
+  # requieren migración con QA propio. Dependabot (alertas + PRs
+  # automáticos de seguridad) se activó en el repo el mismo día — es la
+  # red de seguridad real para no perder de vista nuevas vulnerabilidades,
+  # este job queda como reporte informativo en cada corrida.
   audit-web:
     name: 🛡️ npm audit (informativo)
     runs-on: ubuntu-latest
