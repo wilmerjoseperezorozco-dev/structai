@@ -611,7 +611,7 @@ if ESTRUCTURAL_AVAILABLE:
 class AskRequest(BaseModel):
     pregunta: str = Field(..., description="Pregunta en lenguaje natural del ingeniero civil")
     norma_hint: Optional[str] = Field(None, description="Filtro de norma explícito, ej: 'NTC 673'")
-    top_k: int = Field(6, ge=1, le=20, description="Chunks a recuperar por norma")
+    top_k: int = Field(10, ge=1, le=20, description="Chunks a recuperar por norma")
 
 class FuenteChunk(BaseModel):
     norma: str
@@ -634,7 +634,7 @@ class AskResponse(BaseModel):
 
 class ConsultarRequest(BaseModel):
     pregunta: str = Field(..., description="Pregunta en lenguaje natural, de cualquier dominio de ingeniería")
-    top_k: int = Field(6, ge=1, le=20, description="Chunks a recuperar")
+    top_k: int = Field(10, ge=1, le=20, description="Chunks a recuperar")
 
 class ConsultarResponse(BaseModel):
     dominio: str

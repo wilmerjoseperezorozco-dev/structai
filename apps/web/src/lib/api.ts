@@ -193,7 +193,7 @@ export function descargarBlob(blob: Blob, filename: string): void {
 export async function askNorma(
   pregunta: string,
   norma_hint?: string,
-  top_k = 6
+  top_k = 10
 ): Promise<AskResponse> {
   return api<AskResponse>("/ask", {
     method: "POST",
@@ -207,7 +207,7 @@ export async function askNorma(
  * Barranquilla/Atlántico) y responde con la fuente correcta. */
 export async function consultarDelegado(
   pregunta: string,
-  top_k = 6
+  top_k = 10
 ): Promise<ConsultarResponse> {
   return api<ConsultarResponse>("/consultar", {
     method: "POST",

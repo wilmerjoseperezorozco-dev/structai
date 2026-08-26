@@ -908,11 +908,24 @@ def ask_precios(question: str, top_k: int = 8) -> dict:
 
 
 # ─── BÚSQUEDA HÍBRIDA ────────────────────────────────────────────────────────
+# Subido de 6 a 10 (2026-08-26) para maximizar recuperación sin costo de
+# infraestructura: los chunks son deliberadamente pequeños (tope de 128
+# tokens del modelo de embeddings local, ver [[project_construdata_limite_
+# tokens_embeddings]] en la memoria del proyecto), así que pedir más
+# resultados por consulta es la forma más barata de compensar eso — no
+# usa más RAM (el RPC de Supabase ya soportaba hasta match_count=8 por su
+# propio default, el código Python lo pisaba a 6 en las tres capas:
+# aquí, en apps/api/main.py y en apps/web/src/lib/api.ts). El único costo
+# real es un poco más de tokens hacia Groq/OpenAI por respuesta — hoy el
+# uso diario está en ~12K tokens de un límite de 200K, hay margen de sobra.
+TOP_K_DEFAULT_RAG = 10
+
+
 def embed_query(text: str) -> list[float]:
     model = _embedding_model()
     return model.encode(text, normalize_embeddings=True).tolist()
 
-def search(query: str, norma_filter: Optional[str] = None, top_k: int = 6, motor_filter: Optional[str] = None) -> list[ChunkResult]:
+def search(query: str, norma_filter: Optional[str] = None, top_k: int = TOP_K_DEFAULT_RAG, motor_filter: Optional[str] = None) -> list[ChunkResult]:
     """Búsqueda híbrida RRF en Supabase. motor_filter restringe a motor_chunks.motor
     (ej. 'aquai') — deja fuera nsr10_chunks/ntc_chunks cuando se usa."""
     embedding = embed_query(query)
@@ -950,7 +963,7 @@ def search(query: str, norma_filter: Optional[str] = None, top_k: int = 6, motor
 # trackea vigencia/derogación para estas dos normas, a diferencia de
 # nsr10_chunks/ntc_chunks) -- por eso NO reusan search(), que está atado a
 # la forma exacta de search_knowledge.
-def _search_pais_hybrid(rpc_name: str, query: str, top_k: int = 6) -> list[ChunkResult]:
+def _search_pais_hybrid(rpc_name: str, query: str, top_k: int = TOP_K_DEFAULT_RAG) -> list[ChunkResult]:
     embedding = embed_query(query)
     result = sb.rpc(rpc_name, {
         "query_embedding": embedding,
@@ -972,11 +985,11 @@ def _search_pais_hybrid(rpc_name: str, query: str, top_k: int = 6) -> list[Chunk
     ]
 
 
-def search_peru_e030(query: str, top_k: int = 6) -> list[ChunkResult]:
+def search_peru_e030(query: str, top_k: int = TOP_K_DEFAULT_RAG) -> list[ChunkResult]:
     return _search_pais_hybrid("search_knowledge_peru_e030", query, top_k)
 
 
-def search_ecuador_nec_se_ds(query: str, top_k: int = 6) -> list[ChunkResult]:
+def search_ecuador_nec_se_ds(query: str, top_k: int = TOP_K_DEFAULT_RAG) -> list[ChunkResult]:
     return _search_pais_hybrid("search_knowledge_ecuador_nec_se_ds", query, top_k)
 
 
@@ -1425,7 +1438,7 @@ def _bloque_contexto_sgc(sgc_registro: dict) -> str:
     return "\n\n".join(partes)
 
 
-def ask(question: str, norma_hint: Optional[str] = None, top_k: int = 6) -> dict:
+def ask(question: str, norma_hint: Optional[str] = None, top_k: int = TOP_K_DEFAULT_RAG) -> dict:
     """
     RAG multi-norma completo.
     Retorna: {respuesta, fuentes, normas_citadas, chunks_usados}
@@ -1864,7 +1877,7 @@ def _ask_delegado_compuesto(question: str, motores: list[str], top_k: int) -> di
     }
 
 
-def ask_delegado(question: str, top_k: int = 6) -> dict:
+def ask_delegado(question: str, top_k: int = TOP_K_DEFAULT_RAG) -> dict:
     """
     Punto de entrada único: detecta si la pregunta pertenece al dominio de un
     motor específico (aquai/geopot/vias/gerencia) o al RAG normativo general
