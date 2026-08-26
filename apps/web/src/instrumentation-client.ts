@@ -1,6 +1,13 @@
 // Sentry — captura de errores en el navegador (cliente).
 // Solo se activa si NEXT_PUBLIC_SENTRY_DSN está seteado, igual patrón que
 // SENTRY_DSN en apps/api/main.py — no rompe dev local sin cuenta configurada.
+//
+// Movido desde sentry.client.config.ts (raíz de apps/web) al subir a
+// @sentry/nextjs v10: el SDK deprecó ese archivo a favor de
+// instrumentation-client.ts (convención de Next.js) porque el archivo viejo
+// deja de funcionar con Turbopack -- confirmado con el warning real de build
+// del 2026-08-26 antes de este cambio. Mismo contenido, solo cambia dónde
+// vive.
 import * as Sentry from "@sentry/nextjs";
 
 const dsn = process.env.NEXT_PUBLIC_SENTRY_DSN;
@@ -48,3 +55,9 @@ if (dsn) {
     },
   });
 }
+
+// Requerido por @sentry/nextjs v10 para instrumentar navegaciones del App
+// Router (spans de "pageload"/"navigation" en el trace) -- sin este export,
+// el build imprime "ACTION REQUIRED" (confirmado real al subir de v8 a
+// v10.71.0 el 2026-08-26). No-op si Sentry nunca se inicializó (sin DSN).
+export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;

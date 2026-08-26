@@ -69,7 +69,15 @@ module.exports = withSentryConfig(withPWA(nextConfig), {
   project: process.env.SENTRY_PROJECT,
   authToken: process.env.SENTRY_AUTH_TOKEN,
   silent: true,
-  disableLogger: true,
+  // disableLogger deprecado en @sentry/nextjs v10 (movido a
+  // webpack.treeshake.removeDebugLogging, confirmado con el warning real de
+  // build del 2026-08-26 al subir de v8 a v10.71.0) -- mismo efecto real:
+  // elimina las llamadas Sentry.logger.* del bundle final por tree-shaking.
+  webpack: {
+    treeshake: {
+      removeDebugLogging: true,
+    },
+  },
   widenClientFileUpload: false,
   sourcemaps: {
     disable: !process.env.SENTRY_AUTH_TOKEN,
