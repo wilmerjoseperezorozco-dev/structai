@@ -35,8 +35,8 @@ export default function PrivacidadPage() {
               Wilmer José Pérez Orozco, persona natural, domiciliado en Barranquilla, Atlántico,
               Colombia, operador de StructAI (nombre de proyecto: Construdata). Correo de contacto
               para asuntos de datos personales:{" "}
-              <a href="mailto:wilmerjoseperezorozco@gmail.com" className="text-brand-400 hover:underline">
-                wilmerjoseperezorozco@gmail.com
+              <a href="mailto:wperez12@cuc.edu.co" className="text-brand-400 hover:underline">
+                wperez12@cuc.edu.co
               </a>.
             </p>
           </section>
@@ -127,8 +127,8 @@ export default function PrivacidadPage() {
             </ul>
             <p className="mt-2">
               Para ejercer cualquiera de estos derechos, escribe a{" "}
-              <a href="mailto:wilmerjoseperezorozco@gmail.com" className="text-brand-400 hover:underline">
-                wilmerjoseperezorozco@gmail.com
+              <a href="mailto:wperez12@cuc.edu.co" className="text-brand-400 hover:underline">
+                wperez12@cuc.edu.co
               </a>. Responderemos tu solicitud dentro de los plazos que establece la ley
               colombiana (10 días hábiles para consultas, 15 días hábiles para reclamos).
             </p>

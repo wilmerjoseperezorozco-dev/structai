@@ -31,8 +31,8 @@ export default function TerminosPage() {
             <p>
               StructAI (nombre de proyecto: Construdata) es operado por Wilmer José Pérez Orozco,
               persona natural, con domicilio en Barranquilla, Atlántico, Colombia. Contacto:{" "}
-              <a href="mailto:wilmerjoseperezorozco@gmail.com" className="text-brand-400 hover:underline">
-                wilmerjoseperezorozco@gmail.com
+              <a href="mailto:wperez12@cuc.edu.co" className="text-brand-400 hover:underline">
+                wperez12@cuc.edu.co
               </a>.
             </p>
           </section>
@@ -136,8 +136,8 @@ export default function TerminosPage() {
             <h2 className="text-white font-semibold mb-2">10. Contacto</h2>
             <p>
               Preguntas sobre estos términos:{" "}
-              <a href="mailto:wilmerjoseperezorozco@gmail.com" className="text-brand-400 hover:underline">
-                wilmerjoseperezorozco@gmail.com
+              <a href="mailto:wperez12@cuc.edu.co" className="text-brand-400 hover:underline">
+                wperez12@cuc.edu.co
               </a>
             </p>
           </section>
