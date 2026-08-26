@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { HardHat, Loader2, MailCheck } from "lucide-react";
+import { HardHat, Loader2, MailCheck, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -32,6 +32,7 @@ function LoginContent() {
   const [error, setError] = useState<string | null>(errorCallback ? MENSAJE_ERROR_CALLBACK[errorCallback] ?? "El enlace no es válido." : null);
   const [confirmacionPendiente, setConfirmacionPendiente] = useState(false);
   const [mode, setMode] = useState<"login" | "registro">("login");
+  const [mostrarPassword, setMostrarPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -121,15 +122,26 @@ function LoginContent() {
               <label className="text-xs text-concrete-400 font-medium block mb-1.5">
                 Contraseña
               </label>
-              <input
-                type="password"
-                required
-                minLength={8}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-concrete-900 border border-concrete-700 rounded-xl px-3 py-3 text-sm text-white placeholder:text-concrete-600 outline-none focus:border-brand-500 transition"
-              />
+              <div className="relative">
+                <input
+                  type={mostrarPassword ? "text" : "password"}
+                  required
+                  minLength={8}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full bg-concrete-900 border border-concrete-700 rounded-xl px-3 py-3 pr-11 text-sm text-white placeholder:text-concrete-600 outline-none focus:border-brand-500 transition"
+                />
+                <button
+                  type="button"
+                  onClick={() => setMostrarPassword((v) => !v)}
+                  aria-label={mostrarPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                  aria-pressed={mostrarPassword}
+                  className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-concrete-500 transition hover:text-concrete-200"
+                >
+                  {mostrarPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
             </div>
 
             {error && (
