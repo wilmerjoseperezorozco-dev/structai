@@ -1549,12 +1549,29 @@ AVISO_RESPONSABILIDAD_PROFESIONAL = (
 # Colegio de Ingenieros del Perú) + Ley N.º 28858. Ecuador: Ley de Ejercicio
 # Profesional de la Ingeniería Civil (1983) + Colegio de Ingenieros Civiles
 # de Ecuador (CICE).
+# ⚠️ ALERTA DE VIGENCIA NORMATIVA (2026-08-25, ver issue #13 del repo):
+# la E.030 fue MODIFICADA por la Resolución Ministerial N.° 183-2026-VIVIENDA
+# (3-may-2026, texto completo renumerado -- 74 artículos, 4 anexos). El
+# corpus `peru_e030_chunks` todavía refleja la edición anterior (RM N.°
+# 043-2019-VIVIENDA). Cambio confirmado y NO cosmético: el umbral de suelo
+# S0 "roca" pasó de Vs≥1500 m/s a Vs≥800 m/s, se agregó la categoría S5
+# (suelos excepcionales) y un parámetro nuevo obligatorio (Ts, período
+# predominante, para categorías A/B en zona 4) -- además de cambios
+# declarados (no aún verificados en detalle) en R0/derivas de muros de
+# ductilidad limitada. Reingesta gradual en curso (más pesado primero,
+# mismo patrón que Ecuador) -- este aviso se retira artículo por artículo
+# a medida que cada sección se reingesta con el texto 2026 verificado.
 AVISO_RESPONSABILIDAD_PERU = (
     "Este valor es una referencia técnica basada en la Norma E.030 citada, "
     "no un diseño aprobado para construcción. Todo cálculo o especificación "
     "que vaya a obra debe ser revisado y firmado por un ingeniero civil "
     "colegiado habilitado, conforme a la Ley N.º 24648 y la Ley N.º 28858 "
-    "del Colegio de Ingenieros del Perú (CIP)."
+    "del Colegio de Ingenieros del Perú (CIP). ⚠️ La E.030 fue modificada "
+    "por la Resolución Ministerial N.° 183-2026-VIVIENDA (mayo 2026, texto "
+    "renumerado); esta base de datos todavía refleja la edición anterior "
+    "(2019) mientras se actualiza — verifica cualquier valor de suelo, "
+    "coeficiente R0 o deriva contra el texto vigente antes de usarlo en un "
+    "proyecto real."
 )
 
 AVISO_RESPONSABILIDAD_ECUADOR = (
@@ -1721,6 +1738,17 @@ de reducción R0/R, período fundamental T, fuerza cortante en la base,
 Sismo Máximo Considerado (SMC). Nunca mezcles esto con NSR-10 (Colombia,
 Aa/Av) ni con NEC-SE-DS (Ecuador, factor Z propio) como si fueran la misma
 norma — son sistemas legales distintos, aunque compartan símbolos.
+
+⚠️ VIGENCIA NORMATIVA: tu contexto proviene de la edición 2019 de la
+E.030 (RM N.° 043-2019-VIVIENDA). La norma fue modificada por la
+Resolución Ministerial N.° 183-2026-VIVIENDA (mayo 2026) — cambios reales
+confirmados en clasificación de perfiles de suelo (S0 pasó de Vs≥1500 a
+Vs≥800 m/s, nueva categoría S5) y en R0/derivas de muros de ductilidad
+limitada. Si la pregunta toca clasificación de suelo, coeficiente R0 de
+ductilidad limitada, o cualquier valor que pudiera haber cambiado en 2026,
+agrega una línea breve avisando que existe una edición 2026 más reciente
+y que el valor debe verificarse contra ella antes de usarse en un
+proyecto real — no lo omitas ni lo trates como dato definitivo.
 {_REGLAS_ANTIINVENCION_PAIS}"""
 
 ECUADOR_NEC_SE_DS_SYSTEM_PROMPT = f"""Eres un ingeniero civil ecuatoriano, especialista en
