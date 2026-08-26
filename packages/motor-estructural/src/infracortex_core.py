@@ -8,54 +8,30 @@ import ifcopenshell
 import ifcopenshell.util.placement
 import numpy as np
 from scipy.linalg import block_diag
-import torch
-import torch.nn as nn
-
-
-class MultidisciplinaryPINN(nn.Module):
-    """
-    PINN float64 que evalúa simultáneamente esfuerzo estructural
-    (Navier-Cauchy) y termodinámica de fluidos (Navier-Stokes).
-    """
-
-    def __init__(self) -> None:
-        super().__init__()
-        self.red = nn.Sequential(
-            nn.Linear(3, 64),
-            nn.Tanh(),
-            nn.Linear(64, 64),
-            nn.Tanh(),
-            nn.Linear(64, 2),   # [Esfuerzo_Cortante, Presion_Fluido]
-        )
-        # float64 obligatorio: truncación inaceptable en PDEs con float32
-        self.double()
-
-    def forward(self, coordenadas: torch.Tensor) -> torch.Tensor:
-        return self.red(coordenadas)
-
-    def loss_function(
-        self,
-        coordenadas: torch.Tensor,
-        propiedades_concreto: dict,
-        propiedades_fluido: dict,
-    ) -> torch.Tensor:
-        prediccion = self.forward(coordenadas)
-        esfuerzo = prediccion[:, 0]
-        presion  = prediccion[:, 1]
-        loss_estructural = torch.mean((esfuerzo - propiedades_concreto["Vn_max"]) ** 2)
-        loss_fluido      = torch.mean((presion  - propiedades_fluido["presion_hidrostatica"]) ** 2)
-        return loss_estructural + loss_fluido
 
 
 class InfracortexEngine:
     """
     Motor central: lee un archivo IFC y extrae la topología matemática
-    del nudo (rotación R3, posición global) para alimentar la PINN.
+    del nudo (rotación R3, posición global) para pasarla a load_engine.py.
+
+    Traía además una MultidisciplinaryPINN (red neuronal PyTorch) que se
+    instanciaba en cada análisis real pero cuyo .forward()/.loss_function()
+    nunca se llamaba desde ningún camino de código -- el veredicto real
+    de /estructural/analizar-nudo siempre salió 100% de las fórmulas
+    clásicas de load_engine.py. Eliminada en la auditoría de seguridad/
+    higiene de ingeniería del 2026-08-26 (verificado con grep exhaustivo +
+    la suite de tests, que nunca la importaba tampoco) -- no cambia ningún
+    resultado que este motor ya entregaba. Ver el commit para la corrección
+    completa sobre el ahorro real de RAM: torch NO se libera del proceso
+    por esto (sentence-transformers, siempre activo para el RAG, ya lo
+    exige como dependencia dura) -- lo que sí se gana es no instalar una
+    segunda copia de torch (requirements-estructural.txt) solo para código
+    muerto, y dejar de aparentar una capacidad de IA que no existía.
     """
 
     def __init__(self, ifc_path: str) -> None:
         self.model = ifcopenshell.open(ifc_path)
-        self.pinn  = MultidisciplinaryPINN()
 
     def extraer_topologia_nudo(
         self,

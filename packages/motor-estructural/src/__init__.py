@@ -1,10 +1,14 @@
 """
 motor-estructural — Motor de Análisis Estructural INFRACORTEX
 =============================================================
-Pipeline: IFC (BIM) → Topología → PINN float64 → Cargas NSR-10 → Chequeo Nudo
+Pipeline: IFC (BIM) → Topología → Cargas NSR-10 → Chequeo Nudo
 Empresa física: Infracortex | App: StructAI
+
+(La PINN de PyTorch que este pipeline mencionaba se eliminó el 2026-08-26:
+era código muerto, nunca se llamaba desde ningún camino real. Ver
+infracortex_core.py para el detalle.)
 """
-from .infracortex_core import InfracortexEngine, MultidisciplinaryPINN
+from .infracortex_core import InfracortexEngine
 from .load_engine import (
     calcular_demanda_cortante_nudo,
     ZONA_SISMICA_ATLANTICO,
@@ -20,7 +24,6 @@ from .models import (
 
 __all__ = [
     "InfracortexEngine",
-    "MultidisciplinaryPINN",
     "calcular_demanda_cortante_nudo",
     "ZONA_SISMICA_ATLANTICO",
     "CARGAS_GRAVEDAD_DEFAULT",

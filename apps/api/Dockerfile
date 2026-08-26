@@ -38,14 +38,25 @@ WORKDIR /app
 COPY . .
 
 # ── Instalar dependencias de la API ──────────────────────────────
-# 2026-08-20: requirements.txt ya NO trae torch/ifcopenshell/onnxruntime/
-# opencv — se movieron a requirements-vision.txt y
-# requirements-estructural.txt, instalados condicionalmente vía estos ARG.
-# Default false en ambos porque coincide EXACTO con el estado real de
-# producción hoy (ENABLE_YOLO=false, ENABLE_ESTRUCTURAL=false en las env
-# vars del App Platform) — main.py nunca importa esos paquetes con los
-# flags en false, así que no instalarlos no cambia el comportamiento
-# actual, solo acelera el build y reduce el tamaño de la imagen.
+# 2026-08-20: requirements.txt ya NO trae ifcopenshell/onnxruntime/opencv
+# — se movieron a requirements-vision.txt y requirements-estructural.txt,
+# instalados condicionalmente vía estos ARG. Default false en ambos
+# porque coincide EXACTO con el estado real de producción hoy
+# (ENABLE_YOLO=false, ENABLE_ESTRUCTURAL=false en las env vars del App
+# Platform) — main.py nunca importa esos paquetes con los flags en false,
+# así que no instalarlos no cambia el comportamiento actual, solo acelera
+# el build y reduce el tamaño de la imagen.
+#
+# Corrección real 2026-08-26: "requirements.txt ya no trae torch" (como
+# decía antes este comentario) era impreciso -- sentence-transformers
+# (SÍ está en requirements.txt, lo usa el RAG que está siempre activo)
+# exige torch como dependencia dura, confirmado con
+# `pip show sentence-transformers`. torch se instala con el core
+# igual, con o sin estos ARG. requirements-estructural.txt ya no trae su
+# propio pin de torch (motor-estructural traía una PINN de PyTorch que
+# nunca se usaba para nada real, eliminada -- ver infracortex_core.py):
+# antes eso arriesgaba un conflicto de versión real entre dos
+# especificaciones de torch resueltas en pasadas de pip separadas.
 #
 # Para habilitar motor-estructural o YOLO en producción: (1) configurar
 # el Build Argument correspondiente en DigitalOcean App Platform

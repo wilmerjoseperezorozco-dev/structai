@@ -11,7 +11,7 @@ prototipo standalone.
 | Método | Ruta | Descripción |
 |--------|------|-------------|
 | GET | `/estructural/salud` | Health check del motor |
-| POST | `/estructural/analizar-nudo` | IFC upload → PINN → NSR-10 chequeo nudo |
+| POST | `/estructural/analizar-nudo` | IFC upload → topología (IfcOpenShell) → NSR-10 chequeo nudo |
 | POST | `/estructural/inspeccion-estribos` | Imagen → separación real → NSR-10 C.21.4.4 |
 
 ## Ejemplo curl — analizar-nudo

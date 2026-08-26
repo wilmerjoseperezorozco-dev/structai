@@ -51,7 +51,7 @@ Esta disciplina es, en el fondo, el mismo método científico aplicado a softwar
 | **GeoPot** | Geotecnia y laboratorio: suelos, concreto, agregados, sísmica NSR-10 |
 | **Vías** | Diseño vial INVIAS: geometría, pavimentos, mantenimiento, topografía, NTC de materiales |
 | **Gerencia** | Earned Value Management (PMBOK) + aprendizaje automático predictivo sobre avance de obra |
-| **InfraCortex** | BIM (IFC) → topología del nudo viga-columna → red neuronal informada por física (PINN) → chequeo por cortante NSR-10 Títulos A/B/C, más inspección visual de estribos por visión artificial |
+| **InfraCortex** | BIM (IFC) → topología del nudo viga-columna → chequeo por cortante NSR-10 Títulos A/B/C (fórmulas clásicas), más inspección visual de estribos |
 
 Cada motor expone su propio router FastAPI, su propia tabla en Supabase, y su propio corpus de búsqueda — todos comparten el mismo backend y la misma base de datos, pero ninguno depende de que otro exista para funcionar.
 
@@ -110,7 +110,7 @@ construdata/
 │   ├── knowledge/       → _archivo/ con la fuente PDF descartada (ver nota de integridad arriba)
 │   ├── ai-gateway/      → gateway multi-proveedor — experimental
 │   ├── bim-intelligence/→ IFC + Qdrant — experimental, no conectado al producto
-│   └── motor-estructural/ → InfraCortex: IFC + PINN + NSR-10 A/B/C, router `/estructural` conectado
+│   └── motor-estructural/ → InfraCortex: IFC + NSR-10 A/B/C, router `/estructural` conectado
 ├── scripts/ingesta/  → pipeline de carga del corpus, versionado por dominio (el documento fuente, no)
 ├── infra/supabase/   → schema y migraciones reales, reconstruidas byte a byte contra producción
 ├── docs/             → comparación pública, canal de colaboración institucional

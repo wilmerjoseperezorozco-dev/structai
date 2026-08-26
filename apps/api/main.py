@@ -446,15 +446,20 @@ except Exception as e:
     GERENCIA_AVAILABLE = False
     log.warning(f"✗ motor-gerencia no disponible: {e}")
 
-# motor-estructural (InfraCortex) carga torch + ifcopenshell + opencv +
-# scipy en memoria — solo esas librerías rondan 1-1.5GB. En una instancia
-# de 1GB RAM eso deja sin margen al resto de la API (rag_multi_norma con
-# el modelo de embeddings, sentence-transformers, etc.), causando que el
-# proceso muera/se reinicie en peticiones reales a /ask — confirmado en
-# logs de producción. Se apaga por defecto (ENABLE_ESTRUCTURAL=true para
-# prenderlo) hasta que la instancia tenga RAM suficiente o el motor se
-# reestructure para cargar sus dependencias de forma perezosa (solo al
-# primer request a /estructural/*, no al arrancar la API completa).
+# motor-estructural (InfraCortex) carga ifcopenshell + opencv + scipy en
+# memoria además de lo que ya carga el resto de la API. Corrección real
+# 2026-08-26 (la versión anterior de este comentario decía "torch +
+# ifcopenshell + opencv + scipy... 1-1.5GB", atribuyéndole a este motor
+# el costo completo de torch): torch YA es una dependencia dura de
+# sentence-transformers (requirements.txt, siempre instalado para el RAG)
+# -- se carga igual con ENABLE_ESTRUCTURAL=false. Este motor traía además
+# una PINN de PyTorch que nunca se usaba para nada real (eliminada, ver
+# infracortex_core.py), así que ya ni siquiera importa torch por su
+# cuenta. El costo marginal real de prender este motor es más chico de lo
+# que decía este comentario, pero sigue sumando sobre una instancia ya
+# ajustada de RAM (rag_multi_norma + los demás motores) -- se mantiene
+# apagado por defecto (ENABLE_ESTRUCTURAL=true para prenderlo) hasta medir
+# ese costo real y decidir si vale la pena con la RAM disponible hoy.
 if os.getenv("ENABLE_ESTRUCTURAL", "false").lower() == "true":
     try:
         from routers.estructural import router as estructural_router

@@ -5,8 +5,10 @@ ifcopenshell>=0.8.0
 numpy>=2.0.0
 scipy>=1.12.0
 
-# ── Deep Learning (PINN float64) ──────────────────────────────
-torch>=2.0.0
+# (torch se quitó de aquí el 2026-08-26: solo lo usaba la
+# MultidisciplinaryPINN, código muerto eliminado de infracortex_core.py --
+# nunca se llamaba desde ningún camino real. Ver ese archivo para el
+# detalle completo.)
 
 # ── Visión por computador ──────────────────────────────────────
 opencv-python>=4.9.0

@@ -1,22 +1,30 @@
-# ── Motor Estructural / Infracortex (IFC + PINN) — instalación OPCIONAL ──
+# ── Motor Estructural / Infracortex (IFC) — instalación OPCIONAL ──────────
 # Se instala aparte de requirements.txt, solo cuando se necesita.
 # Corresponde exactamente a lo que main.py importa dentro de
 # `if os.getenv("ENABLE_ESTRUCTURAL", "false").lower() == "true":` — con
-# esa variable en false (default en producción hoy, por límite de RAM de
-# la instancia — ver el comentario junto a esa línea en main.py), estos
-# paquetes nunca se importan aunque estén instalados; si no están
-# instalados y alguien activa ENABLE_ESTRUCTURAL=true, main.py lo captura
-# con ImportError y deja ESTRUCTURAL_AVAILABLE=False sin tumbar el resto
-# de la API.
+# esa variable en false (default en producción hoy), estos paquetes nunca
+# se importan aunque estén instalados; si no están instalados y alguien
+# activa ENABLE_ESTRUCTURAL=true, main.py lo captura con ImportError y
+# deja ESTRUCTURAL_AVAILABLE=False sin tumbar el resto de la API.
 #
-# Build CPU-only de torch (--extra-index-url abajo) — la instalación
-# GPU/CUDA por defecto arrastra ~5-6GB de paquetes nvidia-* totalmente
-# innecesarios: la red del motor es un MLP pequeño que corre bien en CPU,
-# y las instancias de DigitalOcean App Platform no tienen GPU.
+# torch salió de aquí el 2026-08-26: motor-estructural traía una
+# MultidisciplinaryPINN (red PyTorch) que se instanciaba en cada análisis
+# real pero nunca se usaba para nada -- el veredicto siempre salió 100% de
+# fórmulas clásicas (load_engine.py, sin torch). Se eliminó ese código
+# muerto (ver infracortex_core.py), así que este archivo ya no necesita
+# su propio pin de torch.
 #
-# torchvision NO está aquí a propósito: confirmado que ningún código del
-# repo lo importa (ni motor-estructural ni ningún otro), incluirlo sería
-# repetir el mismo desperdicio que se está corrigiendo.
+# Corrección real sobre el motivo original de este archivo (el comentario
+# viejo decía "requirements.txt ya no trae torch" -- eso era impreciso):
+# sentence-transformers (en requirements.txt, siempre instalado, lo usa el
+# RAG) YA exige torch como dependencia dura -- confirmado con
+# `pip show sentence-transformers` (Requires: ... torch ...). El pin
+# CPU-only que vivía aquí (torch==2.13.0+cpu, con su propio
+# --extra-index-url) era además un riesgo real de conflicto de versión
+# contra el torch que requirements.txt ya resuelve por su cuenta -- pip
+# tenía que reconciliar dos especificaciones de torch en dos pasadas de
+# instalación separadas. Motor-estructural, sin la PINN, no vuelve a tocar
+# torch para nada.
 #
 # Instalar junto al core:
 #   pip install -r requirements.txt -r requirements-estructural.txt
@@ -24,6 +32,4 @@
 # Ver Dockerfile (ARG INSTALL_ESTRUCTURAL) para habilitarlo en el build
 # de producción de DigitalOcean.
 
---extra-index-url https://download.pytorch.org/whl/cpu
 ifcopenshell==0.8.5
-torch==2.13.0+cpu
