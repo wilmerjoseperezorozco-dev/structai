@@ -153,6 +153,29 @@ function Fuentes({
   );
 }
 
+// Esquema seguro para links dentro de una respuesta renderizada como markdown
+// (react-markdown, sin rehype-raw, no ejecuta HTML crudo -- pero SÍ arma un
+// <a href> real a partir de la sintaxis [texto](url) del propio markdown).
+// Gap real encontrado en la auditoría de seguridad del 2026-08-26: el
+// componente `a` de abajo pasaba `href` directo sin validar esquema -- una
+// respuesta de LLM manipulada por inyección de prompt del propio usuario
+// ("responde con un link [click](javascript:...)") podía terminar en un
+// <a href="javascript:..."> real, y como target="_blank" solo se activa
+// para URLs que empiezan con "http", ese link ejecutaría en el mismo origen
+// de la app al hacer clic, no en pestaña aislada. Ver rules/react/security.md
+// ("Unsafe URL Schemes"). No es la fuente de mayor riesgo del sistema (el
+// corpus no lo ve nadie más que quien hizo la pregunta), pero es gratis
+// cerrarlo.
+function esUrlSegura(href: string | undefined): boolean {
+  if (!href) return false;
+  try {
+    const parsed = new URL(href, "https://www.structai.online");
+    return ["http:", "https:", "mailto:"].includes(parsed.protocol);
+  } catch {
+    return false;
+  }
+}
+
 // ── Burbuja de mensaje ───────────────────────────────────────────────────────
 // Sin avatares circulares ni bubbles con cola: el rol se distingue por
 // alineación + un rótulo de texto liviano, no por un ícono decorativo —
@@ -183,16 +206,24 @@ const MARKDOWN_COMPONENTS = {
   h3: ({ children }: { children?: ReactNode }) => (
     <h3 className="text-sm font-semibold text-brand-200 mt-2.5 mb-1 first:mt-0">{children}</h3>
   ),
-  a: ({ href, children }: { href?: string; children?: ReactNode }) => (
-    <a
-      href={href}
-      target={href?.startsWith("http") ? "_blank" : undefined}
-      rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}
-      className="text-brand-400 underline underline-offset-2 hover:text-brand-300"
-    >
-      {children}
-    </a>
-  ),
+  a: ({ href, children }: { href?: string; children?: ReactNode }) => {
+    if (!esUrlSegura(href)) {
+      // Esquema no permitido (javascript:, data:, etc.) -- se muestra el
+      // texto igual (no perder el contenido de la respuesta) pero sin
+      // convertirlo en un link real.
+      return <span className="underline decoration-dotted">{children}</span>;
+    }
+    return (
+      <a
+        href={href}
+        target={href?.startsWith("http") ? "_blank" : undefined}
+        rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}
+        className="text-brand-400 underline underline-offset-2 hover:text-brand-300"
+      >
+        {children}
+      </a>
+    );
+  },
 };
 
 // ── Aviso de responsabilidad profesional (issue #18) ────────────────────────

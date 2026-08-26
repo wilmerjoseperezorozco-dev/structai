@@ -566,15 +566,17 @@ async def security_headers_middleware(request: Request, call_next):
     response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
     return response
 
-# ── Rate limiting por IP ──────────────────────────────────────────────────────
-# Hoy la API no valida usuario (no hay verificación de Authorization/JWT de
-# Supabase en ningún endpoint — confirmado al auditar main.py y el cliente
-# del frontend en apps/web/src/lib/api.ts), así que el único identificador
-# disponible para limitar es la IP. Esto protege infraestructura/costo
-# (Groq se paga por token, un scraper podría agotar el presupuesto en
-# minutos) — NO reemplaza el límite freemium de "5 APU/mes" por usuario,
-# que hoy no se aplica en el servidor y requiere primero validar el JWT de
-# Supabase en cada request (tarea aparte).
+# ── Rate limiting por usuario (o IP si no hay sesión) ────────────────────────
+# Comentario histórico corregido en la auditoría de seguridad 2026-08-26:
+# este bloque decía "la API no valida usuario, el único identificador es la
+# IP" -- desactualizado desde que se agregó verificación real de JWT de
+# Supabase (auth.py, get_current_user/require_admin) en main.py y los
+# routers de motores. Ver el comentario real y vigente de key_func más abajo
+# (línea ~586): agrupa por user_id cuando hay JWT válido, cae a IP si no.
+# Esto protege infraestructura/costo (Groq se paga por token, un scraper
+# podría agotar el presupuesto en minutos) — NO reemplaza el límite freemium
+# de "5 APU/mes" por usuario (ver test_freemium_limite.py, que sí corre en
+# el servidor desde entonces).
 #
 # Backend en memoria (default de slowapi): correcto para una sola
 # instancia — que es el plan actual (Render/Cloud Run, 1 proceso). Si en
@@ -1134,11 +1136,19 @@ def _check_memoria() -> dict:
 # decoradores @app.X(...) sobre la misma función es el mismo patrón que ya
 # usaba /health con GET+HEAD — FastAPI registra rutas adicionales apuntando
 # al mismo handler, no crea una copia ni cambia el comportamiento.
+# Gap real de DDoS encontrado en la auditoría de seguridad del 2026-08-26:
+# este endpoint es público sin auth (correcto, lo necesita cualquier monitor
+# externo) pero no tenía rate limit -- ?deep=true dispara llamadas EXTERNAS
+# reales (Groq models.list(), latencia de Supabase), así que sin límite
+# alguien podía forzar al servidor a hacer llamadas salientes repetidas en
+# loop. 20/minuto es generoso de sobra para monitoreo real (UptimeRobot
+# pinguea cada 1-5 min) pero cierra el abuso.
 @app.get("/health", tags=["Sistema"])
 @app.head("/health", tags=["Sistema"])
 @app.get("/v1/health", tags=["Sistema"])
 @app.head("/v1/health", tags=["Sistema"])
-def health(deep: bool = False):
+@limiter.limit("20/minute")
+def health(request: Request, deep: bool = False):
     """
     Health check con estado de cada módulo.
 
@@ -1228,9 +1238,14 @@ def _ultima_fila(tabla: str) -> Optional[str]:
         return None
 
 
+# Mismo gap real que /health: público sin auth a propósito (issue #3), pero
+# sin rate limit dispara 8 COUNT + 3 "última fila" contra Supabase EN CADA
+# llamada -- vector de amplificación real, no solo hipotético (auditoría
+# 2026-08-26).
 @app.get("/data-status", tags=["Sistema"])
 @app.get("/v1/data-status", tags=["Sistema"])
-def data_status():
+@limiter.limit("20/minute")
+def data_status(request: Request):
     """
     Estado real y verificable de los datos cargados en StructAI — público,
     sin autenticación a propósito, para demostrar escala sin requerir login.
