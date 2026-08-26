@@ -13,6 +13,7 @@ import {
   ClipboardList,
   ArrowRight,
   Plus,
+  BadgeCheck,
 } from "lucide-react";
 import clsx from "clsx";
 
@@ -217,11 +218,24 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Pie */}
+      {/* Pie — el DOI es real, no un adorno: registrado en Zenodo, listado
+          en CITATION.cff/README.md del repo, verificado en vivo que
+          resuelve (doi.org -> Zenodo) antes de ponerlo aquí. Es un DOI
+          "concepto" (10.5281/zenodo.21851529) -- Zenodo lo mantiene
+          apuntando siempre a la última versión archivada. */}
       <div className="mx-auto max-w-3xl px-5 pb-8 pt-2">
         <p className="text-[11px] text-ink-600">
           Wilmer José Pérez Orozco · Trabajo de grado · Corporación Universidad de la Costa
         </p>
+        <a
+          href="https://doi.org/10.5281/zenodo.21851529"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-2 inline-flex items-center gap-1.5 font-mono text-[10px] text-ink-500 transition hover:text-bronze-300"
+        >
+          <BadgeCheck size={11} className="flex-shrink-0 text-bronze-500" />
+          DOI 10.5281/zenodo.21851529
+        </a>
       </div>
     </div>
   );
