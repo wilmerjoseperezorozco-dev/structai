@@ -26,6 +26,19 @@ ya cubierto por `.gitignore`. Patrón de cada script: cargar `.env` desde
 (`paraphrase-multilingual-MiniLM-L12-v2`, 384-dim, sin costo), `upsert` a la
 tabla de chunks correspondiente con `on_conflict="id"`. Ver `scripts/README.md`.
 
+**Antes de ingestar CUALQUIER norma por primera vez (o de darla por
+vigente)**: buscar explícitamente si existe una versión más reciente o una
+resolución/decreto modificatorio, y revisar los issues abiertos del
+milestone de ese país/norma — no asumir que el PDF más fácil de encontrar
+es el vigente. Esto ya falló dos veces en este proyecto por el mismo motivo
+(la advertencia ya estaba escrita en un issue y no se consultó antes de
+ingestar la primera vez): la E.030 de Perú se cargó completa con la edición
+2019 (RM 043-2019-VIVIENDA) el mismo día que el issue #13 ya advertía sobre
+la RM 183-2026-VIVIENDA (mayo 2026, texto renumerado con cambios reales no
+cosméticos — ver ese issue y `scripts/ingesta/peru_e030/reemplazo_2026/`).
+La verificación de vigencia va ANTES de escribir el primer chunk, no
+después de que ya esté sirviendo respuestas en producción.
+
 **Antes de dar un chunk por bueno**: verificar con una consulta de retrieval
 real contra la función RPC de búsqueda (`match_<tabla>_chunks`), no solo
 confirmar que el `insert`/`upsert` no lanzó error.
