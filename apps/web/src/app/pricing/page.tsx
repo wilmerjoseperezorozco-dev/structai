@@ -80,7 +80,7 @@ export default function PricingPage() {
           tapar el contenido de golpe al hacer scroll. */}
       <header className="sticky top-0 z-20 border-b border-ink-800 bg-ink-950/85 backdrop-blur-sm">
         <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/" className="-my-2.5 flex items-center gap-2 py-2.5">
             <div className="flex h-6 w-6 items-center justify-center rounded-md bg-bronze-500">
               <HardHat size={13} className="text-ink-950" />
             </div>
@@ -88,7 +88,7 @@ export default function PricingPage() {
           </Link>
           <Link
             href="/login"
-            className="text-xs text-ink-300 transition hover:text-bronze-300"
+            className="-mx-2 -my-3.5 px-2 py-3.5 text-xs text-ink-300 transition hover:text-bronze-300"
           >
             Ingresar
           </Link>
@@ -133,7 +133,7 @@ export default function PricingPage() {
                 aria-selected={!anual}
                 onClick={() => setAnual(false)}
                 className={clsx(
-                  "relative z-10 rounded-full px-4 py-1.5 transition-colors",
+                  "relative z-10 rounded-full px-4 py-3 transition-colors",
                   !anual ? "text-ink-950" : "text-ink-300 hover:text-ink-100"
                 )}
               >
@@ -145,7 +145,7 @@ export default function PricingPage() {
                 aria-selected={anual}
                 onClick={() => setAnual(true)}
                 className={clsx(
-                  "relative z-10 rounded-full px-4 py-1.5 transition-colors",
+                  "relative z-10 rounded-full px-4 py-3 transition-colors",
                   anual ? "text-ink-950" : "text-ink-300 hover:text-ink-100"
                 )}
               >

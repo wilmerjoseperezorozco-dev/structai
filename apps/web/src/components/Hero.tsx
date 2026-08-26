@@ -104,7 +104,7 @@ export function Hero() {
             </div>
             <Link
               href="/login"
-              className="text-xs text-ink-300 transition hover:text-bronze-300"
+              className="-mx-2 -my-3.5 px-2 py-3.5 text-xs text-ink-300 transition hover:text-bronze-300"
             >
               Ingresar
             </Link>
@@ -167,20 +167,27 @@ export function Hero() {
                 key={m.nombre}
                 type="button"
                 aria-expanded={activo}
+                // Bug real encontrado probando en emulación táctil real
+                // (celular): con onMouseEnter/onMouseLeave, un tap en
+                // touch dispara un mouseenter+click sintéticos y LUEGO un
+                // mouseleave sintético -- el mouseleave pisaba el estado
+                // que el click acababa de fijar, así que la tarjeta se
+                // abría y se cerraba sola en el mismo tap. El click ahora
+                // es la ÚNICA fuente de verdad del estado (funciona igual
+                // con tap, teclado o mouse) -- el hover de mouse real es
+                // 100% CSS (`group-hover:` abajo), nunca toca este estado.
                 onClick={() => setAbierto(activo ? null : m.nombre)}
-                onMouseEnter={() => setAbierto(m.nombre)}
-                onMouseLeave={() => setAbierto((cur) => (cur === m.nombre ? null : cur))}
                 className={clsx(
                   "group flex w-full flex-col items-start gap-2.5 rounded-xl border px-3.5 py-3 text-left transition-all duration-300",
                   activo
                     ? "border-bronze-600/60 bg-ink-900 shadow-[0_0_28px_-10px_rgba(217,154,63,0.4)]"
-                    : "border-ink-800 bg-ink-900/50 hover:border-ink-700"
+                    : "border-ink-800 bg-ink-900/50 hover:border-bronze-700/40 hover:bg-ink-900"
                 )}
               >
                 <div className="flex w-full items-start gap-2.5">
                   <span
                     className={clsx(
-                      "mt-0.5 rounded-md p-1 transition-colors duration-300",
+                      "mt-0.5 rounded-md p-1 transition-colors duration-300 group-hover:bg-bronze-500/15 group-hover:text-bronze-300",
                       activo ? "bg-bronze-500/15 text-bronze-300" : "text-bronze-400"
                     )}
                   >
@@ -199,12 +206,18 @@ export function Hero() {
                   />
                 </div>
 
-                {/* Guía — animada con la técnica grid-template-rows 0fr→1fr:
-                    anima a "altura automática" sin medir con JS, y colapsa
-                    limpio a 0 sin dejar un salto brusco de layout. */}
+                {/* Guía — dos disparadores independientes que nunca se
+                    pisan entre sí: `activo` (click, el estado real/ARIA,
+                    funciona con tap y teclado) via una clase forzada, y
+                    hover de mouse real (`group-hover:`, puramente CSS, un
+                    tap nunca lo activa) como vista previa ambiental sin
+                    tocar el estado. Técnica grid-template-rows 0fr->1fr
+                    para animar a "altura automática" sin medir con JS. */}
                 <div
-                  className="grid w-full transition-[grid-template-rows] duration-300 ease-out"
-                  style={{ gridTemplateRows: activo ? "1fr" : "0fr" }}
+                  className={clsx(
+                    "grid w-full grid-rows-[0fr] transition-[grid-template-rows] duration-300 ease-out group-hover:grid-rows-[1fr]",
+                    activo && "!grid-rows-[1fr]"
+                  )}
                 >
                   <div className="overflow-hidden">
                     <p className="pt-2 text-xs leading-relaxed text-ink-400">
@@ -231,7 +244,7 @@ export function Hero() {
           href="https://doi.org/10.5281/zenodo.21851529"
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-2 inline-flex items-center gap-1.5 font-mono text-[10px] text-ink-500 transition hover:text-bronze-300"
+          className="-mx-2 -my-2 mt-2 inline-flex items-center gap-1.5 px-2 py-2 font-mono text-[10px] text-ink-500 transition hover:text-bronze-300"
         >
           <BadgeCheck size={11} className="flex-shrink-0 text-bronze-500" />
           DOI 10.5281/zenodo.21851529
