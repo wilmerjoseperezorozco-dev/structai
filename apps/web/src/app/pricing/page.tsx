@@ -17,8 +17,10 @@ import { PLANES, PRO_ANUAL, WOMPI_CHECKOUT_URL, WOMPI_ES_MODO_PRUEBA, formatCOP 
 
 // Correo de contacto para cotización Enterprise — sin autoservicio (ver
 // comentario en freemium.ts): todavía no hay cliente institucional para
-// calibrar un precio de catálogo.
-const ENTERPRISE_CONTACTO = "mailto:wilmerjoseperezorozco@gmail.com?subject=StructAI%20Enterprise";
+// calibrar un precio de catálogo. ventas@structai.online (Zoho Mail,
+// cuenta real ya creada 2026-08-26) reemplaza el correo personal expuesto
+// antes — da seriedad institucional a la cotización de ventas.
+const ENTERPRISE_CONTACTO = "mailto:ventas@structai.online?subject=StructAI%20Enterprise";
 
 const FEATURES = [
   { label: "NSR-10 completa (11 títulos)", free: true,  pro: true,  enterprise: true },
