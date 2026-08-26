@@ -66,10 +66,10 @@ export const PLANES = {
 // con descuento anual en /pricing. Mismo ~33% de descuento que ya existía
 // antes de bajar el precio mensual de Pro.
 export const PRO_ANUAL = {
+  ...PLANES.pro,
   nombre: "Pro Anual",
   precio_mes: 6583,
   precio_anual: 79000,
-  ...PLANES.pro,
 };
 
 export function puedeCalcularAPU(plan: UserPlan, usados: number): boolean {

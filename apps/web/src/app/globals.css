@@ -30,3 +30,70 @@
     scrollbar-color: #334155 transparent;
   }
 }
+
+/* Animaciones de entrada reutilizables (2026-08-26, primero usadas en
+   /pricing) — CSS puro a propósito, sin librería nueva: la página animada
+   es corta y liviana, y una dependencia de motion completa (framer-motion/
+   gsap) no se justifica solo para esto. `.reveal` arranca invisible y sube
+   8px; `.reveal-1..5` escalonan el delay para dar sensación de secuencia
+   sin JS de por medio. Todo se desactiva si el usuario pidió menos
+   movimiento — nunca se anima nada si prefers-reduced-motion está activo. */
+@layer utilities {
+  .reveal {
+    opacity: 0;
+    animation: reveal-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .reveal-1 { animation-delay: 0.05s; }
+  .reveal-2 { animation-delay: 0.12s; }
+  .reveal-3 { animation-delay: 0.19s; }
+  .reveal-4 { animation-delay: 0.26s; }
+  .reveal-5 { animation-delay: 0.33s; }
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-1,
+  .reveal-2,
+  .reveal-3,
+  .reveal-4,
+  .reveal-5 {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Micro-animación al cambiar el precio mostrado (toggle mensual/anual en
+   /pricing) — se dispara remontando el nodo con una `key` distinta por
+   estado, así el navegador reinicia la animación solo sin JS extra. */
+.price-pop {
+  animation: price-pop 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes price-pop {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .price-pop {
+    animation: none;
+  }
+}
