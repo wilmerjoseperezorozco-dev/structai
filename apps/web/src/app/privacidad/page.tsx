@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function PrivacidadPage() {
   return (
-    <div className="min-h-full bg-concrete-900 px-4 py-10">
+    <div className="h-full overflow-y-auto bg-concrete-900 px-4 py-10">
       <div className="max-w-2xl mx-auto">
         <Link
           href="/login"

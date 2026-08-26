@@ -71,7 +71,7 @@ function LoginContent() {
   };
 
   return (
-    <div className="min-h-screen bg-concrete-900 flex items-center justify-center px-4">
+    <div className="h-screen overflow-y-auto bg-concrete-900 flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-sm">
 
         {/* Logo */}

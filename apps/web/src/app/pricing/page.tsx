@@ -52,9 +52,11 @@ export default function PricingPage() {
   const precioMostrado = anual ? PRO_ANUAL.precio_mes : PLANES.pro.precio_mes;
 
   return (
-    <div className="relative min-h-full overflow-y-auto bg-ink-950 px-4 py-10">
+    <div className="relative h-full overflow-y-auto bg-ink-950">
       {/* Misma atmósfera del Hero: retícula de plano técnico + resplandor
-          cálido, muy sutil — nunca compite con el contenido. */}
+          cálido, muy sutil — nunca compite con el contenido. Van en el
+          contenedor con scroll (no en el wrapper con padding de abajo)
+          para cubrir todo el alto real de la página, no solo un viewport. */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-[0.06]"
@@ -69,6 +71,31 @@ export default function PricingPage() {
         className="pointer-events-none absolute -top-24 left-1/2 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full bg-bronze-700/20 blur-[110px]"
       />
 
+      {/* Barra de navegación mínima — esta página no tenía NINGUNA forma de
+          volver al inicio o a login salvo el botón "atrás" del navegador
+          (hueco real de navegación, encontrado al revisar buenas prácticas:
+          toda pantalla debe dejar un camino de vuelta visible, no depender
+          solo del historial). Sticky porque la página es lo bastante larga
+          para valer la pena tenerla siempre a mano; con blur+borde para no
+          tapar el contenido de golpe al hacer scroll. */}
+      <header className="sticky top-0 z-20 border-b border-ink-800 bg-ink-950/85 backdrop-blur-sm">
+        <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-bronze-500">
+              <HardHat size={13} className="text-ink-950" />
+            </div>
+            <span className="font-display text-sm font-semibold text-ink-50">StructAI</span>
+          </Link>
+          <Link
+            href="/login"
+            className="text-xs text-ink-300 transition hover:text-bronze-300"
+          >
+            Ingresar
+          </Link>
+        </div>
+      </header>
+
+      <div className="px-4 py-10">
       <div className="relative mx-auto max-w-4xl">
 
         {/* Header */}
@@ -230,6 +257,7 @@ export default function PricingPage() {
         <p className="mt-6 text-center text-xs text-ink-600">
           Pago seguro con Wompi · Cancela cuando quieras · Factura Colombia
         </p>
+      </div>
       </div>
     </div>
   );
