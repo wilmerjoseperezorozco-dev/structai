@@ -14,7 +14,9 @@ dependencies = [
     "mcp>=1.0.0",
     "fastmcp>=0.1.0",
     # Qdrant
-    "qdrant-client>=1.7.0",
+    # >=1.7.0 -> >=1.9.0 (2026-08-26): mínimo con CVE-2024-3829 parchado en
+    # el servidor -- ver comentario real en requirements.txt.
+    "qdrant-client>=1.9.0",
     # Embeddings
     "openai>=1.54.4",
     "anthropic>=0.40.0",

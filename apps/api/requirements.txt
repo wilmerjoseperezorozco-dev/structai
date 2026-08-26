@@ -8,17 +8,23 @@
 pytest-rerunfailures==14.0
 
 # ── FastAPI core ──────────────────────────────────────────────
-fastapi==0.115.5
-# starlette es dependencia transitiva de fastapi — sin pin explícito, un
-# `pip install` fresco puede resolver starlette 1.x (rompe la API interna:
-# Router ya no acepta on_startup/on_shutdown, usa lifespan). fastapi==0.115.5
-# exige starlette>=0.40.0,<0.42.0 (verificado vía importlib.metadata); pin
-# explícito para que el build no dependa de qué versión de starlette exista
-# el día que se instale. Encontrado el 2026-08-01: rompía la carga de
-# motor-aquai/geopot/vias/gerencia Y la construcción de FastAPI() misma.
-starlette==0.41.3
+# fastapi 0.115.5 -> 0.141.1, starlette 0.41.3 -> 1.3.1 (2026-08-26): subida
+# real para parchar 3 vulnerabilidades HIGH de Dependabot en starlette
+# (DoS vía Range header, SSRF/robo de credenciales NTLM vía rutas UNC en
+# StaticFiles en Windows, request.form() ignorando límites de tamaño) —
+# https://github.com/wilmerjoseperezorozco-dev/structai/security/dependabot/{21,15,4}.
+# El pin viejo evitaba justo esto a propósito (ver comentario histórico
+# abajo) porque Starlette 1.x quitó el soporte de on_startup/on_shutdown
+# del Router -- main.py migró de @app.on_event("startup") a
+# lifespan=_lifespan (patrón que FastAPI recomienda desde hace tiempo) el
+# mismo día, así que la razón real de fijar la versión vieja ya no aplica.
+# Verificado con la suite completa de apps/api/tests (32/32 pasan) + un
+# TestClient real que dispara /health y confirma que el lifespan corre
+# igual que el @app.on_event de antes (news_cycle, prewarm de embeddings).
+fastapi==0.141.1
+starlette==1.3.1
 uvicorn[standard]==0.32.1
-python-multipart==0.0.12       # necesario para UploadFile/Form
+python-multipart==0.0.32       # necesario para UploadFile/Form -- 0.0.12 -> 0.0.32 parcha 4 CVEs HIGH (DoS/arbitrary file write)
 pydantic==2.9.2
 
 # ── RAG / Embeddings ─────────────────────────────────────────
@@ -61,14 +67,14 @@ reportlab==4.2.5
 openpyxl==3.1.5
 
 # ── Utilidades ────────────────────────────────────────────────
-python-dotenv==1.0.1
+python-dotenv==1.2.2             # 1.0.1 -> 1.2.2 (2026-08-26): parcha symlink following en set_key (MEDIUM, no se usa set_key aquí pero cierra la alerta igual)
 psutil==6.1.0                  # /health avanzado: RAM del proceso y del sistema
 slowapi==0.1.9                 # rate limiting en /ask, /consultar, /detect, /apu/calculate
 PyJWT>=2.10.1,<3.0.0            # verificación de JWT de Supabase Auth (auth.py) — gotrue (dep. de supabase-py) exige >=2.10.1
-cryptography==43.0.3            # PyJWT necesita esto para verificar firmas ES256 (JWKS de Supabase)
+cryptography==48.0.1            # 43.0.3 -> 48.0.1 (2026-08-26): parcha 3 CVEs HIGH (subgroup attack en curvas SECT, path-building exponencial, OpenSSL vulnerable embebido) -- PyJWT sigue verificando ES256 (JWKS de Supabase) igual, verificado con test_ask_token_es256_valido_no_da_401
 sentry-sdk[fastapi]==2.19.2     # captura de errores en producción — no-op si SENTRY_DSN no está seteado
 
 # ── Testing / carga (no se instalan en producción, solo dev) ───
-pytest==8.3.3
+pytest==9.0.3                   # 8.3.3 -> 9.0.3 (2026-08-26): parcha manejo vulnerable de tmpdir (MEDIUM)
 pytest-asyncio==0.24.0
 locust==2.32.2

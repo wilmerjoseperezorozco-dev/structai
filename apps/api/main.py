@@ -36,6 +36,7 @@ import sys
 import logging
 import time
 import zipfile
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Optional
 
@@ -471,12 +472,48 @@ else:
 # APP
 # ════════════════════════════════════════════════════════════════════════════════
 
+@asynccontextmanager
+async def _lifespan(_app: FastAPI):
+    """Reemplaza a @app.on_event("startup") (deprecado, y roto de plano en
+    Starlette 1.x -- el Router ya no acepta on_startup/on_shutdown, solo
+    lifespan). Migrado el 2026-08-26 al subir fastapi/starlette para
+    parchar las vulnerabilidades reales de Dependabot (starlette DoS/SSRF,
+    ver requirements.txt). Los nombres que referencia (_load_onnx_model,
+    NOTICIAS_AVAILABLE, etc.) se resuelven en el namespace del módulo recién
+    al INVOCARSE esta función -- no antes, cuando de hecho ninguno de ellos
+    existe todavía aquí arriba -- exactamente el mismo comportamiento que ya
+    tenía el @app.on_event("startup") que este lifespan reemplaza, solo con
+    otra sintaxis."""
+    global _onnx_session
+    _onnx_session = _load_onnx_model()
+
+    if NOTICIAS_AVAILABLE:
+        asyncio.create_task(_ciclo_noticias())
+
+    # asyncio.to_thread(), NO awaited: deja el event loop libre para
+    # responder /health de inmediato mientras el modelo se carga en
+    # paralelo en un hilo aparte. En la instancia anterior de 1GB RAM esto
+    # causó un ciclo real de caídas (memoria insuficiente para sostener
+    # torch+sentence-transformers junto al resto de la API, confirmado en
+    # logs de producción: 3 reinicios consecutivos). Tras subir a
+    # apps-s-1vcpu-2gb (2026-07-30), memoria disponible verificada vía
+    # /health?deep=true: 1635MB libres (antes 611MB) — margen suficiente.
+    if RAG_AVAILABLE:
+        asyncio.create_task(asyncio.to_thread(_prewarm_embeddings_blocking))
+
+    log.info("Construdata API lista ✓")
+    yield
+    # Sin lógica de shutdown por ahora -- el @app.on_event("startup") viejo
+    # tampoco tenía un @app.on_event("shutdown") que reemplazar.
+
+
 app = FastAPI(
     title="Construdata API",
     version="1.0.0",
     description="Backend unificado: RAG normativo NTC/NSR-10, Motor APU y detección estructural YOLO",
     docs_url="/docs",
     redoc_url="/redoc",
+    lifespan=_lifespan,
 )
 
 # allow_origins=["*"] + allow_credentials=True es una combinación insegura
@@ -1002,28 +1039,6 @@ async def _ciclo_noticias():
         except Exception as e:
             log.warning(f"Ciclo de noticias falló, se reintenta en el próximo intervalo: {e}")
         await asyncio.sleep(_INTERVALO_NOTICIAS_SEGUNDOS)
-
-
-@app.on_event("startup")
-async def startup():
-    global _onnx_session
-    _onnx_session = _load_onnx_model()
-
-    if NOTICIAS_AVAILABLE:
-        asyncio.create_task(_ciclo_noticias())
-
-    # asyncio.to_thread(), NO awaited: deja el event loop libre para
-    # responder /health de inmediato mientras el modelo se carga en
-    # paralelo en un hilo aparte. En la instancia anterior de 1GB RAM esto
-    # causó un ciclo real de caídas (memoria insuficiente para sostener
-    # torch+sentence-transformers junto al resto de la API, confirmado en
-    # logs de producción: 3 reinicios consecutivos). Tras subir a
-    # apps-s-1vcpu-2gb (2026-07-30), memoria disponible verificada vía
-    # /health?deep=true: 1635MB libres (antes 611MB) — margen suficiente.
-    if RAG_AVAILABLE:
-        asyncio.create_task(asyncio.to_thread(_prewarm_embeddings_blocking))
-
-    log.info("Construdata API lista ✓")
 
 
 # ════════════════════════════════════════════════════════════════════════════════
@@ -1718,7 +1733,7 @@ def apu_calculate(
             pu_std=round(result.pu_std, 2),
             norma_ref=result.norma_ref,
             uuid_trazabilidad=result.uuid_trazabilidad,
-            timestamp=datetime.datetime.utcnow().isoformat() + "Z",
+            timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat().replace("+00:00", "Z"),
         )
     except Exception as e:
         log.error(f"Error calculando APU {actividad_id}: {e}", exc_info=True, extra={"user_id": user.id, "endpoint": "/apu/calculate"})
@@ -1818,7 +1833,7 @@ def apu_calculate_dinamico(request: Request, body: APUCantidadesRequest):
         pu_std=result.pu_std,
         norma_ref=result.norma_ref,
         uuid_trazabilidad=result.uuid_trazabilidad,
-        timestamp=datetime.datetime.utcnow().isoformat() + "Z",
+        timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat().replace("+00:00", "Z"),
     )
     registrar_apu_calculo(user.id, result.actividad_id, 1.0, desglose, body.proyecto_nombre)
     return desglose
@@ -1859,7 +1874,7 @@ def _calcular_fila_apu(fila: dict) -> tuple[dict, Optional["APUDesglose"]]:
                 pu_std=round(result.pu_std, 2),
                 norma_ref=result.norma_ref,
                 uuid_trazabilidad=result.uuid_trazabilidad,
-                timestamp=_dt.datetime.utcnow().isoformat() + "Z",
+                timestamp=_dt.datetime.now(_dt.timezone.utc).isoformat().replace("+00:00", "Z"),
             )
             costo_total_fila = round(desglose.precio_unitario * cantidad, 2)
         else:
@@ -1903,7 +1918,7 @@ def _calcular_fila_apu(fila: dict) -> tuple[dict, Optional["APUDesglose"]]:
                 pu_std=result.pu_std,
                 norma_ref=result.norma_ref,
                 uuid_trazabilidad=result.uuid_trazabilidad,
-                timestamp=_dt.datetime.utcnow().isoformat() + "Z",
+                timestamp=_dt.datetime.now(_dt.timezone.utc).isoformat().replace("+00:00", "Z"),
             )
             costo_total_fila = round(desglose.precio_unitario * fila["cantidad"], 2)
 

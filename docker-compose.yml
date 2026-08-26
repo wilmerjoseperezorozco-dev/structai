@@ -44,8 +44,13 @@ services:
       - redis_data:/data
 
   # ── Qdrant (BIM Intelligence — vector store) ──────────────
+  # v1.7.4 -> v1.9.7 (2026-08-26): parcha CVE-2024-3829 (lectura/escritura
+  # arbitraria de archivos vía symlinks maliciosos en snapshots, crítico,
+  # https://github.com/wilmerjoseperezorozco-dev/structai/security/dependabot/44)
+  # -- servicio experimental sin wiring a producción (ver README.md), pero
+  # el parche es gratis y cierra la alerta real de todas formas.
   qdrant:
-    image: qdrant/qdrant:v1.7.4
+    image: qdrant/qdrant:v1.9.7
     ports:
       - "6333:6333"   # REST + Dashboard → http://localhost:6333/dashboard
       - "6334:6334"   # gRPC

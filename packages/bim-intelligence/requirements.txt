@@ -6,7 +6,15 @@ mcp>=1.0.0
 fastmcp>=0.1.0
 
 # ── Qdrant ───────────────────────────────────────────────────
-qdrant-client==1.7.3
+# 1.7.3 -> 1.9.2 (2026-08-26, última versión real de PyPI en la serie 1.9.x
+# -- verificado con `pip index versions`, no asumido): la alerta Dependabot
+# crítica real está en el SERVIDOR Qdrant < 1.9.0 (CVE-2024-3829, symlinks
+# en snapshots), no en este cliente Python en sí -- GitHub la asocia al
+# paquete pip por no tener un ecosistema propio para el binario del
+# servidor. Se sube igual para que el cliente quede alineado con la
+# versión mínima parcheada del servidor (docker-compose.yml sube a v1.9.7,
+# la última imagen real de esa serie).
+qdrant-client==1.9.2
 
 # ── AI Providers ─────────────────────────────────────────────
 anthropic>=0.40.0
