@@ -482,6 +482,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+# ── Cabeceras de seguridad HTTP ───────────────────────────────────────────────
+# Brecha real encontrada en la auditoría de seguridad 2026-08-26 (triage de
+# la checklist de 18 ítems que pidió el usuario): no existía ningún
+# middleware seteando estas cabeceras. HTTPS ya lo fuerza la plataforma
+# (Vercel/hosting), pero HSTS, X-Frame-Options, etc. son responsabilidad de
+# la app y no venían puestos.
+@app.middleware("http")
+async def security_headers_middleware(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+    return response
+
 # ── Rate limiting por IP ──────────────────────────────────────────────────────
 # Hoy la API no valida usuario (no hay verificación de Authorization/JWT de
 # Supabase en ningún endpoint — confirmado al auditar main.py y el cliente
