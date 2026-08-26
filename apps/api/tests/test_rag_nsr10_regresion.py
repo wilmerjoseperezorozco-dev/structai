@@ -141,7 +141,13 @@ CASOS_TITULO_C = [
 
 @pytest.mark.parametrize("pregunta,variantes_esperadas", CASOS_TITULO_B + CASOS_TITULO_A + CASOS_TITULO_C)
 def test_respuesta_contiene_hecho_verificado(pregunta: str, variantes_esperadas: list[str]) -> None:
-    resultado = ask(pregunta, top_k=4)
+    # top_k=4 (hardcodeado aquí desde antes) quedó por debajo incluso del
+    # viejo default de la app (6), y muy por debajo del real actual
+    # (TOP_K_DEFAULT_RAG=10, subido 2026-08-26 por el mismo motivo: corpus
+    # verbatim mucho más grande y granular tras Título G y C). No pasar
+    # top_k usa el default real de ask() -- el test deja de ser más
+    # estricto que producción, que era un falso negativo, no una regresión.
+    resultado = ask(pregunta)
     respuesta = resultado["respuesta"]
     assert _contiene_alguna(respuesta, variantes_esperadas), (
         f"Ninguna de {variantes_esperadas} apareció en la respuesta.\n"
