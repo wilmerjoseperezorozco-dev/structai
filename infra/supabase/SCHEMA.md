@@ -40,7 +40,7 @@ endpoint público `GET /data-status` de `apps/api` en vez de este documento.
 
 | Tabla | Propósito |
 |---|---|
-| `profiles` | Perfil + plan (free/pro/enterprise) + contador de consultas del mes |
+| `profiles` | Perfil + plan (free/pro/enterprise) + role (user/admin, agregado 2026-08-26) + contador de consultas del mes |
 | `apu_calculations` | Historial de cálculos APU guardados por el usuario |
 | `consultas_history` | Historial de chat (RAG) por usuario |
 | `consultas` | (legado/en desuso — 0 filas; política pública de lectura para `authenticated` cerrada 2026-08-25 en repaso de RLS, ver migración `cerrar_lectura_publica_tabla_consultas_legado`) |
@@ -103,6 +103,20 @@ RLS está **habilitado en todas las tablas de `public`**, sin excepción
    `USING` sin `WITH CHECK`, lo que permitía a un usuario reasignar el
    `user_id` de su propia fila; cerrado en la migración
    `agregar_with_check_faltante_en_update_own`, mismo patrón que las demás).
+
+**Re-verificado política por política el 2026-08-26** (introspección directa
+de `pg_policies`, no un resumen): el cierre del 2026-08-25 sigue vigente,
+ninguna política nueva quedó sin `WITH CHECK`. Tres huecos de *completitud*
+(no de seguridad — al faltar la política, esa operación queda denegada por
+defecto, no abierta) encontrados y aún sin cerrar, pendientes de decidir si
+son intencionales o un olvido:
+- `agent_results`: sin política de `DELETE`.
+- `compliance_checks`: sin política de `UPDATE`.
+- `plan_analyses`: sin política de `UPDATE`.
+Si el frontend alguna vez intenta borrar/actualizar una fila de esas tablas,
+fallará en silencio (RLS deniega, no lanza error de esquema) — revisar si el
+diseño es "estas filas son inmutables una vez creadas" (en cuyo caso está
+bien así) o si falta agregar la política, mismo patrón que las demás.
 
 ## Cómo mantener esto actualizado
 

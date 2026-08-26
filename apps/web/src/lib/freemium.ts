@@ -24,10 +24,18 @@ export const PLANES = {
     historial_dias: 7,
     badge: null,
   },
+  // Precio de lanzamiento ("fundador") decidido 2026-08-26 para maximizar
+  // adopción del primer semillero universitario: el costo real de LLM por
+  // consulta (respaldo OpenAI gpt-4o-mini cuando se agota la cuota gratis
+  // de Groq) es del orden de centavos de dólar por miles de consultas, así
+  // que el margen aguanta un precio bajo — la fricción de adopción es el
+  // riesgo real a este punto, no el costo. Antes: $19.900/mes. Antes de
+  // subirlo, comunicarlo explícitamente como "precio de lanzamiento" a
+  // quien ya esté pagando, para no generar mala voluntad.
   pro: {
     nombre: "Pro",
-    precio_mes: 19900,
-    precio_anual: 159000,
+    precio_mes: 9900,
+    precio_anual: 79000,
     apu_por_mes: Infinity,
     proyectos_max: Infinity,
     export_pdf: true,
@@ -35,18 +43,34 @@ export const PLANES = {
     historial_dias: Infinity,
     badge: "PRO",
   },
-  pro_anual: {
-    nombre: "Pro Anual",
-    precio_mes: 13250,
-    precio_anual: 159000,
+  // Cotización a medida, no autoservicio: todavía no hay ni un solo cliente
+  // institucional (universidad, constructora) para calibrar un precio fijo
+  // de catálogo — fijar uno ahora arriesgaría subvalorar el primer contrato
+  // real. El CTA en /pricing lleva a contacto directo, no a Wompi.
+  enterprise: {
+    nombre: "Enterprise",
+    precio_mes: null,
+    precio_anual: null,
     apu_por_mes: Infinity,
     proyectos_max: Infinity,
     export_pdf: true,
     nsr10_completo: true,
     historial_dias: Infinity,
-    badge: "PRO",
+    badge: "ENTERPRISE",
   },
 } satisfies Record<UserPlan, object>;
+
+// Variante de facturación anual de Pro — NO es un UserPlan real (ver el
+// comentario en supabase.ts): un usuario en esta modalidad igual queda
+// guardado con plan="pro" en la base, esto es solo para mostrar el precio
+// con descuento anual en /pricing. Mismo ~33% de descuento que ya existía
+// antes de bajar el precio mensual de Pro.
+export const PRO_ANUAL = {
+  nombre: "Pro Anual",
+  precio_mes: 6583,
+  precio_anual: 79000,
+  ...PLANES.pro,
+};
 
 export function puedeCalcularAPU(plan: UserPlan, usados: number): boolean {
   const limite = PLANES[plan].apu_por_mes;

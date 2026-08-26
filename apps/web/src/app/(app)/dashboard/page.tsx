@@ -2,6 +2,7 @@
 
 import { Calculator, BookOpen, FolderOpen, TrendingUp, ChevronRight, MessageSquare, Scan } from "lucide-react";
 import Link from "next/link";
+import { PLANES, formatCOP } from "@/lib/freemium";
 
 const ACCESOS_RAPIDOS = [
   {
@@ -86,7 +87,7 @@ export default function DashboardPage() {
           <div className="flex items-start gap-3">
             <TrendingUp size={20} className="text-brand-400 mt-0.5 flex-shrink-0" />
             <div className="flex-1">
-              <p className="text-sm font-semibold text-white">Activa Pro por $19.900/mes</p>
+              <p className="text-sm font-semibold text-white">Activa Pro por {formatCOP(PLANES.pro.precio_mes)}/mes</p>
               <p className="text-xs text-concrete-400 mt-0.5">
                 PDF trazable · Proyectos ilimitados · Seguridad industrial
               </p>

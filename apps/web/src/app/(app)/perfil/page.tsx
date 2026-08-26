@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { User, LogOut, Loader2, Crown } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { PLANES, formatCOP } from "@/lib/freemium";
 
 interface Perfil {
   email: string;
@@ -117,7 +118,7 @@ export default function PerfilPage() {
           href="/pricing"
           className="block w-full text-center bg-brand-600 hover:bg-brand-500 text-ink-950 text-sm font-semibold py-3 rounded-xl transition"
         >
-          Activa Pro por $19.900/mes
+          Activa Pro por {formatCOP(PLANES.pro.precio_mes)}/mes
         </a>
       )}
 

@@ -54,7 +54,7 @@ from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from starlette.concurrency import run_in_threadpool
 
-from auth import get_current_user
+from auth import get_current_user, AuthenticatedUser
 from cache import TTLCache
 from rate_limit import limiter
 import apu_excel
@@ -274,6 +274,36 @@ def verificar_limite_apu_mes(user_id: str) -> None:
                 "del plan gratis este mes. Activa Pro en /pricing para cálculos ilimitados."
             ),
         )
+
+
+# ── Rol de administrador (2026-08-26) ───────────────────────────────────────
+# profiles.role ('user'/'admin') es un campo aparte de profiles.plan
+# (free/pro/enterprise) — el rol gobierna acceso a endpoints administrativos
+# del backend, el plan gobierna límites freemium. Se lee siempre con
+# _uso_sb (service_role, bypassa RLS) — nunca desde el cliente con la clave
+# anónima, mismo patrón que verificar_limite_proyectos/verificar_limite_apu_mes.
+def require_admin(request: Request) -> AuthenticatedUser:
+    """Como get_current_user(), pero además exige profiles.role = 'admin'.
+
+    401 si no hay token válido (delega en get_current_user). 403 si el
+    usuario es válido pero no es admin, o si _uso_sb no está disponible
+    (fail-closed: sin poder verificar el rol, se niega el acceso en vez de
+    dejarlo pasar — a diferencia de los límites freemium, que sí dejan
+    pasar en best-effort porque ahí el costo de fallar es solo negocio, acá
+    es acceso administrativo).
+    """
+    user = get_current_user(request)
+    if _uso_sb is None:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Verificación de rol no disponible")
+    try:
+        perfil = _uso_sb.table("profiles").select("role").eq("id", user.id).maybe_single().execute()
+        role = (perfil.data or {}).get("role", "user") if perfil else "user"
+    except Exception as e:
+        log.warning(f"No se pudo verificar rol de admin (se deniega por defecto): {e}")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Verificación de rol no disponible")
+    if role != "admin":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Requiere rol de administrador")
+    return user
 
 # ── Importaciones lazy para no fallar si falta algún paquete ──────────────────
 # `except Exception` (no solo ImportError): rag_multi_norma.py lee credenciales
@@ -2087,6 +2117,33 @@ def debug_route(q: str):
         raise HTTPException(status_code=503, detail="RAG no disponible")
     normas = route_query(q)
     return {"query": q, "normas_detectadas": normas, "total": len(normas)}
+
+
+# ── /admin/usuarios — primer endpoint administrativo (2026-08-26) ────────────
+# MVP deliberado: solo lectura, sin panel en el frontend todavía. El objetivo
+# de hoy era que el rol de admin existiera y tuviera un efecto real y
+# verificable (no solo una columna sin usar) — un panel completo (cambiar
+# plan de un usuario a mano, revocar acceso, etc.) es trabajo aparte cuando
+# haya volumen real de estudiantes que lo justifique.
+
+@app.get("/admin/usuarios", tags=["Admin"])
+@app.get("/v1/admin/usuarios", tags=["Admin"])
+def admin_listar_usuarios(request: Request):
+    """Lista todos los perfiles (email, plan, rol, fecha de registro).
+    Requiere profiles.role = 'admin' — ver require_admin()."""
+    require_admin(request)
+    if _uso_sb is None:
+        raise HTTPException(status_code=503, detail="Cliente de Supabase no disponible")
+    res = _uso_sb.table("profiles") \
+        .select("id, email, nombre, plan, role, consultas_mes, created_at") \
+        .order("created_at", desc=False) \
+        .execute()
+    usuarios = res.data or []
+    return {
+        "total": len(usuarios),
+        "por_plan": {p: sum(1 for u in usuarios if u.get("plan") == p) for p in ("free", "pro", "enterprise")},
+        "usuarios": usuarios,
+    }
 
 
 # ════════════════════════════════════════════════════════════════════════════════
