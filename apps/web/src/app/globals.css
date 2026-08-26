@@ -97,3 +97,18 @@
     animation: none;
   }
 }
+
+/* Guardia global: cualquier transición/animación CSS del resto de la app
+   (hover, expandir/colapsar, etc. — ej. las tarjetas de motores en
+   Hero.tsx) se vuelve instantánea si el usuario pidió menos movimiento.
+   Las reglas de arriba ya cubren sus propios casos explícitamente; esta es
+   la red de seguridad para todo lo demás, para no tener que acordarse de
+   añadir el guard en cada componente nuevo que use `transition-*`. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

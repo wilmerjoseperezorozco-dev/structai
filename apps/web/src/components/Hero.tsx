@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import {
   HardHat,
@@ -9,24 +12,66 @@ import {
   Route,
   ClipboardList,
   ArrowRight,
+  Plus,
 } from "lucide-react";
+import clsx from "clsx";
 
 type Motor = {
   nombre: string;
   dominio: string;
+  // Guía corta que aparece al pasar el mouse o tocar la tarjeta — capacidad
+  // real del motor, no marketing genérico (ver [[project_construdata]] en
+  // la memoria del proyecto: cada uno de estos ya tiene tests reales).
+  guia: string;
   icon: React.ReactNode;
 };
 
 const MOTORES: Motor[] = [
-  { nombre: "APU", dominio: "Precios unitarios", icon: <Calculator size={17} /> },
-  { nombre: "Estructural", dominio: "Deformación y pandeo", icon: <Ruler size={17} /> },
-  { nombre: "AquAI", dominio: "Acueducto y alcantarillado", icon: <Droplets size={17} /> },
-  { nombre: "GeoPot", dominio: "Geotecnia y laboratorio", icon: <Mountain size={17} /> },
-  { nombre: "Vías", dominio: "Diseño vial INVIAS", icon: <Route size={17} /> },
-  { nombre: "Gerencia", dominio: "EVM + predicción ML", icon: <ClipboardList size={17} /> },
+  {
+    nombre: "APU",
+    dominio: "Precios unitarios",
+    guia: "Análisis de precios unitarios con incertidumbre real: intervalo de confianza IC90 por Monte Carlo, catálogo Construdata 2026 Barranquilla, cada insumo trazado a su fuente.",
+    icon: <Calculator size={17} />,
+  },
+  {
+    nombre: "Estructural",
+    dominio: "Deformación y pandeo",
+    guia: "Deformación de vigas (Euler-Bernoulli) y pandeo de columnas (Euler/Johnson), con simulación Monte Carlo de incertidumbre sobre los resultados.",
+    icon: <Ruler size={17} />,
+  },
+  {
+    nombre: "AquAI",
+    dominio: "Acueducto y alcantarillado",
+    guia: "Acueducto y alcantarillado bajo RAS 2000: cadena de caudales, Hazen-Williams, golpe de ariete, diseño de PTAP/PTAR y tarifas CRA.",
+    icon: <Droplets size={17} />,
+  },
+  {
+    nombre: "GeoPot",
+    dominio: "Geotecnia y laboratorio",
+    guia: "Laboratorio de suelos (clasificación USCS, Proctor, CBR) y zonificación sísmica NSR-10 por departamento, con norma ASTM/INV citada en cada resultado.",
+    icon: <Mountain size={17} />,
+  },
+  {
+    nombre: "Vías",
+    dominio: "Diseño vial INVIAS",
+    guia: "Diseño geométrico y de pavimentos (INVIAS 2008, AASHTO-93), más 15 verificadores de normas NTC de materiales de vías.",
+    icon: <Route size={17} />,
+  },
+  {
+    nombre: "Gerencia",
+    dominio: "EVM + predicción ML",
+    guia: "Earned Value Management (CPI/SPI/EAC) y predicción de riesgo y fecha de término por machine learning, sobre el avance real de tu obra.",
+    icon: <ClipboardList size={17} />,
+  },
 ];
 
 export function Hero() {
+  // Sin "hover-only": esta es una PWA que se usa mucho desde el celular,
+  // donde no existe :hover real. El mismo estado se activa con mouse
+  // (desktop), con tap (móvil, vía onClick) y con teclado (foco natural de
+  // <button>) — nunca queda información solo detrás de un mouseover.
+  const [abierto, setAbierto] = useState<string | null>(null);
+
   return (
     <div className="h-full overflow-y-auto bg-ink-950">
       <div className="relative">
@@ -114,18 +159,61 @@ export function Hero() {
           7 motores de dominio
         </p>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {MOTORES.map((m) => (
-            <div
-              key={m.nombre}
-              className="flex items-start gap-2.5 rounded-xl border border-ink-800 bg-ink-900/50 px-3.5 py-3"
-            >
-              <span className="mt-0.5 text-bronze-400">{m.icon}</span>
-              <div className="min-w-0">
-                <p className="text-sm font-medium text-ink-100">{m.nombre}</p>
-                <p className="truncate text-xs text-ink-500">{m.dominio}</p>
-              </div>
-            </div>
-          ))}
+          {MOTORES.map((m) => {
+            const activo = abierto === m.nombre;
+            return (
+              <button
+                key={m.nombre}
+                type="button"
+                aria-expanded={activo}
+                onClick={() => setAbierto(activo ? null : m.nombre)}
+                onMouseEnter={() => setAbierto(m.nombre)}
+                onMouseLeave={() => setAbierto((cur) => (cur === m.nombre ? null : cur))}
+                className={clsx(
+                  "group flex w-full flex-col items-start gap-2.5 rounded-xl border px-3.5 py-3 text-left transition-all duration-300",
+                  activo
+                    ? "border-bronze-600/60 bg-ink-900 shadow-[0_0_28px_-10px_rgba(217,154,63,0.4)]"
+                    : "border-ink-800 bg-ink-900/50 hover:border-ink-700"
+                )}
+              >
+                <div className="flex w-full items-start gap-2.5">
+                  <span
+                    className={clsx(
+                      "mt-0.5 rounded-md p-1 transition-colors duration-300",
+                      activo ? "bg-bronze-500/15 text-bronze-300" : "text-bronze-400"
+                    )}
+                  >
+                    {m.icon}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-ink-100">{m.nombre}</p>
+                    <p className="truncate text-xs text-ink-500">{m.dominio}</p>
+                  </div>
+                  <Plus
+                    size={13}
+                    className={clsx(
+                      "mt-1 flex-shrink-0 text-ink-600 transition-transform duration-300",
+                      activo && "rotate-45 text-bronze-400"
+                    )}
+                  />
+                </div>
+
+                {/* Guía — animada con la técnica grid-template-rows 0fr→1fr:
+                    anima a "altura automática" sin medir con JS, y colapsa
+                    limpio a 0 sin dejar un salto brusco de layout. */}
+                <div
+                  className="grid w-full transition-[grid-template-rows] duration-300 ease-out"
+                  style={{ gridTemplateRows: activo ? "1fr" : "0fr" }}
+                >
+                  <div className="overflow-hidden">
+                    <p className="pt-2 text-xs leading-relaxed text-ink-400">
+                      {m.guia}
+                    </p>
+                  </div>
+                </div>
+              </button>
+            );
+          })}
         </div>
       </div>
 
