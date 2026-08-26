@@ -71,7 +71,7 @@ python-dotenv==1.2.2             # 1.0.1 -> 1.2.2 (2026-08-26): parcha symlink f
 psutil==6.1.0                  # /health avanzado: RAM del proceso y del sistema
 slowapi==0.1.9                 # rate limiting en /ask, /consultar, /detect, /apu/calculate
 PyJWT>=2.10.1,<3.0.0            # verificación de JWT de Supabase Auth (auth.py) — gotrue (dep. de supabase-py) exige >=2.10.1
-cryptography==48.0.1            # 43.0.3 -> 48.0.1 (2026-08-26): parcha 3 CVEs HIGH (subgroup attack en curvas SECT, path-building exponencial, OpenSSL vulnerable embebido) -- PyJWT sigue verificando ES256 (JWKS de Supabase) igual, verificado con test_ask_token_es256_valido_no_da_401
+cryptography==50.0.1            # 43.0.3 -> 48.0.1 -> 50.0.1 (2026-08-26, misma sesión): 48.0.1 cerró 3 CVEs HIGH, pero un cuarto (Bleichenbacher timing oracle en PKCS#7 EnvelopedData, rango >=44.0.0 <50.0.0) apareció en Dependabot minutos después de ese primer fix -- no se usa PKCS#7 aquí (PyJWT solo verifica firmas ES256), pero se cierra igual. Verificado con test_ask_token_es256_valido_no_da_401.
 sentry-sdk[fastapi]==2.19.2     # captura de errores en producción — no-op si SENTRY_DSN no está seteado
 
 # ── Testing / carga (no se instalan en producción, solo dev) ───

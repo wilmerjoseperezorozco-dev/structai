@@ -27,7 +27,7 @@ watchdog==4.0.1
 # ── Procesamiento ─────────────────────────────────────────────
 numpy==1.26.4
 pydantic==2.9.2
-python-dotenv==1.0.1
+python-dotenv==1.2.2  # 1.0.1 -> 1.2.2 (2026-08-26): parcha symlink following en set_key (MEDIUM)
 
 # ── CLI / UI ──────────────────────────────────────────────────
 rich==13.9.4

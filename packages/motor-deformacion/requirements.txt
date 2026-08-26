@@ -3,4 +3,4 @@ numpy==1.26.4
 scipy==1.13.1
 
 # ── Tests ────────────────────────────────────────────────────
-pytest==8.3.3
+pytest==9.0.3  # 8.3.3 -> 9.0.3 (2026-08-26): parcha manejo vulnerable de tmpdir (MEDIUM)
