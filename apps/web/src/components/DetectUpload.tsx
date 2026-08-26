@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Camera, Upload, X, Loader2, Scan, AlertCircle, AlertTriangle, Lock } from "lucide-react";
 import clsx from "clsx";
@@ -127,7 +127,15 @@ export default function DetectUpload() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
+  // Ref (no state) solo para poder revocar la URL vigente al desmontar sin
+  // depender de `preview` en el efecto ni disparar un setState en cleanup.
+  const previewRef = useRef<string | null>(null);
 
+  // Fuga de memoria real encontrada en el repaso general 2026-08-26:
+  // URL.createObjectURL(f) nunca se liberaba con revokeObjectURL(), ni al
+  // reemplazar la foto por otra ni al desmontar el componente. Impacto bajo
+  // en una sesión corta con una imagen a la vez, pero es una referencia de
+  // blob real que el navegador nunca libera por sí solo.
   const handleFile = useCallback((f: File) => {
     if (!f.type.startsWith("image/")) {
       setError("Solo se aceptan imágenes JPG/PNG/WebP");
@@ -137,8 +145,18 @@ export default function DetectUpload() {
     setResult(null);
     setApuResults({});
     setError(null);
+    if (previewRef.current) URL.revokeObjectURL(previewRef.current);
     const url = URL.createObjectURL(f);
+    previewRef.current = url;
     setPreview(url);
+  }, []);
+
+  // Cubre el caso de navegar fuera de la página con una foto todavía
+  // cargada — sin esto, esa última URL nunca se revocaba.
+  useEffect(() => {
+    return () => {
+      if (previewRef.current) URL.revokeObjectURL(previewRef.current);
+    };
   }, []);
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -189,6 +207,10 @@ export default function DetectUpload() {
   };
 
   const reset = () => {
+    if (previewRef.current) {
+      URL.revokeObjectURL(previewRef.current);
+      previewRef.current = null;
+    }
     setPreview(null);
     setFile(null);
     setResult(null);

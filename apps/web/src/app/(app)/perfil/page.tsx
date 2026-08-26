@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { User, LogOut, Loader2, Crown } from "lucide-react";
+import { User, LogOut, Loader2, Crown, AlertCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { PLANES, formatCOP } from "@/lib/freemium";
 
@@ -25,6 +25,7 @@ export default function PerfilPage() {
   const router = useRouter();
   const [perfil, setPerfil] = useState<Perfil | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [signingOut, setSigningOut] = useState(false);
 
   useEffect(() => {
@@ -33,15 +34,34 @@ export default function PerfilPage() {
     async function load() {
       const { data: session } = await supabase.auth.getSession();
       const user = session.session?.user;
-      if (!user) return;
+      // Bug real encontrado en el repaso general 2026-08-26: este early
+      // return salía sin setLoading(false) — si la sesión expiraba justo
+      // en este momento, el spinner "Cargando perfil..." quedaba pegado
+      // para siempre (mismo patrón corregido en proyectos/page.tsx).
+      if (!user) {
+        if (!cancelled) {
+          setError("Tu sesión expiró. Vuelve a iniciar sesión para ver tu perfil.");
+          setLoading(false);
+        }
+        return;
+      }
 
-      const { data } = await supabase
+      const { data, error: perfilError } = await supabase
         .from("profiles")
         .select("email, nombre, empresa, ciudad, plan, consultas_mes")
         .eq("id", user.id)
         .maybeSingle();
 
       if (cancelled) return;
+
+      // Bug real encontrado el mismo día: antes se descartaba `error` de la
+      // respuesta y siempre caía en silencio al perfil "free" por defecto,
+      // sin avisar que la consulta había fallado de verdad (ej. RLS,
+      // Supabase caído) — indistinguible de un usuario nuevo legítimo sin
+      // fila en profiles todavía.
+      if (perfilError) {
+        setError("No se pudo cargar tu perfil completo — mostrando datos básicos.");
+      }
 
       setPerfil(
         data ?? {

@@ -34,7 +34,18 @@ export default function ProyectosPage() {
     async function load() {
       const { data: session } = await supabase.auth.getSession();
       const userId = session.session?.user.id;
-      if (!userId) return;
+      // Bug real encontrado en el repaso general 2026-08-26: este early
+      // return salía sin setLoading(false) — si la sesión expiraba justo
+      // en este momento (el guard de (app)/layout.tsx ya validó sesión al
+      // entrar, pero puede vencer mientras el usuario navega), el spinner
+      // "Cargando proyectos..." quedaba pegado para siempre.
+      if (!userId) {
+        if (!cancelled) {
+          setError("Tu sesión expiró. Vuelve a iniciar sesión para ver tus proyectos.");
+          setLoading(false);
+        }
+        return;
+      }
 
       const { data, error: apuError } = await supabase
         .from("apu_calculations")
