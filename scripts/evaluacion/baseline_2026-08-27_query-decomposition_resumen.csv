@@ -1,0 +1,5 @@
+metrica,media,std,min,max,n
+faithfulness,0.856,0.266,0.167,1.0,12
+answer_relevancy,0.92,0.043,0.853,0.992,12
+context_precision,0.875,0.151,0.45,1.0,12
+context_recall,1.0,0.0,1.0,1.0,12

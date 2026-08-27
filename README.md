@@ -45,11 +45,13 @@ Esta disciplina es, en el fondo, el mismo método científico aplicado a softwar
 
 No me quedé en describir la arquitectura de recuperación; la medí, con el marco de evaluación RAGAS (fidelidad, relevancia de respuesta, precisión y cobertura del contexto) sobre un conjunto de preguntas con respuesta correcta verificada de antemano contra el texto oficial de la norma. Documento esto con la misma disciplina que aplico al corpus: con los números reales, no con la impresión de que algo "se ve mejor".
 
-| Etapa | Fidelidad | Relevancia | Precisión de contexto | Cobertura de contexto |
+| Etapa (n=12 preguntas) | Fidelidad | Relevancia | Precisión de contexto | Cobertura de contexto |
 |---|---|---|---|---|
-| Línea base (RRF sin re-ranking) | 0.906 | 0.917 | 0.743 | 1.000 |
-| + Re-ranking por cross-encoder, puntaje combinado | 0.837 | 0.851 | **0.875** | 0.917 |
-| + Descomposición de consultas compuestas | 0.856 | 0.920 | 0.875 | **1.000** |
+| Línea base (RRF sin re-ranking) | 0.906 ± 0.193 | 0.917 ± 0.055 | 0.743 ± 0.235 | 1.000 ± 0.000 |
+| + Re-ranking por cross-encoder, puntaje combinado | 0.837 ± 0.243 | 0.851 ± 0.271 | **0.875 ± 0.138** | 0.917 ± 0.289 |
+| + Descomposición de consultas compuestas | 0.856 ± 0.266 | 0.920 ± 0.043 | 0.875 ± 0.151 | **1.000 ± 0.000** |
+
+El ± es la desviación estándar entre las 12 preguntas de esa misma corrida, no una estimación — la reporto porque, con una muestra de este tamaño, es tan importante como el promedio: en fidelidad y relevancia, la diferencia entre etapas (≈0.05-0.07) es más chica que la propia dispersión entre preguntas (0.19-0.27), así que no puedo afirmar con esta muestra que esas dos métricas realmente bajaron por el re-ranking — es igual de consistente con ruido de muestra. La mejora en precisión de contexto (0.743 → 0.875) sí es más grande que la dispersión de la corrida que mejora, lo cual la hace la lectura más confiable de las cuatro. Es exactamente el motivo por el que estoy ampliando el conjunto de evaluación más allá de 12 preguntas — con una muestra mayor, esta misma tabla debería volverse más concluyente, no solo más larga.
 
 Tres hallazgos concretos salieron de este trabajo, cada uno generalizable a cualquier sistema RAG híbrido sobre corpus normativo técnico, no solo a este:
 
@@ -217,11 +219,13 @@ Propiedad de Wilmer José Pérez Orozco — ver [LICENSE](./LICENSE). El reposit
 
 **Empirical RAG evaluation — measured, not just designed.** I didn't stop at describing the retrieval architecture; I measured it with the RAGAS evaluation framework (faithfulness, answer relevancy, context precision, context recall) against a question set with correctness verified independently ahead of time.
 
-| Stage | Faithfulness | Relevancy | Context precision | Context recall |
+| Stage (n=12 questions) | Faithfulness | Relevancy | Context precision | Context recall |
 |---|---|---|---|---|
-| Baseline (RRF, no re-ranking) | 0.906 | 0.917 | 0.743 | 1.000 |
-| + Cross-encoder re-ranking, combined score | 0.837 | 0.851 | **0.875** | 0.917 |
-| + Compound-query decomposition | 0.856 | 0.920 | 0.875 | **1.000** |
+| Baseline (RRF, no re-ranking) | 0.906 ± 0.193 | 0.917 ± 0.055 | 0.743 ± 0.235 | 1.000 ± 0.000 |
+| + Cross-encoder re-ranking, combined score | 0.837 ± 0.243 | 0.851 ± 0.271 | **0.875 ± 0.138** | 0.917 ± 0.289 |
+| + Compound-query decomposition | 0.856 ± 0.266 | 0.920 ± 0.043 | 0.875 ± 0.151 | **1.000 ± 0.000** |
+
+The ± is the standard deviation across the 12 questions of that same run, not an estimate — I report it because, at this sample size, it matters as much as the average: for faithfulness and relevancy, the difference between stages (≈0.05–0.07) is smaller than the spread between questions within a single run (0.19–0.27), so I can't claim from this sample that those two metrics genuinely dropped because of re-ranking — it's equally consistent with sample noise. The context-precision gain (0.743 → 0.875) is larger than the spread of the run it improves into, which makes it the most trustworthy read of the four. This is exactly why I'm expanding the evaluation set beyond 12 questions — with a larger sample, this same table should become more conclusive, not just longer.
 
 Three concrete findings came out of this, each generalizable to any hybrid RAG system over technical regulatory corpora, not just this one: **(1)** the baseline showed the real bottleneck wasn't the one I expected — context recall was already perfect (1.000), the real problem was precision (0.743), i.e. ranking order, not missing content; **(2)** a real design defect in Reciprocal Rank Fusion — each branch's internal candidate-pool size was tied to the caller's requested result count instead of being a fixed value, producing a non-monotonic ranking where a correct fragment could appear or vanish depending on a parameter that shouldn't have affected order, fixed by decoupling that pool size; **(3)** combining the re-ranker's score with the original hybrid-retrieval score, instead of replacing it outright, is what actually works — pure replacement improved precision but degraded recall (0.917), while the combined, normalized score improved precision consistently (0.743 → 0.875) without that regression. Query decomposition took the context recall of the case that motivated it from 0.0 to 1.0 — with a limitation I document explicitly, not hide: that particular run coincided with the primary LLM provider's quota running out, which partly confounds attribution of the generation metrics (not the retrieval ones) to that specific change.
 

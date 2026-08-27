@@ -106,11 +106,38 @@ def main():
     out_csv = SCRIPT_DIR / "_resultados.csv"
     df.to_csv(out_csv, index=False, encoding="utf-8")
 
-    print("\n=== SCORECARD (promedio de las 12 preguntas) ===")
-    for metrica in ["faithfulness", "answer_relevancy", "context_precision", "context_recall"]:
+    # Media sola no dice si una diferencia entre corridas es real o es
+    # varianza entre preguntas -- con n=12/n=50 la desviación estándar entre
+    # preguntas de la MISMA corrida suele ser grande (0.15-0.27 en las
+    # corridas ya medidas 2026-08-27), a veces mayor que la diferencia entre
+    # corridas que se está tratando de atribuir a un cambio de código. Nunca
+    # reportar solo el promedio sin esto -- fue exactamente el motivo por el
+    # que una caída puntual se leyó primero como regresión real y resultó
+    # ser ruido (ver [[project_structai_ragas_baseline]]).
+    metricas = ["faithfulness", "answer_relevancy", "context_precision", "context_recall"]
+    resumen_filas = []
+    for metrica in metricas:
         if metrica in df.columns:
-            print(f"  {metrica}: {df[metrica].mean():.3f}")
+            resumen_filas.append({
+                "metrica": metrica,
+                "media": round(df[metrica].mean(), 3),
+                "std": round(df[metrica].std(ddof=1), 3),
+                "min": round(df[metrica].min(), 3),
+                "max": round(df[metrica].max(), 3),
+                "n": len(df[metrica]),
+            })
+    import csv as _csv
+    out_resumen = SCRIPT_DIR / "_resumen.csv"
+    with out_resumen.open("w", newline="", encoding="utf-8") as f:
+        writer = _csv.DictWriter(f, fieldnames=["metrica", "media", "std", "min", "max", "n"])
+        writer.writeheader()
+        writer.writerows(resumen_filas)
+
+    print(f"\n=== SCORECARD (media ± desviación estándar, n={len(df)} preguntas) ===")
+    for fila in resumen_filas:
+        print(f"  {fila['metrica']}: {fila['media']:.3f} ± {fila['std']:.3f}  (min={fila['min']:.3f}, max={fila['max']:.3f})")
     print(f"\nDetalle por pregunta guardado en {out_csv}")
+    print(f"Resumen media±std guardado en {out_resumen}")
 
 
 if __name__ == "__main__":
