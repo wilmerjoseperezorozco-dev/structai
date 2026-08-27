@@ -315,4 +315,25 @@ CASOS_BASELINE = [
         "ground_truth": "El vidrio templado se trata térmicamente hasta lograr una compresión alta en la superficie o el borde; el termoendurecido logra solo una compresión moderada.",
         "id": "K-templado-vs-termoendurecido-compresion",
     },
+    # ---- Título K, ampliación (K.4.2 — requisitos de diseño de vidrios) ----
+    {
+        "pregunta": "Cual es el factor de seguridad exigido para el diseño de barandas y pasamanos de vidrio segun el Titulo K?",
+        "ground_truth": "Los paneles para barandas y pasamanos de vidrio se deben diseñar con un factor de seguridad igual a cuatro (4).",
+        "id": "K-barandas-vidrio-factor-seguridad-4",
+    },
+    {
+        "pregunta": "Se permite usar vidrios de 2 mm de espesor segun el Titulo K?",
+        "ground_truth": "No, se prohíbe el uso de vidrios de 2 mm debido a su excesiva flexibilidad.",
+        "id": "K-vidrio-2mm-prohibido",
+    },
+    {
+        "pregunta": "Cual es el limite recomendado de probabilidad de rotura aceptable por esfuerzos termicos en vidrio segun el Titulo K?",
+        "ground_truth": "Es recomendable que la probabilidad de rotura aceptable por esfuerzos térmicos no sea superior al 0.8%.",
+        "id": "K-esfuerzos-termicos-probabilidad-rotura-08porciento",
+    },
+    {
+        "pregunta": "A partir de que inclinacion respecto a la vertical se considera un sistema vidriado como inclinado (no vertical) segun el Titulo K?",
+        "ground_truth": "Un sistema vidriado se considera inclinado cuando tiene una inclinación de más de 15° con respecto a la vertical.",
+        "id": "K-vidrio-inclinado-mas-de-15grados",
+    },
 ]

@@ -407,6 +407,30 @@ CASOS_TITULO_K_K4 = [
     ),
 ]
 
+# Ampliacion 2026-08-27 (continuacion, K.4.2 -- requisitos de diseño de vidrios).
+CASOS_TITULO_K_K42 = [
+    pytest.param(
+        "Cual es el factor de seguridad exigido para el diseño de barandas y pasamanos de vidrio segun el Titulo K?",
+        ["cuatro", "4"],
+        id="K-barandas-vidrio-factor-seguridad-4",
+    ),
+    pytest.param(
+        "Se permite usar vidrios de 2 mm de espesor segun el Titulo K?",
+        ["no", "prohib", "flexibilidad"],
+        id="K-vidrio-2mm-prohibido",
+    ),
+    pytest.param(
+        "Cual es el limite recomendado de probabilidad de rotura aceptable por esfuerzos termicos en vidrio segun el Titulo K?",
+        ["0.8", "0,8"],
+        id="K-esfuerzos-termicos-probabilidad-rotura-08porciento",
+    ),
+    pytest.param(
+        "A partir de que inclinacion respecto a la vertical se considera un sistema vidriado como inclinado (no vertical) segun el Titulo K?",
+        ["15"],
+        id="K-vidrio-inclinado-mas-de-15grados",
+    ),
+]
+
 
 @pytest.mark.parametrize(
     "pregunta,variantes_esperadas",
@@ -424,7 +448,8 @@ CASOS_TITULO_K_K4 = [
     + CASOS_TITULO_I
     + CASOS_TITULO_B_EXTRA
     + CASOS_NTC_SGSST
-    + CASOS_TITULO_K_K4,
+    + CASOS_TITULO_K_K4
+    + CASOS_TITULO_K_K42,
 )
 def test_respuesta_contiene_hecho_verificado(pregunta: str, variantes_esperadas: list[str]) -> None:
     # top_k=4 (hardcodeado aquí desde antes) quedó por debajo incluso del
