@@ -503,6 +503,15 @@ async def _lifespan(_app: FastAPI):
     # logs de producción: 3 reinicios consecutivos). Tras subir a
     # apps-s-1vcpu-2gb (2026-07-30), memoria disponible verificada vía
     # /health?deep=true: 1635MB libres (antes 611MB) — margen suficiente.
+    #
+    # A propósito NO se precalienta aquí el modelo de re-ranking
+    # (rag_multi_norma._reranker_model(), agregado 2026-08-27): medido en
+    # vivo, agrega ~300MB reales de RSS sobre lo que ya usa el modelo de
+    # embeddings -- con el margen actual (1635MB) hay espacio, pero
+    # precalentar DOS modelos pesados en paralelo al arranque es más riesgo
+    # de lo que vale la pena ahora mismo. Queda con carga perezosa
+    # (@lru_cache, igual que _embedding_model): el primer /ask real paga
+    # ese costo una sola vez (~unos segundos), no cada request.
     if RAG_AVAILABLE:
         asyncio.create_task(asyncio.to_thread(_prewarm_embeddings_blocking))
 

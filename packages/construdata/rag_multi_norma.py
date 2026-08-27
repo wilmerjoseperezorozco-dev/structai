@@ -31,6 +31,21 @@ log = logging.getLogger(__name__)
 sb = create_client(os.environ["SUPABASE_URL"], os.environ["SUPABASE_SERVICE_KEY"])
 
 EMBEDDING_MODEL_NAME = "paraphrase-multilingual-MiniLM-L12-v2"  # 384-dim, multilingüe — debe calzar con nsr10_chunks/ntc_chunks.embedding vector(384)
+
+# Re-ranking (2026-08-27): cross-encoder local, mismo paquete
+# sentence-transformers ya instalado -- sin dependencia nueva ni costo por
+# consulta (a diferencia de una API de rerank paga). Motivado por la línea
+# base real de RAGAS (scripts/evaluacion/): context_precision=0.743 fue el
+# cuello de botella medido, no la generación -- verificado a mano en 3
+# preguntas reales que la cláusula correcta SÍ existe en el corpus pero no
+# llegaba al contexto. mmarco-mMiniLMv2-L12-H384-v1 es multilingüe
+# (100 idiomas, incluye español) y del mismo tamaño/familia que el modelo
+# de embeddings ya cargado -- no duplica el costo de RAM de forma
+# desproporcionada. Verificado en vivo antes de integrarlo: distingue
+# correctamente un texto de "compresión" (score -5.6) de uno de "cortante"
+# (score +2.9) para una consulta sobre cortante -- el error exacto
+# encontrado en la auditoría de faithfulness (C-factor-phi-traccion-090).
+RERANKER_MODEL_NAME = "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1"
 # llama-3.3-70b-versatile fue reemplazado el 2026-07-31 — Groq lo deprecó
 # (apagado programado 2026-08-16 para cuentas free/developer). gpt-oss-120b
 # es el reemplazo recomendado por Groq y, a diferencia de llama-3.3, sí
@@ -175,6 +190,66 @@ def _embedding_model():
     os.environ.setdefault("HF_HUB_OFFLINE", "1")
     from sentence_transformers import SentenceTransformer
     return SentenceTransformer(EMBEDDING_MODEL_NAME)
+
+
+@lru_cache(maxsize=1)
+def _reranker_model():
+    """Mismo patrón que _embedding_model() -- cacheado, carga perezosa (solo
+    la primera vez que se necesita, no al importar el módulo). CrossEncoder
+    es parte de sentence-transformers, ya instalado -- ver RERANKER_MODEL_NAME
+    arriba para el porqué de este modelo específico."""
+    os.environ.setdefault("HF_HUB_OFFLINE", "1")
+    from sentence_transformers import CrossEncoder
+    return CrossEncoder(RERANKER_MODEL_NAME)
+
+
+# Peso del cross-encoder en el score combinado (ver _rerank_chunks). 1.0
+# sería reemplazar el RRF por completo -- exactamente lo que se probó
+# primero (2026-08-27) y midió con RAGAS: mejoró context_precision
+# (0.743 -> 0.793) pero empeoró faithfulness/answer_relevancy/recall,
+# porque el cross-encoder evalúa cada chunk AISLADO de los demás y puede
+# descartar un fragmento que el RRF sí tenía bien rankeado en preguntas
+# compuestas (ej. "factores phi para tracción Y cortante" perdió el
+# fragmento de tracción por completo, recall de esa pregunta se fue a
+# 0.0). 0.7 -- el cross-encoder pesa más que el RRF pero ya no lo
+# reemplaza -- es un punto de partida razonable, no un valor definitivo:
+# ajustar según lo que mida la próxima corrida real de RAGAS.
+PESO_RERANKER = 0.7
+
+
+def _rerank_chunks(query: str, chunks: list["ChunkResult"], top_k: int) -> list["ChunkResult"]:
+    """Reordena `chunks` combinando el score original de búsqueda híbrida
+    (RRF de KNN + full-text) con el del cross-encoder (relevancia real
+    query-vs-contenido, par a par) -- no reemplaza uno por el otro, ver
+    PESO_RERANKER arriba para el motivo real medido con RAGAS de por qué
+    un reemplazo puro es peor que combinarlos. Ambos scores vienen en
+    escalas distintas (RRF ~0-1, cross-encoder logit sin acotar) -- se
+    normalizan min-max dentro del propio pool de candidatos antes de
+    combinar, no tienen unidades comparables de otra forma.
+
+    Sin chunks o con 1 solo, no hay nada que reordenar -- se devuelve tal
+    cual para no pagar el costo del modelo en vano."""
+    if len(chunks) <= 1:
+        return chunks
+    modelo = _reranker_model()
+    pares = [(query, c.contenido) for c in chunks]
+    puntajes_ce = list(modelo.predict(pares))
+    puntajes_rrf = [c.score for c in chunks]
+
+    def _normalizar(valores: list[float]) -> list[float]:
+        lo, hi = min(valores), max(valores)
+        if hi - lo < 1e-9:
+            return [0.5] * len(valores)  # todos iguales -- no distorsionar con 0/1 arbitrario
+        return [(v - lo) / (hi - lo) for v in valores]
+
+    ce_norm = _normalizar(puntajes_ce)
+    rrf_norm = _normalizar(puntajes_rrf)
+    combinados = [
+        PESO_RERANKER * ce + (1 - PESO_RERANKER) * rrf
+        for ce, rrf in zip(ce_norm, rrf_norm)
+    ]
+    reordenados = sorted(zip(chunks, combinados), key=lambda par: par[1], reverse=True)
+    return [c for c, _ in reordenados[:top_k]]
 
 
 @dataclass
@@ -1444,9 +1519,20 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = TOP_K_DEFA
     Retorna: {respuesta, fuentes, normas_citadas, chunks_usados}
     """
     # 1. Routing automático si no hay norma específica
+    #
+    # pool_k: cuántos candidatos se recuperan de la búsqueda híbrida ANTES
+    # de re-rankear (2026-08-27) -- necesita ser mayor que top_k para que el
+    # cross-encoder tenga margen real de reordenar, no solo confirmar el
+    # mismo orden que ya traía el RRF. Motivado por la línea base de RAGAS
+    # (context_precision=0.743 medido, ver scripts/evaluacion/): en los 3
+    # casos reales auditados a mano, la cláusula correcta SÍ estaba en el
+    # corpus pero rankeaba fuera del top_k original -- con un pool más
+    # amplio + re-ranking, el cross-encoder puede rescatarla antes de
+    # truncar al top_k final que de verdad llega al LLM.
+    pool_k = max(top_k * 3, 20)
     if norma_hint:
         target_normas = [norma_hint]
-        chunks = search(question, norma_filter=norma_hint, top_k=top_k)
+        candidatos = search(question, norma_filter=norma_hint, top_k=pool_k)
     else:
         target_normas = route_query(question)
         # Buscar en todas las normas relevantes en paralelo
@@ -1462,18 +1548,24 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = TOP_K_DEFA
         # búsqueda global (norma_filter=None) al pool de candidatos, sin importar si
         # hubo normas detectadas por keyword.
         for norma in (target_normas or [None]):
-            results = search(question, norma_filter=norma, top_k=top_k)
+            results = search(question, norma_filter=norma, top_k=pool_k)
             for c in results:
                 if c.chunk_id not in seen_ids:
                     all_chunks.append(c)
                     seen_ids.add(c.chunk_id)
         if target_normas:
-            for c in search(question, norma_filter=None, top_k=top_k):
+            for c in search(question, norma_filter=None, top_k=pool_k):
                 if c.chunk_id not in seen_ids:
                     all_chunks.append(c)
                     seen_ids.add(c.chunk_id)
-        # Ordenar por score y tomar top 2×top_k
-        chunks = sorted(all_chunks, key=lambda x: x.score, reverse=True)[:top_k * 2]
+        # Ordenar por score del RRF y acotar el pool antes de re-rankear
+        # (techo real para no pagar el costo del cross-encoder sobre un
+        # pool sin límite si route_query() detecta varias normas a la vez).
+        candidatos = sorted(all_chunks, key=lambda x: x.score, reverse=True)[:40]
+
+    # Re-ranking: cross-encoder sobre el pool de candidatos, recorta al
+    # top_k real que llega al LLM (ver _rerank_chunks/RERANKER_MODEL_NAME).
+    chunks = _rerank_chunks(question, candidatos, top_k)
 
     # 2. Construir contexto (con advertencia de vigencia por chunk cuando aplica)
     contexto = "\n\n---\n\n".join(_format_chunk_context(c) for c in chunks)
