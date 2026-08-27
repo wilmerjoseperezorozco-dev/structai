@@ -59,6 +59,21 @@ Tres hallazgos concretos salieron de este trabajo, cada uno generalizable a cual
 2. **Un defecto de diseño en la fusión de rangos recíprocos (RRF)**: el tamaño del conjunto interno de candidatos de cada rama de búsqueda (vectorial y de texto completo) estaba atado a la cantidad de resultados solicitada por quien llamaba a la función, en vez de ser un valor fijo. Esto producía un ranking no monótono — un fragmento correcto podía aparecer o desaparecer del resultado final según un parámetro que en teoría no debería afectar el orden. Corregido desacoplando ese tamaño interno de la cantidad solicitada.
 3. **Combinar el puntaje del re-ranker con el de recuperación híbrida, en vez de reemplazarlo por completo, es lo que realmente funciona.** El reemplazo puro mejoraba la precisión pero degradaba la cobertura (0.917); la combinación normalizada mejoró la precisión de forma sostenida (0.743 → 0.875) sin esa regresión.
 
+### Validación a mayor escala: de 12 a 52 preguntas
+
+Hice justo lo que la tabla de arriba pedía: amplié el conjunto de evaluación de 12 a 52 preguntas, cubriendo ahora Títulos D, E y G completos, más ampliaciones de A, B, C, F, H, I, J, K, y las normas NTC 121/174/1500 y el Decreto 1072 (SGSST) — mismo método de siempre, ningún hecho inventado, cada uno extraído directo del corpus verbatim ya cargado.
+
+| Métrica (n=52 preguntas) | Media ± desviación estándar |
+|---|---|
+| Fidelidad | 0.826 ± 0.252 (n=49 — 3 respuestas del juez fallaron por ruido real de infraestructura, excluidas, no promediadas como cero) |
+| Relevancia de respuesta | 0.858 ± 0.252 |
+| Precisión de contexto | 0.784 ± 0.181 |
+| Cobertura de contexto | 0.960 ± 0.198 (n=50) |
+
+El hallazgo más importante de esta ampliación no es ningún promedio — es cuánto cambió la dispersión. Con 12 preguntas, la relevancia de respuesta salía en 0.920 ± 0.043: parecía casi perfecta y muy consistente. Con 52, es 0.858 ± 0.252 — la muestra chica estaba dando una imagen artificialmente optimista, no representativa de la varianza real del sistema. Es exactamente la razón por la que valía la pena ampliarla: doce preguntas alcanzan para detectar un problema estructural de diseño, pero no para confiar en qué tan estable es el sistema en el día a día. La precisión de contexto, en cambio, se mantuvo relativamente estable entre ambas escalas (0.875 → 0.784) — una señal más confiable que la relevancia de respuesta.
+
+La verificación previa (más barata, sin el juez de RAGAS) encontró además 3 preguntas de las 40 nuevas donde el hecho existe en el corpus pero no llega al contexto recuperado con la configuración por defecto — un hueco real de precisión de recuperación, no un dato mal cargado. Los dejo documentados como candidatos concretos de mejora, no los escondo: la cuantía máxima de refuerzo a flexión en pórticos DES (Título C), el espesor mínimo de mampostería no reforzada (Título D), y la duración de la Fase 3 del SG-SST para empresas grandes (Decreto 1072) — este último probablemente porque la tabla fuente mezcla los cuatro tamaños de empresa en un solo fragmento denso, diluyendo la señal del embedding.
+
 La descomposición de consultas compuestas (preguntas que combinan dos conceptos normativos independientes) llevó la cobertura del contexto del caso que la motivó de 0.0 a 1.0 — con una limitación que documento explícitamente, no oculto: esa corrida en particular coincidió con el agotamiento de cuota del proveedor de LLM principal, lo que confunde parcialmente la atribución de las métricas de generación (no de recuperación) a esa intervención específica.
 
 ## Los 7 motores
@@ -228,6 +243,19 @@ Propiedad de Wilmer José Pérez Orozco — ver [LICENSE](./LICENSE). El reposit
 The ± is the standard deviation across the 12 questions of that same run, not an estimate — I report it because, at this sample size, it matters as much as the average: for faithfulness and relevancy, the difference between stages (≈0.05–0.07) is smaller than the spread between questions within a single run (0.19–0.27), so I can't claim from this sample that those two metrics genuinely dropped because of re-ranking — it's equally consistent with sample noise. The context-precision gain (0.743 → 0.875) is larger than the spread of the run it improves into, which makes it the most trustworthy read of the four. This is exactly why I'm expanding the evaluation set beyond 12 questions — with a larger sample, this same table should become more conclusive, not just longer.
 
 Three concrete findings came out of this, each generalizable to any hybrid RAG system over technical regulatory corpora, not just this one: **(1)** the baseline showed the real bottleneck wasn't the one I expected — context recall was already perfect (1.000), the real problem was precision (0.743), i.e. ranking order, not missing content; **(2)** a real design defect in Reciprocal Rank Fusion — each branch's internal candidate-pool size was tied to the caller's requested result count instead of being a fixed value, producing a non-monotonic ranking where a correct fragment could appear or vanish depending on a parameter that shouldn't have affected order, fixed by decoupling that pool size; **(3)** combining the re-ranker's score with the original hybrid-retrieval score, instead of replacing it outright, is what actually works — pure replacement improved precision but degraded recall (0.917), while the combined, normalized score improved precision consistently (0.743 → 0.875) without that regression. Query decomposition took the context recall of the case that motivated it from 0.0 to 1.0 — with a limitation I document explicitly, not hide: that particular run coincided with the primary LLM provider's quota running out, which partly confounds attribution of the generation metrics (not the retrieval ones) to that specific change.
+
+**Scaling up the evaluation: from 12 to 52 questions.** I did exactly what the table above called for: expanded the evaluation set from 12 to 52 questions, now covering Titles D, E and G in full plus extensions of A, B, C, F, H, I, J, K, and the NTC 121/174/1500 standards and Decree 1072 (SGSST) — same method as always, nothing invented, every fact pulled straight from the already-loaded verbatim corpus.
+
+| Metric (n=52 questions) | Mean ± standard deviation |
+|---|---|
+| Faithfulness | 0.826 ± 0.252 (n=49 — 3 judge calls failed on real infrastructure noise, excluded, not averaged in as zero) |
+| Answer relevancy | 0.858 ± 0.252 |
+| Context precision | 0.784 ± 0.181 |
+| Context recall | 0.960 ± 0.198 (n=50) |
+
+The most important finding of this expansion isn't any single average — it's how much the spread changed. At 12 questions, answer relevancy came out at 0.920 ± 0.043: it looked almost perfect and very consistent. At 52, it's 0.858 ± 0.252 — the small sample was giving an artificially optimistic picture, not a representative one of the system's real variance. That's exactly why the expansion was worth doing: twelve questions are enough to catch a structural design problem, not enough to trust how stable the system really is day to day. Context precision, by contrast, held up relatively steady across both scales (0.875 → 0.784) — a more trustworthy signal than answer relevancy turned out to be.
+
+The cheaper pre-check (no RAGAS judge involved) also found 3 of the 40 new questions where the fact exists in the corpus but doesn't reach the retrieved context under the default configuration — a real retrieval-precision gap, not a bad data load. I document them as concrete improvement candidates rather than hide them: the maximum flexural reinforcement ratio in DES moment frames (Title C), the minimum thickness of unreinforced masonry (Title D), and the Phase 3 duration of SG-SST implementation for large companies (Decree 1072) — the last one likely because its source table packs all four company-size tiers into one dense fragment, diluting the embedding's signal.
 
 **The 7 engines:**
 

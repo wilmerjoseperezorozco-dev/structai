@@ -148,10 +148,264 @@ CASOS_TITULO_C = [
         ["135"],
         id="C-ganchos-sismicos-135grados",
     ),
+    pytest.param(
+        "Cual es la cuantia maxima de refuerzo a flexion permitida en vigas de porticos resistentes a momento con capacidad especial DES segun el Titulo C?",
+        ["0.025", "0,025", "2.5%", "2,5%"],
+        id="C-cuantia-maxima-flexion-DES-0025",
+    ),
+    pytest.param(
+        "Cual es el valor maximo de fyt que se puede usar para calcular la cuantia del refuerzo de confinamiento segun el Titulo C?",
+        ["700"],
+        id="C-fyt-maximo-confinamiento-700MPa",
+    ),
+    pytest.param(
+        "Cual es el espaciamiento maximo del refuerzo en diafragmas estructurales de concreto, excepto losas post-tensadas, segun el Titulo C?",
+        ["450"],
+        id="C-diafragmas-espaciamiento-max-450mm",
+    ),
+]
+
+# Ampliación 2026-08-27 (ida de 12 a 50 preguntas) -- mismos hechos ya
+# verificados leyendo directamente el PDF oficial verbatim ya cargado en
+# nsr10_chunks/ntc_chunks (no se inventa nada nuevo, se extiende la misma
+# disciplina a los títulos que ya están verbatim: D, E, G, y a los chunks
+# de precisión ya existentes en A/F/J/K). Ver [[project_structai_ragas_baseline]].
+CASOS_TITULO_D = [
+    pytest.param(
+        "A partir de que area construida es obligatoria la supervision tecnica en una estructura de mamposteria segun el Titulo D?",
+        ["3000"],
+        id="D-supervision-tecnica-3000m2",
+    ),
+    pytest.param(
+        "Cual es el valor minimo absoluto de resistencia a la compresion del mortero de relleno a los 28 dias segun el Titulo D, sin importar la resistencia de la mamposteria?",
+        ["12.5", "12,5"],
+        id="D-mortero-relleno-minimo-125MPa",
+    ),
+    pytest.param(
+        "Que porcentaje maximo del area de la seccion transversal pueden ocupar las celdas verticales en una unidad de mamposteria de perforacion vertical segun el Titulo D?",
+        ["65"],
+        id="D-celdas-verticales-max-65porciento",
+    ),
+    pytest.param(
+        "Cual es el diametro minimo de refuerzo permitido en celdas de mamposteria inyectadas con mortero segun el Titulo D?",
+        ["3/8", "10m", "10 mm", "n° 3", "n°3", "no. 3"],
+        id="D-diametro-minimo-refuerzo-celdas-10mm",
+    ),
+    pytest.param(
+        "Cual es el espesor minimo nominal de un muro de mamposteria NO reforzada segun el Titulo D?",
+        ["120"],
+        id="D-espesor-minimo-no-reforzada-120mm",
+    ),
+    pytest.param(
+        "En que condicion de amenaza sismica se permite usar mamposteria no reforzada como sistema de resistencia sismica segun el Titulo D?",
+        ["0.05", "0,05", "baja"],
+        id="D-no-reforzada-zona-baja-Aa-005",
+    ),
+    pytest.param(
+        "En que dimension de probetas se mide la resistencia a la compresion de los morteros de pega tipo H M S o N segun el Titulo D?",
+        ["50 mm", "50mm", "75 mm", "75mm"],
+        id="D-morteros-probetas-cubos-50mm",
+    ),
+]
+
+CASOS_TITULO_E = [
+    pytest.param(
+        "Cual es la resistencia minima a compresion a los 28 dias del mortero de pega en mamposteria confinada segun el Titulo E?",
+        ["7.5", "7,5"],
+        id="E-mortero-pega-75MPa",
+    ),
+    pytest.param(
+        "Cual es el espesor minimo nominal de un muro estructural en zona sismica alta para una casa de dos pisos, primer nivel, segun el Titulo E?",
+        ["110"],
+        id="E-espesor-muro-zona-alta-2pisos-110mm",
+    ),
+    pytest.param(
+        "Cual es el area transversal minima de las columnas de confinamiento en mamposteria confinada segun el Titulo E?",
+        ["20 000", "20000", "200 cm", "200cm"],
+        id="E-columnas-confinamiento-area-20000mm2",
+    ),
+]
+
+CASOS_TITULO_G = [
+    pytest.param(
+        "Cuantos pies tablares tiene un metro cubico de madera segun el Titulo G?",
+        ["424"],
+        id="G-m3-424-pies-tablares",
+    ),
+    pytest.param(
+        "Cual es el contenido de humedad maximo permitido para madera estructural en general, y para madera laminada, segun el Titulo G?",
+        ["19", "12"],
+        id="G-humedad-madera-estructural-19-12porciento",
+    ),
+    pytest.param(
+        "Se permiten las uniones clavadas en elementos de guadua segun el Titulo G?",
+        ["no", "prohib", "grietas"],
+        id="G-guadua-uniones-clavadas-prohibidas",
+    ),
+    pytest.param(
+        "Para que contenido de humedad maximo son representativas las cargas admisibles de conexiones de guadua de la tabla G.12.11-2 segun el Titulo G?",
+        ["19"],
+        id="G-guadua-humedad-cargas-admisibles-19porciento",
+    ),
+]
+
+CASOS_TITULO_A_EXTRA = [
+    pytest.param(
+        "Cual es la deriva maxima permitida para mamposteria con falla predominante por cortante segun el Titulo A?",
+        ["0.5", "0,5"],
+        id="A-deriva-mamposteria-cortante-05porciento",
+    ),
+]
+
+CASOS_TITULO_F_EXTRA = [
+    pytest.param(
+        "Cual es la ecuacion basica de diseño DCCR para estructuras de acero segun el Titulo F?",
+        ["ru", "rn", "phi"],
+        id="F-DCCR-formula-Ru-phiRn",
+    ),
+    pytest.param(
+        "Cuales son los limites de luz entre columnas y peralte total de la cercha en un Portico con Cercha Ductil (PCD) segun el Titulo F?",
+        ["20", "1.8", "1,8"],
+        id="F-PCD-limites-luz20m-peralte18m",
+    ),
+]
+
+CASOS_TITULO_J = [
+    pytest.param(
+        "Cual es el area de servicio y el caudal minimo requerido por hidrante para un hospital segun el Titulo J?",
+        ["500", "63"],
+        id="J-hidrante-hospital-500m2-63Ls",
+    ),
+    pytest.param(
+        "Cual es la resistencia al fuego minima en horas de un muro cortafuego en una edificacion de categoria de riesgo I segun el Titulo J?",
+        ["3"],
+        id="J-muro-cortafuego-categoria1-3horas",
+    ),
+]
+
+CASOS_TITULO_K = [
+    pytest.param(
+        "Cual es la fuerza maxima requerida para abrir completamente una puerta de salida segun el Titulo K?",
+        ["250"],
+        id="K-fuerza-apertura-puerta-250N",
+    ),
+    pytest.param(
+        "Por cuanto tiempo minimo debe permanecer en servicio el sistema de iluminacion de emergencia tras una falla del sistema principal segun el Titulo K?",
+        ["1.5", "1,5"],
+        id="K-iluminacion-emergencia-15horas",
+    ),
+    pytest.param(
+        "Cuantas salidas minimas se requieren para una edificacion con carga de ocupacion entre 501 y 1000 personas segun el Titulo K?",
+        ["3", "tres"],
+        id="K-numero-salidas-501-1000-3salidas",
+    ),
+]
+
+CASOS_TITULO_H = [
+    pytest.param(
+        "Cuantos años minimos de experiencia en diseño geotecnico de cimentaciones debe tener el profesional que dirige un estudio geotecnico segun el Titulo H?",
+        ["cinco", "5"],
+        id="H-experiencia-geotecnista-5anos",
+    ),
+    pytest.param(
+        "Cual es la profundidad minima y el numero minimo de sondeos para una unidad de construccion de categoria Alta (11 a 20 niveles) segun el Titulo H?",
+        ["25", "4"],
+        id="H-sondeos-categoria-alta-25m-4sondeos",
+    ),
+    pytest.param(
+        "Entre cuantos niveles y que rango de cargas de servicio define el Titulo H la categoria Media de una unidad de construccion?",
+        ["4", "10", "801", "4.000", "4,000", "4000"],
+        id="H-categoria-media-4a10niveles",
+    ),
+]
+
+CASOS_TITULO_I = [
+    pytest.param(
+        "Cual es la excepcion a la obligatoriedad de supervision tecnica para casas de uno y dos pisos del Titulo E, segun el Titulo I?",
+        ["15"],
+        id="I-excepcion-titulo-E-15viviendas",
+    ),
+    pytest.param(
+        "Durante cuantos años minimo debe conservar el supervisor tecnico el registro escrito de sus labores segun el Titulo I?",
+        ["cinco", "5"],
+        id="I-registro-supervisor-5anos",
+    ),
+    pytest.param(
+        "Cuales son los dos grados de supervision tecnica que reconoce el Titulo I?",
+        ["continua", "itinerante"],
+        id="I-dos-grados-supervision-AB",
+    ),
+]
+
+CASOS_TITULO_B_EXTRA = [
+    pytest.param(
+        "Cual es el porcentaje de incremento de carga viva por impacto para los soportes de elevadores o ascensores segun el Titulo B?",
+        ["100"],
+        id="B-impacto-ascensores-100porciento",
+    ),
+    pytest.param(
+        "Cual es el valor del factor de efecto rafaga G para estructuras rigidas segun el Titulo B?",
+        ["0.85", "0,85"],
+        id="B-factor-rafaga-G085",
+    ),
+]
+
+CASOS_NTC_SGSST = [
+    pytest.param(
+        "Se pueden instalar las instalaciones hidraulicas y sanitarias en la caja del ascensor o el cuarto de maquinas segun la NTC 1500?",
+        ["no"],
+        id="NTC1500-instalaciones-prohibidas-ascensor",
+    ),
+    pytest.param(
+        "Entre que valores debe estar el modulo de finura del agregado fino para concreto segun la NTC 174?",
+        ["2.3", "2,3", "3.1", "3,1"],
+        id="NTC174-modulo-finura-23-31",
+    ),
+    pytest.param(
+        "Cual es el tiempo minimo de fraguado inicial del cemento Portland segun la NTC 121?",
+        ["45"],
+        id="NTC121-fraguado-inicial-45min",
+    ),
+    pytest.param(
+        "Cual es la multa maxima en SMMLV por no reportar un accidente de trabajo grave o mortal segun el Decreto 1072 de 2015?",
+        ["1000", "1.000"],
+        id="Decreto1072-multa-no-reportar-AT-1000SMMLV",
+    ),
+    pytest.param(
+        "En cuantos meses debe completar la Fase 3 de implementacion del SG-SST una empresa grande de mas de 200 trabajadores segun el Decreto 1072 de 2015?",
+        ["6"],
+        id="Decreto1072-fase3-empresa-grande-6meses",
+    ),
+    pytest.param(
+        "Cual es el porcentaje maximo de terrones de arcilla y particulas deleznables permitido en el agregado fino para concreto segun la NTC 174?",
+        ["3.0", "3,0", "3%"],
+        id="NTC174-terrones-arcilla-max-3porciento",
+    ),
+    pytest.param(
+        "Cual es la expansion maxima en autoclave permitida para el cemento Portland segun la NTC 121?",
+        ["0.80", "0,80", "0.8%", "0,8%"],
+        id="NTC121-expansion-autoclave-08porciento",
+    ),
 ]
 
 
-@pytest.mark.parametrize("pregunta,variantes_esperadas", CASOS_TITULO_B + CASOS_TITULO_A + CASOS_TITULO_C)
+@pytest.mark.parametrize(
+    "pregunta,variantes_esperadas",
+    CASOS_TITULO_B
+    + CASOS_TITULO_A
+    + CASOS_TITULO_C
+    + CASOS_TITULO_D
+    + CASOS_TITULO_E
+    + CASOS_TITULO_G
+    + CASOS_TITULO_A_EXTRA
+    + CASOS_TITULO_F_EXTRA
+    + CASOS_TITULO_J
+    + CASOS_TITULO_K
+    + CASOS_TITULO_H
+    + CASOS_TITULO_I
+    + CASOS_TITULO_B_EXTRA
+    + CASOS_NTC_SGSST,
+)
 def test_respuesta_contiene_hecho_verificado(pregunta: str, variantes_esperadas: list[str]) -> None:
     # top_k=4 (hardcodeado aquí desde antes) quedó por debajo incluso del
     # viejo default de la app (6), y muy por debajo del real actual
