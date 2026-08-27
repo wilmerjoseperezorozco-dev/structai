@@ -388,6 +388,25 @@ CASOS_NTC_SGSST = [
     ),
 ]
 
+# Ampliacion 2026-08-27 (continuacion, K.4.1 -- glosario de vidrios).
+CASOS_TITULO_K_K4 = [
+    pytest.param(
+        "Que le pasa al vidrio templado (fully tempered) cuando se rompe, segun el Titulo K?",
+        ["pequeños pedazos", "pequenos pedazos", "fragmenta"],
+        id="K-vidrio-templado-fragmenta-pequeños-pedazos",
+    ),
+    pytest.param(
+        "A partir de que angulo respecto a la vertical se considera un vidrio como tragaluz o claraboya segun el Titulo K?",
+        ["15"],
+        id="K-tragaluz-angulo-15grados",
+    ),
+    pytest.param(
+        "Cual es la diferencia entre vidrio templado y vidrio termoendurecido segun el Titulo K?",
+        ["moderada", "alta"],
+        id="K-templado-vs-termoendurecido-compresion",
+    ),
+]
+
 
 @pytest.mark.parametrize(
     "pregunta,variantes_esperadas",
@@ -404,7 +423,8 @@ CASOS_NTC_SGSST = [
     + CASOS_TITULO_H
     + CASOS_TITULO_I
     + CASOS_TITULO_B_EXTRA
-    + CASOS_NTC_SGSST,
+    + CASOS_NTC_SGSST
+    + CASOS_TITULO_K_K4,
 )
 def test_respuesta_contiene_hecho_verificado(pregunta: str, variantes_esperadas: list[str]) -> None:
     # top_k=4 (hardcodeado aquí desde antes) quedó por debajo incluso del

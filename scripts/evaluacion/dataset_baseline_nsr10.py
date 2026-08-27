@@ -299,4 +299,20 @@ CASOS_BASELINE = [
         "ground_truth": "La expansión en autoclave no debe exceder el 0.80% para el cemento Portland.",
         "id": "NTC121-expansion-autoclave-08porciento",
     },
+    # ---- Título K, ampliación (K.4.1 — glosario de vidrios) ----
+    {
+        "pregunta": "Que le pasa al vidrio templado (fully tempered) cuando se rompe, segun el Titulo K?",
+        "ground_truth": "El vidrio templado, al romperse en cualquier punto, se fragmenta entero en pequeños pedazos con bordes relativamente romos.",
+        "id": "K-vidrio-templado-fragmenta-pequeños-pedazos",
+    },
+    {
+        "pregunta": "A partir de que angulo respecto a la vertical se considera un vidrio como tragaluz o claraboya segun el Titulo K?",
+        "ground_truth": "Se considera tragaluz o claraboya el vidrio plano instalado en un ángulo mayor a 15° de la vertical en el exterior de un edificio.",
+        "id": "K-tragaluz-angulo-15grados",
+    },
+    {
+        "pregunta": "Cual es la diferencia entre vidrio templado y vidrio termoendurecido segun el Titulo K?",
+        "ground_truth": "El vidrio templado se trata térmicamente hasta lograr una compresión alta en la superficie o el borde; el termoendurecido logra solo una compresión moderada.",
+        "id": "K-templado-vs-termoendurecido-compresion",
+    },
 ]
