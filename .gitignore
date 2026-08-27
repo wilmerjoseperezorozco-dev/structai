@@ -45,6 +45,11 @@ scripts/ingesta/*/raw/
 scripts/ingesta/sgsst_raw/
 scripts/ingesta/ras_audit/
 scripts/ingesta/preview_*.txt
+# Salida de scratch de cada corrida de scripts/evaluacion/ragas_baseline_nsr10.py
+# -- los snapshots que sí vale la pena conservar se renombran a mano a
+# baseline_<fecha>_*.* (esos SÍ se versionan, ver baseline_2026-08-27_*.*).
+scripts/evaluacion/_muestras.jsonl
+scripts/evaluacion/_resultados.csv
 
 # ── Dataset de fotos de obra reales (personas identificables, sitio real) ──
 # El modelo.onnx entrenado SÍ se puede commitear (deliberado, binario

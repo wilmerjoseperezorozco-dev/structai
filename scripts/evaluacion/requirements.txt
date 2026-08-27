@@ -1,0 +1,75 @@
+# ── Evaluación RAGAS del pipeline RAG (packages/construdata/rag_multi_norma.py) ──
+#
+# Instalar en un VENV APARTE, nunca junto a apps/api/requirements.txt.
+# Conflicto real encontrado y verificado el 2026-08-27 (no teórico): la
+# cadena de dependencias de `ragas` (vía `langchain-openai`) exige
+# `openai>=2.45.0`, mientras que `apps/api/requirements.txt` fija
+# `openai==1.54.4` a propósito para producción. Instalar ambos en el mismo
+# entorno rompe uno de los dos -- confirmado con
+# `pip install openai==1.54.4` después de instalar ragas:
+#   "langchain-openai 1.6.0 requires openai<4.0.0,>=2.45.0, but you have
+#    openai 1.54.4 which is incompatible."
+#
+# Verificado también (antes de aislar el venv) que `rag_multi_norma.py`
+# SÍ funciona correctamente con openai>=2.x (llamada real end-to-end a
+# Groq/OpenAI, respuesta generada correcta) -- el pin de producción a
+# 1.54.4 es una decisión aparte y deliberada de estabilidad, no porque
+# 2.x esté roto. Este venv de evaluación puede usar la versión de openai
+# que ragas necesite sin ningún problema real.
+#
+# En Windows: crear el venv en una ruta CORTA fuera del proyecto (ej.
+# C:\ragas_venv) -- la ruta real de este repo (con espacios y acentos) es
+# larga, y los archivos de licencia anidados de torch (dependencia de
+# sentence-transformers) exceden el límite de 260 caracteres de Windows
+# al instalar dentro del propio repo. Encontrado real el 2026-08-27:
+# "OSError: [WinError 206] El nombre del archivo... es demasiado largo".
+#
+# Bug real y ampliamente reportado en ragas 0.4.x (issues #2741/#2745/#2753
+# de vibrantlabsai/ragas, confirmado vía WebSearch el 2026-08-27, no
+# específico de este entorno): `ragas/llms/base.py` importa
+# `ChatVertexAI`/`VertexAI` de `langchain_community` a nivel de módulo sin
+# try/except -- esa integración se movió a `langchain-google-vertexai`
+# hace tiempo, y en cualquier langchain-community moderno ese import
+# rompe la librería ENTERA para cualquiera que no use Google Cloud
+# (Groq/OpenAI/Anthropic incluidos). Workaround real usado: fijar
+# `ragas==0.3.9` (última versión sin este bug, confirmado en el mismo
+# hilo de GitHub) Y ADEMÁS parchar el archivo instalado a mano (0.3.9
+# igual resuelve langchain-community a una versión sin el submódulo,
+# fijar solo la versión de ragas no basta):
+#
+#   # en ragas/llms/base.py, envolver en try/except:
+#   try:
+#       from langchain_community.chat_models.vertexai import ChatVertexAI
+#       from langchain_community.llms import VertexAI
+#   except ImportError:
+#       ChatVertexAI = None
+#       VertexAI = None
+#   ...
+#   MULTIPLE_COMPLETION_SUPPORTED = [
+#       cls for cls in [OpenAI, ChatOpenAI, AzureOpenAI, AzureChatOpenAI, ChatVertexAI, VertexAI]
+#       if cls is not None
+#   ]
+#
+# Revisar si una versión más nueva de ragas ya trae el fix real (el issue
+# de GitHub menciona que el import correcto sería
+# `from langchain_google_vertexai import ChatVertexAI`) antes de repetir
+# este parche a mano en el futuro.
+#
+# Instalación real usada:
+#   python -m venv C:\ragas_venv
+#   C:\ragas_venv\Scripts\python.exe -m pip install "ragas==0.3.9"
+#   # aplicar el parche de arriba a ragas/llms/base.py dentro del venv
+#   C:\ragas_venv\Scripts\python.exe -m pip install -r scripts/evaluacion/requirements.txt
+#
+# Uso:
+#   C:\ragas_venv\Scripts\python.exe scripts/evaluacion/ragas_baseline_nsr10.py
+
+# ── Runtime real de rag_multi_norma.py (para poder llamar ask() de verdad) ──
+supabase>=2.15.0
+httpx
+python-dotenv
+sentence-transformers
+
+# ── Evaluación ──
+# ragas==0.3.9, NO la última (0.4.x) -- ver el bug real documentado arriba.
+ragas==0.3.9

@@ -1520,6 +1520,17 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = TOP_K_DEFA
             {"norma": c.norma, "seccion": c.seccion, "estado_vigencia": c.estado_vigencia, "derogada_por": c.derogada_por}
             for c in chunks if not c.vigente
         ],
+        # Contenido real de los chunks recuperados (no solo norma/sección
+        # como en `fuentes`) -- agregado 2026-08-27 para poder evaluar el
+        # pipeline con RAGAS (necesita el texto real del contexto, no solo
+        # su etiqueta) sin duplicar la lógica de routing/búsqueda en un
+        # script aparte. Aditivo: `AskResponse` (apps/api/main.py) no
+        # declara esta clave, así que FastAPI la descarta al serializar
+        # /ask -- no cambia el contrato público de la API.
+        "contextos_recuperados": [
+            {"norma": c.norma, "seccion": c.seccion, "contenido": c.contenido, "score": round(c.score, 4)}
+            for c in chunks
+        ],
     }
 
 
