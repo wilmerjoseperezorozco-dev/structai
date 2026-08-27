@@ -129,22 +129,19 @@ CASOS_TITULO_C = [
     pytest.param(
         "Cuales son los factores de reduccion de resistencia phi para secciones controladas por traccion y para cortante?",
         ["0.90", "0,90"],
+        # Este caso estuvo marcado xfail (2026-08-27) por una causa raíz real:
+        # search_knowledge() ataba el pool interno de las ramas semántica y
+        # léxica (LIMIT match_count*3) al match_count del LLAMADOR, dando una
+        # posición distinta e inestable al mismo chunk según cuánto se pidiera
+        # (NSR10-C-C_9_3_2_1: ausente en match_count 30/40, #44 en 50, #45 en
+        # 60, #24 en 100 -- verificado en vivo). Fix real aplicado el mismo
+        # día en la migración search_knowledge (Supabase): pool interno fijo
+        # (300), desacoplado de match_count. Verificado tras el fix: posición
+        # #1 estable en match_count 30/40/50/60/100, y este test pasa de
+        # verdad (XPASS, sin xfail) contra el pipeline real. Ver
+        # [[project_structai_ragas_baseline]] en memoria para el detalle
+        # completo de la investigación.
         id="C-factor-phi-traccion-090",
-        # xfail real, no oculto (2026-08-27): esta pregunta compuesta ("Y" une
-        # dos conceptos, tracción y cortante) diluye tanto el embedding que
-        # NSR10-C-C_9_3_2_1 (el 0.90 real) no entra de forma confiable al
-        # contexto -- verificado que ni el re-ranking (combinado con el score
-        # original, ver rag_multi_norma.py::_rerank_chunks) puede arreglarlo:
-        # el chunk correcto no siempre llega ni al pool de 40 candidatos que
-        # se re-rankea. Causa raíz más profunda encontrada al investigar esto:
-        # search_knowledge (RRF) da una posición DISTINTA e inestable para el
-        # mismo chunk según el match_count pedido (ausente en 30/40, #44 en
-        # 50, #45 en 60, #24 en 100) -- el fusionado de KNN + full-text no es
-        # monótono al variar match_count, un hallazgo real independiente del
-        # re-ranking. El fix real es descomponer la pregunta en sub-consultas
-        # (tracción / cortante por separado) antes de buscar -- no implementado
-        # todavía. Ver [[project_structai_ragas_baseline]] en memoria.
-        marks=pytest.mark.xfail(reason="RRF inestable + dilución semántica en pregunta compuesta -- ver comentario, fix real es descomposición de consultas, no re-ranking", strict=False),
     ),
     pytest.param(
         "Cual es el angulo de doblez de los ganchos sismicos en estribos de confinamiento para estructuras DMO y DES?",
