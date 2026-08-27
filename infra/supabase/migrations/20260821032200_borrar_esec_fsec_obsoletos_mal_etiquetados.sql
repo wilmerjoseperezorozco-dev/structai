@@ -1,0 +1,20 @@
+-- 2026-08-20 (issue #5, trabajo en Titulos E/J/K): encontrados 21 chunks
+-- obsoletos con el mismo patron ya visto varias veces esta sesion
+-- (I-SEC, J-SEC -> A.9, ahora E-SEC/F-SEC):
+--
+-- E-SEC* (7 chunks): su propio campo 'capitulo' ya se autodenominaba
+-- "NSR-10 Titulo F -- Estructuras Metalicas (resumen tecnico, no es texto
+-- oficial verbatim -- pendiente reauditoria)" -- es decir, estaba mal
+-- etiquetado bajo el prefijo "E" pero es contenido de Titulo F (acero).
+-- Ademas usa una numeracion de capitulos que NO corresponde a la
+-- estructura real de NSR-10 F (F.7, F.10, F.13 no son capitulos reales
+-- independientes -- F.13 ya se confirmo esta sesion que en realidad es
+-- contenido de Titulo A). Titulo F ya tiene cobertura verbatim real y
+-- extensa (F.2 completo de sesiones previas, F.3.1-F.3.11 completo de
+-- hoy) que hace estos resumenes redundantes ademas de mal etiquetados.
+--
+-- F-SEC* (14 chunks): seccion="MAD.X" -- es contenido de Titulo G
+-- (madera/guadua) mal etiquetado bajo el prefijo "F". Titulo G ya tiene
+-- 426 chunks verbatim reales (G.1 a G.12 completo, cargados 2026-07-14),
+-- estos 14 resumenes quedan 100% redundantes.
+delete from nsr10_chunks where id like 'E-SEC%' or id like 'F-SEC%';
