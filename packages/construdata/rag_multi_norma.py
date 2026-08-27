@@ -9,6 +9,7 @@ por respuesta, inviable para un SaaS con usuarios reales).
 Uso: from rag_multi_norma import ask, route_query
 ══════════════════════════════════════════════════════════════════
 """
+import json
 import logging
 import os
 import re
@@ -250,6 +251,98 @@ def _rerank_chunks(query: str, chunks: list["ChunkResult"], top_k: int) -> list[
     ]
     reordenados = sorted(zip(chunks, combinados), key=lambda par: par[1], reverse=True)
     return [c for c, _ in reordenados[:top_k]]
+
+
+# ─── DESCOMPOSICIÓN DE CONSULTAS COMPUESTAS (issue #30) ──────────────────────
+# Motivado por la investigación real del bug de search_knowledge (2026-08-27,
+# ver project_structai_ragas_baseline en memoria): la pregunta "factores phi
+# para tracción Y cortante" diluye tanto el embedding que el chunk correcto
+# (NSR10-C-C_9_3_2_1) tiene rank semántico puro = 288 sobre 8387 chunks --
+# muy malo -- aunque su rank léxico puro es 19 (excelente). Esa vez el fix de
+# estabilidad de search_knowledge lo salvó porque la rama léxica tuvo suerte;
+# la próxima pregunta compuesta con peor suerte léxica no se salva sola. El
+# re-ranking tampoco alcanza: _rerank_chunks evalúa cada chunk AISLADO, así
+# que si el candidato de "tracción" nunca entra al pool en primer lugar, no
+# hay nada que reordenar (ver comentario de PESO_RERANKER arriba -- el
+# reemplazo puro por cross-encoder perdió ese fragmento por completo).
+#
+# El fix real es en la RECUPERACIÓN, no en el ranking: separar la pregunta en
+# sub-preguntas independientes ANTES de buscar, y fusionar los candidatos de
+# cada una. Se usa un LLM barato (mismo respaldo Groq->OpenAI que el resto
+# del pipeline) en vez de una heurística de regex porque distinguir "dos
+# conceptos independientes" ("tracción Y cortante", dos secciones distintas)
+# de "un solo hecho con dos valores de la misma fila" ("Aa Y Av para
+# Barranquilla", ya cubierto por A-Aa-Av-Barranquilla en
+# test_rag_nsr10_regresion.py) es semántico, no sintáctico -- una regex sobre
+# conjunciones se habría equivocado con ese segundo caso.
+#
+# Costo real, no ocultado: esto agrega una llamada a LLM en TODA pregunta
+# (antes de este cambio, ask() no llamaba al LLM hasta la síntesis final) --
+# el prompt es corto (sin system prompt, no se beneficia del cache de Groq)
+# y max_tokens_groq bajo, pero sigue siendo una llamada real que acelera el
+# consumo de la cuota diaria de Groq (ver GROQ_LIMITE_DIARIO_TOKENS). Si esto
+# se vuelve un problema medido (no hipotético), la primera palanca es un
+# pre-filtro barato (regex) que solo dispare esta llamada cuando ya hay una
+# señal sintáctica de conjunción -- no implementado todavía porque no hay
+# evidencia hoy de que la cuota se agote por esto específicamente.
+_MAX_SUBPREGUNTAS = 3
+_MIN_CHARS_SUBPREGUNTA = 15
+
+
+def _descomponer_pregunta(question: str) -> list[str]:
+    """Si `question` combina 2+ conceptos independientes que competirían por
+    el mismo embedding, la separa en sub-preguntas autocontenidas para que
+    ask() busque cada una por separado y fusione los candidatos (ver
+    _fusionar_candidatos). Degrada SIEMPRE de forma segura a [question] --
+    cualquier fallo (red, JSON inválido, forma inesperada) no debe bloquear
+    ni cambiar el comportamiento de una pregunta simple."""
+    prompt = (
+        "Analiza esta pregunta técnica de ingeniería civil/normativa "
+        "colombiana. Si combina 2 o más conceptos INDEPENDIENTES que se "
+        "responderían con secciones/artículos distintos de la norma (ej. "
+        "\"factores phi para tracción Y para cortante\" son dos valores en "
+        "secciones distintas), sepárala en sub-preguntas autocontenidas y "
+        "completas -- cada una debe poder buscarse sola, sin la otra. Si es "
+        "una sola pregunta, o pide un solo hecho aunque mencione 2 valores "
+        "de la MISMA fila de tabla/artículo (ej. \"valores de Aa y Av para "
+        "Barranquilla\" es una sola consulta a una sola fila), NO la "
+        "separes -- devuelve la pregunta original tal cual, sin cambios.\n\n"
+        "Responde SOLO con JSON, sin texto adicional ni explicación: "
+        '{"subpreguntas": ["...", "..."]}\n\n'
+        f"Pregunta: {question}"
+    )
+    try:
+        contenido = _llamar_llm_con_respaldo(
+            [{"role": "user", "content": prompt}], max_tokens_groq=250,
+        )
+        bloque_json = re.search(r"\{.*\}", contenido, re.DOTALL)
+        if not bloque_json:
+            return [question]
+        subpreguntas = json.loads(bloque_json.group(0)).get("subpreguntas")
+        if (
+            isinstance(subpreguntas, list)
+            and 2 <= len(subpreguntas) <= _MAX_SUBPREGUNTAS
+            and all(isinstance(s, str) and len(s.strip()) >= _MIN_CHARS_SUBPREGUNTA for s in subpreguntas)
+        ):
+            return [s.strip() for s in subpreguntas]
+    except Exception as e:
+        log.warning(f"No se pudo descomponer la pregunta, se usa tal cual: {e}")
+    return [question]
+
+
+def _fusionar_candidatos(chunks_por_pregunta: list[list["ChunkResult"]], limite: int = 40) -> list["ChunkResult"]:
+    """Une los candidatos recuperados para cada (sub)pregunta, deduplicando
+    por chunk_id -- si el mismo chunk aparece en más de una sub-búsqueda se
+    queda con el score más alto, no lo cuenta dos veces -- y trunca al pool
+    que se re-rankea después (mismo límite ya usado antes de este cambio en
+    la rama multi-norma de ask())."""
+    mejores: dict[str, "ChunkResult"] = {}
+    for chunks in chunks_por_pregunta:
+        for c in chunks:
+            actual = mejores.get(c.chunk_id)
+            if actual is None or c.score > actual.score:
+                mejores[c.chunk_id] = c
+    return sorted(mejores.values(), key=lambda x: x.score, reverse=True)[:limite]
 
 
 @dataclass
@@ -1513,12 +1606,48 @@ def _bloque_contexto_sgc(sgc_registro: dict) -> str:
     return "\n\n".join(partes)
 
 
+def _recuperar_candidatos_normativa(pregunta_busqueda: str, norma_hint: Optional[str], pool_k: int) -> tuple[list[str], list[ChunkResult]]:
+    """Routing + búsqueda híbrida para UNA pregunta de búsqueda (la pregunta
+    original, o una sub-pregunta de _descomponer_pregunta -- issue #30).
+    Extraído de ask() para poder llamarlo una vez por sub-pregunta sin
+    duplicar la lógica de routing multi-norma."""
+    if norma_hint:
+        return [norma_hint], search(pregunta_busqueda, norma_filter=norma_hint, top_k=pool_k)
+
+    target_normas = route_query(pregunta_busqueda)
+    # Buscar en todas las normas relevantes en paralelo
+    all_chunks: list[ChunkResult] = []
+    seen_ids: set[str] = set()
+    # route_query() por keywords es un filtro de PRIORIDAD, no exclusivo — una
+    # pregunta con vocabulario técnico compartido entre normas (p.ej. "resistencia
+    # a compresión" aparece tanto en NTC 673 como en NSR-10 Título E) puede hacer
+    # que la norma correcta nunca sea detectada por keyword y, si el filtro fuera
+    # exclusivo, jamás se buscaría — encontrado auditando Título E: 2 de 4
+    # preguntas piloto fallaban porque route_query() nunca incluía "NSR-10" pese a
+    # existir contenido real y correcto. Por eso SIEMPRE se agrega también una
+    # búsqueda global (norma_filter=None) al pool de candidatos, sin importar si
+    # hubo normas detectadas por keyword.
+    for norma in (target_normas or [None]):
+        results = search(pregunta_busqueda, norma_filter=norma, top_k=pool_k)
+        for c in results:
+            if c.chunk_id not in seen_ids:
+                all_chunks.append(c)
+                seen_ids.add(c.chunk_id)
+    if target_normas:
+        for c in search(pregunta_busqueda, norma_filter=None, top_k=pool_k):
+            if c.chunk_id not in seen_ids:
+                all_chunks.append(c)
+                seen_ids.add(c.chunk_id)
+    return target_normas, all_chunks
+
+
 def ask(question: str, norma_hint: Optional[str] = None, top_k: int = TOP_K_DEFAULT_RAG) -> dict:
     """
     RAG multi-norma completo.
     Retorna: {respuesta, fuentes, normas_citadas, chunks_usados}
     """
-    # 1. Routing automático si no hay norma específica
+    # 1. Descomposición (issue #30) + routing automático si no hay norma
+    # específica.
     #
     # pool_k: cuántos candidatos se recuperan de la búsqueda híbrida ANTES
     # de re-rankear (2026-08-27) -- necesita ser mayor que top_k para que el
@@ -1530,41 +1659,32 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = TOP_K_DEFA
     # amplio + re-ranking, el cross-encoder puede rescatarla antes de
     # truncar al top_k final que de verdad llega al LLM.
     pool_k = max(top_k * 3, 20)
-    if norma_hint:
-        target_normas = [norma_hint]
-        candidatos = search(question, norma_filter=norma_hint, top_k=pool_k)
-    else:
-        target_normas = route_query(question)
-        # Buscar en todas las normas relevantes en paralelo
-        all_chunks: list[ChunkResult] = []
-        seen_ids: set[str] = set()
-        # route_query() por keywords es un filtro de PRIORIDAD, no exclusivo — una
-        # pregunta con vocabulario técnico compartido entre normas (p.ej. "resistencia
-        # a compresión" aparece tanto en NTC 673 como en NSR-10 Título E) puede hacer
-        # que la norma correcta nunca sea detectada por keyword y, si el filtro fuera
-        # exclusivo, jamás se buscaría — encontrado auditando Título E: 2 de 4
-        # preguntas piloto fallaban porque route_query() nunca incluía "NSR-10" pese a
-        # existir contenido real y correcto. Por eso SIEMPRE se agrega también una
-        # búsqueda global (norma_filter=None) al pool de candidatos, sin importar si
-        # hubo normas detectadas por keyword.
-        for norma in (target_normas or [None]):
-            results = search(question, norma_filter=norma, top_k=pool_k)
-            for c in results:
-                if c.chunk_id not in seen_ids:
-                    all_chunks.append(c)
-                    seen_ids.add(c.chunk_id)
-        if target_normas:
-            for c in search(question, norma_filter=None, top_k=pool_k):
-                if c.chunk_id not in seen_ids:
-                    all_chunks.append(c)
-                    seen_ids.add(c.chunk_id)
-        # Ordenar por score del RRF y acotar el pool antes de re-rankear
-        # (techo real para no pagar el costo del cross-encoder sobre un
-        # pool sin límite si route_query() detecta varias normas a la vez).
-        candidatos = sorted(all_chunks, key=lambda x: x.score, reverse=True)[:40]
 
-    # Re-ranking: cross-encoder sobre el pool de candidatos, recorta al
-    # top_k real que llega al LLM (ver _rerank_chunks/RERANKER_MODEL_NAME).
+    # Si la pregunta combina 2+ conceptos independientes, se busca cada uno
+    # por separado y se fusionan los candidatos -- ver _descomponer_pregunta
+    # para el porqué real (dilución semántica confirmada, no hipotética).
+    # Con una sola sub-pregunta (el caso normal) este bucle corre UNA vez,
+    # igual que antes de este cambio.
+    subpreguntas = _descomponer_pregunta(question)
+    target_normas: list[str] = []
+    candidatos_por_pregunta: list[list[ChunkResult]] = []
+    for sub in subpreguntas:
+        normas_sub, candidatos_sub = _recuperar_candidatos_normativa(sub, norma_hint, pool_k)
+        for n in normas_sub:
+            if n not in target_normas:
+                target_normas.append(n)
+        candidatos_por_pregunta.append(candidatos_sub)
+
+    # Fusiona (dedup por chunk_id, se queda con el score más alto) y acota el
+    # pool antes de re-rankear -- mismo límite (40) que ya se usaba antes de
+    # este cambio en la rama multi-norma.
+    candidatos = _fusionar_candidatos(candidatos_por_pregunta, limite=40)
+
+    # Re-ranking: cross-encoder sobre el pool de candidatos fusionado,
+    # evaluado contra la pregunta ORIGINAL completa (no las sub-preguntas) --
+    # el objetivo final sigue siendo responder la pregunta tal como la hizo
+    # el usuario. Recorta al top_k real que llega al LLM (ver
+    # _rerank_chunks/RERANKER_MODEL_NAME).
     chunks = _rerank_chunks(question, candidatos, top_k)
 
     # 2. Construir contexto (con advertencia de vigencia por chunk cuando aplica)
