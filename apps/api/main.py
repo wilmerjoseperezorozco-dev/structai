@@ -50,6 +50,7 @@ load_dotenv(Path(__file__).resolve().parent / ".env")
 from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, Response
+from openai import APIConnectionError, APIStatusError, InternalServerError, RateLimitError
 from pydantic import BaseModel, Field
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
@@ -71,6 +72,33 @@ log = logging.getLogger("construdata.api")
 # tiene cuota mensual de eventos — con 100 usuarios piloto no hace falta
 # tracear el 100% de requests para detectar errores, solo una muestra
 # representativa de performance.
+#
+# _filtrar_ruido_llm_con_respaldo: hallazgo real 2026-08-28 (issues
+# PYTHON-FASTAPI-5 y -6) -- Sentry auto-instrumenta el cliente `openai`, y
+# Groq reutiliza esa misma clase (rag_multi_norma.py: groq_client =
+# OpenAI(base_url="https://api.groq.com/...")). Eso significa que un 429
+# (RateLimitError) o 413 (APIStatusError) de GROQ se reporta como error
+# ANTES de que _llamar_llm_con_respaldo() lo atrape y resuelva con el
+# respaldo OpenAI -- verificado en vivo contra consultas_history: ambas
+# veces el usuario sí recibió una respuesta real, segundos después. Mismo
+# criterio exacto que ese except (tipo + status_code 413), restringido a
+# errores de groq.com por el contenido del mensaje -- si el respaldo
+# OpenAI mismo falla algún día, esa excepción NO tiene "groq.com" en el
+# mensaje y sigue reportándose sin filtrar (eso sí sería una caída real).
+def _filtrar_ruido_llm_con_respaldo(event, hint):
+    exc_info = hint.get("exc_info")
+    if not exc_info:
+        return event
+    exc = exc_info[1]
+    if "groq.com" not in str(exc):
+        return event
+    if isinstance(exc, (RateLimitError, APIConnectionError, InternalServerError)):
+        return None
+    if isinstance(exc, APIStatusError) and getattr(exc, "status_code", None) == 413:
+        return None
+    return event
+
+
 _SENTRY_DSN = os.getenv("SENTRY_DSN", "").strip()
 if _SENTRY_DSN:
     import sentry_sdk
@@ -83,6 +111,7 @@ if _SENTRY_DSN:
         environment=os.getenv("SENTRY_ENVIRONMENT", "production"),
         traces_sample_rate=0.1,
         send_default_pii=False,
+        before_send=_filtrar_ruido_llm_con_respaldo,
     )
     log.info("✓ Sentry inicializado")
 else:
