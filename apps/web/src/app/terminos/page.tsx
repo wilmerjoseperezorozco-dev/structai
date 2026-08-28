@@ -30,7 +30,8 @@ export default function TerminosPage() {
             <h2 className="text-white font-semibold mb-2">1. Quién presta el servicio</h2>
             <p>
               StructAI (nombre de proyecto: Construdata) es operado por Wilmer José Pérez Orozco,
-              persona natural, con domicilio en Barranquilla, Atlántico, Colombia. Contacto:{" "}
+              persona natural comerciante, NIT 1.140.895.330-5, con domicilio en Barranquilla,
+              Atlántico, Colombia. Contacto:{" "}
               <a href="mailto:ventas@structai.online" className="text-brand-400 hover:underline">
                 ventas@structai.online
               </a>.
