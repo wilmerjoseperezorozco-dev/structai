@@ -4,12 +4,14 @@ import type { UserPlan } from "./supabase";
 // "Activar Pro" abre este link de pago; cuando Wompi confirma el pago, el
 // plan se activa a mano en Supabase desde el panel del owner. Webhook
 // automático queda para cuando haya volumen suficiente para justificarlo
-// (ver notas de la sesión). El link por defecto es de MODO PRUEBA
-// (test_VPOS) — antes de cobrar dinero real hay que reemplazar
-// NEXT_PUBLIC_WOMPI_CHECKOUT_URL por el link de producción desde el panel
-// de Wompi (Cobros > Links de pago).
+// (ver notas de la sesión). Link de PRODUCCIÓN real generado 2026-08-27
+// desde el panel de Wompi (Cobros > Link de pago genérico) — no es un
+// secreto (es un link de cobro pensado para compartirse/imprimirse en QR),
+// así que vivir como default acá es correcto; NEXT_PUBLIC_WOMPI_CHECKOUT_URL
+// sigue permitiendo overridearlo por entorno si hace falta (ej. un link de
+// prueba en preview deployments).
 export const WOMPI_CHECKOUT_URL =
-  process.env.NEXT_PUBLIC_WOMPI_CHECKOUT_URL || "https://checkout.wompi.co/l/test_VPOS_dYJ3Uh";
+  process.env.NEXT_PUBLIC_WOMPI_CHECKOUT_URL || "https://checkout.wompi.co/l/VPOS_9BlIZd";
 export const WOMPI_ES_MODO_PRUEBA = WOMPI_CHECKOUT_URL.includes("/l/test_");
 
 export const PLANES = {

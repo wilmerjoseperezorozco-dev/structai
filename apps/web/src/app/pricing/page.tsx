@@ -233,6 +233,23 @@ export default function PricingPage() {
           </div>
         </div>
 
+        {/* Acceso educativo gratuito — ya se ofrecía por contacto directo
+            (ver docs/contacto-institucional.md) pero nunca había llegado al
+            producto; alguien que aterriza en /pricing desde LinkedIn no
+            tenía forma de enterarse. Mismo canal de contacto que Enterprise
+            porque es la misma naturaleza de oferta: caso a caso, no
+            autoservicio — no hay un botón "activar" honesto para esto todavía. */}
+        <p className="reveal reveal-4 mb-8 text-center text-xs text-ink-500">
+          ¿Programa de ingeniería civil, semillero de investigación o docente?{" "}
+          <a
+            href={ENTERPRISE_CONTACTO}
+            className="text-bronze-400 underline decoration-bronze-700/60 underline-offset-2 transition hover:text-bronze-300"
+          >
+            Acceso educativo gratuito a StructAI
+          </a>{" "}
+          para estudiantes y docentes.
+        </p>
+
         {/* Tabla comparativa */}
         <div className="reveal reveal-5 overflow-x-auto rounded-2xl border border-ink-800 bg-ink-900/60">
           <div className="min-w-[560px]">

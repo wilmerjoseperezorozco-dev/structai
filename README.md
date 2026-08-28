@@ -12,6 +12,8 @@ Esa es la apuesta completa de StructAI: una plataforma de inteligencia artificia
 
 `Construdata` es el nombre interno del repositorio; **StructAI** es la marca pública, en [structai.online](https://www.structai.online).
 
+**Si esto te sirve:** [pruébalo en structai.online](https://www.structai.online) — el plan gratis incluye consulta a la NSR-10 completa. Si el enfoque de trazabilidad normativa te parece relevante para tu trabajo o tu investigación, una ⭐ en este repositorio ayuda a que más gente lo encuentre. Para citarlo en un trabajo académico, usa el DOI de Zenodo del badge de arriba. Si diriges un programa de ingeniería civil o un semillero de investigación, hay acceso educativo gratuito — ver [`docs/contacto-institucional.md`](docs/contacto-institucional.md).
+
 ## Qué hay hoy, verificado en vivo — no una promesa
 
 Todo lo que sigue se puede comprobar ahora mismo contra producción, sin confiar en este documento: [`GET /data-status`](https://plankton-app-9qinh.ondigitalocean.app/data-status).
