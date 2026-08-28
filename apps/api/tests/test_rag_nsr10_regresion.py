@@ -431,6 +431,26 @@ CASOS_TITULO_K_K42 = [
     ),
 ]
 
+# Ampliacion 2026-08-28 -- Titulo F.4.1 (Provisiones Generales de acero
+# formado en frio, primera pieza real del hueco mas grande del corpus).
+CASOS_TITULO_F_F41 = [
+    pytest.param(
+        "Cuales son los factores de resistencia phi minimos para miembros y para conexiones en un analisis racional de ingenieria de acero formado en frio segun el Titulo F?",
+        ["0.80", "0,80", "0.65", "0,65"],
+        id="F-analisis-racional-phi-miembros-080-conexiones-065",
+    ),
+    pytest.param(
+        "Cual es el espesor minimo entregado permitido para acero formado en frio respecto al espesor de diseño segun el Titulo F?",
+        ["95"],
+        id="F-espesor-minimo-entregado-95porciento",
+    ),
+    pytest.param(
+        "Hasta que espesor de lamina, rollo, tira o barra aplica la especificacion de estructuras de acero con perfiles formados en frio del Titulo F?",
+        ["25.4", "25,4", "1 pulgada"],
+        id="F-f41-alcance-espesor-maximo-254mm",
+    ),
+]
+
 
 @pytest.mark.parametrize(
     "pregunta,variantes_esperadas",
@@ -449,7 +469,8 @@ CASOS_TITULO_K_K42 = [
     + CASOS_TITULO_B_EXTRA
     + CASOS_NTC_SGSST
     + CASOS_TITULO_K_K4
-    + CASOS_TITULO_K_K42,
+    + CASOS_TITULO_K_K42
+    + CASOS_TITULO_F_F41,
 )
 def test_respuesta_contiene_hecho_verificado(pregunta: str, variantes_esperadas: list[str]) -> None:
     # top_k=4 (hardcodeado aquí desde antes) quedó por debajo incluso del

@@ -336,4 +336,19 @@ CASOS_BASELINE = [
         "ground_truth": "Un sistema vidriado se considera inclinado cuando tiene una inclinación de más de 15° con respecto a la vertical.",
         "id": "K-vidrio-inclinado-mas-de-15grados",
     },
+    {
+        "pregunta": "Cuales son los factores de resistencia phi minimos para miembros y para conexiones en un analisis racional de ingenieria de acero formado en frio segun el Titulo F?",
+        "ground_truth": "Para miembros, φ = 0.80. Para conexiones, φ = 0.65.",
+        "id": "F-analisis-racional-phi-miembros-080-conexiones-065",
+    },
+    {
+        "pregunta": "Cual es el espesor minimo entregado permitido para acero formado en frio respecto al espesor de diseño segun el Titulo F?",
+        "ground_truth": "El espesor mínimo de acero sin revestimiento, del producto formado en frío tal como se entrega a la obra, no debe ser en ningún punto menor que el 95% del espesor usado en su diseño.",
+        "id": "F-espesor-minimo-entregado-95porciento",
+    },
+    {
+        "pregunta": "Hasta que espesor de lamina, rollo, tira o barra aplica la especificacion de estructuras de acero con perfiles formados en frio del Titulo F?",
+        "ground_truth": "Aplica a miembros estructurales de acero de bajo carbono o de baja aleación, cuya sección ha sido formada en frío, a partir de láminas, rollos, tiras, platinas o barras de espesor menor o igual a 25.4 mm (1 pulgada).",
+        "id": "F-f41-alcance-espesor-maximo-254mm",
+    },
 ]
