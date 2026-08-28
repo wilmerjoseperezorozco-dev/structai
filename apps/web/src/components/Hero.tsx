@@ -144,10 +144,10 @@ export function Hero() {
                 <ArrowRight size={16} />
               </Link>
               <Link
-                href="/?tab=chat"
+                href="/pricing"
                 className="inline-flex items-center gap-2 rounded-xl border border-ink-700 px-5 py-3 text-sm text-ink-200 transition hover:border-bronze-600/60 hover:text-bronze-300"
               >
-                Probar el chat normativo
+                Ver planes
               </Link>
             </div>
           </div>
