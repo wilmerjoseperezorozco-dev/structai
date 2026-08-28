@@ -22,7 +22,7 @@ export default function PrivacidadPage() {
           <span className="text-xs text-brand-300 font-medium">StructAI</span>
         </div>
         <h1 className="text-3xl font-bold text-white mb-2">Política de Privacidad</h1>
-        <p className="text-concrete-500 text-xs mb-1">Última actualización: 14 de julio de 2026</p>
+        <p className="text-concrete-500 text-xs mb-1">Última actualización: 28 de agosto de 2026</p>
         <p className="text-concrete-500 text-xs mb-8">
           Aviso de privacidad conforme a la Ley 1581 de 2012 (Habeas Data) y sus decretos reglamentarios.
         </p>
@@ -35,8 +35,8 @@ export default function PrivacidadPage() {
               Wilmer José Pérez Orozco, persona natural, domiciliado en Barranquilla, Atlántico,
               Colombia, operador de StructAI (nombre de proyecto: Construdata). Correo de contacto
               para asuntos de datos personales:{" "}
-              <a href="mailto:wperez12@cuc.edu.co" className="text-brand-400 hover:underline">
-                wperez12@cuc.edu.co
+              <a href="mailto:ventas@structai.online" className="text-brand-400 hover:underline">
+                ventas@structai.online
               </a>.
             </p>
           </section>
@@ -96,7 +96,7 @@ export default function PrivacidadPage() {
             <ul className="list-disc list-inside space-y-1">
               <li><strong className="text-white">Supabase</strong> — almacenamiento de la base de datos y autenticación de usuarios.</li>
               <li><strong className="text-white">Groq</strong> — procesamiento de las consultas mediante modelos de inteligencia artificial. El texto de la consulta se envía a este proveedor para generar la respuesta.</li>
-              <li><strong className="text-white">Vercel</strong> — hospedaje de la aplicación web.</li>
+              <li><strong className="text-white">Vercel</strong> — hospedaje de la aplicación web y analítica de uso (Vercel Analytics: páginas visitadas, sin cookies de terceros ni fines publicitarios).</li>
             </ul>
             <p className="mt-2">
               Estos proveedores operan con infraestructura fuera de Colombia, por lo que el uso
@@ -127,8 +127,8 @@ export default function PrivacidadPage() {
             </ul>
             <p className="mt-2">
               Para ejercer cualquiera de estos derechos, escribe a{" "}
-              <a href="mailto:wperez12@cuc.edu.co" className="text-brand-400 hover:underline">
-                wperez12@cuc.edu.co
+              <a href="mailto:ventas@structai.online" className="text-brand-400 hover:underline">
+                ventas@structai.online
               </a>. Responderemos tu solicitud dentro de los plazos que establece la ley
               colombiana (10 días hábiles para consultas, 15 días hábiles para reclamos).
             </p>

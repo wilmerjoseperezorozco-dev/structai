@@ -22,7 +22,7 @@ export default function TerminosPage() {
           <span className="text-xs text-brand-300 font-medium">StructAI</span>
         </div>
         <h1 className="text-3xl font-bold text-white mb-2">Términos de Uso</h1>
-        <p className="text-concrete-500 text-xs mb-8">Última actualización: 13 de julio de 2026</p>
+        <p className="text-concrete-500 text-xs mb-8">Última actualización: 28 de agosto de 2026</p>
 
         <div className="bg-concrete-800 border border-concrete-700 rounded-2xl p-6 space-y-6 text-sm text-concrete-300 leading-relaxed">
 
@@ -31,8 +31,8 @@ export default function TerminosPage() {
             <p>
               StructAI (nombre de proyecto: Construdata) es operado por Wilmer José Pérez Orozco,
               persona natural, con domicilio en Barranquilla, Atlántico, Colombia. Contacto:{" "}
-              <a href="mailto:wperez12@cuc.edu.co" className="text-brand-400 hover:underline">
-                wperez12@cuc.edu.co
+              <a href="mailto:ventas@structai.online" className="text-brand-400 hover:underline">
+                ventas@structai.online
               </a>.
             </p>
           </section>
@@ -92,7 +92,29 @@ export default function TerminosPage() {
           </section>
 
           <section>
-            <h2 className="text-white font-semibold mb-2">6. Uso aceptable</h2>
+            <h2 className="text-white font-semibold mb-2">6. Derecho de retracto</h2>
+            <p className="mb-2">
+              Conforme al artículo 47 de la Ley 1480 de 2011 (Estatuto del Consumidor) y las
+              normas de comercio electrónico aplicables en Colombia, si contrataste el plan Pro a
+              través de un medio de pago electrónico tienes derecho a retractarte de la compra
+              dentro de los cinco (5) días hábiles siguientes a la contratación, sin necesidad de
+              justificación. Para ejercer este derecho, escribe a{" "}
+              <a href="mailto:ventas@structai.online" className="text-brand-400 hover:underline">
+                ventas@structai.online
+              </a>{" "}
+              indicando tu solicitud; el reembolso se procesará conforme a la ley y a las
+              políticas del proveedor de pagos utilizado.
+            </p>
+            <p>
+              Este derecho no aplica si, antes de vencer el plazo anterior, solicitaste
+              expresamente y empezaste a usar el servicio contratado — excepción prevista en la
+              misma ley para servicios cuya prestación ya inició con el consentimiento expreso del
+              consumidor.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-white font-semibold mb-2">7. Uso aceptable</h2>
             <p>
               No está permitido: usar el servicio para actividades ilegales, intentar vulnerar la
               seguridad de la plataforma, realizar ingeniería inversa del software, revender o
@@ -103,7 +125,7 @@ export default function TerminosPage() {
           </section>
 
           <section>
-            <h2 className="text-white font-semibold mb-2">7. Propiedad intelectual</h2>
+            <h2 className="text-white font-semibold mb-2">8. Propiedad intelectual</h2>
             <p>
               El software, la marca &quot;StructAI&quot; (y el nombre de proyecto &quot;Construdata&quot;), y los contenidos propios de la
               plataforma son propiedad de su operador. Los proyectos, cálculos y datos que el
@@ -113,7 +135,7 @@ export default function TerminosPage() {
           </section>
 
           <section>
-            <h2 className="text-white font-semibold mb-2">8. Disponibilidad y cambios al servicio</h2>
+            <h2 className="text-white font-semibold mb-2">9. Disponibilidad y cambios al servicio</h2>
             <p>
               El servicio se presta &quot;tal cual&quot; y &quot;según disponibilidad&quot;. Puede haber
               interrupciones por mantenimiento, fallas de proveedores externos (hosting, IA) o
@@ -124,7 +146,7 @@ export default function TerminosPage() {
           </section>
 
           <section>
-            <h2 className="text-white font-semibold mb-2">9. Ley aplicable</h2>
+            <h2 className="text-white font-semibold mb-2">10. Ley aplicable</h2>
             <p>
               Estos términos se rigen por las leyes de la República de Colombia. Cualquier
               controversia derivada de su interpretación o aplicación se someterá a la
@@ -133,11 +155,11 @@ export default function TerminosPage() {
           </section>
 
           <section>
-            <h2 className="text-white font-semibold mb-2">10. Contacto</h2>
+            <h2 className="text-white font-semibold mb-2">11. Contacto</h2>
             <p>
               Preguntas sobre estos términos:{" "}
-              <a href="mailto:wperez12@cuc.edu.co" className="text-brand-400 hover:underline">
-                wperez12@cuc.edu.co
+              <a href="mailto:ventas@structai.online" className="text-brand-400 hover:underline">
+                ventas@structai.online
               </a>
             </p>
           </section>

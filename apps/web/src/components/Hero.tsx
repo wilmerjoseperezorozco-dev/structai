@@ -238,7 +238,7 @@ export function Hero() {
           apuntando siempre a la última versión archivada. */}
       <div className="mx-auto max-w-3xl px-5 pb-8 pt-2">
         <p className="text-[11px] text-ink-600">
-          Wilmer José Pérez Orozco · Trabajo de grado · Corporación Universidad de la Costa
+          Wilmer José Pérez Orozco · Trabajo de grado · Universidad de la Costa
         </p>
         <a
           href="https://doi.org/10.5281/zenodo.21851529"
