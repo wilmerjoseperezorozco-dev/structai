@@ -32,8 +32,9 @@ export default function PrivacidadPage() {
           <section>
             <h2 className="text-white font-semibold mb-2">1. Responsable del tratamiento</h2>
             <p>
-              Wilmer José Pérez Orozco, persona natural, domiciliado en Barranquilla, Atlántico,
-              Colombia, operador de StructAI (nombre de proyecto: Construdata). Correo de contacto
+              Wilmer José Pérez Orozco, persona natural comerciante, NIT 1.140.895.330-5,
+              domiciliado en Tubará, Atlántico, Colombia, operador de StructAI (nombre de
+              proyecto: Construdata). Correo de contacto
               para asuntos de datos personales:{" "}
               <a href="mailto:ventas@structai.online" className="text-brand-400 hover:underline">
                 ventas@structai.online
