@@ -474,6 +474,33 @@ CASOS_TITULO_F_F42 = [
     ),
 ]
 
+# Ampliacion 2026-09-01 -- Titulo F.4.3 (Miembros: tension, flexion,
+# cortante, arrugamiento del alma, compresion concentrica, carga axial
+# + momento combinados). Chunks escritos y trocheados a ~100 tokens
+# desde el principio (aprendido de F.4.2). Hallazgo real de retrieval,
+# documentado sin ocultar (mismo criterio que F.4.1): la pregunta sobre
+# phi=0.90 para fluencia en seccion bruta a tension NO trae el chunk
+# correcto ni en el top-3 del pipeline real (RRF+reranker) -- queda sin
+# xfail a proposito, es exactamente el tipo de hueco que debe medir el
+# dataset de evaluacion para cuando se ataquen los issues #31/#32.
+CASOS_TITULO_F_F43 = [
+    pytest.param(
+        "Cual es el coeficiente kv de pandeo al corte para almas no reforzadas de acero formado en frio segun el Titulo F?",
+        ["5.34", "5,34"],
+        id="F-f43-kv-almas-no-reforzadas-534",
+    ),
+    pytest.param(
+        "Cual es el factor de resistencia phi para fluencia en la seccion bruta de un miembro en tension de acero formado en frio segun el Titulo F?",
+        ["0.90", "0,90"],
+        id="F-f43-phi-tension-fluencia-seccion-bruta-090",
+    ),
+    pytest.param(
+        "Cual es el factor de resistencia phi para rotura en la seccion neta de un miembro en tension de acero formado en frio segun el Titulo F?",
+        ["0.75", "0,75"],
+        id="F-f43-phi-tension-rotura-seccion-neta-075",
+    ),
+]
+
 
 @pytest.mark.parametrize(
     "pregunta,variantes_esperadas",
@@ -494,7 +521,8 @@ CASOS_TITULO_F_F42 = [
     + CASOS_TITULO_K_K4
     + CASOS_TITULO_K_K42
     + CASOS_TITULO_F_F41
-    + CASOS_TITULO_F_F42,
+    + CASOS_TITULO_F_F42
+    + CASOS_TITULO_F_F43,
 )
 def test_respuesta_contiene_hecho_verificado(pregunta: str, variantes_esperadas: list[str]) -> None:
     # top_k=4 (hardcodeado aquí desde antes) quedó por debajo incluso del

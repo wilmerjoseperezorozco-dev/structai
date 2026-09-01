@@ -366,4 +366,19 @@ CASOS_BASELINE = [
         "ground_truth": "El ancho efectivo se determina igual que para elementos rigidizados, excepto que el coeficiente de pandeo de placa k se toma como 0.43.",
         "id": "F-f42-k-elemento-no-rigidizado-043",
     },
+    {
+        "pregunta": "Cual es el coeficiente kv de pandeo al corte para almas no reforzadas de acero formado en frio segun el Titulo F?",
+        "ground_truth": "Para almas no reforzadas, kv = 5.34.",
+        "id": "F-f43-kv-almas-no-reforzadas-534",
+    },
+    {
+        "pregunta": "Cual es el factor de resistencia phi para fluencia en la seccion bruta de un miembro en tension de acero formado en frio segun el Titulo F?",
+        "ground_truth": "Para fluencia en la sección bruta, Tn = Ag·Fy, con φt = 0.90.",
+        "id": "F-f43-phi-tension-fluencia-seccion-bruta-090",
+    },
+    {
+        "pregunta": "Cual es el factor de resistencia phi para rotura en la seccion neta de un miembro en tension de acero formado en frio segun el Titulo F?",
+        "ground_truth": "Para rotura en la sección neta lejos de la conexión, Tn = An·Fu, con φt = 0.75.",
+        "id": "F-f43-phi-tension-rotura-seccion-neta-075",
+    },
 ]
