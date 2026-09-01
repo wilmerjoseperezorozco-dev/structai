@@ -83,6 +83,10 @@ La verificación previa (más barata, sin el juez de RAGAS) encontró además 3 
 
 La descomposición de consultas compuestas (preguntas que combinan dos conceptos normativos independientes) llevó la cobertura del contexto del caso que la motivó de 0.0 a 1.0 — con una limitación que documento explícitamente, no oculto: esa corrida en particular coincidió con el agotamiento de cuota del proveedor de LLM principal, lo que confunde parcialmente la atribución de las métricas de generación (no de recuperación) a esa intervención específica.
 
+### Auditoría de integridad del corpus — otro hallazgo real, corregido (2026-09-01)
+
+El modelo de embeddings local tiene un límite duro de 128 tokens por fragmento — cualquier texto más largo se trunca en silencio para la búsqueda semántica, aunque el texto completo siga guardado y visible si el fragmento llega a recuperarse. Audité el corpus completo de NSR-10 con el tokenizador real (no una estimación por caracteres) y encontré que **493 de 4.129 fragmentos (11.9%) superaban ese límite**, con severidad muy desigual por título: los Títulos K, B, J y A estaban truncados al 100% de sus fragmentos, mientras que los Títulos C y D — la mayoría del corpus, 3.121 fragmentos — estaban en 0%. Corregido el mismo día: los 493 fragmentos se volvieron a dividir respetando el límite real (sin releer ningún PDF — el texto verbatim ya cargado era correcto, solo estaba mal fragmentado), verificado con una segunda auditoría independiente que confirmó 0% de fragmentos sobre el límite en la totalidad del corpus. El detalle completo, con la tabla de severidad por título, está en el historial de commits públicos del repositorio.
+
 ## Los 7 motores
 
 | Motor | Dominio |
@@ -269,6 +273,8 @@ The most important finding of this expansion isn't any single average — it's h
 
 The cheaper pre-check (no RAGAS judge involved) also found 3 of the 40 new questions where the fact exists in the corpus but doesn't reach the retrieved context under the default configuration — a real retrieval-precision gap, not a bad data load. I document them as concrete improvement candidates rather than hide them: the maximum flexural reinforcement ratio in DES moment frames (Title C), the minimum thickness of unreinforced masonry (Title D), and the Phase 3 duration of SG-SST implementation for large companies (Decree 1072) — the last one likely because its source table packs all four company-size tiers into one dense fragment, diluting the embedding's signal.
 
+**Corpus integrity audit — another real finding, fixed (2026-09-01).** The local embedding model has a hard 128-token limit per fragment — anything longer gets silently truncated for semantic search, even though the full text stays stored and visible if that fragment ever gets retrieved. I audited the entire NSR-10 corpus with the real tokenizer (not a character-count estimate) and found **493 of 4,129 fragments (11.9%) exceeded that limit**, with severity wildly uneven by title: Titles K, B, J and A were 100% truncated, while Titles C and D — most of the corpus, 3,121 fragments — were at 0%. Fixed the same day: the 493 fragments were re-split respecting the real limit (no PDF re-read needed — the already-loaded verbatim text was correct, just mis-chunked), verified with a second, independent audit confirming 0% of fragments over the limit across the whole corpus. Full detail, including the per-title severity table, is in the repository's public commit history.
+
 **The 7 engines:**
 
 | Engine | Domain |
@@ -310,7 +316,7 @@ cd apps/api  && pip install -r requirements.txt && uvicorn main:app --reload
 
 7 motores de dominio (6 activos en producción, 1 desactivado por defecto por RAM), trazabilidad normativa completa sobre NSR-10, RAS 2000/Res. 0330, INVIAS, NTC y SGSST. Marca pública: **StructAI**.
 
-**Cobertura en vivo** (verificada ahora, no una promesa): 4.627 chunks de NSR-10 en los 11 títulos, 294 de NTC/SGSST, 4.060 de los motores de dominio, y una base de precios de 4.566 actividades / 10.281 insumos / 102 proveedores verificados (24 locales del Atlántico + 78 nacionales). Compruébalo tú mismo: [`GET /data-status`](https://structai-api-235651108862.us-east1.run.app/data-status).
+**Cobertura en vivo** (verificada ahora, no una promesa): 7.243 chunks de NSR-10 en los 11 títulos (el salto frente a versiones anteriores de esta cifra viene de una corrección real de troceo el 2026-09-01, no de contenido nuevo — ver "Auditoría de integridad del corpus" abajo), 294 de NTC/SGSST, 4.060 de los motores de dominio, y una base de precios de 4.566 actividades / 10.281 insumos / 102 proveedores verificados (24 locales del Atlántico + 78 nacionales). Compruébalo tú mismo: [`GET /data-status`](https://structai-api-235651108862.us-east1.run.app/data-status).
 
 **Evaluación empírica del RAG**: medida con RAGAS, no solo diseñada — precisión de contexto 0.743 → 0.875 tras re-ranking combinado y descomposición de consultas, con un defecto real de fusión RRF encontrado y corregido en el camino. Detalle completo arriba, en "Evaluación empírica del RAG".
 
