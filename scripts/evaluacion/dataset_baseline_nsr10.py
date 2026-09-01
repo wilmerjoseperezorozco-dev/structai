@@ -351,4 +351,19 @@ CASOS_BASELINE = [
         "ground_truth": "Aplica a miembros estructurales de acero de bajo carbono o de baja aleación, cuya sección ha sido formada en frío, a partir de láminas, rollos, tiras, platinas o barras de espesor menor o igual a 25.4 mm (1 pulgada).",
         "id": "F-f41-alcance-espesor-maximo-254mm",
     },
+    {
+        "pregunta": "Cual es la maxima relacion ancho plano-espesor w/t para un elemento a compresion rigidizado con ambos bordes longitudinales conectados a otros elementos rigidizados segun el Titulo F?",
+        "ground_truth": "Para un elemento a compresión rigidizado con ambos bordes longitudinales conectados a otros elementos rigidizados, w/t ≤ 500.",
+        "id": "F-f42-max-wt-elemento-rigidizado-ambos-bordes-500",
+    },
+    {
+        "pregunta": "Cual es la relacion maxima altura-espesor h/t para almas no reforzadas de miembros en flexion de acero formado en frio segun el Titulo F?",
+        "ground_truth": "Para almas no reforzadas, (h/t)máx = 200.",
+        "id": "F-f42-max-ht-almas-no-reforzadas-200",
+    },
+    {
+        "pregunta": "Que coeficiente de pandeo de placa k se usa para elementos NO rigidizados bajo compresion uniforme segun el Titulo F?",
+        "ground_truth": "El ancho efectivo se determina igual que para elementos rigidizados, excepto que el coeficiente de pandeo de placa k se toma como 0.43.",
+        "id": "F-f42-k-elemento-no-rigidizado-043",
+    },
 ]

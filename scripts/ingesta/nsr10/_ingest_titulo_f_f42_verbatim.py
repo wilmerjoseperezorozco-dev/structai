@@ -1,0 +1,561 @@
+"""
+NSR-10 Título F, Capítulo F.4 (Estructuras de Acero con Perfiles de Lámina
+Formada en Frío) — F.4.2 (Elementos) completo, en verbatim real. Segunda
+pieza de F.4/F.5 (F.4.1 ya cerrado en sesión anterior).
+
+F.4.2 — ELEMENTOS: F.4.2.1 (Límites y consideraciones dimensionales —
+relaciones ancho plano/espesor máximas, deflexión de aletas, relación
+h/t de almas), F.4.2.2 (Anchos efectivos de elementos rigidizados bajo
+compresión uniforme, con huecos circulares/no circulares, bajo gradiente
+de esfuerzo, y almas de secciones C con huecos), F.4.2.3 (Anchos
+efectivos de elementos NO rigidizados, bajo compresión uniforme y bajo
+gradiente de esfuerzo), F.4.2.4 (Anchos efectivos de elementos con
+pestaña simple como rigidizador de borde), F.4.2.5 (Anchos efectivos de
+elementos con rigidizadores intermedios sencillos o múltiples, caso
+específico de n rigidizadores idénticos y caso general).
+
+Fuente: NSR-10-982-1082.pdf (Drive id 1Mr7auE8pwQ3IiQaZmLgVY5-Xdu7psmze),
+páginas internas F-313 a F-328 (páginas PDF 13-28), leído visualmente
+página por página (método establecido: PDF nativo descargado local +
+Read con pages=, nunca el texto plano de Drive que corrompe subíndices).
+
+Uso: python _ingest_titulo_f_f42_verbatim.py
+"""
+from __future__ import annotations
+
+import os
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+load_dotenv(PROJECT_ROOT / "apps" / "api" / ".env")
+
+CAPITULO = "NSR-10 Título F — Estructuras Metálicas"
+
+CHUNKS = [
+    {
+        "id": "NSR10-F-F_4_2_1_limites_dimensionales",
+        "seccion": "F.4.2.1 (Límites y consideraciones dimensionales)",
+        "titulo": "Relaciones máximas ancho plano-espesor de aletas (3 casos, F.4.2.1.1.1), deflexión hacia el interior de aletas anchas (ecuación F.4.2.1-1, F.4.2.1.1.2), efectos de corte en luces cortas y Tabla F.4.2.1-1, y relación máxima altura-espesor h/t de almas (F.4.2.1.2).",
+        "texto": (
+            "NSR-10 Título F, Capítulo F.4 — ESTRUCTURAS DE ACERO CON PERFILES DE "
+            "LÁMINA FORMADA EN FRÍO. F.4.2 — ELEMENTOS. F.4.2.1 — LÍMITES Y "
+            "CONSIDERACIONES DIMENSIONALES. F.4.2.1.1 — Consideraciones para la "
+            "relación ancho plano-espesor de aletas. F.4.2.1.1.1 — Relaciones "
+            "máximas ancho plano-espesor — Las máximas relaciones admisibles "
+            "ancho plano-espesor, w/t, sin consideración de rigidizadores "
+            "intermedios y tomando como t el espesor real del elemento, deben "
+            "ser las siguientes: (1) Elemento a compresión rigidizado con solo un "
+            "borde longitudinal conectado a un elemento alma o aleta y el otro "
+            "borde rigidizado por labio o pestaña sencilla: w/t ≤ 60. Cualquier "
+            "otra clase de rigidizador: cuando Is < Ia, w/t ≤ 60; cuando Is ≥ Ia, "
+            "w/t ≤ 90. Donde: Is = momento de inercia real del rigidizador "
+            "completo alrededor de su propio eje centroidal paralelo al elemento "
+            "a ser rigidizado. Ia = momento de inercia adecuado del rigidizador, "
+            "de tal forma que cada elemento componente se comportará como un "
+            "elemento rigidizado. (2) Elemento a compresión rigidizado con ambos "
+            "bordes longitudinales conectados a otros elementos rigidizados: "
+            "w/t ≤ 500. (3) Elemento a compresión no rigidizado: w/t ≤ 60.\n\n"
+            "Nota: Los elementos en compresión no rigidizados que tengan una "
+            "relación w/t superior a aproximadamente 30 y los elementos en "
+            "compresión rigidizados que tengan una relación w/t superior a "
+            "aproximadamente 250 son susceptibles a desarrollar una deformación "
+            "perceptible bajo la resistencia total disponible (resistencia "
+            "multiplicada por un factor), sin afectar la capacidad del miembro a "
+            "desarrollar la resistencia requerida (efecto de las cargas "
+            "mayoradas). Los elementos rigidizados con relaciones w/t mayores "
+            "que 500 pueden ser usados con una resistencia de diseño adecuada "
+            "para soportar las cargas requeridas; sin embargo, las deformaciones "
+            "importantes de tales elementos invalidarán las ecuaciones de diseño "
+            "especificadas en este Reglamento.\n\n"
+            "F.4.2.1.1.2 — Deflexión hacia el interior de la longitud completa "
+            "de la Aleta — Cuando la aleta de un miembro en flexión es "
+            "inusualmente ancha, y se desea limitar la máxima curvatura o "
+            "movimientos de esta hacia el eje neutro, la siguiente ecuación "
+            "aplica a las aletas en compresión y tensión independiente de si "
+            "están rigidizadas o no: wf = raíz cuarta de (0.061·t·d·E/fav · "
+            "(100·cf/d)) (ecuación F.4.2.1-1). Donde: wf = ancho de la aleta que "
+            "se proyecta más allá del alma; o la mitad de la distancia entre "
+            "almas para vigas en cajón o U. t = espesor de la aleta. d = altura "
+            "de la viga. cf = cantidad de desplazamiento por curvatura de la "
+            "aleta hacia el eje neutro. fav = esfuerzo promedio en el ancho de "
+            "la aleta no reducido (en el caso que los miembros sean diseñados "
+            "mediante el procedimiento del ancho efectivo, el esfuerzo promedio "
+            "es igual al máximo esfuerzo multiplicado por la relación entre el "
+            "ancho efectivo de diseño y el ancho real).\n\n"
+            "F.4.2.1.1.3 — Efectos de variación debido al corte (Luces cortas "
+            "soportando cargas concentradas) — Cuando la luz de la viga es "
+            "menor que 30wf (wf según se define más adelante) y soporta una "
+            "carga concentrada o varias cargas espaciadas a una distancia mayor "
+            "que 2wf, el ancho efectivo de diseño de cualquier aleta, bien sea "
+            "en tensión o en compresión, debe limitarse de acuerdo con la tabla "
+            "F.4.2.1-1.\n\n"
+            "Tabla F.4.2.1-1 — Luces cortas y aletas anchas. Máxima relación "
+            "permisible entre el ancho de diseño efectivo (b) y ancho real (w): "
+            "L/wf = 30 → relación b/w = 1.00. L/wf = 25 → b/w = 0.96. L/wf = 20 "
+            "→ b/w = 0.91. L/wf = 18 → b/w = 0.89. L/wf = 16 → b/w = 0.86. "
+            "L/wf = 14 → b/w = 0.82. L/wf = 12 → b/w = 0.78. L/wf = 10 → "
+            "b/w = 0.73. L/wf = 8 → b/w = 0.67. L/wf = 6 → b/w = 0.55. Donde: "
+            "L = luz total para vigas simples; o distancia entre puntos de "
+            "inflexión para vigas continuas; o el doble de la longitud para "
+            "vigas en voladizo. wf = ancho de la aleta que se proyecta más allá "
+            "del alma para vigas I y secciones similares; o la mitad de la "
+            "distancia entre almas para secciones cajón o U. Para aletas de las "
+            "vigas I y secciones similares rigidizadas por pestañas o labios en "
+            "los bordes exteriores, wf debe ser tomado como la suma de la "
+            "proyección de la aleta más allá del alma y el ancho de la pestaña "
+            "o labio.\n\n"
+            "F.4.2.1.2 — Relación máxima altura-espesor en almas — La relación "
+            "h/t, de las almas de los miembros en flexión no debe exceder los "
+            "siguientes límites: (a) Para almas no reforzadas: (h/t)máx = 200. "
+            "(b) Para almas provistas de rigidizadores de apoyo que satisfagan "
+            "los requisitos de F.4.3.3.7.1: (1) Cuando se usen rigidizadores de "
+            "apoyo solamente: (h/t)máx = 260. (2) Cuando se usen rigidizadores "
+            "de apoyo y rigidizadores intermedios: (h/t)máx = 300. Donde: "
+            "h = altura de la porción plana del alma, medida a lo largo del "
+            "plano del alma. t = espesor del alma. Cuando el alma conste de dos "
+            "o más láminas, se debe calcular para cada una la relación h/t."
+        ),
+    },
+    {
+        "id": "NSR10-F-F_4_2_2_1_a_2_anchos_efectivos_rigidizados_huecos",
+        "seccion": "F.4.2.2.1-F.4.2.2.2 (Anchos efectivos de elementos rigidizados bajo compresión uniforme, y con huecos)",
+        "titulo": "Determinación de la resistencia (ecuaciones F.4.2.2-1 a F.4.2.2-5) y del estado de servicio (F.4.2.2-6 a F.4.2.2-10) del ancho efectivo de elementos rigidizados; ancho efectivo con huecos circulares (F.4.2.2-11, -12) y no circulares.",
+        "texto": (
+            "NSR-10 Título F, Capítulo F.4 — F.4.2.2 — ANCHOS EFECTIVOS DE "
+            "ELEMENTOS RIGIDIZADOS. F.4.2.2.1 — Elementos rigidizados bajo "
+            "compresión uniforme. (a) Determinación de la resistencia — El "
+            "ancho efectivo, b, se determinará a partir de las siguientes "
+            "ecuaciones: b = w cuando λ ≤ 0.673 (F.4.2.2-1). b = ρ·w cuando "
+            "λ > 0.673 (F.4.2.2-2). Donde: w = ancho plano como se muestra en "
+            "la figura F.4.2.2-1. ρ = factor de reducción local = "
+            "(1 − 0.22/λ)/λ (F.4.2.2-3). λ es un factor de esbeltez determinado "
+            "como sigue: λ = raíz cuadrada de (f/Fcr) (F.4.2.2-4). Donde: "
+            "f = esfuerzo de compresión en el elemento calculado como sigue: "
+            "Para miembros en flexión: (1) Si se utiliza el procedimiento 1 de "
+            "la sección F.4.3.3.1.1: (a) Cuando la fluencia inicial es en "
+            "compresión en el elemento en consideración, f = Fy. (b) Cuando la "
+            "fluencia inicial es en tensión, el esfuerzo de compresión, f, en "
+            "el elemento en consideración debe ser determinado con base en la "
+            "sección efectiva para el momento My (momento que causa la "
+            "fluencia inicial). (2) Si se utiliza el procedimiento 2 de la "
+            "sección F.4.3.3.1.1, f es el esfuerzo en el elemento bajo "
+            "consideración para el momento Mn determinado con base en la "
+            "sección efectiva. (3) Si se utiliza la sección F.4.3.3.1.2.1, f es "
+            "el esfuerzo Fc como se describe bajo ese numeral para la "
+            "determinación del módulo de sección efectiva Sc. Para miembros a "
+            "compresión f se toma igual al Fn, como es determinado en F.4.3.4. "
+            "Fcr = k·π²·E / (12·(1−μ²)) · (t/w)² (F.4.2.2-5). Donde: "
+            "k = coeficiente de pandeo de placa = 4 para elementos rigidizados "
+            "apoyados por un alma en cada borde longitudinal (en las secciones "
+            "aplicables se dan valores de k para los diferentes tipos de "
+            "elementos). E = módulo de elasticidad del acero. t = espesor del "
+            "elemento rigidizado bajo compresión uniforme. μ = relación de "
+            "Poisson del acero.\n\n"
+            "(b) Determinación del Estado de Servicio (deflexiones) — El ancho "
+            "efectivo, bd, usado para la determinación del estado de servicio "
+            "de la estructura debe ser calculado como sigue: bd = w cuando "
+            "λ ≤ 0.673 (F.4.2.2-6). bd = ρ·w cuando λ > 0.673 (F.4.2.2-7). "
+            "Donde: w = ancho plano. ρ = coeficiente de reducción determinado "
+            "por uno de los siguientes procedimientos: (1) Procedimiento 1. Se "
+            "puede obtener un estimativo bajo del ancho efectivo a partir de "
+            "las ecuaciones F.4.2.2-3 y F.4.2.2-4 donde fd sustituye a f, "
+            "siendo fd el esfuerzo de compresión en el elemento bajo "
+            "consideración. (2) Procedimiento 2. Para elementos rigidizados "
+            "soportados por un alma en cada borde longitudinal, se puede "
+            "obtener un estimativo mejorado del ancho efectivo, calculando ρ "
+            "así: ρ = 1.00 cuando λ ≤ 0.673. ρ = (1.358 − 0.461/λ)/λ cuando "
+            "0.673 < λ < λc (F.4.2.2-8). ρ = (0.41 + 0.59·raíz(Fy/fd) − "
+            "0.22/λ)/λ cuando λ ≥ λc (F.4.2.2-9). ρ ≤ 1.00 para todos los "
+            "casos. Donde: λc = 0.256 + 0.328·(w/t)·raíz(Fy/E) (F.4.2.2-10). "
+            "λ está definida por la ecuación F.4.2.2-4, excepto que fd "
+            "reemplaza a f.\n\n"
+            "F.4.2.2.2 — Elementos rigidizados bajo compresión uniforme con "
+            "huecos circulares y no circulares. (a) Determinación de la "
+            "resistencia — Para huecos circulares: El ancho efectivo, b, debe "
+            "determinarse como sigue: Para 0.50 ≥ dh/w ≥ 0, y w/t ≤ 70 y la "
+            "distancia entre centros de huecos es ≥ 0.50w y ≥ 3dh: "
+            "b = w − dh cuando λ ≤ 0.673 (F.4.2.2-11). b = w·[1 − (0.22/λ) − "
+            "(0.8dh/w) + (0.085dh/(wλ))] / λ cuando λ > 0.673 (F.4.2.2-12). En "
+            "todos los casos b ≤ w − dh. Donde: w = ancho plano. t = espesor "
+            "del elemento. dh = diámetro de huecos. λ es definida en la sección "
+            "F.4.2.2.1. Para huecos no circulares — Se asumirá que un elemento "
+            "rigidizado bajo compresión uniforme con huecos no circulares "
+            "consiste de dos franjas no rigidizadas de ancho plano, c, "
+            "adyacentes a los huecos (ver la figura F.4.2.2-2). El ancho "
+            "efectivo, b, de cada franja no rigidizada adyacente al hueco se "
+            "determinará de acuerdo con la sección F.4.2.2.1(a), con la "
+            "excepción de que el coeficiente de pandeo de placas, k, debe ser "
+            "tomado como 0.43 y w como c. Estas especificaciones serán "
+            "aplicables dentro de los siguientes límites: (1) Espaciamiento "
+            "centro a centro de huecos, s ≥ 610 mm (24 pulgadas). (2) Distancia "
+            "libre entre el hueco y los extremos, Send ≥ 254 mm (10 pulgadas). "
+            "(3) Altura del hueco, dh ≤ 63.5 mm (2.5 pulgadas). (4) Longitud "
+            "del hueco, Lh ≤ 114 mm (4.5 pulgadas). (5) Relación entre la "
+            "altura del hueco, dh, y el ancho entre bordes exteriores, wo: "
+            "dh/wo ≤ 0.5. Alternativamente, se permitirá la determinación del "
+            "ancho efectivo, b, mediante pruebas en laboratorio sobre columnas "
+            "cortas de acuerdo con el procedimiento de ensayo AISI S902. (b) "
+            "Estado de servicio (deflexiones) — El ancho efectivo, bd, usado en "
+            "la determinación del estado de servicio será igual al b calculado "
+            "de acuerdo con el procedimiento 1 de la sección F.4.2.2.1(b), "
+            "excepto que fd remplaza el valor de f, donde fd es el esfuerzo de "
+            "compresión calculado sobre el elemento en consideración."
+        ),
+    },
+    {
+        "id": "NSR10-F-F_4_2_2_3_a_4_gradiente_esfuerzo_secciones_c_huecos",
+        "seccion": "F.4.2.2.3-F.4.2.2.4 (Almas y otros elementos rigidizados bajo gradiente de esfuerzo, y almas de secciones C con huecos)",
+        "titulo": "Ecuaciones F.4.2.2-13 a F.4.2.2-22 para almas bajo gradiente de esfuerzo (2 casos), y los 8 límites de aplicabilidad de F.4.2.2.4 para almas de secciones C con huecos bajo gradiente.",
+        "texto": (
+            "NSR-10 Título F, Capítulo F.4 — F.4.2.2.3 — Almas y otros elementos "
+            "rigidizados bajo gradiente de esfuerzo. La siguiente notación es "
+            "usada en esta sección: b1 = ancho efectivo, dimensión definida en "
+            "la figura F.4.2.2-3. b2 = ancho efectivo, dimensión definida en la "
+            "figura F.4.2.2-3. be = ancho efectivo b determinado de acuerdo con "
+            "la sección F.4.2.2.1 con f1 remplazando a f y con k determinado "
+            "como es definido en esta sección. bo = ancho de la aleta en "
+            "compresión entre bordes externos como se define en la figura "
+            "F.4.2.2-4. f1, f2 = esfuerzos mostrados en la figura F.4.2.2-3 "
+            "calculados sobre la base de la sección efectiva. Donde f1 y f2 son "
+            "esfuerzos en compresión, f1 ≥ f2. ho = altura del alma medida "
+            "entre bordes externos, tal y como se define en la figura "
+            "F.4.2.2-4. k = coeficiente de pandeo de placas. ψ = |f2/f1| "
+            "(valor absoluto) (F.4.2.2-13). (a) Determinación de la resistencia "
+            "— (1) Para almas bajo gradiente de esfuerzo (f1 en compresión y "
+            "f2 en tensión como se muestra en la figura F.4.2.2-3(a)), los "
+            "anchos efectivos y el coeficiente de pandeo de placas serán "
+            "calculados como sigue: k = 4 + 2·(1+ψ)³ + 2·(1+ψ) (F.4.2.2-14). "
+            "Para ho/bo ≤ 4: b1 = be/(3+ψ) (F.4.2.2-15). b2 = be/2 cuando "
+            "ψ > 0.236 (F.4.2.2-16). b2 = be − b1 cuando ψ ≤ 0.236 "
+            "(F.4.2.2-17). Adicionalmente, b1+b2 no excederá la porción en "
+            "compresión del alma calculada sobre la base de la sección "
+            "efectiva. Para ho/bo > 4: b1 = be/(3+ψ) (F.4.2.2-18). "
+            "b1 = be/(1+ψ) − b1 (F.4.2.2-19). (2) Para otro elemento "
+            "rigidizado bajo gradiente de esfuerzo (f1 y f2 en compresión "
+            "como se muestra en la figura F.4.2.2-3(b)): k = 4 + 2·(1−ψ)² + "
+            "2·(1−ψ) (F.4.2.2-20). b1 = be/(3−ψ) (F.4.2.2-21). "
+            "b2 = be − b1 (F.4.2.2-22). (b) Determinación del Estado de "
+            "servicio (deflexiones) — Los anchos efectivos utilizados en la "
+            "determinación del estado de servicio del miembro serán "
+            "calculados de acuerdo con la sección F.4.2.2.3(a) excepto que "
+            "fd1 y fd2 remplazan a f1 y f2, donde fd1 y fd2 son los esfuerzos "
+            "calculados f1 y f2 basados en la sección efectiva hallada con la "
+            "carga para la cual el estado de servicio es determinado.\n\n"
+            "F.4.2.2.4 — Almas de Secciones C con huecos bajo gradiente de "
+            "Esfuerzo. Las especificaciones de esta parte serán aplicables "
+            "dentro de los siguientes límites: (1) dh/h ≤ 0.7. (2) h/t ≤ 200. "
+            "(3) Huecos centrados en la mitad de la altura del alma. "
+            "(4) Distancia libre entre huecos ≥ 457 mm. (5) Huecos no "
+            "circulares con radio de la esquina ≥ 2t. (6) Huecos no "
+            "circulares con dh ≤ 64 mm y Lh ≤ 114 mm. (7) Huecos circulares "
+            "con diámetro ≤ 152 mm. (8) dh > 14 mm. Donde: dh = altura del "
+            "hueco en el alma. h = altura de la porción plana del alma medida "
+            "a lo largo del plano del alma. t = espesor del elemento. "
+            "Lh = longitud del hueco en el alma. b1, b2 = anchos efectivos "
+            "definidos por la figura F.4.2.2-3. (a) Determinación de la "
+            "resistencia — Cuando dh/h < 0.38, los anchos efectivos, b1 y b2, "
+            "serán determinados de acuerdo con la sección F.4.2.2.3(a) "
+            "asumiendo que no existen huecos en el alma. Cuando dh/h ≥ 0.38, "
+            "el ancho efectivo será determinado de acuerdo con la sección "
+            "F.4.2.3.1(a) asumiendo que la porción en compresión del alma "
+            "consiste de un elemento no rigidizado adyacente al hueco con "
+            "f = f1 como se muestra en la figura F.4.2.2-3. (b) Determinación "
+            "del Estado de servicio (deflexiones) — Los anchos efectivos serán "
+            "determinados de acuerdo con la sección F.4.2.2.3(b) asumiendo la "
+            "no existencia de huecos en el alma."
+        ),
+    },
+    {
+        "id": "NSR10-F-F_4_2_3_anchos_efectivos_no_rigidizados",
+        "seccion": "F.4.2.3 (Anchos efectivos de elementos no rigidizados)",
+        "titulo": "F.4.2.3.1 (compresión uniforme, k=0.43) y F.4.2.3.2 (gradiente de esfuerzo — 2 casos según ubicación del borde no soportado, ecuaciones F.4.2.3-1 a F.4.2.3-11, 2 alternativas para secciones C no rigidizadas).",
+        "texto": (
+            "NSR-10 Título F, Capítulo F.4 — F.4.2.3 — ANCHOS EFECTIVOS DE "
+            "ELEMENTOS NO RIGIDIZADOS. F.4.2.3.1 — Elementos no rigidizados "
+            "bajo compresión uniforme. (a) Determinación de la resistencia — "
+            "El ancho efectivo, b, se determinará de acuerdo con la sección "
+            "F.4.2.2.1(a), excepto que el coeficiente de pandeo de placa, k, "
+            "debe ser tomado como 0.43 y w como se define en la figura "
+            "F.4.2.3-1. (b) Determinación del Estado de servicio (deflexiones) "
+            "— El ancho efectivo, bd, usado en la determinación del estado de "
+            "servicio del miembro estructural será calculado acorde con el "
+            "procedimiento 1 de la sección F.4.2.2.1(b), excepto que fd "
+            "reemplaza a f y k = 0.43.\n\n"
+            "F.4.2.3.2 — Elementos no rigidizados y rigidizadores de borde bajo "
+            "gradiente de esfuerzo. La siguiente notación aplicará a esta "
+            "sección: b = ancho efectivo medido desde el borde rigidizado o "
+            "soportado, determinado de acuerdo con la sección F.4.2.2.1(a), "
+            "con f igual a f1 y con k y ρ determinados de acuerdo al "
+            "procedimiento presentado en esta sección. bo = ancho total del "
+            "elemento no rigidizado del miembro en sección C, tal como se "
+            "define en la figura F.4.2.3-4. f1, f2 = esfuerzos mostrados en "
+            "las figuras F.4.2.3-2, F.4.2.3-3, y F.4.2.3-4 calculados con base "
+            "en la sección bruta. Donde tanto f1 como f2 son esfuerzos de "
+            "compresión y se tiene que f1 ≥ f2. ho = altura total del miembro "
+            "no rigidizado en sección C, definido de acuerdo con la figura "
+            "F.4.2.3-4. k = coeficiente de pandeo de placa definido en esta "
+            "sección o, de forma diferente, como se define en la sección "
+            "F.4.2.2.1(a). t = espesor del elemento. w = ancho plano del "
+            "elemento no rigidizado, donde w/t ≤ 60. ψ = |f1/f2| (valor "
+            "absoluto) (F.4.2.3-1). λ = factor de esbeltez definido en la "
+            "sección F.4.2.2.1(a) con f = f1. ρ = factor de reducción tal como "
+            "se define en esta sección o, de otra forma, como se define en la "
+            "sección F.4.2.2.1(a). (a) Determinación de la resistencia — El "
+            "ancho efectivo, b, de un elemento no rigidizado bajo gradiente de "
+            "esfuerzo se determinará de acuerdo con la sección F.4.2.2.1(a) "
+            "con f igual a f1 y el coeficiente de pandeo de placa, k, "
+            "determinado de acuerdo con esta sección, a menos que se indique "
+            "lo contrario. Para los casos en que f1 es en compresión y f2 es "
+            "en tensión, ρ, presente en la sección F.4.2.2.1(a), se "
+            "determinará de acuerdo con esta sección. (1) Cuando, tanto f1 "
+            "como f2, son esfuerzos de compresión (figura F.4.2.3-2), el "
+            "coeficiente de pandeo de placa será calculado de acuerdo con "
+            "cualquiera de las siguientes ecuaciones: Si el esfuerzo decrece "
+            "hacia el borde no soportado (libre) (figura F.4.2.3-2(a)): "
+            "k = 0.578/(ψ+0.34) (F.4.2.3-2). Si el esfuerzo crece hacia el "
+            "borde no soportado (libre) (figura F.4.2.3-2(b)): "
+            "k = 0.57 − 0.21ψ + 0.07ψ² (F.4.2.3-3). (2) Cuando f1 es en "
+            "compresión y f2 en tensión (figura F.4.2.3-3) el factor de "
+            "reducción y el coeficiente de pandeo de placa será calculado "
+            "como sigue: (a) Si el borde no soportado está en compresión "
+            "(figura F.4.2.3-3(a)): ρ = 1.0 cuando λ ≤ 0.673·(1+ψ). "
+            "ρ = (1+ψ)·(1 − 0.22·(1+ψ)/λ)/λ cuando λ > 0.673·(1+ψ) "
+            "(F.4.2.3-4). k = 0.57 + 0.21ψ + 0.07ψ² (F.4.2.3-5). (b) Si el "
+            "borde soportado está en compresión (figura F.4.2.3-3(b)): Para "
+            "ψ < 1.0: ρ = 1.0 cuando λ ≤ 0.673. ρ = (1−ψ)·(1 − 0.22/λ)/λ + ψ "
+            "cuando λ > 0.673 (F.4.2.3-6). k = 1.70 + 5ψ + 17.1ψ² "
+            "(F.4.2.3-7). Para ψ ≥ 1.0: ρ = 1.0. Para la determinación del "
+            "ancho efectivo, b, de los elementos no rigidizados de un miembro "
+            "en sección C se permitirá el uso de los dos métodos alternativos "
+            "siguientes, según sea el caso: Alternativa 1 para secciones C no "
+            "rigidizadas: Cuando el borde no soportado (libre) está en "
+            "compresión y el borde soportado está en tensión (figura "
+            "F.4.2.3-4(a)): b = w cuando λ ≤ 0.856 (F.4.2.3-8). b = ρ·w cuando "
+            "λ > 0.856 (F.4.2.3-9). Donde: ρ = 0.925/raíz(λ) (F.4.2.3-10). "
+            "k = 0.145·(bo/ho) + 1.256 (F.4.2.3-11). 0.1 ≤ bo/ho ≤ 1.0. "
+            "Alternativa 2 para secciones C no rigidizadas: Cuando el borde "
+            "soportado está en compresión y el borde no soportado está en "
+            "tensión (figura F.4.2.3-4(b)), el ancho efectivo se determina de "
+            "acuerdo con la sección F.4.2.2.3. En el cálculo de módulo de la "
+            "sección efectiva Se del numeral F.4.3.3.1.1 o Sc del numeral "
+            "F.4.3.3.1.2.1 la fibra extrema en compresión en las figuras "
+            "F.4.2.3-2(b), F.4.2.3-3(a), y F.4.2.3-4(a) debe ser tomada como "
+            "el borde de la sección efectiva más cercano al extremo no "
+            "soportado (libre). En el cálculo del módulo de sección efectiva "
+            "Se del numeral F.4.3.3.1.1, la fibra extrema en tensión en las "
+            "figuras F.4.2.3-3(b) y F.4.2.3-4(b) será tomada como el borde de "
+            "la sección efectiva más cerca al extremo no soportado. (b) "
+            "Determinación del Estado de servicio (deflexiones) — El ancho "
+            "efectivo, bd, usado en la determinación del estado de servicio "
+            "será calculado de acuerdo con la sección F.4.2.3.2(a), excepto "
+            "que fd1 y fd2 reemplazan a f1 y f2, respectivamente, donde fd1 y "
+            "fd2 son los esfuerzos f1 y f2 calculados tal como se muestra en "
+            "las figuras F.4.2.3-2, F.4.2.3-3 y F.4.2.3-4, basados en el área "
+            "bruta con la carga para la cual se determina el estado de "
+            "servicio."
+        ),
+    },
+    {
+        "id": "NSR10-F-F_4_2_4_pestana_simple_rigidizador_borde",
+        "seccion": "F.4.2.4 (Anchos efectivos de elementos bajo compresión uniforme con una pestaña simple como rigidizador de borde)",
+        "titulo": "Ecuaciones F.4.2.4-1 a F.4.2.4-11 (dos rangos según w/t vs. 0.328S) y Tabla F.4.2.4-1 para el coeficiente de pandeo de placa k según ángulo θ y relación D/w del rigidizador.",
+        "texto": (
+            "NSR-10 Título F, Capítulo F.4 — F.4.2.4 — ANCHOS EFECTIVOS DE "
+            "ELEMENTOS BAJO COMPRESIÓN UNIFORME CON UNA PESTAÑA SIMPLE COMO "
+            "RIGIDIZADOR DE BORDE. Los anchos efectivos de elementos bajo "
+            "compresión uniforme con un rigidizador simple de borde serán "
+            "calculados de acuerdo con (a) mediante determinación de la "
+            "resistencia y con (b) determinación del estado de servicio. (a) "
+            "Determinación de la resistencia — Para w/t ≤ 0.328S: Ia = 0 (No "
+            "se necesita rigidizador de borde). b = w (F.4.2.4-1). "
+            "b1 = b2 = w/2 (véase figura F.4.2.4-1) (F.4.2.4-2). ds = d's "
+            "(F.4.2.4-3). Para w/t > 0.328S: b1 = (b/2)·(R1) (véase figura "
+            "F.4.2.4-1) (F.4.2.4-4). b2 = b − b1 (véase figura F.4.2.4-1) "
+            "(F.4.2.4-5). ds = d's·(R1) (F.4.2.4-6). Donde: S = 1.28·raíz(E/f) "
+            "(F.4.2.4-7). w = dimensión plana definida en la figura "
+            "F.4.2.4-1. t = espesor de la sección. Ia = momento de Inercia "
+            "adecuado del rigidizador de tal forma que cada elemento "
+            "componente se comporte como un elemento rigidizado = "
+            "399·t⁴·[(w/t)/S − 0.328]³ ≤ t⁴·[115·(w/t)/S + 5] (F.4.2.4-8). "
+            "b = ancho efectivo de diseño. b1, b2 = porciones del ancho "
+            "efectivo de diseño tal como se definen en la figura F.4.2.4-1. "
+            "ds = ancho efectivo reducido del rigidizador tal como se define "
+            "en la figura F.4.2.4-1, y utilizado en el cálculo de todas las "
+            "propiedades de la sección efectiva. d's = ancho efectivo del "
+            "rigidizador calculado de acuerdo con la sección F.4.2.3.2 (véase "
+            "figura F.4.2.4-1). (R1) = Is/Ia ≤ 1 (F.4.2.4-9). Donde: "
+            "Is = momento de Inercia de la sección completa del rigidizador "
+            "alrededor de su propio eje centroidal paralelo al elemento a ser "
+            "rigidizado. Para rigidizadores de borde, la esquina redondeada "
+            "entre el rigidizador y el elemento a ser rigidizado no será "
+            "considerada como parte del rigidizador = (d³·t·sen²θ)/12 "
+            "(F.4.2.4-10). Para la definición de las demás variables "
+            "remitirse a la figura F.4.2.4-1. El ancho efectivo, b, en las "
+            "ecuaciones F.4.2.4-4 y F.4.2.4-5 se calculará de acuerdo con la "
+            "sección F.4.2.2.1 con el coeficiente de pandeo de placa, k, tal "
+            "como se define en la tabla F.4.2.4-1 a continuación: Tabla "
+            "F.4.2.4-1 — Determinación del coeficiente de pandeo de placa (k) "
+            "— Pestaña simple rigidizadora de borde (140° ≥ θ ≥ 40°): Para "
+            "D/w ≤ 0.25: k = 3.57·(R1)ⁿ + 0.43 ≤ 4. Para 0.25 < D/w < 0.80: "
+            "k = (4.82 − 5D/w)·(R1)ⁿ + 0.43 ≤ 4. Donde: "
+            "n = (0.582 − (w/t)/(4S)) ≥ 1/3 (F.4.2.4-11). D, d = dimensiones "
+            "reales del rigidizador, según la figura F.4.2.4-1. (b) "
+            "Determinación del Estado de servicio (deflexiones) — El ancho "
+            "efectivo, bd, usado en la determinación del estado de servicio "
+            "será calculado de acuerdo con la sección F.4.2.4(a) excepto que "
+            "fd reemplaza a f, donde fd es el esfuerzo de compresión "
+            "calculado en la sección efectiva con la carga para la cual se "
+            "determina el estado de servicio."
+        ),
+    },
+    {
+        "id": "NSR10-F-F_4_2_5_rigidizadores_intermedios",
+        "seccion": "F.4.2.5 (Anchos efectivos de elementos con rigidizadores intermedios sencillos o múltiples, y elementos de borde con rigidizadores intermedios)",
+        "titulo": "F.4.2.5.1.1 (caso específico n rigidizadores idénticos igualmente espaciados, ecuaciones F.4.2.5-1 a -11) y F.4.2.5.1.2 (caso general, ecuaciones F.4.2.5-12 a -17); F.4.2.5.2 elementos de borde con rigidizadores intermedios.",
+        "texto": (
+            "NSR-10 Título F, Capítulo F.4 — F.4.2.5 — ANCHOS EFECTIVOS DE "
+            "ELEMENTOS CON RIGIDIZADORES INTERMEDIOS SENCILLOS O MÚLTIPLES O "
+            "ELEMENTOS DE BORDE CON RIGIDIZADORES INTERMEDIOS. F.4.2.5.1 — "
+            "Anchos efectivos de elementos bajo compresión uniforme con "
+            "rigidizadores intermedios sencillos o múltiples. La siguiente "
+            "notación es utilizada en esta sección: Ag = área bruta del "
+            "elemento, incluyendo rigidizadores. As = área bruta del "
+            "rigidizador. be = ancho efectivo del elemento, localizado en el "
+            "centroide del elemento incluyendo rigidizadores, ver figura "
+            "F.4.2.5-2. bo = ancho plano total del elemento rigidizado, ver "
+            "figura F.4.2.5-1. bp = ancho plano del subelemento más grande, "
+            "ver figura F.4.2.5-1. cf = distancia horizontal a partir del "
+            "borde del elemento al eje (o ejes) del rigidizador (o "
+            "rigidizadores), ver figura F.4.2.5-1. Fcr = esfuerzo de pandeo "
+            "elástico de la placa. f = esfuerzo de compresión uniforme "
+            "actuante sobre el elemento plano. h = ancho de elementos "
+            "adyacentes a elementos rigidizados (ejemplo: la altura del alma "
+            "en una sección sombrero con rigidizadores intermedios múltiples "
+            "en la aleta a compresión es igual a h; si los elementos "
+            "adyacentes tienen diferentes anchos, utilizar el más pequeño). "
+            "Isp = momento de Inercia del rigidizador alrededor del eje de la "
+            "porción plana del elemento. El radio que conecta al rigidizador "
+            "con la parte plana puede ser incluido. k = coeficiente de placa "
+            "del elemento. kd = coeficiente de placa para pandeo distorsional. "
+            "kloc = coeficiente de placa para pandeo local del subelemento. "
+            "Lbr = longitud no soportada entre puntos de arriostramiento u "
+            "otras restricciones, las cuales restringen el pandeo distorsional "
+            "del elemento. R = factor de modificación para el coeficiente "
+            "distorsional de pandeo de placa. n = número de rigidizadores en "
+            "el elemento. t = espesor del elemento. i = índice para el "
+            "rigidizador \"i\". λ = factor de esbeltez. ρ = factor de "
+            "reducción. El ancho efectivo se determinará como sigue: "
+            "be = ρ·[Ag/t] (F.4.2.5-1). ρ = 1 cuando λ ≤ 0.673. "
+            "ρ = (1 − 0.22/λ)/λ cuando λ > 0.673 (F.4.2.5-2). Donde: "
+            "λ = raíz(f/Fcr) (F.4.2.5-3). Donde: Fcr = k·π²·E / "
+            "(12·(1−μ²)·(t/bo)²) (F.4.2.5-4). El coeficiente de pandeo de "
+            "placa, k, se determinará a partir del mínimo entre R·kd y kloc, "
+            "determinado de acuerdo con la sección F.4.2.5.1.1 ó F.4.2.5.1.2, "
+            "según corresponda. k = el valor mínimo entre R·kd y kloc "
+            "(F.4.2.5-5). R = 2 cuando bo/h < 1. "
+            "R = (11 − bo/h)/5 ≥ 1/2 cuando bo/h ≥ 1 (F.4.2.5-6).\n\n"
+            "F.4.2.5.1.1 — Caso Específico: \"n\" rigidizadores idénticos "
+            "igualmente espaciados — Para elementos bajo compresión uniforme "
+            "con rigidizadores idénticos, múltiples e igualmente espaciados, "
+            "los coeficientes de pandeo de placa y los anchos efectivos se "
+            "calcularán como sigue: a) Determinación de la resistencia — "
+            "kloc = 4·(n+1)² (F.4.2.5-7). "
+            "kd = ((1+β²)² + γ·(1+n)) / (β²·(1+δ·(n+1))) (F.4.2.5-8). Donde: "
+            "β = (1 + γ·(n+1))^(1/4) (F.4.2.5-9). Donde: "
+            "γ = 10.92·Isp/(bo·t³) (F.4.2.5-10). δ = As/(bo·t) (F.4.2.5-11). "
+            "Si Lbr < β·bo se permitirá utilizar la relación Lbr/bo en lugar "
+            "de β para tener en cuenta el incremento en la capacidad debido "
+            "al arriostramiento. b) Determinación del Estado de servicio — El "
+            "ancho efectivo, bd, utilizado en la determinación del estado de "
+            "servicio se calculará de acuerdo con la sección F.4.2.5.1.1(a), "
+            "excepto que fd remplaza a f, donde fd es el esfuerzo de "
+            "compresión calculado sobre el elemento en consideración, basado "
+            "en la sección efectiva para la carga en la cual se determina el "
+            "estado de servicio.\n\n"
+            "F.4.2.5.1.2 — Caso General: Rigidizadores arbitrarios en número, "
+            "localización y tamaño — Para elementos rigidizados bajo "
+            "compresión uniforme con rigidizadores múltiples de tamaño, "
+            "localización y número arbitrario, los coeficientes de pandeo de "
+            "placa y anchos efectivos se calcularán como sigue: a) "
+            "Determinación de la resistencia — kloc = 4·(bo/bp)² "
+            "(F.4.2.5-12). kd = ((1+β²)² + 2·suma(i=1 a n) de γi·ωi) / "
+            "(β²·(1+2·suma(i=1 a n) de δi·ωi)) (F.4.2.5-13). Donde: "
+            "β = (2·suma(i=1 a n) de γi·ωi + 1)^(1/4) (F.4.2.5-14). Donde: "
+            "γi = 10.92·(Isp)i / (bo·t³) (F.4.2.5-15). "
+            "ωi = sen²(π·ci/bo) (F.4.2.5-16). δi = (As)i/(bo·t) "
+            "(F.4.2.5-17). Si Lbr < β·bo se permitirá utilizar la relación "
+            "Lbr/bo en lugar de β para tener en cuenta el incremento en la "
+            "capacidad debido al arriostramiento. b) Determinación del Estado "
+            "de servicio — El ancho efectivo, bd, utilizado en la "
+            "determinación del estado de servicio se calculará de acuerdo con "
+            "la sección F.4.2.5.1.2(a), excepto que fd reemplaza a f, donde "
+            "fd es el esfuerzo de compresión calculado sobre el elemento en "
+            "consideración, basado en la sección efectiva para la carga en la "
+            "cual se determina el estado de servicio.\n\n"
+            "F.4.2.5.2 — Elementos de borde con rigidizadores intermedios. "
+            "(a) Determinación de la resistencia — Para elementos rigidizados "
+            "de borde con rigidizadores intermedios, el ancho efectivo, be, "
+            "se determinará como sigue: Si bo/t > 0.328S, el elemento es "
+            "totalmente efectivo y no se requiere reducir el elemento por "
+            "pandeo local. Si bo/t > 0.328S, entonces el coeficiente de "
+            "pandeo de placa, k, se determinará a partir de las "
+            "especificaciones de la la sección F.4.2.4, pero con bo en lugar "
+            "de w en todas las expresiones numéricas. Si el valor k, "
+            "calculado a partir de la sección F.4.2.4, es menor a 4.0 (k<4), "
+            "el rigidizador o rigidizadores intermedios deberán ser "
+            "ignorados y deben seguirse las especificaciones de la sección "
+            "F.4.2.4 para el cálculo del ancho efectivo. Si el valor k, "
+            "calculado a partir de la sección F.4.2.4, es igual a 4.0 (k=4), "
+            "el ancho efectivo del elemento rigidizado de borde se calculará "
+            "de acuerdo con las especificaciones de la sección F.4.2.5.1, con "
+            "la siguiente excepción: R calculado de acuerdo con la sección "
+            "F.4.2.5.1 es menor o igual a 1. Donde: bo = Ancho plano total "
+            "del elemento rigidizado de borde. Las otras variables son "
+            "definidas en la sección F.4.2.4 y F.4.2.5.1. (b) Determinación "
+            "del Estado de servicio (deflexiones) — El ancho efectivo, bd, "
+            "utilizado en la determinación del estado de servicio se "
+            "calculará de acuerdo con la sección F.4.2.5.2(a), excepto que "
+            "fd reemplaza a f, donde fd es el esfuerzo de compresión "
+            "calculado sobre el elemento en consideración, basado en la "
+            "sección efectiva para la carga en la que se determina el "
+            "estado de servicio."
+        ),
+    },
+]
+
+
+def main():
+    from sentence_transformers import SentenceTransformer
+    from supabase import create_client
+
+    sb = create_client(os.environ["SUPABASE_URL"], os.environ["SUPABASE_SERVICE_KEY"])
+    print(f"Chunks a insertar: {len(CHUNKS)}")
+    for c in CHUNKS:
+        print(f"  {c['id']} ({c['seccion']}): {len(c['texto'])} chars")
+
+    print("\nCargando modelo de embeddings local...")
+    model = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
+    textos = [c["texto"] for c in CHUNKS]
+    vectores = model.encode(textos, normalize_embeddings=True, show_progress_bar=True)
+
+    rows = []
+    for chunk, vec in zip(CHUNKS, vectores):
+        rows.append({
+            "id": chunk["id"],
+            "capitulo": CAPITULO,
+            "seccion": chunk["seccion"],
+            "titulo": chunk["titulo"][:500],
+            "texto": chunk["texto"],
+            "embedding": vec.tolist(),
+        })
+
+    print("\nSubiendo a nsr10_chunks (upsert por id)...")
+    sb.table("nsr10_chunks").upsert(rows, on_conflict="id").execute()
+
+    print(f"\nOK: {len(rows)} chunks verbatim de F.4.2 cargados. Numeral F.4.2 completo.")
+
+
+if __name__ == "__main__":
+    main()

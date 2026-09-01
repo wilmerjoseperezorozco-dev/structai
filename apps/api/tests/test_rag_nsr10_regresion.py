@@ -451,6 +451,29 @@ CASOS_TITULO_F_F41 = [
     ),
 ]
 
+# Ampliacion 2026-09-01 -- Titulo F.4.2 (Elementos: anchos efectivos
+# rigidizados/no rigidizados, pestana simple, rigidizadores intermedios).
+# Reingestado el mismo dia en chunks chicos (~100 tokens) tras encontrar
+# que el modelo de embeddings trunca a 128 tokens y los chunks grandes
+# originales no retrievaban -- ver commit del re-troceo.
+CASOS_TITULO_F_F42 = [
+    pytest.param(
+        "Cual es la maxima relacion ancho plano-espesor w/t para un elemento a compresion rigidizado con ambos bordes longitudinales conectados a otros elementos rigidizados segun el Titulo F?",
+        ["500"],
+        id="F-f42-max-wt-elemento-rigidizado-ambos-bordes-500",
+    ),
+    pytest.param(
+        "Cual es la relacion maxima altura-espesor h/t para almas no reforzadas de miembros en flexion de acero formado en frio segun el Titulo F?",
+        ["200"],
+        id="F-f42-max-ht-almas-no-reforzadas-200",
+    ),
+    pytest.param(
+        "Que coeficiente de pandeo de placa k se usa para elementos NO rigidizados bajo compresion uniforme segun el Titulo F?",
+        ["0.43", "0,43"],
+        id="F-f42-k-elemento-no-rigidizado-043",
+    ),
+]
+
 
 @pytest.mark.parametrize(
     "pregunta,variantes_esperadas",
@@ -470,7 +493,8 @@ CASOS_TITULO_F_F41 = [
     + CASOS_NTC_SGSST
     + CASOS_TITULO_K_K4
     + CASOS_TITULO_K_K42
-    + CASOS_TITULO_F_F41,
+    + CASOS_TITULO_F_F41
+    + CASOS_TITULO_F_F42,
 )
 def test_respuesta_contiene_hecho_verificado(pregunta: str, variantes_esperadas: list[str]) -> None:
     # top_k=4 (hardcodeado aquí desde antes) quedó por debajo incluso del
