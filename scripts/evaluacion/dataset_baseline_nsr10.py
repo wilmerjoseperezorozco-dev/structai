@@ -416,4 +416,19 @@ CASOS_BASELINE = [
         "ground_truth": "Deben proveerse mecanismos de transferencia de cargas de apoyo (F.4.5.6.1), considerar el cortante de arrancamiento y desgarramiento del sujetador por tensión con resistencia de anclaje determinada por normas del producto o ensayo (F.4.5.6.2), y proveerse mecanismos de transferencia de fuerzas cortantes sin exceder los valores permitidos por el Reglamento (F.4.5.6.3).",
         "id": "F-f45-cierre-conexiones-otros-materiales",
     },
+    {
+        "pregunta": "Que norma tecnica colombiana rige los procedimientos de la prueba a tension para determinar propiedades mecanicas de secciones completas de acero formado en frio segun el Titulo F?",
+        "ground_truth": "La norma NTC 3353 (equivalente a ASTM A370-05), según la sección F.4.6.3.1.",
+        "id": "F-f46-ntc3353-prueba-tension-seccion-completa",
+    },
+    {
+        "pregunta": "Cuantos especimenes a tension minimo se deben tomar de cada rollo madre para establecer los valores representativos de acero virgen segun el Titulo F?",
+        "ground_truth": "Al menos cuatro especímenes a tensión de cada rollo madre, tomados longitudinalmente a una distancia del borde externo del rollo igual a la cuarta parte del ancho (F.4.6.3.3).",
+        "id": "F-f46-acero-virgen-cuatro-especimenes",
+    },
+    {
+        "pregunta": "Cuantos especimenes identicos minimo se requieren en un ensayo de comportamiento estructural DCCR y cual es la desviacion maxima permitida respecto al promedio segun el Titulo F?",
+        "ground_truth": "No menos de tres especímenes idénticos, siempre que la desviación entre el resultado de cualquier ensayo individual y el promedio no exceda ±15% (F.4.6.1.1(a)).",
+        "id": "F-f46-dccr-tres-especimenes-15pct",
+    },
 ]

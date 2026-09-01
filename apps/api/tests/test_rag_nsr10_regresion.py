@@ -562,6 +562,40 @@ CASOS_TITULO_F_F45_CIERRE = [
     ),
 ]
 
+# Ampliacion 2026-09-01 -- Titulo F.4.6 (ENSAYOS PARA CASOS ESPECIALES)
+# COMPLETO: F.4.6.1 (DCCR -- ecuacion estadistica del factor de
+# resistencia phi, factor de correccion Cp, Tabla F.4.6.1-1 con ~30
+# tipos de componente), F.4.6.2 (ensayos de confirmacion), F.4.6.3
+# (propiedades mecanicas -- seccion completa, elementos planos, acero
+# virgen). Con esto F.4.6 queda COMPLETO -- solo falta el resto de
+# F.4.7/F.4.8 (siguiente PDF) y todo F.5 (Aluminio).
+#
+# Hallazgo real de troceo, no solo de retrieval: el splitter por
+# caracteres (~4.5 chars/token estimados) SUBESTIMO el conteo real de
+# tokens para este contenido denso en numeros/simbolos griegos --
+# verificado con el tokenizer real, 10 de 30 piezas iniciales
+# resultaron entre 133 y 205 tokens reales (sobre el limite duro de
+# 128), se habrian truncado en silencio. Corregido con un segundo
+# paso de sub-particion basado en el tokenizer real, no en la
+# estimacion (ver _resplit_titulo_f_f46_por_limite_tokens.py).
+CASOS_TITULO_F_F46 = [
+    pytest.param(
+        "Que norma tecnica colombiana rige los procedimientos de la prueba a tension para determinar propiedades mecanicas de secciones completas de acero formado en frio segun el Titulo F?",
+        ["NTC 3353", "A370"],
+        id="F-f46-ntc3353-prueba-tension-seccion-completa",
+    ),
+    pytest.param(
+        "Cuantos especimenes a tension minimo se deben tomar de cada rollo madre para establecer los valores representativos de acero virgen segun el Titulo F?",
+        ["cuatro", "4"],
+        id="F-f46-acero-virgen-cuatro-especimenes",
+    ),
+    pytest.param(
+        "Cuantos especimenes identicos minimo se requieren en un ensayo de comportamiento estructural DCCR y cual es la desviacion maxima permitida respecto al promedio segun el Titulo F?",
+        ["tres", "3", "15%"],
+        id="F-f46-dccr-tres-especimenes-15pct",
+    ),
+]
+
 
 @pytest.mark.parametrize(
     "pregunta,variantes_esperadas",
@@ -586,7 +620,8 @@ CASOS_TITULO_F_F45_CIERRE = [
     + CASOS_TITULO_F_F43
     + CASOS_TITULO_F_F44
     + CASOS_TITULO_F_F45
-    + CASOS_TITULO_F_F45_CIERRE,
+    + CASOS_TITULO_F_F45_CIERRE
+    + CASOS_TITULO_F_F46,
 )
 def test_respuesta_contiene_hecho_verificado(pregunta: str, variantes_esperadas: list[str]) -> None:
     # top_k=4 (hardcodeado aquí desde antes) quedó por debajo incluso del
