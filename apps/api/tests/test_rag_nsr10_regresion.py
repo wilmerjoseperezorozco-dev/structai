@@ -501,6 +501,24 @@ CASOS_TITULO_F_F43 = [
     ),
 ]
 
+# Ampliacion 2026-09-01 -- Titulo F.4.4 (Miembros armados y sistemas
+# estructurales: secciones armadas, sistemas mixtos, arriostramiento
+# lateral, entramados livianos, diafragmas, sistemas de muros y
+# cubiertas metalicas con Standing Seam). Chunks re-trocheados a ~100
+# tokens con el mismo splitter de F.4.2/F.4.3.
+CASOS_TITULO_F_F44 = [
+    pytest.param(
+        "Cual es el rango de espesor minimo especificado del acero base permitido para entramados livianos repetitivos de acero formado en frio segun el Titulo F?",
+        ["0.455", "2.997", "0,455", "2,997"],
+        id="F-f44-espesor-entramados-livianos-0455-2997",
+    ),
+    pytest.param(
+        "Cual es la resistencia nominal requerida de la riostra para restringir la traslacion lateral de un miembro sencillo en compresion axialmente cargado segun el Titulo F?",
+        ["0.01", "0,01", "1%"],
+        id="F-f44-pbr1-riostra-compresion-001pn",
+    ),
+]
+
 
 @pytest.mark.parametrize(
     "pregunta,variantes_esperadas",
@@ -522,7 +540,8 @@ CASOS_TITULO_F_F43 = [
     + CASOS_TITULO_K_K42
     + CASOS_TITULO_F_F41
     + CASOS_TITULO_F_F42
-    + CASOS_TITULO_F_F43,
+    + CASOS_TITULO_F_F43
+    + CASOS_TITULO_F_F44,
 )
 def test_respuesta_contiene_hecho_verificado(pregunta: str, variantes_esperadas: list[str]) -> None:
     # top_k=4 (hardcodeado aquí desde antes) quedó por debajo incluso del

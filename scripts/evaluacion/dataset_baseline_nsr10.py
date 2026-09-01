@@ -381,4 +381,14 @@ CASOS_BASELINE = [
         "ground_truth": "Para rotura en la sección neta lejos de la conexión, Tn = An·Fu, con φt = 0.75.",
         "id": "F-f43-phi-tension-rotura-seccion-neta-075",
     },
+    {
+        "pregunta": "Cual es el rango de espesor minimo especificado del acero base permitido para entramados livianos repetitivos de acero formado en frio segun el Titulo F?",
+        "ground_truth": "El espesor mínimo especificado del acero base debe estar entre 0.455 mm y 2.997 mm.",
+        "id": "F-f44-espesor-entramados-livianos-0455-2997",
+    },
+    {
+        "pregunta": "Cual es la resistencia nominal requerida de la riostra para restringir la traslacion lateral de un miembro sencillo en compresion axialmente cargado segun el Titulo F?",
+        "ground_truth": "Pbr,1 = 0.01·Pn, es decir, el 1% de la resistencia nominal bajo compresión axial del miembro.",
+        "id": "F-f44-pbr1-riostra-compresion-001pn",
+    },
 ]
