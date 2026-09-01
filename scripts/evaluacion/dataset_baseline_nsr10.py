@@ -431,4 +431,19 @@ CASOS_BASELINE = [
         "ground_truth": "No menos de tres especímenes idénticos, siempre que la desviación entre el resultado de cualquier ensayo individual y el promedio no exceda ±15% (F.4.6.1.1(a)).",
         "id": "F-f46-dccr-tres-especimenes-15pct",
     },
+    {
+        "pregunta": "Cuantos milimetros de recubrimiento minimo de concreto se requieren sobre la cresta del tablero de acero de un sistema compuesto segun el Titulo F?",
+        "ground_truth": "50 mm sobre la cresta del tablero metálico; cuando se requiere refuerzo adicional para momento negativo, el recubrimiento mínimo sobre esas barras es de 20 mm (F.4.7.5.3.1).",
+        "id": "F-f47-recubrimiento-minimo-50mm",
+    },
+    {
+        "pregunta": "Cual es el espesor minimo de acero base aceptado para fabricacion del tablero metalico de trabajo en seccion compuesta segun el Titulo F?",
+        "ground_truth": "Un espesor de acero base de 0.71 mm (tipo o calibre 22), según la sección F.4.7.2 y la Tabla F.4.7.2-2.",
+        "id": "F-f47-espesor-minimo-071mm-calibre22",
+    },
+    {
+        "pregunta": "El apuntalamiento temporal de un tablero metalico debe permanecer instalado hasta que el concreto alcance que porcentaje de su resistencia y por cuantos dias minimo segun el Titulo F?",
+        "ground_truth": "Hasta que el concreto alcance el 75% de su resistencia especificada a compresión y durante un mínimo de 7 días (F.4.7.6.1).",
+        "id": "F-f47-apuntalamiento-75pct-7dias",
+    },
 ]

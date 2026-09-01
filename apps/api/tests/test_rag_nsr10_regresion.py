@@ -596,6 +596,39 @@ CASOS_TITULO_F_F46 = [
     ),
 ]
 
+# Ampliacion 2026-09-01 -- Titulo F.4.7 (TABLEROS METALICOS PARA
+# TRABAJO EN SECCION COMPUESTA) COMPLETO: F.4.7.1 alcance, F.4.7.2
+# materiales (Tabla F.4.7.2-1 tolerancias, Tabla F.4.7.2-2 espesores),
+# F.4.7.3 diseno como formaleta (Figura F.4.7.3-1 diagramas de carga/
+# momento/deflexion/reaccion, DEA, DCCR, deflexiones, longitud minima
+# de apoyo), F.4.7.4 almacenamiento e instalacion (bordes a tope,
+# anclaje, soldadura, sujetadores mecanicos), F.4.7.5 diseno como
+# unidad compuesta (ensayos, concreto, deflexiones, refuerzo,
+# flexion DEA/DCCR, conectores de cortante, cortante, cortante+
+# momento combinados), F.4.7.6 procedimiento constructivo
+# (apuntalamiento, limpieza, vaciado), F.4.7.7 consideraciones
+# adicionales (estacionamientos, voladizos, vigas en seccion
+# compuesta, cargas concentradas, tuberia). Con esto F.4.7 queda
+# COMPLETO -- falta F.4.8 (mismo PDF, siguiente seccion) y todo F.5
+# (Aluminio, otro PDF, cierra el Titulo F).
+CASOS_TITULO_F_F47 = [
+    pytest.param(
+        "Cuantos milimetros de recubrimiento minimo de concreto se requieren sobre la cresta del tablero de acero de un sistema compuesto segun el Titulo F?",
+        ["50"],
+        id="F-f47-recubrimiento-minimo-50mm",
+    ),
+    pytest.param(
+        "Cual es el espesor minimo de acero base aceptado para fabricacion del tablero metalico de trabajo en seccion compuesta segun el Titulo F?",
+        ["0.71", "22"],
+        id="F-f47-espesor-minimo-071mm-calibre22",
+    ),
+    pytest.param(
+        "El apuntalamiento temporal de un tablero metalico debe permanecer instalado hasta que el concreto alcance que porcentaje de su resistencia y por cuantos dias minimo segun el Titulo F?",
+        ["75%", "7"],
+        id="F-f47-apuntalamiento-75pct-7dias",
+    ),
+]
+
 
 @pytest.mark.parametrize(
     "pregunta,variantes_esperadas",
@@ -621,7 +654,8 @@ CASOS_TITULO_F_F46 = [
     + CASOS_TITULO_F_F44
     + CASOS_TITULO_F_F45
     + CASOS_TITULO_F_F45_CIERRE
-    + CASOS_TITULO_F_F46,
+    + CASOS_TITULO_F_F46
+    + CASOS_TITULO_F_F47,
 )
 def test_respuesta_contiene_hecho_verificado(pregunta: str, variantes_esperadas: list[str]) -> None:
     # top_k=4 (hardcodeado aquí desde antes) quedó por debajo incluso del
