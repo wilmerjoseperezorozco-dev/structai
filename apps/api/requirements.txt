@@ -76,5 +76,10 @@ sentry-sdk[fastapi]==2.19.2     # captura de errores en producción — no-op si
 
 # ── Testing / carga (no se instalan en producción, solo dev) ───
 pytest==9.0.3                   # 8.3.3 -> 9.0.3 (2026-08-26): parcha manejo vulnerable de tmpdir (MEDIUM)
-pytest-asyncio==0.24.0
+pytest-asyncio==1.4.0            # 0.24.0 -> 1.4.0 (2026-08-31): 0.24.0 exige pytest<9, rompía la resolución de
+# dependencias contra el pytest==9.0.3 de arriba (encontrado real en un build de Cloud Build desde cero, que
+# instala sin caché — DigitalOcean nunca forzó esta reinstalación). 1.4.0 es la primera versión que soporta
+# pytest 9 (pytest<10,>=8.4, confirmado en PyPI). Revisado el changelog: los cambios de ruptura entre 0.24 y
+# 1.4 son `event_loop_policy` fixture y el kwarg `scope=` de @pytest.mark.asyncio — ninguno de los dos se usa
+# en este repo (solo `asyncio_mode = auto` en pytest.ini, que sigue soportado sin cambios).
 locust==2.32.2
