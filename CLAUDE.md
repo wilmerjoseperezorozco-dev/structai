@@ -110,6 +110,10 @@ que siga siendo cierto.
 - `infra/supabase/SCHEMA.md` + `infra/supabase/migrations/` — schema real
   documentado y migraciones reconstruidas byte a byte desde
   `supabase_migrations.schema_migrations`.
+- `docs/fuentes-normativas.md` — mapa real de qué archivo de Google Drive
+  cubre qué Título/página de la NSR-10 (87 PDFs) + estado real de ingesta
+  verbatim por título. Consultar ANTES de descargar un PDF de Drive para
+  una ingesta nueva, y actualizar en el mismo commit que cierre un título.
 - `docs/comparacion.md` — comparación pública StructAI vs. IA genérica.
 - `.github/workflows/ci.yml` — lint+build web, tests de los 7 motores, tests
   de integración de `apps/api` (usa Groq/OpenAI reales, no mocks).
