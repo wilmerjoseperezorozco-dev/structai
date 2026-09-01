@@ -25,7 +25,7 @@ const ENTERPRISE_CONTACTO = "mailto:ventas@structai.online?subject=StructAI%20En
 const FEATURES = [
   { label: "NSR-10 completa (11 títulos)", free: true,  pro: true,  enterprise: true },
   { label: "NTC complementarias",          free: true,  pro: true,  enterprise: true },
-  { label: "Consulta RAG normativa",       free: true,  pro: true,  enterprise: true },
+  { label: "Consultas de chat por mes",    free: "10",  pro: "∞",   enterprise: "∞" },
   { label: "APU por mes",                  free: "5",   pro: "∞",   enterprise: "∞" },
   { label: "Proyectos simultáneos",        free: "1",   pro: "∞",   enterprise: "∞" },
   { label: "Historial de consultas",       free: "7 d", pro: "∞",   enterprise: "∞" },

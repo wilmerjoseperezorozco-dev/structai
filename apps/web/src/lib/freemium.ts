@@ -20,6 +20,13 @@ export const PLANES = {
     precio_mes: 0,
     precio_anual: 0,
     apu_por_mes: 5,
+    // Agregado 2026-09-01: hasta ahora el chat (/ask, /consultar) no tenía
+    // ningún límite por plan -- espejo del LIMITE_CHAT_MES_FREE real que
+    // aplica apps/api/main.py (verificar_limite_chat_mes), contando filas
+    // reales de consultas_history por mes. 10/mes decidido explícitamente:
+    // alcanza para evaluar el producto, un uso profesional diario lo agota
+    // en una semana.
+    consultas_por_mes: 10,
     proyectos_max: 1,
     export_pdf: false,
     nsr10_completo: true,
@@ -39,6 +46,7 @@ export const PLANES = {
     precio_mes: 9900,
     precio_anual: 79000,
     apu_por_mes: Infinity,
+    consultas_por_mes: Infinity,
     proyectos_max: Infinity,
     export_pdf: true,
     nsr10_completo: true,
@@ -54,6 +62,7 @@ export const PLANES = {
     precio_mes: null,
     precio_anual: null,
     apu_por_mes: Infinity,
+    consultas_por_mes: Infinity,
     proyectos_max: Infinity,
     export_pdf: true,
     nsr10_completo: true,

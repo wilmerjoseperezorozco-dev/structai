@@ -306,6 +306,54 @@ def verificar_limite_apu_mes(user_id: str) -> None:
         )
 
 
+# ── Límite freemium: consultas de chat/mes ──────────────────────────────────
+# Agregado 2026-09-01: hasta ahora /ask y /consultar (el gancho principal del
+# producto) no tenían NINGÚN límite por plan -- solo el rate limit genérico
+# de 10/minuto, igual para free/pro/anónimo. Decisión explícita del usuario:
+# 10 consultas/mes en el plan gratis (mismo patrón de reset mensual que ya
+# usa APU) -- alcanza para evaluar el producto en un par de sesiones reales,
+# pero un uso profesional diario lo agota en una semana. Reusa
+# consultas_history (ya existía, cada /ask y /consultar hace un insert ahí
+# vía registrar_consulta) en vez de crear una tabla nueva -- mismo patrón de
+# contar filas reales por mes que _cupo_apu_mes_restante, no un contador
+# denormalizado.
+LIMITE_CHAT_MES_FREE = 10
+
+
+def verificar_limite_chat_mes(user_id: str) -> None:
+    """Lanza 402 si un usuario del plan free ya agotó su cupo de consultas de
+    chat del mes. Fail-open igual que los límites de APU/proyectos: si
+    Supabase falla, se deja pasar en vez de tumbar el chat por un problema
+    de infraestructura de trazabilidad."""
+    if _uso_sb is None:
+        return
+    try:
+        perfil = _uso_sb.table("profiles").select("plan").eq("id", user_id).maybe_single().execute()
+        plan = (perfil.data or {}).get("plan", "free") if perfil else "free"
+        if plan != "free":
+            return
+
+        import datetime
+        inicio_mes = datetime.datetime.now(datetime.timezone.utc).replace(
+            day=1, hour=0, minute=0, second=0, microsecond=0
+        ).isoformat()
+        conteo = _uso_sb.table("consultas_history").select("id", count="exact") \
+            .eq("user_id", user_id).gte("created_at", inicio_mes).execute()
+        usados = conteo.count or 0
+    except Exception as e:
+        log.warning(f"No se pudo verificar límite de chat/mes (se deja pasar): {e}")
+        return
+
+    if usados >= LIMITE_CHAT_MES_FREE:
+        raise HTTPException(
+            status_code=status.HTTP_402_PAYMENT_REQUIRED,
+            detail=(
+                f"Alcanzaste el límite de {LIMITE_CHAT_MES_FREE} consultas de chat "
+                "del plan gratis este mes. Activa Pro en /pricing para consultas ilimitadas."
+            ),
+        )
+
+
 # ── Rol de administrador (2026-08-26) ───────────────────────────────────────
 # profiles.role ('user'/'admin') es un campo aparte de profiles.plan
 # (free/pro/enterprise) — el rol gobierna acceso a endpoints administrativos
@@ -1403,6 +1451,7 @@ def ask_norma(request: Request, req: AskRequest):
         {"pregunta": "¿Qué resistencia mínima necesito para columnas sísmicas?"}
     """
     user = get_current_user(request)
+    verificar_limite_chat_mes(user.id)
 
     if not RAG_AVAILABLE:
         raise HTTPException(
@@ -1490,6 +1539,7 @@ def consultar_delegado(request: Request, req: ConsultarRequest):
         {"pregunta": "¿Qué coeficiente C de Hazen-Williams uso para tubería PVC?"}
     """
     user = get_current_user(request)
+    verificar_limite_chat_mes(user.id)
 
     if not RAG_AVAILABLE:
         raise HTTPException(
