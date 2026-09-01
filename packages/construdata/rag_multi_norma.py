@@ -174,7 +174,8 @@ def _registrar_uso_groq(tokens_usados: int) -> None:
             sentry_sdk.capture_message(mensaje, level="warning")
         except Exception:
             # sentry_sdk no instalado/configurado — el log.warning de arriba
-            # ya deja rastro en los logs de DigitalOcean aunque no llegue a Sentry.
+            # ya deja rastro en Cloud Logging (Google Cloud Run, desde el
+            # 2026-09-01) aunque no llegue a Sentry.
             pass
 
 

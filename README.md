@@ -2,7 +2,7 @@
 
 [![Web](https://img.shields.io/badge/web-structai.online-0ea5e9)](https://www.structai.online)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21851529.svg)](https://doi.org/10.5281/zenodo.21851529)
-[![Estado en vivo](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fplankton-app-9qinh.ondigitalocean.app%2Fdata-status&query=%24.corpus_normativo.nsr10_chunks.chunks&label=chunks%20NSR-10%20en%20vivo&color=16a34a)](https://plankton-app-9qinh.ondigitalocean.app/data-status)
+[![Estado en vivo](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fstructai-api-235651108862.us-east1.run.app%2Fdata-status&query=%24.corpus_normativo.nsr10_chunks.chunks&label=chunks%20NSR-10%20en%20vivo&color=16a34a)](https://structai-api-235651108862.us-east1.run.app/data-status)
 
 ## Por qué existe esto
 
@@ -16,7 +16,7 @@ Esa es la apuesta completa de StructAI: una plataforma de inteligencia artificia
 
 ## Qué hay hoy, verificado en vivo — no una promesa
 
-Todo lo que sigue se puede comprobar ahora mismo contra producción, sin confiar en este documento: [`GET /data-status`](https://plankton-app-9qinh.ondigitalocean.app/data-status).
+Todo lo que sigue se puede comprobar ahora mismo contra producción, sin confiar en este documento: [`GET /data-status`](https://structai-api-235651108862.us-east1.run.app/data-status).
 
 | Corpus | Contenido | Cifra real hoy |
 |---|---|---|
@@ -143,7 +143,7 @@ construdata/
 ├── apps/
 │   ├── web/        → Next.js 14 (App Router) + PWA          → Vercel (desplegado)
 │   ├── native/      → React Native + Expo Router (Fase 0)    → sin publicar aún
-│   └── api/         → FastAPI, los 7 motores + RAG           → DigitalOcean App Platform (desplegado)
+│   └── api/         → FastAPI, los 7 motores + RAG           → Google Cloud Run (desplegado)
 ├── packages/
 │   ├── motor-apu/, motor-deformacion/, motor-aquai/,
 │   │   motor-geopot/, motor-vias/, motor-gerencia/  → cada uno con su pyproject.toml y sus tests
@@ -184,11 +184,11 @@ cd apps/native && npm install && npm start
 | Componente | Estado |
 |---|---|
 | `apps/web` | ✅ Desplegado en Vercel (PWA), deploy automático en cada push a `master` |
-| `apps/api` | ✅ Desplegado en DigitalOcean App Platform, deploy automático en cada push a `master`. Login requerido (Supabase Auth) para `/ask`, `/apu/calculate` y `/detect` |
+| `apps/api` | ✅ Desplegado en Google Cloud Run (`us-east1`), deploy manual vía `gcloud run deploy` — CI/CD automático (Cloud Build trigger) todavía no armado. Login requerido (Supabase Auth) para `/ask`, `/apu/calculate` y `/detect` |
 | `apps/native` | 🔄 Fase 0 de un roadmap más largo — shell nativo, sin sensores todavía |
 | Supabase | ✅ En producción, RLS activo en todas las tablas, `pgvector` para los 3 corpus RAG |
 
-Verificable ahora mismo, sin confiar en esta tabla: [`GET /health?deep=true`](https://plankton-app-9qinh.ondigitalocean.app/health) y [`GET /data-status`](https://plankton-app-9qinh.ondigitalocean.app/data-status).
+Verificable ahora mismo, sin confiar en esta tabla: [`GET /health?deep=true`](https://structai-api-235651108862.us-east1.run.app/health) y [`GET /data-status`](https://structai-api-235651108862.us-east1.run.app/data-status).
 
 ## Secrets de GitHub Actions (reales, verificados contra `ci.yml`)
 
@@ -226,7 +226,7 @@ Propiedad de Wilmer José Pérez Orozco — ver [LICENSE](./LICENSE). El reposit
 
 **Why this exists.** On August 10, 2026, a magnitude-7.4 earthquake killed more than 287 people in Colombia. It wasn't a geological surprise — the whole country sits on seismic-hazard zones, and a large share of its housing was built before strict seismic codes existed, or built afterward without anyone verifying compliance on site. I'm a civil engineer, and I've spent months building StructAI on one conviction: if an engineer can look up the exact regulation — not an approximation, not a generic AI summary that never actually saw the Colombian code — at the moment they're calculating, fewer errors get made. In this country, a structural miscalculation isn't a technical detail. It's a life. StructAI cites the real regulation — NSR-10, RAS 2000, INVIAS, NTC — with chapter and article, never an invented citation. If it doesn't have the information loaded, it says so.
 
-**What's live today, verified now — not a promise.** Everything below can be checked right now against production, without trusting this document: [`GET /data-status`](https://plankton-app-9qinh.ondigitalocean.app/data-status).
+**What's live today, verified now — not a promise.** Everything below can be checked right now against production, without trusting this document: [`GET /data-status`](https://structai-api-235651108862.us-east1.run.app/data-status).
 
 | Corpus | Content | Real figure today |
 |---|---|---|
@@ -297,7 +297,7 @@ cd apps/web  && npm install && npm run dev
 cd apps/api  && pip install -r requirements.txt && uvicorn main:app --reload
 ```
 
-**Deploy status:** `apps/web` on Vercel (PWA, auto-deploy on every push to `master`) · `apps/api` on DigitalOcean App Platform (auto-deploy on every push, login required via Supabase Auth for `/ask`, `/apu/calculate`, `/detect`) · `apps/native` is Phase 0 of a longer roadmap — native shell, no sensors yet · Supabase in production, RLS on every table. Verify it yourself, without trusting this table: [`GET /health?deep=true`](https://plankton-app-9qinh.ondigitalocean.app/health) and [`GET /data-status`](https://plankton-app-9qinh.ondigitalocean.app/data-status).
+**Deploy status:** `apps/web` on Vercel (PWA, auto-deploy on every push to `master`) · `apps/api` on Google Cloud Run (`us-east1`, manual deploy via `gcloud run deploy` — automatic CI/CD trigger not wired up yet, login required via Supabase Auth for `/ask`, `/apu/calculate`, `/detect`) · `apps/native` is Phase 0 of a longer roadmap — native shell, no sensors yet · Supabase in production, RLS on every table. Verify it yourself, without trusting this table: [`GET /health?deep=true`](https://structai-api-235651108862.us-east1.run.app/health) and [`GET /data-status`](https://structai-api-235651108862.us-east1.run.app/data-status).
 
 **License.** Owned by Wilmer José Pérez Orozco — see [LICENSE](./LICENSE). The repository is public for technical demonstration, portfolio, and academic collaboration purposes; it is not open-source software.
 
@@ -310,7 +310,7 @@ cd apps/api  && pip install -r requirements.txt && uvicorn main:app --reload
 
 7 motores de dominio (6 activos en producción, 1 desactivado por defecto por RAM), trazabilidad normativa completa sobre NSR-10, RAS 2000/Res. 0330, INVIAS, NTC y SGSST. Marca pública: **StructAI**.
 
-**Cobertura en vivo** (verificada ahora, no una promesa): 4.061 chunks de NSR-10 en los 11 títulos, 294 de NTC/SGSST, 4.060 de los motores de dominio, y una base de precios de 4.566 actividades / 10.281 insumos / 102 proveedores verificados (24 locales del Atlántico + 78 nacionales). Compruébalo tú mismo: [`GET /data-status`](https://plankton-app-9qinh.ondigitalocean.app/data-status).
+**Cobertura en vivo** (verificada ahora, no una promesa): 4.399 chunks de NSR-10 en los 11 títulos, 294 de NTC/SGSST, 4.060 de los motores de dominio, y una base de precios de 4.566 actividades / 10.281 insumos / 102 proveedores verificados (24 locales del Atlántico + 78 nacionales). Compruébalo tú mismo: [`GET /data-status`](https://structai-api-235651108862.us-east1.run.app/data-status).
 
 **Evaluación empírica del RAG**: medida con RAGAS, no solo diseñada — precisión de contexto 0.743 → 0.875 tras re-ranking combinado y descomposición de consultas, con un defecto real de fusión RRF encontrado y corregido en el camino. Detalle completo arriba, en "Evaluación empírica del RAG".
 

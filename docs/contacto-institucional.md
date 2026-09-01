@@ -50,7 +50,7 @@ en cómo se está usando y citando su normativa, quiero que veas exactamente
 cómo lo hacemos — el código de las reglas de citación es público
 (`packages/construdata/rag_multi_norma.py`), y la cobertura real (no
 proyectada) es verificable en vivo en [`GET
-/data-status`](https://plankton-app-9qinh.ondigitalocean.app/data-status).
+/data-status`](https://structai-api-235651108862.us-east1.run.app/data-status).
 
 En esta misma línea, hay tres instituciones más con las que quiero
 hablar específicamente:

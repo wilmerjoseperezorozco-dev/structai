@@ -96,7 +96,7 @@ incluso con dataset pequeño y sin GPU (más lento en CPU, pero viable: minutos,
 no horas). Al terminar exporta automáticamente a ONNX en
 `packages/yolo/model.onnx`.
 
-**Este entrenamiento se corre en tu máquina local, nunca en DigitalOcean** —
+**Este entrenamiento se corre en tu máquina local, nunca en el servidor de producción (Google Cloud Run desde 2026-09-01, antes DigitalOcean)** —
 `ultralytics`/`torch` para entrenar es pesado; el servidor de producción
 solo necesita el archivo `.onnx` final (unos 6-12 MB), que se hornea en la
 imagen Docker igual que el modelo de embeddings.

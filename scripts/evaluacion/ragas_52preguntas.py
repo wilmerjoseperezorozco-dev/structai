@@ -15,8 +15,9 @@ explícitamente como confound real (no se ocultan):
    consistente y reproducible (httpcore.RemoteProtocolError:
    ConnectionTerminated, 5/5 en pruebas aisladas) contra el RPC
    search_knowledge desde esta máquina Windows. HTTP/1.1 funciona sin
-   fallos. No se toca production (DigitalOcean, Linux, ruta de red
-   distinta) -- esto puede ser específico de esta máquina/ISP.
+   fallos. No se toca production (Google Cloud Run desde 2026-09-01,
+   antes DigitalOcean -- en ambos casos Linux, ruta de red distinta) --
+   esto puede ser específico de esta máquina/ISP.
 
 Ejecutar: C:\\ragas_venv\\Scripts\\python.exe ragas_52preguntas.py
 """

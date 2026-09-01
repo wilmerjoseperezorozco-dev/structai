@@ -6,7 +6,7 @@ No comparo StructAI contra un producto comercial específico de la competencia �
 
 Cada fila de la tabla es verificable por cualquiera, hoy mismo:
 
-- Las cifras de cobertura, en vivo, sin necesidad de confiar en este documento: [`GET /data-status`](https://plankton-app-9qinh.ondigitalocean.app/data-status).
+- Las cifras de cobertura, en vivo, sin necesidad de confiar en este documento: [`GET /data-status`](https://structai-api-235651108862.us-east1.run.app/data-status).
 - El comportamiento ante una pregunta sin contenido cargado, probando el chat en [structai.online](https://www.structai.online).
 - El código de las reglas de citación y de bloqueo de alucinación, público, en [`packages/construdata/rag_multi_norma.py`](../packages/construdata/rag_multi_norma.py).
 

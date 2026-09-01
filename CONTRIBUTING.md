@@ -83,4 +83,4 @@ Para un cambio grande/riesgoso en el frontend:
 2. Abrir un PR hacia `master` — el preview aparece solo, sin config adicional.
 3. Revisar el preview, y recién ahí mergear.
 
-`apps/api` en DigitalOcean no tiene este flujo todavía (solo despliega automático al pushear `master`) — un ambiente de staging real de backend requeriría una segunda app de DO (costo mensual real) y, para no arriesgar datos de producción, un segundo proyecto de Supabase — evaluado, no implementado por costo/complejidad frente al beneficio en esta etapa del piloto.
+`apps/api` en Google Cloud Run (cutover real desde DigitalOcean el 2026-09-01) no tiene este flujo todavía — el deploy es manual (`gcloud run deploy`), sin trigger de CI/CD ni de staging. Un ambiente de staging real de backend requeriría un segundo servicio de Cloud Run (costo mensual real, aunque bajo) y, para no arriesgar datos de producción, un segundo proyecto de Supabase — evaluado, no implementado por costo/complejidad frente al beneficio en esta etapa del piloto.

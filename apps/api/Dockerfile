@@ -58,10 +58,12 @@ COPY . .
 # antes eso arriesgaba un conflicto de versión real entre dos
 # especificaciones de torch resueltas en pasadas de pip separadas.
 #
-# Para habilitar motor-estructural o YOLO en producción: (1) configurar
-# el Build Argument correspondiente en DigitalOcean App Platform
-# (Settings → App-Level → Build Arguments, o en el component si aplica),
-# Y (2) configurar la env var de runtime (ENABLE_ESTRUCTURAL/ENABLE_YOLO)
+# Para habilitar motor-estructural o YOLO en producción (Google Cloud
+# Run desde el cutover del 2026-09-01, antes DigitalOcean App Platform):
+# (1) pasar el build arg correspondiente en el build de Cloud Build
+# (`gcloud builds submit --substitutions=...` o `--build-arg` si se
+# construye con `docker build` directo), Y (2) configurar la env var de
+# runtime (ENABLE_ESTRUCTURAL/ENABLE_YOLO)
 # a "true" — los dos deben coincidir, si solo se activa la env var de
 # runtime sin haber instalado el paquete, main.py lo captura con
 # ImportError y el motor queda no disponible sin romper el resto de la

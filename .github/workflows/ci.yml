@@ -7,9 +7,15 @@
 #     no vía Action) — cada push a master dispara su propio deploy solo.
 #     Duplicarlo aquí con una acción de deploy causaría dos despliegues
 #     compitiendo por la misma build.
-#   - apps/api está desplegado en DigitalOcean App Platform, con
-#     auto-deploy nativo en cada push a master (no vía Action) — mismo
-#     motivo que apps/web, no duplicar el disparador aquí.
+#   - apps/api corría en DigitalOcean App Platform con auto-deploy nativo
+#     en cada push a master. Cutover real a Google Cloud Run (2026-09-01,
+#     us-east1, servicio structai-api) — a diferencia de DO, Cloud Run NO
+#     tiene todavía un trigger de CI/CD automático (Cloud Build desde
+#     GitHub, pendiente de armar), así que hoy el deploy de apps/api es
+#     manual (gcloud builds submit + gcloud run deploy), no dispara con
+#     este workflow ni con el push a master. DigitalOcean sigue existiendo
+#     como respaldo apagado por decisión propia (saldo vencido no pagado a
+#     propósito), sin tráfico real desde el cutover.
 #   - Migraciones de Supabase: NO se automatizan aquí (nota actualizada
 #     2026-08-20 — la nota anterior de "solo 1 migración vieja" quedó
 #     obsoleta: infra/supabase/migrations/ ya tiene las 65 migraciones
@@ -194,6 +200,7 @@ jobs:
           # con "Groq y el respaldo OpenAI no pudieron generar una
           # respuesta") el respaldo se quedaba sin credencial en CI y no
           # podía activarse -- el secret OPENAI_API_KEY ya está configurado
-          # en el repo (y en DigitalOcean para producción) desde el
-          # 2026-08-20, esta línea lo activa también aquí.
+          # en el repo desde el 2026-08-20 (y en Google Secret Manager para
+          # producción, desde el cutover a Cloud Run del 2026-09-01), esta
+          # línea lo activa también aquí.
           OPENAI_API_KEY:       ${{ secrets.OPENAI_API_KEY }}

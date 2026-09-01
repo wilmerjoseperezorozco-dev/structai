@@ -74,9 +74,25 @@ oficial.
 financiado con crédito propio del usuario). NVIDIA NIM se probó como segundo
 nivel y se retiró el 2026-08-20 por latencia inconsistente (20s–199s). Los
 tres secrets (`GROQ_API_KEY`, `OPENAI_API_KEY`, más los de Supabase) deben
-existir tanto en GitHub Actions (Settings → Secrets) como en las variables de
-entorno de DigitalOcean (producción) — son almacenes separados, confirmar en
-ambos al rotar o agregar credenciales.
+existir tanto en GitHub Actions (Settings → Secrets) como en Google Secret
+Manager (producción, proyecto `structai-507113`, región `us-east1`) — son
+almacenes separados, confirmar en ambos al rotar o agregar credenciales.
+
+## Infraestructura de producción (actualizado 2026-09-01)
+
+`apps/api` corre en **Google Cloud Run** (`structai-api`,
+`us-east1`, `structai-api-235651108862.us-east1.run.app`) — cutover real
+desde DigitalOcean el 2026-09-01, ver
+[[project_structai_gcp_cloud_run_fase1]] en la memoria privada del usuario
+para el detalle completo (bugs reales encontrados: CORS, dos umbrales de
+OOM, modelo reranker sin hornear en el Dockerfile). Supabase sigue siendo
+la base de datos y Auth, sin cambios. **DigitalOcean queda apagado por
+decisión propia del usuario** (saldo vencido no pagado a propósito, sin
+tráfico real desde el cutover) — no reactivar ni usar como referencia de
+producción. El deploy a Cloud Run es **manual** (`gcloud builds submit` +
+`gcloud run deploy`), sin trigger de CI/CD automático todavía — antes de
+afirmar en cualquier doc público que el deploy es automático, verificar
+que siga siendo cierto.
 
 ## Dónde está cada cosa
 
