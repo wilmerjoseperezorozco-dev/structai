@@ -73,7 +73,7 @@ RUN pip install --no-cache-dir -r requirements.txt \
     && if [ "$INSTALL_VISION" = "true" ]; then pip install --no-cache-dir -r requirements-vision.txt; fi \
     && if [ "$INSTALL_ESTRUCTURAL" = "true" ]; then pip install --no-cache-dir -r requirements-estructural.txt; fi
 
-# ── Hornear el modelo de embeddings en la imagen ──────────────────
+# ── Hornear los modelos de HuggingFace en la imagen ──────────────────
 # rag_multi_norma.py fuerza HF_HUB_OFFLINE=1 en tiempo de ejecución
 # (correcto: nunca debe depender de la red para responder /ask), pero
 # eso asume que el modelo YA está en caché local — un contenedor nuevo
@@ -82,7 +82,17 @@ RUN pip install --no-cache-dir -r requirements.txt \
 # primer despliegue real. Se descarga aquí, en build time (con red
 # disponible), para que quede horneado en la imagen y el contenedor en
 # producción nunca necesite salir a internet por esto.
-RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')"
+#
+# Segundo hallazgo real 2026-09-01, mismo síntoma exacto pero en el
+# reranker (RERANKER_MODEL_NAME / _reranker_model() en
+# rag_multi_norma.py): ese modelo se carga perezosamente (solo la
+# primera vez que se reordenan resultados) y nunca se horneó aquí —
+# nunca falló en DigitalOcean porque esa instancia lleva corriendo
+# tiempo sin reconstruirse desde cero y en algún momento lo descargó y
+# quedó cacheado en su disco; un contenedor realmente nuevo (Cloud Run,
+# o cualquier redeploy futuro de DigitalOcean) nunca tuvo esa
+# oportunidad. Mismo fix: hornear los dos modelos aquí.
+RUN python -c "from sentence_transformers import SentenceTransformer, CrossEncoder; SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2'); CrossEncoder('cross-encoder/mmarco-mMiniLMv2-L12-H384-v1')"
 
 # ── Variables de entorno (se pasan en runtime via --env-file) ────
 ENV PORT=8000
