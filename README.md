@@ -310,7 +310,7 @@ cd apps/api  && pip install -r requirements.txt && uvicorn main:app --reload
 
 7 motores de dominio (6 activos en producción, 1 desactivado por defecto por RAM), trazabilidad normativa completa sobre NSR-10, RAS 2000/Res. 0330, INVIAS, NTC y SGSST. Marca pública: **StructAI**.
 
-**Cobertura en vivo** (verificada ahora, no una promesa): 4.399 chunks de NSR-10 en los 11 títulos, 294 de NTC/SGSST, 4.060 de los motores de dominio, y una base de precios de 4.566 actividades / 10.281 insumos / 102 proveedores verificados (24 locales del Atlántico + 78 nacionales). Compruébalo tú mismo: [`GET /data-status`](https://structai-api-235651108862.us-east1.run.app/data-status).
+**Cobertura en vivo** (verificada ahora, no una promesa): 4.627 chunks de NSR-10 en los 11 títulos, 294 de NTC/SGSST, 4.060 de los motores de dominio, y una base de precios de 4.566 actividades / 10.281 insumos / 102 proveedores verificados (24 locales del Atlántico + 78 nacionales). Compruébalo tú mismo: [`GET /data-status`](https://structai-api-235651108862.us-east1.run.app/data-status).
 
 **Evaluación empírica del RAG**: medida con RAGAS, no solo diseñada — precisión de contexto 0.743 → 0.875 tras re-ranking combinado y descomposición de consultas, con un defecto real de fusión RRF encontrado y corregido en el camino. Detalle completo arriba, en "Evaluación empírica del RAG".
 
