@@ -537,6 +537,31 @@ CASOS_TITULO_F_F45 = [
     ),
 ]
 
+# Ampliacion 2026-09-01 -- Titulo F.4.5 CIERRE: resto de F.4.5.4.3
+# (ecuacion F.4.5.4-6), F.4.5.4.3.3, F.4.5.4.4 completo (tension y
+# desgarramiento en tornillos), F.4.5.4.5 (comportamiento combinado),
+# F.4.5.5 (ROTURA -- cortante/tension/bloque de cortante) y F.4.5.6
+# (conexiones a otros materiales). Con esto F.4.5 queda COMPLETO --
+# solo falta F.4.6 (visible en el mismo PDF, no ingestado todavia) y
+# todo F.5 (Aluminio, otro PDF).
+CASOS_TITULO_F_F45_CIERRE = [
+    pytest.param(
+        "Como se calcula la resistencia nominal al desgarramiento del tornillo Pnot en conexiones atornilladas de acero formado en frio segun el Titulo F?",
+        ["0.85", "tc", "Fu2"],
+        id="F-f45-cierre-pnot-desgarramiento-tornillo-085",
+    ),
+    pytest.param(
+        "Que ecuaciones se usan para la rotura por bloque de cortante en conexiones de lamina delgada de acero segun el Titulo F?",
+        ["4.76", "bloque de cortante"],
+        id="F-f45-cierre-bloque-cortante-476mm",
+    ),
+    pytest.param(
+        "Que requisitos aplican para las conexiones de acero formado en frio con componentes estructurales de otros materiales segun el Titulo F?",
+        ["apoyo", "cortante", "otros materiales"],
+        id="F-f45-cierre-conexiones-otros-materiales",
+    ),
+]
+
 
 @pytest.mark.parametrize(
     "pregunta,variantes_esperadas",
@@ -560,7 +585,8 @@ CASOS_TITULO_F_F45 = [
     + CASOS_TITULO_F_F42
     + CASOS_TITULO_F_F43
     + CASOS_TITULO_F_F44
-    + CASOS_TITULO_F_F45,
+    + CASOS_TITULO_F_F45
+    + CASOS_TITULO_F_F45_CIERRE,
 )
 def test_respuesta_contiene_hecho_verificado(pregunta: str, variantes_esperadas: list[str]) -> None:
     # top_k=4 (hardcodeado aquí desde antes) quedó por debajo incluso del

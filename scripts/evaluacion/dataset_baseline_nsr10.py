@@ -401,4 +401,19 @@ CASOS_BASELINE = [
         "ground_truth": "La distancia mínima entre centros de perforaciones no debe ser menor a 3 veces el diámetro nominal del perno, d.",
         "id": "F-f45-pernos-distancia-minima-3d",
     },
+    {
+        "pregunta": "Como se calcula la resistencia nominal al desgarramiento del tornillo Pnot en conexiones atornilladas de acero formado en frio segun el Titulo F?",
+        "ground_truth": "Pnot = 0.85·tc·d·Fu2, donde tc es el menor valor entre la profundidad de penetración y el espesor t2, d es el diámetro nominal del tornillo y Fu2 es la resistencia última del miembro que no está en contacto con la cabeza del tornillo o la arandela.",
+        "id": "F-f45-cierre-pnot-desgarramiento-tornillo-085",
+    },
+    {
+        "pregunta": "Que ecuaciones se usan para la rotura por bloque de cortante en conexiones de lamina delgada de acero segun el Titulo F?",
+        "ground_truth": "Rn se determina como el menor valor entre Rn = 0.6·Fy·Agv + Fu·Ant (F.4.5.5-3) y Rn = 0.6·Fu·Anv + Fu·Ant (F.4.5.5-4), aplicable cuando el espesor de la parte conectada más delgada es menor a 4.76 mm (φ=0.65 para conexiones pernadas, φ=0.60 para soldadas).",
+        "id": "F-f45-cierre-bloque-cortante-476mm",
+    },
+    {
+        "pregunta": "Que requisitos aplican para las conexiones de acero formado en frio con componentes estructurales de otros materiales segun el Titulo F?",
+        "ground_truth": "Deben proveerse mecanismos de transferencia de cargas de apoyo (F.4.5.6.1), considerar el cortante de arrancamiento y desgarramiento del sujetador por tensión con resistencia de anclaje determinada por normas del producto o ensayo (F.4.5.6.2), y proveerse mecanismos de transferencia de fuerzas cortantes sin exceder los valores permitidos por el Reglamento (F.4.5.6.3).",
+        "id": "F-f45-cierre-conexiones-otros-materiales",
+    },
 ]
