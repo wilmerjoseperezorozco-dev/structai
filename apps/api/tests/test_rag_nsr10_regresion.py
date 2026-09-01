@@ -519,6 +519,24 @@ CASOS_TITULO_F_F44 = [
     ),
 ]
 
+# Ampliacion 2026-09-01 -- Titulo F.4.5 (Conexiones y Uniones) PARCIAL:
+# F.4.5.1 generalidades + F.4.5.2 conexiones soldadas completo + F.4.5.3
+# conexiones pernadas completo + F.4.5.4 atornilladas hasta cortante
+# (sin tension). Falta el resto de F.4.5.4, F.4.5.5, F.4.5.6 y todo F.5
+# -- pendiente para otra sesion.
+CASOS_TITULO_F_F45 = [
+    pytest.param(
+        "Cual es el diametro efectivo minimo de fusion permitido para una soldadura de tapon en conexiones de acero formado en frio segun el Titulo F?",
+        ["9.5", "9,5"],
+        id="F-f45-tapon-diametro-efectivo-minimo-95mm",
+    ),
+    pytest.param(
+        "Cual es la distancia minima entre centros de perforaciones para pernos en conexiones de acero formado en frio segun el Titulo F?",
+        ["3d", "3 veces", "tres veces"],
+        id="F-f45-pernos-distancia-minima-3d",
+    ),
+]
+
 
 @pytest.mark.parametrize(
     "pregunta,variantes_esperadas",
@@ -541,7 +559,8 @@ CASOS_TITULO_F_F44 = [
     + CASOS_TITULO_F_F41
     + CASOS_TITULO_F_F42
     + CASOS_TITULO_F_F43
-    + CASOS_TITULO_F_F44,
+    + CASOS_TITULO_F_F44
+    + CASOS_TITULO_F_F45,
 )
 def test_respuesta_contiene_hecho_verificado(pregunta: str, variantes_esperadas: list[str]) -> None:
     # top_k=4 (hardcodeado aquí desde antes) quedó por debajo incluso del

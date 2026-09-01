@@ -391,4 +391,14 @@ CASOS_BASELINE = [
         "ground_truth": "Pbr,1 = 0.01·Pn, es decir, el 1% de la resistencia nominal bajo compresión axial del miembro.",
         "id": "F-f44-pbr1-riostra-compresion-001pn",
     },
+    {
+        "pregunta": "Cual es el diametro efectivo minimo de fusion permitido para una soldadura de tapon en conexiones de acero formado en frio segun el Titulo F?",
+        "ground_truth": "Las soldaduras de tapón deben especificarse con un diámetro efectivo de área de fusión mínimo que no puede ser menor a 9.5 mm.",
+        "id": "F-f45-tapon-diametro-efectivo-minimo-95mm",
+    },
+    {
+        "pregunta": "Cual es la distancia minima entre centros de perforaciones para pernos en conexiones de acero formado en frio segun el Titulo F?",
+        "ground_truth": "La distancia mínima entre centros de perforaciones no debe ser menor a 3 veces el diámetro nominal del perno, d.",
+        "id": "F-f45-pernos-distancia-minima-3d",
+    },
 ]
