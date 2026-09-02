@@ -114,6 +114,14 @@ que siga siendo cierto.
   cubre qué Título/página de la NSR-10 (87 PDFs) + estado real de ingesta
   verbatim por título. Consultar ANTES de descargar un PDF de Drive para
   una ingesta nueva, y actualizar en el mismo commit que cierre un título.
+- `docs/CATALOGO_DATOS.md` — significado columna por columna de las 4
+  tablas del corpus RAG (`nsr10_chunks`/`ntc_chunks`/`motor_chunks`/
+  `normas_registro`) y la convención real de `id` de `nsr10_chunks`
+  (patrón, sufijos de re-troceo, prefijos especiales) — complementa
+  `infra/supabase/SCHEMA.md`, que cubre el resto del schema. Leer ANTES
+  de escribir un script de ingesta nuevo o de agrupar/filtrar por
+  título en SQL (la columna `capitulo` está confirmada inconsistente,
+  no usarla para eso).
 - `docs/comparacion.md` — comparación pública StructAI vs. IA genérica.
 - `.github/workflows/ci.yml` — lint+build web, tests de los 7 motores, tests
   de integración de `apps/api` (usa Groq/OpenAI reales, no mocks).

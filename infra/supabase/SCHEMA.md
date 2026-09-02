@@ -14,6 +14,11 @@ migraciones versionadas).
 actualizan a mano en cada sesión). Para el estado real y en vivo, usar el
 endpoint público `GET /data-status` de `apps/api` en vez de este documento.
 
+Para el significado columna por columna de las 4 tablas del corpus RAG
+(`nsr10_chunks`/`ntc_chunks`/`motor_chunks`/`normas_registro`) y la
+convención real de `id` de `nsr10_chunks`, ver `docs/CATALOGO_DATOS.md`
+— este documento cubre tablas/RLS/RPC, ese otro cubre columnas/ids.
+
 ## Tablas principales
 
 ### Corpus RAG (normativa, público de solo lectura)
