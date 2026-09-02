@@ -37,7 +37,15 @@ on:
     branches: [master]
 
 env:
-  NODE_VERSION: 20
+  # 22, no 20: @supabase/* (auth-js/functions-js/postgrest-js/realtime-js/
+  # storage-js/supabase-js, todos 2.110.5) ya requieren Node >=22 (EBADENGINE
+  # confirmado en los logs reales de CI, 2026-09-02) -- Node 20 seguía
+  # "funcionando" con warnings, pero es la causa real (junto al reranker de
+  # abajo) de que "Lint & Type Check (web)" llevara días fallando: el npm
+  # que trae Node 20 valida el lockfile distinto al npm 11.x usado
+  # localmente para generarlo/actualizarlo, y `npm ci` (estricto) rechazaba
+  # entradas de rollup que sí estaban resueltas correctamente.
+  NODE_VERSION: 22
   PYTHON_VERSION: '3.12'
 
 jobs:
@@ -171,20 +179,26 @@ jobs:
         run: pip install -r requirements.txt
       # rag_multi_norma.py fuerza HF_HUB_OFFLINE=1 al importarse (correcto:
       # /ask y /consultar nunca deben depender de la red en producción — el
-      # Dockerfile ya hornea el modelo en la imagen por el mismo motivo, ver
-      # apps/api/Dockerfile). Un runner de CI nuevo nunca lo descargó, así
-      # que cada test que importa rag_multi_norma fallaba con
+      # Dockerfile ya hornea AMBOS modelos en la imagen por el mismo motivo,
+      # ver apps/api/Dockerfile). Un runner de CI nuevo nunca los descargó,
+      # así que cada test que importa rag_multi_norma fallaba con
       # LocalEntryNotFoundError -- causa real de que CI llevara varios días
-      # en rojo (encontrado 2026-08-09, confirmado en los logs reales de la
-      # corrida fallida). Se cachea entre corridas para que esto solo pese
-      # la primera vez.
-      - name: Cachear modelo de embeddings (HF)
+      # en rojo (embeddings: encontrado 2026-08-09; reranker: encontrado
+      # 2026-09-02, mismo bug de fondo que ya se había parchado en el
+      # Dockerfile de Cloud Run el 2026-09-01 -- commit 407a347 -- pero
+      # nunca se replicó aquí porque el reranker se agregó DESPUÉS del
+      # primer fix de este workflow, el 2026-08-27, y nadie volvió a
+      # revisar este paso). Se cachea entre corridas para que esto solo
+      # pese la primera vez.
+      - name: Cachear modelos (HF — embeddings + reranker)
         uses: actions/cache@v4
         with:
           path: ~/.cache/huggingface
-          key: hf-paraphrase-multilingual-MiniLM-L12-v2
-      - name: Descargar modelo de embeddings (si no está en caché)
-        run: python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')"
+          key: hf-embeddings-minilm-l12-v2_reranker-mmarco-mminilmv2-l12-h384-v1
+      - name: Descargar modelos (si no están en caché)
+        run: |
+          python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')"
+          python -c "from sentence_transformers import CrossEncoder; CrossEncoder('cross-encoder/mmarco-mMiniLMv2-L12-H384-v1')"
       - name: Correr pytest
         working-directory: apps/api
         run: pytest -v
