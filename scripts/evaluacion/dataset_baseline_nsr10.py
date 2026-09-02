@@ -511,4 +511,19 @@ CASOS_BASELINE = [
         "ground_truth": "β0 = 7ε, según la Tabla F.5.4.3-1 (elementos internos no soldados: β0 = 22ε).",
         "id": "F-f543-beta0-elementos-salientes-no-soldados",
     },
+    {
+        "pregunta": "Segun la Tabla F.5.4.4-1 de coeficiente de ablandamiento kz de la NSR-10 Titulo F.5, cual es el valor de kz para la aleacion 6061 tratada en caliente T6 en extrusion o tuberia extruida?",
+        "ground_truth": "kz = 0.50, tanto para extrusión (E) como para tubería extruída (DT), según la Tabla F.5.4.4-1.",
+        "id": "F-f544-kz-6061-t6",
+    },
+    {
+        "pregunta": "Cual es el tiempo de recuperacion en dias para aleaciones de aluminio de la serie 7000 despues de soldar antes de aplicar el coeficiente kz segun el Titulo F.5?",
+        "ground_truth": "30 días, siempre que el material se mantenga a una temperatura no menor de 15°C (F.5.4.4.2(c); la serie 6*** requiere solo 3 días).",
+        "id": "F-f544-tiempo-recuperacion-serie-7000",
+    },
+    {
+        "pregunta": "En estructuras de aluminio del Titulo F.5, cual es el valor de eta cuando una union tiene un solo camino de calor valido y el espesor tc es menor o igual a 25mm?",
+        "ground_truth": "η = 1.50 (para tc > 25mm, η = 1.33), según F.5.4.4.3(e)(2).",
+        "id": "F-f544-eta-un-camino-calor-tc25",
+    },
 ]

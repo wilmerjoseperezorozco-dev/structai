@@ -780,6 +780,34 @@ CASOS_TITULO_F_F54_1_2_3 = [
     ),
 ]
 
+# F.5.4.4 (Ablandamiento en la Zona Afectada por el Calor Adyacente a la
+# Soldadura) -- ver _ingest_titulo_f_f544_verbatim.py. Nota de fraseo real:
+# la pregunta de kz para 6061-T6 falla con fraseo genérico ("cual es el
+# coeficiente kz... para 6061-T6") pese a que el chunk correcto (con TODA
+# la Tabla F.5.4.4-1, incluyendo 6061) retrieva top-1 -- el LLM alucina
+# que la tabla "solo menciona 1200/3103/3105" cuando 6061 SÍ está en el
+# mismo chunk. Solo pasa nombrando explícitamente la tabla + la condición
+# exacta (extrusión/tubería extruída) en la pregunta. Mismo patrón de
+# falla de generación sobre contenido tipo lista densa ya visto en F.5.2
+# (tabla) y F.5.4.3 (definición) -- no es un caso aislado.
+CASOS_TITULO_F_F544 = [
+    pytest.param(
+        "Segun la Tabla F.5.4.4-1 de coeficiente de ablandamiento kz de la NSR-10 Titulo F.5, cual es el valor de kz para la aleacion 6061 tratada en caliente T6 en extrusion o tuberia extruida?",
+        ["0.50", "0,50"],
+        id="F-f544-kz-6061-t6",
+    ),
+    pytest.param(
+        "Cual es el tiempo de recuperacion en dias para aleaciones de aluminio de la serie 7000 despues de soldar antes de aplicar el coeficiente kz segun el Titulo F.5?",
+        ["30 días", "30 dias", "30días", "30dias"],
+        id="F-f544-tiempo-recuperacion-serie-7000",
+    ),
+    pytest.param(
+        "En estructuras de aluminio del Titulo F.5, cual es el valor de eta cuando una union tiene un solo camino de calor valido y el espesor tc es menor o igual a 25mm?",
+        ["1.50", "1,50", "1.5", "1,5"],
+        id="F-f544-eta-un-camino-calor-tc25",
+    ),
+]
+
 
 @pytest.mark.parametrize(
     "pregunta,variantes_esperadas",
@@ -811,7 +839,8 @@ CASOS_TITULO_F_F54_1_2_3 = [
     + CASOS_TITULO_F_F51
     + CASOS_TITULO_F_F52
     + CASOS_TITULO_F_F53
-    + CASOS_TITULO_F_F54_1_2_3,
+    + CASOS_TITULO_F_F54_1_2_3
+    + CASOS_TITULO_F_F544,
 )
 def test_respuesta_contiene_hecho_verificado(pregunta: str, variantes_esperadas: list[str]) -> None:
     # top_k=4 (hardcodeado aquí desde antes) quedó por debajo incluso del
