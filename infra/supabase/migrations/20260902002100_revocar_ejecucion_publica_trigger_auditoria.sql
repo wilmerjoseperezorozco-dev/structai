@@ -1,0 +1,15 @@
+-- Hallazgo real del advisor de seguridad de Supabase (2026-09-02),
+-- inmediatamente despues de crear el trigger de auditoria en
+-- 20260902001834_auditoria_cambios_plan_role_profiles.sql: la funcion
+-- SECURITY DEFINER log_profile_plan_role_change() quedaba ejecutable
+-- directamente via /rest/v1/rpc/log_profile_plan_role_change por los
+-- roles anon Y authenticated -- Postgres expone toda funcion nueva del
+-- schema public a PostgREST por defecto, no es especifico de triggers.
+-- No hace falta que sea publica: solo el propio mecanismo de trigger de
+-- Postgres necesita invocarla, eso no depende de un GRANT EXECUTE.
+--
+-- Verificado tras aplicar: el trigger sigue disparando normalmente
+-- (UPDATE de prueba real en profiles.plan sigue generando filas en
+-- profiles_audit_log) y el advisor de seguridad queda limpio de estas
+-- dos alertas.
+revoke execute on function public.log_profile_plan_role_change() from public, anon, authenticated;

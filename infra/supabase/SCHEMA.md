@@ -59,6 +59,7 @@ convención real de `id` de `nsr10_chunks`, ver `docs/CATALOGO_DATOS.md`
 | Tabla | Filas | Propósito |
 |---|---:|---|
 | `noticias_relevantes` | 988 | Titular+resumen+link de noticias (sismos/normativa) vía Google News RSS — nunca el artículo completo |
+| `profiles_audit_log` | — (nueva, 2026-09-02) | Auditoría real de cambios a `profiles.plan`/`profiles.role`, capturada por trigger a nivel de Postgres (`log_profile_plan_role_change()`, `AFTER UPDATE` en `profiles`) — funciona sin importar si el cambio vino de la API, el panel de Supabase, o SQL directo. `changed_by` (`auth.uid()`) queda `NULL` cuando el cambio se hizo sin contexto de sesión autenticada (service_role/SQL Editor) — limitación real, documentada. Solo lectura para `role='admin'` vía RLS; sin política de escritura para `authenticated`/`anon` (solo el trigger, `SECURITY DEFINER`, con `EXECUTE` revocado explícitamente de `public`/`anon`/`authenticated` tras un hallazgo real del advisor de seguridad de Supabase que lo dejaba invocable directo vía RPC). |
 
 ## Índices de búsqueda
 
@@ -88,6 +89,7 @@ exactos que similitud semántica.
 | `save_apu_calculation(...)`, `save_consulta(...)`, `save_plan_analysis(...)` | Persistencia de historial por usuario |
 | `handle_new_user()` | Trigger: crea fila en `profiles` al registrarse un usuario nuevo |
 | `set_updated_at()` | Trigger genérico de `updated_at` |
+| `log_profile_plan_role_change()` | Trigger (`AFTER UPDATE` en `profiles`, `SECURITY DEFINER`, `EXECUTE` revocado de roles públicos): registra en `profiles_audit_log` cualquier cambio real a `plan`/`role`, agregado 2026-09-02 |
 
 ## Row Level Security
 
