@@ -446,4 +446,19 @@ CASOS_BASELINE = [
         "ground_truth": "Hasta que el concreto alcance el 75% de su resistencia especificada a compresión y durante un mínimo de 7 días (F.4.7.6.1).",
         "id": "F-f47-apuntalamiento-75pct-7dias",
     },
+    {
+        "pregunta": "Cual es el rango de espesor minimo del acero permitido para entramados de acero formado en frio segun el Titulo F?",
+        "ground_truth": "Entre 0.46 mm y 3.00 mm, según la sección F.4.8.1.",
+        "id": "F-f48-espesor-046-300mm",
+    },
+    {
+        "pregunta": "Cual es el espaciamiento minimo centro a centro requerido entre perforaciones de un miembro de entramado de acero formado en frio segun el Titulo F?",
+        "ground_truth": "No menor a 600 mm, salvo que el fabricante especifique otras condiciones distintas (F.4.8.3.5).",
+        "id": "F-f48-perforaciones-espaciamiento-600mm",
+    },
+    {
+        "pregunta": "Cual es la carga nominal axial maxima por paral cuando se usa tablero de yeso de 12.7mm con tornillo No 6 segun el Titulo F?",
+        "ground_truth": "25.8 kN, según la Tabla F.4.8.4-1.",
+        "id": "F-f48-carga-axial-tablero-yeso-258kn",
+    },
 ]

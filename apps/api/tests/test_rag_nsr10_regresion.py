@@ -629,6 +629,39 @@ CASOS_TITULO_F_F47 = [
     ),
 ]
 
+# Ampliacion 2026-09-01 -- Titulo F.4.8 (ESPECIFICACIONES PARA
+# CONSTRUCCION DE ENTRAMADOS DE ACERO FORMADO EN FRIO, SISTEMAS DE
+# CONSTRUCCION EN SECO Y ENTRAMADOS DE CERCHAS) COMPLETO -- la pieza
+# mas grande de F.4 hasta ahora (27 paginas, ~23 ecuaciones, 10+
+# tablas): F.4.8.1 generalidades, F.4.8.2 materiales (Tablas
+# F.4.8.2-1/-2), F.4.8.3 productos (designacion, geometria estandar
+# con Tablas F.4.8.3-1 a -10 por tipo P/G/U/O/L, perforaciones,
+# marcacion, tolerancias), F.4.8.4 diseno (propiedades de seccion,
+# diseno de parales de muro con ecuaciones F.4.8.4-1 a -4, diseno de
+# cerchas con miembros cordones/alma + cartelas + conexiones por
+# recorte con ecuaciones F.4.8.4-5 a -12, dinteles tipo espalda con
+# espalda/cajon/L con ecuaciones F.4.8.4-13 a -23), F.4.8.5 estado de
+# servicio. Con esto F.4.8 queda COMPLETO -- y con esto TODO F.4
+# (F.4.1 a F.4.8) queda completo. Falta F.5 (Aluminio, PDF distinto)
+# para cerrar el Titulo F entero.
+CASOS_TITULO_F_F48 = [
+    pytest.param(
+        "Cual es el rango de espesor minimo del acero permitido para entramados de acero formado en frio segun el Titulo F?",
+        ["0.46", "3.00", "3,00"],
+        id="F-f48-espesor-046-300mm",
+    ),
+    pytest.param(
+        "Cual es el espaciamiento minimo centro a centro requerido entre perforaciones de un miembro de entramado de acero formado en frio segun el Titulo F?",
+        ["600"],
+        id="F-f48-perforaciones-espaciamiento-600mm",
+    ),
+    pytest.param(
+        "Cual es la carga nominal axial maxima por paral cuando se usa tablero de yeso de 12.7mm con tornillo No 6 segun el Titulo F?",
+        ["25.8", "25,8"],
+        id="F-f48-carga-axial-tablero-yeso-258kn",
+    ),
+]
+
 
 @pytest.mark.parametrize(
     "pregunta,variantes_esperadas",
@@ -655,7 +688,8 @@ CASOS_TITULO_F_F47 = [
     + CASOS_TITULO_F_F45
     + CASOS_TITULO_F_F45_CIERRE
     + CASOS_TITULO_F_F46
-    + CASOS_TITULO_F_F47,
+    + CASOS_TITULO_F_F47
+    + CASOS_TITULO_F_F48,
 )
 def test_respuesta_contiene_hecho_verificado(pregunta: str, variantes_esperadas: list[str]) -> None:
     # top_k=4 (hardcodeado aquí desde antes) quedó por debajo incluso del
