@@ -694,6 +694,38 @@ CASOS_TITULO_F_F51 = [
     # entrada, no es una regresion nueva.
 ]
 
+# Ampliacion 2026-09-01 -- Titulo F.5.2 (ESTRUCTURAS DE ALUMINIO --
+# PROPIEDADES Y SELECCION DE MATERIALES) COMPLETO, 15 paginas: F.5.2.1
+# denominacion, F.5.2.2 materiales permitidos (aleaciones tratadas y
+# no tratadas en caliente, Tablas F.5.2.2-1 a -4 con propiedades
+# mecanicas/pernos/metales de aporte), F.5.2.3 propiedades de
+# resistencia/mecanicas/fisicas (Tabla F.5.2.3-1), F.5.2.4 durabilidad
+# y proteccion contra la corrosion (Tabla F.5.2.4-1 proteccion por
+# ambiente, Tabla F.5.2.4-2 contactos metal-metal, contacto con
+# concreto/madera/suelos/agua/quimicos/aislantes), F.5.2.5 fabricacion
+# y construccion, F.5.2.6 seleccion de materiales, F.5.2.7
+# disponibilidad (Tablas F.5.2.7-1 a -3). Tercera pieza de F.5.
+CASOS_TITULO_F_F52 = [
+    pytest.param(
+        "Cual es el esfuerzo minimo de prueba del 0.2 por ciento en kgf por milimetro cuadrado para la aleacion de aluminio 6082 en condicion T6 extrusiones hasta 20mm segun el Titulo F?",
+        ["25.5", "25,5"],
+        id="F-f52-6082-t6-esfuerzo-255kgf",
+    ),
+    pytest.param(
+        "Que nivel de proteccion contra la corrosion requiere el aluminio de durabilidad A sumergido en agua salada segun el Titulo F?",
+        ["requiere protecci", "se requiere protecci"],
+        id="F-f52-durabilidad-a-agua-salada-proteccion",
+    ),
+    # Nota real 2026-09-01: pregunta sobre la Tabla F.5.2.2-4 (metales
+    # de aporte para soldadura TIG/MIG) NO se agrega -- el chunk
+    # correcto retrieva top-1 (verificado con search()), pero en
+    # ask() la generacion no aprovecha el contenido de la tabla y
+    # responde "consulta la tabla directamente" en vez de citar los
+    # grupos Tipo 1/3/4/5. Limitacion de generacion sobre contenido
+    # tabular denso, no de retrieval -- no se fuerza un test que
+    # fallaria de entrada.
+]
+
 
 @pytest.mark.parametrize(
     "pregunta,variantes_esperadas",
@@ -722,7 +754,8 @@ CASOS_TITULO_F_F51 = [
     + CASOS_TITULO_F_F46
     + CASOS_TITULO_F_F47
     + CASOS_TITULO_F_F48
-    + CASOS_TITULO_F_F51,
+    + CASOS_TITULO_F_F51
+    + CASOS_TITULO_F_F52,
 )
 def test_respuesta_contiene_hecho_verificado(pregunta: str, variantes_esperadas: list[str]) -> None:
     # top_k=4 (hardcodeado aquí desde antes) quedó por debajo incluso del

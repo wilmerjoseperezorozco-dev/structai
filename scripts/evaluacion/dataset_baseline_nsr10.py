@@ -471,4 +471,14 @@ CASOS_BASELINE = [
         "ground_truth": "Estructuras aporticadas, en celosía y de lámina rigidizada, con elementos extruídos o laminados, para aplicaciones como puentes, edificios, torres, vehículos de carretera y sobre rieles, naves marinas, grúas y estructuras sobre cubierta ubicadas mar adentro (F.5.1.1).",
         "id": "F-f51-alcance-tipos-estructuras",
     },
+    {
+        "pregunta": "Cual es el esfuerzo minimo de prueba del 0.2 por ciento en kgf por milimetro cuadrado para la aleacion de aluminio 6082 en condicion T6 extrusiones hasta 20mm segun el Titulo F?",
+        "ground_truth": "25.5 kgf/mm², según la Tabla F.5.2.2-1.",
+        "id": "F-f52-6082-t6-esfuerzo-255kgf",
+    },
+    {
+        "pregunta": "Que nivel de proteccion contra la corrosion requiere el aluminio de durabilidad A sumergido en agua salada segun el Titulo F?",
+        "ground_truth": "Requiere protección (P), según la Tabla F.5.2.4-1 — a diferencia de agua dulce, donde no se requiere protección para durabilidad A.",
+        "id": "F-f52-durabilidad-a-agua-salada-proteccion",
+    },
 ]
