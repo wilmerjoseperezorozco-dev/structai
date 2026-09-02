@@ -481,4 +481,19 @@ CASOS_BASELINE = [
         "ground_truth": "Requiere protección (P), según la Tabla F.5.2.4-1 — a diferencia de agua dulce, donde no se requiere protección para durabilidad A.",
         "id": "F-f52-durabilidad-a-agua-salada-proteccion",
     },
+    {
+        "pregunta": "Cual es la deflexion limite recomendada para voladizos que soportan pisos en estructuras de aluminio segun el Titulo F?",
+        "ground_truth": "L/180, según la Tabla F.5.3.4-1.",
+        "id": "F-f53-deflexion-voladizo-L180",
+    },
+    {
+        "pregunta": "Cual es el coeficiente de reduccion de capacidad phi para uniones soldadas en estructuras de aluminio segun el Titulo F?",
+        "ground_truth": "0.80, según la Tabla F.5.3.3-1 (debe usarse 0.70 en procedimientos que no cumplan las especificaciones de aprobación de soldadura TIG/MIG como la BS4870 Parte 2).",
+        "id": "F-f53-phi-union-soldada",
+    },
+    {
+        "pregunta": "En el diseno de estructuras de aluminio del Titulo F, cuando se revisa fatiga se deben considerar colapso total y crecimiento estable de grietas, cual es la tolerancia de dano?",
+        "ground_truth": "El crecimiento estable de grietas se determina monitoreando la tasa de crecimiento de las grietas de fatiga en inspecciones regulares, acordando con el cliente los métodos de inspección, longitudes límite y tasas admisibles de crecimiento (F.5.3.6.3).",
+        "id": "F-f53-fatiga-crecimiento-grietas",
+    },
 ]

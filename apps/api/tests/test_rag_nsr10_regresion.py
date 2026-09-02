@@ -726,6 +726,33 @@ CASOS_TITULO_F_F52 = [
     # fallaria de entrada.
 ]
 
+# Ampliacion 2026-09-01 -- Titulo F.5.3 (ESTRUCTURAS DE ALUMINIO --
+# PRINCIPIOS DE DISENO) COMPLETO, seccion manejable de 4 paginas
+# (F-458 a F-461): F.5.3.1 diseno para estados limite, F.5.3.2 cargas,
+# F.5.3.3 resistencia estatica (ecuacion phi*Rn>=Sum(gamma*Q), Tabla
+# F.5.3.3-1 coeficientes de reduccion), F.5.3.4 deformacion (Tabla
+# F.5.3.4-1 deflexiones limite, deformacion inelastica, distorsion),
+# F.5.3.5 durabilidad, F.5.3.6 fatiga (generalidades, colapso total
+# con coeficiente gamma_L, crecimiento estable de grietas), F.5.3.7
+# vibracion, F.5.3.8 ensayos. Quinta pieza de F.5.
+CASOS_TITULO_F_F53 = [
+    pytest.param(
+        "Cual es la deflexion limite recomendada para voladizos que soportan pisos en estructuras de aluminio segun el Titulo F?",
+        ["L/180"],
+        id="F-f53-deflexion-voladizo-L180",
+    ),
+    pytest.param(
+        "Cual es el coeficiente de reduccion de capacidad phi para uniones soldadas en estructuras de aluminio segun el Titulo F?",
+        ["0.80", "0,80", "0.70", "0,70"],
+        id="F-f53-phi-union-soldada",
+    ),
+    pytest.param(
+        "En el diseno de estructuras de aluminio del Titulo F, cuando se revisa fatiga se deben considerar colapso total y crecimiento estable de grietas, cual es la tolerancia de dano?",
+        ["grietas"],
+        id="F-f53-fatiga-crecimiento-grietas",
+    ),
+]
+
 
 @pytest.mark.parametrize(
     "pregunta,variantes_esperadas",
@@ -755,7 +782,8 @@ CASOS_TITULO_F_F52 = [
     + CASOS_TITULO_F_F47
     + CASOS_TITULO_F_F48
     + CASOS_TITULO_F_F51
-    + CASOS_TITULO_F_F52,
+    + CASOS_TITULO_F_F52
+    + CASOS_TITULO_F_F53,
 )
 def test_respuesta_contiene_hecho_verificado(pregunta: str, variantes_esperadas: list[str]) -> None:
     # top_k=4 (hardcodeado aquí desde antes) quedó por debajo incluso del
