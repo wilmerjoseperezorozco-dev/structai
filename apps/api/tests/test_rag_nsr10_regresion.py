@@ -662,6 +662,38 @@ CASOS_TITULO_F_F48 = [
     ),
 ]
 
+# Ampliacion 2026-09-01 -- Titulo F.5.1 (ESTRUCTURAS DE ALUMINIO --
+# GENERALIDADES) COMPLETO: F.5.1.1 alcance (incluye el hallazgo real
+# de que F.5 usa un sistema de unidades distinto -- kgf/kgf.mm^2, no
+# SI), F.5.1.2 definiciones (~30 terminos), F.5.1.3 simbolos
+# principales (glosario extenso). Primera pieza de F.5, la ultima
+# seccion del Titulo F -- con F.4 ya completo, cerrar F.5 completa el
+# Titulo F entero. F.5 es MUY grande: sigue denso (F.5.2 materiales,
+# F.5.3, F.5.4 diseno de miembros) hasta la ultima pagina del PDF
+# actual y continua en el siguiente PDF de Drive (F.5.5-F.5.8 +
+# apendices, cierra el Titulo F) -- no descargado todavia.
+CASOS_TITULO_F_F51 = [
+    pytest.param(
+        "En el capitulo F.5 de estructuras de aluminio del Titulo F, en que sistema de unidades estan expresadas las fuerzas y los esfuerzos?",
+        ["kgf"],
+        id="F-f51-sistema-unidades-kgf",
+    ),
+    pytest.param(
+        "Que tipos de estructuras cubren los requisitos de diseno del capitulo de estructuras de aluminio de la NSR-10?",
+        ["puentes", "edificios"],
+        id="F-f51-alcance-tipos-estructuras",
+    ),
+    # Nota real 2026-09-01: preguntas sobre el glosario de definiciones
+    # F.5.1.2 (fatiga, pandeo torsional lateral, estados limite
+    # ultimos) NO pasan el pipeline completo -- el hecho SI existe
+    # verbatim (verificado con SQL directo) pero pierde el ranking de
+    # retrieval frente a contenido de F.1/F.2/F.3 (terminologia
+    # estructural generica, mucho mas grande en el corpus). Misma
+    # limitacion ya documentada para el glosario de F.4.1.1 -- issues
+    # #31/#32. No se agrega como caso de prueba porque fallaria de
+    # entrada, no es una regresion nueva.
+]
+
 
 @pytest.mark.parametrize(
     "pregunta,variantes_esperadas",
@@ -689,7 +721,8 @@ CASOS_TITULO_F_F48 = [
     + CASOS_TITULO_F_F45_CIERRE
     + CASOS_TITULO_F_F46
     + CASOS_TITULO_F_F47
-    + CASOS_TITULO_F_F48,
+    + CASOS_TITULO_F_F48
+    + CASOS_TITULO_F_F51,
 )
 def test_respuesta_contiene_hecho_verificado(pregunta: str, variantes_esperadas: list[str]) -> None:
     # top_k=4 (hardcodeado aquí desde antes) quedó por debajo incluso del

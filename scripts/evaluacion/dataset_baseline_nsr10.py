@@ -461,4 +461,14 @@ CASOS_BASELINE = [
         "ground_truth": "25.8 kN, según la Tabla F.4.8.4-1.",
         "id": "F-f48-carga-axial-tablero-yeso-258kn",
     },
+    {
+        "pregunta": "En el capitulo F.5 de estructuras de aluminio del Titulo F, en que sistema de unidades estan expresadas las fuerzas y los esfuerzos?",
+        "ground_truth": "En kgf (fuerzas) y kgf/mm² (esfuerzos) — no en el sistema internacional SI —, según la sección F.5.1.1.",
+        "id": "F-f51-sistema-unidades-kgf",
+    },
+    {
+        "pregunta": "Que tipos de estructuras cubren los requisitos de diseno del capitulo de estructuras de aluminio de la NSR-10?",
+        "ground_truth": "Estructuras aporticadas, en celosía y de lámina rigidizada, con elementos extruídos o laminados, para aplicaciones como puentes, edificios, torres, vehículos de carretera y sobre rieles, naves marinas, grúas y estructuras sobre cubierta ubicadas mar adentro (F.5.1.1).",
+        "id": "F-f51-alcance-tipos-estructuras",
+    },
 ]
