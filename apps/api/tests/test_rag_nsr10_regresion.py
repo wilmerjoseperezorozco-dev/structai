@@ -753,6 +753,33 @@ CASOS_TITULO_F_F53 = [
     ),
 ]
 
+# F.5.4.1-F.5.4.3 (Diseño Estático de Miembros: Generalidades, Esfuerzos
+# Límites, Clasificación de la Sección y Pandeo Local) -- ver
+# _ingest_titulo_f_f54_1_2_3_verbatim.py. Nota de fraseo real: la pregunta
+# de "totalmente compacta" NO pasa con frases como "según el Título F.5,
+# cuándo se clasifica..." pese a que el chunk correcto retrieva top-1
+# (confirmado con _rerank_chunks directo) -- es una falla de generación,
+# no de retrieval, reproducible incluso reintentando. Solo pasa con
+# fraseo que pide explicar el SIGNIFICADO de "pandeo local puede
+# ignorarse" en vez de pedir la definición de la clasificación en sí.
+CASOS_TITULO_F_F54_1_2_3 = [
+    pytest.param(
+        "Cual es el esfuerzo limite po para aluminio 6061-T6 en extrusion segun la NSR-10 Titulo F.5.4?",
+        ["24 kgf/mm", "24kgf/mm", "24 kg/mm"],
+        id="F-f541-2-esfuerzo-limite-po-6061-t6",
+    ),
+    pytest.param(
+        "En estructuras de aluminio del Titulo F.5 de la NSR-10, que significa que en una seccion clasificada como totalmente compacta el pandeo local puede ignorarse?",
+        ["pandeo local"],
+        id="F-f543-totalmente-compacta-pandeo-local",
+    ),
+    pytest.param(
+        "Cual es el valor limite de beta0 para elementos salientes de aluminio no soldados segun la tabla de valores limite de beta de la NSR-10 Titulo F.5?",
+        ["7ε", "7 ε", "7e", "= 7"],
+        id="F-f543-beta0-elementos-salientes-no-soldados",
+    ),
+]
+
 
 @pytest.mark.parametrize(
     "pregunta,variantes_esperadas",
@@ -783,7 +810,8 @@ CASOS_TITULO_F_F53 = [
     + CASOS_TITULO_F_F48
     + CASOS_TITULO_F_F51
     + CASOS_TITULO_F_F52
-    + CASOS_TITULO_F_F53,
+    + CASOS_TITULO_F_F53
+    + CASOS_TITULO_F_F54_1_2_3,
 )
 def test_respuesta_contiene_hecho_verificado(pregunta: str, variantes_esperadas: list[str]) -> None:
     # top_k=4 (hardcodeado aquí desde antes) quedó por debajo incluso del

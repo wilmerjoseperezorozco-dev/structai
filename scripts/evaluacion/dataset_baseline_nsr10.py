@@ -496,4 +496,19 @@ CASOS_BASELINE = [
         "ground_truth": "El crecimiento estable de grietas se determina monitoreando la tasa de crecimiento de las grietas de fatiga en inspecciones regulares, acordando con el cliente los métodos de inspección, longitudes límite y tasas admisibles de crecimiento (F.5.3.6.3).",
         "id": "F-f53-fatiga-crecimiento-grietas",
     },
+    {
+        "pregunta": "Cual es el esfuerzo limite po para aluminio 6061-T6 en extrusion segun la NSR-10 Titulo F.5.4?",
+        "ground_truth": "24 kgf/mm², para espesores hasta 150 mm, según la Tabla F.5.4.2-1.",
+        "id": "F-f541-2-esfuerzo-limite-po-6061-t6",
+    },
+    {
+        "pregunta": "En estructuras de aluminio del Titulo F.5 de la NSR-10, que significa que en una seccion clasificada como totalmente compacta el pandeo local puede ignorarse?",
+        "ground_truth": "Significa que la sección puede desarrollar su resistencia plástica total (momento igual a po veces el módulo elástico, o mayor) sin que el pandeo local premature de los elementos de pared delgada reduzca su capacidad (F.5.4.3.3).",
+        "id": "F-f543-totalmente-compacta-pandeo-local",
+    },
+    {
+        "pregunta": "Cual es el valor limite de beta0 para elementos salientes de aluminio no soldados segun la tabla de valores limite de beta de la NSR-10 Titulo F.5?",
+        "ground_truth": "β0 = 7ε, según la Tabla F.5.4.3-1 (elementos internos no soldados: β0 = 22ε).",
+        "id": "F-f543-beta0-elementos-salientes-no-soldados",
+    },
 ]
