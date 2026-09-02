@@ -40,11 +40,10 @@ env:
   # 22, no 20: @supabase/* (auth-js/functions-js/postgrest-js/realtime-js/
   # storage-js/supabase-js, todos 2.110.5) ya requieren Node >=22 (EBADENGINE
   # confirmado en los logs reales de CI, 2026-09-02) -- Node 20 seguía
-  # "funcionando" con warnings, pero es la causa real (junto al reranker de
-  # abajo) de que "Lint & Type Check (web)" llevara días fallando: el npm
-  # que trae Node 20 valida el lockfile distinto al npm 11.x usado
-  # localmente para generarlo/actualizarlo, y `npm ci` (estricto) rechazaba
-  # entradas de rollup que sí estaban resueltas correctamente.
+  # "funcionando" con warnings, pero ya no es lo que el proyecto necesita.
+  # OJO: esto por sí solo NO arregla "Lint & Type Check (web)" -- ver el
+  # paso "Actualizar npm" en ese job para la causa real de por qué llevaba
+  # días fallando (confirmado con Node 22, sigue el mismo `npm ci` roto).
   NODE_VERSION: 22
   PYTHON_VERSION: '3.12'
 
@@ -64,6 +63,17 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
           cache-dependency-path: apps/web/package-lock.json
+      # Causa real (confirmada 2026-09-02) de que este job llevara días
+      # fallando con "Missing: rollup@4.63.1 from lock file": no es un
+      # lockfile roto -- `npm ci` limpio (node_modules borrado) pasa
+      # perfecto con npm 11.11.0 local, pero falla con el npm 10.9.8 que
+      # trae Node 22 en el runner. Es el bug conocido de npm con
+      # optionalDependencies de binarios de plataforma de rollup 4.x
+      # (@sentry/nextjs fija rollup a la anidada 4.63.0/^4.60.3), que
+      # varias versiones de npm 10.x resuelven distinto a npm 11.x. Fix:
+      # forzar un npm moderno antes de `npm ci`, no confiar en el que
+      # trae el runner.
+      - run: npm install -g npm@11
       - run: npm ci
       - run: npm run lint
       - run: npx tsc --noEmit
@@ -99,6 +109,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: '${{ env.NODE_VERSION }}' }
+      - run: npm install -g npm@11
       - run: npm ci
       - run: npm audit --audit-level=high
 
@@ -117,6 +128,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
           cache-dependency-path: apps/web/package-lock.json
+      - run: npm install -g npm@11
       - run: npm ci
       - run: npm run build
         env:
