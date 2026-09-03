@@ -101,8 +101,29 @@ def _cargar_desde_supabase() -> dict[str, list[dict]]:
             return {}
         from supabase import create_client
         sb = create_client(url, key)
-        resultado = sb.table("sgc_amenaza_sismica_municipios").select("*").execute()
-        filas = resultado.data or []
+        # `.select("*").execute()` sin paginar se trunca en silencio al
+        # límite de PostgREST (1.000 filas) -- Colombia tiene 1.121
+        # municipios reales en esta tabla (confirmado con `select count(*)`
+        # el 2026-09-03, mismo bug encontrado ese día en
+        # pais_zonificacion.py para Perú), así que sin paginar se perdían
+        # ~121 municipios (~11%) del lookup de Aa/Av en silencio. Pagina
+        # con .range() hasta agotar la tabla.
+        _TAMANO_PAGINA = 1000
+        filas: list[dict] = []
+        inicio = 0
+        while True:
+            pagina = (
+                sb.table("sgc_amenaza_sismica_municipios")
+                .select("*")
+                .range(inicio, inicio + _TAMANO_PAGINA - 1)
+                .execute()
+                .data
+                or []
+            )
+            filas.extend(pagina)
+            if len(pagina) < _TAMANO_PAGINA:
+                break
+            inicio += _TAMANO_PAGINA
         if not filas:
             return {}
         registros = [
