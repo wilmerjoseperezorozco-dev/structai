@@ -839,6 +839,29 @@ CASOS_TITULO_F_F545 = [
     ),
 ]
 
+# F.5.4.6 (Miembros a Tensión) -- ver _ingest_titulo_f_f546_verbatim.py.
+CASOS_TITULO_F_F546 = [
+    pytest.param(
+        # Fraseo real de la respuesta confirmado en producción: "0,6 · A₀"
+        # (con espacios angostos U+202F y subíndice Unicode ₀, no la letra
+        # "o") -- variantes amplias pero justificadas, la pregunta pide
+        # especificamente el factor de reducción.
+        "Segun el Titulo F.5 de aluminio, cual es la reduccion de area que se resta para un componente unico conectado por un lado a una cartela en un tirante conectado excentricamente?",
+        ["0.6Ao", "0.6 Ao", "0,6Ao", "0,6 Ao", "0,6", "0.6"],
+        id="F-f546-tirante-excentrico-06ao",
+    ),
+    pytest.param(
+        "En estructuras de aluminio del Titulo F.5, cuales son los tres tipos de miembros a tension considerados como conectados excentricamente segun F.5.4.6.2?",
+        ["Ángulos conectados", "Angulos conectados"],
+        id="F-f546-tres-tipos-conexion-excentrica",
+    ),
+    pytest.param(
+        "Segun el Titulo F.5 de aluminio, la resistencia a tension de diseno PRS de un miembro se toma como el menor de cuales dos valores?",
+        ["fluencia general", "falla local"],
+        id="F-f546-prs-menor-fluencia-falla-local",
+    ),
+]
+
 
 @pytest.mark.parametrize(
     "pregunta,variantes_esperadas",
@@ -872,7 +895,8 @@ CASOS_TITULO_F_F545 = [
     + CASOS_TITULO_F_F53
     + CASOS_TITULO_F_F54_1_2_3
     + CASOS_TITULO_F_F544
-    + CASOS_TITULO_F_F545,
+    + CASOS_TITULO_F_F545
+    + CASOS_TITULO_F_F546,
 )
 def test_respuesta_contiene_hecho_verificado(pregunta: str, variantes_esperadas: list[str]) -> None:
     # top_k=4 (hardcodeado aquí desde antes) quedó por debajo incluso del

@@ -541,4 +541,19 @@ CASOS_BASELINE = [
         "ground_truth": "F.5.5.4 (según F.5.4.5.1); la cláusula específica de rigidizador de viga ensamblada es F.5.5.4.4.",
         "id": "F-f545-vigas-ensambladas-f5541",
     },
+    {
+        "pregunta": "Segun el Titulo F.5 de aluminio, cual es la reduccion de area que se resta para un componente unico conectado por un lado a una cartela en un tirante conectado excentricamente?",
+        "ground_truth": "0.6Ao (donde Ao es el área efectiva del lado o lados salientes del elemento conectado, ignorando cualquier filete), según F.5.4.6.2(1). Para un componente doble simétricamente conectado a cada lado de una cartela es 0.2Ao.",
+        "id": "F-f546-tirante-excentrico-06ao",
+    },
+    {
+        "pregunta": "En estructuras de aluminio del Titulo F.5, cuales son los tres tipos de miembros a tension considerados como conectados excentricamente segun F.5.4.6.2?",
+        "ground_truth": "Ángulos conectados únicamente por una aleta, canales conectados por el alma, y secciones T conectadas por la aleta.",
+        "id": "F-f546-tres-tipos-conexion-excentrica",
+    },
+    {
+        "pregunta": "Segun el Titulo F.5 de aluminio, la resistencia a tension de diseno PRS de un miembro se toma como el menor de cuales dos valores?",
+        "ground_truth": "El menor entre fluencia general a lo largo del miembro y falla local en una sección crítica, según F.5.4.6.1.",
+        "id": "F-f546-prs-menor-fluencia-falla-local",
+    },
 ]
