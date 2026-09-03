@@ -808,6 +808,37 @@ CASOS_TITULO_F_F544 = [
     ),
 ]
 
+# F.5.4.5 (Vigas) -- ver _ingest_titulo_f_f545_verbatim.py. Nota de fraseo
+# real: la pregunta sobre la clasificacion compacta/esbelta a cortante
+# (F.5.4.5.3(a), d/t<=49*epsilon) NO se agrego -- confirmada dos veces como
+# no confiable en generacion, con dos fallas DISTINTAS: una vez el LLM
+# alucino una formula completa inventada (epsilon=sqrt(Fy/E) en MPa, 3
+# categorias con limites 1/epsilon y 1.5/epsilon -- nada de eso existe en
+# el texto real, que dice d/t<=49*epsilon compacta / >49*epsilon esbelta,
+# solo 2 categorias, epsilon=(25/po)^0.5 en kgf/mm2) y otra vez nego tener
+# la informacion pese a que el chunk correcto retrieva top-1 (confirmado
+# con _rerank_chunks directo). Tampoco se agrego la pregunta sobre la
+# ecuacion MRSO para cortante elevado (F.5.4.5-17) -- fallo con "el
+# Titulo F trata solo de acero" pese al chunk correcto en contexto. Ambas
+# quedan como limitacion de generacion documentada, no de retrieval.
+CASOS_TITULO_F_F545 = [
+    pytest.param(
+        "Cual es el espaciamiento maximo de soporte lateral para poder ignorar el pandeo torsional lateral en vigas de aluminio del Titulo F.5?",
+        ["40εry", "40 ε ry", "40εr", "40 ε r"],
+        id="F-f545-espaciamiento-40epsilon-ry",
+    ),
+    pytest.param(
+        "Segun el Titulo F.5 de aluminio, cual es el porcentaje de la fuerza de compresion en la aleta que deben resistir las restricciones laterales de una viga?",
+        ["3%", "3 %", "3 por ciento"],
+        id="F-f545-restricciones-laterales-3-porciento",
+    ),
+    pytest.param(
+        "En el Titulo F.5 de aluminio, que numeral se recomienda usar preferiblemente para disenar vigas ensambladas que tienen almas rigidizadas mas esbeltas?",
+        ["F.5.5.4"],
+        id="F-f545-vigas-ensambladas-f5541",
+    ),
+]
+
 
 @pytest.mark.parametrize(
     "pregunta,variantes_esperadas",
@@ -840,7 +871,8 @@ CASOS_TITULO_F_F544 = [
     + CASOS_TITULO_F_F52
     + CASOS_TITULO_F_F53
     + CASOS_TITULO_F_F54_1_2_3
-    + CASOS_TITULO_F_F544,
+    + CASOS_TITULO_F_F544
+    + CASOS_TITULO_F_F545,
 )
 def test_respuesta_contiene_hecho_verificado(pregunta: str, variantes_esperadas: list[str]) -> None:
     # top_k=4 (hardcodeado aquí desde antes) quedó por debajo incluso del

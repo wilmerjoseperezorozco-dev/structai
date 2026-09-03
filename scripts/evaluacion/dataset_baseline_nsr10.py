@@ -526,4 +526,19 @@ CASOS_BASELINE = [
         "ground_truth": "η = 1.50 (para tc > 25mm, η = 1.33), según F.5.4.4.3(e)(2).",
         "id": "F-f544-eta-un-camino-calor-tc25",
     },
+    {
+        "pregunta": "Cual es el espaciamiento maximo de soporte lateral para poder ignorar el pandeo torsional lateral en vigas de aluminio del Titulo F.5?",
+        "ground_truth": "40εry (ε=(25/po)^0.5, ry = radio de giro del eje menor), según F.5.4.5.6.",
+        "id": "F-f545-espaciamiento-40epsilon-ry",
+    },
+    {
+        "pregunta": "Segun el Titulo F.5 de aluminio, cual es el porcentaje de la fuerza de compresion en la aleta que deben resistir las restricciones laterales de una viga?",
+        "ground_truth": "3% de la compresión en la aleta, según F.5.4.5.6(e).",
+        "id": "F-f545-restricciones-laterales-3-porciento",
+    },
+    {
+        "pregunta": "En el Titulo F.5 de aluminio, que numeral se recomienda usar preferiblemente para disenar vigas ensambladas que tienen almas rigidizadas mas esbeltas?",
+        "ground_truth": "F.5.5.4 (según F.5.4.5.1); la cláusula específica de rigidizador de viga ensamblada es F.5.5.4.4.",
+        "id": "F-f545-vigas-ensambladas-f5541",
+    },
 ]
