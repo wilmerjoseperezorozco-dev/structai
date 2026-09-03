@@ -63,6 +63,35 @@ def _get_supabase_client():
     return create_client(url, key)
 
 
+_TAMANO_PAGINA_SUPABASE = 1000  # límite real de PostgREST por página, confirmado en vivo
+
+
+def _fetch_paginado(sb, tabla: str) -> list[dict]:
+    """`.select('*').execute()` sin paginar se trunca en silencio al límite
+    de PostgREST (confirmado en vivo: 1.000 de 1.884 filas reales de
+    peru_e030_zonificacion_distrital, perdiendo el 47% de los distritos sin
+    ningún error -- así fue como Coracora/Parinacochas, provincia real del
+    sismo M6.7-7.2 de Ayacucho del 2026-08-20, nunca se detectaba pese a
+    estar cargada en la tabla desde el 2026-08-26). Pagina con .range()
+    hasta agotar la tabla."""
+    filas: list[dict] = []
+    inicio = 0
+    while True:
+        pagina = (
+            sb.table(tabla)
+            .select("*")
+            .range(inicio, inicio + _TAMANO_PAGINA_SUPABASE - 1)
+            .execute()
+            .data
+            or []
+        )
+        filas.extend(pagina)
+        if len(pagina) < _TAMANO_PAGINA_SUPABASE:
+            break
+        inicio += _TAMANO_PAGINA_SUPABASE
+    return filas
+
+
 def _cargar_cache_peru() -> dict[str, list[dict]]:
     global _cache_peru
     if _cache_peru is not None:
@@ -71,7 +100,7 @@ def _cargar_cache_peru() -> dict[str, list[dict]]:
         sb = _get_supabase_client()
         if sb is None:
             return {}
-        filas = sb.table("peru_e030_zonificacion_distrital").select("*").execute().data or []
+        filas = _fetch_paginado(sb, "peru_e030_zonificacion_distrital")
         cache: dict[str, list[dict]] = {}
         for f in filas:
             clave = _normalizar(f["distrito"])
@@ -103,7 +132,7 @@ def _cargar_cache_ecuador() -> dict[str, list[dict]]:
         sb = _get_supabase_client()
         if sb is None:
             return {}
-        filas = sb.table("ecuador_nec_se_ds_zonificacion_poblacion").select("*").execute().data or []
+        filas = _fetch_paginado(sb, "ecuador_nec_se_ds_zonificacion_poblacion")
         cache: dict[str, list[dict]] = {}
         for f in filas:
             texto_normalizado = _normalizar(f["poblacion"])
