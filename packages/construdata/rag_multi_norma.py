@@ -731,10 +731,75 @@ class PrecioResult:
         return _fuente_display(self.tipo_fuente)
 
 
+# Sinónimos regionales de construcción para AMPLIAR la búsqueda SQL de
+# precios (no confundir con el bloque de prosa _CONTEXTO_COLOMBIA_COMPARTIDO
+# más abajo, que es el mismo vocabulario pero en texto para que el LLM
+# reconozca la jerga al REDACTAR la respuesta -- este es el mismo
+# conocimiento pero en forma de datos, para expandir la CONSULTA antes de
+# buscarla). Hallazgo real que motivó esto (2026-09-03): buscar "pañete"
+# en apu_precios_referencia trae 24 filas, pero "revoque" trae 3 y "friso"
+# 1 -- son el mismo concepto de obra, guardado con 3 palabras distintas
+# por distintos proveedores/regiones, y sin esto una búsqueda por un solo
+# término perdía las otras dos terceras partes de los resultados reales
+# tanto en la capa regional (apu_precios_referencia) como en la nacional
+# (apu_items_nacional) -- confirmado con SQL directo antes de escribir el
+# fix, no asumido.
+#
+# Mantener sincronizado a mano con la jerga de _CONTEXTO_COLOMBIA_COMPARTIDO
+# más abajo -- no se generó uno del otro a propósito: esa prosa lleva
+# atribución por país (ej. "encofrado (Esp/Arg/Chile)") que aquí no aporta
+# nada para expandir una consulta SQL, y forzar un solo origen habría
+# complicado la redacción cuidada del prompt sin necesidad real.
+SINONIMOS_CONSTRUCCION: list[list[str]] = [
+    ["concreto", "hormigón"],
+    ["formaleta", "encofrado", "cimbra"],
+    ["varilla", "cabilla", "hierro", "acero de refuerzo"],
+    ["placa", "losa"],
+    ["friso", "pañete", "revoque", "aplanado", "enlucido"],
+    ["andén", "acera", "vereda"],
+    ["cercha", "cabreada", "armadura de techo"],
+    ["recebo", "base granular"],
+    ["puntilla", "clavo"],
+    ["interventor", "supervisor técnico", "fiscalizador"],
+    ["maestro de obra", "capataz"],
+]
+
+
+def _sin_tildes(s: str) -> str:
+    nfkd = unicodedata.normalize("NFKD", s)
+    return "".join(c for c in nfkd if not unicodedata.combining(c))
+
+
+def _expandir_sinonimos_precios(query: str) -> str:
+    """Agrega al texto de búsqueda los sinónimos regionales de cualquier
+    término de SINONIMOS_CONSTRUCCION que aparezca en la consulta (insensible
+    a tildes/mayúsculas), para que buscar_precios_apu() encuentre filas
+    guardadas con el término equivalente, no solo el literal escrito por el
+    usuario. Se aplica UNA sola vez sobre p_query antes de llamar al RPC --
+    como las 4 ramas de esa consulta (actividad/insumo/proveedor regional/
+    proveedor nacional) comparten el mismo tsquery construido a partir de
+    p_query, las 4 se benefician con este único cambio, sin tocar la
+    función SQL."""
+    q_norm = _sin_tildes(query.lower())
+    extra: list[str] = []
+    for grupo in SINONIMOS_CONSTRUCCION:
+        if any(_sin_tildes(t.lower()) in q_norm for t in grupo):
+            extra.extend(grupo)
+    if not extra:
+        return query
+    # dedup preservando orden (un término puede aparecer en un solo grupo,
+    # pero por seguridad ante futuros grupos superpuestos)
+    return query + " " + " ".join(dict.fromkeys(extra))
+
+
 def buscar_precios_apu(query: str, top_k: int = 8) -> list[PrecioResult]:
     """Busca en la base de precios APU Barranquilla/Atlántico vía RPC
-    buscar_precios_apu (texto completo español + trigram)."""
-    result = sb.rpc("buscar_precios_apu", {"p_query": query, "p_limit": top_k}).execute()
+    buscar_precios_apu (texto completo español + trigram), ampliando antes
+    la consulta con sinónimos regionales de construcción conocidos (ver
+    SINONIMOS_CONSTRUCCION) para no perder resultados guardados con un
+    término equivalente distinto al que escribió el usuario."""
+    query_ampliada = _expandir_sinonimos_precios(query)
+    result = sb.rpc("buscar_precios_apu", {"p_query": query_ampliada, "p_limit": top_k}).execute()
     return [
         PrecioResult(
             tipo=r["tipo"],
