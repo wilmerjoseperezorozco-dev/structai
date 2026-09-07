@@ -43,7 +43,7 @@ significa más norma cubierta, solo troceo más fino.
 
 | Título | Chunks reales | Estado |
 |---|---|---|
-| A — Requisitos generales | 75 | Verbatim, **pero sin auditoría numeral por numeral todavía**. 15 chunks no-verbatim (parafraseados, presentados como texto oficial) borrados el 2026-09-01 — issue [#38](https://github.com/wilmerjoseperezorozco-dev/structai/issues/38) sigue abierto. No se ha comparado A.1–A.9 numeral por numeral contra el PDF fuente (el método sí aplicado a K.3 — ver más abajo) para confirmar que no falten numerales enteros |
+| A — Requisitos generales | 182 (bajo prefijos `NSR10-A-`/`A2-`/`A3-`/`A4-`/`A5-`/`A6-`, convención de id inconsistente — ver `docs/CATALOGO_DATOS.md`) | **INCOMPLETO — hueco real confirmado 2026-09-07** (`pypdf` sobre los 14 PDF fuente + comparación contra `nsr10_chunks`, 542 numerales reales identificados). **189 de 542 numerales (35%) sin ningún chunk.** 6 capítulos completos sin cobertura: A.1 (Introducción, 67 numerales), A.7 (Interacción suelo-estructura, 16), A.8 (Efectos sísmicos sobre elementos no estructurales, 17), A.11 (Instrumentación sísmica, 12), A.12 (Edificaciones indispensables grupos II/III, 34), A.13 (Definiciones, 2). Más huecos parciales dentro de A.2 y A.3 — el más importante es **A.3.6 completo** (Irregularidades en planta/altura, 27 numerales, contenido de diseño estructural activo, no solo administrativo). Algunos rangos existentes de A.2 están marcados "resumen" (prosa condensada, no verbatim estricto) — bandera a revisar. Los 14 PDF fuente ya están descargados en `scripts/ingesta/nsr10/raw/`. 15 chunks no-verbatim (parafraseados) borrados el 2026-09-01 — issue [#38](https://github.com/wilmerjoseperezorozco-dev/structai/issues/38) sigue abierto |
 | B — Cargas | 169 | Verbatim, mismo caveat que A: nunca se auditaron huecos específicos numeral por numeral |
 | C — Concreto estructural | 2.410 | Verbatim completo, auditado (0% de chunks truncados) |
 | D — Mampostería estructural | 711 | Verbatim completo, auditado (0% de chunks truncados) |
@@ -74,9 +74,25 @@ completo")**:
   papeleo" — de hecho la mayoría técnica del título (cimentaciones,
   taludes, muros de contención, licuación, suelos problemáticos,
   rehabilitación sísmica) nunca se ingestó.
-- **Título A — auditoría en curso**, mismo método, resultado pendiente.
-- **Título B — todavía sin auditar**, dado el hallazgo real de H no
-  asumir que B está bien solo porque no se ha revisado.
+- **Título A — auditado 2026-09-07, hueco real confirmado también** (ver
+  fila de arriba): 189 de 542 numerales (35%) sin chunk, incluyendo 6
+  capítulos completos y A.3.6 (irregularidades estructurales) entero.
+  Menos grave que H en proporción, pero A.3.6 sí es contenido de diseño
+  activo, no solo administrativo.
+- **Dos de dos títulos auditados con este método resultaron tener huecos
+  reales, no auditorías cosméticas.** Extender el mismo método a Título B
+  (nunca auditado) es la conclusión lógica antes de asumir que está bien.
+
+**Hallazgo colateral de la auditoría de A, sin relación con huecos de
+contenido**: `scripts/ingesta/nsr10/raw/capitulo_a.txt` (JSON local,
+gitignored) describe una estructura de capítulos de Título A que **no
+coincide con la real** (dice que A.4 es "Filosofía del diseño
+sismorresistente", A.7 "Métodos de análisis sísmico", etc. — nombres
+fabricados, con `"fecha_extraccion": "2024-01-15"` como placeholder, no
+una extracción real del PDF). No se identificó que ningún script de
+ingesta real lo use, pero queda como alerta si aparece referenciado en
+el futuro — mismo espíritu que la nota de integridad ya existente sobre
+el pipeline automático descartado.
 
 **Nota real sobre calidad, ya corregida (2026-09-01)**: se encontró que
 151 de 293 chunks (51.5%) de F.4.3/F.4.4/F.4.5 se truncaban en silencio al
