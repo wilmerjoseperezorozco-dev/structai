@@ -32,34 +32,58 @@ cubra esa página — pérdida real de una fracción del Apéndice C-F. Document
 por decisión del usuario (2026-08-01): no bloquea el resto del catálogo, pero
 sigue pendiente de completar si aparece la fuente.
 
-## Estado real de ingesta verbatim por título (actualizado 2026-09-01)
+## Estado real de ingesta verbatim por título (actualizado 2026-09-07, `count(*)` real contra `nsr10_chunks`)
+
+Los conteos de esta tabla crecieron bastante frente a versiones anteriores
+de este documento — no por contenido nuevo en A/B/H/K, sino por la
+auditoría de tokens reales del 2026-09-01 (ver nota más abajo), que
+re-trocheó todo el corpus a piezas más pequeñas respetando el límite real
+de 128 tokens del modelo de embeddings. Un título con más chunks hoy no
+significa más norma cubierta, solo troceo más fino.
 
 | Título | Chunks reales | Estado |
 |---|---|---|
-| A — Requisitos generales | 69 | Parcial. Sin auditoría numeral por numeral. 15 chunks no-verbatim (parafraseados, presentados como texto oficial) borrados el 2026-09-01 — ver issue [#38](https://github.com/wilmerjoseperezorozco-dev/structai/issues/38) |
-| B — Cargas | 31 | Delgado, sin auditar huecos específicos |
-| C — Concreto estructural | 2.410 | Verbatim completo |
-| D — Mampostería estructural | 711 | Verbatim completo |
+| A — Requisitos generales | 75 | Verbatim, **pero sin auditoría numeral por numeral todavía**. 15 chunks no-verbatim (parafraseados, presentados como texto oficial) borrados el 2026-09-01 — issue [#38](https://github.com/wilmerjoseperezorozco-dev/structai/issues/38) sigue abierto. No se ha comparado A.1–A.9 numeral por numeral contra el PDF fuente (el método sí aplicado a K.3 — ver más abajo) para confirmar que no falten numerales enteros |
+| B — Cargas | 169 | Verbatim, mismo caveat que A: nunca se auditaron huecos específicos numeral por numeral |
+| C — Concreto estructural | 2.410 | Verbatim completo, auditado (0% de chunks truncados) |
+| D — Mampostería estructural | 711 | Verbatim completo, auditado (0% de chunks truncados) |
 | E — Casas de 1 y 2 pisos | 37 | Verbatim completo (E.1–E.9) |
-| F.1–F.3 (generalidades + provisiones sísmicas) | — | Verbatim completo (F.2.6 y F.3 completos) |
-| F.4.1–F.4.7 (acero formado en frío) | — | Verbatim completo (cerrado 2026-09-01) |
-| F.4.8 (entramados, sistemas en seco, cerchas) | 0 | Pendiente — PDF ya descargado localmente (`NSR-10-1083-1182.pdf`), no ingestado todavía |
-| F.5 (Aluminio, cierra el Título F) | 0 | Pendiente — requiere `NSR-10-1183-1283.pdf` |
+| F.1–F.4 (generalidades, acero laminado/armado/tubular, provisiones sísmicas, acero formado en frío) | 988 | **Verbatim completo** (F.4 cerrado 2026-09-01) |
+| F.5.1–F.5.4.6 (Aluminio — generalidades, propiedades, principios de diseño, miembros: generalidades/esfuerzos/pandeo local/ablandamiento/vigas/tensión) | 403 | Verbatim completo |
+| F.5.4.7 (Miembros a compresión) | 0 | **Pendiente** — la pieza más densa de F.5 (Tabla F.5.4.7-2, 18 tipos de sección con fórmulas propias cada uno), ya mapeada parcialmente pero no transcrita, mismo `NSR-10-1083-1182.pdf` ya descargado |
+| F.5.4.8–F.5.4.9, F.5.5–F.5.8 + apéndices F.5.A–F.5.F (cierra el Título F) | 0 | Pendiente — requiere descargar `NSR-10-1183-1283.pdf` (id `1xuOZukeQsLIV957z59BK2eJqpZ5qu__b`, confirmado real, no descargado todavía) |
 | G — Madera y Guadua | 464 | Verbatim completo |
-| H — Estudios geotécnicos | 49 | Parcial. Sin auditoría numeral por numeral. 13 chunks no-verbatim borrados el 2026-09-01 — issue [#38](https://github.com/wilmerjoseperezorozco-dev/structai/issues/38) |
+| H — Estudios geotécnicos | 48 | Verbatim, **sin auditoría numeral por numeral todavía**. 13 chunks no-verbatim borrados el 2026-09-01 — issue [#38](https://github.com/wilmerjoseperezorozco-dev/structai/issues/38) sigue abierto |
 | I — Supervisión técnica | 33 | Verbatim completo (I.1–I.4) |
 | J — Protección contra incendios | 18 | Verbatim completo (J.1–J.4) |
-| K.1–K.3, K.4.1–K.4.2 | — | Verbatim completo |
-| K.4.3 (Vidrios — seguridad) | parcial | **Bloqueado**: la fuente de Drive se agota en K.4.3.16, no hay ningún archivo posterior en la carpeta — necesita que el usuario aporte otra fuente |
+| K — Otros requisitos complementarios (K.1–K.4.3) | 416 | **Verbatim completo, incluido K.4.3** — corrección real 2026-09-07: una memoria interna daba K.4.3 por "bloqueado, sin fuente" desde 2026-08-28, pero en algún punto posterior sí se ingestó sin que se actualizara esa nota; confirmado con SQL directo (chunks reales `NSR10-K-K_4_3_*`, K.4.3.1 a K.4.3.9) y con una respuesta real de `ask()` citando K.4.3.2 con precisión exacta |
 
-**Nota real sobre calidad, no solo cobertura**: el 2026-09-01 se encontró que
+**Título F, total real hoy**: 1.391 chunks (988 + 403) de los ~2.200-2.400
+estimados para cerrarlo por completo — sigue siendo, con diferencia, el
+título con más volumen de todos.
+
+**Sobre el "sin auditoría numeral por numeral" de A/B/H**: significa que
+nadie extrajo con `pypdf`/regex los numerales que existen REALMENTE en el
+PDF fuente y los comparó contra los ids de chunk en la base, el único
+método que confirmó de verdad un hueco real (K.3.11–K.3.18, 0% cubiertos,
+2026-08-27) que la sola inspección de "¿el chunk que existe se ve
+completo?" no detectó. No hay evidencia de un hueco real conocido en A/B/H
+hoy — es honestamente "no verificado", no "sabemos que falta algo".
+
+**Nota real sobre calidad, ya corregida (2026-09-01)**: se encontró que
 151 de 293 chunks (51.5%) de F.4.3/F.4.4/F.4.5 se truncaban en silencio al
-buscar, por un bug real del splitter de troceo (corregido el mismo día). El
-resto del corpus ingestado **antes** de esa fecha (C, D, G, E, I, J, K, A, H,
-B, F.4.1, F.4.2) no ha sido auditado todavía con el mismo método real de
-verificación de tokens — no asumir que está bien solo porque los chunks
-existen. Script de auditoría reusable:
-`scripts/mantenimiento/auditar_tokens_reales_f43_f44_f45.py`.
+buscar, por un bug real del splitter de troceo. Generalizado el chequeo a
+**todo** `nsr10_chunks` (4.129 chunks medidos entonces): 493 (11.9%)
+superaban el límite real de 128 tokens, con severidad muy dispareja —
+Títulos K, B, J y A rotos al 100% de sus chunks; C, D, H y las 3
+resoluciones SGSST en 0%. **Corregido el mismo día para todo el corpus**
+(no solo F.4.3-F.4.5): verificado con una segunda auditoría independiente,
+0% de chunks sobre el límite en la totalidad de `nsr10_chunks`. Esto
+explica por qué los conteos de A/B/K de esta tabla son mucho más altos que
+en versiones anteriores del documento — no es contenido nuevo, es el mismo
+texto verbatim ya cargado, re-trocheado en piezas más pequeñas y
+correctas. Script de auditoría reusable:
+`scripts/mantenimiento/auditar_tokens_reales_corpus_completo.py`.
 
 ## Otros dominios (no cubiertos por este documento todavía)
 

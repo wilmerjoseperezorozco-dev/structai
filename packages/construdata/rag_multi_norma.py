@@ -725,6 +725,12 @@ class PrecioResult:
     item_codigo: Optional[str]
     categoria_fuente: Optional[str]
     score: float
+    # uuid real de apu_precios_referencia cuando tipo=='actividad' (agregado
+    # 2026-09-07, migración 20260907120000) -- permite pedir el desglose real
+    # de insumos de esa actividad vía obtener_desglose_actividad(). None para
+    # el resto de tipos (insumo/proveedor/proveedor_nacional) y para
+    # resultados de buscar_precios_invias_vias(), que no pasa por este RPC.
+    actividad_id: Optional[str] = None
 
     @property
     def fuente_display(self) -> str:
@@ -820,9 +826,23 @@ def buscar_precios_apu(query: str, top_k: int = 8) -> list[PrecioResult]:
             item_codigo=r.get("item_codigo"),
             categoria_fuente=r.get("categoria_fuente"),
             score=r.get("score") or 0.0,
+            actividad_id=r.get("actividad_id"),
         )
         for r in result.data
     ]
+
+
+def obtener_desglose_actividad(actividad_id: str) -> list[dict]:
+    """Desglose real de insumos (material/mano de obra/equipo) de una
+    actividad, vía el RPC obtener_desglose_actividad (migración
+    20260907120000) que sigue el FK real
+    apu_insumos_referencia.actividad_padre_id -> apu_precios_referencia.id.
+    Cobertura parcial pero real: verificado con SQL directo que solo 927 de
+    4.566 actividades (20.3%) tienen al menos un insumo enlazado por FK --
+    devuelve lista vacía para el resto, no un error (mismo criterio que
+    buscar_precios_invias_vias con provincias sin cobertura)."""
+    result = sb.rpc("obtener_desglose_actividad", {"p_actividad_id": actividad_id}).execute()
+    return result.data
 
 
 _INVIAS_UBICACIONES_CACHE: list[dict] | None = None
@@ -925,7 +945,7 @@ def buscar_precios_invias_vias(query: str, top_k: int = 4) -> list[PrecioResult]
     ]
 
 
-def _format_precio_context(p: PrecioResult) -> str:
+def _format_precio_context(p: PrecioResult, incluir_desglose: bool = False) -> str:
     """Una línea por resultado — solo lo que un profesional necesita:
     nombre, unidad, precio(s), región genérica, fuente y fecha. Nunca nombre
     de obra, dirección ni municipios específicos de un contrato.
@@ -937,7 +957,13 @@ def _format_precio_context(p: PrecioResult) -> str:
     quedaba guardada en la base pero la RPC nunca la seleccionaba, así que
     el chat nunca la mencionaba (encontrado 2026-08-09 revisando cómo dar
     una noción de incertidumbre con lo que ya hay, sin inventar una
-    distribución que no está respaldada por suficientes datos)."""
+    distribución que no está respaldada por suficientes datos).
+
+    incluir_desglose=True (agregado 2026-09-07): si p es una actividad con
+    actividad_id real, agrega una línea agrupada por tipo de insumo
+    (material/mano de obra/equipo) vía obtener_desglose_actividad(). Solo
+    927 de 4.566 actividades (20.3%) tienen desglose real enlazado por FK
+    -- si no hay filas, no agrega nada (silencioso, no es un error)."""
     partes = [f"{p.nombre}"]
     if p.unidad:
         partes.append(f"unidad: {p.unidad}")
@@ -952,7 +978,23 @@ def _format_precio_context(p: PrecioResult) -> str:
         partes.append(f"fecha: {p.fecha_captura}")
     if p.categoria_fuente and "rango $" in p.categoria_fuente:
         partes.append(f"variabilidad real de mercado: {p.categoria_fuente}")
-    return " | ".join(partes)
+    texto = " | ".join(partes)
+    if incluir_desglose and p.tipo == "actividad" and p.actividad_id:
+        insumos = obtener_desglose_actividad(p.actividad_id)
+        if insumos:
+            por_grupo: dict[str, list[str]] = {}
+            for i in insumos:
+                linea = f"{i['insumo']}"
+                if i.get("cantidad") is not None:
+                    linea += f" ({i['cantidad']} {i.get('unidad') or 'un'})"
+                if i.get("valor_unitario") is not None:
+                    linea += f": ${i['valor_unitario']:,.0f} COP"
+                por_grupo.setdefault(i.get("tipo_insumo") or "Otro", []).append(linea)
+            desglose = "; ".join(
+                f"{grupo}: " + ", ".join(lineas) for grupo, lineas in por_grupo.items()
+            )
+            texto += f" | desglose real: {desglose}"
+    return texto
 
 
 # ─── CONTEXTO COMPARTIDO: JERGA REGIONAL, ENTIDADES/TRÁMITES, REGISTRO ──────
@@ -1105,6 +1147,11 @@ def ask_precios(question: str, top_k: int = 8) -> dict:
             "normas_citadas": [],
             "fuentes": [],
             "chunks_usados": 0,
+            # Clave presente también en el camino sin resultados -- para que
+            # ragas_precios.py siempre reciba una lista (aunque vacía), igual
+            # que el resto de este dict, en vez de tener que chequear si la
+            # clave existe.
+            "contextos_recuperados": [],
         }
     # Reutiliza el mismo contrato de "fuentes" que ChunkResult (norma/seccion/
     # contenido_preview/score) para que /consultar y el frontend (componente
@@ -1126,7 +1173,17 @@ def ask_precios(question: str, top_k: int = 8) -> dict:
         for p in resultados
     ]
     normas_citadas = list(dict.fromkeys(p.fuente_display for p in resultados))[:4]
-    contexto = "\n".join(_format_precio_context(p) for p in resultados)
+    # Desglose real solo para el PRIMER resultado tipo='actividad' de mejor
+    # score -- no para los 8 resultados, para no disparar hasta 8 llamadas
+    # RPC extra (obtener_desglose_actividad) por cada pregunta de precio.
+    primero_actividad_visto = False
+    partes_contexto = []
+    for p in resultados:
+        incluir = p.tipo == "actividad" and not primero_actividad_visto
+        if incluir:
+            primero_actividad_visto = True
+        partes_contexto.append(_format_precio_context(p, incluir_desglose=incluir))
+    contexto = "\n".join(partes_contexto)
     messages = [
         {"role": "system", "content": APU_PRECIOS_SYSTEM_PROMPT},
         {"role": "user", "content": f"PRECIOS DISPONIBLES:\n{contexto}\n\nPREGUNTA: {question}"}
@@ -1138,6 +1195,21 @@ def ask_precios(question: str, top_k: int = 8) -> dict:
         "normas_citadas": normas_citadas,
         "fuentes": fuentes_formato_chunk,
         "chunks_usados": len(resultados),
+        # Contenido real de cada resultado de precio (no solo nombre/precio
+        # como en `fuentes`) -- mismo patrón aditivo que ask() (ver el
+        # comentario allá): AskResponse/ConsultarResponse en apps/api/main.py
+        # no declaran esta clave, así que FastAPI la descarta al serializar
+        # /consultar -- no cambia el contrato público. Agregado para poder
+        # evaluar ask_precios() con RAGAS (scripts/evaluacion/ragas_precios.py),
+        # que necesita el texto real del contexto, no solo su etiqueta.
+        # Reusa partes_contexto ya calculado arriba (mismo texto que vio el
+        # LLM, incluido el desglose del primer resultado tipo=actividad) en
+        # vez de volver a llamar _format_precio_context -- evita una segunda
+        # tanda de llamadas RPC a obtener_desglose_actividad.
+        "contextos_recuperados": [
+            {"norma": p.fuente_display, "seccion": p.nombre, "contenido": texto, "score": round(p.score, 4)}
+            for p, texto in zip(resultados, partes_contexto)
+        ],
     }
 
 
@@ -2121,6 +2193,7 @@ def _ask_delegado_compuesto(question: str, motores: list[str], top_k: int) -> di
             "normas_citadas": [],
             "fuentes": [],
             "chunks_usados": 0,
+            "contextos_recuperados": [],
         }
 
     contexto = "\n\n===\n\n".join(partes)
@@ -2163,6 +2236,17 @@ def _ask_delegado_compuesto(question: str, motores: list[str], top_k: int) -> di
         "normas_citadas": normas_citadas,
         "fuentes": fuentes,
         "chunks_usados": len(chunks) + len(precios),
+        # Mismo patrón aditivo de contextos_recuperados que ask()/ask_precios()
+        # -- combina las dos fuentes reales de esta pregunta compuesta (norma +
+        # precio) en una sola lista para RAGAS, que no distingue de qué motor
+        # vino cada contexto, solo necesita el texto real recuperado.
+        "contextos_recuperados": [
+            {"norma": c.norma, "seccion": c.seccion, "contenido": c.contenido, "score": round(c.score, 4)}
+            for c in chunks
+        ] + [
+            {"norma": p.fuente_display, "seccion": p.nombre, "contenido": _format_precio_context(p), "score": round(p.score, 4)}
+            for p in precios
+        ],
     }
 
 

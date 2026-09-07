@@ -24,6 +24,25 @@ y el Decreto 1072 (SGSST) -- nada inventado, todo extraído con SQL directo
 contra nsr10_chunks/ntc_chunks y verificado contra el texto real antes de
 escribir el ground_truth. Ver [[project_structai_ragas_baseline]] y
 [[project_structai_nsr10_inventario_titulos]] en memoria.
+
+Ampliación posterior no documentada aquí (detectada 2026-09-07 al recontar
+el archivo: el docstring seguía diciendo "52 preguntas" pero
+CASOS_BASELINE ya tenía 103 -- quedó desactualizado tras agregarse, en
+sesiones siguientes, la cobertura extensa de Título F.4 (acero formado en
+frío) y F.5 (aluminio), que sí siguió el mismo criterio de extracción
+verbatim + verificación, solo que sin actualizar este comentario).
+
+Ampliación 2026-09-07 (de 103 a 143 preguntas, a pedido del usuario, tras
+analizar la variedad real del dataset): las 103 anteriores son casi en su
+totalidad preguntas de un solo hecho numérico ("¿cuál es el valor de X
+según el Título Y?"), sin ninguna que combine dos títulos, ninguna
+adversarial (sin respuesta real en el corpus), ninguna compuesta
+precio+norma, y ninguna con fraseo coloquial de campo. Las 40 nuevas
+preguntas (id con prefijo "X-...", "ADV-...", "COMP-...", "COLOQ-...")
+se agregan al final de CASOS_BASELINE, agrupadas en 4 bloques nuevos con
+su propio comentario de sección -- no se creó una lista aparte a
+propósito, para que ragas_52preguntas.py siga corriendo sobre un solo
+dataset sin tener que tocar ese script.
 """
 
 CASOS_BASELINE = [
@@ -555,5 +574,237 @@ CASOS_BASELINE = [
         "pregunta": "Segun el Titulo F.5 de aluminio, la resistencia a tension de diseno PRS de un miembro se toma como el menor de cuales dos valores?",
         "ground_truth": "El menor entre fluencia general a lo largo del miembro y falla local en una sección crítica, según F.5.4.6.1.",
         "id": "F-f546-prs-menor-fluencia-falla-local",
+    },
+    # ==== AMPLIACIÓN 2026-09-07: preguntas complejas (ver docstring) ====
+    # ---- Síntesis cruzada entre títulos (ambos hechos ya verificados por
+    # separado arriba -- la pregunta nueva obliga a combinarlos) ----
+    {
+        "pregunta": "Barranquilla tiene Aa=0.10 segun la NSR-10. Podria usarse mamposteria no reforzada como sistema de resistencia sismica en Barranquilla segun el Titulo D?",
+        "ground_truth": "No, porque el Título D solo permite mampostería no reforzada como sistema de resistencia sísmica en zonas con Aa menor o igual a 0.05, y Barranquilla tiene Aa = 0.10.",
+        "id": "SINT-barranquilla-Aa010-vs-mamposteria-no-reforzada-D",
+    },
+    {
+        "pregunta": "Es mayor la resistencia minima que exige el Titulo C para el concreto estructural que la que exige el Titulo D para el mortero de relleno de mamposteria?",
+        "ground_truth": "Sí: el Título C exige mínimo 17 MPa para el concreto estructural, mayor que los 12.5 MPa mínimos que exige el Título D para el mortero de relleno.",
+        "id": "SINT-fc-concreto-C-vs-mortero-relleno-D",
+    },
+    {
+        "pregunta": "Es mucho mayor la resistencia minima del concreto para estructuras DES o DMO del Titulo C que la del mortero de pega en casas de uno y dos pisos del Titulo E?",
+        "ground_truth": "Sí: el Título C exige mínimo 21 MPa para concreto DES/DMO, casi el triple de los 7.5 MPa mínimos que exige el Título E para el mortero de pega en casas de uno y dos pisos.",
+        "id": "SINT-fc-DES-DMO-C-vs-mortero-pega-E",
+    },
+    {
+        "pregunta": "Es igual el factor de reduccion de resistencia phi para secciones controladas por traccion en concreto del Titulo C que el factor phi para miembros en un analisis racional de acero formado en frio del Titulo F?",
+        "ground_truth": "No: el Título C usa φ=0.90 para secciones controladas por tracción en concreto, mientras que el Título F usa φ=0.80 para miembros en un análisis racional de acero formado en frío.",
+        "id": "SINT-phi-traccion-C-vs-phi-miembros-F",
+    },
+    {
+        "pregunta": "Es mas exigente el Titulo D con la resistencia del mortero de relleno que el Titulo E con la resistencia del mortero de pega en mamposteria confinada?",
+        "ground_truth": "Sí: el Título D exige mínimo 12.5 MPa para el mortero de relleno, más que los 7.5 MPa mínimos que exige el Título E para el mortero de pega en mampostería confinada.",
+        "id": "SINT-mortero-relleno-D-vs-mortero-pega-E",
+    },
+    {
+        "pregunta": "Es el mismo numero de anos el que exige el Titulo H de experiencia minima a un geotecnista que el numero de anos que el Titulo I exige conservar el registro de un supervisor tecnico?",
+        "ground_truth": "Sí, coincide el número (5 años) pero se refieren a cosas distintas: el Título H exige más de 5 años de experiencia en diseño geotécnico, y el Título I exige conservar el registro del supervisor durante al menos 5 años.",
+        "id": "SINT-5anos-geotecnista-H-vs-registro-supervisor-I",
+    },
+    {
+        "pregunta": "El caudal minimo de un hidrante para un hospital lo regula el mismo titulo de la NSR-10 que la fuerza maxima para abrir una puerta de salida?",
+        "ground_truth": "No: el caudal mínimo de hidrantes (63 L/s para hospitales) lo regula el Título J, mientras que la fuerza máxima de apertura de puertas de salida (menor a 250 N) la regula el Título K.",
+        "id": "SINT-hidrante-J-vs-fuerza-puerta-K",
+    },
+    {
+        "pregunta": "Se definen los 4 sistemas estructurales de resistencia sismica en el mismo titulo de la NSR-10 que trata la carga de viento?",
+        "ground_truth": "No: los 4 sistemas estructurales de resistencia sísmica (muros de carga, combinado, pórtico, dual) se definen en el Título A, mientras que la carga de viento se trata en el Título B.",
+        "id": "SINT-sistemas-sismicos-A-vs-viento-B",
+    },
+    {
+        "pregunta": "Regulan el mismo material estructural el Titulo D y el Titulo G de la NSR-10?",
+        "ground_truth": "No: el Título D regula mampostería estructural, mientras que el Título G regula madera y guadua — son materiales y títulos distintos.",
+        "id": "SINT-material-D-vs-G",
+    },
+    {
+        "pregunta": "Aplican las mismas reglas de conexion el Titulo F para acero que el Titulo G para guadua?",
+        "ground_truth": "No: son títulos de materiales distintos con reglas propias de conexión — por ejemplo, el Título G prohíbe las uniones clavadas en guadua, una restricción que no aplica al acero del Título F.",
+        "id": "SINT-conexiones-F-vs-G",
+    },
+    {
+        "pregunta": "El recubrimiento minimo del concreto contra el suelo lo regula el mismo titulo de la NSR-10 que los requisitos de vidrio en barandas?",
+        "ground_truth": "No: el recubrimiento mínimo del concreto contra el suelo (75 mm) lo regula el Título C, mientras que los requisitos de vidrio en barandas (factor de seguridad 4) los regula el Título K.",
+        "id": "SINT-recubrimiento-C-vs-vidrio-barandas-K",
+    },
+    {
+        "pregunta": "Es mas alta la resistencia minima del concreto estructural del Titulo C que el limite de fraguado inicial del cemento Portland de la NTC 121?",
+        "ground_truth": "No son comparables directamente (17 MPa es una resistencia a la compresión, 45 minutos es un tiempo de fraguado) — el Título C regula la resistencia del concreto y la NTC 121 regula el tiempo mínimo de fraguado inicial del cemento, son propiedades distintas del mismo material.",
+        "id": "SINT-fc-concreto-C-vs-fraguado-NTC121",
+    },
+    # ---- Preguntas compuestas precio+norma (primera cobertura real de
+    # _ask_delegado_compuesto() -- combinan un hecho normativo ya verificado
+    # arriba con un precio real de scripts/evaluacion/dataset_baseline_precios.py) ----
+    {
+        "pregunta": "Cual es la resistencia minima a la compresion f'c que exige la NSR-10 para el concreto estructural, y cuanto cuesta el kilo de acero corrugado figurado de 1/4 a 1 pulgada en Barranquilla?",
+        "ground_truth": "El f'c mínimo es 17 MPa (Título C); el acero corrugado figurado 1/4\"-1\" de 60.000 PSI cuesta $2.617,87 COP por kg en Barranquilla.",
+        "id": "COMP-fc-minimo-y-acero-corrugado",
+    },
+    {
+        "pregunta": "Cuantos pies tablares tiene un metro cubico de madera segun el Titulo G, y cuanto cuesta el metro cubico de arena de rio en Barranquilla?",
+        "ground_truth": "Un metro cúbico de madera tiene 424 pies tablares (Título G); la arena de río cuesta $70.000 COP por m³ en Barranquilla.",
+        "id": "COMP-pies-tablares-y-arena-rio",
+    },
+    {
+        "pregunta": "Cual es el recubrimiento minimo del concreto cuando esta en contacto permanente con el suelo, y cuanto cuesta un bloque de concreto de 20x20x40 en Barranquilla?",
+        "ground_truth": "El recubrimiento mínimo es 75 mm (Título C); el bloque de concreto 20x20x40 cuesta $2.050,04 COP por unidad en Barranquilla.",
+        "id": "COMP-recubrimiento-y-bloque-concreto",
+    },
+    {
+        "pregunta": "Cual es la deriva maxima permitida para una estructura de concreto reforzado, y cuanto cuesta el saco de cemento Argos gris de 50kg en Homecenter?",
+        "ground_truth": "La deriva máxima es 1.0% de la altura de piso (Título A); el saco de cemento Argos gris de 50kg cuesta $32.500 COP en Homecenter Colombia.",
+        "id": "COMP-deriva-maxima-y-cemento-argos",
+    },
+    {
+        "pregunta": "Cual es el angulo de doblez de los ganchos sismicos en estribos de confinamiento, y cuanto vale la hora de un ayudante de albañileria en Barranquilla?",
+        "ground_truth": "El ángulo es 135 grados (Título C, estructuras DMO/DES); la hora de ayudante de albañilería cuesta $2.461 COP en Barranquilla.",
+        "id": "COMP-ganchos-sismicos-y-ayudante",
+    },
+    {
+        "pregunta": "Cual es la resistencia minima del mortero de relleno en mamposteria segun el Titulo D, y cuanto cuesta el metro cuadrado de baldosa Alfa L1 de 33x33?",
+        "ground_truth": "El mortero de relleno nunca puede ser inferior a 12.5 MPa (Título D); la baldosa Alfa L1 33x33 cuesta $30.160,19 COP por m².",
+        "id": "COMP-mortero-relleno-y-baldosa",
+    },
+    {
+        "pregunta": "A partir de que area construida es obligatoria la supervision tecnica en mamposteria segun el Titulo D, y cual es el mejor precio nacional de un codo de acero galvanizado de 1 1/4 pulgada?",
+        "ground_truth": "Es obligatoria por encima de 3.000 m² de área construida (Título D); el mejor precio nacional del codo de 90° en acero galvanizado de 1 1/4\" es $5.000 COP con Ferretería Nicholson, comparado entre 60 proveedores mipyme reales.",
+        "id": "COMP-supervision-mamposteria-y-codo-galvanizado",
+    },
+    {
+        "pregunta": "Cual es la fuerza maxima requerida para abrir completamente una puerta de salida segun el Titulo K, y cuanto cuesta un candado estandar de 30mm en Ferreteria Samir?",
+        "ground_truth": "La fuerza máxima es menor a 250 N (Título K); el candado estándar de 30mm cuesta $43.366 COP en Ferretería Samir, Barranquilla.",
+        "id": "COMP-fuerza-puerta-y-candado",
+    },
+    # ---- Fraseo coloquial de campo (reformulaciones informales de hechos ya
+    # verificados arriba -- mide si REGISTRO cambia el resultado, no solo la
+    # redacción) ----
+    {
+        "pregunta": "Los ganchos de los flejes en una columna sismica se doblan a 90 grados o mas cerrados?",
+        "ground_truth": "Se doblan a 135 grados según el Título C (para estructuras DMO y DES) — más cerrado que un ángulo recto de 90 grados.",
+        "id": "COLOQ-ganchos-flejes-columna",
+    },
+    {
+        "pregunta": "Si el concreto va pegado a la tierra todo el tiempo, cuanto de recubrimiento le tengo que dejar a la varilla?",
+        "ground_truth": "75 mm, según el Título C, cuando el concreto está en contacto permanente con el suelo.",
+        "id": "COLOQ-recubrimiento-varilla-tierra",
+    },
+    {
+        "pregunta": "De que resistencia minima tiene que ser el concreto de una estructura, la mas floja que se permite?",
+        "ground_truth": "17 MPa, la resistencia mínima a la compresión que exige el Título C para el concreto estructural.",
+        "id": "COLOQ-resistencia-concreto-floja",
+    },
+    {
+        "pregunta": "Cuanto se puede ladear un piso de un edificio de concreto sin que sea un problema, segun la norma?",
+        "ground_truth": "1.0% de la altura del piso, la deriva máxima permitida para estructuras de concreto reforzado según el Título A.",
+        "id": "COLOQ-ladeo-piso-concreto",
+    },
+    {
+        "pregunta": "Que tan humeda puede estar la madera que se usa para la estructura del techo?",
+        "ground_truth": "Máximo 19% de humedad para madera estructural en general, o 12% si es madera laminada, según el Título G.",
+        "id": "COLOQ-humedad-madera-techo",
+    },
+    {
+        "pregunta": "Se le puede meter clavo a la guadua para unir dos piezas?",
+        "ground_truth": "No, las uniones clavadas están prohibidas en guadua porque los clavos inducen grietas longitudinales, según el Título G.",
+        "id": "COLOQ-clavo-guadua",
+    },
+    {
+        "pregunta": "Que tan dura puede estar una puerta de emergencia para que la gente la pueda abrir sin problema?",
+        "ground_truth": "La fuerza requerida para abrirla completamente debe ser menor a 250 N, según el Título K.",
+        "id": "COLOQ-dureza-puerta-emergencia",
+    },
+    {
+        "pregunta": "Desde que tamano de obra en mamposteria toca contratar un supervisor tecnico si o si?",
+        "ground_truth": "A partir de 3.000 m² de área construida, según el Título D.",
+        "id": "COLOQ-tamano-obra-supervisor",
+    },
+    {
+        "pregunta": "Que tan gruesa tiene que ser minimo una columna de confinamiento en un muro de mamposteria confinada?",
+        "ground_truth": "El área transversal mínima es 20.000 mm² (200 cm²), según el Título E.",
+        "id": "COLOQ-columna-confinamiento-gruesa",
+    },
+    {
+        "pregunta": "Cuales son las formas en que se puede armar la estructura de un edificio para que aguante un temblor, segun la norma?",
+        "ground_truth": "Los 4 sistemas estructurales de resistencia sísmica que reconoce la NSR-10 son: muros de carga, combinado, pórtico y sistema dual (Título A).",
+        "id": "COLOQ-formas-estructura-temblor",
+    },
+    # ---- Adversarial / sin respuesta real en el corpus ----
+    # 4 de estas 10 se probaron EN VIVO contra ask() antes de escribir el
+    # ground_truth (batch de 2026-09-07). Hallazgo real e importante: la
+    # pregunta sobre "Título L" hizo que el sistema AFIRME que existe un
+    # "NSR-10, Título L (Diseño y Construcción de Estructuras Metálicas)"
+    # -- fabricado; verificado con SQL directo (0 filas con Título L en
+    # nsr10_chunks) que la NSR-10 real solo llega hasta el Título K, y que
+    # "Estructuras Metálicas" es en realidad el Título F. Es una
+    # alucinación real, no una suposición -- queda documentada tal cual
+    # para medirla con RAGAS, no corregida de antemano. Las otras 3
+    # verificadas en vivo (NTC 99999, decibeles de ruido) el sistema SÍ
+    # respondió honestamente que no tiene esa información -- casos
+    # positivos reales, no solo teóricos. Ojo: al verificar esto se
+    # encontró además que K.4.3 (vidrios de seguridad) SÍ está cargado
+    # verbatim y se citó con precisión -- la memoria privada del proyecto
+    # que lo daba por "bloqueado, sin fuente" estaba desactualizada
+    # (corregida por separado, no se usa K.4.3 aquí como adversarial).
+    # Las otras 6 son construidas por diseño (título/norma/tema que no
+    # existe o está fuera del alcance de la NSR-10), razonablemente
+    # seguras de no tener contenido real, pero NO probadas una por una en
+    # vivo por límite de tiempo -- si alguna resulta tener contenido real
+    # al correr RAGAS, hay que revisar y corregir el ground_truth, no
+    # ignorar el resultado.
+    {
+        "pregunta": "Que dice el Titulo L de la NSR-10 sobre estructuras metalicas prefabricadas?",
+        "ground_truth": "La NSR-10 no tiene un Título L -- la numeración de títulos llega hasta el Título K. Estructuras metálicas está regulado en el Título F, no en un supuesto Título L. El sistema no debe afirmar que existe un Título L ni inventar su contenido.",
+        "id": "ADV-titulo-L-fabricado",
+    },
+    {
+        "pregunta": "Que exige el Titulo M de la NSR-10 sobre estructuras de bambu laminado?",
+        "ground_truth": "La NSR-10 no tiene un Título M -- la numeración de títulos llega hasta el Título K. El sistema no debe inventar contenido para un título que no existe.",
+        "id": "ADV-titulo-M-bambu-laminado",
+    },
+    {
+        "pregunta": "Que exige la NTC 99999 sobre acabados de pintura?",
+        "ground_truth": "No existe una NTC 99999 en el corpus ni como norma colombiana real conocida -- el sistema no debe inventar requisitos para ella.",
+        "id": "ADV-ntc-99999-acabados-pintura",
+    },
+    {
+        "pregunta": "Cual es el limite de decibeles de ruido permitido en obra segun la NSR-10?",
+        "ground_truth": "La NSR-10 no regula límites de ruido en obra -- ese tema lo regulan normas ambientales y de salud ocupacional (ej. resoluciones del Ministerio de Trabajo), no la NSR-10. El sistema debe aclarar que no es un tema de la NSR-10, no inventar un valor en decibeles.",
+        "id": "ADV-decibeles-ruido-obra",
+    },
+    {
+        "pregunta": "Cuales son los valores de Aa y Av para una ciudad en Marte segun la NSR-10?",
+        "ground_truth": "La NSR-10 es una norma colombiana que solo asigna valores de Aa y Av a municipios de Colombia -- no existe ni puede existir un valor real para una ubicación fuera de Colombia (o fuera del planeta). El sistema no debe inventar un valor.",
+        "id": "ADV-marte-Aa-Av",
+    },
+    {
+        "pregunta": "Que exige la NTC 88888 sobre iluminacion LED en fachadas?",
+        "ground_truth": "No existe una NTC 88888 en el corpus ni como norma colombiana real conocida -- el sistema no debe inventar requisitos para ella.",
+        "id": "ADV-ntc-88888-iluminacion-led",
+    },
+    {
+        "pregunta": "Cual es el factor de reduccion de resistencia phi para estructuras de diamante estructural segun el Titulo C?",
+        "ground_truth": "\"Diamante estructural\" no es un material reconocido por la NSR-10 (que regula concreto, acero, mampostería, madera/guadua y aluminio) -- el sistema no debe inventar un factor phi para un material que no existe en la norma.",
+        "id": "ADV-material-diamante-estructural",
+    },
+    {
+        "pregunta": "Que capitulo de la NSR-10 regula el diseno de puentes colgantes peatonales de mas de 500 metros de luz?",
+        "ground_truth": "La NSR-10 regula edificaciones, no puentes -- el diseño de puentes en Colombia lo regula el CCP-14 (INVIAS/AASHTO LRFD), una norma distinta. El sistema no debe inventar un capítulo de la NSR-10 para esto.",
+        "id": "ADV-puentes-colgantes-fuera-alcance",
+    },
+    {
+        "pregunta": "Que exige el Decreto 1077 de 2015 sobre el peso maximo de granizo permitido en cubiertas?",
+        "ground_truth": "El Decreto 1077 de 2015 es una norma real de Colombia (licencias urbanísticas y ordenamiento territorial, Ley 388/1997), pero no regula cargas de granizo en cubiertas -- eso sería, si acaso, una carga técnica de la NSR-10 Título B. El sistema no debe inventar una exigencia de granizo atribuida al Decreto 1077.",
+        "id": "ADV-decreto1077-granizo-cubiertas",
+    },
+    {
+        "pregunta": "Que dice la NSR-10 sobre el diseno estructural de reactores nucleares?",
+        "ground_truth": "La NSR-10 es una norma de edificaciones civiles convencionales en Colombia y no regula reactores nucleares -- ese es un tema completamente fuera de su alcance. El sistema no debe inventar contenido para esto.",
+        "id": "ADV-reactor-nuclear-fuera-alcance",
     },
 ]

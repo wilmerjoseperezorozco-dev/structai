@@ -1,31 +1,24 @@
 """
-Línea base RAGAS de NSR-10/normas -- 143 preguntas (dataset_baseline_nsr10.py,
-crecido de 12 -> 52 -> 103 -> 143 en sesiones sucesivas sin correr RAGAS
-completo, por la decisión explícita de diferir la corrida hasta +300
-preguntas -- ver [[project_structai_ragas_baseline]] en memoria). Esta
-corrida (2026-09-07) se adelanta sobre esa decisión a pedido explícito del
-usuario, específicamente para medir las 40 preguntas complejas nuevas
-(síntesis cruzada entre títulos, adversariales, compuestas precio+norma,
-coloquiales) que no existían en ninguna corrida anterior. Corre sobre el
-pipeline real con re-ranking combinado + descomposición de consultas (el
-estado actual de rag_multi_norma.ask(), no una versión vieja).
+Línea base RAGAS de precios/APU -- 55 preguntas (dataset_baseline_precios.py),
+corriendo sobre rag_multi_norma.ask_precios() real (texto completo español +
+trigram + expansión de sinónimos regionales, sin mocks).
 
-Dos parches de entorno aplicados SOLO para esta corrida, documentados
-explícitamente como confound real (no se ocultan):
+Esta es la corrida "ANTES" del Paso 3 del plan de Fase 4 (desglose
+jerárquico actividad->insumo vía actividad_padre_id) -- se guarda como
+baseline real para comparar contra una segunda corrida "DESPUÉS" una vez
+implementado ese paso, en vez de asumir que agregar el desglose mejora las
+métricas sin medirlo.
 
-1. Groq forzado a fallar de inmediato -> respaldo OpenAI directo. Groq
-   viene inconsistente/lento hoy (mismo patrón de agotamiento de cuota ya
-   documentado); el usuario autorizó explícitamente usar OpenAI (crédito
-   real disponible) en vez de esperar a que Groq falle o cuelgue.
-2. Cliente Supabase forzado a HTTP/1.1 -- HTTP/2 falla de forma
-   consistente y reproducible (httpcore.RemoteProtocolError:
-   ConnectionTerminated, 5/5 en pruebas aisladas) contra el RPC
-   search_knowledge desde esta máquina Windows. HTTP/1.1 funciona sin
-   fallos. No se toca production (Google Cloud Run desde 2026-09-01,
-   antes DigitalOcean -- en ambos casos Linux, ruta de red distinta) --
-   esto puede ser específico de esta máquina/ISP.
+Mismos dos parches de entorno que ragas_52preguntas.py, documentados ahí
+como confound real (no se ocultan, mismo motivo):
 
-Ejecutar: C:\\ragas_venv\\Scripts\\python.exe ragas_52preguntas.py
+1. Groq forzado a fallar de inmediato -> respaldo OpenAI directo (Groq
+   inconsistente/lento hoy, usuario autorizó gastar crédito de OpenAI para
+   verificación real en vez de esperar a Groq).
+2. Cliente Supabase forzado a HTTP/1.1 (HTTP/2 falla de forma consistente
+   desde esta máquina Windows contra los RPC de Supabase).
+
+Ejecutar: C:\\ragas_venv\\Scripts\\python.exe ragas_precios.py
 """
 import json
 import os
@@ -57,28 +50,18 @@ rag_multi_norma.sb = create_client(
     options=ClientOptions(httpx_client=_http1_client),
 )
 
-from rag_multi_norma import ask
-from dataset_baseline_nsr10 import CASOS_BASELINE
+from rag_multi_norma import ask_precios
+from dataset_baseline_precios import CASOS_BASELINE_PRECIOS
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-# Antes hardcodeado a "baseline_2026-08-27_52preguntas_*" -- bug real
-# encontrado 2026-09-07: el dataset ya creció a 143 preguntas (52 -> 103
-# -> 143 en sesiones sucesivas sin correr RAGAS completo, por la decisión
-# de diferir hasta +300), y ese nombre fijo habría SOBREESCRITO el
-# baseline histórico de 52 preguntas del 2026-08-27 con datos de una
-# corrida distinta bajo el mismo nombre. Corregido a nombre derivado del
-# n real + fecha real de la corrida, para que cada baseline quede
-# identificado por lo que realmente mide (mismo principio que ya usa
-# ragas_precios.py con su constante FECHA).
 FECHA = "2026-09-07"
-N_PREGUNTAS = len(CASOS_BASELINE)
 
 
 def construir_muestras():
     muestras = []
-    for i, caso in enumerate(CASOS_BASELINE, 1):
-        print(f"  [{i:02d}/{len(CASOS_BASELINE)}] preguntando: {caso['id']} ...", flush=True)
-        resultado = ask(caso["pregunta"], top_k=10)
+    for i, caso in enumerate(CASOS_BASELINE_PRECIOS, 1):
+        print(f"  [{i:02d}/{len(CASOS_BASELINE_PRECIOS)}] preguntando: {caso['id']} ...", flush=True)
+        resultado = ask_precios(caso["pregunta"], top_k=8)
         contextos = [c["contenido"] for c in resultado.get("contextos_recuperados", [])]
         muestras.append({
             "id": caso["id"],
@@ -91,10 +74,10 @@ def construir_muestras():
 
 
 def main():
-    print(f"Construyendo {len(CASOS_BASELINE)} muestras reales (llamadas a ask(), Groq desactivado -> OpenAI directo)...")
+    print(f"Construyendo {len(CASOS_BASELINE_PRECIOS)} muestras reales (llamadas a ask_precios(), Groq desactivado -> OpenAI directo)...")
     muestras = construir_muestras()
 
-    out_path = SCRIPT_DIR / f"baseline_{FECHA}_{N_PREGUNTAS}preguntas_muestras.jsonl"
+    out_path = SCRIPT_DIR / f"baseline_{FECHA}_precios_muestras.jsonl"
     with out_path.open("w", encoding="utf-8") as f:
         for m in muestras:
             f.write(json.dumps(m, ensure_ascii=False) + "\n")
@@ -120,21 +103,18 @@ def main():
     )
 
     df = resultado.to_pandas()
-    out_csv = SCRIPT_DIR / f"baseline_{FECHA}_{N_PREGUNTAS}preguntas_scorecard.csv"
+    out_csv = SCRIPT_DIR / f"baseline_{FECHA}_precios_scorecard.csv"
     df.to_csv(out_csv, index=False, encoding="utf-8")
 
-    # to_pandas() de RAGAS no conserva campos custom como "id" (mismo bug
-    # real encontrado en ragas_precios.py 2026-09-07) -- se reconstruye la
-    # categoría por POSICIÓN, no por columna. Prefijo nuevo (SINT-/ADV-/
-    # COMP-/COLOQ-) vs. cualquier otro id = pregunta "original" (de las 103
-    # ya existentes antes de esta ampliación).
-    PREFIJOS_NUEVOS = ("SINT-", "ADV-", "COMP-", "COLOQ-")
-    def _categoria(id_: str) -> str:
-        for p in PREFIJOS_NUEVOS:
-            if id_.startswith(p):
-                return p.rstrip("-")
-        return "original"
-    df["categoria"] = [_categoria(m["id"]) for m in muestras]
+    # to_pandas() de RAGAS SOLO conserva user_input/retrieved_contexts/
+    # response/reference + las métricas -- descarta cualquier campo custom
+    # como "id" que iba en las muestras originales (bug real encontrado en
+    # la primera corrida 2026-09-07: df["id"] no existe, KeyError). En vez
+    # de la columna "id", se reconstruye el prefijo de categoría por
+    # POSICIÓN: EvaluationDataset.from_list() preserva el orden de la
+    # lista de entrada, así que la fila i del resultado corresponde a
+    # muestras[i].
+    df["categoria"] = [m["id"].split("-")[0] + "-" + m["id"].split("-")[1] for m in muestras]
 
     metricas = ["faithfulness", "answer_relevancy", "context_precision", "context_recall"]
     resumen_filas = []
@@ -163,7 +143,7 @@ def main():
                 })
 
     import csv as _csv
-    out_resumen = SCRIPT_DIR / f"baseline_{FECHA}_{N_PREGUNTAS}preguntas_resumen.csv"
+    out_resumen = SCRIPT_DIR / f"baseline_{FECHA}_precios_resumen.csv"
     with out_resumen.open("w", newline="", encoding="utf-8") as f:
         writer = _csv.DictWriter(f, fieldnames=["categoria", "metrica", "media", "std", "min", "max", "n"])
         writer.writeheader()
@@ -173,10 +153,6 @@ def main():
     for fila in resumen_filas:
         if fila["categoria"] == "TODAS":
             print(f"  {fila['metrica']}: {fila['media']:.3f} ± {fila['std']:.3f}  (min={fila['min']:.3f}, max={fila['max']:.3f})")
-    print(f"\n=== Por categoría ===")
-    for fila in resumen_filas:
-        if fila["categoria"] != "TODAS":
-            print(f"  {fila['categoria']:10s} {fila['metrica']:18s}: {fila['media']:.3f} (n={fila['n']})")
     print(f"\nDetalle por pregunta: {out_csv}")
     print(f"Resumen media±std (general + por categoría): {out_resumen}")
 
