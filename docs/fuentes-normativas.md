@@ -53,7 +53,7 @@ significa más norma cubierta, solo troceo más fino.
 | F.5.4.7 (Miembros a compresión) | 0 | **Pendiente** — la pieza más densa de F.5 (Tabla F.5.4.7-2, 18 tipos de sección con fórmulas propias cada uno), ya mapeada parcialmente pero no transcrita, mismo `NSR-10-1083-1182.pdf` ya descargado |
 | F.5.4.8–F.5.4.9, F.5.5–F.5.8 + apéndices F.5.A–F.5.F (cierra el Título F) | 0 | Pendiente — requiere descargar `NSR-10-1183-1283.pdf` (id `1xuOZukeQsLIV957z59BK2eJqpZ5qu__b`, confirmado real, no descargado todavía) |
 | G — Madera y Guadua | 464 | Verbatim completo |
-| H — Estudios geotécnicos | 48 | Verbatim, **sin auditoría numeral por numeral todavía**. 13 chunks no-verbatim borrados el 2026-09-01 — issue [#38](https://github.com/wilmerjoseperezorozco-dev/structai/issues/38) sigue abierto |
+| H — Estudios geotécnicos | 48 | **INCOMPLETO — hueco real grande, confirmado 2026-09-07 con auditoría numeral por numeral** (`pypdf` sobre los 3 PDF fuente + comparación contra `nsr10_chunks`, 181 encabezados reales identificados). Solo cubre H.1–H.3.2 (~18% del título, 33 de 181 encabezados). **Faltan por completo H.3.3 (ensayos de laboratorio) y los capítulos H.4 (cimentaciones), H.5 (excavaciones y taludes), H.6 (estructuras de contención), H.7 (efectos sísmicos/licuación), H.8 (sistema constructivo), H.9 (suelos expansivos/colapsables) y H.10 (rehabilitación sísmica)** — 148 de 181 encabezados sin chunk. Los 3 PDF fuente ya están descargados en `scripts/ingesta/nsr10/raw/`. 13 chunks no-verbatim (de lo poco que sí existía) borrados el 2026-09-01 — issue [#38](https://github.com/wilmerjoseperezorozco-dev/structai/issues/38) sigue abierto |
 | I — Supervisión técnica | 33 | Verbatim completo (I.1–I.4) |
 | J — Protección contra incendios | 18 | Verbatim completo (J.1–J.4) |
 | K — Otros requisitos complementarios (K.1–K.4.3) | 416 | **Verbatim completo, incluido K.4.3** — corrección real 2026-09-07: una memoria interna daba K.4.3 por "bloqueado, sin fuente" desde 2026-08-28, pero en algún punto posterior sí se ingestó sin que se actualizara esa nota; confirmado con SQL directo (chunks reales `NSR10-K-K_4_3_*`, K.4.3.1 a K.4.3.9) y con una respuesta real de `ask()` citando K.4.3.2 con precisión exacta |
@@ -62,13 +62,21 @@ significa más norma cubierta, solo troceo más fino.
 estimados para cerrarlo por completo — sigue siendo, con diferencia, el
 título con más volumen de todos.
 
-**Sobre el "sin auditoría numeral por numeral" de A/B/H**: significa que
-nadie extrajo con `pypdf`/regex los numerales que existen REALMENTE en el
-PDF fuente y los comparó contra los ids de chunk en la base, el único
-método que confirmó de verdad un hueco real (K.3.11–K.3.18, 0% cubiertos,
-2026-08-27) que la sola inspección de "¿el chunk que existe se ve
-completo?" no detectó. No hay evidencia de un hueco real conocido en A/B/H
-hoy — es honestamente "no verificado", no "sabemos que falta algo".
+**Sobre la auditoría numeral por numeral (mismo método que confirmó
+K.3.11–K.3.18, 0% cubiertos, 2026-08-27 — extraer con `pypdf`/regex los
+numerales que existen REALMENTE en el PDF fuente y compararlos contra los
+ids de chunk en la base, no solo mirar si "el chunk que existe se ve
+completo")**:
+
+- **Título H — auditado 2026-09-07, hueco real confirmado** (ver fila de
+  arriba): 148 de 181 encabezados reales sin chunk, el título cubre apenas
+  H.1–H.3.2. No era un caso de "probablemente está bien, falta el
+  papeleo" — de hecho la mayoría técnica del título (cimentaciones,
+  taludes, muros de contención, licuación, suelos problemáticos,
+  rehabilitación sísmica) nunca se ingestó.
+- **Título A — auditoría en curso**, mismo método, resultado pendiente.
+- **Título B — todavía sin auditar**, dado el hallazgo real de H no
+  asumir que B está bien solo porque no se ha revisado.
 
 **Nota real sobre calidad, ya corregida (2026-09-01)**: se encontró que
 151 de 293 chunks (51.5%) de F.4.3/F.4.4/F.4.5 se truncaban en silencio al
