@@ -112,7 +112,16 @@ Hasta esta semana, la disciplina de medición de arriba solo cubría el RAG norm
 
 Las ramas de proveedor y proveedor nacional salen casi perfectas (0.85–1.0); la de insumos individuales es la más débil (precisión de contexto 0.538). La categoría adversarial (materiales inventados, ej. "concreto de kriptonita") tiene relevancia de respuesta en 0.000 — verificado a mano que **no es una falla real**: el sistema sí rechaza inventar un precio, pero esa misma métrica de RAGAS penaliza una respuesta honesta de "no lo tengo" por no dar un número directo, una limitación conocida de esa métrica frente a casos de rechazo. El hallazgo real y sin corregir todavía es la categoría de jerga regional: preguntas como "cuánto cuesta hacer una vereda" no siempre encuentran el precio real guardado como "andén" cuando compite contra filas casi duplicadas en el ranking — queda como mejora pendiente, documentada como tal, no oculta.
 
-De paso se implementó el desglose jerárquico actividad→insumo mencionado en la tabla de arriba, y se amplió el conjunto de evaluación normativo de 103 a 143 preguntas con categorías que antes no existían (preguntas que combinan dos títulos, preguntas sin respuesta real en el corpus, preguntas que mezclan precio y norma en una sola consulta, y fraseo coloquial de campo) — la corrida de RAGAS sobre ese conjunto ampliado está en curso.
+De paso se implementó el desglose jerárquico actividad→insumo mencionado en la tabla de arriba, y se amplió el conjunto de evaluación normativo de 103 a 143 preguntas con categorías que antes no existían (preguntas que combinan dos títulos, preguntas sin respuesta real en el corpus, preguntas que mezclan precio y norma en una sola consulta, y fraseo coloquial de campo).
+
+| Métrica (n=143 preguntas, NSR-10 ampliado) | Media ± desviación estándar |
+|---|---|
+| Fidelidad | 0.757 ± 0.255 |
+| Relevancia de respuesta | 0.848 ± 0.256 |
+| Precisión de contexto | 0.798 ± 0.218 |
+| Cobertura de contexto | 0.915 ± 0.264 |
+
+Desglosado por categoría, la lectura real es más interesante que el promedio: las preguntas de **síntesis entre dos títulos salen mejor que el resto** (relevancia 0.937) — la descomposición de consultas maneja bien combinar dos conceptos normativos, contrario a lo que uno esperaría de una pregunta "más difícil". Las preguntas **compuestas de precio+norma** (primera vez que se mide esa ruta con RAGAS) salen débiles (relevancia 0.000, fidelidad 0.486) — señal real, no ruido de infraestructura, y candidata concreta a revisar antes de confiar en esa ruta sin reservas. Las categorías adversarial y coloquial mostraron valores nulos en precisión de contexto que coinciden con una racha real de timeouts del juez hacia el final de esta corrida (misma colisión de cuota de OpenAI ya documentada en la ampliación de 52 preguntas) — no los cuento como hallazgo confirmado hasta repetir la medición con las cuotas de generación y juicio separadas.
 
 ### Auditoría de integridad del corpus — otro hallazgo real, corregido (2026-09-01)
 
@@ -329,7 +338,16 @@ The cheaper pre-check (no RAGAS judge involved) also found 3 of the 40 new quest
 
 The supplier and national-supplier branches come out nearly perfect (0.85–1.0); individual supplies is the weakest (context precision 0.538). The adversarial category (invented materials, e.g. "kryptonite concrete") shows answer relevancy at 0.000 — checked by hand that this **isn't a real failure**: the system does refuse to invent a price, but that same RAGAS metric penalizes an honest "I don't have that" for not giving a direct number, a known limitation of that metric against refusal cases. The real, still-unfixed finding is the regional-jargon category: questions like "how much does a sidewalk cost" (using a regional synonym) don't always surface the real price stored under the standard term when it's competing against near-duplicate rows in the ranking — left as a documented, pending improvement, not hidden.
 
-Along the way, the activity→supply breakdown hierarchy mentioned in the table above was implemented, and the regulatory evaluation set was expanded from 103 to 143 questions with categories that didn't exist before (questions spanning two titles at once, questions with no real answer in the corpus, questions mixing price and regulation in a single query, and colloquial field phrasing) — the RAGAS run over that expanded set is in progress.
+Along the way, the activity→supply breakdown hierarchy mentioned in the table above was implemented, and the regulatory evaluation set was expanded from 103 to 143 questions with categories that didn't exist before (questions spanning two titles at once, questions with no real answer in the corpus, questions mixing price and regulation in a single query, and colloquial field phrasing).
+
+| Metric (n=143 questions, expanded NSR-10 set) | Mean ± standard deviation |
+|---|---|
+| Faithfulness | 0.757 ± 0.255 |
+| Answer relevancy | 0.848 ± 0.256 |
+| Context precision | 0.798 ± 0.218 |
+| Context recall | 0.915 ± 0.264 |
+
+Broken down by category, the real story is more interesting than the average: questions **synthesizing two titles at once actually score better than the rest** (relevancy 0.937) — query decomposition handles combining two regulatory concepts well, the opposite of what you'd expect from a "harder" question type. The **compound price+regulation questions** (the first time that path has ever been measured with RAGAS) come out weak (relevancy 0.000, faithfulness 0.486) — a real signal, not infrastructure noise, and a concrete candidate to review before trusting that path without reservations. The adversarial and colloquial categories showed null context-precision values that line up with a real streak of judge timeouts near the end of this run (the same OpenAI quota collision already documented in the 52-question expansion) — I'm not counting those as a confirmed finding until the measurement is repeated with separate generation and judging quotas.
 
 **Corpus integrity audit — another real finding, fixed (2026-09-01).** The local embedding model has a hard 128-token limit per fragment — anything longer gets silently truncated for semantic search, even though the full text stays stored and visible if that fragment ever gets retrieved. I audited the entire NSR-10 corpus with the real tokenizer (not a character-count estimate) and found **493 of 4,129 fragments (11.9%) exceeded that limit**, with severity wildly uneven by title: Titles K, B, J and A were 100% truncated, while Titles C and D — most of the corpus, 3,121 fragments — were at 0%. Fixed the same day: the 493 fragments were re-split respecting the real limit (no PDF re-read needed — the already-loaded verbatim text was correct, just mis-chunked), verified with a second, independent audit confirming 0% of fragments over the limit across the whole corpus. Full detail, including the per-title severity table, is in the repository's public commit history.
 
