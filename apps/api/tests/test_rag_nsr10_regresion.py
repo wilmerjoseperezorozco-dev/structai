@@ -962,6 +962,36 @@ CASOS_TITULO_H_H8 = [
     ),
 ]
 
+# ---- Título H, ampliación H.9 completo (Condiciones geotécnicas especiales:
+# suelos expansivos, dispersivos/erodables, colapsables, efectos de la
+# vegetación) ----
+# Ingesta verbatim 2026-09-07 (misma sesión), 4/4 PASSED contra producción
+# real (Groq agotado ese día, respaldo OpenAI automático) -- capítulo más
+# grande de Título H (29 encabezados reales), sin hallazgos fallidos esta
+# vez.
+CASOS_TITULO_H_H9 = [
+    pytest.param(
+        "Cual es la profundidad maxima tipica hasta la que se desarrollan las raices de un arbol segun el Titulo H?",
+        ["6.0 m", "6 m", "6.0m"],
+        id="H-profundidad-raices-6m",
+    ),
+    pytest.param(
+        "A que valor de pF equivale el punto de marchitamiento de las plantas segun el Titulo H?",
+        ["4.2", "4,2"],
+        id="H-punto-marchitamiento-pf-42",
+    ),
+    pytest.param(
+        "Cual es el criterio para que un suelo se considere colapsable segun la relacion gamma_d sobre gamma_dcrit del Titulo H?",
+        ["menor", "1", "colapsable"],
+        id="H-criterio-colapsabilidad-gamma-dcrit",
+    ),
+    pytest.param(
+        "A partir de que porcentaje de sales de sodio en el agua intersticial se considera una arcilla como suelo dispersivo segun el Titulo H?",
+        ["40%", "60%"],
+        id="H-suelo-dispersivo-sales-sodio-40-60",
+    ),
+]
+
 
 @pytest.mark.parametrize(
     "pregunta,variantes_esperadas",
@@ -999,6 +1029,7 @@ CASOS_TITULO_H_H8 = [
     + CASOS_TITULO_H_H6
     + CASOS_TITULO_H_H7
     + CASOS_TITULO_H_H8
+    + CASOS_TITULO_H_H9
     + CASOS_TITULO_F_F544
     + CASOS_TITULO_F_F545
     + CASOS_TITULO_F_F546,

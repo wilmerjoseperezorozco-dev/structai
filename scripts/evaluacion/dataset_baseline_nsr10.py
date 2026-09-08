@@ -819,6 +819,32 @@ CASOS_BASELINE = [
         "ground_truth": "La desviación máxima de verticalidad permitida no deberá ser mayor de 3/100 de su longitud.",
         "id": "H-desviacion-verticalidad-pilote-3-100",
     },
+    # ---- Título H, ampliación H.9 completo (Condiciones geotécnicas
+    # especiales: suelos expansivos, dispersivos/erodables, colapsables,
+    # efectos de la vegetación) ----
+    # Ingesta verbatim 2026-09-07 (misma sesión), 4/4 PASSED contra
+    # producción real -- capítulo más grande de Título H (29 encabezados
+    # reales), sin hallazgos fallidos esta vez.
+    {
+        "pregunta": "Cual es la profundidad maxima tipica hasta la que se desarrollan las raices de un arbol segun el Titulo H?",
+        "ground_truth": "Las raíces de los árboles generalmente se desarrollan por lo regular a no más de 6.0 m de profundidad, según el Título H.",
+        "id": "H-profundidad-raices-6m",
+    },
+    {
+        "pregunta": "A que valor de pF equivale el punto de marchitamiento de las plantas segun el Titulo H?",
+        "ground_truth": "El punto de marchitamiento equivale a una presión métrica de succión igual a pF = 4.2, superior a 10^3 kPa.",
+        "id": "H-punto-marchitamiento-pf-42",
+    },
+    {
+        "pregunta": "Cual es el criterio para que un suelo se considere colapsable segun la relacion gamma_d sobre gamma_dcrit del Titulo H?",
+        "ground_truth": "El suelo es colapsable si gamma_d/gamma_dcrit es menor o igual a 1; si es mayor a 1, el suelo es estable o expansivo.",
+        "id": "H-criterio-colapsabilidad-gamma-dcrit",
+    },
+    {
+        "pregunta": "A partir de que porcentaje de sales de sodio en el agua intersticial se considera una arcilla como suelo dispersivo segun el Titulo H?",
+        "ground_truth": "Se considera suelo dispersivo cuando la concentración de sales de sodio (Na) en el agua intersticial pasa de 40% o 60% del total de sales disueltas.",
+        "id": "H-suelo-dispersivo-sales-sodio-40-60",
+    },
     # ---- Adversarial / sin respuesta real en el corpus ----
     # 4 de estas 10 se probaron EN VIVO contra ask() antes de escribir el
     # ground_truth (batch de 2026-09-07). Hallazgo real e importante: la
