@@ -43,6 +43,12 @@ se agregan al final de CASOS_BASELINE, agrupadas en 4 bloques nuevos con
 su propio comentario de sección -- no se creó una lista aparte a
 propósito, para que ragas_52preguntas.py siga corriendo sobre un solo
 dataset sin tener que tocar ese script.
+
+Ampliación 2026-09-07 (misma sesión, de 143 a 145): +2 preguntas reales
+de Título H (ids "H-asentamiento-..."/"H-fsicp-..."), primera ingesta
+tras la auditoría numeral-por-numeral que confirmó que Título H solo
+cubría H.1-H.3.2 (~18% del título) -- ver memoria privada del usuario,
+project_structai_nsr10_inventario_titulos.md.
 """
 
 CASOS_BASELINE = [
@@ -733,6 +739,22 @@ CASOS_BASELINE = [
         "pregunta": "Cuales son las formas en que se puede armar la estructura de un edificio para que aguante un temblor, segun la norma?",
         "ground_truth": "Los 4 sistemas estructurales de resistencia sísmica que reconoce la NSR-10 son: muros de carga, combinado, pórtico y sistema dual (Título A).",
         "id": "COLOQ-formas-estructura-temblor",
+    },
+    # ---- Título H, ampliación H.3.3 (cierre) + H.4 completo (Cimentaciones) ----
+    # Ingesta verbatim 2026-09-07, primera pieza tras la auditoría numeral por
+    # numeral que confirmó que Título H solo cubría H.1-H.3.2 (~18%). Mismas
+    # 2 preguntas verificadas PASSED de test_rag_nsr10_regresion.py -- otras
+    # 2 probadas no pasaron (retrieval y una confusión de fila de tabla en
+    # generación, ver memoria privada) y se dejaron fuera a propósito.
+    {
+        "pregunta": "Cual es el asentamiento maximo permitido a 20 anos para construcciones aisladas segun el Titulo H de la NSR-10?",
+        "ground_truth": "El asentamiento total calculado a 20 años para construcciones aisladas se limita a 30 cm, siempre que no se afecte la funcionalidad de conducciones de servicios ni el acceso a la construcción.",
+        "id": "H-asentamiento-maximo-aisladas-30cm",
+    },
+    {
+        "pregunta": "Cuales son los factores de seguridad indirectos minimos para cimentaciones bajo carga muerta mas carga viva normal segun el Titulo H?",
+        "ground_truth": "El factor de seguridad indirecto mínimo F_SICP para cimentaciones bajo carga muerta más carga viva normal es 3.0.",
+        "id": "H-fsicp-carga-muerta-viva-normal-30",
     },
     # ---- Adversarial / sin respuesta real en el corpus ----
     # 4 de estas 10 se probaron EN VIVO contra ask() antes de escribir el

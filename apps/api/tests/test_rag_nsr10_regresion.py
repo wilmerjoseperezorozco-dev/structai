@@ -862,6 +862,27 @@ CASOS_TITULO_F_F546 = [
     ),
 ]
 
+# ---- Título H, ampliación H.3.3 (cierre) + H.4 completo (Cimentaciones) ----
+# Ingesta verbatim 2026-09-07, primera pieza tras la auditoría numeral por
+# numeral que confirmó que Título H solo cubría H.1-H.3.2 (~18% del título).
+# Solo se agregan aquí las 2 preguntas verificadas PASSED contra producción
+# real (ask(), respaldo OpenAI por agotamiento de cuota diaria de Groq) --
+# 2 preguntas más probadas NO pasaron (retrieval y generación, ver memoria
+# privada del usuario, project_structai_nsr10_inventario_titulos.md) y se
+# dejaron fuera a propósito en vez de forzarlas.
+CASOS_TITULO_H_H4 = [
+    pytest.param(
+        "Cual es el asentamiento maximo permitido a 20 anos para construcciones aisladas segun el Titulo H de la NSR-10?",
+        ["30 cm", "30cm", "0.30 m", "0,30 m"],
+        id="H-asentamiento-maximo-aisladas-30cm",
+    ),
+    pytest.param(
+        "Cuales son los factores de seguridad indirectos minimos para cimentaciones bajo carga muerta mas carga viva normal segun el Titulo H?",
+        ["3.0", "3,0"],
+        id="H-fsicp-carga-muerta-viva-normal-30",
+    ),
+]
+
 
 @pytest.mark.parametrize(
     "pregunta,variantes_esperadas",
@@ -894,6 +915,7 @@ CASOS_TITULO_F_F546 = [
     + CASOS_TITULO_F_F52
     + CASOS_TITULO_F_F53
     + CASOS_TITULO_F_F54_1_2_3
+    + CASOS_TITULO_H_H4
     + CASOS_TITULO_F_F544
     + CASOS_TITULO_F_F545
     + CASOS_TITULO_F_F546,
