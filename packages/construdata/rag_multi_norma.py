@@ -1779,6 +1779,54 @@ def _recuperar_candidatos_normativa(pregunta_busqueda: str, norma_hint: Optional
     return target_normas, all_chunks
 
 
+_UNIDADES_RE = (
+    r"%|por ciento|porciento|MPa|kPa|kN/m2|kN/m²|kN|mm|m²|m2|"
+    r"°|grados|kg|kgf/mm2|kgf/mm²|kgf|L/s|golpes/pie|golpes|años|horas|veces"
+)
+_NUMERO_CON_UNIDAD_RE = re.compile(
+    r"\d+[.,]\d+\s?(?:" + _UNIDADES_RE + r")?"  # decimal (con o sin unidad)
+    r"|\d{2,}\s?(?:" + _UNIDADES_RE + r")"  # entero de 2+ dígitos CON unidad
+    # (un entero suelto de 1 dígito sin decimal, ej. "3 historias" o "5
+    # sondeos", se deja fuera a propósito -- demasiado ruido de falsos
+    # positivos con numeración estructural genérica de una sola cifra)
+)
+# Numerales/ecuaciones de la norma (A.3.3-1, H.9.3.2, F.5.4.4-1) no son
+# "números inventados" -- son referencias, se excluyen antes de comparar.
+_NUMERAL_NORMA_RE = re.compile(r"\b[A-K]\.\d+(?:\.\d+)*(?:-\d+)?\b")
+
+
+def _detectar_posible_alucinacion_numerica(contexto: str, respuesta: str) -> list[str]:
+    """Heurística barata (issue #31, primer paso -- sin costo de LLM extra):
+    extrae números con unidad/decimales de la RESPUESTA generada y verifica
+    si aparecen literalmente en el CONTEXTO recuperado. Un número que el LLM
+    cita pero que no está en ningún chunk recuperado es una señal real de
+    fabricación -- exactamente el patrón confirmado hoy en 2 casos reales
+    (H-H9-cuatro-tipos-suelos-colapsables, COLOQ2-fyt-confinamiento-700MPa:
+    el LLM inventó una fórmula y una cifra que no estaban en el contexto).
+
+    Es un heurístico, no un juez perfecto -- puede tener falsos positivos
+    (un número parafraseado con distinto formato) y falsos negativos (una
+    alucinación puramente textual, sin número). Devuelve la lista de
+    números sospechosos (vacía si no se encontró ninguno); el llamador
+    decide qué hacer con la advertencia -- hoy solo se expone en el campo
+    aditivo `advertencia_posible_alucinacion`, no bloquea ni reintenta.
+    Escalar a un juicio con LLM barato (Groq/gpt-4o-mini) si esto resulta
+    ruidoso en producción -- ver criterio de aceptación del issue #31."""
+    respuesta_sin_numerales = _NUMERAL_NORMA_RE.sub("", respuesta)
+    candidatos = _NUMERO_CON_UNIDAD_RE.findall(respuesta_sin_numerales)
+    sospechosos = []
+    for c in candidatos:
+        c = c.strip()
+        variantes = {c, c.replace(",", "."), c.replace(".", ",")}
+        # también el número solo, por si el contexto lo trae con otra unidad
+        solo_num_match = re.match(r"[\d.,]+", c)
+        if solo_num_match:
+            variantes.add(solo_num_match.group())
+        if not any(v in contexto for v in variantes):
+            sospechosos.append(c)
+    return sospechosos
+
+
 def ask(question: str, norma_hint: Optional[str] = None, top_k: int = TOP_K_DEFAULT_RAG) -> dict:
     """
     RAG multi-norma completo.
@@ -1850,6 +1898,14 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = TOP_K_DEFA
 
     # 3. Síntesis con Ollama local
     respuesta = _generar_respuesta(contexto, question)
+
+    # Autoevaluación barata post-generación (issue #31, primer paso): números
+    # que el LLM cita pero que no aparecen en el contexto realmente
+    # recuperado -- señal real de fabricación, no solo hipotética (ver
+    # docstring de _detectar_posible_alucinacion_numerica). Aditivo, no
+    # bloquea la respuesta ni la regenera todavía.
+    advertencia_alucinacion = _detectar_posible_alucinacion_numerica(contexto, respuesta)
+
     normas_citadas = list({c.norma for c in chunks})
     fuentes = [
         {"norma": c.norma, "seccion": c.seccion, "score": round(c.score, 4)}
@@ -1881,6 +1937,13 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = TOP_K_DEFA
             {"norma": c.norma, "seccion": c.seccion, "contenido": c.contenido, "score": round(c.score, 4)}
             for c in chunks
         ],
+        # Aditivo (issue #31): números citados en la respuesta que no se
+        # encontraron en el contexto recuperado -- heurístico barato, no un
+        # juez perfecto (ver docstring de _detectar_posible_alucinacion_numerica).
+        # Lista vacía = no se detectó ningún número sospechoso, no es garantía
+        # de que la respuesta esté 100% libre de alucinación (una alucinación
+        # sin número no la detecta este chequeo).
+        "advertencia_posible_alucinacion": advertencia_alucinacion,
     }
 
 
