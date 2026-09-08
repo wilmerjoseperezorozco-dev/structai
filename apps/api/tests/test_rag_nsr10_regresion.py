@@ -883,6 +883,85 @@ CASOS_TITULO_H_H4 = [
     ),
 ]
 
+# ---- Título H, ampliación H.5 completo (Excavaciones y estabilidad de taludes) ----
+# Ingesta verbatim 2026-09-07 (misma sesión), 3/3 PASSED contra producción real.
+CASOS_TITULO_H_H5 = [
+    pytest.param(
+        "Cual es la sobrecarga uniforme minima a considerar en la via publica y zonas proximas a excavaciones temporales segun el Titulo H?",
+        ["15 kPa", "1.5 t/m", "1,5 t/m"],
+        id="H-sobrecarga-minima-excavaciones-15kpa",
+    ),
+    pytest.param(
+        "En cuanto tiempo puede reducirse la cohesion de los materiales arcillosos en taludes de excavacion segun el Titulo H?",
+        ["30 por ciento", "30%", "un mes"],
+        id="H-cohesion-arcillas-30porciento-1mes",
+    ),
+    pytest.param(
+        "Cual es el valor minimo de KST sobre amax para macizos rocosos con RQD mayor a 50 por ciento segun el Titulo H?",
+        ["1.00", "1,00"],
+        id="H-kst-amax-macizos-rocosos-100",
+    ),
+]
+
+# ---- Título H, ampliación H.6 completo (Estructuras de contención) ----
+# Ingesta verbatim 2026-09-07 (misma sesión), 2/3 PASSED contra producción
+# real -- la 3ra pregunta (coeficiente de presión pasiva para suelos
+# cohesivos) se descartó por diseño de pregunta defectuoso, no por falla
+# del sistema: la Tabla H.6.4-1 tiene movimientos horizontales
+# (fracciones de H), no coeficientes Kp numéricos por tipo de suelo.
+CASOS_TITULO_H_H6 = [
+    pytest.param(
+        "A que profundidad minima bajo la superficie del terreno debe desplantarse la base de un muro de gravedad segun el Titulo H?",
+        ["1 m", "1m", "un metro"],
+        id="H-desplante-muro-gravedad-1m",
+    ),
+    pytest.param(
+        "Cual es el factor de seguridad minimo al deslizamiento en condicion estatica para estructuras de contencion segun el Titulo H?",
+        ["1.60", "1,60"],
+        id="H-fs-deslizamiento-estatico-160",
+    ),
+]
+
+# ---- Título H, ampliación H.7 completo (Evaluación geotécnica de efectos sísmicos) ----
+# Ingesta verbatim 2026-09-07 (misma sesión), 3/3 PASSED contra producción real.
+CASOS_TITULO_H_H7 = [
+    pytest.param(
+        "A partir de que distancia epicentral se debe considerar el aporte de la componente vertical de la senal sismica segun el Titulo H?",
+        ["25 Km", "25 km", "25km"],
+        id="H-componente-vertical-25km",
+    ),
+    pytest.param(
+        "Cual es el valor limite de aceleracion en roca para el cual resulta importante evaluar la amplificacion segun el Titulo H?",
+        ["0.4g", "0,4g", "0.4 g"],
+        id="H-amplificacion-limite-04g",
+    ),
+    pytest.param(
+        "Cuantas historias de movimiento minimo se deben utilizar en los analisis de respuesta dinamica segun el Titulo H?",
+        ["tres", "3 historias", "al menos tres"],
+        id="H-historias-movimiento-minimo-tres",
+    ),
+]
+
+# ---- Título H, ampliación H.8 completo (Sistema constructivo de cimentaciones,
+# excavaciones y muros de contención) ----
+# Ingesta verbatim 2026-09-07 (misma sesión), 2/3 PASSED contra producción
+# real -- la 3ra (factor de seguridad para pandeo de pilotes, FS=3.0) el
+# LLM dijo que el Título H "no especifica un valor numérico" pese a que
+# "F_S se tomará igual a 3.0" está en el mismo chunk verbatim que la
+# ecuación H.8.4-1 -- hallazgo real de generación, no forzado como test.
+CASOS_TITULO_H_H8 = [
+    pytest.param(
+        "A partir de que profundidad de excavacion se debe contar con un plan de contingencia segun el Titulo H?",
+        ["3 m", "3m", "tres metros"],
+        id="H-plan-contingencia-3m",
+    ),
+    pytest.param(
+        "Cual es la desviacion maxima de verticalidad permitida para un pilote hincado con capacidad de carga por punta segun el Titulo H?",
+        ["3/100"],
+        id="H-desviacion-verticalidad-pilote-3-100",
+    ),
+]
+
 
 @pytest.mark.parametrize(
     "pregunta,variantes_esperadas",
@@ -916,6 +995,10 @@ CASOS_TITULO_H_H4 = [
     + CASOS_TITULO_F_F53
     + CASOS_TITULO_F_F54_1_2_3
     + CASOS_TITULO_H_H4
+    + CASOS_TITULO_H_H5
+    + CASOS_TITULO_H_H6
+    + CASOS_TITULO_H_H7
+    + CASOS_TITULO_H_H8
     + CASOS_TITULO_F_F544
     + CASOS_TITULO_F_F545
     + CASOS_TITULO_F_F546,

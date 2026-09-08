@@ -756,6 +756,69 @@ CASOS_BASELINE = [
         "ground_truth": "El factor de seguridad indirecto mínimo F_SICP para cimentaciones bajo carga muerta más carga viva normal es 3.0.",
         "id": "H-fsicp-carga-muerta-viva-normal-30",
     },
+    # ---- Título H, ampliación H.5 completo (Excavaciones y estabilidad de taludes) ----
+    {
+        "pregunta": "Cual es la sobrecarga uniforme minima a considerar en la via publica y zonas proximas a excavaciones temporales segun el Titulo H?",
+        "ground_truth": "La sobrecarga uniforme mínima a considerar en la vía pública y zonas libres próximas a excavaciones temporales es 15 kPa (1.5 t/m²).",
+        "id": "H-sobrecarga-minima-excavaciones-15kpa",
+    },
+    {
+        "pregunta": "En cuanto tiempo puede reducirse la cohesion de los materiales arcillosos en taludes de excavacion segun el Titulo H?",
+        "ground_truth": "La cohesión de los materiales arcillosos tiende a disminuir con el tiempo, en una proporción que puede alcanzar 30% en un plazo de un mes.",
+        "id": "H-cohesion-arcillas-30porciento-1mes",
+    },
+    {
+        "pregunta": "Cual es el valor minimo de KST sobre amax para macizos rocosos con RQD mayor a 50 por ciento segun el Titulo H?",
+        "ground_truth": "Para macizos rocosos con RQD > 50%, el valor mínimo de KST/amax es 1.00, sin necesidad de análisis de amplificación.",
+        "id": "H-kst-amax-macizos-rocosos-100",
+    },
+    # ---- Título H, ampliación H.6 completo (Estructuras de contención) ----
+    {
+        "pregunta": "A que profundidad minima bajo la superficie del terreno debe desplantarse la base de un muro de gravedad segun el Titulo H?",
+        "ground_truth": "La base de un muro de gravedad o en voladizo debe desplantarse cuando menos a 1 m bajo la superficie del terreno enfrente del muro.",
+        "id": "H-desplante-muro-gravedad-1m",
+    },
+    {
+        "pregunta": "Cual es el factor de seguridad minimo al deslizamiento en condicion estatica para estructuras de contencion segun el Titulo H?",
+        "ground_truth": "El factor de seguridad mínimo al deslizamiento en condición estática es 1.60, según la Tabla H.6.9-1.",
+        "id": "H-fs-deslizamiento-estatico-160",
+    },
+    # ---- Título H, ampliación H.7 completo (Evaluación geotécnica de efectos sísmicos) ----
+    {
+        "pregunta": "A partir de que distancia epicentral se debe considerar el aporte de la componente vertical de la senal sismica segun el Titulo H?",
+        "ground_truth": "Para fuentes sismogénicas cercanas (menores de 25 km de distancia epicentral) con potencial de eventos superficiales, debe considerarse el aporte de la componente vertical de la señal sísmica.",
+        "id": "H-componente-vertical-25km",
+    },
+    {
+        "pregunta": "Cual es el valor limite de aceleracion en roca para el cual resulta importante evaluar la amplificacion segun el Titulo H?",
+        "ground_truth": "La evaluación de la amplificación resulta importante para aceleraciones originarias en roca inferiores a un valor límite del orden de 0.4g.",
+        "id": "H-amplificacion-limite-04g",
+    },
+    {
+        "pregunta": "Cuantas historias de movimiento minimo se deben utilizar en los analisis de respuesta dinamica segun el Titulo H?",
+        "ground_truth": "Los análisis de respuesta dinámica deben utilizar por lo menos tres historias de movimiento en función del tiempo, representativas de las diferentes fuentes sismogénicas relevantes.",
+        "id": "H-historias-movimiento-minimo-tres",
+    },
+    # ---- Título H, ampliación H.8 completo (Sistema constructivo de
+    # cimentaciones, excavaciones y muros de contención) ----
+    # Ingesta verbatim 2026-09-07 (misma sesión). 2/3 preguntas probadas
+    # PASSED contra producción real; la 3ra (factor de seguridad al pandeo
+    # de pilotes, FS=3.0) es un hallazgo real de generación -- el LLM citó
+    # correctamente la ecuación H.8.4-1 pero dijo que el Título H "no
+    # especifica un valor numérico concreto" pese a que "F_S se tomará
+    # igual a 3.0" está en el mismo chunk verbatim -- se deja fuera del
+    # dataset a propósito (no forzada como PASSED), ver memoria privada /
+    # docs/fuentes-normativas.md para el detalle.
+    {
+        "pregunta": "A partir de que profundidad de excavacion se debe contar con un plan de contingencia segun el Titulo H?",
+        "ground_truth": "A partir de 3 m de profundidad de excavación debe contarse con un plan de contingencia.",
+        "id": "H-plan-contingencia-3m",
+    },
+    {
+        "pregunta": "Cual es la desviacion maxima de verticalidad permitida para un pilote hincado con capacidad de carga por punta segun el Titulo H?",
+        "ground_truth": "La desviación máxima de verticalidad permitida no deberá ser mayor de 3/100 de su longitud.",
+        "id": "H-desviacion-verticalidad-pilote-3-100",
+    },
     # ---- Adversarial / sin respuesta real en el corpus ----
     # 4 de estas 10 se probaron EN VIVO contra ask() antes de escribir el
     # ground_truth (batch de 2026-09-07). Hallazgo real e importante: la
