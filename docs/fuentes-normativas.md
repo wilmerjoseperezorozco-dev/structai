@@ -53,7 +53,7 @@ significa más norma cubierta, solo troceo más fino.
 | F.5.4.7 (Miembros a compresión) | 0 | **Pendiente** — la pieza más densa de F.5 (Tabla F.5.4.7-2, 18 tipos de sección con fórmulas propias cada uno), ya mapeada parcialmente pero no transcrita, mismo `NSR-10-1083-1182.pdf` ya descargado |
 | F.5.4.8–F.5.4.9, F.5.5–F.5.8 + apéndices F.5.A–F.5.F (cierra el Título F) | 0 | Pendiente — requiere descargar `NSR-10-1183-1283.pdf` (id `1xuOZukeQsLIV957z59BK2eJqpZ5qu__b`, confirmado real, no descargado todavía) |
 | G — Madera y Guadua | 464 | Verbatim completo |
-| H — Estudios geotécnicos | 472 (48 originales + 87 H.3.3/H.4 + 47 H.5 + 45 H.6 + 64 H.7 + 80 H.8 + 101 H.9) | **PARCIAL, cerrado en gran parte el mismo día 2026-09-07** tras la auditoría numeral por numeral que confirmó el hueco (181 encabezados reales identificados, partió de ~18% cubierto). Cerrados completos el mismo día: **H.3.3 (cierre de H.3), H.4 (Cimentaciones), H.5 (Excavaciones y estabilidad de taludes), H.6 (Estructuras de contención), H.7 (Evaluación geotécnica de efectos sísmicos/licuación), H.8 (Sistema constructivo) y H.9 (Condiciones geotécnicas especiales: suelos expansivos/dispersivos/colapsables, efectos de la vegetación)** — todos re-trocheados con verificación real de tokens, 0 sobre el límite desde el primer intento en cada pieza. **Solo falta H.10 (Rehabilitación sísmica de edificios, 17 encabezados)** — ~17 de 181 encabezados (~9%) sin chunk, bajado del 82% original. Verificado con `ask()` real en cada pieza: 18 de 19 preguntas nuevas PASSED con cita exacta (H.9 fue 4/4 limpio, sin hallazgos fallidos); 1 falló por retrieval (límite de giro H.4.9.4, chunk corto) y 1 se descartó por diseño de pregunta defectuoso (Tabla H.6.4-1 no tiene coeficientes Kp numéricos); un caso adicional (Tabla H.4.9-1) reveló que el LLM confunde filas adyacentes de tablas densas — mismo patrón ya documentado en F.5.2/F.5.4.3/F.5.4.4. **Hallazgo real en H.8**: al verificar la ecuación de pandeo H.8.4-1 (pilotes), el LLM cita la fórmula correctamente pero responde "el Título H no especifica un valor numérico concreto para el factor de seguridad" pese a que el mismo chunk verbatim transcrito dice literalmente "F_S se tomará igual a 3.0" — un miss real de síntesis/generación, no de retrieval (el chunk correcto sí se recuperó); no se agregó al dataset de regresión para no forzar un caso fallido como si pasara. Los 3 PDF fuente ya están descargados en `scripts/ingesta/nsr10/raw/` (H.10 continúa en `NSR-10-1451-1500.pdf` mismo, página H-59, y sigue en `NSR-10-1501-1570.pdf` ya descargado). 13 chunks no-verbatim (de lo poco que existía antes) borrados el 2026-09-01 — issue [#38](https://github.com/wilmerjoseperezorozco-dev/structai/issues/38) sigue abierto |
+| H — Estudios geotécnicos | 552 (48 originales + 87 H.3.3/H.4 + 47 H.5 + 45 H.6 + 64 H.7 + 80 H.8 + 101 H.9 + 80 H.10) | **VERBATIM COMPLETO (H.1-H.10), cerrado el mismo día 2026-09-07** tras la auditoría numeral por numeral que confirmó el hueco original (181 encabezados reales identificados, partió de ~18% cubierto). Cerrados en la misma sesión: **H.3.3 (cierre de H.3), H.4 (Cimentaciones), H.5 (Excavaciones y estabilidad de taludes), H.6 (Estructuras de contención), H.7 (Evaluación geotécnica de efectos sísmicos/licuación), H.8 (Sistema constructivo), H.9 (Condiciones geotécnicas especiales: suelos expansivos/dispersivos/colapsables, efectos de la vegetación) y H.10 (Rehabilitación sísmica de edificios: amenazas sismo-geotécnicas y reforzamiento de cimentaciones)** — todos re-trocheados con verificación real de tokens, 0 sobre el límite desde el primer intento en cada pieza, sin excepción. Verificado con `ask()` real en cada pieza: 20 de 22 preguntas nuevas PASSED con cita exacta (H.9 fue 4/4 limpio); 1 falló por retrieval (límite de giro H.4.9.4, chunk corto) y 1 se descartó por diseño de pregunta defectuoso (Tabla H.6.4-1 no tiene coeficientes Kp numéricos); un caso adicional (Tabla H.4.9-1) reveló que el LLM confunde filas adyacentes de tablas densas — mismo patrón ya documentado en F.5.2/F.5.4.3/F.5.4.4. **Hallazgo real en H.8**: al verificar la ecuación de pandeo H.8.4-1 (pilotes), el LLM cita la fórmula correctamente pero responde "el Título H no especifica un valor numérico concreto para el factor de seguridad" pese a que el mismo chunk verbatim transcrito dice literalmente "F_S se tomará igual a 3.0" — un miss real de síntesis/generación, no de retrieval. **Hallazgo real en H.10**: al preguntar la profundidad de nivel freático para descartar licuación (H.10.2.2.2, valores reales: 10 m bajo el cimiento o 15 m bajo la superficie), el LLM cita el artículo correcto pero no surge los valores numéricos específicos — mismo patrón de miss de síntesis. Ninguno de los dos se agregó al dataset de regresión para no forzar un caso fallido como si pasara. Los PDF fuente ya están descargados en `scripts/ingesta/nsr10/raw/` (`NSR-10-1401-1450.pdf`, `NSR-10-1451-1500.pdf`, `NSR-10-1501-1570.pdf`). 13 chunks no-verbatim (de lo poco que existía antes) borrados el 2026-09-01 — issue [#38](https://github.com/wilmerjoseperezorozco-dev/structai/issues/38) sigue abierto (era sobre A y H; con H ya verbatim completo, queda pendiente solo por Título A) |
 | I — Supervisión técnica | 33 | Verbatim completo (I.1–I.4) |
 | J — Protección contra incendios | 18 | Verbatim completo (J.1–J.4) |
 | K — Otros requisitos complementarios (K.1–K.4.3) | 416 | **Verbatim completo, incluido K.4.3** — corrección real 2026-09-07: una memoria interna daba K.4.3 por "bloqueado, sin fuente" desde 2026-08-28, pero en algún punto posterior sí se ingestó sin que se actualizara esa nota; confirmado con SQL directo (chunks reales `NSR10-K-K_4_3_*`, K.4.3.1 a K.4.3.9) y con una respuesta real de `ask()` citando K.4.3.2 con precisión exacta |
@@ -68,17 +68,20 @@ numerales que existen REALMENTE en el PDF fuente y compararlos contra los
 ids de chunk en la base, no solo mirar si "el chunk que existe se ve
 completo")**:
 
-- **Título H — auditado 2026-09-07, hueco real confirmado** (ver fila de
-  arriba): 148 de 181 encabezados reales sin chunk, el título cubre apenas
-  H.1–H.3.2. No era un caso de "probablemente está bien, falta el
-  papeleo" — de hecho la mayoría técnica del título (cimentaciones,
-  taludes, muros de contención, licuación, suelos problemáticos,
-  rehabilitación sísmica) nunca se ingestó.
-- **Título A — auditado 2026-09-07, hueco real confirmado también** (ver
-  fila de arriba): 189 de 542 numerales (35%) sin chunk, incluyendo 6
-  capítulos completos y A.3.6 (irregularidades estructurales) entero.
-  Menos grave que H en proporción, pero A.3.6 sí es contenido de diseño
-  activo, no solo administrativo.
+- **Título H — auditado 2026-09-07, hueco real confirmado y CERRADO el
+  mismo día** (ver fila de arriba): partió de 148 de 181 encabezados
+  reales sin chunk (el título cubría apenas H.1–H.3.2). No era un caso
+  de "probablemente está bien, falta el papeleo" — de hecho la mayoría
+  técnica del título (cimentaciones, taludes, muros de contención,
+  licuación, suelos problemáticos, rehabilitación sísmica) nunca se
+  había ingestado. Los 181 encabezados quedaron cerrados en verbatim
+  completo (H.1-H.10) antes de terminar la sesión.
+- **Título A — auditado 2026-09-07, hueco real confirmado también, aún
+  sin cerrar** (ver fila de arriba): 189 de 542 numerales (35%) sin
+  chunk, incluyendo 6 capítulos completos y A.3.6 (irregularidades
+  estructurales) entero. Menos grave que H era en proporción, pero
+  A.3.6 sí es contenido de diseño activo, no solo administrativo —
+  candidato lógico para la próxima ingesta verbatim de Título A/B.
 - **Dos de dos títulos auditados con este método resultaron tener huecos
   reales, no auditorías cosméticas.** Extender el mismo método a Título B
   (nunca auditado) es la conclusión lógica antes de asumir que está bien.

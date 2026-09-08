@@ -845,6 +845,26 @@ CASOS_BASELINE = [
         "ground_truth": "Se considera suelo dispersivo cuando la concentración de sales de sodio (Na) en el agua intersticial pasa de 40% o 60% del total de sales disueltas.",
         "id": "H-suelo-dispersivo-sales-sodio-40-60",
     },
+    # ---- Título H, ampliación H.10 completo (Rehabilitación sísmica de
+    # edificios: amenazas de origen sismo-geotécnico y reforzamiento de
+    # cimentaciones) — CIERRA TÍTULO H COMPLETO (H.1-H.10) ----
+    # Ingesta verbatim 2026-09-07 (misma sesión), 2/3 PASSED contra
+    # producción real. La 3ra (profundidad del nivel freático para
+    # descartar licuación, H.10.2.2.2) es un hallazgo real de
+    # generación: el LLM cita el artículo correcto pero no surge los
+    # valores específicos (10 m bajo el cimiento más profundo, o 15 m
+    # bajo la superficie) presentes en el mismo chunk verbatim -- no
+    # se agregó al dataset.
+    {
+        "pregunta": "A partir de que inclinacion de talud se debe evaluar la estabilidad de laderas para rehabilitacion sismica segun el Titulo H?",
+        "ground_truth": "Cuando la pendiente del talud excede aproximadamente 18 grados (3 horizontal: 1 vertical), según el Título H.",
+        "id": "H-inclinacion-talud-rehabilitacion-18grados",
+    },
+    {
+        "pregunta": "Cual es el N160 minimo para suelos no cohesivos bajo la tabla de agua para descartar amenaza de licuacion segun el Titulo H?",
+        "ground_truth": "N160 de 30 golpes/pie para profundidades bajo la tabla de agua, o con un contenido de arcilla mayor de 20%.",
+        "id": "H-n160-minimo-licuacion-30golpes",
+    },
     # ---- Adversarial / sin respuesta real en el corpus ----
     # 4 de estas 10 se probaron EN VIVO contra ask() antes de escribir el
     # ground_truth (batch de 2026-09-07). Hallazgo real e importante: la
