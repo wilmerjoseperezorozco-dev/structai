@@ -81,6 +81,51 @@ todas las anteriores -- no se puede asumir que pasan solo porque el
 ground_truth es correcto, el sistema real podría fallar en recuperarlo
 o en sintetizarlo (ver los hallazgos de H.8.4-1/H.10.2.2.2 en este
 mismo archivo como ejemplo de por qué esa verificación importa).
+
+**VERIFICACIÓN REAL COMPLETADA 2026-09-08** (pedido explícito del
+usuario: "corre las 113 preguntas nuevas contra ask() y anota el
+hallazgo") -- `scripts/evaluacion/_verificar_113_nuevas_ask.py`, 113
+llamadas reales a `ask()` (Groq agotado, respaldo OpenAI automático),
+resultados completos en `scripts/evaluacion/resultados_113_nuevas.json`.
+El chequeo automático (comparar números extraídos del ground_truth
+contra la respuesta) tuvo muchos falsos negativos por formato (φ vs
+"phi", unicode, respuestas en lista) -- **los 62 "AUTO-FAIL" se
+revisaron a mano uno por uno**. Resultado real: de las 95 preguntas
+factuales (excluyendo las 18 adversariales), ~76 correctas (~80%,
+consistente con el baseline RAGAS ya medido) y **19 fallos reales**,
+agrupados en:
+1. **2 alucinaciones nuevas confirmadas** (mismo patrón que F.5.4.5):
+   `H-H9-cuatro-tipos-suelos-colapsables` (el LLM reemplazó 2 de los 4
+   tipos reales -- cenizas volcánicas y suelos residuales -- por
+   contenido inventado, mezclando la definición general de H.9.3.1 con
+   la lista de H.9.3.2); `COLOQ2-fyt-confinamiento-700MPa` (el LLM
+   inventó una fórmula completa 0.0018×200.000=360MPa y una cita a
+   C.10.13.8.7 que no corresponde, en vez del valor real de 700 MPa).
+2. **1 contradicción lógica real**: `COMP2-A-phi-1bP-vs-1bA` responde
+   "No, son diferentes" y en la misma respuesta demuestra que ambos
+   valen φ=0.8 -- el LLM se contradice a sí mismo en una pregunta
+   compuesta de comparación.
+3. **~16 fallos de retrieval real** (el chunk correcto existe en
+   producción pero no se recuperó, o se recuperó el capítulo
+   equivocado) -- incluye un hallazgo transversal medible: varias
+   preguntas `COLOQ2-` (fraseo coloquial) fallan pese a que la MISMA
+   pregunta en fraseo técnico directo ya había pasado en este mismo
+   dataset (ej. `F-analisis-racional-phi-miembros-080-conexiones-065`
+   pasó, `COLOQ2-analisis-racional-phi` -- misma pregunta, fraseo
+   coloquial -- no recuperó el valor). Confirma cuantitativamente lo
+   que esa categoría se diseñó para medir.
+
+**Las 18 preguntas adversariales (ADV2-) dieron 18/18 limpio** -- ningún
+caso de alucinación de contenido fabricado al preguntar por normas,
+títulos o materiales que no existen; el sistema admitió honestamente
+no tener la información en todos los casos.
+
+Detalle completo por pregunta (incluye las ~76 correctas) en
+`resultados_113_nuevas.json`. No se removió ninguna pregunta de este
+dataset por haber fallado -- RAGAS mide desempeño real, no exige que
+todo pase; los 19 fallos reales quedan documentados aquí y en memoria
+privada (`project_structai_nsr10_inventario_titulos.md`) como
+hallazgos a corregir, no ocultados.
 """
 
 CASOS_BASELINE = [

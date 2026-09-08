@@ -1,0 +1,1019 @@
+[
+  {
+    "id": "H-H9-minerales-expansivos-montmorilonita",
+    "pregunta": "Cuales son los minerales activos que le dan a una arcilla su caracter expansivo segun el Titulo H?",
+    "ground_truth": "Los minerales activos reconocidos son la montmorilonita, la vermiculita y algunas variedades de haloisita.",
+    "respuesta": "Los minerales que le confieren a la arcilla su carácter expansivo, según el Título H (sección H.9.1.1), son:\n\n- **Montmorillonita**  \n- **Vermiculita**  \n- **Algunas variedades de haloisita**  \n\nEstos son los minerales “activos” que pueden absorber moléculas de agua dentro de su estructura y producir la expansión del suelo.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 116.0
+  },
+  {
+    "id": "H-H9-sufijo-vertic-igac",
+    "pregunta": "Con que sufijo identifica el IGAC en la taxonomia agrologica a los suelos potencialmente expansivos segun el Titulo H?",
+    "ground_truth": "Se identifican con el sufijo \"ert\" o con la palabra \"Vertic\" (por ejemplo Udert, Haplustert, Vertic Paleoudult).",
+    "respuesta": "El IGAC señala que los suelos potencialmente expansivos aparecen en la taxonomía agrológica con el **sufijo “ert”** o con la palabra **“Vertic”** (por ejemplo : Udert, Haplustert, Vertic Paleoudult, etc.).【H — H.9.1.3 — Identificación de los suelos expansivos + Tabla H.9.1-1】",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 39.4
+  },
+  {
+    "id": "H-H9-sondeos-50porciento-zona-activa",
+    "pregunta": "Que porcentaje minimo de los sondeos debe reconocer los materiales bajo la zona activa en un estudio de suelos expansivos segun el Titulo H?",
+    "ground_truth": "Por lo menos el 50% de los sondeos deben reconocer suficientemente los materiales que se encuentran por debajo de la zona activa.",
+    "respuesta": "El Título H establece que, para estudios de suelos (incluidos los expansivos), **al menos el 50 % de los sondeos** deben reconocer suficientemente los materiales que se encuentran por debajo de la zona activa.  \n\n- H.9.1.3 indica que “por lo menos el 50 % de los sondeos deben reconocer suficientemente los materiales que se encuentran por debajo de la zona activa”.  \n- Además, H.3.2.5 refuerza el requisito de que “al menos 50 % de los sondeos debe alcanzar la profundidad…”.  \n\nAsí que el porcentaje mínimo exigido es **50 %**.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 55.3
+  },
+  {
+    "id": "H-H9-drenaje-perimetral-2-10porciento",
+    "pregunta": "Que pendiente de drenaje perimetral se recomienda alrededor de una estructura en suelo expansivo segun el Titulo H?",
+    "ground_truth": "Se recomienda un adecuado drenaje alrededor de las estructuras por medio de pendientes perimetrales del 2% al 10%.",
+    "respuesta": "Según el Título H, apartado H.9.1.6 (c), el drenaje de escorrentía alrededor de la estructura debe proveerse mediante pendientes perimetrales de **entre 2 % y 10 %**.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 34.3
+  },
+  {
+    "id": "H-H9-cuatro-tipos-suelos-colapsables",
+    "pregunta": "Cuales son los cuatro tipos principales de suelos colapsables que reconoce el Titulo H?",
+    "ground_truth": "Suelos aluviales y coluviales, suelos eólicos (loess), cenizas volcánicas, y suelos residuales.",
+    "respuesta": "Los cuatro tipos principales de suelos colapsables que reconoce el Título H son:\n\n1. **Suelos aluviales y coluviales** – depositados en ambientes semi‑desérticos por flujos más o menos torrenciales y que suelen presentar una estructura inestable (suelos metastables).  \n2. **Suelos eólicos** – depositados por el viento; son arenas y limos arenosos con escaso cemento arcilloso y una estructura suelta o inestable.  \n3. **Suelos cementados por arcilla y sales (carbonato de calcio)** – formados por arenas y limos que, aunque en estado seco resisten cargas considerables, pierden su conformación estructural y su volumen al saturarse.  \n4. **Suelos con alta compresibilidad y colapsibilidad** – aquellos que, bajo aumento de carga o saturación, experimentan severas reducciones de volumen y pérdida de resistencia (incluye suelos con componentes arcillosos que presentan colapsibilidad significativa).  \n\n*(Fuente: H.9.3.2 — “TIPOS DE SUELOS COLAPSABLES” del Título H).*\n",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 35.7
+  },
+  {
+    "id": "H-H9-hidrocolapso-muy-severo-020",
+    "pregunta": "A partir de que deformacion potencial de hidrocolapso se clasifica un suelo como muy severo segun la Tabla H.9.3-1 del Titulo H?",
+    "ground_truth": "Cuando la deformación potencial de hidrocolapso (épsilon_w) es mayor de 0.20, la clasificación de severidad es muy severa.",
+    "respuesta": "Según la Tabla H.9.3‑1 del Título H, un suelo se considera de **grado de colapsibilidad “muy severa”** cuando la deformación potencial de hidrocolapso (\\(\\varepsilon_{w}\\)) supera **0.20** ( > 0.20 ).",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 25.9
+  },
+  {
+    "id": "H-H9-pf4-981kpa",
+    "pregunta": "A cuantos kPa de presion de poros negativa equivale una succion de pF=4 segun la Tabla H.9.4-1 del Titulo H?",
+    "ground_truth": "Un pF de 4 equivale a una presión de poros negativa de 981 kPa (10 kgf/cm2), según la Tabla H.9.4-1.",
+    "respuesta": "Según la tabla H.9.4‑1 del Título H, la succión pF se relaciona con la altura de agua h en cm y con la presión de poros negativa (u) en kPa.  \n\n- pF = 1 → h = 10 cm → u ≈ 0.981 kPa  \n- pF = 4 → h = 10⁴ cm = 10 000 cm = 100 m  \n\nComo cada centímetro de columna de agua equivale a 0.0981 kPa, la presión correspondiente es:\n\n\\[\nu = 10 000\\;\\text{cm} \\times 0.0981\\;\\frac{\\text{kPa}}{\\text{cm}} \\approx 981\\;\\text{kPa}\n\\]\n\n**Respuesta:** Una succión de pF = 4 equivale a aproximadamente 981 kPa de presión de poros negativa.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 38.7
+  },
+  {
+    "id": "H-H9-eucalyptus-macarthuri-500Ldia",
+    "pregunta": "Cuantos litros de agua por dia transpira un eucalipto Eucalyptus Macarthuri en un dia soleado segun la Tabla H.9.4-2 del Titulo H?",
+    "ground_truth": "500 litros por día, según la Tabla H.9.4-2 de requerimientos de agua.",
+    "respuesta": "Según la Tabla H.9.4‑2 del Título H, el eucalipto *Eucalyptus macarthuri* transpira **≈ 500 litros por día** en un día soleado.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 44.2
+  },
+  {
+    "id": "H-H9-crecimiento-raices-20mm-dia",
+    "pregunta": "A que velocidad maxima puede crecer una raiz en busqueda de agua y nutrientes segun el Titulo H?",
+    "ground_truth": "El crecimiento de las raíces puede llegar a 20 mm por día en búsqueda de agua y nutrientes.",
+    "respuesta": "Según el fragmento **H.9.4.4.1** del Título H, el crecimiento de las raíces en búsqueda de agua y nutrientes puede alcanzar **hasta 20 mm por día**.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 52.2
+  },
+  {
+    "id": "H-H9-especie-agresiva-urapan",
+    "pregunta": "Menciona una especie de arbol considerada agresiva por el Titulo H que no deberia sembrarse cerca de edificaciones.",
+    "ground_truth": "El Urapán (Fraxinus chinensis), el Eucalipto, el Sauce, el Pino, la Acacia o el Cerezo -- todas consideradas especies agresivas en H.9.4.6.2(a).",
+    "respuesta": "En el fragmento disponible del Título H solo se define qué se entiende por “especies agresivas” (especies originarias del extranjero o de climas muy severos) pero no se enumeran ejemplos concretos. Por lo tanto, con la información que tengo no puedo indicar un árbol específico que esté expresamente señalado como agresivo en esa sección. Te recomiendo revisar el capítulo completo H‑9 de la NSR‑10, donde se listan las especies prohibidas para la proximidad a edificaciones.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 28.5
+  },
+  {
+    "id": "H-H9-mitigacion-estructural-dos-caminos",
+    "pregunta": "Cuales son los dos caminos de mitigacion de tipo estructural para suelos expansivos segun el Titulo H?",
+    "ground_truth": "Cimentación rígida y construcción flexible, según H.9.1.9.",
+    "respuesta": "En el **Título H** de la NSR‑10 la mitigación estructural de suelos expansivos se aborda a través de **dos vías principales**:\n\n1. **Mejoramiento del suelo** – se busca incrementar la capacidad admisible de la subrasante antes de colocar la cimentación.  \n   - En el apartado **H.10.5.1 — MEJORAMIENTO DEL SUELO** se indica que las opciones de mejoramiento incluyen la **remoción del suelo, su reemplazo por material de préstamo o su densificación** (aunque se advierte que algunas técnicas pueden ser costosas o generar asentamientos).  \n\n2. **Diseño de cimentación adecuada** – cuando el suelo presenta **expansividad intermedia a alta**, el reglamento obliga a realizar un **estudio geotécnico completo** (ver **E.2.1.2** del Título E) y, con base en ese estudio, a escoger una solución de cimentación que evite los efectos de la expansión, como **pilotes, zapatas reforzadas o cimentaciones profundas**.  \n\nEn resumen, el Título H contempla:\n\n- **Mejoramiento del suelo** (remoción, reemplazo, densificación).  \n- **Cimentación estructural diseñada para suelos expansivos** (pilotes, zapatas reforzadas, etc.), respaldada por el estudio geotécnico exigido.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 49.6
+  },
+  {
+    "id": "H-H9-recubrimiento-vegetativo-20porciento",
+    "pregunta": "Hasta que pendiente de ladera se puede aplicar el recubrimiento vegetativo como medida contra suelos erodables segun el Titulo H?",
+    "ground_truth": "El recubrimiento vegetativo es aplicable en laderas de poca pendiente, menor de 20%.",
+    "respuesta": "No encontré eso en las normas que tengo cargadas — revisa directo el Título H de la NSR-10, seguro está ahí. Este título trata sobre los requisitos geotécnicos y puede contener información sobre pendientes y medidas de protección como el recubrimiento vegetativo.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 29.2
+  },
+  {
+    "id": "H-H9-limite-plastico-pf-4a5",
+    "pregunta": "En que rango de succion pF se ubica el limite plastico de un suelo segun el Titulo H?",
+    "ground_truth": "El límite plástico corresponde a succiones pF entre 4 y 5.",
+    "respuesta": "Según el Título H de la normatividad, el límite plástico de un suelo se ubica en un rango de succión pF entre 4 y 5. Esto se establece en la sección H.9.4.5.3, donde se menciona que la succión se relaciona con los límites de consistencia de un suelo determinado.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 16.9
+  },
+  {
+    "id": "H-H9-limite-practico-pf-30",
+    "pregunta": "Por encima de que valor de succion pF se desencadena un proceso de desecacion en vez de expansion segun el Titulo H?",
+    "ground_truth": "Para succiones pF superiores a 3.0 se desencadena un proceso de desecación; para pF inferiores a 3.0, uno de expansión.",
+    "respuesta": "Según el Título H, se establece que para succiones pF superiores a 3.0 se desencadena un proceso de desecación. Por lo tanto, el valor crítico es pF > 3.0.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 16.7
+  },
+  {
+    "id": "H-H9-loess-suelos-eolicos",
+    "pregunta": "Que tipo de suelos identifica el Titulo H con el nombre generico de loess?",
+    "ground_truth": "Los suelos eólicos -- arenas y limos arenosos con escaso cemento arcilloso, depositados por el viento, reciben el nombre genérico de loess en las zonas templadas.",
+    "respuesta": "El Título H de la NSR-10 identifica como \"loess\" a los suelos colapsables que se encuentran en zonas templadas. Estos suelos son caracterizados por su estructura inestable y son susceptibles a colapsar bajo ciertas condiciones.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 17.9
+  },
+  {
+    "id": "H-H10-cinco-amenazas-sismicas-sitio",
+    "pregunta": "Cuales son las cinco amenazas sismicas del sitio que enumera el Titulo H para rehabilitacion de cimentaciones?",
+    "ground_truth": "Ruptura de una falla, licuación, compactación diferencial, deslizamientos, y avalancha o inundación.",
+    "respuesta": "Las cinco amenazas sísmicas del sitio que enumera el Título H para la rehabilitación de cimentaciones son:\n\n1. Ruptura de fallas superficiales.\n2. Licuación.\n3. Compactación diferencial.\n4. Deslizamientos.\n5. Avalanchas.\n\nEstas amenazas deben ser evaluadas y, si no son aceptables, deben ser mitigadas según lo establecido en el artículo H.10.3.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 18.0
+  },
+  {
+    "id": "H-H10-pleistoceno-11000anos",
+    "pregunta": "De que edad geologica minima deben ser los materiales geologicos bajo el nivel freatico para descartar amenaza de compactacion diferencial segun el Titulo H?",
+    "ground_truth": "Deben ser del Pleistoceno en edad geológica, es decir más antiguos de 11.000 años.",
+    "respuesta": "Según el Título H de la NSR-10, para suponer que no existe amenaza debido a compactación diferencial, los materiales geológicos bajo los cimientos y bajo el nivel freático deben ser del Pleistoceno en edad geológica, es decir, más antiguos de 11,000 años. Esto se menciona en el criterio (b) del artículo H.10.2.2.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 16.1
+  },
+  {
+    "id": "H-H10-tres-tipos-cimentacion",
+    "pregunta": "Cuales son los tres tipos de cimentacion que considera el Titulo H para el reforzamiento y rigidez de cimentaciones?",
+    "ground_truth": "Cimentaciones superficiales (zapatas y losas), pilotes, y pilas.",
+    "respuesta": "El Título H de la NSR-10 considera tres tipos de cimentación para el reforzamiento y rigidez de cimentaciones:\n\n1. Cimentaciones superficiales (zapatas y losas).\n2. Pilotes.\n3. Pilas.\n\nEstos tipos de cimentación pueden tener un comportamiento complejo y su diseño debe tener en cuenta la rigidez y capacidad para asegurar una adecuada respuesta estructural y distribución de carga.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 15.7
+  },
+  {
+    "id": "H-H10-mejoramiento-estructural-deslizamientos",
+    "pregunta": "Menciona dos esquemas de mejoramiento estructural para mitigar deslizamientos segun el Titulo H.",
+    "ground_truth": "Muros de gravedad, muros anclados/pernados (soil nailing), muros de tierra mecánicamente estabilizada, barreras para flujos de escombros, reforzamiento del edificio, vigas de equilibrio en la cimentación, o muros/pantallas de cortante.",
+    "respuesta": "Para mitigar la amenaza de deslizamientos según el Título H de la NSR-10, se pueden considerar los siguientes esquemas de mejoramiento estructural:\n\n1. **Estabilización de Taludes**: Implementar técnicas de estabilización en taludes cuya pendiente exceda aproximadamente 18 grados (3 horizontal: 1 vertical). Esto puede incluir la construcción de muros de contención, drenajes para reducir la presión del agua en el suelo, o el uso de geotextiles para reforzar el terreno.\n\n2. **Sistema de Anclajes**: Utilizar anclajes o pilotes que se inserten en el suelo para proporcionar soporte adicional a las estructuras y evitar el deslizamiento. Estos anclajes pueden ayudar a resistir las fuerzas que actúan sobre el talud y mejorar la estabilidad general del sistema.\n\nEs importante que la efectividad de estas medidas sea evaluada por un ingeniero estructural en el contexto del comportamiento global del sistema del edificio, tal como se indica en la norma.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 17.4
+  },
+  {
+    "id": "H-H10-jet-grouting-mejoramiento-suelo",
+    "pregunta": "Que tecnica de inyeccion menciona el Titulo H para mejorar el suelo bajo cimentaciones existentes?",
+    "ground_truth": "El jet grouting, además de inyecciones de compactación e inyecciones químicas (cemento, cal).",
+    "respuesta": "El Título H menciona que las inyecciones de compactación pueden ser consideradas para incrementar la capacidad portante del suelo. Estas inyecciones logran densificación y resistencia de diversos tipos de suelos, y pueden transmitir las cargas de los cimientos a estratos más duros y profundos. Además, se menciona que las inyecciones químicas (como cemento o cal) pueden reforzar suelos arenosos, aunque pueden ser menos efectivas en suelos de grano fino o arenas limosas. También se sugiere considerar la técnica de \"jet grouting\" para este propósito.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 18.0
+  },
+  {
+    "id": "H-H10-base-fija-fuerza-controlada",
+    "pregunta": "Bajo la suposicion de base fija en un procedimiento lineal, como deben ser las acciones sobre los componentes geotecnicos segun el Titulo H?",
+    "ground_truth": "Las acciones sobre los componentes geotécnicos deberán ser de fuerza controlada.",
+    "respuesta": "Bajo la suposición de base fija en un procedimiento lineal, las acciones sobre los componentes geotécnicos deben ser de fuerza controlada. Esto se establece en el Título H, específicamente en la sección H.10.4.3.1. Es fundamental que estas acciones se manejen adecuadamente para garantizar la estabilidad y seguridad de la cimentación.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 20.6
+  },
+  {
+    "id": "H-H10-fuentes-avalancha-inundacion",
+    "pregunta": "Menciona dos fuentes reales de amenaza de avalancha o inundacion que reconoce el Titulo H para rehabilitacion sismica.",
+    "ground_truth": "Presas/acueductos/tanques de almacenamiento de agua dañados por el sismo, áreas costeras susceptibles a tsunamis, o áreas bajas con subsidencia regional.",
+    "respuesta": "El Título H de la NSR-10 reconoce las siguientes dos fuentes reales de amenaza de avalancha o inundación para la rehabilitación sísmica:\n\n1. **Presas, acueductos, tanques de almacenamiento de agua y tuberías** que puedan afectar el edificio por daños ocasionados por el sismo, como deslizamientos, vibración fuerte o ruptura de falla activa. (Referencia: H.10.2.2)\n\n2. **Áreas o zonas costeras susceptibles a tsunamis**, que representan un riesgo de inundación inducida por sismos. (Referencia: H.10.2.2) \n\nEstas fuentes deben ser consideradas en la evaluación y mitigación de amenazas sísmicas en el contexto de la rehabilitación de edificaciones.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 17.5
+  },
+  {
+    "id": "H-H10-tres-medidas-mitigacion-licuacion",
+    "pregunta": "Cuales son los tres tipos generales de medidas de mitigacion de la amenaza de licuacion segun el Titulo H?",
+    "ground_truth": "Modificar la estructura, modificar la cimentación, o modificar las condiciones del suelo.",
+    "respuesta": "Según el Título H de la NSR-10, si se ha determinado que la licuación es de probable ocurrencia y las consecuencias no son aceptables, se deben considerar tres tipos generales de medidas de mitigación, que pueden ser individuales o en combinación:\n\n1. **Modificar la estructura**: Mejorar la resistencia de la estructura contra las deformaciones del terreno que se predice ocasionará la licuación.\n2. **(No se especifican más medidas en el fragmento proporcionado)**.\n\nPara un análisis más completo, sería ideal revisar el texto completo del Título H, ya que el fragmento no menciona las otras dos medidas.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 15.2
+  },
+  {
+    "id": "H-H10-capacidad-ultima-geotecnista",
+    "pregunta": "Quien debe determinar la capacidad ultima y de trabajo de los componentes de la cimentacion segun el Titulo H, capitulo de rehabilitacion sismica?",
+    "ground_truth": "El ingeniero geotecnista, según los requisitos del capítulo H.4.",
+    "respuesta": "La capacidad última y de trabajo de los componentes de la cimentación debe ser determinada por el ingeniero geotecnista, según lo establecido en el Título H, sección H.10.4.1 de la NSR-10. Esto se debe a que el ingeniero geotecnista es el profesional encargado de evaluar las condiciones del terreno y las características de la cimentación para garantizar su adecuada capacidad de carga y comportamiento estructural.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 24.4
+  },
+  {
+    "id": "H-H10-zapatas-submuradas",
+    "pregunta": "Que tecnica se usa para incrementar la capacidad o resistencia a traccion de una zapata existente segun el Titulo H?",
+    "ground_truth": "Las zapatas y losas pueden ser sub-muradas para incrementar su capacidad o resistencia a la tracción.",
+    "respuesta": "Según el Título H de la NSR-10, para incrementar la capacidad o resistencia a tracción de una zapata existente, se pueden utilizar dos técnicas: \n\n1. **Sub-muradas**: Esta técnica consiste en bajar el horizonte de contacto de la zapata, lo que mejora la capacidad portante.\n   \n2. **Agrandamiento de la zapata**: Esto implica aumentar las dimensiones de la zapata para incrementar su capacidad o resistencia a la tracción.\n\nAmbas técnicas requieren que se determinen las capacidades y rigideces de acuerdo a los procedimientos del artículo H.10.4. Además, es importante considerar los efectos de gateo y la transferencia de carga.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 113.7
+  },
+  {
+    "id": "H-H10-vigas-equilibrio-desplazamiento-lateral",
+    "pregunta": "Para que sirven las vigas de equilibrio en la cimentacion segun el Titulo H?",
+    "ground_truth": "Para dar interconexión adecuada cuando existe potencial de desplazamiento diferencial lateral de las cimentaciones del edificio.",
+    "respuesta": "El contexto disponible no menciona específicamente las vigas de equilibrio en la cimentación según el Título H de la NSR-10. Sin embargo, el Título H establece los requisitos mínimos que deben cumplir los estudios geotécnicos que sirven de base al diseño estructural y de cimentaciones, incluyendo la exploración del subsuelo y el contenido mínimo del informe geotécnico.\n\nPara información específica sobre las vigas de equilibrio, te recomendaría consultar el Título C de la NSR-10, que trata sobre el concreto estructural y puede contener detalles sobre las vigas de amarre y su relación con las fuerzas que deben resistir, especialmente en el contexto de cimentaciones.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 18.0
+  },
+  {
+    "id": "H-H10-alcance-amenazas-sismogeotecnicas",
+    "pregunta": "Que tipo de amenazas cubre el alcance del capitulo de rehabilitacion sismica de edificios del Titulo H?",
+    "ground_truth": "Amenazas potenciales de origen sismo-geotécnico: licuación, compactación diferencial, deslizamientos, caída de rocas y avalanchas.",
+    "respuesta": "El alcance del capítulo de rehabilitación sísmica de edificios del Título H cubre las amenazas potenciales de origen sismo-geotécnico, que incluyen:\n\n1. Licuación\n2. Compactación diferencial\n3. Deslizamientos\n4. Caída de rocas\n5. Avalanchas\n\nAdemás, se mencionan los requisitos geotécnicos mínimos respecto a las cimentaciones en el artículo H.10.1. Estas medidas pueden aplicarse solo a las cimentaciones o en conjunto con la rehabilitación sísmica de la edificación.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 14.7
+  },
+  {
+    "id": "A-A33-ecuacion-A331-R",
+    "pregunta": "Cual es la formula del coeficiente de capacidad de disipacion de energia reducido R segun la ecuacion A.3.3-1 del Titulo A?",
+    "ground_truth": "R = phi_a * phi_p * phi_r * R0 (ecuación A.3.3-1).",
+    "respuesta": "La fórmula del coeficiente de capacidad de disipación de energía reducido \\( R \\) según la ecuación A.3.3-1 del Título A de la NSR-10 es:\n\n\\[ R = \\phi_a \\cdot \\phi_p \\cdot \\phi_r \\cdot R_0 \\]\n\nDonde:\n- \\( R_0 \\) es el coeficiente básico de capacidad de disipación de energía.\n- \\( \\phi_a \\) es el coeficiente de reducción por irregularidad en altura.\n- \\( \\phi_p \\) es el coeficiente de reducción por irregularidad en planta.\n- \\( \\phi_r \\) es el coeficiente de reducción por ausencia de redundancia. \n\nEsta fórmula se utiliza para ajustar el valor de \\( R \\) en función de las características específicas de la estructura.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 14.2
+  },
+  {
+    "id": "A-A33-retroceso-esquina-15porciento",
+    "pregunta": "A partir de que porcentaje de la dimension de la planta se considera excesivo un retroceso en una esquina segun la Tabla A.3-6 del Titulo A?",
+    "ground_truth": "Cuando las proyecciones de la estructura a ambos lados del retroceso son mayores que el 15% de la dimensión de la planta en esa dirección (Tipo 2P).",
+    "respuesta": "Un retroceso en una esquina se considera excesivo cuando las proyecciones de la estructura, a ambos lados del retroceso, son mayores que el 15 por ciento de la dimensión de la planta de la estructura en la dirección del retroceso. Esto está especificado en la Tabla A.3-6 del Título A de la NSR-10.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 69.5
+  },
+  {
+    "id": "A-A33-discontinuidad-diafragma-50porciento",
+    "pregunta": "A partir de que porcentaje del area bruta del diafragma se considera irregularidad por discontinuidad del diafragma segun la Tabla A.3-6 del Titulo A?",
+    "ground_truth": "Cuando las aberturas, entrantes, retrocesos o huecos tienen áreas mayores al 50% del área bruta del diafragma (Tipo 3P).",
+    "respuesta": "Se considera que hay irregularidad por discontinuidad del diafragma cuando existen aberturas, entrantes, retrocesos o huecos con áreas mayores al 50 por ciento del área bruta del diafragma. Esto está especificado en la Tabla A.3-6 del Título A de la NSR-10.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 16.4
+  },
+  {
+    "id": "A-A33-phi-p-tipo-4P-08",
+    "pregunta": "Cual es el valor de phi_p para la irregularidad tipo 4P, desplazamientos del plano de accion, segun la Tabla A.3-6 del Titulo A?",
+    "ground_truth": "phi_p = 0.8 para la irregularidad tipo 4P.",
+    "respuesta": "El valor de φp para la irregularidad tipo 4P, que corresponde a los desplazamientos del plano de acción de elementos verticales, es 0.8, según la Tabla A.3-6 del Título A de la NSR-10.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 21.2
+  },
+  {
+    "id": "A-A33-phi-p-tipo-5P-09",
+    "pregunta": "Cual es el valor de phi_p para la irregularidad tipo 5P, sistemas no paralelos, segun la Tabla A.3-6 del Titulo A?",
+    "ground_truth": "phi_p = 0.9 para la irregularidad tipo 5P.",
+    "respuesta": "El contexto disponible no incluye la Tabla A.3-6, que define los valores de φp para las irregularidades en planta, incluyendo la irregularidad tipo 5P. Te sugiero consultar directamente la Tabla A.3-6 en el Título A de la NSR-10 para obtener el valor específico de φp para esa irregularidad.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 9.8
+  },
+  {
+    "id": "A-A33-piso-flexible-1aA",
+    "pregunta": "Cuando se considera que un piso tiene irregularidad tipo 1aA, piso flexible, segun la Tabla A.3-7 del Titulo A?",
+    "ground_truth": "Cuando la rigidez ante fuerzas horizontales de un piso es menor del 70% pero superior o igual al 60% de la rigidez del piso superior, o menor del 80% pero superior o igual al 70% del promedio de los tres pisos superiores. phi_a = 0.9.",
+    "respuesta": "Un piso se considera irregular tipo 1aA, es decir, un piso flexible, cuando la rigidez ante fuerzas horizontales de ese piso es menor del 70% pero superior o igual al 60% de la rigidez del piso superior, o menor del 80% pero superior o igual al 70% del promedio de la rigidez de los tres pisos superiores. En este caso, el coeficiente φa se establece en 0.9. Esto está definido en la Tabla A.3-7 de la NSR-10.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 14.6
+  },
+  {
+    "id": "A-A33-irregularidad-masa-2A-15veces",
+    "pregunta": "A partir de que relacion de masas entre pisos contiguos se considera irregularidad tipo 2A segun la Tabla A.3-7 del Titulo A?",
+    "ground_truth": "Cuando la masa de cualquier piso es mayor que 1.5 veces la masa de uno de los pisos contiguos (excepto cubiertas más livianas). phi_a = 0.9.",
+    "respuesta": "La irregularidad tipo 2A, según la Tabla A.3-7 del Título A de la NSR-10, se considera cuando la masa \\( m_i \\) de cualquier piso es mayor que 1.5 veces la masa de uno de los pisos contiguos. Esto significa que si un piso tiene una masa que supera en un 50% la masa del piso adyacente, la estructura se clasifica como irregular.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 13.3
+  },
+  {
+    "id": "A-A33-irregularidad-geometrica-3A-13veces",
+    "pregunta": "A partir de que relacion de dimensiones horizontales entre pisos adyacentes se considera irregularidad geometrica tipo 3A segun la Tabla A.3-7 del Titulo A?",
+    "ground_truth": "Cuando la dimensión horizontal del sistema de resistencia sísmica en un piso es mayor que 1.3 veces la misma dimensión en un piso adyacente. phi_a = 0.9.",
+    "respuesta": "Según la Tabla A.3-7 del Título A de la NSR-10, se considera una irregularidad geométrica tipo 3A cuando la dimensión horizontal del sistema de resistencia sísmica en cualquier piso es mayor que 1.3 veces la misma dimensión en un piso adyacente. Esto significa que si la dimensión horizontal de un piso supera en un 30% la dimensión del piso contiguo, la estructura se clasifica como irregular.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 13.9
+  },
+  {
+    "id": "A-A33-phi-a-tipo-4A-08",
+    "pregunta": "Cual es el valor de phi_a para la irregularidad tipo 4A, desplazamientos dentro del plano de accion, segun la Tabla A.3-7 del Titulo A?",
+    "ground_truth": "phi_a = 0.8 para la irregularidad tipo 4A.",
+    "respuesta": "El contexto disponible no incluye la Tabla A.3-7 del Título A de la NSR-10, que es donde se definen los valores de φa para las irregularidades en altura. Te sugiero que consultes directamente la Tabla A.3-7 en la norma para obtener el valor específico de φa para la irregularidad tipo 4A.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 15.6
+  },
+  {
+    "id": "A-A33-piso-debil-5aA-80porciento",
+    "pregunta": "Cuando se considera que un piso tiene irregularidad tipo 5aA, piso debil, segun la Tabla A.3-7 del Titulo A?",
+    "ground_truth": "Cuando la resistencia del piso es menor del 80% pero superior o igual al 65% de la del piso inmediatamente superior. phi_a = 0.9.",
+    "respuesta": "Un piso se considera irregular tipo 5aA, es decir, un \"piso débil\", cuando la resistencia del piso es menor del 80 por ciento de la del piso inmediatamente superior o igual al 65 por ciento. La resistencia del piso se entiende como la suma de las resistencias de todos los elementos que comparten el cortante del piso para la dirección considerada. En este caso, se aplica un coeficiente φa = 0.9. Esto está definido en la Tabla A.3-7 de la NSR-10.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 12.6
+  },
+  {
+    "id": "A-A33-zona-baja-1aP-1bP",
+    "pregunta": "A que tipos de irregularidad en planta puede limitarse la evaluacion en zonas de amenaza sismica baja para grupos de uso I y II segun el Titulo A?",
+    "ground_truth": "A las irregularidades tipo 1aP y 1bP (Tabla A.3-6), según A.3.3.6.",
+    "respuesta": "En zonas de amenaza sísmica baja para edificaciones pertenecientes a los grupos de uso I y II, la evaluación para determinar si la edificación es irregular o no puede limitarse a las irregularidades en planta de los tipos 1aP y 1bP, según lo establecido en la sección A.3.3.6 del Título A de la NSR-10.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 16.3
+  },
+  {
+    "id": "A-A33-zona-intermedia-1aP-1bP-3P-4P",
+    "pregunta": "A que tipos de irregularidad en planta puede limitarse la evaluacion en zona de amenaza sismica intermedia para el grupo de uso I segun el Titulo A?",
+    "ground_truth": "A las irregularidades tipo 1aP, 1bP, 3P y 4P (Tabla A.3-6), según A.3.3.7.",
+    "respuesta": "En zonas de amenaza sísmica intermedia para edificaciones del grupo de uso I, la evaluación de irregularidad en planta puede limitarse a los tipos de irregularidad 1aP, 1bP, 3P y 4P, según lo establecido en la NSR-10, específicamente en la sección A.3.3.7.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 17.8
+  },
+  {
+    "id": "A-A33-DMI-phi-r-siempre-10",
+    "pregunta": "Que valor de phi_r se asigna siempre a una edificacion con capacidad de disipacion de energia minima DMI segun el Titulo A?",
+    "ground_truth": "phi_r = 1.0 siempre, para edificaciones con sistema estructural DMI (A.3.3.8.1).",
+    "respuesta": "Para edificaciones cuyo sistema estructural de resistencia sísmica es de un material que cumple los requisitos de capacidad de disipación de energía mínima (DMI), el valor del factor de reducción de resistencia por ausencia de redundancia en el sistema estructural de resistencia sísmica, φr, se le asigna un valor de la unidad, es decir, φr = 1.0. Esto está especificado en la sección A.3.3.8.1 del Título A de la NSR-10.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 65.9
+  },
+  {
+    "id": "A-A33-ecuacion-A332-sobrerresistencia",
+    "pregunta": "Cual es la formula de la ecuacion A.3.3-2 para las fuerzas de diseno amplificadas por sobrerresistencia segun el Titulo A?",
+    "ground_truth": "E = (Omega0 * Fs / R) mas menos 0.5 * Aa * Fa * D (ecuación A.3.3-2).",
+    "respuesta": "La fórmula de la ecuación A.3.3-2 para las fuerzas de diseño amplificadas por sobrerresistencia según el Título A de la NSR-10 es:\n\n\\[ E_a = \\Omega_0 \\cdot E \\]\n\ndonde \\( E_a \\) es la fuerza sísmica amplificada y \\( E \\) es la fuerza sísmica original. El coeficiente de sobrerresistencia \\( \\Omega_0 \\) se aplica cuando los requisitos para el material estructural y el grado de capacidad de disipación de energía lo requieren.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 15.0
+  },
+  {
+    "id": "SINT2-sobrecarga-H-vs-viento-B",
+    "pregunta": "Es mayor la sobrecarga minima que exige el Titulo H para la via publica cerca de excavaciones (15 kPa) que la carga minima de diseno por viento del Titulo B (0.40 kN/m2)?",
+    "ground_truth": "Sí, 15 kPa (equivalentes a 15 kN/m²) es mucho mayor que 0.40 kN/m², aunque miden fenómenos distintos (sobrecarga de excavación vs. presión de viento).",
+    "respuesta": "Para comparar las dos cargas, primero convertimos las unidades de la carga mínima de diseño por viento del Título B a kPa:\n\n1 kN/m² es equivalente a 1 kPa. Por lo tanto, la carga mínima de diseño por viento es de 0.40 kN/m², que es igual a 0.40 kPa.\n\nAhora, comparando las dos cargas:\n\n- Sobrecarga mínima en la vía pública cerca de excavaciones (Título H): 15 kPa.\n- Carga mínima de diseño por viento (Título B): 0.40 kPa.\n\nClaramente, 15 kPa es mayor que 0.40 kPa. Por lo tanto, la sobrecarga mínima que exige el Título H es mayor que la carga mínima de diseño por viento del Título B.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 24.5
+  },
+  {
+    "id": "SINT2-sobrecarga-H-vs-biblioteca-B",
+    "pregunta": "Es mayor la sobrecarga minima que exige el Titulo H cerca de excavaciones (15 kPa) que la carga viva para estanterias de biblioteca del Titulo B (7 kN/m2)?",
+    "ground_truth": "Sí, 15 kN/m² es mayor que 7 kN/m², aunque son cargas de naturaleza distinta (sobrecarga temporal de excavación vs. carga viva de servicio).",
+    "respuesta": "Para comparar las cargas, primero convertimos las unidades de la sobrecarga mínima exigida en el Título H y la carga viva para estanterías del Título B.\n\n1. **Sobrecarga mínima cerca de excavaciones (Título H)**: 15 kPa es equivalente a 15 kN/m².\n2. **Carga viva para estanterías de biblioteca (Título B)**: 7 kN/m².\n\nAhora, comparando ambos valores:\n\n- Sobrecarga mínima (Título H): 15 kN/m²\n- Carga viva para estanterías (Título B): 7 kN/m²\n\nLa sobrecarga mínima de 15 kN/m² es mayor que la carga viva de 7 kN/m² para estanterías de biblioteca. Por lo tanto, sí, la sobrecarga mínima que exige el Título H es mayor.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 23.2
+  },
+  {
+    "id": "SINT2-talud-H10-vs-tragaluz-K",
+    "pregunta": "Es mas inclinado el talud a partir del cual el Titulo H exige evaluar estabilidad de laderas (18 grados) que el angulo que define un tragaluz segun el Titulo K (mas de 15 grados)?",
+    "ground_truth": "Sí, 18° es mayor que 15°, aunque son criterios de títulos y propósitos completamente distintos (estabilidad geotécnica de laderas vs. clasificación de vidrio inclinado).",
+    "respuesta": "Sí, el talud a partir del cual el Título H exige evaluar la estabilidad de laderas es más inclinado. Según el Título H.10.2.2.4, se considera que la pendiente de un talud es crítica cuando excede aproximadamente 18 grados. Por otro lado, el Título K establece que un tragaluz se define como tal cuando su inclinación es mayor a 15 grados. Por lo tanto, 18 grados es mayor que 15 grados, lo que significa que el talud que requiere evaluación de estabilidad es más inclinado que el ángulo que define un tragaluz.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 126.4
+  },
+  {
+    "id": "SINT2-ganchos-C-vs-talud-H10",
+    "pregunta": "Es mayor el angulo de doblez de los ganchos sismicos en estribos de confinamiento del Titulo C (135 grados) que el angulo de talud del Titulo H que activa la evaluacion de estabilidad de laderas (18 grados)?",
+    "ground_truth": "Sí, 135° es mucho mayor que 18°, aunque son ángulos de naturaleza completamente distinta (doblez de refuerzo de acero vs. inclinación de un talud).",
+    "respuesta": "Sí, el ángulo de doblez de los ganchos sísmicos en estribos de confinamiento del Título C de la NSR-10 es mayor que el ángulo de talud del Título H que activa la evaluación de estabilidad de laderas. \n\nLos ganchos sísmicos deben tener un doblez de 135º o más, según lo establecido en el Título C, mientras que el ángulo de talud que activa la evaluación de estabilidad de laderas es de 18º. Por lo tanto, 135º es significativamente mayor que 18º.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 28.2
+  },
+  {
+    "id": "SINT2-fs-deslizamiento-H-vs-vidrio-K",
+    "pregunta": "Es menor el factor de seguridad minimo al deslizamiento en condicion estatica de muros de contencion del Titulo H (1.60) que el factor de seguridad exigido para paneles de vidrio en barandas del Titulo K (4)?",
+    "ground_truth": "Sí, 1.60 es menor que 4, aunque son factores de seguridad de disciplinas distintas (geotecnia vs. vidrio de seguridad) y no directamente comparables en su significado físico.",
+    "respuesta": "Sí, el factor de seguridad mínimo al deslizamiento en condiciones estáticas para muros de contención según el Título H de la NSR-10 es de 1.60, mientras que el factor de seguridad exigido para paneles de vidrio en barandas del Título K es de 4. Esto significa que el factor de seguridad para los paneles de vidrio es significativamente más alto que el de los muros de contención, reflejando la necesidad de mayor protección en aplicaciones donde hay riesgo de impacto humano.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 17.4
+  },
+  {
+    "id": "SINT2-fc-C-vs-mortero-pega-E-17vs75",
+    "pregunta": "Es mayor el f'c minimo del concreto estructural del Titulo C (17 MPa) que la resistencia minima del mortero de pega en mamposteria del Titulo E (7.5 MPa)?",
+    "ground_truth": "Sí, 17 MPa es más del doble de 7.5 MPa, aunque son materiales y títulos distintos (concreto estructural vs. mortero de pega de mampostería de 1-2 pisos).",
+    "respuesta": "Sí, el valor mínimo de resistencia a compresión del concreto estructural según el Título C de la NSR-10 es de 17 MPa, mientras que la resistencia mínima del mortero de pega en mampostería según el Título E es de 7.5 MPa. Por lo tanto, 17 MPa es mayor que 7.5 MPa.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 10.9
+  },
+  {
+    "id": "SINT2-espesor-D-vs-acero-F",
+    "pregunta": "Es mayor el espesor minimo de un muro de mamposteria no reforzada del Titulo D (120 mm) que el espesor minimo de acero base en entramados livianos formados en frio del Titulo F (0.455 mm)?",
+    "ground_truth": "Sí, 120 mm es varios órdenes de magnitud mayor que 0.455 mm, pero son magnitudes de naturaleza distinta (espesor de un muro de mampostería vs. espesor de lámina de acero) que no tiene sentido comparar en la práctica.",
+    "respuesta": "Sí, el espesor mínimo de un muro de mampostería no reforzada según el Título D de la NSR-10 es de 120 mm, mientras que el espesor mínimo del acero en los entramados livianos formados en frío del Título F es de 0.46 mm. Por lo tanto, 120 mm es significativamente mayor que 0.46 mm.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 9.7
+  },
+  {
+    "id": "SINT2-columna-E-vs-celdas-D-no-comparable",
+    "pregunta": "Puede compararse directamente el area minima de las columnas de confinamiento del Titulo E (20.000 mm2) con el porcentaje maximo de celdas verticales del Titulo D (65%)?",
+    "ground_truth": "No son directamente comparables -- uno es un área absoluta en mm² (Título E, columnas de confinamiento) y el otro es un porcentaje relativo del área de sección transversal (Título D, celdas verticales de mampostería).",
+    "respuesta": "No se puede comparar directamente el área mínima de las columnas de confinamiento del Título E (20,000 mm²) con el porcentaje máximo de celdas verticales del Título D (65%). \n\nEl área mínima de las columnas de confinamiento se refiere a una medida absoluta de sección transversal que debe cumplir para garantizar la resistencia estructural en mampostería confinada, mientras que el porcentaje máximo de celdas verticales se refiere a una proporción relativa dentro de la mampostería estructural, que indica la cantidad de área de celdas verticales permitidas en relación con el área total del muro.\n\nAmbos parámetros son importantes, pero operan en contextos diferentes: uno es un valor absoluto (área de columnas) y el otro es un valor relativo (porcentaje de celdas). Para un análisis adecuado, se deben considerar ambos en el diseño estructural, pero no se pueden comparar directamente.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 17.4
+  },
+  {
+    "id": "SINT2-deriva-A-vs-fs-H-no-comparable",
+    "pregunta": "Tiene sentido comparar la deriva maxima permitida para concreto del Titulo A (1.0%) con el factor de seguridad al deslizamiento de muros de contencion del Titulo H (1.60)?",
+    "ground_truth": "No directamente -- la deriva máxima es un porcentaje de desplazamiento relativo de piso (Título A, requisito estructural sísmico) mientras que el factor de seguridad al deslizamiento es un cociente de resistencia/solicitación (Título H, requisito geotécnico); son magnitudes de naturaleza distinta.",
+    "respuesta": "No tiene sentido comparar directamente la deriva máxima permitida para estructuras de concreto del Título A (1.0%) con el factor de seguridad al deslizamiento de muros de contención del Título H (1.60). \n\nLa deriva máxima se refiere a la deformación lateral permitida en estructuras durante eventos sísmicos, mientras que el factor de seguridad al deslizamiento se relaciona con la estabilidad de los muros de contención frente a fuerzas que podrían causar su deslizamiento. Son conceptos que abordan diferentes aspectos del comportamiento estructural y de estabilidad.\n\nLa NSR-10 Título A establece que la deriva máxima permitida para estructuras de concreto reforzado es del 1.0% de la altura de piso (Δmax ≤ 0.010 * hpi), mientras que el factor de seguridad al deslizamiento en muros de contención se utiliza para asegurar que la estructura no se desplace bajo cargas laterales, como las fuerzas sísmicas o la presión del suelo.\n\nPor lo tanto, aunque ambos conceptos son importantes en el diseño estructural, no son comparables directamente ya que abordan diferentes tipos de comportamiento estructural y requisitos de diseño.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 100.7
+  },
+  {
+    "id": "SINT2-titulo-A-vs-H-cimentacion",
+    "pregunta": "El Titulo A y el Titulo H regulan lo mismo para el diseno de la cimentacion de un edificio sismo resistente?",
+    "ground_truth": "No, son complementarios: el Título A define las fuerzas sísmicas de diseño y los sistemas estructurales de resistencia sísmica, mientras que el Título H define las capacidades del suelo, los factores de seguridad geotécnicos y los estudios de suelo necesarios para diseñar la cimentación misma.",
+    "respuesta": "El Título A y el Título H de la NSR-10 no regulan lo mismo para el diseño de la cimentación de un edificio sismo resistente. \n\nEl Título A establece los principios generales y requisitos mínimos de diseño y construcción sismo resistente que aplican a prácticamente todas las edificaciones en Colombia, incluyendo aspectos como la definición de zonas de amenaza sísmica y grupos de uso. Por otro lado, el Título H se centra en las disposiciones específicas para el diseño de cimentaciones, incluyendo requisitos relacionados con la resistencia y estabilidad de estas estructuras bajo condiciones sísmicas.\n\nPor lo tanto, aunque ambos títulos son relevantes para el diseño sismo resistente, cada uno aborda diferentes aspectos del proceso de diseño y construcción. Para un diseño adecuado de cimentaciones sismo resistentes, es necesario considerar las disposiciones de ambos títulos, pero con un enfoque particular en las especificaciones del Título H para la cimentación.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 21.1
+  },
+  {
+    "id": "SINT2-vidrio-K-vs-guadua-G-uniones",
+    "pregunta": "El Titulo K prohibe las uniones clavadas igual que el Titulo G lo hace para la guadua?",
+    "ground_truth": "No, la prohibición de uniones clavadas es específica de la guadua en el Título G (por el riesgo de grietas longitudinales); el Título K regula vidrios y tiene sus propios requisitos de seguridad, sin relación con uniones clavadas.",
+    "respuesta": "El contexto disponible no menciona específicamente el Título K de la NSR-10, por lo que no puedo confirmar si prohíbe las uniones clavadas de la misma manera que lo hace el Título G para la guadua. Sin embargo, el Título G claramente establece en G.12.11.1.1 que \"en ningún caso se permitirán uniones clavadas, ya que los clavos inducen grietas longitudinales debido a la disposición de las fibras de la guadua\".\n\nTe recomendaría revisar directamente el Título K de la NSR-10 para obtener información precisa sobre las uniones clavadas en ese contexto.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 8.7
+  },
+  {
+    "id": "SINT2-supervision-D-vs-G-no-mismo-umbral",
+    "pregunta": "Exige el Titulo G un umbral de area construida para supervision tecnica igual al que exige el Titulo D para mamposteria?",
+    "ground_truth": "El Título D sí establece un umbral numérico claro (más de 3.000 m² de área construida obliga a supervisión técnica en mampostería); el corpus no documenta un umbral equivalente específico para madera/guadua en el Título G, así que no es correcto asumir que aplica el mismo número.",
+    "respuesta": "No, el Título G de la NSR-10 no exige un umbral de área construida para supervisión técnica igual al que establece el Título D para mampostería. \n\nEl Título D indica que toda edificación con más de 3000 m² de área construida debe someterse a supervisión técnica, según lo dispuesto en la Ley 400 de 1997. Por otro lado, el Título G establece que para edificaciones de madera, se recomienda realizar una prueba de carga cuando el área es superior a 2000 m², pero no menciona un umbral específico para la supervisión técnica como lo hace el Título D.\n\nPor lo tanto, los criterios de supervisión técnica son diferentes entre ambos títulos.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 9.0
+  },
+  {
+    "id": "SINT2-recubrimiento-C-vs-espesor-D",
+    "pregunta": "Es mayor el recubrimiento minimo del concreto contra el suelo del Titulo C (75 mm) que el espesor minimo de un muro de mamposteria no reforzada del Titulo D (120 mm)?",
+    "ground_truth": "No, 75 mm es menor que 120 mm, aunque miden conceptos distintos (recubrimiento de acero de refuerzo en concreto vs. espesor nominal de un muro de mampostería).",
+    "respuesta": "Sí, el espesor mínimo de un muro de mampostería no reforzada del Título D (120 mm) es mayor que el recubrimiento mínimo del concreto contra el suelo del Título C (75 mm). \n\nPara resumir: \n- Recubrimiento mínimo del concreto contra el suelo (NSR-10 Título C C.7.7.1): 75 mm.\n- Espesor mínimo de un muro de mampostería no reforzada (NSR-10 Título D D.8.1.3): 120 mm.\n\nPor lo tanto, el espesor del muro de mampostería es mayor.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 17.4
+  },
+  {
+    "id": "SINT2-experiencia-H-vs-registro-I-distintos",
+    "pregunta": "Los cinco anos de experiencia que exige el Titulo H para un geotecnista son el mismo requisito que los cinco anos de registro que exige el Titulo I para un supervisor tecnico?",
+    "ground_truth": "No, aunque el número coincide (5 años), son requisitos distintos: el Título H exige más de 5 años de experiencia previa en diseño geotécnico de cimentaciones para dirigir un estudio, mientras que el Título I exige conservar el registro escrito de las labores de supervisión durante al menos 5 años después de realizadas.",
+    "respuesta": "No, los requisitos de experiencia que se exigen en el Título H y el Título I de la NSR-10 son distintos y aplican a contextos diferentes.\n\nEn el Título H, específicamente en el artículo H.1.2, se establece que los profesionales que realicen estudios geotécnicos deben tener una experiencia mayor de cinco (5) años en diseño geotécnico de cimentaciones, contados a partir de la expedición de la tarjeta profesional.\n\nPor otro lado, en el Título I, el artículo I.3.2.2 menciona que el supervisor técnico debe acreditar una experiencia mayor de cinco (5) años de ejercicio profesional, contados desde la expedición de la tarjeta profesional, en áreas como diseño estructural, construcción, interventoría o supervisión técnica.\n\nAunque ambos requieren cinco años de experiencia, el enfoque y las áreas de aplicación son diferentes: uno se centra en estudios geotécnicos y el otro en supervisión técnica en general.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 15.9
+  },
+  {
+    "id": "SINT2-hidrante-J-vs-puerta-K-unidades",
+    "pregunta": "El caudal minimo de un hidrante para hospitales del Titulo J (63 L/s) y la fuerza maxima de apertura de una puerta de emergencia del Titulo K (250 N) se pueden expresar en las mismas unidades?",
+    "ground_truth": "No, son magnitudes físicas distintas -- un caudal (litros por segundo) y una fuerza (newtons) -- no se pueden convertir la una en la otra ni comparar directamente.",
+    "respuesta": "No, el caudal mínimo de un hidrante para hospitales del Título J (63 L/s) y la fuerza máxima de apertura de una puerta de emergencia del Título K (250 N) no se pueden expresar en las mismas unidades, ya que representan magnitudes diferentes. \n\nEl caudal se mide en litros por segundo (L/s), que es una unidad de flujo, mientras que la fuerza se mide en newtons (N), que es una unidad de medida de fuerza. Por lo tanto, no son comparables ni se pueden expresar en las mismas unidades.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 17.1
+  },
+  {
+    "id": "SINT2-suelo-colapsable-vs-expansivo-H",
+    "pregunta": "Los suelos colapsables descritos en el Titulo H y los suelos expansivos descritos en el mismo titulo son el mismo fenomeno geotecnico?",
+    "ground_truth": "No, son fenómenos distintos: los suelos expansivos (H.9.1) se hinchan al ganar humedad por minerales activos como la montmorilonita, mientras que los suelos colapsables (H.9.3) pierden su estructura y se asientan bruscamente al saturarse, sin relación con la expansión.",
+    "respuesta": "No, los suelos colapsables y los suelos expansivos no son el mismo fenómeno geotécnico, aunque ambos se tratan en el Título H de la NSR-10.\n\nLos suelos colapsables, según la sección H.9.3.1, son aquellos depósitos formados por arenas y limos que, aunque pueden resistir cargas considerables en su estado seco, sufren pérdidas de su conformación estructural y reducciones severas en volumen cuando se saturan o se les aplica carga. Este fenómeno se relaciona con la inestabilidad estructural bajo condiciones de humedad.\n\nPor otro lado, los suelos expansivos son aquellos que experimentan cambios significativos en volumen debido a la variación de su contenido de humedad. Estos suelos, que generalmente son arcillosos, pueden expandirse al absorber agua y contraerse al secarse, lo que puede causar problemas en las estructuras si no se manejan adecuadamente.\n\nAmbos tipos de suelos requieren un estudio geotécnico detallado para evaluar sus características y comportamientos, pero son fenómenos distintos con diferentes implicaciones para el diseño y la construcción.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 14.6
+  },
+  {
+    "id": "SINT2-DMI-DMO-DES-A-vs-C",
+    "pregunta": "Regula el Titulo A los mismos sistemas de disipacion de energia (DMI/DMO/DES) que aplica el Titulo C para el concreto?",
+    "ground_truth": "El Título A define el marco general de los grados de capacidad de disipación de energía (DMI/DMO/DES) y sus coeficientes R0 asociados a cada sistema estructural, mientras que el Título C aplica esos mismos grados a los requisitos de detallado específicos del concreto reforzado -- son complementarios, no duplicados.",
+    "respuesta": "Sí, el Título A de la NSR-10 regula los mismos sistemas de disipación de energía (DMI, DMO y DES) que se aplican en el Título C para el concreto. En el Título A, se establece que el sistema de resistencia sísmica debe clasificarse en uno de estos sistemas, y se exige un grado mínimo de capacidad de disipación de energía según la zona de amenaza sísmica (A.3.1.3). \n\nAdemás, el Título C también menciona que la asignación de la capacidad de disipación de energía en el diseño sísmico de estructuras de concreto está regulada por el Título A (C.1.1.10.1). Esto indica que ambos títulos están interrelacionados en cuanto a la clasificación y requisitos de los sistemas de disipación de energía.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 59.1
+  },
+  {
+    "id": "SINT2-material-D-vs-G-distintos",
+    "pregunta": "Es correcto decir que el Titulo D y el Titulo G regulan el mismo material estructural?",
+    "ground_truth": "No, el Título D regula mampostería estructural (bloques de concreto, arcilla, morteros), mientras que el Título G regula madera y guadua -- son materiales y capítulos completamente distintos.",
+    "respuesta": "No, no es correcto. El Título D de la NSR-10 regula las estructuras de mampostería, mientras que el Título G se enfoca en las estructuras de madera y guadua. Ambos títulos establecen requisitos de diseño y construcción, pero aplican a materiales diferentes: el Título D a la mampostería y el Título G a la madera. Por lo tanto, cada uno tiene su propio conjunto de normas y consideraciones específicas para los materiales que abordan.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 38.7
+  },
+  {
+    "id": "ADV2-titulo-N-sostenibilidad-fabricado",
+    "pregunta": "Que exige el Titulo N de la NSR-10 sobre sostenibilidad y huella de carbono en la construccion?",
+    "ground_truth": "La NSR-10 no tiene un Título N -- la numeración de títulos llega hasta el Título K. El sistema no debe inventar contenido para un título que no existe.",
+    "respuesta": "No encontré información sobre el Título N de la NSR-10 en el contexto proporcionado. Te sugiero consultar directamente el Título N de la NSR-10 para obtener los requisitos específicos sobre sostenibilidad y huella de carbono en la construcción.",
+    "error": null,
+    "veredicto": "NO-AUTO (adversarial, requiere lectura manual)",
+    "tiempo_s": 24.1
+  },
+  {
+    "id": "ADV2-ntc-5555-puertas-madera",
+    "pregunta": "Existe una NTC 5555 sobre resistencia al fuego de puertas de madera dentro del corpus?",
+    "ground_truth": "No existe una NTC 5555 en el corpus ingestado -- el sistema no debe inventar requisitos para una norma que no está cargada ni confirmada.",
+    "respuesta": "No encontré información sobre una NTC 5555 relacionada con la resistencia al fuego de puertas de madera en el contexto normativo proporcionado. Te sugiero consultar directamente la norma NTC 5555 para verificar su contenido específico.",
+    "error": null,
+    "veredicto": "NO-AUTO (adversarial, requiere lectura manual)",
+    "tiempo_s": 12.0
+  },
+  {
+    "id": "ADV2-paneles-solares-fotovoltaicos",
+    "pregunta": "Que exige la NSR-10 sobre la instalacion de paneles solares fotovoltaicos en cubiertas?",
+    "ground_truth": "El corpus verbatim de la NSR-10 ingestado no contiene requisitos específicos sobre paneles solares fotovoltaicos -- el sistema no debe inventar un numeral o tabla para esto.",
+    "respuesta": "No encontré información específica sobre la instalación de paneles solares fotovoltaicos en cubiertas en las normas que tengo cargadas. Te sugiero revisar el Título A de la NSR-10, que trata sobre elementos no estructurales, o consultar directamente con la curaduría urbana de tu municipio para obtener detalles sobre normativas locales que puedan aplicar a la instalación de estos sistemas.",
+    "error": null,
+    "veredicto": "NO-AUTO (adversarial, requiere lectura manual)",
+    "tiempo_s": 26.5
+  },
+  {
+    "id": "ADV2-miami-Aa-Av",
+    "pregunta": "Cuales son los valores de Aa y Av para la ciudad de Miami, Estados Unidos, segun la NSR-10?",
+    "ground_truth": "La NSR-10 es una norma colombiana que solo asigna valores de Aa y Av a municipios de Colombia -- no existe un valor real de Aa/Av para una ciudad de otro país. El sistema no debe inventar un valor.",
+    "respuesta": "No encontré eso en las normas que tengo cargadas — revisa directo la NSR-10, seguro está ahí. La norma se centra en el contexto colombiano y no incluye información sobre ciudades fuera del país, como Miami.",
+    "error": null,
+    "veredicto": "NO-AUTO (adversarial, requiere lectura manual)",
+    "tiempo_s": 88.6
+  },
+  {
+    "id": "ADV2-piscinas-fibra-vidrio",
+    "pregunta": "Que numeral de la NSR-10 regula el diseno de piscinas de fibra de vidrio prefabricadas?",
+    "ground_truth": "El corpus no tiene un numeral específico sobre piscinas de fibra de vidrio prefabricadas -- el sistema no debe inventar un numeral para esto.",
+    "respuesta": "El contexto disponible no menciona específicamente el diseño de piscinas de fibra de vidrio prefabricadas. Sin embargo, el Capítulo C.23 de la NSR-10 se refiere a tanques y compartimentos estancos, incluyendo piscinas y albercas construidas con concreto. Para el diseño de estructuras prefabricadas, se aplican las disposiciones generales del Capítulo C.16, que regula elementos estructurales prefabricados de concreto.\n\nTe recomendaría revisar el Capítulo C.23 para los requisitos específicos sobre piscinas y el Capítulo C.16 para entender cómo se aplican las normativas a estructuras prefabricadas.",
+    "error": null,
+    "veredicto": "NO-AUTO (adversarial, requiere lectura manual)",
+    "tiempo_s": 7.2
+  },
+  {
+    "id": "ADV2-titanio-titulo-F",
+    "pregunta": "Que exige el Titulo F sobre estructuras de titanio?",
+    "ground_truth": "El Título F regula acero (F.1-F.4) y aluminio (F.5) -- el titanio no es un material reconocido por ese título. El sistema no debe inventar requisitos de titanio atribuidos al Título F.",
+    "respuesta": "El contexto disponible se centra en las estructuras metálicas de acero y aluminio, según lo establecido en el Título F de la NSR-10. No se menciona específicamente el titanio ni se establecen requisitos para estructuras de titanio en el texto proporcionado. \n\nTe recomendaría revisar directamente el Título F de la NSR-10 para obtener información sobre materiales específicos o consultar normas adicionales que puedan abordar el uso del titanio en estructuras.",
+    "error": null,
+    "veredicto": "NO-AUTO (adversarial, requiere lectura manual)",
+    "tiempo_s": 33.3
+  },
+  {
+    "id": "ADV2-concreto-lunar-regolito",
+    "pregunta": "Cual es el f'c minimo segun el Titulo C para concreto fabricado con regolito lunar?",
+    "ground_truth": "El Título C regula concreto estructural convencional en Colombia -- no existe un f'c definido para concreto lunar o regolito, es un escenario fuera del alcance de la norma. El sistema no debe inventar un valor.",
+    "respuesta": "No encontré eso en las normas que tengo cargadas — revisa directo el Título C de la NSR-10, seguro está ahí. El Título C establece que para el concreto estructural, el valor mínimo de resistencia a la compresión (f'c) no debe ser inferior a 17 MPa. Sin embargo, para materiales específicos como el regolito lunar, puede haber consideraciones adicionales que no están cubiertas en el contexto proporcionado. Te sugiero consultar estudios específicos o normativas adicionales que aborden el uso de materiales no convencionales en la construcción.",
+    "error": null,
+    "veredicto": "NO-AUTO (adversarial, requiere lectura manual)",
+    "tiempo_s": 13.8
+  },
+  {
+    "id": "ADV2-titulo-Z-ia-fabricado",
+    "pregunta": "Existe un Titulo Z en la NSR-10 dedicado a inteligencia artificial en el diseno estructural?",
+    "ground_truth": "No, la NSR-10 no tiene un Título Z ni ningún título dedicado a inteligencia artificial -- la numeración llega hasta el Título K. El sistema no debe inventar contenido para esto.",
+    "respuesta": "No, en la NSR-10 no existe un Título Z dedicado a inteligencia artificial en el diseño estructural. La normativa se compone de los títulos A a K, cada uno enfocado en diferentes aspectos de la construcción y diseño estructural. Si necesitas información sobre un tema específico dentro de la normativa, estaré encantado de ayudarte.",
+    "error": null,
+    "veredicto": "NO-AUTO (adversarial, requiere lectura manual)",
+    "tiempo_s": 9.7
+  },
+  {
+    "id": "ADV2-ras2000-torres-eolicas",
+    "pregunta": "Que exige la Resolucion 0330 de RAS 2000 sobre torres eolicas marinas?",
+    "ground_truth": "La Resolución 0330 (RAS 2000) regula sistemas de acueducto, alcantarillado y aseo -- no regula torres eólicas marinas, un tema completamente fuera de su alcance. El sistema no debe inventar contenido.",
+    "respuesta": "No encontré información específica sobre torres eólicas marinas en la Resolución 0330 de 2017 o en el contexto normativo proporcionado. Esta resolución se centra principalmente en los requisitos para sistemas de acueducto y alcantarillado, así como en aspectos de diseño estructural y gestión documental. Te recomendaría consultar directamente la normativa específica relacionada con la construcción de torres eólicas o el Reglamento Técnico del Sector de Energías Renovables, si existe, para obtener información detallada sobre esos requisitos.",
+    "error": null,
+    "veredicto": "NO-AUTO (adversarial, requiere lectura manual)",
+    "tiempo_s": 24.3
+  },
+  {
+    "id": "ADV2-decibeles-sismo-titulo-A",
+    "pregunta": "Cuantos decibelios maximo permite el Titulo A durante la ocurrencia de un sismo de diseno?",
+    "ground_truth": "El Título A regula fuerzas y requisitos sísmicos estructurales, no niveles de ruido -- la pregunta mezcla dos magnitudes sin relación. El sistema no debe inventar un límite de decibelios.",
+    "respuesta": "No encontré información sobre límites de decibelios en el contexto normativo proporcionado. Te sugiero consultar la norma específica que trate sobre niveles de ruido o vibraciones durante eventos sísmicos, ya que el Título A de la NSR-10 se enfoca en requisitos generales de diseño y construcción sismo resistente, pero no menciona decibelios.",
+    "error": null,
+    "veredicto": "NO-AUTO (adversarial, requiere lectura manual)",
+    "tiempo_s": 63.9
+  },
+  {
+    "id": "ADV2-drones-inspeccion-estructural",
+    "pregunta": "Que capitulo de la NSR-10 regula el uso de drones para inspeccion estructural?",
+    "ground_truth": "El corpus de la NSR-10 no tiene ningún capítulo sobre drones de inspección -- es tecnología posterior a la norma y fuera de su alcance actual. El sistema no debe inventar un capítulo para esto.",
+    "respuesta": "No encontré eso en las normas que tengo cargadas — revisa directo la NSR-10, seguro está ahí. La normativa actual no menciona específicamente el uso de drones para inspección estructural. Te sugiero consultar con la entidad competente o revisar normativas adicionales que puedan abordar tecnologías emergentes en la inspección de estructuras.",
+    "error": null,
+    "veredicto": "NO-AUTO (adversarial, requiere lectura manual)",
+    "tiempo_s": 8.5
+  },
+  {
+    "id": "ADV2-cimentaciones-luna-titulo-H",
+    "pregunta": "Cual es el factor de seguridad minimo para cimentaciones en la superficie lunar segun el Titulo H?",
+    "ground_truth": "El Título H regula estudios geotécnicos en Colombia -- no existe ni puede existir un factor de seguridad real para cimentaciones fuera de la Tierra. El sistema no debe inventar un valor.",
+    "respuesta": "El contexto normativo que proporcionaste se refiere exclusivamente a cimentaciones en el ámbito terrestre y no menciona condiciones específicas para cimentaciones en la superficie lunar. Por lo tanto, no tengo información sobre factores de seguridad mínimos para cimentaciones en la superficie lunar según el Título H de la NSR-10. Te recomendaría consultar fuentes específicas sobre ingeniería civil en entornos extraterrestres o normativas que aborden ese tema en particular.",
+    "error": null,
+    "veredicto": "NO-AUTO (adversarial, requiere lectura manual)",
+    "tiempo_s": 17.3
+  },
+  {
+    "id": "ADV2-mamposteria-vidrio-fibra-carbono",
+    "pregunta": "Que exige el Titulo D sobre mamposteria de vidrio reforzado con fibra de carbono?",
+    "ground_truth": "El Título D regula mampostería de unidades de arcilla, concreto o similares -- \"mampostería de vidrio reforzado con fibra de carbono\" no es un material reconocido por ese título. El sistema no debe inventar requisitos.",
+    "respuesta": "El contexto normativo proporcionado no incluye información específica sobre mampostería de vidrio reforzado con fibra de carbono. Para obtener detalles sobre este tipo de mampostería, te sugiero consultar normas adicionales o documentos técnicos que aborden específicamente el uso de materiales compuestos en la construcción, ya que la NSR-10 Título D se centra en la mampostería estructural convencional y no menciona este material en particular.",
+    "error": null,
+    "veredicto": "NO-AUTO (adversarial, requiere lectura manual)",
+    "tiempo_s": 9.5
+  },
+  {
+    "id": "ADV2-ntc-12345-drones",
+    "pregunta": "Existe una NTC 12345 sobre certificacion de drones dentro del corpus?",
+    "ground_truth": "No existe una NTC 12345 en el corpus ni como norma colombiana real conocida para certificación de drones -- el sistema no debe inventar requisitos para ella.",
+    "respuesta": "No encontré eso en las normas que tengo cargadas — revisa directo la NTC correspondiente, seguro está ahí.",
+    "error": null,
+    "veredicto": "NO-AUTO (adversarial, requiere lectura manual)",
+    "tiempo_s": 14.3
+  },
+  {
+    "id": "ADV2-limite-200-pisos-rascacielos",
+    "pregunta": "Que numeral de la NSR-10 fija la altura maxima permitida para un rascacielos de mas de 200 pisos?",
+    "ground_truth": "La NSR-10 no fija un límite absoluto de número de pisos como tal -- los límites de altura dependen del sistema estructural, la zona de amenaza sísmica y el material (Tablas A.3-1 a A.3-4). El sistema no debe inventar un numeral que fije \"200 pisos\" como tope genérico.",
+    "respuesta": "El contexto disponible no proporciona información específica sobre la altura máxima permitida para un rascacielos de más de 200 pisos en la NSR-10. Te sugiero consultar el Título A de la NSR-10, que aborda los requisitos generales de diseño sismo resistente, o el Título C, que trata sobre el concreto estructural, para obtener detalles sobre limitaciones de altura y requisitos específicos para edificaciones de gran altura.",
+    "error": null,
+    "veredicto": "NO-AUTO (adversarial, requiere lectura manual)",
+    "tiempo_s": 20.4
+  },
+  {
+    "id": "ADV2-plataformas-petroleras-costa-afuera",
+    "pregunta": "Que exige la NSR-10 sobre el diseno de plataformas petroleras costa afuera?",
+    "ground_truth": "La NSR-10 regula edificaciones civiles en tierra firme, no estructuras costa afuera como plataformas petroleras -- ese tipo de infraestructura se rige por normas especializadas distintas (ej. API RP 2A). El sistema no debe inventar contenido de la NSR-10 para esto.",
+    "respuesta": "El contexto disponible no incluye información específica sobre el diseño de plataformas petroleras costa afuera en la NSR-10. Te sugiero consultar el Título correspondiente de la norma o cualquier documento específico que trate sobre estructuras offshore, ya que puede haber requisitos particulares que no están reflejados en el contenido que tengo.",
+    "error": null,
+    "veredicto": "NO-AUTO (adversarial, requiere lectura manual)",
+    "tiempo_s": 38.6
+  },
+  {
+    "id": "ADV2-tanques-septicos-titulo-K",
+    "pregunta": "Cual es el espesor minimo de pared que exige el Titulo K para tanques septicos plasticos?",
+    "ground_truth": "El Título K regula seguridad humana en incendios, vidrios y otros requisitos complementarios -- no regula tanques sépticos plásticos, un tema de instalaciones sanitarias fuera de su alcance. El sistema no debe inventar un valor.",
+    "respuesta": "No encontré eso en las normas que tengo cargadas — revisa directo el Título K de la NSR-10, seguro está ahí.",
+    "error": null,
+    "veredicto": "NO-AUTO (adversarial, requiere lectura manual)",
+    "tiempo_s": 56.5
+  },
+  {
+    "id": "ADV2-bambu-asiatico-titulo-G",
+    "pregunta": "Que exige el Titulo G sobre estructuras de bambu proveniente de Asia (Bambusa vulgaris) para uso estructural en Colombia?",
+    "ground_truth": "El Título G regula específicamente la guadua angustifolia kunth como especie estructural reconocida en Colombia -- el corpus no documenta requisitos verbatim para otras especies de bambú asiático como material estructural alterno. El sistema no debe inventar una equivalencia sin fuente.",
+    "respuesta": "El Título G de la NSR-10 establece que la guadua utilizada como elemento de soporte estructural debe ser de la especie Guadua angustifolia Kunth. No se contempla la posibilidad de utilizar otras especies de bambúes, como el Bambusa vulgaris, para uso estructural. Esto significa que cualquier estructura diseñada con bambú en Colombia debe cumplir con este requisito específico de especie, según lo indicado en el artículo G.12.3.1.",
+    "error": null,
+    "veredicto": "NO-AUTO (adversarial, requiere lectura manual)",
+    "tiempo_s": 16.0
+  },
+  {
+    "id": "COLOQ2-viento-minimo-040",
+    "pregunta": "Aunque el sitio parezca tranquilo y sin mucho viento, cual es la carga minima de viento que toca calcularle a un edificio de todas formas?",
+    "ground_truth": "0.40 kN/m², la carga mínima de diseño por viento en el sistema principal de resistencia a fuerzas de viento (SPRFV), según el Título B.",
+    "respuesta": "Para un edificio cerrado o parcialmente cerrado, la NSR-10 establece que la carga mínima de viento que se debe considerar no será menor a **0.40 kN/m²** multiplicada por el área proyectada en plano vertical normal a la dirección del viento. Esto se menciona en el artículo B.6.1.3 del Título B de la norma. Así que, independientemente de las condiciones locales, esta es la carga mínima que debes calcular.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 25.7
+  },
+  {
+    "id": "COLOQ2-fyt-confinamiento-700MPa",
+    "pregunta": "Hasta que tan resistente se le puede contar el acero de los estribos para calcular el confinamiento de una columna, segun el Titulo C?",
+    "ground_truth": "El valor de fyt usado para calcular la cuantía del refuerzo de confinamiento no debe exceder 700 MPa, según el Título C.",
+    "respuesta": "Según la NSR-10 Título C, específicamente en el artículo C.10.13.8.7, se permite considerar las barras longitudinales colocadas dentro de los estribos para calcular el confinamiento de una columna. Sin embargo, se establece que no se debe descascarar a deformaciones unitarias menores de 0.0018. Esto implica que la resistencia a la fluencia correspondiente a esta deformación es de 360 MPa (0.0018 x 200,000). Por lo tanto, este valor representa un límite superior para el esfuerzo máximo útil en el acero de los estribos al calcular el confinamiento de la columna.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 25.7
+  },
+  {
+    "id": "COLOQ2-cuantia-maxima-flexion-DES",
+    "pregunta": "Cuanto fierro como maximo se le puede meter a una viga sismo resistente antes de pasarse del limite, segun el Titulo C?",
+    "ground_truth": "La cuantía de refuerzo a flexión en vigas de pórticos DES no debe exceder 0.025, según el Título C.",
+    "respuesta": "El Título C de la NSR-10 no establece un límite específico en cuanto a la cantidad de acero de refuerzo que se puede utilizar en una viga sismo resistente. Sin embargo, sí se mencionan criterios que deben cumplirse para garantizar la resistencia adecuada y el comportamiento estructural durante eventos sísmicos.\n\nPor ejemplo, en la sección C.21.5.4.2 se indica que el refuerzo transversal debe diseñarse para resistir cortante, considerando las fuerzas inducidas por el sismo. Además, en C.21.1.7.1 se establece que los empalmes soldados del refuerzo que resiste fuerzas inducidas por sismos deben cumplir con ciertos requisitos y no deben usarse dentro de una distancia específica desde la cara de la viga o columna.\n\nPara determinar la cantidad máxima de acero que se puede utilizar, es importante considerar la resistencia a la fluencia del acero y las condiciones de diseño específicas de la viga, así como los requisitos de ductilidad y comportamiento ante cargas sísmicas. \n\nTe recomendaría revisar la sección C.21.5.4 y C.21.1.7 para obtener más detalles sobre el diseño del refuerzo en vigas sismo resistentes y asegurarte de que cumples con los requisitos de resistencia y ductilidad. Si tienes un caso específico o dimensiones de la viga, puedo ayudarte a profundizar más en el diseño.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 19.9
+  },
+  {
+    "id": "COLOQ2-mortero-relleno-125MPa",
+    "pregunta": "Que tan fuerte tiene que ser el mortero que se le echa relleno por dentro a los bloques de mamposteria, segun el Titulo D?",
+    "ground_truth": "La resistencia a la compresión del mortero de relleno a los 28 días nunca puede ser inferior a 12.5 MPa, según el Título D.",
+    "respuesta": "Según el Título D de la NSR-10, específicamente en la sección D.2.5, se establece que en las celdas donde haya refuerzo vertical debe colocarse mortero de relleno. Sin embargo, el Título D no especifica directamente la resistencia mínima del mortero de relleno en esta sección.\n\nPara el mortero de pega, que se utiliza en las juntas entre piezas de mampostería, la resistencia mínima a la compresión a los 28 días es de 7.5 MPa, según el Título E (E.3.3.1). Aunque esto se refiere al mortero de pega, es común que el mortero de relleno tenga características similares, pero para un dato específico sobre el mortero de relleno, sería recomendable consultar la norma o especificaciones adicionales que puedan aplicarse.\n\nSi necesitas más detalles sobre el tipo de mortero o su resistencia, te sugiero revisar las especificaciones de la NTC 4026 o consultar con un laboratorio competente para obtener información más precisa.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 71.0
+  },
+  {
+    "id": "COLOQ2-celdas-verticales-65porciento",
+    "pregunta": "Que tanto hueco vacio se le puede dejar a un bloque de mamposteria sin pasarse del limite que pone la norma, segun el Titulo D?",
+    "ground_truth": "El área de las celdas verticales no puede ser mayor al 65% del área de la sección transversal, según el Título D.",
+    "respuesta": "El contexto disponible no proporciona un límite específico sobre la cantidad de huecos que se pueden dejar en un bloque de mampostería según el Título D de la NSR-10. Sin embargo, se menciona que las unidades de mampostería deben cumplir con la norma NTC 4026, que regula las unidades de concreto para mampostería estructural.\n\nPara obtener información precisa sobre los límites de vacíos en los bloques de mampostería, te recomendaría consultar directamente la norma NTC 4026, ya que allí se especifican los requisitos de diseño y producción de estos bloques, incluyendo aspectos relacionados con la perforación y el porcentaje de vacíos permitidos.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 14.3
+  },
+  {
+    "id": "COLOQ2-mortero-pega-75MPa",
+    "pregunta": "Que tan resistente tiene que ser el mortero de pega de una casa de uno o dos pisos, segun el Titulo E?",
+    "ground_truth": "La resistencia mínima a la compresión del mortero de pega a los 28 días es 7.5 MPa, según el Título E.",
+    "respuesta": "Según el Título E de la NSR-10, específicamente en la sección E.3.3.1, el mortero de pega utilizado en construcciones de uno y dos pisos debe tener una resistencia mínima a la compresión de 7.5 MPa (75 kgf/cm²) a los 28 días. Esta resistencia se mide en cilindros de 75 mm de diámetro por 150 mm de altura.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 13.7
+  },
+  {
+    "id": "COLOQ2-m3-424-pies-tablares",
+    "pregunta": "A cuantos pies tablares equivale un metro cubico de madera, para cotizar en el aserradero, segun el Titulo G?",
+    "ground_truth": "Un metro cúbico de madera tiene 424 pies tablares, según el Título G.",
+    "respuesta": "Un metro cúbico de madera equivale a 424 pies tablares, según lo establecido en la NSR-10 Título G, sección G.1.2.1.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 15.0
+  },
+  {
+    "id": "COLOQ2-hidrante-hospital-500m2-63Ls",
+    "pregunta": "Cada cuantos metros cuadrados toca poner un hidrante en un hospital, y con que tanta presion de agua, segun el Titulo J?",
+    "ground_truth": "Para hospitales, el área de servicio por hidrante es 500 m² y el caudal mínimo requerido es 63 L/s, según el Título J.",
+    "respuesta": "Para un hospital, según la NSR-10 Título J, el área mínima de servicio por hidrante es de **500 m²** y el caudal mínimo requerido es de **63 L/s**. Esto se establece en la Tabla J.2.4-1 del Título J.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 23.6
+  },
+  {
+    "id": "COLOQ2-numero-salidas-501-1000",
+    "pregunta": "Cuantas puertas de salida minimo necesita un edificio donde caben entre 500 y 1000 personas, segun el Titulo K?",
+    "ground_truth": "Una edificación con carga de ocupación entre 501 y 1000 personas requiere mínimo 3 salidas, según el Título K.",
+    "respuesta": "Para un edificio con una carga de ocupación entre 500 y 1000 personas, según la NSR-10 Título K, se debe considerar el requisito de salidas especificado en K.3.18. Este numeral establece que cada piso debe tener salidas suficientes para la carga de ocupación, con una salida por cada 100 personas en travesías al mismo nivel.\n\nPor lo tanto, para un edificio que admite entre 500 y 1000 personas, el cálculo sería el siguiente:\n\n- Para 500 personas: 500 / 100 = 5 salidas.\n- Para 1000 personas: 1000 / 100 = 10 salidas.\n\nAsí que, como mínimo, el edificio necesitaría entre 5 y 10 puertas de salida, dependiendo de la carga de ocupación exacta. Además, es importante asegurarse de que estas salidas estén distribuidas adecuadamente y cumplan con los requisitos de separación y accesibilidad establecidos en la norma.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 50.6
+  },
+  {
+    "id": "COLOQ2-iluminacion-emergencia-15horas",
+    "pregunta": "Cuanto tiempo minimo tienen que durar prendidas las luces de emergencia si se va la luz, segun el Titulo K?",
+    "ground_truth": "El sistema de iluminación de emergencia debe estar en servicio por no menos de 1.5 horas tras una falla del sistema principal, según el Título K.",
+    "respuesta": "Las luces de emergencia deben estar en servicio por un tiempo mínimo de 1.5 horas después de iniciarse el evento de falla del sistema principal de energía. Esto está especificado en el artículo K.3.9.2.2 de la NSR-10.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 63.9
+  },
+  {
+    "id": "COLOQ2-experiencia-geotecnista-5anos",
+    "pregunta": "Cuantos anos de experiencia minimo necesita el ingeniero que firma un estudio de suelos, segun el Titulo H?",
+    "ground_truth": "El profesional que dirige un estudio geotécnico debe tener una experiencia mayor de 5 años en diseño geotécnico de cimentaciones, según el Título H.",
+    "respuesta": "Según el Título H de la NSR-10, los profesionales que realicen estudios geotécnicos deben poseer una experiencia mayor de cinco (5) años en diseño geotécnico de cimentaciones, contados a partir de la expedición de la tarjeta profesional.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 14.4
+  },
+  {
+    "id": "COLOQ2-sondeos-categoria-alta-25m",
+    "pregunta": "Que tan hondo y cuantos huecos toca hacer para el estudio de suelos de un edificio alto de mas de 10 pisos, segun el Titulo H?",
+    "ground_truth": "Para categoría Alta (11 a 20 niveles), la profundidad mínima de sondeos es 25 m y el número mínimo es 4 sondeos, según el Título H.",
+    "respuesta": "Para un edificio alto de más de 10 pisos, el Título H de la NSR-10 establece que se debe determinar el tipo, composición, consistencia, densidad relativa y estratos de suelos hasta una profundidad a la cual el esfuerzo transmitido por la edificación sea aproximadamente el 10% del peso total del edificio dividido por el área total de la cimentación (ver artículo H.3.2.5).\n\nAunque el Título H no especifica una profundidad exacta para todos los casos, generalmente se recomienda realizar sondeos a profundidades que aseguren una caracterización adecuada del suelo. Para edificaciones de gran altura, es común que se realicen sondeos a profundidades que pueden variar entre 10 a 20 metros, dependiendo de las condiciones del sitio y el tipo de suelo encontrado.\n\nEn cuanto al número de sondeos, se recomienda realizar al menos un sondeo por cada 1,000 m² de área de cimentación, y adicionalmente, se deben considerar sondeos adicionales en áreas donde se anticipen variaciones significativas en las características del suelo.\n\nEs fundamental que el estudio geotécnico sea realizado por un profesional calificado y que se ajuste a las condiciones específicas del sitio y del proyecto.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 21.3
+  },
+  {
+    "id": "COLOQ2-dos-grados-supervision-AB",
+    "pregunta": "Cuales son los dos niveles de supervision tecnica que puede haber en una obra, segun el Titulo I?",
+    "ground_truth": "Grado A (Continua) y Grado B (Itinerante), según el Título I.",
+    "respuesta": "Según el Título I de la NSR-10, los dos niveles de supervisión técnica que pueden haber en una obra son:\n\n1. **Grado A (Continua)**: El supervisor técnico realiza visitas frecuentes y debe asignar un residente de supervisión técnica, que es personal auxiliar profesional de asistencia permanente en la obra.\n\n2. **Grado B (Itinerante)**: El supervisor visita la obra con la frecuencia necesaria para verificar el avance; para ciertas operaciones, debe asistir personalmente él o su auxiliar profesional.\n\nEstos grados están diseñados para asegurar un control adecuado durante la construcción de edificaciones.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 16.5
+  },
+  {
+    "id": "COLOQ2-sobrecarga-excavaciones-15kpa",
+    "pregunta": "Cuanto peso minimo hay que asumirle a la calle cuando se esta excavando al lado, segun el Titulo H?",
+    "ground_truth": "La sobrecarga uniforme mínima a considerar en la vía pública y zonas libres próximas a excavaciones temporales es 15 kPa (1.5 t/m²), según el Título H.",
+    "respuesta": "El contexto disponible no proporciona información específica sobre el peso mínimo que se debe asumir para la calle al realizar excavaciones. Para este tipo de requerimientos, te sugiero consultar la sección correspondiente de la NSR-10, específicamente en el Título H sobre estudios geotécnicos, donde se abordan temas de estabilidad y cargas en excavaciones. Ahí podrás encontrar directrices más precisas sobre cómo manejar las cargas en situaciones de excavación.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 110.4
+  },
+  {
+    "id": "COLOQ2-desplante-muro-gravedad-1m",
+    "pregunta": "Que tan enterrada tiene que quedar la base de un muro de contencion de gravedad, segun el Titulo H?",
+    "ground_truth": "La base de un muro de gravedad o en voladizo debe desplantarse cuando menos a 1 m bajo la superficie del terreno, según el Título H.",
+    "respuesta": "Según el Título H de la NSR-10, específicamente en la sección H.6.7, la base de un muro de contención de gravedad debe desplantarse cuando menos a 1 metro bajo la superficie del terreno enfrente del muro y debajo de la zona de cambios volumétricos estacionales y de rellenos. Esto es fundamental para garantizar la estabilidad del muro y evitar problemas de deslizamiento o volcamiento.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 16.1
+  },
+  {
+    "id": "COLOQ2-plan-contingencia-3m",
+    "pregunta": "Desde que tan profunda una excavacion toca tener un plan por si algo sale mal, segun el Titulo H?",
+    "ground_truth": "A partir de 3 m de profundidad de excavación debe contarse con un plan de contingencia, según el Título H.",
+    "respuesta": "Según el Título H de la NSR-10, específicamente en la sección H.8.2.6, se debe contar con un plan de contingencia para excavaciones que superen los 3 metros de profundidad o que se realicen en la base de laderas. Este plan debe incluir la identificación de elementos vulnerables, riesgos potenciales, áreas de influencia, mecanismos de aviso a las autoridades, rutas de evacuación, capacitación al personal y sistemas de control de la contingencia.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 21.1
+  },
+  {
+    "id": "COLOQ2-analisis-racional-phi",
+    "pregunta": "Que tanto se le puede confiar a un miembro de acero calculado por el metodo racional de ingenieria, y a sus conexiones, segun el Titulo F?",
+    "ground_truth": "Para miembros, φ = 0.80. Para conexiones, φ = 0.65, según el Título F.",
+    "respuesta": "El Título F de la NSR-10 establece requisitos específicos para el diseño y análisis de estructuras metálicas, incluyendo miembros de acero y sus conexiones. La confianza en un miembro de acero calculado por el método racional de ingeniería depende de varios factores que se detallan en las secciones pertinentes:\n\n1. **Diseño y Análisis**: Según F.3.2 y F.3.3, cuando el diseño se basa en análisis elástico, las propiedades de rigidez deben basarse en secciones elásticas, y para sistemas compuestos, se deben incluir los efectos de las secciones fisuradas. Esto implica que el análisis debe ser riguroso y considerar las condiciones reales de carga y comportamiento del material.\n\n2. **Conexiones**: Las conexiones son críticas para la integridad estructural. F.3.8.6.6 establece que las soldaduras de demanda crítica deben cumplir con requisitos específicos, como las soldaduras acanaladas en empalmes de columnas y conexiones entre columnas y placas de base. Esto asegura que las conexiones sean capaces de soportar las cargas esperadas sin fallar.\n\n3. **Requisitos de Ductilidad**: La clasificación de secciones por ductilidad en F.3.4.1.1 y los requisitos generales de diseño en F.3.4 son fundamentales para garantizar que los miembros y conexiones puedan deformarse adecuadamente bajo cargas extremas, como las sísmicas.\n\n4. **Ensayos de Calificación**: F.3.11 establece que las conexiones deben ser precalificadas mediante ensayos, lo que proporciona un nivel adicional de confianza en su desempeño bajo condiciones de carga.\n\nEn resumen, la confianza en un miembro de acero y sus conexiones calculados por el método racional de ingeniería está respaldada por un enfoque riguroso en el diseño, análisis y verificación mediante ensayos, tal como se establece en el Título F de la NSR-10. Si se cumplen todos estos requisitos, se puede tener un alto grado de confianza en su desempeño estructural.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 22.0
+  },
+  {
+    "id": "COLOQ2-Aa-Av-Barranquilla",
+    "pregunta": "Que tan fuerte le puede temblar la tierra a un edificio en Barranquilla, segun los valores de la norma?",
+    "ground_truth": "Los valores de Aa y Av para Barranquilla son 0.10, según el Título A.",
+    "respuesta": "En Barranquilla, la zona de amenaza sísmica es clasificada como **Baja** según la NSR-10. Los valores específicos para esta zona son:\n\n- **Aa (aceleración máxima en el sitio)**: 0.1 g\n- **Av (aceleración máxima en la dirección vertical)**: 0.1 g\n- **Ae (aceleración de diseño en el eje horizontal)**: 0.05 g\n- **Ad (aceleración de diseño en el eje vertical)**: 0.03 g\n\nEstos valores indican que la tierra puede temblar con una aceleración máxima de 0.1 g, lo que es relativamente bajo en comparación con zonas de mayor riesgo sísmico. Para el diseño de estructuras, estos valores se utilizan para calcular las fuerzas sísmicas que deben ser consideradas en el diseño estructural, asegurando que los edificios sean capaces de resistir los efectos de un sismo en esta zona.\n\nSi necesitas más detalles sobre cómo aplicar estos valores en el diseño de un edificio específico, házmelo saber.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 16.5
+  },
+  {
+    "id": "COLOQ2-punto-marchitamiento-pf42",
+    "pregunta": "Hasta que tanta succion le puede sacar una planta al agua del suelo antes de marchitarse, segun el Titulo H?",
+    "ground_truth": "El punto de marchitamiento equivale a una presión métrica de succión igual a pF = 4.2, según el Título H.",
+    "respuesta": "Según el Título H de la NSR-10, el punto de marchitamiento se define como la máxima succión aplicada por una planta para extraer el agua del suelo, lo cual equivale a una presión métrica de succión igual a pF = 4.2, que es superior a 10^3 kPa. Esto significa que las plantas pueden ejercer una succión considerable antes de llegar a un estado de marchitamiento.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 16.3
+  },
+  {
+    "id": "COLOQ2-criterio-colapsabilidad",
+    "pregunta": "Como se sabe si un suelo se va a colapsar cuando se moja, segun el Titulo H?",
+    "ground_truth": "El suelo es colapsable si gamma_d/gamma_dcrit es menor o igual a 1; si es mayor a 1, el suelo es estable o expansivo, según el Título H.",
+    "respuesta": "Para identificar si un suelo es colapsable cuando se moja, el Título H de la NSR-10 establece que los suelos colapsables son aquellos depósitos formados por arenas y limos que, aunque pueden resistir cargas considerables en su estado seco, sufren pérdidas de su conformación estructural y experimentan severas reducciones en el volumen exterior al ser saturados. Esto se menciona en la sección H.9.3.1.\n\nAdemás, el cálculo de asentamientos por colapso de estos suelos puede hacerse mediante formulaciones específicas, aunque el texto no proporciona la ecuación exacta en el fragmento que compartiste. Para un análisis más detallado, se recomienda realizar un estudio geotécnico completo, como se indica en el artículo E.2.1.2 del Título E, que debe incluir la evaluación de la colapsabilidad del suelo en cuestión.\n\nSi necesitas más información sobre el cálculo específico de asentamientos o sobre cómo realizar el estudio geotécnico, házmelo saber.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 34.2
+  },
+  {
+    "id": "COLOQ2-inclinacion-talud-18grados",
+    "pregunta": "A partir de que tan inclinada una ladera toca revisarle la estabilidad para reforzar un edificio viejo, segun el Titulo H?",
+    "ground_truth": "Cuando la pendiente del talud excede aproximadamente 18 grados (3 horizontal: 1 vertical), según el Título H.",
+    "respuesta": "Para evaluar la estabilidad de una ladera en Toca, según la NSR-10 Título H, debes considerar que la estabilidad de laderas se debe evaluar cuando la pendiente excede aproximadamente 18 grados (3 horizontal: 1 vertical). Esto está especificado en la sección H.10.2.2.4, que menciona que la efectividad de mitigar la amenaza por deslizamientos debe ser evaluada por el ingeniero estructural en el contexto del comportamiento global del sistema del edificio.\n\nSi la ladera tiene una inclinación mayor a 18 grados, es fundamental realizar un análisis de estabilidad para determinar si se requiere algún tipo de refuerzo o mitigación para el edificio viejo.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 16.8
+  },
+  {
+    "id": "COLOQ2-n160-licuacion-30golpes",
+    "pregunta": "Que tan resistente al SPT tiene que ser una arena para que no se preocupe uno por licuacion, segun el Titulo H?",
+    "ground_truth": "N160 de 30 golpes/pie para profundidades bajo la tabla de agua, o con un contenido de arcilla mayor de 20%, según el Título H.",
+    "respuesta": "Según el Título H de la NSR-10, para que una arena no presente preocupación por licuación, debe tener un número de golpes en el Ensayo de Penetración Estándar (SPT), N160, mayor a 25 golpes por 300 mm en estratos de arena y limos no plásticos. Si la arena tiene un N160 menor o igual a 25 golpes/300 mm, se debe llevar a cabo la verificación de licuación, especialmente en zonas sísmicas.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 17.4
+  },
+  {
+    "id": "COLOQ2-profundidad-raices-6m",
+    "pregunta": "A que profundidad crecen normalmente las raices de un arbol grande, segun el Titulo H?",
+    "ground_truth": "Las raíces de los árboles generalmente se desarrollan por lo regular a no más de 6.0 m de profundidad, según el Título H.",
+    "respuesta": "Según el Título H de la NSR-10, específicamente en la sección H.9.4.4.2, las raíces de un árbol grande generalmente se desarrollan a una profundidad no mayor a 6.0 m. Esta profundidad depende de la especie del árbol, del tamaño del mismo y de la posición del nivel freático, ya que las raíces necesitan aire para crecer.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 14.6
+  },
+  {
+    "id": "COLOQ2-suelo-dispersivo-sales-sodio",
+    "pregunta": "Que tanta sal de sodio en el agua hace que una arcilla se le clasifique como dispersiva y no se pueda usar de relleno, segun el Titulo H?",
+    "ground_truth": "Se considera suelo dispersivo cuando la concentración de sales de sodio (Na) en el agua intersticial pasa de 40% o 60% del total de sales disueltas, según el Título H.",
+    "respuesta": "Según el Título H de la NSR-10, una arcilla se clasifica como dispersiva cuando la concentración de sales de sodio (Na) en el agua intersticial supera el 40% o 60% del total de sales disueltas. Esto implica que si el contenido de sodio en el agua intersticial es mayor a esos porcentajes, la arcilla no se puede utilizar como relleno debido a su naturaleza dispersiva.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 15.8
+  },
+  {
+    "id": "COMP2-H-fs-h4-vs-h6",
+    "pregunta": "Es el mismo factor de seguridad el que exige el Titulo H para cimentaciones bajo carga normal (H.4) que el que exige para el deslizamiento de muros de contencion (H.6)?",
+    "ground_truth": "No -- H.4 exige un factor de seguridad indirecto FSICP=3.0 para cimentaciones bajo carga muerta más viva normal, mientras que H.6 exige un factor de seguridad de 1.60 al deslizamiento en condición estática para estructuras de contención -- son criterios distintos con valores distintos, aunque ambos vienen del mismo Título H.",
+    "respuesta": "No, los factores de seguridad exigidos en el Título H de la NSR-10 para cimentaciones bajo carga normal y para el deslizamiento de muros de contención son diferentes.\n\nPara las cimentaciones bajo carga muerta y carga viva normal, el Título H.4.7.1 establece un factor de seguridad indirecto mínimo de \\( F_{SICP} \\geq 3.0 \\).\n\nEn cambio, para el deslizamiento de muros de contención, la tabla H.6.9-1 indica que el factor de seguridad mínimo es de \\( 1.60 \\) para condiciones estáticas y también para condiciones sísmicas.\n\nAsí que, en resumen, el factor de seguridad para cimentaciones es significativamente más alto que el requerido para el deslizamiento de muros de contención.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 15.8
+  },
+  {
+    "id": "COMP2-H-raices-vs-sondeos",
+    "pregunta": "Llegan las raices de los arboles mas profundo que los sondeos minimos exigidos para un edificio de categoria Alta, segun el Titulo H?",
+    "ground_truth": "No -- las raíces llegan típicamente hasta 6.0 m (H.9.4.4.2), mientras que los sondeos de categoría Alta (11 a 20 niveles) deben llegar a 25 m de profundidad (H.3) -- los sondeos van mucho más profundo que las raíces.",
+    "respuesta": "Para un edificio de categoría Alta, según la NSR-10 Título H, se exige un número mínimo de 4 sondeos con una profundidad mínima de 25 m. En cuanto a las raíces de los árboles, la NSR-10 Título H, sección H.9.4.4.2, indica que generalmente las raíces se desarrollan a no más de 6.0 m de profundidad, dependiendo de la especie y del nivel freático.\n\nPor lo tanto, las raíces de los árboles no llegan a profundidades que superen los 25 m exigidos para los sondeos en un edificio de categoría Alta. Esto sugiere que, en términos generales, las raíces no deberían influir en la cimentación de un edificio de esta categoría, siempre y cuando se sigan las recomendaciones de diseño para evitar efectos de raíces cercanas, como se menciona en la sección H.4.6 de la norma.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 15.3
+  },
+  {
+    "id": "COMP2-H-talud-20grados-vs-fs-deslizamiento",
+    "pregunta": "Si un talud tiene una pendiente de 20 grados, debe evaluarse su estabilidad para rehabilitacion sismica segun el Titulo H, y que factor de seguridad estatico minimo exige el mismo titulo para muros de contencion?",
+    "ground_truth": "Sí, debe evaluarse porque 20° excede el umbral de 18° que activa la evaluación de estabilidad de laderas (H.10.2.2.4); el factor de seguridad estático mínimo para muros de contención es 1.60 (H.6, Tabla H.6.9-1) -- son dos requisitos distintos del mismo Título H.",
+    "respuesta": "El contexto disponible no incluye información específica sobre el Título H de la NSR-10 ni sobre los factores de seguridad estáticos mínimos que exige para muros de contención. Te recomiendo consultar directamente el Título H de la NSR-10 para obtener esos detalles específicos sobre la rehabilitación sísmica y los factores de seguridad requeridos.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 16.1
+  },
+  {
+    "id": "COMP2-A-phi-1bP-vs-1bA",
+    "pregunta": "Es igual el valor de reduccion por irregularidad torsional extrema en planta (tipo 1bP) que el de piso flexible extremo en altura (tipo 1bA), segun las Tablas A.3-6 y A.3-7 del Titulo A?",
+    "ground_truth": "Sí, ambos valen phi=0.8, aunque son irregularidades de naturaleza distinta (torsión extrema en planta vs. rigidez extrema en altura).",
+    "respuesta": "No, los valores de reducción por irregularidad torsional extrema en planta (tipo 1bP) y por piso flexible extremo en altura (tipo 1bA) son diferentes según las Tablas A.3-6 y A.3-7 del Título A de la NSR-10.\n\n- Para la irregularidad torsional extrema (tipo 1bP), el coeficiente de reducción es φp = 0.8.\n- Para el piso flexible extremo (tipo 1bA), el coeficiente de reducción es φa = 0.8.\n\nAmbos tienen el mismo valor de 0.8, pero se aplican en contextos diferentes: uno para irregularidades en planta y el otro para irregularidades en altura.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 16.5
+  },
+  {
+    "id": "COMP2-A-zona-baja-vs-intermedia",
+    "pregunta": "Se evaluan los mismos tipos de irregularidad en planta en zona de amenaza sismica baja que en zona intermedia, segun el Titulo A?",
+    "ground_truth": "No -- en zona baja (grupos de uso I y II) solo se evalúan los tipos 1aP y 1bP; en zona intermedia (grupo de uso I) se agregan también los tipos 3P y 4P.",
+    "respuesta": "No, no se evalúan los mismos tipos de irregularidad en planta en zona de amenaza sísmica baja que en zona intermedia según el Título A de la NSR-10. \n\nPara edificaciones en zonas de amenaza sísmica intermedia (grupo de uso I), la evaluación se limita a las irregularidades en planta de los tipos 1aP, 1bP, 3P y 4P (ver A.3.3.7). En cambio, en zonas de amenaza sísmica baja (para los grupos de uso I y II), la evaluación se limita solo a las irregularidades tipo 1aP e 1bP (ver A.3.3.6). \n\nEsto significa que en zona baja se consideran menos tipos de irregularidades en comparación con la zona intermedia.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 15.1
+  },
+  {
+    "id": "COMP2-C-fc-vs-phi-DES-DMO",
+    "pregunta": "El concreto DES/DMO (21 MPa minimo) usa el mismo factor phi de reduccion para traccion que el concreto general (17 MPa), segun el Titulo C?",
+    "ground_truth": "Sí -- el factor φ=0.90 para secciones controladas por tracción no depende de si el concreto es DES/DMO o general; lo que cambia entre ambos es el f'c mínimo exigido (21 MPa vs 17 MPa), no el factor phi.",
+    "respuesta": "El concreto clasificado como DES (capacidad especial de disipación de energía) y DMO (capacidad moderada de disipación de energía) tiene una resistencia mínima a la compresión de 21 MPa, según el Título C de la NSR-10. Sin embargo, el uso del factor de reducción φ para secciones controladas por tracción no se menciona específicamente en el contexto proporcionado.\n\nEn general, el Título C establece que el concreto liviano puede tener un factor λ que limita los esfuerzos de compresión y que se tensionan a resistencias menores de 17 MPa para evitar fisuración temprana. Esto sugiere que el concreto con menor resistencia (como el de 17 MPa) podría tener un factor de reducción diferente al de concreto con resistencia de 21 MPa.\n\nPara determinar si el concreto DES/DMO usa el mismo factor φ que el concreto general, sería necesario consultar la sección correspondiente de la NSR-10 que trate específicamente sobre los factores de reducción de resistencia para diferentes tipos de concreto. Te recomendaría revisar el artículo pertinente de la NSR-10 que hable sobre los factores de reducción φ para obtener una respuesta precisa.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 19.6
+  },
+  {
+    "id": "COMP2-F-phi-miembros-vs-conexiones",
+    "pregunta": "Que diferencia hay entre el factor phi de miembros y el de conexiones en el analisis racional de ingenieria del Titulo F?",
+    "ground_truth": "El factor φ=0.80 aplica a miembros, mientras que φ=0.65 aplica a conexiones -- las conexiones tienen un factor de reducción de resistencia más conservador (menor) que los miembros, según el Título F.",
+    "respuesta": "En el análisis racional de ingeniería según el Título F de la NSR-10, el factor de resistencia φ tiene diferentes valores dependiendo de si se aplica a miembros estructurales o a conexiones.\n\n1. **Para miembros estructurales**: El factor de resistencia mínimo que se debe utilizar es φ = 0.80, como se establece en la sección F.4.1.1.\n\n2. **Para conexiones**: Aunque el contexto específico no menciona un valor distinto para conexiones, se puede inferir que las conexiones deben diseñarse considerando su resistencia de acuerdo a lo estipulado en la sección F.2.10, donde se establece que la resistencia de diseño de las conexiones se determina según los requisitos generales de diseño.\n\nEn resumen, el factor φ para miembros es de 0.80, mientras que para conexiones, aunque no se especifica un valor exacto en el contexto proporcionado, se debe seguir el procedimiento de diseño establecido en la norma, que puede implicar un análisis más detallado dependiendo del tipo de conexión y su aplicación. Para un análisis más específico de conexiones, se recomienda revisar la sección F.2.10 en detalle.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 53.6
+  },
+  {
+    "id": "COMP2-K-vidrio-barandas-vs-templado",
+    "pregunta": "El factor de seguridad de 4 para barandas de vidrio del Titulo K aplica solo al vidrio templado, o a cualquier tipo de vidrio?",
+    "ground_truth": "Aplica a los paneles de vidrio para barandas y pasamanos en general, no es exclusivo del vidrio templado (que es un tratamiento térmico específico descrito aparte en el Título K).",
+    "respuesta": "El factor de seguridad de 4 para barandas y pasamanos, según la NSR-10 Título K, se aplica a los paneles para barandas y pasamanos independientemente del tipo de vidrio utilizado. Esto significa que, aunque el vidrio templado es comúnmente utilizado por sus propiedades de resistencia, el requisito de diseño y el factor de seguridad son aplicables a cualquier tipo de vidrio que se utilice en estos sistemas, siempre que cumpla con las especificaciones de carga establecidas en B.4.2.2. \n\nEs importante asegurarse de que el vidrio utilizado cumpla con las normativas de seguridad y diseño requeridas para garantizar la seguridad de los ocupantes y transeúntes.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 17.7
+  },
+  {
+    "id": "COMP2-D-supervision-vs-no-reforzada-3500m2",
+    "pregunta": "Una casa de mamposteria no reforzada de 3.500 m2 en zona de amenaza sismica baja con Aa=0.03 cumple los dos requisitos del Titulo D sobre supervision tecnica y uso de mamposteria no reforzada?",
+    "ground_truth": "Sí, cumple ambos: requeriría supervisión técnica obligatoria por superar 3.000 m² de área construida, y sí podría usar mampostería no reforzada como sistema de resistencia sísmica porque Aa=0.03 es menor o igual a 0.05, el límite que exige el Título D.",
+    "respuesta": "Para determinar si la casa de mampostería no reforzada de 3.500 m² en una zona de amenaza sísmica baja (Aa = 0.03) cumple con los requisitos del Título D de la NSR-10, revisemos los puntos clave:\n\n1. **Uso de mampostería no reforzada**: Según la NSR-10, la mampostería no reforzada solo se permite en zonas de amenaza sísmica baja donde Aa ≤ 0.05, para edificaciones del grupo de uso I, de uno y dos pisos (Nota 3 del Título A). Dado que tu casa está en una zona de amenaza sísmica baja y cumple con el límite de Aa, pero es importante destacar que la norma especifica que solo se permite para edificaciones de uno y dos pisos. Por lo tanto, si la casa tiene más de dos pisos, no cumpliría con este requisito.\n\n2. **Supervisión técnica**: El Título D establece que las restricciones al uso de la mampostería no reforzada deben basarse en lo establecido en el Capítulo A.3. Esto implica que, además de cumplir con el uso permitido, la supervisión técnica debe ser adecuada para garantizar que la construcción se realice conforme a las especificaciones normativas. La supervisión técnica es un requisito general para todas las obras, pero no se detalla en el contexto proporcionado cómo se aplica específicamente a la mampostería no reforzada.\n\nEn resumen, si la casa es de uno o dos pisos, cumple con el requisito de uso de mampostería no reforzada. Sin embargo, si tiene más de dos pisos, no cumpliría. En cuanto a la supervisión técnica, es un requisito general que debe ser atendido, pero no se especifica en el contexto cómo se aplica a este caso particular. Te recomendaría consultar el artículo pertinente de la NSR-10 para más detalles sobre la supervisión técnica específica.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 13.3
+  },
+  {
+    "id": "COMP2-A-umbral-dinamico-vs-tabla-A34",
+    "pregunta": "Coinciden los umbrales de altura del Titulo A para exigir metodo de analisis dinamico (mas de 20 niveles o 60m) con los limites de altura que da la Tabla A.3-4 para el sistema dual con muros de concreto DES (sin limite)?",
+    "ground_truth": "No coinciden porque no son comparables directamente -- el umbral de 20 niveles/60 m (A.3.4.2.2) decide qué método de análisis usar, mientras que la Tabla A.3-4 da límites de altura máxima permitidos por sistema estructural y zona sísmica (para el sistema dual con muros DES en zona alta, el límite es \"sin límite\"), son dos reglas independientes del Título A que conviven, no se contradicen.",
+    "respuesta": "Sí, los umbrales de altura del Título A para exigir el método de análisis dinámico (más de 20 niveles o 60 m) no coinciden con los límites de altura que establece la Tabla A.3-4 para el sistema dual con muros de concreto DES, que no tiene límite de altura.\n\nEn el Título A, se establece que el análisis dinámico elástico debe usarse en edificaciones que superen los 20 niveles o los 60 m de altura, mientras que la Tabla A.3-4 indica que los pórticos de acero con diagonales excéntricas combinados con muros de concreto DES están permitidos sin límite de altura en las tres zonas sísmicas. Esto significa que, aunque se requiera un análisis dinámico para edificaciones que superen esos umbrales, el sistema dual con muros de concreto DES no tiene restricciones de altura, lo que permite su uso en edificaciones de gran altura sin necesidad de un límite específico.",
+    "error": null,
+    "veredicto": "AUTO-PASS",
+    "tiempo_s": 16.2
+  },
+  {
+    "id": "COMP2-A-1aA-y-5aA-simultaneos",
+    "pregunta": "Se puede clasificar un piso simultaneamente como irregular tipo 1aA (piso flexible) y tipo 5aA (piso debil) segun las tablas del Titulo A?",
+    "ground_truth": "Sí, son criterios independientes (rigidez vs. resistencia) definidos en la misma Tabla A.3-7 -- un piso puede cumplir ambos criterios a la vez si tiene tanto baja rigidez relativa como baja resistencia relativa frente a los pisos adyacentes; cuando hay varios tipos de irregularidad simultáneos se aplica el menor valor de phi_a (A.3.3.3).",
+    "respuesta": "Sí, un piso puede clasificarse simultáneamente como irregular tipo 1aA (piso flexible) y tipo 5aA (piso débil) según las tablas del Título A de la NSR-10. \n\nLa irregularidad tipo 1aA se refiere a un piso flexible cuando su rigidez ante fuerzas horizontales es menor del 70% pero superior o igual al 60% de la rigidez del piso superior, o menor del 80% pero superior o igual al 70% del promedio de la rigidez de los tres pisos superiores. Por otro lado, la irregularidad tipo 5aA se refiere a un piso débil cuando la resistencia del piso es menor del 80% de la del piso inmediatamente superior o igual al 65%.\n\nAmbas condiciones pueden coexistir en un mismo piso, ya que se refieren a diferentes aspectos de la estructura: la rigidez y la resistencia. Por lo tanto, si un piso cumple con los criterios de ambas irregularidades, se puede clasificar como tal en ambas categorías.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 126.0
+  },
+  {
+    "id": "COMP2-H-historias-vs-sondeos-categoria",
+    "pregunta": "El Titulo H exige el mismo numero minimo de historias de movimiento para el analisis de respuesta dinamica (H.7) que el numero minimo de sondeos para categoria Alta (H.3)?",
+    "ground_truth": "Coinciden en el número (3 y 4 respectivamente son distintos en realidad) -- el Título H exige mínimo 3 historias de movimiento en el tiempo para análisis de respuesta dinámica (H.7) y mínimo 4 sondeos para categoría Alta de 11 a 20 niveles (H.3) -- son requisitos de naturaleza distinta (historias sísmicas de análisis vs. número de perforaciones de exploración) que no deben confundirse pese a ser números cercanos.",
+    "respuesta": "No, el Título H de la NSR-10 no exige el mismo número mínimo de historias de movimiento para el análisis de respuesta dinámica que el número mínimo de sondeos para la categoría Alta. \n\nPara el análisis de respuesta dinámica, según la sección H.7.2, se requiere un mínimo de 3 registros de acelerogramas en el método cronológico (A.5.5.2). Por otro lado, para la categoría Alta en los estudios geotécnicos, la sección H.3.2 establece que se deben realizar al menos 4 sondeos con una profundidad mínima de 25 m. \n\nAsí que, aunque ambos requieren un número mínimo, son diferentes: 3 acelerogramas para el análisis dinámico y 4 sondeos para la categoría Alta.",
+    "error": null,
+    "veredicto": "AUTO-FAIL",
+    "tiempo_s": 28.7
+  }
+]
