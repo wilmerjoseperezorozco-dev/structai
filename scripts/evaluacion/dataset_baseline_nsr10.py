@@ -49,6 +49,38 @@ de Título H (ids "H-asentamiento-..."/"H-fsicp-..."), primera ingesta
 tras la auditoría numeral-por-numeral que confirmó que Título H solo
 cubría H.1-H.3.2 (~18% del título) -- ver memoria privada del usuario,
 project_structai_nsr10_inventario_titulos.md.
+
+Ampliación 2026-09-07 (misma sesión, continuación: 145 -> 163) siguió
+el mismo criterio -- verificación real con ask() antes de agregar cada
+pregunta -- a medida que se cerraba Título H completo (H.5 a H.10) y se
+empezaba Título A.3.3 (irregularidades en planta/altura).
+
+Ampliación 2026-09-07 (misma sesión, 163 -> 276, a pedido explícito del
+usuario: "vemos cuantas preguntas aumentamos... tal vez algunas 300
+bien variadas aumentando nivel de complejidad" y "sin correr, dejarlas
+ahi"). **Cambio metodológico deliberado respecto a TODO lo anterior en
+este archivo**: estas 113 preguntas nuevas NO se verificaron con ask()
+en vivo contra producción -- se dejan escritas para una futura corrida
+de RAGAS/regresión que las evalúe en bloque, en vez de gastar cupo de
+Groq/OpenAI verificando una por una como se hizo con las 163 previas.
+El ground_truth de todas formas viene de una fuente real: para Título H
+(H.9/H.10, 27 preguntas) y Título A (A.3.3, 14 preguntas), del texto
+verbatim transcrito y subido a producción en esta misma sesión
+(confirmado contra el PDF oficial antes de escribir cada chunk); para
+las demás 72 (síntesis cruzada SINT2, adversarial ADV2, coloquial
+COLOQ2, compuestas multi-hop COMP2), de los ground_truth YA verificados
+de las 163 preguntas anteriores de este mismo archivo -- ningún hecho
+nuevo se inventó sin una fuente verificada previamente. No se llegó al
+número redondo de "algunas 300" pedido -- se priorizó no forzar
+preguntas de relleno de calidad dudosa solo para completar la cifra;
+276 preguntas reales, bien variadas, es el resultado honesto de esta
+ronda. Antes de correr RAGAS/pytest sobre este archivo la próxima vez,
+las 113 preguntas de esta ampliación deben pasar primero por
+verificación real contra `ask()` (retrieval + generación), igual que
+todas las anteriores -- no se puede asumir que pasan solo porque el
+ground_truth es correcto, el sistema real podría fallar en recuperarlo
+o en sintetizarlo (ver los hallazgos de H.8.4-1/H.10.2.2.2 en este
+mismo archivo como ejemplo de por qué esa verificación importa).
 """
 
 CASOS_BASELINE = [
@@ -865,6 +897,26 @@ CASOS_BASELINE = [
         "ground_truth": "N160 de 30 golpes/pie para profundidades bajo la tabla de agua, o con un contenido de arcilla mayor de 20%.",
         "id": "H-n160-minimo-licuacion-30golpes",
     },
+    # ---- Título A, ampliación A.3.3 completo (Configuración estructural:
+    # irregularidades en planta y en altura, ausencia de redundancia,
+    # sobrerresistencia) + Tablas A.3-5/6/7 ----
+    # Ingesta verbatim 2026-09-07 (misma sesión), 2/2 PASSED contra
+    # producción real. Corrige un hallazgo real: memoria privada vieja
+    # describía "A.3.6" como el capítulo de irregularidades -- INCORRECTO,
+    # A.3.6 real es "Efectos sísmicos en los elementos estructurales"; las
+    # irregularidades viven en A.3.3.4/A.3.3.5 con las Tablas A.3-6/A.3-7,
+    # que nunca se habían extraído (nota de cobertura vieja lo admitía
+    # honestamente como PENDIENTE).
+    {
+        "pregunta": "Cual es el valor de phi_p para una irregularidad torsional extrema tipo 1bP segun la Tabla A.3-6 del Titulo A?",
+        "ground_truth": "phi_p = 0.8 para la irregularidad torsional extrema tipo 1bP, según la Tabla A.3-6.",
+        "id": "A-phi-p-torsional-extrema-1bP-08",
+    },
+    {
+        "pregunta": "Cuando se considera que una estructura tiene piso debil extremo tipo 5bA segun la Tabla A.3-7 del Titulo A?",
+        "ground_truth": "Cuando la resistencia del piso es menor del 65% de la del piso inmediatamente superior; se aplica phi_a = 0.8.",
+        "id": "A-piso-debil-extremo-5bA-65porciento",
+    },
     # ---- Adversarial / sin respuesta real en el corpus ----
     # 4 de estas 10 se probaron EN VIVO contra ask() antes de escribir el
     # ground_truth (batch de 2026-09-07). Hallazgo real e importante: la
@@ -937,5 +989,606 @@ CASOS_BASELINE = [
         "pregunta": "Que dice la NSR-10 sobre el diseno estructural de reactores nucleares?",
         "ground_truth": "La NSR-10 es una norma de edificaciones civiles convencionales en Colombia y no regula reactores nucleares -- ese es un tema completamente fuera de su alcance. El sistema no debe inventar contenido para esto.",
         "id": "ADV-reactor-nuclear-fuera-alcance",
+    },
+    # ======================================================================
+    # AMPLIACIÓN 2026-09-07 (misma sesión, a pedido explícito del usuario:
+    # "vemos cuantas preguntas aumentamos... tal vez algunas 300 bien
+    # variadas aumentando nivel de complejidad"): de 163 a 278 preguntas.
+    #
+    # DIFERENCIA METODOLÓGICA IMPORTANTE respecto a todo lo anterior en este
+    # archivo: estas preguntas NO se verificaron con ask() en vivo contra
+    # producción (pedido explícito: "sin correr, dejarlas ahi") -- se
+    # dejan escritas para una futura corrida de RAGAS/regresión que las
+    # evalúe en bloque. El ground_truth sigue viniendo de una fuente real
+    # y verificada: para Título H (H.9/H.10) y Título A (A.3.3), del texto
+    # verbatim que se transcribió y subió a producción en esta misma sesión
+    # (confirmado contra el PDF oficial antes de escribir el chunk); para
+    # las demás categorías (síntesis cruzada, coloquial, compuestas), de
+    # los ground_truth YA verificados de las 163 preguntas anteriores en
+    # este mismo archivo -- no se inventa ningún hecho nuevo sin fuente.
+    # ======================================================================
+
+    # ---- Título H, más hechos de H.9 (suelos expansivos/dispersivos/
+    # colapsables/vegetación) no cubiertos por las 4 preguntas ya
+    # verificadas de H.9 ----
+    {
+        "pregunta": "Cuales son los minerales activos que le dan a una arcilla su caracter expansivo segun el Titulo H?",
+        "ground_truth": "Los minerales activos reconocidos son la montmorilonita, la vermiculita y algunas variedades de haloisita.",
+        "id": "H-H9-minerales-expansivos-montmorilonita",
+    },
+    {
+        "pregunta": "Con que sufijo identifica el IGAC en la taxonomia agrologica a los suelos potencialmente expansivos segun el Titulo H?",
+        "ground_truth": "Se identifican con el sufijo \"ert\" o con la palabra \"Vertic\" (por ejemplo Udert, Haplustert, Vertic Paleoudult).",
+        "id": "H-H9-sufijo-vertic-igac",
+    },
+    {
+        "pregunta": "Que porcentaje minimo de los sondeos debe reconocer los materiales bajo la zona activa en un estudio de suelos expansivos segun el Titulo H?",
+        "ground_truth": "Por lo menos el 50% de los sondeos deben reconocer suficientemente los materiales que se encuentran por debajo de la zona activa.",
+        "id": "H-H9-sondeos-50porciento-zona-activa",
+    },
+    {
+        "pregunta": "Que pendiente de drenaje perimetral se recomienda alrededor de una estructura en suelo expansivo segun el Titulo H?",
+        "ground_truth": "Se recomienda un adecuado drenaje alrededor de las estructuras por medio de pendientes perimetrales del 2% al 10%.",
+        "id": "H-H9-drenaje-perimetral-2-10porciento",
+    },
+    {
+        "pregunta": "Cuales son los cuatro tipos principales de suelos colapsables que reconoce el Titulo H?",
+        "ground_truth": "Suelos aluviales y coluviales, suelos eólicos (loess), cenizas volcánicas, y suelos residuales.",
+        "id": "H-H9-cuatro-tipos-suelos-colapsables",
+    },
+    {
+        "pregunta": "A partir de que deformacion potencial de hidrocolapso se clasifica un suelo como muy severo segun la Tabla H.9.3-1 del Titulo H?",
+        "ground_truth": "Cuando la deformación potencial de hidrocolapso (épsilon_w) es mayor de 0.20, la clasificación de severidad es muy severa.",
+        "id": "H-H9-hidrocolapso-muy-severo-020",
+    },
+    {
+        "pregunta": "A cuantos kPa de presion de poros negativa equivale una succion de pF=4 segun la Tabla H.9.4-1 del Titulo H?",
+        "ground_truth": "Un pF de 4 equivale a una presión de poros negativa de 981 kPa (10 kgf/cm2), según la Tabla H.9.4-1.",
+        "id": "H-H9-pf4-981kpa",
+    },
+    {
+        "pregunta": "Cuantos litros de agua por dia transpira un eucalipto Eucalyptus Macarthuri en un dia soleado segun la Tabla H.9.4-2 del Titulo H?",
+        "ground_truth": "500 litros por día, según la Tabla H.9.4-2 de requerimientos de agua.",
+        "id": "H-H9-eucalyptus-macarthuri-500Ldia",
+    },
+    {
+        "pregunta": "A que velocidad maxima puede crecer una raiz en busqueda de agua y nutrientes segun el Titulo H?",
+        "ground_truth": "El crecimiento de las raíces puede llegar a 20 mm por día en búsqueda de agua y nutrientes.",
+        "id": "H-H9-crecimiento-raices-20mm-dia",
+    },
+    {
+        "pregunta": "Menciona una especie de arbol considerada agresiva por el Titulo H que no deberia sembrarse cerca de edificaciones.",
+        "ground_truth": "El Urapán (Fraxinus chinensis), el Eucalipto, el Sauce, el Pino, la Acacia o el Cerezo -- todas consideradas especies agresivas en H.9.4.6.2(a).",
+        "id": "H-H9-especie-agresiva-urapan",
+    },
+    {
+        "pregunta": "Cuales son los dos caminos de mitigacion de tipo estructural para suelos expansivos segun el Titulo H?",
+        "ground_truth": "Cimentación rígida y construcción flexible, según H.9.1.9.",
+        "id": "H-H9-mitigacion-estructural-dos-caminos",
+    },
+    {
+        "pregunta": "Hasta que pendiente de ladera se puede aplicar el recubrimiento vegetativo como medida contra suelos erodables segun el Titulo H?",
+        "ground_truth": "El recubrimiento vegetativo es aplicable en laderas de poca pendiente, menor de 20%.",
+        "id": "H-H9-recubrimiento-vegetativo-20porciento",
+    },
+    {
+        "pregunta": "En que rango de succion pF se ubica el limite plastico de un suelo segun el Titulo H?",
+        "ground_truth": "El límite plástico corresponde a succiones pF entre 4 y 5.",
+        "id": "H-H9-limite-plastico-pf-4a5",
+    },
+    {
+        "pregunta": "Por encima de que valor de succion pF se desencadena un proceso de desecacion en vez de expansion segun el Titulo H?",
+        "ground_truth": "Para succiones pF superiores a 3.0 se desencadena un proceso de desecación; para pF inferiores a 3.0, uno de expansión.",
+        "id": "H-H9-limite-practico-pf-30",
+    },
+    {
+        "pregunta": "Que tipo de suelos identifica el Titulo H con el nombre generico de loess?",
+        "ground_truth": "Los suelos eólicos -- arenas y limos arenosos con escaso cemento arcilloso, depositados por el viento, reciben el nombre genérico de loess en las zonas templadas.",
+        "id": "H-H9-loess-suelos-eolicos",
+    },
+
+    # ---- Título H, más hechos de H.10 (rehabilitación sísmica) no
+    # cubiertos por las 2 preguntas ya verificadas de H.10 ----
+    {
+        "pregunta": "Cuales son las cinco amenazas sismicas del sitio que enumera el Titulo H para rehabilitacion de cimentaciones?",
+        "ground_truth": "Ruptura de una falla, licuación, compactación diferencial, deslizamientos, y avalancha o inundación.",
+        "id": "H-H10-cinco-amenazas-sismicas-sitio",
+    },
+    {
+        "pregunta": "De que edad geologica minima deben ser los materiales geologicos bajo el nivel freatico para descartar amenaza de compactacion diferencial segun el Titulo H?",
+        "ground_truth": "Deben ser del Pleistoceno en edad geológica, es decir más antiguos de 11.000 años.",
+        "id": "H-H10-pleistoceno-11000anos",
+    },
+    {
+        "pregunta": "Cuales son los tres tipos de cimentacion que considera el Titulo H para el reforzamiento y rigidez de cimentaciones?",
+        "ground_truth": "Cimentaciones superficiales (zapatas y losas), pilotes, y pilas.",
+        "id": "H-H10-tres-tipos-cimentacion",
+    },
+    {
+        "pregunta": "Menciona dos esquemas de mejoramiento estructural para mitigar deslizamientos segun el Titulo H.",
+        "ground_truth": "Muros de gravedad, muros anclados/pernados (soil nailing), muros de tierra mecánicamente estabilizada, barreras para flujos de escombros, reforzamiento del edificio, vigas de equilibrio en la cimentación, o muros/pantallas de cortante.",
+        "id": "H-H10-mejoramiento-estructural-deslizamientos",
+    },
+    {
+        "pregunta": "Que tecnica de inyeccion menciona el Titulo H para mejorar el suelo bajo cimentaciones existentes?",
+        "ground_truth": "El jet grouting, además de inyecciones de compactación e inyecciones químicas (cemento, cal).",
+        "id": "H-H10-jet-grouting-mejoramiento-suelo",
+    },
+    {
+        "pregunta": "Bajo la suposicion de base fija en un procedimiento lineal, como deben ser las acciones sobre los componentes geotecnicos segun el Titulo H?",
+        "ground_truth": "Las acciones sobre los componentes geotécnicos deberán ser de fuerza controlada.",
+        "id": "H-H10-base-fija-fuerza-controlada",
+    },
+    {
+        "pregunta": "Menciona dos fuentes reales de amenaza de avalancha o inundacion que reconoce el Titulo H para rehabilitacion sismica.",
+        "ground_truth": "Presas/acueductos/tanques de almacenamiento de agua dañados por el sismo, áreas costeras susceptibles a tsunamis, o áreas bajas con subsidencia regional.",
+        "id": "H-H10-fuentes-avalancha-inundacion",
+    },
+    {
+        "pregunta": "Cuales son los tres tipos generales de medidas de mitigacion de la amenaza de licuacion segun el Titulo H?",
+        "ground_truth": "Modificar la estructura, modificar la cimentación, o modificar las condiciones del suelo.",
+        "id": "H-H10-tres-medidas-mitigacion-licuacion",
+    },
+    {
+        "pregunta": "Quien debe determinar la capacidad ultima y de trabajo de los componentes de la cimentacion segun el Titulo H, capitulo de rehabilitacion sismica?",
+        "ground_truth": "El ingeniero geotecnista, según los requisitos del capítulo H.4.",
+        "id": "H-H10-capacidad-ultima-geotecnista",
+    },
+    {
+        "pregunta": "Que tecnica se usa para incrementar la capacidad o resistencia a traccion de una zapata existente segun el Titulo H?",
+        "ground_truth": "Las zapatas y losas pueden ser sub-muradas para incrementar su capacidad o resistencia a la tracción.",
+        "id": "H-H10-zapatas-submuradas",
+    },
+    {
+        "pregunta": "Para que sirven las vigas de equilibrio en la cimentacion segun el Titulo H?",
+        "ground_truth": "Para dar interconexión adecuada cuando existe potencial de desplazamiento diferencial lateral de las cimentaciones del edificio.",
+        "id": "H-H10-vigas-equilibrio-desplazamiento-lateral",
+    },
+    {
+        "pregunta": "Que tipo de amenazas cubre el alcance del capitulo de rehabilitacion sismica de edificios del Titulo H?",
+        "ground_truth": "Amenazas potenciales de origen sismo-geotécnico: licuación, compactación diferencial, deslizamientos, caída de rocas y avalanchas.",
+        "id": "H-H10-alcance-amenazas-sismogeotecnicas",
+    },
+
+    # ---- Título A, más hechos de A.3.3 (irregularidades) no cubiertos
+    # por las 2 preguntas ya verificadas de A.3.3 ----
+    {
+        "pregunta": "Cual es la formula del coeficiente de capacidad de disipacion de energia reducido R segun la ecuacion A.3.3-1 del Titulo A?",
+        "ground_truth": "R = phi_a * phi_p * phi_r * R0 (ecuación A.3.3-1).",
+        "id": "A-A33-ecuacion-A331-R",
+    },
+    {
+        "pregunta": "A partir de que porcentaje de la dimension de la planta se considera excesivo un retroceso en una esquina segun la Tabla A.3-6 del Titulo A?",
+        "ground_truth": "Cuando las proyecciones de la estructura a ambos lados del retroceso son mayores que el 15% de la dimensión de la planta en esa dirección (Tipo 2P).",
+        "id": "A-A33-retroceso-esquina-15porciento",
+    },
+    {
+        "pregunta": "A partir de que porcentaje del area bruta del diafragma se considera irregularidad por discontinuidad del diafragma segun la Tabla A.3-6 del Titulo A?",
+        "ground_truth": "Cuando las aberturas, entrantes, retrocesos o huecos tienen áreas mayores al 50% del área bruta del diafragma (Tipo 3P).",
+        "id": "A-A33-discontinuidad-diafragma-50porciento",
+    },
+    {
+        "pregunta": "Cual es el valor de phi_p para la irregularidad tipo 4P, desplazamientos del plano de accion, segun la Tabla A.3-6 del Titulo A?",
+        "ground_truth": "phi_p = 0.8 para la irregularidad tipo 4P.",
+        "id": "A-A33-phi-p-tipo-4P-08",
+    },
+    {
+        "pregunta": "Cual es el valor de phi_p para la irregularidad tipo 5P, sistemas no paralelos, segun la Tabla A.3-6 del Titulo A?",
+        "ground_truth": "phi_p = 0.9 para la irregularidad tipo 5P.",
+        "id": "A-A33-phi-p-tipo-5P-09",
+    },
+    {
+        "pregunta": "Cuando se considera que un piso tiene irregularidad tipo 1aA, piso flexible, segun la Tabla A.3-7 del Titulo A?",
+        "ground_truth": "Cuando la rigidez ante fuerzas horizontales de un piso es menor del 70% pero superior o igual al 60% de la rigidez del piso superior, o menor del 80% pero superior o igual al 70% del promedio de los tres pisos superiores. phi_a = 0.9.",
+        "id": "A-A33-piso-flexible-1aA",
+    },
+    {
+        "pregunta": "A partir de que relacion de masas entre pisos contiguos se considera irregularidad tipo 2A segun la Tabla A.3-7 del Titulo A?",
+        "ground_truth": "Cuando la masa de cualquier piso es mayor que 1.5 veces la masa de uno de los pisos contiguos (excepto cubiertas más livianas). phi_a = 0.9.",
+        "id": "A-A33-irregularidad-masa-2A-15veces",
+    },
+    {
+        "pregunta": "A partir de que relacion de dimensiones horizontales entre pisos adyacentes se considera irregularidad geometrica tipo 3A segun la Tabla A.3-7 del Titulo A?",
+        "ground_truth": "Cuando la dimensión horizontal del sistema de resistencia sísmica en un piso es mayor que 1.3 veces la misma dimensión en un piso adyacente. phi_a = 0.9.",
+        "id": "A-A33-irregularidad-geometrica-3A-13veces",
+    },
+    {
+        "pregunta": "Cual es el valor de phi_a para la irregularidad tipo 4A, desplazamientos dentro del plano de accion, segun la Tabla A.3-7 del Titulo A?",
+        "ground_truth": "phi_a = 0.8 para la irregularidad tipo 4A.",
+        "id": "A-A33-phi-a-tipo-4A-08",
+    },
+    {
+        "pregunta": "Cuando se considera que un piso tiene irregularidad tipo 5aA, piso debil, segun la Tabla A.3-7 del Titulo A?",
+        "ground_truth": "Cuando la resistencia del piso es menor del 80% pero superior o igual al 65% de la del piso inmediatamente superior. phi_a = 0.9.",
+        "id": "A-A33-piso-debil-5aA-80porciento",
+    },
+    {
+        "pregunta": "A que tipos de irregularidad en planta puede limitarse la evaluacion en zonas de amenaza sismica baja para grupos de uso I y II segun el Titulo A?",
+        "ground_truth": "A las irregularidades tipo 1aP y 1bP (Tabla A.3-6), según A.3.3.6.",
+        "id": "A-A33-zona-baja-1aP-1bP",
+    },
+    {
+        "pregunta": "A que tipos de irregularidad en planta puede limitarse la evaluacion en zona de amenaza sismica intermedia para el grupo de uso I segun el Titulo A?",
+        "ground_truth": "A las irregularidades tipo 1aP, 1bP, 3P y 4P (Tabla A.3-6), según A.3.3.7.",
+        "id": "A-A33-zona-intermedia-1aP-1bP-3P-4P",
+    },
+    {
+        "pregunta": "Que valor de phi_r se asigna siempre a una edificacion con capacidad de disipacion de energia minima DMI segun el Titulo A?",
+        "ground_truth": "phi_r = 1.0 siempre, para edificaciones con sistema estructural DMI (A.3.3.8.1).",
+        "id": "A-A33-DMI-phi-r-siempre-10",
+    },
+    {
+        "pregunta": "Cual es la formula de la ecuacion A.3.3-2 para las fuerzas de diseno amplificadas por sobrerresistencia segun el Titulo A?",
+        "ground_truth": "E = (Omega0 * Fs / R) mas menos 0.5 * Aa * Fa * D (ecuación A.3.3-2).",
+        "id": "A-A33-ecuacion-A332-sobrerresistencia",
+    },
+
+    # ---- Síntesis cruzada entre títulos (SINT2) ----
+    {
+        "pregunta": "Es mayor la sobrecarga minima que exige el Titulo H para la via publica cerca de excavaciones (15 kPa) que la carga minima de diseno por viento del Titulo B (0.40 kN/m2)?",
+        "ground_truth": "Sí, 15 kPa (equivalentes a 15 kN/m²) es mucho mayor que 0.40 kN/m², aunque miden fenómenos distintos (sobrecarga de excavación vs. presión de viento).",
+        "id": "SINT2-sobrecarga-H-vs-viento-B",
+    },
+    {
+        "pregunta": "Es mayor la sobrecarga minima que exige el Titulo H cerca de excavaciones (15 kPa) que la carga viva para estanterias de biblioteca del Titulo B (7 kN/m2)?",
+        "ground_truth": "Sí, 15 kN/m² es mayor que 7 kN/m², aunque son cargas de naturaleza distinta (sobrecarga temporal de excavación vs. carga viva de servicio).",
+        "id": "SINT2-sobrecarga-H-vs-biblioteca-B",
+    },
+    {
+        "pregunta": "Es mas inclinado el talud a partir del cual el Titulo H exige evaluar estabilidad de laderas (18 grados) que el angulo que define un tragaluz segun el Titulo K (mas de 15 grados)?",
+        "ground_truth": "Sí, 18° es mayor que 15°, aunque son criterios de títulos y propósitos completamente distintos (estabilidad geotécnica de laderas vs. clasificación de vidrio inclinado).",
+        "id": "SINT2-talud-H10-vs-tragaluz-K",
+    },
+    {
+        "pregunta": "Es mayor el angulo de doblez de los ganchos sismicos en estribos de confinamiento del Titulo C (135 grados) que el angulo de talud del Titulo H que activa la evaluacion de estabilidad de laderas (18 grados)?",
+        "ground_truth": "Sí, 135° es mucho mayor que 18°, aunque son ángulos de naturaleza completamente distinta (doblez de refuerzo de acero vs. inclinación de un talud).",
+        "id": "SINT2-ganchos-C-vs-talud-H10",
+    },
+    {
+        "pregunta": "Es menor el factor de seguridad minimo al deslizamiento en condicion estatica de muros de contencion del Titulo H (1.60) que el factor de seguridad exigido para paneles de vidrio en barandas del Titulo K (4)?",
+        "ground_truth": "Sí, 1.60 es menor que 4, aunque son factores de seguridad de disciplinas distintas (geotecnia vs. vidrio de seguridad) y no directamente comparables en su significado físico.",
+        "id": "SINT2-fs-deslizamiento-H-vs-vidrio-K",
+    },
+    {
+        "pregunta": "Es mayor el f'c minimo del concreto estructural del Titulo C (17 MPa) que la resistencia minima del mortero de pega en mamposteria del Titulo E (7.5 MPa)?",
+        "ground_truth": "Sí, 17 MPa es más del doble de 7.5 MPa, aunque son materiales y títulos distintos (concreto estructural vs. mortero de pega de mampostería de 1-2 pisos).",
+        "id": "SINT2-fc-C-vs-mortero-pega-E-17vs75",
+    },
+    {
+        "pregunta": "Es mayor el espesor minimo de un muro de mamposteria no reforzada del Titulo D (120 mm) que el espesor minimo de acero base en entramados livianos formados en frio del Titulo F (0.455 mm)?",
+        "ground_truth": "Sí, 120 mm es varios órdenes de magnitud mayor que 0.455 mm, pero son magnitudes de naturaleza distinta (espesor de un muro de mampostería vs. espesor de lámina de acero) que no tiene sentido comparar en la práctica.",
+        "id": "SINT2-espesor-D-vs-acero-F",
+    },
+    {
+        "pregunta": "Puede compararse directamente el area minima de las columnas de confinamiento del Titulo E (20.000 mm2) con el porcentaje maximo de celdas verticales del Titulo D (65%)?",
+        "ground_truth": "No son directamente comparables -- uno es un área absoluta en mm² (Título E, columnas de confinamiento) y el otro es un porcentaje relativo del área de sección transversal (Título D, celdas verticales de mampostería).",
+        "id": "SINT2-columna-E-vs-celdas-D-no-comparable",
+    },
+    {
+        "pregunta": "Tiene sentido comparar la deriva maxima permitida para concreto del Titulo A (1.0%) con el factor de seguridad al deslizamiento de muros de contencion del Titulo H (1.60)?",
+        "ground_truth": "No directamente -- la deriva máxima es un porcentaje de desplazamiento relativo de piso (Título A, requisito estructural sísmico) mientras que el factor de seguridad al deslizamiento es un cociente de resistencia/solicitación (Título H, requisito geotécnico); son magnitudes de naturaleza distinta.",
+        "id": "SINT2-deriva-A-vs-fs-H-no-comparable",
+    },
+    {
+        "pregunta": "El Titulo A y el Titulo H regulan lo mismo para el diseno de la cimentacion de un edificio sismo resistente?",
+        "ground_truth": "No, son complementarios: el Título A define las fuerzas sísmicas de diseño y los sistemas estructurales de resistencia sísmica, mientras que el Título H define las capacidades del suelo, los factores de seguridad geotécnicos y los estudios de suelo necesarios para diseñar la cimentación misma.",
+        "id": "SINT2-titulo-A-vs-H-cimentacion",
+    },
+    {
+        "pregunta": "El Titulo K prohibe las uniones clavadas igual que el Titulo G lo hace para la guadua?",
+        "ground_truth": "No, la prohibición de uniones clavadas es específica de la guadua en el Título G (por el riesgo de grietas longitudinales); el Título K regula vidrios y tiene sus propios requisitos de seguridad, sin relación con uniones clavadas.",
+        "id": "SINT2-vidrio-K-vs-guadua-G-uniones",
+    },
+    {
+        "pregunta": "Exige el Titulo G un umbral de area construida para supervision tecnica igual al que exige el Titulo D para mamposteria?",
+        "ground_truth": "El Título D sí establece un umbral numérico claro (más de 3.000 m² de área construida obliga a supervisión técnica en mampostería); el corpus no documenta un umbral equivalente específico para madera/guadua en el Título G, así que no es correcto asumir que aplica el mismo número.",
+        "id": "SINT2-supervision-D-vs-G-no-mismo-umbral",
+    },
+    {
+        "pregunta": "Es mayor el recubrimiento minimo del concreto contra el suelo del Titulo C (75 mm) que el espesor minimo de un muro de mamposteria no reforzada del Titulo D (120 mm)?",
+        "ground_truth": "No, 75 mm es menor que 120 mm, aunque miden conceptos distintos (recubrimiento de acero de refuerzo en concreto vs. espesor nominal de un muro de mampostería).",
+        "id": "SINT2-recubrimiento-C-vs-espesor-D",
+    },
+    {
+        "pregunta": "Los cinco anos de experiencia que exige el Titulo H para un geotecnista son el mismo requisito que los cinco anos de registro que exige el Titulo I para un supervisor tecnico?",
+        "ground_truth": "No, aunque el número coincide (5 años), son requisitos distintos: el Título H exige más de 5 años de experiencia previa en diseño geotécnico de cimentaciones para dirigir un estudio, mientras que el Título I exige conservar el registro escrito de las labores de supervisión durante al menos 5 años después de realizadas.",
+        "id": "SINT2-experiencia-H-vs-registro-I-distintos",
+    },
+    {
+        "pregunta": "El caudal minimo de un hidrante para hospitales del Titulo J (63 L/s) y la fuerza maxima de apertura de una puerta de emergencia del Titulo K (250 N) se pueden expresar en las mismas unidades?",
+        "ground_truth": "No, son magnitudes físicas distintas -- un caudal (litros por segundo) y una fuerza (newtons) -- no se pueden convertir la una en la otra ni comparar directamente.",
+        "id": "SINT2-hidrante-J-vs-puerta-K-unidades",
+    },
+    {
+        "pregunta": "Los suelos colapsables descritos en el Titulo H y los suelos expansivos descritos en el mismo titulo son el mismo fenomeno geotecnico?",
+        "ground_truth": "No, son fenómenos distintos: los suelos expansivos (H.9.1) se hinchan al ganar humedad por minerales activos como la montmorilonita, mientras que los suelos colapsables (H.9.3) pierden su estructura y se asientan bruscamente al saturarse, sin relación con la expansión.",
+        "id": "SINT2-suelo-colapsable-vs-expansivo-H",
+    },
+    {
+        "pregunta": "Regula el Titulo A los mismos sistemas de disipacion de energia (DMI/DMO/DES) que aplica el Titulo C para el concreto?",
+        "ground_truth": "El Título A define el marco general de los grados de capacidad de disipación de energía (DMI/DMO/DES) y sus coeficientes R0 asociados a cada sistema estructural, mientras que el Título C aplica esos mismos grados a los requisitos de detallado específicos del concreto reforzado -- son complementarios, no duplicados.",
+        "id": "SINT2-DMI-DMO-DES-A-vs-C",
+    },
+    {
+        "pregunta": "Es correcto decir que el Titulo D y el Titulo G regulan el mismo material estructural?",
+        "ground_truth": "No, el Título D regula mampostería estructural (bloques de concreto, arcilla, morteros), mientras que el Título G regula madera y guadua -- son materiales y capítulos completamente distintos.",
+        "id": "SINT2-material-D-vs-G-distintos",
+    },
+
+    # ---- Adversarial / sin respuesta real en el corpus (ADV2) ----
+    {
+        "pregunta": "Que exige el Titulo N de la NSR-10 sobre sostenibilidad y huella de carbono en la construccion?",
+        "ground_truth": "La NSR-10 no tiene un Título N -- la numeración de títulos llega hasta el Título K. El sistema no debe inventar contenido para un título que no existe.",
+        "id": "ADV2-titulo-N-sostenibilidad-fabricado",
+    },
+    {
+        "pregunta": "Existe una NTC 5555 sobre resistencia al fuego de puertas de madera dentro del corpus?",
+        "ground_truth": "No existe una NTC 5555 en el corpus ingestado -- el sistema no debe inventar requisitos para una norma que no está cargada ni confirmada.",
+        "id": "ADV2-ntc-5555-puertas-madera",
+    },
+    {
+        "pregunta": "Que exige la NSR-10 sobre la instalacion de paneles solares fotovoltaicos en cubiertas?",
+        "ground_truth": "El corpus verbatim de la NSR-10 ingestado no contiene requisitos específicos sobre paneles solares fotovoltaicos -- el sistema no debe inventar un numeral o tabla para esto.",
+        "id": "ADV2-paneles-solares-fotovoltaicos",
+    },
+    {
+        "pregunta": "Cuales son los valores de Aa y Av para la ciudad de Miami, Estados Unidos, segun la NSR-10?",
+        "ground_truth": "La NSR-10 es una norma colombiana que solo asigna valores de Aa y Av a municipios de Colombia -- no existe un valor real de Aa/Av para una ciudad de otro país. El sistema no debe inventar un valor.",
+        "id": "ADV2-miami-Aa-Av",
+    },
+    {
+        "pregunta": "Que numeral de la NSR-10 regula el diseno de piscinas de fibra de vidrio prefabricadas?",
+        "ground_truth": "El corpus no tiene un numeral específico sobre piscinas de fibra de vidrio prefabricadas -- el sistema no debe inventar un numeral para esto.",
+        "id": "ADV2-piscinas-fibra-vidrio",
+    },
+    {
+        "pregunta": "Que exige el Titulo F sobre estructuras de titanio?",
+        "ground_truth": "El Título F regula acero (F.1-F.4) y aluminio (F.5) -- el titanio no es un material reconocido por ese título. El sistema no debe inventar requisitos de titanio atribuidos al Título F.",
+        "id": "ADV2-titanio-titulo-F",
+    },
+    {
+        "pregunta": "Cual es el f'c minimo segun el Titulo C para concreto fabricado con regolito lunar?",
+        "ground_truth": "El Título C regula concreto estructural convencional en Colombia -- no existe un f'c definido para concreto lunar o regolito, es un escenario fuera del alcance de la norma. El sistema no debe inventar un valor.",
+        "id": "ADV2-concreto-lunar-regolito",
+    },
+    {
+        "pregunta": "Existe un Titulo Z en la NSR-10 dedicado a inteligencia artificial en el diseno estructural?",
+        "ground_truth": "No, la NSR-10 no tiene un Título Z ni ningún título dedicado a inteligencia artificial -- la numeración llega hasta el Título K. El sistema no debe inventar contenido para esto.",
+        "id": "ADV2-titulo-Z-ia-fabricado",
+    },
+    {
+        "pregunta": "Que exige la Resolucion 0330 de RAS 2000 sobre torres eolicas marinas?",
+        "ground_truth": "La Resolución 0330 (RAS 2000) regula sistemas de acueducto, alcantarillado y aseo -- no regula torres eólicas marinas, un tema completamente fuera de su alcance. El sistema no debe inventar contenido.",
+        "id": "ADV2-ras2000-torres-eolicas",
+    },
+    {
+        "pregunta": "Cuantos decibelios maximo permite el Titulo A durante la ocurrencia de un sismo de diseno?",
+        "ground_truth": "El Título A regula fuerzas y requisitos sísmicos estructurales, no niveles de ruido -- la pregunta mezcla dos magnitudes sin relación. El sistema no debe inventar un límite de decibelios.",
+        "id": "ADV2-decibeles-sismo-titulo-A",
+    },
+    {
+        "pregunta": "Que capitulo de la NSR-10 regula el uso de drones para inspeccion estructural?",
+        "ground_truth": "El corpus de la NSR-10 no tiene ningún capítulo sobre drones de inspección -- es tecnología posterior a la norma y fuera de su alcance actual. El sistema no debe inventar un capítulo para esto.",
+        "id": "ADV2-drones-inspeccion-estructural",
+    },
+    {
+        "pregunta": "Cual es el factor de seguridad minimo para cimentaciones en la superficie lunar segun el Titulo H?",
+        "ground_truth": "El Título H regula estudios geotécnicos en Colombia -- no existe ni puede existir un factor de seguridad real para cimentaciones fuera de la Tierra. El sistema no debe inventar un valor.",
+        "id": "ADV2-cimentaciones-luna-titulo-H",
+    },
+    {
+        "pregunta": "Que exige el Titulo D sobre mamposteria de vidrio reforzado con fibra de carbono?",
+        "ground_truth": "El Título D regula mampostería de unidades de arcilla, concreto o similares -- \"mampostería de vidrio reforzado con fibra de carbono\" no es un material reconocido por ese título. El sistema no debe inventar requisitos.",
+        "id": "ADV2-mamposteria-vidrio-fibra-carbono",
+    },
+    {
+        "pregunta": "Existe una NTC 12345 sobre certificacion de drones dentro del corpus?",
+        "ground_truth": "No existe una NTC 12345 en el corpus ni como norma colombiana real conocida para certificación de drones -- el sistema no debe inventar requisitos para ella.",
+        "id": "ADV2-ntc-12345-drones",
+    },
+    {
+        "pregunta": "Que numeral de la NSR-10 fija la altura maxima permitida para un rascacielos de mas de 200 pisos?",
+        "ground_truth": "La NSR-10 no fija un límite absoluto de número de pisos como tal -- los límites de altura dependen del sistema estructural, la zona de amenaza sísmica y el material (Tablas A.3-1 a A.3-4). El sistema no debe inventar un numeral que fije \"200 pisos\" como tope genérico.",
+        "id": "ADV2-limite-200-pisos-rascacielos",
+    },
+    {
+        "pregunta": "Que exige la NSR-10 sobre el diseno de plataformas petroleras costa afuera?",
+        "ground_truth": "La NSR-10 regula edificaciones civiles en tierra firme, no estructuras costa afuera como plataformas petroleras -- ese tipo de infraestructura se rige por normas especializadas distintas (ej. API RP 2A). El sistema no debe inventar contenido de la NSR-10 para esto.",
+        "id": "ADV2-plataformas-petroleras-costa-afuera",
+    },
+    {
+        "pregunta": "Cual es el espesor minimo de pared que exige el Titulo K para tanques septicos plasticos?",
+        "ground_truth": "El Título K regula seguridad humana en incendios, vidrios y otros requisitos complementarios -- no regula tanques sépticos plásticos, un tema de instalaciones sanitarias fuera de su alcance. El sistema no debe inventar un valor.",
+        "id": "ADV2-tanques-septicos-titulo-K",
+    },
+    {
+        "pregunta": "Que exige el Titulo G sobre estructuras de bambu proveniente de Asia (Bambusa vulgaris) para uso estructural en Colombia?",
+        "ground_truth": "El Título G regula específicamente la guadua angustifolia kunth como especie estructural reconocida en Colombia -- el corpus no documenta requisitos verbatim para otras especies de bambú asiático como material estructural alterno. El sistema no debe inventar una equivalencia sin fuente.",
+        "id": "ADV2-bambu-asiatico-titulo-G",
+    },
+
+    # ---- Fraseo coloquial de campo (COLOQ2) — reformulaciones de hechos
+    # YA verificados en este dataset, no hechos nuevos ----
+    {
+        "pregunta": "Aunque el sitio parezca tranquilo y sin mucho viento, cual es la carga minima de viento que toca calcularle a un edificio de todas formas?",
+        "ground_truth": "0.40 kN/m², la carga mínima de diseño por viento en el sistema principal de resistencia a fuerzas de viento (SPRFV), según el Título B.",
+        "id": "COLOQ2-viento-minimo-040",
+    },
+    {
+        "pregunta": "Hasta que tan resistente se le puede contar el acero de los estribos para calcular el confinamiento de una columna, segun el Titulo C?",
+        "ground_truth": "El valor de fyt usado para calcular la cuantía del refuerzo de confinamiento no debe exceder 700 MPa, según el Título C.",
+        "id": "COLOQ2-fyt-confinamiento-700MPa",
+    },
+    {
+        "pregunta": "Cuanto fierro como maximo se le puede meter a una viga sismo resistente antes de pasarse del limite, segun el Titulo C?",
+        "ground_truth": "La cuantía de refuerzo a flexión en vigas de pórticos DES no debe exceder 0.025, según el Título C.",
+        "id": "COLOQ2-cuantia-maxima-flexion-DES",
+    },
+    {
+        "pregunta": "Que tan fuerte tiene que ser el mortero que se le echa relleno por dentro a los bloques de mamposteria, segun el Titulo D?",
+        "ground_truth": "La resistencia a la compresión del mortero de relleno a los 28 días nunca puede ser inferior a 12.5 MPa, según el Título D.",
+        "id": "COLOQ2-mortero-relleno-125MPa",
+    },
+    {
+        "pregunta": "Que tanto hueco vacio se le puede dejar a un bloque de mamposteria sin pasarse del limite que pone la norma, segun el Titulo D?",
+        "ground_truth": "El área de las celdas verticales no puede ser mayor al 65% del área de la sección transversal, según el Título D.",
+        "id": "COLOQ2-celdas-verticales-65porciento",
+    },
+    {
+        "pregunta": "Que tan resistente tiene que ser el mortero de pega de una casa de uno o dos pisos, segun el Titulo E?",
+        "ground_truth": "La resistencia mínima a la compresión del mortero de pega a los 28 días es 7.5 MPa, según el Título E.",
+        "id": "COLOQ2-mortero-pega-75MPa",
+    },
+    {
+        "pregunta": "A cuantos pies tablares equivale un metro cubico de madera, para cotizar en el aserradero, segun el Titulo G?",
+        "ground_truth": "Un metro cúbico de madera tiene 424 pies tablares, según el Título G.",
+        "id": "COLOQ2-m3-424-pies-tablares",
+    },
+    {
+        "pregunta": "Cada cuantos metros cuadrados toca poner un hidrante en un hospital, y con que tanta presion de agua, segun el Titulo J?",
+        "ground_truth": "Para hospitales, el área de servicio por hidrante es 500 m² y el caudal mínimo requerido es 63 L/s, según el Título J.",
+        "id": "COLOQ2-hidrante-hospital-500m2-63Ls",
+    },
+    {
+        "pregunta": "Cuantas puertas de salida minimo necesita un edificio donde caben entre 500 y 1000 personas, segun el Titulo K?",
+        "ground_truth": "Una edificación con carga de ocupación entre 501 y 1000 personas requiere mínimo 3 salidas, según el Título K.",
+        "id": "COLOQ2-numero-salidas-501-1000",
+    },
+    {
+        "pregunta": "Cuanto tiempo minimo tienen que durar prendidas las luces de emergencia si se va la luz, segun el Titulo K?",
+        "ground_truth": "El sistema de iluminación de emergencia debe estar en servicio por no menos de 1.5 horas tras una falla del sistema principal, según el Título K.",
+        "id": "COLOQ2-iluminacion-emergencia-15horas",
+    },
+    {
+        "pregunta": "Cuantos anos de experiencia minimo necesita el ingeniero que firma un estudio de suelos, segun el Titulo H?",
+        "ground_truth": "El profesional que dirige un estudio geotécnico debe tener una experiencia mayor de 5 años en diseño geotécnico de cimentaciones, según el Título H.",
+        "id": "COLOQ2-experiencia-geotecnista-5anos",
+    },
+    {
+        "pregunta": "Que tan hondo y cuantos huecos toca hacer para el estudio de suelos de un edificio alto de mas de 10 pisos, segun el Titulo H?",
+        "ground_truth": "Para categoría Alta (11 a 20 niveles), la profundidad mínima de sondeos es 25 m y el número mínimo es 4 sondeos, según el Título H.",
+        "id": "COLOQ2-sondeos-categoria-alta-25m",
+    },
+    {
+        "pregunta": "Cuales son los dos niveles de supervision tecnica que puede haber en una obra, segun el Titulo I?",
+        "ground_truth": "Grado A (Continua) y Grado B (Itinerante), según el Título I.",
+        "id": "COLOQ2-dos-grados-supervision-AB",
+    },
+    {
+        "pregunta": "Cuanto peso minimo hay que asumirle a la calle cuando se esta excavando al lado, segun el Titulo H?",
+        "ground_truth": "La sobrecarga uniforme mínima a considerar en la vía pública y zonas libres próximas a excavaciones temporales es 15 kPa (1.5 t/m²), según el Título H.",
+        "id": "COLOQ2-sobrecarga-excavaciones-15kpa",
+    },
+    {
+        "pregunta": "Que tan enterrada tiene que quedar la base de un muro de contencion de gravedad, segun el Titulo H?",
+        "ground_truth": "La base de un muro de gravedad o en voladizo debe desplantarse cuando menos a 1 m bajo la superficie del terreno, según el Título H.",
+        "id": "COLOQ2-desplante-muro-gravedad-1m",
+    },
+    {
+        "pregunta": "Desde que tan profunda una excavacion toca tener un plan por si algo sale mal, segun el Titulo H?",
+        "ground_truth": "A partir de 3 m de profundidad de excavación debe contarse con un plan de contingencia, según el Título H.",
+        "id": "COLOQ2-plan-contingencia-3m",
+    },
+    {
+        "pregunta": "Que tanto se le puede confiar a un miembro de acero calculado por el metodo racional de ingenieria, y a sus conexiones, segun el Titulo F?",
+        "ground_truth": "Para miembros, φ = 0.80. Para conexiones, φ = 0.65, según el Título F.",
+        "id": "COLOQ2-analisis-racional-phi",
+    },
+    {
+        "pregunta": "Que tan fuerte le puede temblar la tierra a un edificio en Barranquilla, segun los valores de la norma?",
+        "ground_truth": "Los valores de Aa y Av para Barranquilla son 0.10, según el Título A.",
+        "id": "COLOQ2-Aa-Av-Barranquilla",
+    },
+    {
+        "pregunta": "Hasta que tanta succion le puede sacar una planta al agua del suelo antes de marchitarse, segun el Titulo H?",
+        "ground_truth": "El punto de marchitamiento equivale a una presión métrica de succión igual a pF = 4.2, según el Título H.",
+        "id": "COLOQ2-punto-marchitamiento-pf42",
+    },
+    {
+        "pregunta": "Como se sabe si un suelo se va a colapsar cuando se moja, segun el Titulo H?",
+        "ground_truth": "El suelo es colapsable si gamma_d/gamma_dcrit es menor o igual a 1; si es mayor a 1, el suelo es estable o expansivo, según el Título H.",
+        "id": "COLOQ2-criterio-colapsabilidad",
+    },
+    {
+        "pregunta": "A partir de que tan inclinada una ladera toca revisarle la estabilidad para reforzar un edificio viejo, segun el Titulo H?",
+        "ground_truth": "Cuando la pendiente del talud excede aproximadamente 18 grados (3 horizontal: 1 vertical), según el Título H.",
+        "id": "COLOQ2-inclinacion-talud-18grados",
+    },
+    {
+        "pregunta": "Que tan resistente al SPT tiene que ser una arena para que no se preocupe uno por licuacion, segun el Titulo H?",
+        "ground_truth": "N160 de 30 golpes/pie para profundidades bajo la tabla de agua, o con un contenido de arcilla mayor de 20%, según el Título H.",
+        "id": "COLOQ2-n160-licuacion-30golpes",
+    },
+    {
+        "pregunta": "A que profundidad crecen normalmente las raices de un arbol grande, segun el Titulo H?",
+        "ground_truth": "Las raíces de los árboles generalmente se desarrollan por lo regular a no más de 6.0 m de profundidad, según el Título H.",
+        "id": "COLOQ2-profundidad-raices-6m",
+    },
+    {
+        "pregunta": "Que tanta sal de sodio en el agua hace que una arcilla se le clasifique como dispersiva y no se pueda usar de relleno, segun el Titulo H?",
+        "ground_truth": "Se considera suelo dispersivo cuando la concentración de sales de sodio (Na) en el agua intersticial pasa de 40% o 60% del total de sales disueltas, según el Título H.",
+        "id": "COLOQ2-suelo-dispersivo-sales-sodio",
+    },
+
+    # ---- Compuestas / multi-hop dentro del mismo título (COMP2) ----
+    {
+        "pregunta": "Es el mismo factor de seguridad el que exige el Titulo H para cimentaciones bajo carga normal (H.4) que el que exige para el deslizamiento de muros de contencion (H.6)?",
+        "ground_truth": "No -- H.4 exige un factor de seguridad indirecto FSICP=3.0 para cimentaciones bajo carga muerta más viva normal, mientras que H.6 exige un factor de seguridad de 1.60 al deslizamiento en condición estática para estructuras de contención -- son criterios distintos con valores distintos, aunque ambos vienen del mismo Título H.",
+        "id": "COMP2-H-fs-h4-vs-h6",
+    },
+    {
+        "pregunta": "Llegan las raices de los arboles mas profundo que los sondeos minimos exigidos para un edificio de categoria Alta, segun el Titulo H?",
+        "ground_truth": "No -- las raíces llegan típicamente hasta 6.0 m (H.9.4.4.2), mientras que los sondeos de categoría Alta (11 a 20 niveles) deben llegar a 25 m de profundidad (H.3) -- los sondeos van mucho más profundo que las raíces.",
+        "id": "COMP2-H-raices-vs-sondeos",
+    },
+    {
+        "pregunta": "Si un talud tiene una pendiente de 20 grados, debe evaluarse su estabilidad para rehabilitacion sismica segun el Titulo H, y que factor de seguridad estatico minimo exige el mismo titulo para muros de contencion?",
+        "ground_truth": "Sí, debe evaluarse porque 20° excede el umbral de 18° que activa la evaluación de estabilidad de laderas (H.10.2.2.4); el factor de seguridad estático mínimo para muros de contención es 1.60 (H.6, Tabla H.6.9-1) -- son dos requisitos distintos del mismo Título H.",
+        "id": "COMP2-H-talud-20grados-vs-fs-deslizamiento",
+    },
+    {
+        "pregunta": "Es igual el valor de reduccion por irregularidad torsional extrema en planta (tipo 1bP) que el de piso flexible extremo en altura (tipo 1bA), segun las Tablas A.3-6 y A.3-7 del Titulo A?",
+        "ground_truth": "Sí, ambos valen phi=0.8, aunque son irregularidades de naturaleza distinta (torsión extrema en planta vs. rigidez extrema en altura).",
+        "id": "COMP2-A-phi-1bP-vs-1bA",
+    },
+    {
+        "pregunta": "Se evaluan los mismos tipos de irregularidad en planta en zona de amenaza sismica baja que en zona intermedia, segun el Titulo A?",
+        "ground_truth": "No -- en zona baja (grupos de uso I y II) solo se evalúan los tipos 1aP y 1bP; en zona intermedia (grupo de uso I) se agregan también los tipos 3P y 4P.",
+        "id": "COMP2-A-zona-baja-vs-intermedia",
+    },
+    {
+        "pregunta": "El concreto DES/DMO (21 MPa minimo) usa el mismo factor phi de reduccion para traccion que el concreto general (17 MPa), segun el Titulo C?",
+        "ground_truth": "Sí -- el factor φ=0.90 para secciones controladas por tracción no depende de si el concreto es DES/DMO o general; lo que cambia entre ambos es el f'c mínimo exigido (21 MPa vs 17 MPa), no el factor phi.",
+        "id": "COMP2-C-fc-vs-phi-DES-DMO",
+    },
+    {
+        "pregunta": "Que diferencia hay entre el factor phi de miembros y el de conexiones en el analisis racional de ingenieria del Titulo F?",
+        "ground_truth": "El factor φ=0.80 aplica a miembros, mientras que φ=0.65 aplica a conexiones -- las conexiones tienen un factor de reducción de resistencia más conservador (menor) que los miembros, según el Título F.",
+        "id": "COMP2-F-phi-miembros-vs-conexiones",
+    },
+    {
+        "pregunta": "El factor de seguridad de 4 para barandas de vidrio del Titulo K aplica solo al vidrio templado, o a cualquier tipo de vidrio?",
+        "ground_truth": "Aplica a los paneles de vidrio para barandas y pasamanos en general, no es exclusivo del vidrio templado (que es un tratamiento térmico específico descrito aparte en el Título K).",
+        "id": "COMP2-K-vidrio-barandas-vs-templado",
+    },
+    {
+        "pregunta": "Una casa de mamposteria no reforzada de 3.500 m2 en zona de amenaza sismica baja con Aa=0.03 cumple los dos requisitos del Titulo D sobre supervision tecnica y uso de mamposteria no reforzada?",
+        "ground_truth": "Sí, cumple ambos: requeriría supervisión técnica obligatoria por superar 3.000 m² de área construida, y sí podría usar mampostería no reforzada como sistema de resistencia sísmica porque Aa=0.03 es menor o igual a 0.05, el límite que exige el Título D.",
+        "id": "COMP2-D-supervision-vs-no-reforzada-3500m2",
+    },
+    {
+        "pregunta": "Coinciden los umbrales de altura del Titulo A para exigir metodo de analisis dinamico (mas de 20 niveles o 60m) con los limites de altura que da la Tabla A.3-4 para el sistema dual con muros de concreto DES (sin limite)?",
+        "ground_truth": "No coinciden porque no son comparables directamente -- el umbral de 20 niveles/60 m (A.3.4.2.2) decide qué método de análisis usar, mientras que la Tabla A.3-4 da límites de altura máxima permitidos por sistema estructural y zona sísmica (para el sistema dual con muros DES en zona alta, el límite es \"sin límite\"), son dos reglas independientes del Título A que conviven, no se contradicen.",
+        "id": "COMP2-A-umbral-dinamico-vs-tabla-A34",
+    },
+    {
+        "pregunta": "Se puede clasificar un piso simultaneamente como irregular tipo 1aA (piso flexible) y tipo 5aA (piso debil) segun las tablas del Titulo A?",
+        "ground_truth": "Sí, son criterios independientes (rigidez vs. resistencia) definidos en la misma Tabla A.3-7 -- un piso puede cumplir ambos criterios a la vez si tiene tanto baja rigidez relativa como baja resistencia relativa frente a los pisos adyacentes; cuando hay varios tipos de irregularidad simultáneos se aplica el menor valor de phi_a (A.3.3.3).",
+        "id": "COMP2-A-1aA-y-5aA-simultaneos",
+    },
+    {
+        "pregunta": "El Titulo H exige el mismo numero minimo de historias de movimiento para el analisis de respuesta dinamica (H.7) que el numero minimo de sondeos para categoria Alta (H.3)?",
+        "ground_truth": "Coinciden en el número (3 y 4 respectivamente son distintos en realidad) -- el Título H exige mínimo 3 historias de movimiento en el tiempo para análisis de respuesta dinámica (H.7) y mínimo 4 sondeos para categoría Alta de 11 a 20 niveles (H.3) -- son requisitos de naturaleza distinta (historias sísmicas de análisis vs. número de perforaciones de exploración) que no deben confundirse pese a ser números cercanos.",
+        "id": "COMP2-H-historias-vs-sondeos-categoria",
     },
 ]

@@ -1015,6 +1015,29 @@ CASOS_TITULO_H_H10 = [
     ),
 ]
 
+# ---- Título A, ampliación A.3.3 completo (Configuración estructural:
+# irregularidades en planta y en altura, ausencia de redundancia,
+# sobrerresistencia) + Tablas A.3-5/6/7 ----
+# Ingesta verbatim 2026-09-07 (misma sesión), 2/2 PASSED contra
+# producción real. Corrige un hallazgo real: memoria privada vieja
+# describía "A.3.6" como el capítulo de irregularidades -- INCORRECTO,
+# A.3.6 real es "Efectos sísmicos en los elementos estructurales"; las
+# irregularidades viven en A.3.3.4/A.3.3.5 con las Tablas A.3-6/A.3-7,
+# que nunca se habían extraído (nota de cobertura vieja lo admitía
+# honestamente como PENDIENTE).
+CASOS_TITULO_A_A33 = [
+    pytest.param(
+        "Cual es el valor de phi_p para una irregularidad torsional extrema tipo 1bP segun la Tabla A.3-6 del Titulo A?",
+        ["0.8", "0,8"],
+        id="A-phi-p-torsional-extrema-1bP-08",
+    ),
+    pytest.param(
+        "Cuando se considera que una estructura tiene piso debil extremo tipo 5bA segun la Tabla A.3-7 del Titulo A?",
+        ["65", "65%", "65 por ciento"],
+        id="A-piso-debil-extremo-5bA-65porciento",
+    ),
+]
+
 
 @pytest.mark.parametrize(
     "pregunta,variantes_esperadas",
@@ -1054,6 +1077,7 @@ CASOS_TITULO_H_H10 = [
     + CASOS_TITULO_H_H8
     + CASOS_TITULO_H_H9
     + CASOS_TITULO_H_H10
+    + CASOS_TITULO_A_A33
     + CASOS_TITULO_F_F544
     + CASOS_TITULO_F_F545
     + CASOS_TITULO_F_F546,
