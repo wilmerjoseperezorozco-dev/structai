@@ -47,7 +47,7 @@ significa más norma cubierta, solo troceo más fino.
 | B — Cargas | 172 (169 + 3 B.3.3/B.3.5/B.3.6) | **PARCIAL, hueco real confirmado 2026-09-08 y en cierre progresivo** (mismo método `pypdf` + comparación contra `nsr10_chunks` que confirmó A y H: 186 numerales reales identificados en los 6 capítulos B.1-B.6). Partió de **7 secciones completas sin ningún chunk**; cerradas el mismo día: **B.3.3 (Cargas muertas mínimas), B.3.5 (Equipos fijos), B.3.6 (Consideraciones especiales)** — verificado con `ask()` real, 2/2 PASSED. **Quedan pendientes 4**: B.4.3 (Carga parcial), B.4.6 (Puente grúas), B.4.7 (Efectos dinámicos), B.4.8 (Cargas de empozamiento de agua y de granizo — **hallazgo curioso: la NSR-10 sí regula cargas de granizo, contrario a lo que se hubiera asumido antes de auditar**; no confundir con el caso adversarial `ADV2-decreto1077-granizo-cubiertas` del dataset de evaluación, que sigue siendo válido porque pregunta específicamente por el Decreto 1077, una norma distinta, no por la NSR-10). **Hallazgo adicional real, no en el alcance original de la auditoría**: los chunks existentes de B.3.4 (`NSR10-B-B_3_4_r1/r2/r3`) son un resumen condensado con solo 2-3 valores de ejemplo por tabla, no verbatim completo — mismo patrón "resumen disfrazado de completo" ya visto en A.3.3/K.2/K.3/F.3; el texto verbatim completo (6 tablas reales, B.3.4.1-1 a B.3.4.3-1) ya se leyó y está disponible en `_ingest_titulo_b_b33_b35_b36_verbatim.py` (docstring) para una futura ingesta, es la referencia de mayor valor práctico pendiente de Título B. El resto de B.1-B.6 (incluido todo B.6, Viento, extensamente cubierto hasta B.6.6.4.1) sí tiene chunks reales. Los 6 PDF fuente ya están descargados en `scripts/ingesta/nsr10/raw/` (`NSR-10-219-221.pdf` a `NSR-10-240-301.pdf`). |
 | C — Concreto estructural | 2.410 | Verbatim completo, auditado (0% de chunks truncados) |
 | D — Mampostería estructural | 711 | **Casi completo, re-auditado con método estricto 2026-09-09**: 472 numerales reales identificados (`pypdf` sobre 13 PDF fuente, `NSR-10-565-569.pdf` a `NSR-10-634-639.pdf`, 70 páginas). **Solo 9 numerales hoja sin chunk propio** (~2%, el mejor resultado de los 7 títulos re-auditados hasta ahora, mejor que G) — confirmados con spot-check leyendo el PDF real: D.1.2.2 (Memorias), D.3.7.2.7 (Refrentado y ensayo de muretes), D.4.5.3 (Mortero de pega), D.4.5.4 (Mortero de inyección), D.5.1.6.1 (Resistencia a la tracción de la mampostería), D.5.4.3.1 (relación altura/espesor efectivo máxima 25), D.6.3.5 (diámetro mínimo de barras en cavidad), D.10.5.2.1 y D.10.6.2.1 (espesores mínimos de elementos/vigas de confinamiento). El resto del título sí está en verbatim granular real. |
-| E — Casas de 1 y 2 pisos | 37 | Verbatim completo (E.1–E.9) |
+| E — Casas de 1 y 2 pisos | 98 | **Verbatim completo, re-auditado con método estricto 2026-09-09**: 252 numerales reales identificados (`pdftotext` sobre los 8 PDF fuente, `NSR-10-640-645.pdf` a `NSR-10-675-677.pdf`; el último archivo llegó corrupto vía MCP dos veces seguidas — mismo número exacto de caracteres base64 truncado ambas veces — y se reconstruyó su contenido a partir del `contentSnippet` de metadata de Drive, que cubre E.9 completo). Los únicos "faltantes" del diff crudo fueron 10 encabezados de capítulo (E.1–E.9) que son padres de contenido ya cubierto — falsos positivos esperados, mismo patrón de A/B/G/H/D. **Segundo título (junto con I) en salir completamente limpio del método estricto.** Único hallazgo a anotar, no confirmado como hueco: el chunk `E.8.5.1.2` cita en su texto verbatim una remisión a "columnas de guadua en E.7.26.2", un numeral que no aparece como encabezado en ninguna de las 252 secciones reales extraídas (el capítulo E.7 real termina en E.7.9 a E.7.11) — confirmado con dos motores de extracción distintos (`pdftotext` y PyMuPDF) que coinciden byte a byte en el texto, así que no es ruido de OCR de un solo motor; probablemente un error tipográfico del documento fuente original (número de referencia cruzada mal escrito), no un hueco de ingesta — queda para verificación visual del PDF si se retoma. El conteo de 37→98 chunks refleja el mismo re-troceo por límite real de tokens ya aplicado al resto del corpus, no contenido nuevo. |
 | F.1–F.4 (generalidades, acero laminado/armado/tubular, provisiones sísmicas, acero formado en frío) | 988 | **Verbatim completo** (F.4 cerrado 2026-09-01) |
 | F.5.1–F.5.4.6 (Aluminio — generalidades, propiedades, principios de diseño, miembros: generalidades/esfuerzos/pandeo local/ablandamiento/vigas/tensión) | 403 | Verbatim completo |
 | F.5.4.7 (Miembros a compresión) | 0 | **Pendiente** — la pieza más densa de F.5 (Tabla F.5.4.7-2, 18 tipos de sección con fórmulas propias cada uno), ya mapeada parcialmente pero no transcrita, mismo `NSR-10-1083-1182.pdf` ya descargado |
@@ -115,12 +115,19 @@ completo")**:
   hasta ahora, incluso mejor que G. Ninguno es contenido crítico
   aislado (mortero de pega/inyección ya están cubiertos por remisión a
   D.3.4/D.3.5, que sí existen).
-- **Siete de ocho títulos re-auditados con el método estricto (A, B, H,
+- **Título E — re-auditado 2026-09-09, salió limpio** (ver fila de
+  arriba): 252 numerales reales identificados, todos con chunk verbatim
+  confirmado; los 10 "faltantes" del diff crudo eran encabezados de
+  capítulo (padres de contenido ya cubierto). Único hallazgo a anotar
+  sin confirmar: una remisión cruzada interna a "E.7.26.2" que no
+  corresponde a ningún encabezado real extraído — posible error
+  tipográfico del documento original, no tratado como hueco de ingesta.
+- **Siete de nueve títulos re-auditados con el método estricto (A, B, H,
   J, K, G, D) resultaron tener algún hueco real, no auditorías
-  cosméticas.** Solo I salió completamente limpio. Los títulos restantes
-  (C, E) siguen pendientes de esta auditoría estricta — dado el
-  patrón de 7 de 8, la expectativa razonable es que también tengan
-  huecos reales, no lo contrario.
+  cosméticas.** I y E salieron completamente limpios. Solo Título C
+  sigue pendiente de esta auditoría estricta — dado el patrón de 7 de 9,
+  la expectativa razonable es que también tenga huecos reales, no lo
+  contrario.
 
 **Hallazgo colateral de la auditoría de A, sin relación con huecos de
 contenido**: `scripts/ingesta/nsr10/raw/capitulo_a.txt` (JSON local,
