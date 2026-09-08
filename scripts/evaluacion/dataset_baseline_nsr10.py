@@ -1242,6 +1242,21 @@ CASOS_BASELINE = [
         "ground_truth": "phi_a = 0.8 para la irregularidad tipo 4A.",
         "id": "A-A33-phi-a-tipo-4A-08",
     },
+    # ---- Título B, ampliación B.3.3 + B.3.5 + B.3.6 (Cargas muertas
+    # mínimas, Equipos fijos, Consideraciones especiales) ----
+    # Ingesta verbatim 2026-09-08, tras la auditoría numeral-por-numeral
+    # que confirmó 7 secciones sin cobertura en Título B. 2/2 PASSED
+    # contra producción real.
+    {
+        "pregunta": "Que se debe incluir dentro de las cargas muertas ademas de los elementos permanentes, segun el Titulo B?",
+        "ground_truth": "La masa correspondiente de todos los equipos fijos apoyados sobre elementos estructurales: ascensores, bombas hidráulicas, transformadores, equipos de aire acondicionado y ventilación, entre otros.",
+        "id": "B-equipos-fijos-cargas-muertas",
+    },
+    {
+        "pregunta": "Quien es responsable de verificar en obra que los pesos reales de los materiales no superen los valores usados en el diseno, segun el Titulo B?",
+        "ground_truth": "Los profesionales que participen en la construcción y la supervisión técnica, y el propietario de la edificación; es responsabilidad de quien suscribe como constructor la licencia de construcción.",
+        "id": "B-responsabilidad-verificar-pesos-obra",
+    },
     {
         "pregunta": "Cuando se considera que un piso tiene irregularidad tipo 5aA, piso debil, segun la Tabla A.3-7 del Titulo A?",
         "ground_truth": "Cuando la resistencia del piso es menor del 80% pero superior o igual al 65% de la del piso inmediatamente superior. phi_a = 0.9.",

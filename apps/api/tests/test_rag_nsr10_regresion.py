@@ -1038,6 +1038,27 @@ CASOS_TITULO_A_A33 = [
     ),
 ]
 
+# ---- Título B, ampliación B.3.3 + B.3.5 + B.3.6 (Cargas muertas
+# mínimas, Equipos fijos, Consideraciones especiales) ----
+# Ingesta verbatim 2026-09-08 (a pedido explícito del usuario: "seguimos
+# con ingesta b.3.3"), tras la auditoría numeral-por-numeral que
+# confirmó 7 secciones sin cobertura en Título B (2026-09-08). Cierra
+# 3 de esas 7 -- quedan pendientes B.3.4 (verbatim real, reemplazando
+# el resumen condensado actual), B.4.3, B.4.6, B.4.7, B.4.8. 2/2 PASSED
+# contra producción real.
+CASOS_TITULO_B_B33 = [
+    pytest.param(
+        "Que se debe incluir dentro de las cargas muertas ademas de los elementos permanentes, segun el Titulo B?",
+        ["equipos fijos", "ascensores", "bombas hidráulicas", "bombas hidraulicas"],
+        id="B-equipos-fijos-cargas-muertas",
+    ),
+    pytest.param(
+        "Quien es responsable de verificar en obra que los pesos reales de los materiales no superen los valores usados en el diseno, segun el Titulo B?",
+        ["profesionales", "supervisión técnica", "supervision tecnica", "propietario"],
+        id="B-responsabilidad-verificar-pesos-obra",
+    ),
+]
+
 
 @pytest.mark.parametrize(
     "pregunta,variantes_esperadas",
@@ -1078,6 +1099,7 @@ CASOS_TITULO_A_A33 = [
     + CASOS_TITULO_H_H9
     + CASOS_TITULO_H_H10
     + CASOS_TITULO_A_A33
+    + CASOS_TITULO_B_B33
     + CASOS_TITULO_F_F544
     + CASOS_TITULO_F_F545
     + CASOS_TITULO_F_F546,
