@@ -4,19 +4,37 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21851529.svg)](https://doi.org/10.5281/zenodo.21851529)
 [![Estado en vivo](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fstructai-api-235651108862.us-east1.run.app%2Fdata-status&query=%24.corpus_normativo.nsr10_chunks.chunks&label=chunks%20NSR-10%20en%20vivo&color=16a34a)](https://structai-api-235651108862.us-east1.run.app/data-status)
 
+**`Construdata`** es el nombre interno del repositorio; **StructAI** es la marca pública, en [structai.online](https://www.structai.online). Todo lo citado en este documento se puede verificar ahora mismo contra producción — [`/data-status`](https://structai-api-235651108862.us-east1.run.app/data-status) y [`/health?deep=true`](https://structai-api-235651108862.us-east1.run.app/health) — sin tener que confiar en el texto.
+
+**Si esto te sirve:** [pruébalo en structai.online](https://www.structai.online) (plan gratis con NSR-10 completa) · una ⭐ ayuda a que más gente lo encuentre · para citarlo académicamente, usa el DOI del badge de arriba · acceso educativo gratuito para programas de ingeniería civil, ver [`docs/contacto-institucional.md`](docs/contacto-institucional.md).
+
+<details>
+<summary><b>📑 Mapa del documento</b> — todo lo de abajo, en orden</summary>
+
+1. [Por qué existe esto](#por-qué-existe-esto)
+2. [Qué hay hoy, verificado en vivo](#qué-hay-hoy-verificado-en-vivo--no-una-promesa)
+3. [Auditoría verbatim de la NSR-10, título por título](#auditoría-verbatim-de-la-nsr-10-título-por-título)
+4. [Infraestructura del RAG — rendimiento medido, no solo diseñado](#infraestructura-del-rag--rendimiento-medido-no-solo-diseñado)
+5. [La metodología](#la-metodología--cómo-funciona-esto-de-verdad)
+6. [Evaluación empírica RAGAS](#evaluación-empírica-del-rag--medido-no-solo-diseñado)
+7. [Los 7 motores](#los-7-motores)
+8. [Lo que todavía no es](#lo-que-todavía-no-es--honestidad-antes-que-marketing)
+9. [Hacia dónde va esto](#hacia-dónde-va-esto--lo-aplicativo-y-lo-que-viene)
+10. [Colaboración institucional](#colaboración-con-universidades-gremios-y-cámaras-de-comercio)
+11. [Arquitectura, estructura del repo, desarrollo local, deploy, secrets](#arquitectura-rag--cómo-está-construido-sin-rodeos)
+
+</details>
+
 ## Por qué existe esto
 
-El 10 de agosto de 2026 un terremoto de magnitud 7.4 dejó 289 muertos en Colombia (cifra oficial final del Gobierno, tras las labores de rescate). No fue una sorpresa geológica — el país entero está sobre zona de amenaza sísmica, y buena parte de su vivienda se construyó antes de que existieran normas sismo-resistentes estrictas, o se construyó después pero sin que nadie verificara en obra que se cumplían. Yo soy ingeniero civil, y llevo meses construyendo StructAI porque estoy convencido de algo simple: si un ingeniero puede consultar la norma exacta —no una aproximación, no un resumen genérico de un asistente de IA que nunca vio el reglamento colombiano— en el momento en que está calculando, se cometen menos errores. Y en este país, un error de cálculo estructural no es un detalle técnico. Es una vida.
+El 10 de agosto de 2026 un terremoto de magnitud 7.4 dejó 289 muertos en Colombia (cifra oficial final del Gobierno). No fue una sorpresa geológica — el país entero está sobre zona de amenaza sísmica, y buena parte de su vivienda se construyó antes de que existieran normas sismo-resistentes estrictas, o después pero sin que nadie verificara en obra que se cumplían. Soy ingeniero civil, y llevo meses construyendo StructAI sobre una convicción simple: si un ingeniero puede consultar la norma exacta —no una aproximación, no un resumen genérico de una IA que nunca vio el reglamento colombiano— en el momento en que está calculando, se cometen menos errores. En este país, un error de cálculo estructural no es un detalle técnico. Es una vida.
 
-Esa es la apuesta completa de StructAI: una plataforma de inteligencia artificial que responde preguntas de ingeniería civil citando la norma real —NSR-10, RAS 2000, INVIAS, NTC— con capítulo y artículo, nunca con una cita inventada. Si no tiene la información cargada, lo dice. Si la tiene, la muestra con su fuente, verificable contra el texto oficial.
+Esa es la apuesta completa: una plataforma de IA que responde preguntas de ingeniería civil citando la norma real —NSR-10, RAS 2000, INVIAS, NTC— con capítulo y artículo, nunca con una cita inventada. Si no tiene la información cargada, lo dice.
 
-`Construdata` es el nombre interno del repositorio; **StructAI** es la marca pública, en [structai.online](https://www.structai.online).
+<details>
+<summary><b>La región tiene un patrón, no es solo Colombia</b> — comparación con Ecuador y Venezuela</summary>
 
-**Si esto te sirve:** [pruébalo en structai.online](https://www.structai.online) — el plan gratis incluye consulta a la NSR-10 completa. Si el enfoque de trazabilidad normativa te parece relevante para tu trabajo o tu investigación, una ⭐ en este repositorio ayuda a que más gente lo encuentre. Para citarlo en un trabajo académico, usa el DOI de Zenodo del badge de arriba. Si diriges un programa de ingeniería civil o un semillero de investigación, hay acceso educativo gratuito — ver [`docs/contacto-institucional.md`](docs/contacto-institucional.md).
-
-### La región tiene un patrón, no es solo Colombia
-
-Seis semanas antes del terremoto de Chocó, Venezuela sufrió el suyo: un sismo doble de magnitud 7,2/7,5 el 24 de junio de 2026, con epicentro frente a La Guaira, a solo 10 km de profundidad. Cruzando los tres sismos más recientes y mejor documentados de la región andino-caribeña —Ecuador (Pedernales, abril 2016), Colombia (Chocó, agosto 2026) y Venezuela (La Guaira, junio 2026)— con datos públicos de USGS, los informes oficiales de cada país y una estimación del Banco Mundial, aparece un patrón que no depende de la magnitud:
+Seis semanas antes del terremoto de Chocó, Venezuela sufrió el suyo: un sismo doble de magnitud 7,2/7,5 el 24 de junio de 2026, epicentro frente a La Guaira, a solo 10 km de profundidad. Cruzando los tres sismos más recientes y mejor documentados de la región andino-caribeña con datos públicos de USGS, informes oficiales de cada país y una estimación del Banco Mundial, aparece un patrón que no depende de la magnitud:
 
 | Evento | Fecha | Magnitud | Profundidad | Muertos | Pérdidas económicas |
 |---|---|---|---|---|---|
@@ -24,161 +42,166 @@ Seis semanas antes del terremoto de Chocó, Venezuela sufrió el suyo: un sismo 
 | Colombia — Chocó | ago-2026 | 7,4 | ~103–110 km | 289 | US$9.571M |
 | Venezuela — La Guaira | jun-2026 | 7,2 / 7,5 | 10 km | 6.301–6.438 | US$19.600M |
 
-Venezuela tuvo el sismo de *menor* magnitud de los tres y, aun así, más de nueve veces las muertes de Ecuador y más de veinte veces las de Colombia. La variable que explica esa diferencia no es cuán fuerte tembló en el hipocentro — es cuán cerca de la superficie ocurrió, y cuánta población densamente construida estaba directamente encima. Profundidad y exposición poblacional ya se pueden mapear hoy con datos públicos (USGS, censos). Lo que ningún país de la región tiene mapeado sistemáticamente todavía es la tercera variable: qué tan vulnerable es, edificio por edificio, lo que ya está construido. Colombia (autoconstrucción sin supervisión técnica) y Venezuela (edificios con planta baja flexible, señalados por el propio Colegio de Ingenieros de Venezuela al pedir la actualización de su norma tras el sismo) tienen el mismo vacío, con nombres distintos.
+Venezuela tuvo el sismo de *menor* magnitud de los tres y, aun así, más de nueve veces las muertes de Ecuador y más de veinte veces las de Colombia. La variable que explica la diferencia no es cuán fuerte tembló en el hipocentro — es cuán cerca de la superficie ocurrió, y cuánta población densamente construida estaba directamente encima. Profundidad y exposición poblacional ya se pueden mapear hoy con datos públicos. Lo que ningún país de la región tiene mapeado sistemáticamente todavía es la tercera variable: qué tan vulnerable es, edificio por edificio, lo que ya está construido. Colombia (autoconstrucción sin supervisión técnica) y Venezuela (edificios con planta baja flexible, señalados por su propio Colegio de Ingenieros al pedir la actualización de su norma) tienen el mismo vacío, con nombres distintos. Esa tercera variable es la línea de trabajo real descrita en ["Hacia dónde va esto"](#hacia-dónde-va-esto--lo-aplicativo-y-lo-que-viene).
 
-Esa tercera variable es la línea de trabajo real en la que estoy — ver "Evaluación de vulnerabilidad sísmica de vivienda ya construida" en la sección de hacia dónde va esto, más abajo.
+*Fuentes: USGS; Servicio Geológico Colombiano y UNGRD; informes oficiales de Ecuador y Venezuela; Banco Mundial. Cifras a la última actualización oficial disponible; deliberadamente no se citan nombres de víctimas ni de edificaciones específicas.*
 
-*Fuentes: USGS (magnitud, profundidad, intensidad); Servicio Geológico Colombiano y UNGRD (Colombia); informes oficiales de gestión de riesgo de Ecuador y Venezuela; Banco Mundial (pérdidas económicas de Venezuela). Cifras de muertos y pérdidas corresponden a las últimas actualizaciones oficiales disponibles a la fecha de este documento; deliberadamente no se citan nombres de víctimas ni de edificaciones específicas.*
+</details>
+
+**Nota de integridad**: un primer intento de pipeline automático de ingesta resultó ser un export roto de un sistema RAG anterior, con contenido desplazado desde su título de origen — se descartó por completo y quedó archivado (`packages/knowledge/_archivo/`), nunca en uso. Todo el corpus real se extrae directo de los PDF oficiales, con verificación cruzada contra el catálogo maestro de cada norma antes de publicarse. Cuando se encuentra un lote mal etiquetado o de baja confianza —ha pasado, más de una vez— se elimina y se documenta por qué, no se disimula.
 
 ## Qué hay hoy, verificado en vivo — no una promesa
 
-Todo lo que sigue se puede comprobar ahora mismo contra producción, sin confiar en este documento: [`GET /data-status`](https://structai-api-235651108862.us-east1.run.app/data-status).
+Todo lo que sigue se comprueba ahora mismo contra producción: [`GET /data-status`](https://structai-api-235651108862.us-east1.run.app/data-status).
 
 | Corpus | Contenido | Cifra real hoy |
 |---|---|---|
-| **NSR-10** | Los 11 títulos (A–K) tienen contenido cargado. **Auditoría estricta numeral por numeral (extraer con `pypdf`/`pdftotext` cada numeral real del PDF fuente y compararlo contra la base, no solo mirar si el chunk que existe se ve completo) ya se aplicó a los 11 títulos — barrido completo, ninguno queda sin auditar.** Resultado honesto: **8 de 10 títulos re-auditados tenían algún hueco real** (A, B, C, D, G, H, J, K) — solo I y E salieron limpios. De esos 8, **H, K, G, D y C ya se cerraron en verbatim completo** el mismo día que se encontró el hueco. **Título H** cubría apenas ~18% al auditarlo (2026-09-07) y se cerró por completo la misma sesión (H.3.3 a H.10). **Título C**, el más grande del corpus, tenía 26 numerales reales sin chunk (~1,4%) — ya cerrados, incluyendo el capítulo C.18.5 (esfuerzos admisibles en preesforzado) que faltaba completo. **Título K** tenía un hueco puntual (K.4.3.10-16) que corregía una afirmación propia anterior — ya cerrado. **Título G** tenía 18 numerales sin chunk, incluida la corrección de un typo real del documento fuente (G.12.4.2.2 impreso → G.12.3.2.2 real) — ya cerrado. **Título D** tenía solo 9 numerales — ya cerrado. **Título A** sigue con 6 capítulos completos sin cobertura — el capítulo de irregularidades (A.3.3) ya se cerró. **Título B** está en cierre progresivo (3 de 7 secciones ya cerradas). **Título J** sigue siendo el hueco más grande de tipo distinto, pendiente para otra sesión: no son capítulos vacíos, es que casi todo el título estaba condensado en resumen parafraseado en vez de verbatim — 159 numerales reales confirmados, solo 49 chunks, candidato a re-ingesta completa. **Título E** (252 numerales reales) salió limpio también — único hallazgo sin confirmar: una remisión cruzada interna a un numeral (E.7.26.2) que no existe como encabezado real, probable error tipográfico del documento fuente. El **F** (Estructuras Metálicas) tiene F.1–F.4 (acero) 100% verbatim, falta cerrar la parte final de F.5 (aluminio) — detalle completo y actualizado en `docs/fuentes-normativas.md`. | 8.454 chunks |
-| **NTC + SGSST** | 18 normas técnicas colombianas (ICONTEC) más el marco de Seguridad y Salud en el Trabajo (Decreto 1072/2015, Ley 1562/2012, Resolución 0312/2019) | 294 chunks |
+| **NSR-10** | Los 11 títulos (A–K) cargados. Los 11 ya pasaron auditoría estricta numeral por numeral (barrido completo) — detalle título por título [más abajo ↓](#auditoría-verbatim-de-la-nsr-10-título-por-título) | 8.454 chunks |
+| **NTC + SGSST** | 18 normas técnicas colombianas (ICONTEC) + marco de Seguridad y Salud en el Trabajo (Decreto 1072/2015, Ley 1562/2012, Res. 0312/2019) | 294 chunks |
 | **Motores de dominio** (AquAI/RAS 2000, GeoPot, Vías/INVIAS, Gerencia) | Corpus propio por motor, normativa específica de cada disciplina | 4.060 chunks |
-| **Precios de referencia** | Actividades de construcción con desglose de insumos, base construida sobre contratos y catálogos reales. Para 927 de las 4.566 actividades (20,3%, el subconjunto con el enlace real a sus insumos) el chat ya devuelve el desglose material/mano de obra/equipo real, no solo el precio todo-costo | 4.566 actividades · 10.281 insumos |
-| **Proveedores con precio verificado** | 24 proveedores/ferreterías del Atlántico con SKU real en ficha de producto, más 78 proveedores mipyme a nivel nacional (catálogo IAD MIPYMES / Colombia Compra Eficiente) con 114.616 precios individuales comparables — 70 de esos 78 (90%) ya tienen ciudad/departamento real, cruzados contra los registros públicos SECOP II y Cámaras de Comercio (RUES), en 22 departamentos distintos | 102 proveedores |
-| **Datos oficiales en vivo, cobertura nacional** | Amenaza sísmica NSR-10 del Servicio Geológico Colombiano (Aa/Av/zona por municipio) · señal estadística de anomalía de caudal del IDEAM contra 60+ años de histórico real por estación (nunca una alerta oficial — eso es competencia exclusiva de IDEAM/UNGRD) · suelos rurales del IGAC/UPRA (taxonomía, drenaje, inundabilidad, pH) · señal estadística de vulnerabilidad de vivienda por material de pared (muestra Sisbén IV, nunca una evaluación estructural) · histórico real de emergencias reportadas a la UNGRD por municipio (fallecidos, viviendas destruidas/averiadas, 2019-2024 — esto es lo que YA pasó, nunca un pronóstico) | 1.121 municipios (SGC) · 949 estaciones con histórico (IDEAM) · 169.088 unidades de suelo (IGAC) · 1.099 municipios (Sisbén) · 41.893 eventos (UNGRD) |
-| **Perú y Ecuador — no solo Colombia** | StructAI ya no es un producto de un solo país: la norma sísmica peruana (E.030, ya actualizada a la edición vigente RM 183-2026-VIVIENDA, no la anterior de 2019) y la ecuatoriana (NEC-SE-DS) están cargadas verbatim y conectadas al chat real (`/consultar`), cada una con su propio aviso de responsabilidad profesional (CIP en Perú, CICE en Ecuador — nunca el aviso colombiano de COPNIA mezclado por error) y su propia tabla de zonificación sísmica consultable por distrito/localidad | 204 chunks + 1.884 distritos (Perú) · 395 chunks + 512 localidades (Ecuador) |
+| **Precios de referencia** | Actividades de construcción con desglose de insumos. Para 927 de 4.566 actividades (20,3%) el chat ya devuelve el desglose material/mano de obra/equipo real, no solo el precio todo-costo | 4.566 actividades · 10.281 insumos |
+| **Proveedores con precio verificado** | 24 ferreterías del Atlántico con SKU real + 78 proveedores mipyme nacionales (IAD MIPYMES / Colombia Compra Eficiente), 114.616 precios individuales — 70 de 78 (90%) con ciudad/departamento real, cruzados contra SECOP II y RUES, en 22 departamentos | 102 proveedores |
+| **Datos oficiales en vivo, cobertura nacional** | Amenaza sísmica NSR-10 (SGC, Aa/Av/zona) · anomalía estadística de caudal (IDEAM, 60+ años de histórico, nunca una alerta oficial) · suelos rurales (IGAC/UPRA) · señal de vulnerabilidad de vivienda por material de pared (Sisbén IV, nunca una evaluación estructural) · histórico real de emergencias (UNGRD, 2019-2024 — lo que ya pasó, nunca un pronóstico) | 1.121 municipios (SGC) · 949 estaciones (IDEAM) · 169.088 unidades de suelo (IGAC) · 1.099 municipios (Sisbén) · 41.893 eventos (UNGRD) |
+| **Perú y Ecuador — no solo Colombia** | E.030 (Perú, ya en la edición vigente RM 183-2026-VIVIENDA) y NEC-SE-DS (Ecuador) verbatim, conectadas a `/consultar`, cada una con su propio aviso profesional (CIP / CICE) y zonificación sísmica por distrito | 204 chunks + 1.884 distritos (Perú) · 395 chunks + 512 localidades (Ecuador) |
 
-**Por qué Perú y Ecuador, y no cualquier otro país al azar.** Los tres países comparten el mismo motor sísmico real — la subducción de la placa de Nazca — así que no es una expansión comercial genérica, es la misma línea de falla. Construir los tres corpus con el mismo rigor permitió un hallazgo real, no solo replicar código: Colombia y Ecuador convergen en el mismo sistema de clasificación de suelos (A-F, mismos umbrales de velocidad de onda de corte), algo que la literatura comparativa de referencia de la región (el estudio WCEE 2012 de Bommer y Pinho, todavía la comparación más citada entre estos países) no pudo ver porque se hizo contra la norma ecuatoriana de 2001, ya reemplazada. No es una crítica a ese estudio —fue riguroso con lo que tenía disponible en su momento—, es lo que pasa cuando alguien vuelve a comparar las normas *vigentes hoy*, verbatim, en vez de citar la comparación de hace más de una década como si siguiera describiendo el estado actual.
+<details>
+<summary>Por qué Perú y Ecuador, y no un país al azar — y por qué la fila de datos oficiales trae dos tipos de señal distintos</summary>
 
-**Por qué esta última fila trae dos tipos de dato distintos, y no es casualidad.** Amenaza sísmica, anomalía de caudal y suelos son señales de **antes** de un evento — dónde hay más riesgo latente. Sisbén (vulnerabilidad de vivienda por municipio) y UNGRD (histórico real de emergencias) son la mitad de **después** — dónde ya sabemos que hay más población vulnerable, y qué tan grave fue el impacto real la última vez que pasó algo ahí. La idea de cruzar ambas mitades nació directo del terremoto de agosto de 2026: no es solo para calcular una estructura nueva, es para ayudar a priorizar dónde enfocar una respuesta real cuando vuelva a pasar. Sigue en desarrollo activo, con dos frentes todavía abiertos y sin resolver, documentados sin adornar el estado real: el subregistro de comunidades étnicas en la respuesta oficial ([issue #15](https://github.com/wilmerjoseperezorozco-dev/structai/issues/15)) y si tiene sentido una referencia rápida de la NSR-10 pensada para brigadas de evaluación de daño en campo, protocolo ATC-20 ([issue #16](https://github.com/wilmerjoseperezorozco-dev/structai/issues/16)).
+Los tres países comparten el mismo motor sísmico real — la subducción de la placa de Nazca — así que no es una expansión comercial genérica, es la misma línea de falla. Construir los tres corpus con el mismo rigor produjo un hallazgo real: Colombia y Ecuador convergen en el mismo sistema de clasificación de suelos (A-F, mismos umbrales de velocidad de onda de corte), algo que el estudio comparativo de referencia de la región (WCEE 2012, Bommer y Pinho) no pudo ver porque se hizo contra la norma ecuatoriana de 2001, ya reemplazada — no es una crítica a ese estudio, es lo que pasa al comparar las normas *vigentes hoy*, verbatim, en vez de citar una comparación de más de una década como si describiera el estado actual.
 
-**Nota de integridad**: un primer intento de pipeline automático de ingesta resultó ser un export roto de un sistema RAG anterior, con contenido desplazado desde su título de origen — se descartó por completo y quedó archivado (`packages/knowledge/_archivo/`), nunca en uso. Todo el corpus real se construye extrayendo directo de los PDF oficiales, con verificación cruzada contra el catálogo maestro de cada norma antes de publicarse. Cuando se encuentra un lote de contenido mal etiquetado o de baja confianza —ha pasado, más de una vez— se elimina y se documenta por qué, no se disimula.
+Amenaza sísmica, anomalía de caudal y suelos son señales de **antes** de un evento — dónde hay más riesgo latente. Sisbén y UNGRD son la mitad de **después** — dónde ya sabemos que hay más población vulnerable, y qué tan grave fue el impacto real la última vez. Cruzar ambas mitades nació directo del terremoto de agosto de 2026: no es solo para calcular una estructura nueva, es para priorizar dónde enfocar una respuesta real. Sigue en desarrollo, con dos frentes abiertos sin resolver: el subregistro de comunidades étnicas en la respuesta oficial ([issue #15](https://github.com/wilmerjoseperezorozco-dev/structai/issues/15)) y si vale la pena una referencia rápida de la NSR-10 para brigadas de evaluación de daño en campo, protocolo ATC-20 ([issue #16](https://github.com/wilmerjoseperezorozco-dev/structai/issues/16)).
+
+</details>
+
+## Auditoría verbatim de la NSR-10, título por título
+
+Método: extraer con `pypdf`/`pdftotext` cada numeral real del PDF fuente y compararlo contra lo que hay en la base de datos — no solo mirar si el chunk que existe se ve completo. Los 11 títulos ya pasaron por esto, barrido completo, ninguno sin auditar.
+
+| Título | Estado | Numerales reales | Hallazgo clave |
+|---|:---:|---|---|
+| **A** — Requisitos generales | 🟡 Parcial | — | 6 capítulos completos aún sin cobertura; el de irregularidades (A.3.3) ya cerrado |
+| **B** — Cargas | 🟡 Parcial | 7 secciones | 3 de 7 secciones ya cerradas, cierre progresivo |
+| **C** — Concreto estructural | ✅ Cerrado | 26 huecos → 0 | El más grande del corpus (~1,4% faltante); hallazgo mayor: el capítulo C.18.5 completo (preesforzado) no tenía ni un chunk |
+| **D** — Mampostería | ✅ Cerrado | 9 huecos → 0 | Hueco puntual, cerrado el mismo día que se encontró |
+| **E** — Vivienda de 1 y 2 pisos | ✅ Limpio | 252 | Único hallazgo sin confirmar: remisión cruzada a un numeral (E.7.26.2) que no existe como encabezado real, probable typo del documento fuente |
+| **F** — Estructuras metálicas | 🟡 Parcial | — | F.1–F.4 (acero) 100% verbatim; falta cerrar el tramo final de F.5 (aluminio) |
+| **G** — Madera y guadua | ✅ Cerrado | 18 huecos → 0 | Incluye la corrección de un typo real del documento (G.12.4.2.2 impreso → G.12.3.2.2 real) |
+| **H** — Estudios geotécnicos | ✅ Cerrado | H.3.3–H.10 | Cubría solo ~18% al auditarlo; cerrado por completo la misma sesión |
+| **I** — Supervisión técnica | ✅ Limpio | — | Sin hallazgos |
+| **J** — Requisitos de protección contra incendio | 🔴 Pendiente | 159 reales, 49 chunks | El hueco más grande y de tipo distinto: casi todo el título está en resumen parafraseado, no verbatim — candidato a re-ingesta completa, dejado explícito para otra sesión |
+| **K** — Requisitos complementarios | ✅ Cerrado | K.4.3.10–16 | Corregía una afirmación propia anterior de "K.4.3 completo" |
+
+**Resumen honesto**: 8 de los 10 títulos re-auditados tenían algún hueco real (todos menos I y E). De esos 8, **H, K, G, D y C ya están cerrados en verbatim completo** — solo quedan **A, B y J** con hueco real pendiente, J el más grande y explícitamente diferido. Detalle completo, con cada numeral y cada excepción documentada, en [`docs/fuentes-normativas.md`](docs/fuentes-normativas.md).
+
+## Infraestructura del RAG — rendimiento medido, no solo diseñado
+
+Igual que el corpus, la infraestructura de búsqueda se audita con evidencia real, no se da por buena porque "no tira error". Cuatro bugs reales encontrados y corregidos, cada uno verificado con `EXPLAIN ANALYZE` o con una segunda auditoría independiente antes de darlo por cerrado:
+
+| # | Problema real encontrado | Cómo se detectó | Corrección |
+|---|---|---|---|
+| 1 | El modelo de embeddings trunca en silencio cualquier fragmento de más de 128 tokens para la búsqueda semántica | Auditoría con el tokenizador real (no una estimación por caracteres): 493 de 4.129 fragmentos (11,9%) excedían el límite, con severidad desigual por título (K/B/J/A al 100%, C/D al 0%) | Los 493 se volvieron a fragmentar respetando el límite real, sin releer ningún PDF — verificado con una segunda auditoría independiente: 0% sobre el límite |
+| 2 | El índice `ivfflat` de pgvector daba recall real de ~10% — un chunk con similitud coseno 0,60 contra su propia consulta no aparecía ni en el top-50 | Comparación manual del cálculo de similitud contra el resultado real del RPC de búsqueda | Índice eliminado y reemplazado por **HNSW** (nativo de pgvector) — recall@10 verificado empíricamente: 99,6–100% en las 5 tablas de embeddings |
+| 3 | El único índice de texto completo (GIN) estaba sobre una expresión distinta a la que usa la función de búsqueda real — nunca se usaba | Medición de latencia real de `search_knowledge()`: forzaba `Parallel Seq Scan` completo en 3 tablas (~1,4s) | GIN nuevo, alineado exacto con la expresión real de la función |
+| 4 | La sub-consulta compartida por las dos ramas de búsqueda (semántica y léxica) se materializaba por estar referenciada dos veces — anulando por completo los índices nuevos | `EXPLAIN ANALYZE` del cuerpo real de la función (una llamada a función es una caja negra para el planificador — hubo que reconstruir la consulta exacta para verlo) | `NOT MATERIALIZED` explícito — sin tocar la lógica, un solo hint |
+
+**Progresión medida, misma consulta real, de punta a punta:**
+
+| Paso | Latencia de `search_knowledge()` |
+|---|---:|
+| Antes (sin índice vectorial) | 3.803 ms |
+| + índices HNSW y GIN | 2.387 ms |
+| + `NOT MATERIALIZED` | **626 ms** |
+
+**~83% de reducción total**, con correctez verificada en cada paso (no solo velocidad): mismos resultados sensatos, y las rutas de filtro por norma y por motor siguen funcionando. Detalle completo, con cada plan de ejecución real, en el historial de commits públicos y en [`infra/supabase/migrations/`](infra/supabase/migrations/).
 
 ## La metodología — cómo funciona esto de verdad
 
-StructAI no es un chatbot con un PDF pegado en el prompt. Es un sistema de recuperación aumentada (RAG) construido con una regla que no se negocia: **una cita inventada es peor que no citar nada, porque parece verificable y no lo es.**
+StructAI no es un chatbot con un PDF pegado en el prompt. Es un sistema de recuperación aumentada (RAG) con una regla que no se negocia: **una cita inventada es peor que no citar nada, porque parece verificable y no lo es.**
 
-En la práctica, eso significa:
+1. **Búsqueda híbrida, no solo semántica.** Similitud vectorial (embeddings locales, sin costo por consulta) + búsqueda léxica de texto completo, fusionadas con Reciprocal Rank Fusion.
+2. **El modelo cita solo lo que está en el contexto recuperado.** Si un artículo no aparece literalmente en el fragmento entregado, el sistema no lo escribe.
+3. **Si el dominio no tiene contenido cargado, lo dice explícitamente**, en vez de responder con una aproximación genérica que suena bien pero no está verificada.
+4. **Cada respuesta se rastrea hasta su fuente** (`normas_registro`, con estado de vigencia y derogación), y el pipeline de carga está versionado en `scripts/ingesta/`, no oculto.
+5. **La verificación es un proceso repetido, no una promesa.** Antes de dar por buena una sección nueva del corpus, se prueba con preguntas reales contra el motor de búsqueda. Cuando el propio pipeline tuvo un error real, quedó documentado en el historial de migraciones, no parchado en silencio.
 
-1. **Búsqueda híbrida, no solo semántica.** Cada consulta combina similitud vectorial (embeddings locales, `sentence-transformers`, sin costo por consulta) con búsqueda léxica de texto completo, fusionadas con Reciprocal Rank Fusion — porque el significado y la palabra exacta de un artículo normativo importan igual.
-2. **El modelo cita solo lo que está en el contexto recuperado.** Si un número de artículo no aparece literalmente en el fragmento que se le entregó, el sistema no lo escribe. Dice "la sección correspondiente de [norma]" en vez de inventar un `A.9.4.3` que no existe.
-3. **Si el dominio no tiene contenido cargado, el sistema lo dice explícitamente** en vez de responder con una aproximación genérica que suena bien pero no está verificada.
-4. **Cada respuesta se puede rastrear hasta su fuente** —`normas_registro`, con estado de vigencia y derogación incluido— y el pipeline completo de carga está versionado en `scripts/ingesta/`, no oculto.
-5. **La verificación no es una promesa, es un proceso repetido.** Antes de dar por buena una sección nueva del corpus, se prueba con preguntas reales contra el motor de búsqueda, no solo se confirma que la carga a la base de datos no falló. Y cuando el propio pipeline de recuperación tuvo un error real —encontrado auditando por qué una respuesta fallaba, corregido en la fuente— quedó documentado en el historial de migraciones, no parchado en silencio.
-
-Esta disciplina es, en el fondo, el mismo método científico aplicado a software: hipótesis, verificación contra la fuente primaria, corrección explícita del error propio. Es también la base metodológica de mi trabajo de grado sobre NSR-10/SGSST/NTC, próximo a sustentar — StructAI es la prueba de concepto aplicada de esa investigación, no un producto separado de ella.
+Es, en el fondo, el mismo método científico aplicado a software: hipótesis, verificación contra la fuente primaria, corrección explícita del error propio — también la base metodológica de mi trabajo de grado sobre NSR-10/SGSST/NTC, próximo a sustentar. StructAI es la prueba de concepto aplicada de esa investigación.
 
 ## Evaluación empírica del RAG — medido, no solo diseñado
 
-No me quedé en describir la arquitectura de recuperación; la medí, con el marco de evaluación RAGAS (fidelidad, relevancia de respuesta, precisión y cobertura del contexto) sobre un conjunto de preguntas con respuesta correcta verificada de antemano contra el texto oficial de la norma. Documento esto con la misma disciplina que aplico al corpus: con los números reales, no con la impresión de que algo "se ve mejor".
+Medido con RAGAS (fidelidad, relevancia de respuesta, precisión y cobertura de contexto) sobre preguntas con `ground_truth` verificado de antemano contra el texto oficial — nunca inventado. El conjunto de evaluación creció en 5 rondas sucesivas a medida que se necesitaba más señal:
 
-| Etapa (n=12 preguntas) | Fidelidad | Relevancia | Precisión de contexto | Cobertura de contexto |
-|---|---|---|---|---|
-| Línea base (RRF sin re-ranking) | 0.906 ± 0.193 | 0.917 ± 0.055 | 0.743 ± 0.235 | 1.000 ± 0.000 |
-| + Re-ranking por cross-encoder, puntaje combinado | 0.837 ± 0.243 | 0.851 ± 0.271 | **0.875 ± 0.138** | 0.917 ± 0.289 |
-| + Descomposición de consultas compuestas | 0.856 ± 0.266 | 0.920 ± 0.043 | 0.875 ± 0.151 | **1.000 ± 0.000** |
+| Corrida | n preguntas | Fidelidad | Relevancia | Precisión de contexto | Cobertura de contexto |
+|---|---:|---|---|---|---|
+| Línea base (RRF sin re-ranking) | 12 | 0,906 ± 0,193 | 0,917 ± 0,055 | 0,743 ± 0,235 | 1,000 ± 0,000 |
+| + re-ranking cross-encoder | 12 | 0,837 ± 0,243 | 0,851 ± 0,271 | **0,875 ± 0,138** | 0,917 ± 0,289 |
+| + descomposición de consultas | 12 | 0,856 ± 0,266 | 0,920 ± 0,043 | 0,875 ± 0,151 | **1,000 ± 0,000** |
+| Ampliación de cobertura | 52 | 0,826 ± 0,252 | 0,858 ± 0,252 | 0,784 ± 0,181 | 0,960 ± 0,198 |
+| + categorías complejas (síntesis, adversarial, compuestas, coloquial) | 143 | 0,757 ± 0,255 | 0,848 ± 0,256 | 0,798 ± 0,218 | 0,915 ± 0,264 |
+| **Post-HNSW/NOT MATERIALIZED (esta sesión)** | **278** | *en curso — se actualiza al terminar la corrida* | | | |
 
-El ± es la desviación estándar entre las 12 preguntas de esa misma corrida, no una estimación — la reporto porque, con una muestra de este tamaño, es tan importante como el promedio: en fidelidad y relevancia, la diferencia entre etapas (≈0.05-0.07) es más chica que la propia dispersión entre preguntas (0.19-0.27), así que no puedo afirmar con esta muestra que esas dos métricas realmente bajaron por el re-ranking — es igual de consistente con ruido de muestra. La mejora en precisión de contexto (0.743 → 0.875) sí es más grande que la dispersión de la corrida que mejora, lo cual la hace la lectura más confiable de las cuatro. Es exactamente el motivo por el que estoy ampliando el conjunto de evaluación más allá de 12 preguntas — con una muestra mayor, esta misma tabla debería volverse más concluyente, no solo más larga.
+<details>
+<summary>Hallazgos concretos por corrida — qué cambió, y por qué, no solo el número final</summary>
 
-Tres hallazgos concretos salieron de este trabajo, cada uno generalizable a cualquier sistema RAG híbrido sobre corpus normativo técnico, no solo a este:
+- **12 preguntas**: la cobertura del contexto ya era perfecta desde el inicio (1,000) — el corpus tenía la información; el problema real estaba en la precisión (0,743), el orden en que llegaban los fragmentos correctos. Un defecto real de diseño en la fusión RRF (el tamaño del pool interno de candidatos estaba atado a la cantidad de resultados solicitada, produciendo un ranking no monótono) se encontró y corrigió en el camino. Combinar el puntaje del re-ranker con el de recuperación híbrida, en vez de reemplazarlo, es lo que funcionó (precisión 0,743 → 0,875 sin degradar cobertura).
+- **52 preguntas**: el hallazgo no fue ningún promedio, fue cuánto cambió la dispersión — con 12 preguntas la relevancia salía en 0,920 ± 0,043 (parecía casi perfecta); con 52, 0,858 ± 0,252 — la muestra chica daba una imagen artificialmente optimista. La precisión de contexto, en cambio, se mantuvo relativamente estable.
+- **143 preguntas** (agregando síntesis cruzada entre títulos, adversariales, compuestas precio+norma, coloquiales): las preguntas de síntesis entre dos títulos salieron *mejor* que el resto (relevancia 0,937) — contrario a lo esperado de una pregunta "más difícil". Las compuestas precio+norma salieron débiles (relevancia 0,000, fidelidad 0,486) — señal real, candidata a revisar, no ruido de infraestructura.
+- **278 preguntas** (esta sesión): primera corrida real de las 113 preguntas más nuevas del dataset (nunca antes verificadas contra `ask()` en producción), y primera medición de calidad después del trabajo de infraestructura (HNSW + GIN + `NOT MATERIALIZED`, ver arriba) — el objetivo es confirmar que la latencia bajó sin que la calidad de recuperación se moviera para peor.
+- **Precios** (55 preguntas, rama aparte): fidelidad 0,792 ± 0,313, relevancia 0,686 ± 0,426, precisión de contexto 0,682 ± 0,369, cobertura 0,727 ± 0,449. Proveedor y proveedor nacional casi perfectos (0,85–1,0); insumos individuales el más débil. La categoría adversarial (materiales inventados) muestra relevancia 0,000 — verificado a mano que **no es una falla real**: el sistema sí rechaza inventar un precio, pero esa métrica de RAGAS penaliza un "no lo tengo" honesto. El hallazgo real sin corregir: jerga regional ("vereda" vs. "andén") no siempre encuentra el precio real cuando compite contra filas casi duplicadas.
 
-1. **La línea base reveló que el cuello de botella real no era el que yo esperaba.** La cobertura del contexto ya era perfecta desde el inicio (1.000): el corpus tenía la información necesaria. El problema real estaba en la precisión (0.743) — el orden en que llegaban los fragmentos correctos, no si existían.
-2. **Un defecto de diseño en la fusión de rangos recíprocos (RRF)**: el tamaño del conjunto interno de candidatos de cada rama de búsqueda (vectorial y de texto completo) estaba atado a la cantidad de resultados solicitada por quien llamaba a la función, en vez de ser un valor fijo. Esto producía un ranking no monótono — un fragmento correcto podía aparecer o desaparecer del resultado final según un parámetro que en teoría no debería afectar el orden. Corregido desacoplando ese tamaño interno de la cantidad solicitada.
-3. **Combinar el puntaje del re-ranker con el de recuperación híbrida, en vez de reemplazarlo por completo, es lo que realmente funciona.** El reemplazo puro mejoraba la precisión pero degradaba la cobertura (0.917); la combinación normalizada mejoró la precisión de forma sostenida (0.743 → 0.875) sin esa regresión.
-
-### Validación a mayor escala: de 12 a 52 preguntas
-
-Hice justo lo que la tabla de arriba pedía: amplié el conjunto de evaluación de 12 a 52 preguntas, cubriendo ahora Títulos D, E y G completos, más ampliaciones de A, B, C, F, H, I, J, K, y las normas NTC 121/174/1500 y el Decreto 1072 (SGSST) — mismo método de siempre, ningún hecho inventado, cada uno extraído directo del corpus verbatim ya cargado.
-
-| Métrica (n=52 preguntas) | Media ± desviación estándar |
-|---|---|
-| Fidelidad | 0.826 ± 0.252 (n=49 — 3 respuestas del juez fallaron por ruido real de infraestructura, excluidas, no promediadas como cero) |
-| Relevancia de respuesta | 0.858 ± 0.252 |
-| Precisión de contexto | 0.784 ± 0.181 |
-| Cobertura de contexto | 0.960 ± 0.198 (n=50) |
-
-El hallazgo más importante de esta ampliación no es ningún promedio — es cuánto cambió la dispersión. Con 12 preguntas, la relevancia de respuesta salía en 0.920 ± 0.043: parecía casi perfecta y muy consistente. Con 52, es 0.858 ± 0.252 — la muestra chica estaba dando una imagen artificialmente optimista, no representativa de la varianza real del sistema. Es exactamente la razón por la que valía la pena ampliarla: doce preguntas alcanzan para detectar un problema estructural de diseño, pero no para confiar en qué tan estable es el sistema en el día a día. La precisión de contexto, en cambio, se mantuvo relativamente estable entre ambas escalas (0.875 → 0.784) — una señal más confiable que la relevancia de respuesta.
-
-La verificación previa (más barata, sin el juez de RAGAS) encontró además 3 preguntas de las 40 nuevas donde el hecho existe en el corpus pero no llega al contexto recuperado con la configuración por defecto — un hueco real de precisión de recuperación, no un dato mal cargado. Los dejo documentados como candidatos concretos de mejora, no los escondo: la cuantía máxima de refuerzo a flexión en pórticos DES (Título C), el espesor mínimo de mampostería no reforzada (Título D), y la duración de la Fase 3 del SG-SST para empresas grandes (Decreto 1072) — este último probablemente porque la tabla fuente mezcla los cuatro tamaños de empresa en un solo fragmento denso, diluyendo la señal del embedding.
-
-La descomposición de consultas compuestas (preguntas que combinan dos conceptos normativos independientes) llevó la cobertura del contexto del caso que la motivó de 0.0 a 1.0 — con una limitación que documento explícitamente, no oculto: esa corrida en particular coincidió con el agotamiento de cuota del proveedor de LLM principal, lo que confunde parcialmente la atribución de las métricas de generación (no de recuperación) a esa intervención específica.
-
-### El lado de precios también se evalúa ahora, no solo la normativa (2026-09-07)
-
-Hasta esta semana, la disciplina de medición de arriba solo cubría el RAG normativo — el motor de precios (`buscar_precios_apu`) no tenía ninguna evaluación RAGAS ni de regresión. Se cerró esa brecha: 55 preguntas reales (actividad, insumo, proveedor regional, proveedor nacional, casos adversariales sin respuesta real, y variantes con jerga regional/sinónimos), con `ground_truth` extraído por SQL directo, nunca inventado.
-
-| Métrica (n=55 preguntas, precios) | Media ± desviación estándar |
-|---|---|
-| Fidelidad | 0.792 ± 0.313 |
-| Relevancia de respuesta | 0.686 ± 0.426 |
-| Precisión de contexto | 0.682 ± 0.369 |
-| Cobertura de contexto | 0.727 ± 0.449 |
-
-Las ramas de proveedor y proveedor nacional salen casi perfectas (0.85–1.0); la de insumos individuales es la más débil (precisión de contexto 0.538). La categoría adversarial (materiales inventados, ej. "concreto de kriptonita") tiene relevancia de respuesta en 0.000 — verificado a mano que **no es una falla real**: el sistema sí rechaza inventar un precio, pero esa misma métrica de RAGAS penaliza una respuesta honesta de "no lo tengo" por no dar un número directo, una limitación conocida de esa métrica frente a casos de rechazo. El hallazgo real y sin corregir todavía es la categoría de jerga regional: preguntas como "cuánto cuesta hacer una vereda" no siempre encuentran el precio real guardado como "andén" cuando compite contra filas casi duplicadas en el ranking — queda como mejora pendiente, documentada como tal, no oculta.
-
-De paso se implementó el desglose jerárquico actividad→insumo mencionado en la tabla de arriba, y se amplió el conjunto de evaluación normativo de 103 a 143 preguntas con categorías que antes no existían (preguntas que combinan dos títulos, preguntas sin respuesta real en el corpus, preguntas que mezclan precio y norma en una sola consulta, y fraseo coloquial de campo).
-
-| Métrica (n=143 preguntas, NSR-10 ampliado) | Media ± desviación estándar |
-|---|---|
-| Fidelidad | 0.757 ± 0.255 |
-| Relevancia de respuesta | 0.848 ± 0.256 |
-| Precisión de contexto | 0.798 ± 0.218 |
-| Cobertura de contexto | 0.915 ± 0.264 |
-
-Desglosado por categoría, la lectura real es más interesante que el promedio: las preguntas de **síntesis entre dos títulos salen mejor que el resto** (relevancia 0.937) — la descomposición de consultas maneja bien combinar dos conceptos normativos, contrario a lo que uno esperaría de una pregunta "más difícil". Las preguntas **compuestas de precio+norma** (primera vez que se mide esa ruta con RAGAS) salen débiles (relevancia 0.000, fidelidad 0.486) — señal real, no ruido de infraestructura, y candidata concreta a revisar antes de confiar en esa ruta sin reservas. Las categorías adversarial y coloquial mostraron valores nulos en precisión de contexto que coinciden con una racha real de timeouts del juez hacia el final de esta corrida (misma colisión de cuota de OpenAI ya documentada en la ampliación de 52 preguntas) — no los cuento como hallazgo confirmado hasta repetir la medición con las cuotas de generación y juicio separadas.
-
-### Auditoría de integridad del corpus — otro hallazgo real, corregido (2026-09-01)
-
-El modelo de embeddings local tiene un límite duro de 128 tokens por fragmento — cualquier texto más largo se trunca en silencio para la búsqueda semántica, aunque el texto completo siga guardado y visible si el fragmento llega a recuperarse. Audité el corpus completo de NSR-10 con el tokenizador real (no una estimación por caracteres) y encontré que **493 de 4.129 fragmentos (11.9%) superaban ese límite**, con severidad muy desigual por título: los Títulos K, B, J y A estaban truncados al 100% de sus fragmentos, mientras que los Títulos C y D — la mayoría del corpus, 3.121 fragmentos — estaban en 0%. Corregido el mismo día: los 493 fragmentos se volvieron a dividir respetando el límite real (sin releer ningún PDF — el texto verbatim ya cargado era correcto, solo estaba mal fragmentado), verificado con una segunda auditoría independiente que confirmó 0% de fragmentos sobre el límite en la totalidad del corpus. El detalle completo, con la tabla de severidad por título, está en el historial de commits públicos del repositorio.
+</details>
 
 ## Los 7 motores
 
 | Motor | Dominio |
 |---|---|
-| **APU** | Análisis de Precios Unitarios — la base de precios reales descrita arriba |
-| **Estructural** (`motor-deformacion`) | Deformación de vigas (Euler-Bernoulli), pandeo de columnas (Euler/Johnson), incertidumbre por Monte Carlo |
-| **AquAI** | Acueducto y alcantarillado — RAS 2000 / Res. 0330-2017 (11 módulos), con datos hidrometeorológicos reales del IDEAM (datos.gov.co) como referencia de campo |
+| **APU** | Análisis de Precios Unitarios — la base de precios reales de arriba |
+| **Estructural** (`motor-deformacion`) | Deformación de vigas (Euler-Bernoulli), pandeo de columnas (Euler/Johnson), incertidumbre Monte Carlo |
+| **AquAI** | Acueducto y alcantarillado — RAS 2000 / Res. 0330-2017 (11 módulos), con datos hidrometeorológicos reales del IDEAM |
 | **GeoPot** | Geotecnia y laboratorio: suelos, concreto, agregados, sísmica NSR-10 |
 | **Vías** | Diseño vial INVIAS: geometría, pavimentos, mantenimiento, topografía, NTC de materiales |
 | **Gerencia** | Earned Value Management (PMBOK) + aprendizaje automático predictivo sobre avance de obra |
-| **InfraCortex** | BIM (IFC) → topología del nudo viga-columna → chequeo por cortante NSR-10 Títulos A/B/C (fórmulas clásicas), más inspección visual de estribos |
+| **InfraCortex** | BIM (IFC) → topología viga-columna → chequeo por cortante NSR-10 A/B/C, más inspección visual de estribos |
 
-Cada motor expone su propio router FastAPI, su propia tabla en Supabase, y su propio corpus de búsqueda — todos comparten el mismo backend y la misma base de datos, pero ninguno depende de que otro exista para funcionar.
+Cada motor expone su propio router FastAPI, su propia tabla en Supabase y su propio corpus — comparten backend y base de datos, pero ninguno depende de otro para funcionar.
 
-> **InfraCortex está desactivado por defecto en producción** (`ENABLE_ESTRUCTURAL=false`): carga `torch` + `ifcopenshell` + `opencv` (~1-1.5 GB), y la instancia actual no tiene margen de RAM para sostenerlo junto al resto de la API. El código está completo y probado (7 tests, 86% de cobertura) — activarlo es una variable de entorno, no una reescritura.
+> **InfraCortex está desactivado por defecto en producción** (`ENABLE_ESTRUCTURAL=false`): carga `torch` + `ifcopenshell` + `opencv` (~1-1,5 GB) y la instancia actual no tiene margen de RAM para sostenerlo junto al resto de la API. Código completo y probado (7 tests, 86% de cobertura) — activarlo es una variable de entorno, no una reescritura.
 
 ## Lo que todavía no es — honestidad antes que marketing
 
-StructAI es un piloto en producción real, con usuarios reales, no una maqueta ni una cobertura nacional completa. Concretamente, a la fecha:
+StructAI es un piloto en producción real, con usuarios reales, no una maqueta ni una cobertura nacional completa:
 
-- **La base de precios con SKU real (marca, especificación técnica, norma) cubre el Atlántico.** La capa nacional (IAD MIPYMES, 78 proveedores) ya tiene ciudad/departamento real para 70 de esos proveedores (cruzados contra SECOP II y el registro de Cámaras de Comercio) — los 8 restantes son casos genuinamente ambiguos (homónimos, uniones temporales sin registro mercantil regular) y se quedan como "Nacional" en vez de adivinar. Ninguno de los dos niveles trae todavía marca/especificación técnica a escala nacional — eso requeriría una fuente distinta, no una extensión de la actual.
-- **Auditoría estricta numeral por numeral (2026-09-07 a 2026-09-09) ya cubrió los 11 títulos — barrido completo.** Encontró algún hueco real en 8 de los 10 títulos re-auditados con este método (A, B, C, D, G, H, J, K) — solo I y E salieron limpios. De esos 8, **H, K, G, D y C ya se cerraron en verbatim completo** el mismo día. El Título H (Estudios Geotécnicos) cubría apenas ~18% al momento de auditarlo, pero se cerró por completo la misma sesión (H.3.3 a H.10, verbatim al 100%). El Título C, el más grande del corpus, tenía 26 numerales reales sin chunk (~1,4%) — ya cerrados, el hallazgo más valioso fue el capítulo C.18.5 (esfuerzos admisibles en preesforzado), que estaba completo en el PDF sin ningún chunk en producción. El Título K tenía un hueco puntual (K.4.3.10-16) que corregía una afirmación propia anterior de "K.4.3 completo" — ya cerrado. El Título G tenía 18 numerales sin chunk, incluida la corrección de un typo real del documento (G.12.4.2.2 impreso → G.12.3.2.2 real) — ya cerrado. El Título D tenía solo 9 numerales — ya cerrado. El Título A sigue con 6 capítulos completos sin cobertura — el capítulo de irregularidades (A.3.3) ya se cerró. El Título B está a medio cerrar. El Título J sigue siendo el hueco más grande de tipo distinto, pendiente para otra sesión: no capítulos vacíos, sino casi todo el título condensado en resumen parafraseado en vez de verbatim (159 numerales reales, solo 49 chunks) — candidato a re-ingesta completa. El Título E (252 numerales reales) también salió limpio — único hallazgo sin confirmar: una remisión cruzada interna a un numeral inexistente (E.7.26.2), probable error tipográfico del documento fuente, no un hueco de ingesta. El Título F tiene pendiente solo el tramo final de aluminio (ver la tabla de arriba).
-- **Orinoquía, Pacífico (más allá de las estaciones IDEAM ya integradas) y Bogotá** son las regiones donde la expansión de cobertura normativa y de precios está activa pero no cerrada.
-- **No hay validación externa todavía.** Ningún ingeniero estructural certificado ajeno a este proyecto ha revisado formalmente la metodología de extracción del corpus. Es exactamente el tipo de colaboración que estoy buscando — ver la sección siguiente.
+- **Precios con SKU real** (marca, especificación técnica) cubre el Atlántico. La capa nacional (78 proveedores mipyme) tiene ciudad/departamento real para 70 — los 8 restantes son casos genuinamente ambiguos (homónimos, uniones temporales sin registro regular) y se quedan como "Nacional" en vez de adivinar.
+- **A, B y J** de la NSR-10 siguen con hueco real — ver la [tabla título por título](#auditoría-verbatim-de-la-nsr-10-título-por-título) arriba, con J como el caso explícitamente diferido.
+- **Orinoquía, Pacífico** (más allá de las estaciones IDEAM ya integradas) **y Bogotá** son las regiones donde la expansión de cobertura está activa pero no cerrada.
+- **No hay validación externa todavía.** Ningún ingeniero estructural certificado ajeno a este proyecto ha revisado formalmente la metodología de extracción — es exactamente el tipo de colaboración que busco, ver [más abajo](#colaboración-con-universidades-gremios-y-cámaras-de-comercio).
 
-El roadmap completo, con cada punto abierto o cerrado, es público: [issues del repositorio](https://github.com/wilmerjoseperezorozco-dev/structai/issues) y su [milestone activo](https://github.com/wilmerjoseperezorozco-dev/structai/milestone/1).
+Roadmap completo, cada punto abierto o cerrado: [issues del repositorio](https://github.com/wilmerjoseperezorozco-dev/structai/issues) y su [milestone activo](https://github.com/wilmerjoseperezorozco-dev/structai/milestone/1).
 
 ## Hacia dónde va esto — lo aplicativo y lo que viene
 
-StructAI empezó como una herramienta para Barranquilla y el Atlántico. La base técnica que existe hoy —el mismo motor que cita NSR-10, NTC o RAS 2000 para un proyecto local— ya no tiene ese límite: funciona igual para cualquier región de Colombia, y el enfoque de trazabilidad normativa ya no es solo "exportable" en teoría a otro país de Latinoamérica —está exportado de verdad a dos (Perú y Ecuador, ver la tabla de arriba), con el mismo rigor verbatim que Colombia. Estas son las líneas de trabajo reales, no aspiracionales:
+StructAI empezó como una herramienta para Barranquilla y el Atlántico. La base técnica ya no tiene ese límite — funciona igual para cualquier región de Colombia, y el enfoque de trazabilidad normativa ya está exportado de verdad a dos países más (Perú y Ecuador), con el mismo rigor verbatim.
 
-- **Evaluación de vulnerabilidad sísmica de vivienda ya construida.** Colombia tiene un parque enorme de vivienda informal y de mampostería no reforzada, construida antes de que existieran normas sismo-resistentes estrictas —o construida después, sin supervisión técnica real. Sobre NSR-10 A.10 y la línea metodológica AIS 2004 → Build Change → AIS 410-23, estoy construyendo contenido orientado a evaluar esa vivienda existente y a técnicas de reforzamiento aplicables, no solo a construcción nueva. El terremoto de agosto de 2026 no inició esta línea de trabajo — la volvió urgente, y cruzarlo con lo que pasó en Venezuela seis semanas antes (ver "La región tiene un patrón" al inicio de este documento) confirmó que el vacío no es exclusivamente colombiano.
-- **Datos ambientales y geológicos reales integrados al cálculo, no solo a la norma.** Esto ya no es un objetivo — es cobertura nacional real: amenaza sísmica del Servicio Geológico Colombiano en los 1.121 municipios del país, anomalía estadística de caudal del IDEAM contra el histórico real de cada río (nunca presentada como alerta oficial, eso sigue siendo competencia exclusiva de IDEAM/UNGRD), y suelos rurales del IGAC/UPRA. Es exactamente el tipo de señal que importa antes de un evento, no solo después: zona de amenaza sísmica de un municipio, o si el caudal de un río está saliéndose de lo normal para la época del año. El objetivo hacia adelante es que cada motor nuevo se apoye en esta misma disciplina de datos oficiales en vivo, no en valores tabulados sueltos.
-- **Cobertura normativa y de precios verdaderamente nacional**, con la misma exigencia de verificación que hoy se aplica al Atlántico, no una versión diluida.
-- **Investigación aplicada, no solo producto.** El diseño de StructAI —extracción verificada, citación literal, honestidad ante la ausencia de datos— es en sí mismo un objeto de estudio para quien investigue sistemas de IA confiables en dominios de alto riesgo (ingeniería, salud, derecho). Es la pregunta de fondo detrás de mi trabajo de grado, y una línea que me interesa seguir más allá de él.
+- **Evaluación de vulnerabilidad sísmica de vivienda ya construida.** Sobre NSR-10 A.10 y la línea metodológica AIS 2004 → Build Change → AIS 410-23, para vivienda informal/mampostería no reforzada construida sin supervisión técnica real — no solo construcción nueva. El terremoto de agosto de 2026 volvió esto urgente; cruzarlo con Venezuela confirmó que el vacío no es exclusivamente colombiano.
+- **Datos ambientales y geológicos reales integrados al cálculo, no solo a la norma.** Ya no es un objetivo, es cobertura nacional real (ver la tabla de arriba) — el objetivo hacia adelante es que cada motor nuevo se apoye en esta misma disciplina de datos oficiales en vivo.
+- **Cobertura normativa y de precios verdaderamente nacional**, con la misma exigencia de verificación que hoy se aplica al Atlántico.
+- **Investigación aplicada, no solo producto.** El diseño de StructAI —extracción verificada, citación literal, honestidad ante la ausencia de datos— es en sí mismo un objeto de estudio para sistemas de IA confiables en dominios de alto riesgo. Es la pregunta de fondo de mi trabajo de grado, y una línea que me interesa seguir más allá de él.
 
 ## Colaboración con universidades, gremios y Cámaras de Comercio
 
-Esto es una invitación concreta, no una frase de cierre. Si diriges o participas en un programa de ingeniería civil, si representas a la Asociación Colombiana de Ingeniería Sísmica (AIS) —cuya metodología de rehabilitación sísmica ya cito con atribución explícita—, a una Cámara de Comercio —cuyo registro público (RUES) ya cruzo hoy para darle ciudad real a 70 de los 78 proveedores nacionales—, o a cualquier entidad con interés real en cómo se está citando y verificando la normativa colombiana con IA, quiero hablar contigo. Ofrezco acceso educativo gratuito para estudiantes y docentes, y estoy buscando activamente:
+Invitación concreta, no una frase de cierre. Si diriges o participas en un programa de ingeniería civil, representas a la AIS (cuya metodología ya cito con atribución), a una Cámara de Comercio (cuyo registro público RUES ya cruzo hoy), o a cualquier entidad con interés real en cómo se cita y verifica la normativa colombiana con IA, quiero hablar contigo. Ofrezco acceso educativo gratuito y busco activamente:
 
-- Revisión externa de la metodología de extracción del corpus por parte de un ingeniero estructural certificado.
-- Datos técnicos, normativos o de precios reales que puedan sumar a esta base, siempre con atribución documentada.
+- Revisión externa de la metodología de extracción por un ingeniero estructural certificado.
+- Datos técnicos, normativos o de precios reales que sumen a esta base, con atribución documentada.
 - Colaboración institucional para llevar esto de un piloto en el Atlántico a una herramienta con alcance nacional real.
 
-El detalle completo de cómo contactar y qué tipo de colaboración busco está en [`docs/contacto-institucional.md`](docs/contacto-institucional.md).
+Detalle completo de cómo contactar: [`docs/contacto-institucional.md`](docs/contacto-institucional.md).
 
 ## Arquitectura RAG — cómo está construido, sin rodeos
 
-- **Embeddings**: 100% locales y sin costo por consulta (`sentence-transformers`, `paraphrase-multilingual-MiniLM-L12-v2`, 384 dimensiones) — no dependen de una API externa de pago.
-- **Vectores**: `pgvector` nativo en Supabase/PostgreSQL, no un servicio de vectores separado.
-- **Síntesis de respuesta**: [Groq](https://groq.com) (`gpt-oss-120b`, 1-3 segundos de latencia típica) como motor principal, con [OpenAI](https://openai.com) (`gpt-4o-mini`) como respaldo automático si Groq se queda sin cuota diaria — dos niveles, no uno, porque un sistema que cita normativa de seguridad no puede darse el lujo de quedar mudo.
-- **Trazabilidad**: cada respuesta incluye `norma_ref` real (documento + sección/artículo exacto), y advierte explícitamente si la norma citada está derogada o modificada.
+- **Embeddings**: 100% locales, sin costo por consulta (`sentence-transformers`, `paraphrase-multilingual-MiniLM-L12-v2`, 384 dimensiones).
+- **Vectores**: `pgvector` nativo en Supabase/PostgreSQL con índice **HNSW** (no un servicio de vectores separado, no el `ivfflat` original — ver [Infraestructura del RAG](#infraestructura-del-rag--rendimiento-medido-no-solo-diseñado) arriba).
+- **Síntesis de respuesta**: [Groq](https://groq.com) (`gpt-oss-120b`, 1-3s típico) como motor principal, [OpenAI](https://openai.com) (`gpt-4o-mini`) como respaldo automático si Groq se queda sin cuota diaria.
+- **Trazabilidad**: cada respuesta incluye `norma_ref` real (documento + sección/artículo exacto), y advierte si la norma citada está derogada o modificada.
 
 ## Estructura del monorepo
 
@@ -198,6 +221,7 @@ construdata/
 │   ├── bim-intelligence/→ IFC + Qdrant — experimental, no conectado al producto
 │   └── motor-estructural/ → InfraCortex: IFC + NSR-10 A/B/C, router `/estructural` conectado
 ├── scripts/ingesta/  → pipeline de carga del corpus, versionado por dominio (el documento fuente, no)
+├── scripts/evaluacion/ → datasets y corridas RAGAS, versionadas
 ├── infra/supabase/   → schema y migraciones reales, reconstruidas byte a byte contra producción
 ├── docs/             → comparación pública, canal de colaboración institucional
 └── .github/workflows/ → CI: lint + tsc, tests Python por motor (7), tests de integración del RAG
@@ -230,9 +254,9 @@ cd apps/native && npm install && npm start
 | `apps/web` | ✅ Desplegado en Vercel (PWA), deploy automático en cada push a `master` |
 | `apps/api` | ✅ Desplegado en Google Cloud Run (`us-east1`), deploy manual vía `gcloud run deploy` — CI/CD automático (Cloud Build trigger) todavía no armado. Login requerido (Supabase Auth) para `/ask`, `/apu/calculate` y `/detect` |
 | `apps/native` | 🔄 Fase 0 de un roadmap más largo — shell nativo, sin sensores todavía |
-| Supabase | ✅ En producción, RLS activo en todas las tablas, `pgvector` para los 3 corpus RAG |
+| Supabase | ✅ En producción, RLS activo en todas las tablas, `pgvector`/HNSW para los 3 corpus RAG |
 
-Verificable ahora mismo, sin confiar en esta tabla: [`GET /health?deep=true`](https://structai-api-235651108862.us-east1.run.app/health) y [`GET /data-status`](https://structai-api-235651108862.us-east1.run.app/data-status).
+Verificable ahora mismo: [`GET /health?deep=true`](https://structai-api-235651108862.us-east1.run.app/health) y [`GET /data-status`](https://structai-api-235651108862.us-east1.run.app/data-status).
 
 ## Secrets de GitHub Actions (reales, verificados contra `ci.yml`)
 
@@ -266,11 +290,14 @@ Propiedad de Wilmer José Pérez Orozco — ver [LICENSE](./LICENSE). El reposit
 
 ### 🇬🇧 English
 
-*Full detail above is in Spanish, my working language for this project. This section is a complete mirror of it, not just an intro, so an English-speaking reader doesn't miss anything.*
+*Full detail above is in Spanish, my working language for this project. This is a condensed mirror covering the same ground, not just an intro.*
 
-**Why this exists.** On August 10, 2026, a magnitude-7.4 earthquake killed 289 people in Colombia (the government's final official count, after rescue operations concluded). It wasn't a geological surprise — the whole country sits on seismic-hazard zones, and a large share of its housing was built before strict seismic codes existed, or built afterward without anyone verifying compliance on site. I'm a civil engineer, and I've spent months building StructAI on one conviction: if an engineer can look up the exact regulation — not an approximation, not a generic AI summary that never actually saw the Colombian code — at the moment they're calculating, fewer errors get made. In this country, a structural miscalculation isn't a technical detail. It's a life. StructAI cites the real regulation — NSR-10, RAS 2000, INVIAS, NTC — with chapter and article, never an invented citation. If it doesn't have the information loaded, it says so.
+**Why this exists.** On August 10, 2026, a magnitude-7.4 earthquake killed 289 people in Colombia (the government's final official count). It wasn't a geological surprise — the whole country sits on seismic-hazard zones, and much of its housing predates strict seismic codes, or was built afterward without on-site verification. I'm a civil engineer; StructAI exists because if an engineer can look up the exact regulation — not a generic AI approximation that never saw the Colombian code — at the moment of calculating, fewer errors get made. A structural miscalculation here isn't a technical detail. It's a life.
 
-**The region has a pattern, not just Colombia.** Six weeks before the Chocó earthquake, Venezuela had its own: a magnitude-7.2/7.5 doublet on June 24, 2026, epicentered off La Guaira at only 10 km depth. Cross-referencing the three most recent, best-documented earthquakes in the Andean-Caribbean region — Ecuador (Pedernales, April 2016), Colombia (Chocó, August 2026), and Venezuela (La Guaira, June 2026) — using public USGS data, each country's official reports, and a World Bank loss estimate, a pattern emerges that has nothing to do with magnitude:
+<details>
+<summary><b>The region has a pattern, not just Colombia</b></summary>
+
+Six weeks before the Chocó earthquake, Venezuela had its own: a magnitude-7.2/7.5 doublet on June 24, 2026, off La Guaira at 10 km depth. Cross-referencing the three most recent, best-documented Andean-Caribbean earthquakes (USGS data, official reports, World Bank estimates):
 
 | Event | Date | Magnitude | Depth | Deaths | Economic losses |
 |---|---|---|---|---|---|
@@ -278,100 +305,64 @@ Propiedad de Wilmer José Pérez Orozco — ver [LICENSE](./LICENSE). El reposit
 | Colombia — Chocó | Aug-2026 | 7.4 | ~103–110 km | 289 | US$9,571M |
 | Venezuela — La Guaira | Jun-2026 | 7.2 / 7.5 | 10 km | 6,301–6,438 | US$19,600M |
 
-Venezuela had the *smallest* magnitude of the three, and still more than nine times Ecuador's death toll and more than twenty times Colombia's. What explains that gap isn't how strongly the ground shook at the hypocenter — it's how close to the surface it happened, and how much densely built population sat directly above it. Depth and population exposure can already be mapped today with public data (USGS, census records). What no country in the region has systematically mapped yet is the third variable: how vulnerable, building by building, what's already standing actually is. Colombia (informal construction without technical oversight) and Venezuela (soft-story buildings, flagged by Venezuela's own College of Engineers when requesting its code be updated after the earthquake) have the same gap, under different names.
+Venezuela had the *smallest* magnitude and still more than nine times Ecuador's death toll. What explains the gap isn't shaking strength — it's depth and how much densely built population sat above it. What no country maps systematically yet: how vulnerable, building by building, what's already standing is. Colombia (informal construction) and Venezuela (soft-story buildings) share the same gap under different names.
 
-That third variable is the real line of work I'm on — see "Seismic vulnerability assessment of existing housing" under "Where this is headed," below.
+</details>
 
-*Sources: USGS (magnitude, depth, intensity); Colombian Geological Survey and UNGRD (Colombia); official risk-management reports from Ecuador and Venezuela; World Bank (Venezuela's economic losses). Death and loss figures reflect the latest official updates available as of this document's date; victim names and specific buildings are deliberately not cited.*
+**What's live today, verified now.** Check it yourself: [`GET /data-status`](https://structai-api-235651108862.us-east1.run.app/data-status).
 
-**What's live today, verified now — not a promise.** Everything below can be checked right now against production, without trusting this document: [`GET /data-status`](https://structai-api-235651108862.us-east1.run.app/data-status).
+| Corpus | Real figure |
+|---|---:|
+| NSR-10 (all 11 titles, strict numeral-by-numeral audit, full sweep — [table above](#auditoría-verbatim-de-la-nsr-10-título-por-título)) | 8,454 chunks |
+| NTC + occupational health & safety framework | 294 chunks |
+| Domain engines (AquAI, GeoPot, Vías, Gerencia) | 4,060 chunks |
+| Reference pricing (927/4,566 activities with real supply breakdown) | 4,566 activities · 10,281 supplies |
+| Verified suppliers (24 local + 78 national, 90% with real city/department) | 114,616 comparable prices |
+| Official live data: seismic hazard, streamflow anomaly, soils, housing vulnerability, emergency history | 1,121 municipalities (SGC) · 949 stations (IDEAM) · 169,088 soil units (IGAC) · 1,099 municipalities (Sisbén) · 41,893 events (UNGRD) |
+| Peru (E.030, current 2026 edition) & Ecuador (NEC-SE-DS), verbatim, live in chat | 204 chunks + 1,884 districts (Peru) · 395 chunks + 512 localities (Ecuador) |
 
-| Corpus | Content | Real figure today |
-|---|---|---|
-| **NSR-10** | All 11 titles (A–K) have content loaded. **Strict numeral-by-numeral audit (extract every real numeral from the source PDF with `pypdf`/`pdftotext` and compare it against the database, not just checking whether the chunks that exist look complete) has now been applied to all 11 titles — full sweep complete, none left unaudited.** Honest result: **8 of the 10 re-audited titles had some real gap** (A, B, C, D, G, H, J, K) — only I and E came back clean. Of those 8, **H, K, G, D, and C have already been closed in full verbatim** the same day the gap was found. **Title H** covered only ~18% when audited (2026-09-07) and was closed completely the same session (H.3.3 through H.10). **Title C**, the largest title in the corpus, had 26 real numerals missing their own chunk (~1.4%) — now closed; the most valuable finding was chapter C.18.5 (allowable stresses in prestressing steel), which was complete in the PDF with no chunk in production. **Title K** had a narrow real gap correcting an earlier claim of my own (K.4.3.10 through K.4.3.16 were missing) — now closed. **Title G** had 18 missing numerals, including a genuine typo fix in the source document (printed as G.12.4.2.2, actually G.12.3.2.2) — now closed. **Title D** had only 9 numerals — now closed. **Title A** still has 6 full chapters with no coverage — the irregularities chapter (A.3.3) has already been closed. **Title B** is being closed progressively (3 of 7 sections done). **Title J** remains the largest gap, of a different kind, left for a future session: not empty chapters, but nearly the whole title condensed into paraphrased summary instead of verbatim — 159 real numerals confirmed, only 49 chunks, a candidate for full re-ingestion. **Title E** (252 real numerals) also came back clean — the only unconfirmed finding is an internal cross-reference to a numeral that doesn't exist as a real heading (E.7.26.2), most likely a typo in the source document rather than an ingestion gap. **F** (Metal Structures) has F.1–F.4 (steel) 100% verbatim, with the tail end of F.5 (aluminum) still open — full, current detail in `docs/fuentes-normativas.md`. | 8,454 chunks |
-| **NTC + SGSST** | 18 Colombian technical standards (ICONTEC) plus the occupational health & safety framework (Decree 1072/2015, Law 1562/2012, Resolution 0312/2019) | 294 chunks |
-| **Domain engines** (AquAI/RAS 2000, GeoPot, Vías/INVIAS, Gerencia) | Own corpus per engine, discipline-specific regulation | 4,060 chunks |
-| **Reference pricing** | Construction activities broken down into supplies, built from real contracts and catalogs. For 927 of the 4,566 activities (20.3%, the subset with a real link to their supplies) the chat already returns the real material/labor/equipment breakdown, not just the all-in price | 4,566 activities · 10,281 supplies |
-| **Suppliers with verified pricing** | 24 suppliers/hardware stores in Atlántico with real SKUs, plus 78 national SME suppliers (IAD MIPYMES / Colombia Compra Eficiente catalog) with 114,616 individual comparable prices — 70 of those 78 (90%) already have a real city/department, cross-checked against the public SECOP II and Chamber of Commerce (RUES) records, across 22 different departments | 102 suppliers |
-| **Live official data, national coverage** | NSR-10 seismic hazard from the Colombian Geological Survey (Aa/Av/zone per municipality) · statistical streamflow-anomaly signal from IDEAM against 60+ years of real historical data per station (never an official alert — that stays IDEAM/UNGRD's exclusive competence) · rural soils from IGAC/UPRA (taxonomy, drainage, flood risk, pH) · statistical housing-vulnerability signal by wall material (Sisbén IV sample, never a structural assessment) · real historical emergency records reported to UNGRD by municipality (deaths, destroyed/damaged homes, 2019–2024 — this is what already happened, never a forecast) | 1,121 municipalities (SGC) · 949 stations with history (IDEAM) · 169,088 soil units (IGAC) · 1,099 municipalities (Sisbén) · 41,893 events (UNGRD) |
-| **Peru and Ecuador — not just Colombia** | StructAI is no longer a single-country product: Peru's seismic code (E.030, already updated to the current edition, RM 183-2026-VIVIENDA, not the older 2019 one) and Ecuador's (NEC-SE-DS) are loaded verbatim and wired into the live chat (`/consultar`), each with its own professional-liability notice (CIP in Peru, CICE in Ecuador — never the Colombian COPNIA notice mixed in by mistake) and its own seismic-zoning lookup by district/locality | 204 chunks + 1,884 districts (Peru) · 395 chunks + 512 localities (Ecuador) |
+**NSR-10 audit, honestly**: 8 of 10 re-audited titles had a real gap (all but I and E). Of those, **H, K, G, D and C are already closed in full verbatim** the same day the gap was found — only **A, B and J** remain open, J being the largest and explicitly deferred (159 real numerals, only 49 chunks, mostly paraphrased summary instead of verbatim — a candidate for full re-ingestion).
 
-**Why Peru and Ecuador, and not some random other country.** The three countries share the same real seismic engine — Nazca-plate subduction — so this isn't a generic commercial expansion, it's the same fault line. Building all three corpora to the same standard produced a real finding, not just replicated code: Colombia and Ecuador converge on the same soil classification system (A-F, same shear-wave-velocity thresholds) — something the region's reference comparative literature (the 2012 WCEE study by Bommer and Pinho, still the most-cited comparison between these countries) couldn't see, because it was built against Ecuador's 2001 code, already superseded. That's not a knock on that study — it was rigorous with what was available at the time — it's what happens when someone compares the codes *actually in force today*, verbatim, instead of citing a decade-plus-old comparison as if it still described the current state.
+<details>
+<summary><b>RAG infrastructure — measured performance, not just design</b></summary>
 
-**Why this last row carries two different kinds of data, and it isn't a coincidence.** Seismic hazard, streamflow anomaly, and soils are **before**-an-event signals — where the latent risk is higher. Sisbén (housing vulnerability by municipality) and UNGRD (real emergency history) are the **after** half — where we already know there's more vulnerable population, and how bad the real impact was the last time something happened there. The idea of crossing both halves came directly out of the August 2026 earthquake: it's not just for calculating a new structure, it's for helping prioritize where to focus a real response when it happens again. Still active work, with two fronts genuinely open and unresolved, documented without dressing up the real status: under-registration of ethnic communities in the official response ([issue #15](https://github.com/wilmerjoseperezorozco-dev/structai/issues/15)), and whether a quick NSR-10 reference aimed at field damage-assessment brigades, ATC-20 protocol, is worth building ([issue #16](https://github.com/wilmerjoseperezorozco-dev/structai/issues/16)).
+Four real bugs found and fixed, each verified with `EXPLAIN ANALYZE` or an independent second audit:
 
-**The methodology — how this actually works.** StructAI is not a chatbot with a PDF pasted into the prompt. It's a retrieval-augmented generation (RAG) system built on one non-negotiable rule: **an invented citation is worse than no citation, because it looks verifiable and isn't.** In practice: (1) hybrid search, not just semantic — every query combines vector similarity (local embeddings, `sentence-transformers`, no per-query cost) with full-text lexical search, fused with Reciprocal Rank Fusion, because both meaning and the exact wording of a regulatory article matter; (2) the model cites only what's in the retrieved context — if an article number doesn't appear literally in the fragment it was given, it doesn't write it; (3) if a domain has no content loaded, the system says so explicitly instead of answering with a plausible-sounding but unverified approximation; (4) every answer is traceable to its source (`normas_registro`, including repeal/amendment status), and the entire ingestion pipeline is version-controlled in `scripts/ingesta/`, not hidden; (5) verification is a repeated process, not a one-time promise — before trusting a new corpus section, I test it with real questions against the search engine, not just confirm the database write didn't error. This discipline is, at bottom, the scientific method applied to software: hypothesis, verification against the primary source, explicit correction of my own error. It's also the methodological backbone of my undergraduate thesis on NSR-10/SGSST/NTC, soon to be defended — StructAI is the applied proof of concept of that research, not a separate product from it.
+| # | Real problem | How it was found | Fix |
+|---|---|---|---|
+| 1 | Embeddings silently truncate fragments over 128 tokens | Real-tokenizer audit: 493/4,129 fragments (11.9%) over limit | Re-split respecting the real limit; second audit confirmed 0% over limit |
+| 2 | `ivfflat` pgvector index had ~10% real recall | A chunk with 0.60 real cosine similarity to its own query missing from top-50 | Replaced with **HNSW**; recall@10 verified empirically at 99.6–100% |
+| 3 | The only full-text GIN index used a different expression than the real search function — never actually used | Latency profiling of `search_knowledge()`: forced full `Parallel Seq Scan` (~1.4s) | New GIN, aligned exactly to the real expression |
+| 4 | The CTE shared between the semantic and lexical search branches got materialized (referenced twice), nullifying the new indexes entirely | `EXPLAIN ANALYZE` on the real function body (a function call is a black box to the planner — had to reconstruct the exact query to see it) | Explicit `NOT MATERIALIZED` |
 
-**Empirical RAG evaluation — measured, not just designed.** I didn't stop at describing the retrieval architecture; I measured it with the RAGAS evaluation framework (faithfulness, answer relevancy, context precision, context recall) against a question set with correctness verified independently ahead of time.
+**Measured, same real query, end to end**: 3,803 ms (no index) → 2,387 ms (HNSW+GIN) → **626 ms** (`NOT MATERIALIZED`) — **~83% total reduction**, correctness verified at every step, not just speed.
 
-| Stage (n=12 questions) | Faithfulness | Relevancy | Context precision | Context recall |
-|---|---|---|---|---|
-| Baseline (RRF, no re-ranking) | 0.906 ± 0.193 | 0.917 ± 0.055 | 0.743 ± 0.235 | 1.000 ± 0.000 |
-| + Cross-encoder re-ranking, combined score | 0.837 ± 0.243 | 0.851 ± 0.271 | **0.875 ± 0.138** | 0.917 ± 0.289 |
-| + Compound-query decomposition | 0.856 ± 0.266 | 0.920 ± 0.043 | 0.875 ± 0.151 | **1.000 ± 0.000** |
+</details>
 
-The ± is the standard deviation across the 12 questions of that same run, not an estimate — I report it because, at this sample size, it matters as much as the average: for faithfulness and relevancy, the difference between stages (≈0.05–0.07) is smaller than the spread between questions within a single run (0.19–0.27), so I can't claim from this sample that those two metrics genuinely dropped because of re-ranking — it's equally consistent with sample noise. The context-precision gain (0.743 → 0.875) is larger than the spread of the run it improves into, which makes it the most trustworthy read of the four. This is exactly why I'm expanding the evaluation set beyond 12 questions — with a larger sample, this same table should become more conclusive, not just longer.
+**The methodology.** Not a chatbot with a PDF pasted into the prompt. A retrieval-augmented generation (RAG) system on one non-negotiable rule: **an invented citation is worse than none, because it looks verifiable and isn't.** Hybrid search (vector + full-text, RRF-fused) · the model cites only what's in retrieved context · explicit "not loaded" instead of a plausible guess · every answer traces to its source, with repeal/amendment status · verification is a repeated process against real questions, not a one-time promise. Same scientific method applied to software — also the backbone of my undergraduate thesis on NSR-10/SGSST/NTC, soon to be defended; StructAI is its applied proof of concept.
 
-Three concrete findings came out of this, each generalizable to any hybrid RAG system over technical regulatory corpora, not just this one: **(1)** the baseline showed the real bottleneck wasn't the one I expected — context recall was already perfect (1.000), the real problem was precision (0.743), i.e. ranking order, not missing content; **(2)** a real design defect in Reciprocal Rank Fusion — each branch's internal candidate-pool size was tied to the caller's requested result count instead of being a fixed value, producing a non-monotonic ranking where a correct fragment could appear or vanish depending on a parameter that shouldn't have affected order, fixed by decoupling that pool size; **(3)** combining the re-ranker's score with the original hybrid-retrieval score, instead of replacing it outright, is what actually works — pure replacement improved precision but degraded recall (0.917), while the combined, normalized score improved precision consistently (0.743 → 0.875) without that regression. Query decomposition took the context recall of the case that motivated it from 0.0 to 1.0 — with a limitation I document explicitly, not hide: that particular run coincided with the primary LLM provider's quota running out, which partly confounds attribution of the generation metrics (not the retrieval ones) to that specific change.
+**Empirical RAG evaluation — measured, not just designed.**
 
-**Scaling up the evaluation: from 12 to 52 questions.** I did exactly what the table above called for: expanded the evaluation set from 12 to 52 questions, now covering Titles D, E and G in full plus extensions of A, B, C, F, H, I, J, K, and the NTC 121/174/1500 standards and Decree 1072 (SGSST) — same method as always, nothing invented, every fact pulled straight from the already-loaded verbatim corpus.
+| Run | n questions | Faithfulness | Relevancy | Context precision | Context recall |
+|---|---:|---|---|---|---|
+| Baseline (RRF, no re-ranking) | 12 | 0.906 ± 0.193 | 0.917 ± 0.055 | 0.743 ± 0.235 | 1.000 ± 0.000 |
+| + cross-encoder re-ranking | 12 | 0.837 ± 0.243 | 0.851 ± 0.271 | **0.875 ± 0.138** | 0.917 ± 0.289 |
+| + query decomposition | 12 | 0.856 ± 0.266 | 0.920 ± 0.043 | 0.875 ± 0.151 | **1.000 ± 0.000** |
+| Coverage expansion | 52 | 0.826 ± 0.252 | 0.858 ± 0.252 | 0.784 ± 0.181 | 0.960 ± 0.198 |
+| + complex categories (cross-title, adversarial, compound, colloquial) | 143 | 0.757 ± 0.255 | 0.848 ± 0.256 | 0.798 ± 0.218 | 0.915 ± 0.264 |
+| **Post-HNSW/NOT MATERIALIZED (this session)** | **278** | *in progress — updated once the run finishes* | | | |
 
-| Metric (n=52 questions) | Mean ± standard deviation |
-|---|---|
-| Faithfulness | 0.826 ± 0.252 (n=49 — 3 judge calls failed on real infrastructure noise, excluded, not averaged in as zero) |
-| Answer relevancy | 0.858 ± 0.252 |
-| Context precision | 0.784 ± 0.181 |
-| Context recall | 0.960 ± 0.198 (n=50) |
+Key findings: the 12-question baseline showed context recall was already perfect (1.000) — the real bottleneck was precision (0.743, ranking order), and a real RRF design defect (internal candidate-pool size tied to the caller's requested count) was found and fixed. At 52 questions, answer relevancy's apparent near-perfection (0.920±0.043 at n=12) turned out to be small-sample optimism (0.858±0.252 at n=52) — context precision held up more reliably. At 143, cross-title synthesis questions scored *better* than the rest (0.937 relevancy), while compound price+regulation questions came out weak (0.000/0.486) — a real, unfixed signal. A separate 55-question pricing evaluation shows supplier branches near-perfect (0.85–1.0) and individual-supply items weakest; the adversarial-material category's 0.000 relevancy is a known RAGAS metric limitation against honest refusals, not a real failure.
 
-The most important finding of this expansion isn't any single average — it's how much the spread changed. At 12 questions, answer relevancy came out at 0.920 ± 0.043: it looked almost perfect and very consistent. At 52, it's 0.858 ± 0.252 — the small sample was giving an artificially optimistic picture, not a representative one of the system's real variance. That's exactly why the expansion was worth doing: twelve questions are enough to catch a structural design problem, not enough to trust how stable the system really is day to day. Context precision, by contrast, held up relatively steady across both scales (0.875 → 0.784) — a more trustworthy signal than answer relevancy turned out to be.
+**The 7 engines**: APU (unit pricing) · Structural/`motor-deformacion` (beam deflection, column buckling, Monte Carlo) · AquAI (water/sewerage, RAS 2000, real IDEAM data) · GeoPot (geotechnics) · Vías (INVIAS road design) · Gerencia (EVM + predictive ML) · InfraCortex (BIM/IFC shear check, disabled by default for RAM — code complete, 7 tests, 86% coverage).
 
-The cheaper pre-check (no RAGAS judge involved) also found 3 of the 40 new questions where the fact exists in the corpus but doesn't reach the retrieved context under the default configuration — a real retrieval-precision gap, not a bad data load. I document them as concrete improvement candidates rather than hide them: the maximum flexural reinforcement ratio in DES moment frames (Title C), the minimum thickness of unreinforced masonry (Title D), and the Phase 3 duration of SG-SST implementation for large companies (Decree 1072) — the last one likely because its source table packs all four company-size tiers into one dense fragment, diluting the embedding's signal.
+**What this isn't yet.** A real production pilot, not a mockup or full national coverage. Pricing with real SKUs covers Atlántico only; NSR-10 Titles A, B and J still have real gaps (J deferred, largest, ~159 numerals mostly in paraphrase not verbatim); Orinoquía, the Pacific, and Bogotá are active but not closed; no external validation yet by a certified structural engineer outside this project — exactly the collaboration I'm looking for.
 
-**Pricing gets evaluated now too, not just the regulatory side (2026-09-07).** Until this week, the measurement discipline above only covered the regulatory RAG — the pricing engine (`buscar_precios_apu`) had no RAGAS or regression evaluation at all. That gap is closed: 55 real questions (activity, supply, regional supplier, national supplier, adversarial cases with no real answer, and regional-jargon/synonym variants), with `ground_truth` pulled straight from SQL, never invented.
+**Where this is going.** Seismic vulnerability assessment of already-built housing (NSR-10 A.10 + AIS 2004 → Build Change → AIS 410-23) · real environmental/geological data already at national scale, more engines to follow the same discipline · truly national regulatory and pricing coverage · applied research on trustworthy AI in high-stakes domains — the question behind my thesis.
 
-| Metric (n=55 questions, pricing) | Mean ± standard deviation |
-|---|---|
-| Faithfulness | 0.792 ± 0.313 |
-| Answer relevancy | 0.686 ± 0.426 |
-| Context precision | 0.682 ± 0.369 |
-| Context recall | 0.727 ± 0.449 |
+**University, guild, and Chamber of Commerce collaboration.** A concrete invitation. If you lead a civil engineering program, represent AIS or a Chamber of Commerce, or have real interest in how Colombian regulation is cited and verified with AI, I want to talk — free educational access, and I'm looking for external methodology review, real data contributions with documented attribution, and institutional partners to go from an Atlántico pilot to real national reach. Detail: [`docs/contacto-institucional.md`](docs/contacto-institucional.md).
 
-The supplier and national-supplier branches come out nearly perfect (0.85–1.0); individual supplies is the weakest (context precision 0.538). The adversarial category (invented materials, e.g. "kryptonite concrete") shows answer relevancy at 0.000 — checked by hand that this **isn't a real failure**: the system does refuse to invent a price, but that same RAGAS metric penalizes an honest "I don't have that" for not giving a direct number, a known limitation of that metric against refusal cases. The real, still-unfixed finding is the regional-jargon category: questions like "how much does a sidewalk cost" (using a regional synonym) don't always surface the real price stored under the standard term when it's competing against near-duplicate rows in the ranking — left as a documented, pending improvement, not hidden.
-
-Along the way, the activity→supply breakdown hierarchy mentioned in the table above was implemented, and the regulatory evaluation set was expanded from 103 to 143 questions with categories that didn't exist before (questions spanning two titles at once, questions with no real answer in the corpus, questions mixing price and regulation in a single query, and colloquial field phrasing).
-
-| Metric (n=143 questions, expanded NSR-10 set) | Mean ± standard deviation |
-|---|---|
-| Faithfulness | 0.757 ± 0.255 |
-| Answer relevancy | 0.848 ± 0.256 |
-| Context precision | 0.798 ± 0.218 |
-| Context recall | 0.915 ± 0.264 |
-
-Broken down by category, the real story is more interesting than the average: questions **synthesizing two titles at once actually score better than the rest** (relevancy 0.937) — query decomposition handles combining two regulatory concepts well, the opposite of what you'd expect from a "harder" question type. The **compound price+regulation questions** (the first time that path has ever been measured with RAGAS) come out weak (relevancy 0.000, faithfulness 0.486) — a real signal, not infrastructure noise, and a concrete candidate to review before trusting that path without reservations. The adversarial and colloquial categories showed null context-precision values that line up with a real streak of judge timeouts near the end of this run (the same OpenAI quota collision already documented in the 52-question expansion) — I'm not counting those as a confirmed finding until the measurement is repeated with separate generation and judging quotas.
-
-**Corpus integrity audit — another real finding, fixed (2026-09-01).** The local embedding model has a hard 128-token limit per fragment — anything longer gets silently truncated for semantic search, even though the full text stays stored and visible if that fragment ever gets retrieved. I audited the entire NSR-10 corpus with the real tokenizer (not a character-count estimate) and found **493 of 4,129 fragments (11.9%) exceeded that limit**, with severity wildly uneven by title: Titles K, B, J and A were 100% truncated, while Titles C and D — most of the corpus, 3,121 fragments — were at 0%. Fixed the same day: the 493 fragments were re-split respecting the real limit (no PDF re-read needed — the already-loaded verbatim text was correct, just mis-chunked), verified with a second, independent audit confirming 0% of fragments over the limit across the whole corpus. Full detail, including the per-title severity table, is in the repository's public commit history.
-
-**The 7 engines:**
-
-| Engine | Domain |
-|---|---|
-| **APU** | Unit price analysis — the real pricing base described above |
-| **Structural** (`motor-deformacion`) | Beam deflection (Euler-Bernoulli), column buckling (Euler/Johnson), Monte Carlo uncertainty |
-| **AquAI** | Water supply & sewerage — RAS 2000 / Res. 0330-2017 (11 modules), with real IDEAM hydro-meteorological data (datos.gov.co) as field reference |
-| **GeoPot** | Geotechnics and lab testing: soils, concrete, aggregates, NSR-10 seismic provisions |
-| **Vías** | INVIAS road design: geometry, pavements, maintenance, topography, materials standards |
-| **Gerencia** | Earned Value Management (PMBOK) + predictive machine learning on construction progress |
-| **InfraCortex** | BIM (IFC) → beam-column node topology → NSR-10 Titles A/B/C shear check (classical formulas), plus visual stirrup inspection |
-
-Each engine exposes its own FastAPI router, its own Supabase table, and its own search corpus — they all share the same backend and database, but none depends on another to function. **InfraCortex is disabled by default in production** (`ENABLE_ESTRUCTURAL=false`): it loads `torch` + `ifcopenshell` + `opencv` (~1–1.5 GB), and the current instance doesn't have the RAM headroom to sustain it alongside the rest of the API. The code is complete and tested (7 tests, 86% coverage) — enabling it is an environment variable, not a rewrite.
-
-**What this isn't yet — honesty before marketing.** StructAI is a real production pilot with real users, not a mockup or full national coverage. Specifically, today: the pricing base with real SKUs (brand, technical spec, standard) covers Atlántico — the national layer (IAD MIPYMES, 78 suppliers) already has a real city/department for 70 of those suppliers, cross-checked against SECOP II and the Chamber of Commerce registry; the remaining 8 are genuinely ambiguous cases (name collisions, temporary unions without regular commercial registration) and stay labeled "National" instead of guessing; neither tier yet brings brand/technical spec to national scale. A strict numeral-by-numeral audit (2026-09-07 through 2026-09-09) now covers all 11 titles — a full sweep, none left unaudited. It found some real gap in 8 of the 10 re-audited titles (A, B, C, D, G, H, J, K) — only I and E came back clean. Of those 8, **H, K, G, D, and C have already been closed in full verbatim**, the same day the gap was found. Title H (Geotechnical Studies) covered only ~18% of the title when the gap was found, but it was closed completely that same session (H.3.3 through H.10, now 100% verbatim). Title C, the largest title in the corpus, had 26 real numerals missing their own chunk (~1.4%) — now closed, the most valuable finding being chapter C.18.5 (allowable stresses in prestressing steel), which was complete in the PDF with no chunk in production. Title K had a narrow real gap (K.4.3.10-16 missing) correcting an earlier claim of my own that "K.4.3 is complete" — now closed. Title G had 18 missing numerals, including a genuine typo fix in the source document (printed as G.12.4.2.2, actually G.12.3.2.2) — now closed. Title D had only 9 numerals — now closed. Title A still has 6 full chapters with no coverage — the irregularities chapter (A.3.3) has already been closed. Title B is being closed progressively. Title J remains the largest gap, of a different kind, left for a future session: not empty chapters, but nearly the whole title condensed into paraphrased summary instead of verbatim (159 real numerals, only 49 chunks) — a candidate for full re-ingestion. Title E (252 real numerals) also came back clean — the only unconfirmed finding is an internal cross-reference to a numeral that doesn't actually exist (E.7.26.2), most likely a typo in the source document. Title F only has the tail end of aluminum left open (see the table above). Orinoquía, the Pacific (beyond the IDEAM stations already integrated), and Bogotá are where coverage expansion is active but not closed. There's no external validation yet — no certified structural engineer outside this project has formally reviewed the corpus-extraction methodology; that's exactly the kind of collaboration I'm looking for. The full roadmap, every point open or closed, is public: [repository issues](https://github.com/wilmerjoseperezorozco-dev/structai/issues) and its [active milestone](https://github.com/wilmerjoseperezorozco-dev/structai/milestone/1).
-
-**Where this is going.** StructAI started as a tool for Barranquilla and Atlántico. The technical base that exists today — the same engine that cites NSR-10, NTC, or RAS 2000 for a local project — no longer has that limit: it works the same for any region of Colombia, and the normative-traceability approach isn't just "exportable" in theory to another Latin American country — it's actually been exported to two (Peru and Ecuador, see the table above), with the same verbatim rigor as Colombia. Real lines of work, not aspirational ones: **seismic vulnerability assessment of already-built housing** — Colombia has a large stock of informal and unreinforced-masonry housing built before strict seismic codes existed, or built afterward without real technical supervision; building on NSR-10 A.10 and the AIS 2004 → Build Change → AIS 410-23 methodological line, I'm building content aimed at assessing that existing housing and applicable retrofit techniques, not just new construction — the August 2026 earthquake didn't start this line of work, it made it urgent, and cross-referencing it with what happened in Venezuela six weeks earlier (see "The region has a pattern" at the top of this document) confirmed the gap isn't Colombia-specific; **real environmental and geological data integrated into the calculation, not just the norm** — this is no longer a goal, it's real national coverage: seismic hazard from the Colombian Geological Survey across the country's 1,121 municipalities, statistical streamflow anomaly from IDEAM against each river's real history (never presented as an official alert, that stays IDEAM/UNGRD's exclusive competence), and rural soils from IGAC/UPRA; **truly national regulatory and pricing coverage**, held to the same verification standard applied to Atlántico today, not a diluted version; **applied research, not just product** — StructAI's design (verified extraction, literal citation, honesty about missing data) is itself a subject of study for anyone researching trustworthy AI systems in high-stakes domains (engineering, health, law) — it's the underlying question behind my thesis, and a line I want to keep pursuing beyond it.
-
-**University, guild, and Chamber of Commerce collaboration.** This is a concrete invitation, not a closing line. If you lead or take part in a civil engineering program, if you represent the Colombian Association of Seismic Engineering (AIS) — whose seismic-rehabilitation methodology I already cite with explicit attribution —, a Chamber of Commerce — whose public registry (RUES) I already cross-check to give a real city to 70 of the 78 national suppliers —, or any entity genuinely interested in how Colombian regulation is being cited and verified with AI, I want to talk. I offer free educational access for students and faculty, and I'm actively looking for: external review of the corpus-extraction methodology by a certified structural engineer; real technical, regulatory, or pricing data that can add to this base, always with documented attribution; institutional collaboration to take this from an Atlántico pilot to a tool with real national reach. Full detail on how to reach out and what kind of collaboration I'm looking for: [`docs/contacto-institucional.md`](docs/contacto-institucional.md).
-
-**RAG architecture — how it's built, no detours.** Embeddings: 100% local, no per-query cost (`sentence-transformers`, `paraphrase-multilingual-MiniLM-L12-v2`, 384 dimensions) — no dependency on a paid external API. Vectors: native `pgvector` on Supabase/PostgreSQL, not a separate vector service. Answer synthesis: [Groq](https://groq.com) (`gpt-oss-120b`, 1–3s typical latency) as the primary engine, with [OpenAI](https://openai.com) (`gpt-4o-mini`) as an automatic fallback if Groq runs out of daily quota — two tiers, not one, because a system that cites safety regulation can't afford to go silent. Traceability: every answer includes a real `norma_ref` (document + exact section/article), and explicitly warns if the cited regulation has been repealed or amended.
+**RAG architecture.** 100% local embeddings, no per-query cost (`sentence-transformers`, 384-dim) · native `pgvector` + **HNSW** on Supabase/PostgreSQL (not `ivfflat`, see infrastructure section above) · [Groq](https://groq.com) primary synthesis with [OpenAI](https://openai.com) automatic fallback · every answer traceable with repeal/amendment status.
 
 **Quick start:**
 ```bash
@@ -379,22 +370,24 @@ cd apps/web  && npm install && npm run dev
 cd apps/api  && pip install -r requirements.txt && uvicorn main:app --reload
 ```
 
-**Deploy status:** `apps/web` on Vercel (PWA, auto-deploy on every push to `master`) · `apps/api` on Google Cloud Run (`us-east1`, manual deploy via `gcloud run deploy` — automatic CI/CD trigger not wired up yet, login required via Supabase Auth for `/ask`, `/apu/calculate`, `/detect`) · `apps/native` is Phase 0 of a longer roadmap — native shell, no sensors yet · Supabase in production, RLS on every table. Verify it yourself, without trusting this table: [`GET /health?deep=true`](https://structai-api-235651108862.us-east1.run.app/health) and [`GET /data-status`](https://structai-api-235651108862.us-east1.run.app/data-status).
+**Deploy status:** `apps/web` on Vercel (auto-deploy on push) · `apps/api` on Google Cloud Run (manual deploy, login required via Supabase Auth) · `apps/native` Phase 0 · Supabase in production, RLS everywhere, `pgvector`/HNSW. Verify: [`/health?deep=true`](https://structai-api-235651108862.us-east1.run.app/health) · [`/data-status`](https://structai-api-235651108862.us-east1.run.app/data-status).
 
-**License.** Owned by Wilmer José Pérez Orozco — see [LICENSE](./LICENSE). The repository is public for technical demonstration, portfolio, and academic collaboration purposes; it is not open-source software.
+**License.** Owned by Wilmer José Pérez Orozco — see [LICENSE](./LICENSE). Public for technical demonstration, portfolio, and academic collaboration; not open-source software.
 
 </td>
 <td width="50%">
 
 ### 🇨🇴 Español
 
-**Plataforma de IA para ingeniería civil en Colombia**, construida después de que el terremoto de agosto de 2026 dejara clara una cosa: el ingeniero necesita verificar la norma exacta detrás de un cálculo, no una aproximación genérica. Cada respuesta de StructAI cita el reglamento real —capítulo, artículo, fuente— y el sistema dice explícitamente cuando no tiene la respuesta, en vez de inventar una.
+**Plataforma de IA para ingeniería civil en Colombia**, construida después de que el terremoto de agosto de 2026 dejara clara una cosa: el ingeniero necesita verificar la norma exacta detrás de un cálculo, no una aproximación genérica. Cada respuesta cita el reglamento real —capítulo, artículo, fuente— y el sistema dice explícitamente cuando no tiene la respuesta.
 
 7 motores de dominio (6 activos en producción, 1 desactivado por defecto por RAM), trazabilidad normativa completa sobre NSR-10, RAS 2000/Res. 0330, INVIAS, NTC y SGSST. Marca pública: **StructAI**.
 
-**Cobertura en vivo** (verificada ahora, no una promesa): 8.454 chunks de NSR-10 en los 11 títulos — los 11 ya pasaron por auditoría estricta numeral por numeral (barrido completo) y 8 de los 10 re-auditados tuvieron algún hueco real, de los cuales **H, K, G, D y C ya se cerraron en verbatim completo** el mismo día que se encontró el hueco; solo **A, B y J** siguen con hueco real pendiente (J el más grande, dejado explícito para otra sesión; I y E salieron limpios); el Título F con el aluminio pendiente —, 294 de NTC/SGSST, 4.060 de los motores de dominio, y una base de precios de 4.566 actividades / 10.281 insumos / 102 proveedores verificados (24 locales del Atlántico + 78 nacionales), con desglose real de insumos ya disponible para el 20% de las actividades. Compruébalo tú mismo: [`GET /data-status`](https://structai-api-235651108862.us-east1.run.app/data-status).
+**Cobertura en vivo**: 8.454 chunks de NSR-10 en los 11 títulos — todos auditados numeral por numeral; H, K, G, D y C ya cerrados en verbatim completo el mismo día que se encontró el hueco; solo A, B y J siguen pendientes (J el más grande, dejado explícito para otra sesión). 294 de NTC/SGSST, 4.060 de motores de dominio, 4.566 actividades / 10.281 insumos / 102 proveedores verificados. Compruébalo tú mismo: [`/data-status`](https://structai-api-235651108862.us-east1.run.app/data-status).
 
-**Evaluación empírica del RAG**: medida con RAGAS, no solo diseñada — precisión de contexto 0.743 → 0.875 tras re-ranking combinado y descomposición de consultas, con un defecto real de fusión RRF encontrado y corregido en el camino. Detalle completo arriba, en "Evaluación empírica del RAG".
+**Infraestructura del RAG**: 4 bugs reales de rendimiento encontrados y corregidos esta sesión (truncamiento silencioso de embeddings, índice `ivfflat` con ~10% de recall real, índice de texto desalineado, CTE materializada anulando los índices) — `search_knowledge()` bajó de 3.803 ms a 626 ms (~83%), con correctez verificada en cada paso. Detalle completo arriba, en "Infraestructura del RAG".
+
+**Evaluación empírica del RAG**: medida con RAGAS, no solo diseñada — precisión de contexto 0,743 → 0,875 tras re-ranking y descomposición de consultas; corrida más reciente en curso sobre 278 preguntas, tras el trabajo de infraestructura de esta sesión. Detalle completo arriba, en "Evaluación empírica del RAG".
 
 **Inicio rápido:**
 ```bash
