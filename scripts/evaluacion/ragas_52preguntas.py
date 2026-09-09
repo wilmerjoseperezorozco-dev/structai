@@ -70,7 +70,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 # n real + fecha real de la corrida, para que cada baseline quede
 # identificado por lo que realmente mide (mismo principio que ya usa
 # ragas_precios.py con su constante FECHA).
-FECHA = "2026-09-07"
+FECHA = "2026-09-09"
 N_PREGUNTAS = len(CASOS_BASELINE)
 
 
