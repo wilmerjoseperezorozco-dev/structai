@@ -106,13 +106,21 @@ completo")**:
   tildes reales (mismo tipo de problema ya visto en un PDF de Título E) —
   confirmado probando ambas herramientas antes de decidir usar lectura
   visual (`Read` con render de imagen) numeral por numeral, página por
-  página, en vez de extracción mecánica. **Progreso real**: J.1 completo
-  (3 numerales) y J.2.1 a J.2.5.2.4 (33 numerales) ya verbatim con tildes
-  reales — 96 chunks en producción, verificados con retrieval real contra
-  `search_knowledge()`. Pendiente: J.2.5.3 en adelante, J.3 completo (53
-  numerales, tablas de resistencia al fuego por material), J.4 completo
-  (43 numerales, tablas NFPA de detección/extinción) — continúa en
-  sesiones sucesivas, capítulo por capítulo, mismo método.
+  página, en vez de extracción mecánica. **Progreso real**: **J.1 y J.2
+  completos**, más J.3.1 a J.3.3.3.13 (definiciones del capítulo, tablas
+  de categorización de riesgo J.3.3-1/J.3.3-2/J.3.3-3, exenciones de
+  cuantificación) — 149 chunks en producción (antes 49), verificados con
+  retrieval real contra `search_knowledge()`. **Corrección propia en el
+  camino**: un primer intento de transcribir las tablas matriciales
+  J.3.3-1/J.3.3-2 quedó aproximado con una nota de "disponible en el PDF
+  dada su complejidad" — se detectó antes de ingestar y se corrigió
+  releyendo la página con cuidado celda por celda, marcando explícitamente
+  las celdas en blanco de la tabla real (no inventadas) y dejando una nota
+  de verificación honesta para cualquier uso de diseño real. Pendiente:
+  J.3.4 (tablas alfabéticas grandes de potencial combustible por material,
+  ~150+ filas) y J.3.4.3 en adelante, J.3.5, y Capítulo J.4 completo (43
+  numerales, tablas NFPA de detección/extinción) — continúa en sesiones
+  sucesivas, mismo método.
 - **Título K — re-auditado y CERRADO el mismo día 2026-09-09, corrige
   un hallazgo anterior** (ver fila de arriba): K.1-K.4.2 y K.4.3.1-9 ya
   estaban completos, pero K.4.3.10-16 (7 numerales, incluidos 3 de
