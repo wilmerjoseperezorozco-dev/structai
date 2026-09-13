@@ -93,12 +93,26 @@ completo")**:
   que salió limpio** (ver fila de arriba): 62 de 63 numerales reales con
   chunk verbatim confirmado, el numeral restante era un falso positivo
   del regex de extracción.
-- **Título J — re-auditado 2026-09-09, hueco real grande confirmado**
-  (ver fila de arriba): no es un caso de "capítulos enteros sin chunk"
-  como A/B/H, sino que **casi todo el título está condensado en resumen
-  parafraseado, no verbatim** — mismo patrón de A.3.3/B.3.4 pero a escala
-  de un título completo (159 numerales reales, 49 chunks condensados).
-  Candidato a re-ingesta verbatim completa.
+- **Título J — re-auditado 2026-09-09, hueco real grande confirmado; re-ingesta
+  verbatim EN CURSO desde 2026-09-12** (ver fila de arriba): no es un caso de
+  "capítulos enteros sin chunk" como A/B/H, sino que casi todo el título
+  estaba condensado en resumen parafraseado, no verbatim, y además con las
+  tildes eliminadas por completo (confirmado leyendo un chunk real antes de
+  re-ingestar) — mismo patrón de A.3.3/B.3.4 pero a escala de un título
+  completo (155-159 numerales reales, 49 chunks condensados originales).
+  **Bloqueo técnico real encontrado al re-ingestar**: el PDF fuente
+  (`NSR-10-1501-1570.pdf`) tiene el texto con codificación de fuente rota —
+  `pdftotext` y `fitz` devuelven el carácter de reemplazo `�` en vez de
+  tildes reales (mismo tipo de problema ya visto en un PDF de Título E) —
+  confirmado probando ambas herramientas antes de decidir usar lectura
+  visual (`Read` con render de imagen) numeral por numeral, página por
+  página, en vez de extracción mecánica. **Progreso real**: J.1 completo
+  (3 numerales) y J.2.1 a J.2.5.2.4 (33 numerales) ya verbatim con tildes
+  reales — 96 chunks en producción, verificados con retrieval real contra
+  `search_knowledge()`. Pendiente: J.2.5.3 en adelante, J.3 completo (53
+  numerales, tablas de resistencia al fuego por material), J.4 completo
+  (43 numerales, tablas NFPA de detección/extinción) — continúa en
+  sesiones sucesivas, capítulo por capítulo, mismo método.
 - **Título K — re-auditado y CERRADO el mismo día 2026-09-09, corrige
   un hallazgo anterior** (ver fila de arriba): K.1-K.4.2 y K.4.3.1-9 ya
   estaban completos, pero K.4.3.10-16 (7 numerales, incluidos 3 de
