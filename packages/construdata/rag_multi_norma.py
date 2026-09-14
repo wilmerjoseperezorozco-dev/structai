@@ -776,6 +776,20 @@ def _sin_tildes(s: str) -> str:
     return "".join(c for c in nfkd if not unicodedata.combining(c))
 
 
+def _grupos_sinonimos_detectados(query: str) -> list[list[str]]:
+    """Grupos de SINONIMOS_CONSTRUCCION cuyo término aparece (insensible a
+    tildes/mayúsculas) en la consulta. Lógica compartida por
+    _expandir_sinonimos_precios (arma el texto ampliado que se envía al
+    RPC) y por buscar_precios_apu (boost por coincidencia EXACTA de esos
+    mismos términos -- ver migración 20260913023000: se intentó primero
+    resolverlo en SQL con word_similarity(), pero eso también subía nombres
+    de actividad corruptos por artefactos de extracción de PDF en
+    apu_precios_referencia, ej. "en concreto" -- se revirtió y el boost
+    quedó del lado de Python, que ya conoce el vocabulario exacto)."""
+    q_norm = _sin_tildes(query.lower())
+    return [grupo for grupo in SINONIMOS_CONSTRUCCION if any(_sin_tildes(t.lower()) in q_norm for t in grupo)]
+
+
 def _expandir_sinonimos_precios(query: str) -> str:
     """Agrega al texto de búsqueda los sinónimos regionales de cualquier
     término de SINONIMOS_CONSTRUCCION que aparezca en la consulta (insensible
@@ -786,11 +800,7 @@ def _expandir_sinonimos_precios(query: str) -> str:
     proveedor nacional) comparten el mismo tsquery construido a partir de
     p_query, las 4 se benefician con este único cambio, sin tocar la
     función SQL."""
-    q_norm = _sin_tildes(query.lower())
-    extra: list[str] = []
-    for grupo in SINONIMOS_CONSTRUCCION:
-        if any(_sin_tildes(t.lower()) in q_norm for t in grupo):
-            extra.extend(grupo)
+    extra: list[str] = [t for grupo in _grupos_sinonimos_detectados(query) for t in grupo]
     if not extra:
         return query
     # dedup preservando orden (un término puede aparecer en un solo grupo,
@@ -798,14 +808,121 @@ def _expandir_sinonimos_precios(query: str) -> str:
     return query + " " + " ".join(dict.fromkeys(extra))
 
 
+def _nombre_coincide_con_sinonimo(nombre: str, terminos: list[str]) -> bool:
+    """True si `nombre` (una fila candidata de buscar_precios_apu) coincide
+    con alguno de los `terminos` de SINONIMOS_CONSTRUCCION ya detectados en
+    la consulta, en cualquiera de las dos direcciones -- substring de uno
+    dentro del otro, insensible a tildes/mayúsculas. Cubre tanto un
+    catálogo que abrevia el término completo (insumo "Maestro" vs. término
+    inyectado "maestro de obra": "maestro" es substring de "maestro de
+    obra") como un nombre largo que contiene el término literal (actividad
+    "Construcción de andén vehicular..." vs. término "andén"). Usado para
+    REORDENAR (no filtrar) el resultado de buscar_precios_apu(),
+    priorizando una coincidencia exacta de vocabulario de construcción
+    conocido por delante de la similitud parcial de trigram/texto completo
+    de una palabra común -- causa raíz real confirmada con SQL directo de
+    que "Maestro" ($4.377.262,50 COP) nunca aparecía en el top_k para
+    "capataz de obra" pese a que la expansión de sinónimos sí agrega
+    "maestro de obra" a la consulta (similarity('Maestro', <pregunta
+    larga>) = 0.138, muy por debajo de competidores sin relación real)."""
+    nombre_norm = _sin_tildes(nombre.lower()).strip()
+    if not nombre_norm:
+        return False
+    for termino in terminos:
+        termino_norm = _sin_tildes(termino.lower()).strip()
+        if termino_norm and (termino_norm in nombre_norm or nombre_norm in termino_norm):
+            return True
+    return False
+
+
+_CONECTORES_ES = frozenset({"de", "del", "la", "el", "los", "las", "en", "con", "por", "para", "y"})
+
+
+def _palabras_clave(terminos: list[str]) -> list[str]:
+    """Palabras individuales (>=4 letras, sin conectores) de los términos
+    de SINONIMOS_CONSTRUCCION que tienen MÁS DE UNA PALABRA (ej. "maestro
+    de obra", "acero de refuerzo") -- se buscan sueltas en vez de la frase
+    completa. Los términos de una sola palabra (ej. "andén", "concreto")
+    se ignoran aquí a propósito: ya los cubre bien el pool ampliado normal
+    de buscar_precios_apu(), y buscarlos sueltos de nuevo solo agrega
+    ruido (confirmado con SQL directo: buscar_precios_apu('concreto', 5)
+    devuelve "CONCRETO 1:3:3" con score=0.692, desplazando filas de andén
+    realmente relevantes de un top_k ya angosto).
+
+    La razón real de esta función es que una FRASE de varias palabras
+    empata por similitud de trigram con una fila totalmente distinta que
+    solo comparte el conector genérico: verificado con SQL directo que
+    similarity('MANO DE OBRA', 'maestro de obra') = 0.526 (ambas comparten
+    " de obra"), más alto que cualquier coincidencia real, mientras que la
+    palabra realmente distintiva de esa frase ("maestro") sola encuentra
+    la fila correcta ("Maestro") con score=1.0 y sin ruido --
+    buscar_precios_apu('maestro', 15) devuelve exactamente esa única
+    fila."""
+    palabras: list[str] = []
+    for termino in terminos:
+        crudo = re.findall(r"[a-zñ]+", _sin_tildes(termino.lower()))
+        if len(crudo) < 2:
+            continue
+        for palabra in crudo:
+            if palabra not in _CONECTORES_ES and len(palabra) >= 4 and palabra not in palabras:
+                palabras.append(palabra)
+    return palabras
+
+
 def buscar_precios_apu(query: str, top_k: int = 8) -> list[PrecioResult]:
     """Busca en la base de precios APU Barranquilla/Atlántico vía RPC
     buscar_precios_apu (texto completo español + trigram), ampliando antes
     la consulta con sinónimos regionales de construcción conocidos (ver
     SINONIMOS_CONSTRUCCION) para no perder resultados guardados con un
-    término equivalente distinto al que escribió el usuario."""
+    término equivalente distinto al que escribió el usuario.
+
+    Cuando la consulta activó algún grupo de SINONIMOS_CONSTRUCCION: (1) se
+    le pide al RPC un pool más grande que top_k con la consulta completa
+    ampliada; (2) además, se busca cada palabra clave de esos términos por
+    separado (ver _palabras_clave) con un p_limit chico, para encontrar
+    catálogos cortos (ej. el insumo "Maestro") que el ranking híbrido de
+    buscar_precios_apu() no puntúa competitivamente frente a una pregunta
+    larga en lenguaje natural, ni siquiera buscando la frase completa del
+    sinónimo (verificado con SQL directo, ver _palabras_clave). El
+    resultado combinado se reordena priorizando una coincidencia EXACTA de
+    los términos originales (ver _nombre_coincide_con_sinonimo) por delante
+    del score híbrido normal, y se trunca a top_k. Ver migración
+    20260913023000 (se intentó primero en SQL con word_similarity(),
+    revertido por subir también nombres de actividad corruptos en
+    apu_precios_referencia)."""
     query_ampliada = _expandir_sinonimos_precios(query)
-    result = sb.rpc("buscar_precios_apu", {"p_query": query_ampliada, "p_limit": top_k}).execute()
+    grupos = _grupos_sinonimos_detectados(query)
+    terminos_sinonimo = [t for grupo in grupos for t in grupo]
+
+    pool = max(top_k, 30) if grupos else top_k
+    result = sb.rpc("buscar_precios_apu", {"p_query": query_ampliada, "p_limit": pool}).execute()
+    filas = list(result.data)
+
+    if grupos:
+        vistos = {(f["tipo"], f["nombre"].strip().lower(), f.get("precio")) for f in filas}
+        for palabra in _palabras_clave(terminos_sinonimo):
+            extra = sb.rpc("buscar_precios_apu", {"p_query": palabra, "p_limit": 5}).execute()
+            for f in extra.data:
+                clave = (f["tipo"], f["nombre"].strip().lower(), f.get("precio"))
+                if clave not in vistos:
+                    vistos.add(clave)
+                    filas.append(f)
+        # Sube el score REAL (no solo la posición) de las filas con
+        # coincidencia exacta -- no alcanza con reordenar `filas` aquí:
+        # ask_precios() combina este resultado con
+        # buscar_precios_invias_vias() y vuelve a ordenar por p.score crudo
+        # antes de armar el contexto para el LLM (bug real encontrado en la
+        # re-corrida de RAGAS post-fix -- "Maestro" volvía a hundirse ahí
+        # pese a haber quedado primero en `filas`, porque su score crudo
+        # 0.137931 seguía siendo bajo). 0.95 es más alto que cualquier
+        # score crudo típico visto en este dataset (tope ~0.3-0.7 salvo
+        # coincidencia exacta de un término corto) pero deja margen bajo un
+        # 1.0 real.
+        for f in filas:
+            if _nombre_coincide_con_sinonimo(f["nombre"], terminos_sinonimo):
+                f["score"] = max(float(f.get("score") or 0.0), 0.95)
+        filas = sorted(filas, key=lambda r: r.get("score") or 0.0, reverse=True)
+    filas = filas[:top_k]
     return [
         PrecioResult(
             tipo=r["tipo"],
@@ -828,7 +945,7 @@ def buscar_precios_apu(query: str, top_k: int = 8) -> list[PrecioResult]:
             score=r.get("score") or 0.0,
             actividad_id=r.get("actividad_id"),
         )
-        for r in result.data
+        for r in filas
     ]
 
 
