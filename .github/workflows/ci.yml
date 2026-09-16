@@ -185,6 +185,33 @@ jobs:
         working-directory: packages/${{ matrix.paquete }}
         run: pytest tests/ -v
 
+  # ── 4b. Cobertura de ingesta — idea 6 del roadmap (2026-09-16) ─────
+  # No re-extrae del PDF fuente (gitignored, no viaja con el checkout) --
+  # compara cada baseline ya congelado (scripts/ingesta/*/cobertura_baseline/
+  # *.json, generados a mano cuando sí se tiene el PDF) contra el estado EN
+  # VIVO del corpus. Bloquea el merge solo si la cobertura de un título CON
+  # baseline retrocedió -- no exige que todo el corpus esté ya completo
+  # (no lo está, ver docs/fuentes-normativas.md), exige que no siga
+  # bajando desde donde ya estaba. Para que esto bloquee un PR de verdad,
+  # falta marcarlo como "required check" en Settings -> Branches del repo
+  # -- hoy corre y reporta, pero GitHub no impide el merge todavía sin ese
+  # paso adicional en la configuración del repo (no algo que se pueda
+  # hacer desde este workflow).
+  test-cobertura-ingesta:
+    name: 📐 Cobertura de ingesta (regresión)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '${{ env.PYTHON_VERSION }}' }
+      - name: Instalar dependencias
+        run: pip install supabase python-dotenv
+      - name: Verificar cobertura contra baselines
+        run: python scripts/ingesta/verificar_cobertura_baseline.py
+        env:
+          SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+
   # ── 5. Tests de integración — apps/api (RAG, rate limit, health) ──
   test-api:
     name: 🧪 Tests de integración (apps/api)
