@@ -393,6 +393,7 @@ try:
     from rag_multi_norma import sb as supabase_client, groq_client
     from rag_multi_norma import RespuestaIAIndisponibleError
     from rag_multi_norma import uso_groq_hoy as _uso_groq_hoy_fn
+    from rag_multi_norma import uso_openai_hoy as _uso_openai_hoy_fn
     from rag_multi_norma import AVISO_RESPONSABILIDAD_PROFESIONAL, aviso_responsabilidad_para_dominio
     RAG_AVAILABLE = True
     log.info("✓ rag_multi_norma cargado")
@@ -1280,12 +1281,18 @@ def health(request: Request, deep: bool = False):
     llm_check = _check_llm_provider()
     memoria_check = _check_memoria()
     uso_groq = _uso_groq_hoy_fn() if RAG_AVAILABLE else {"error": "rag_multi_norma no disponible"}
+    # Costo real del respaldo pago -- agregado junto con el tracker en
+    # rag_multi_norma.py (idea 2 del roadmap de costos, 2026-09-16). Antes
+    # de esto no había ninguna forma de ver, en vivo, cuánto costaba el día
+    # sin ir a buscarlo al dashboard de OpenAI.
+    uso_openai = _uso_openai_hoy_fn() if RAG_AVAILABLE else {"error": "rag_multi_norma no disponible"}
 
     resultado["dependencias"] = {
         "supabase": supabase_check,
         "llm_groq": llm_check,
         "memoria": memoria_check,
         "uso_groq_hoy": uso_groq,
+        "uso_openai_hoy": uso_openai,
     }
 
     # "degraded" si algo activo falló pero el proceso sigue vivo y sirviendo;

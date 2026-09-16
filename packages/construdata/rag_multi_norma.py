@@ -55,7 +55,26 @@ RERANKER_MODEL_NAME = "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1"
 # cada llamada en _generar_respuesta, así que se cachea solo).
 GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
 
-groq_client = OpenAI(api_key=os.environ["GROQ_API_KEY"], base_url="https://api.groq.com/openai/v1")
+# Timeout explícito -- agregado 2026-09-16 (idea 2 del roadmap de costos:
+# https://github.com/wilmerjoseperezorozco-dev/structai). Antes de este
+# cambio el cliente no tenía timeout propio (usaba el default del SDK de
+# OpenAI, ~10 minutos) -- si Groq se colgaba en vez de fallar rápido, la
+# petición completa quedaba esperando ese tiempo en vez de caer al respaldo.
+# 8s, no los 2s que se pidieron originalmente: el propio comentario de este
+# archivo documenta respuestas típicas de Groq en 1-3s, así que un corte a
+# 2s dispararía el respaldo en una fracción real de respuestas normales
+# (cualquier variación de red o un caso con reasoning_effort más largo), sin
+# ganar nada -- el respaldo (OpenAI, pago) empezaría a absorber tráfico que
+# Groq habría resuelto bien un segundo después. 8s da margen generoso sobre
+# el caso normal y sigue cortando mucho antes del cuelgue real que este
+# cambio busca evitar. Ajustar con datos reales de latencia (Sentry) si se
+# observa que 8s sigue siendo demasiado laxo o demasiado agresivo.
+GROQ_TIMEOUT_SEGUNDOS = float(os.getenv("GROQ_TIMEOUT_SEGUNDOS", "8.0"))
+
+groq_client = OpenAI(
+    api_key=os.environ["GROQ_API_KEY"], base_url="https://api.groq.com/openai/v1",
+    timeout=GROQ_TIMEOUT_SEGUNDOS, max_retries=0,
+)
 
 # ─── Respaldo NVIDIA NIM — RETIRADO el 2026-08-20 ─────────────────────────────
 # Se probó del 2026-08-02 al 2026-08-20 como segundo nivel de respaldo. Se
@@ -116,6 +135,8 @@ def _llamar_llm_con_respaldo(messages: list, max_tokens_groq: int = 700) -> str:
             response = openai_client.chat.completions.create(
                 model=OPENAI_MODEL, messages=messages, temperature=0.1, max_tokens=500,
             )
+            if response.usage is not None:
+                _registrar_uso_openai(response.usage.prompt_tokens, response.usage.completion_tokens)
             contenido = response.choices[0].message.content
             if contenido:
                 log.info(f"Respuesta generada con respaldo OpenAI ({OPENAI_MODEL}) porque Groq no estaba disponible.")
@@ -177,6 +198,58 @@ def _registrar_uso_groq(tokens_usados: int) -> None:
             # ya deja rastro en Cloud Logging (Google Cloud Run, desde el
             # 2026-09-01) aunque no llegue a Sentry.
             pass
+
+
+# ─── Costo real del respaldo OpenAI (idea 2 del roadmap de costos) ───────────
+# Agregado 2026-09-16: antes de este cambio, cada llamada exitosa al
+# respaldo OpenAI (línea de arriba) no dejaba ningún rastro de cuánto costó
+# -- el único contador real del archivo era el de Groq (gratis). El respaldo
+# es la única pierna paga de todo `_llamar_llm_con_respaldo`, así que es la
+# que de verdad hay que ver en dinero real, no solo en tokens.
+# Precios verificados en vivo (WebSearch, 2026-09-16, múltiples fuentes de
+# agosto 2026 coinciden): gpt-4o-mini = $0.15 / 1M tokens de entrada,
+# $0.60 / 1M tokens de salida -- USD, sin caché de prompt (no se está usando
+# acá). Se separan entrada/salida (no total_tokens) porque el precio real es
+# 4x distinto entre uno y otro -- un total_tokens ciego subestimaría el
+# costo real en preguntas con contexto largo y respuesta corta (el caso
+# típico de este RAG).
+OPENAI_PRECIO_USD_POR_TOKEN_ENTRADA = 0.15 / 1_000_000
+OPENAI_PRECIO_USD_POR_TOKEN_SALIDA = 0.60 / 1_000_000
+
+_uso_openai_hoy = {"fecha": None, "tokens_entrada": 0, "tokens_salida": 0, "costo_usd": 0.0, "llamadas": 0}
+
+
+def _registrar_uso_openai(tokens_entrada: int, tokens_salida: int) -> None:
+    """Mismo patrón que _registrar_uso_groq -- contador en memoria del
+    proceso, se reinicia solo comparando la fecha UTC en cada actualización.
+    A diferencia de Groq (cuota gratis con techo), acá no hay umbral de
+    alerta por token: cada llamada es dinero real desde la primera, así que
+    el número visible en /health?deep=true (ver apps/api/main.py) es el
+    costo acumulado del día, no un porcentaje de cuota."""
+    import datetime
+
+    hoy = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+    if _uso_openai_hoy["fecha"] != hoy:
+        _uso_openai_hoy["fecha"] = hoy
+        _uso_openai_hoy["tokens_entrada"] = 0
+        _uso_openai_hoy["tokens_salida"] = 0
+        _uso_openai_hoy["costo_usd"] = 0.0
+        _uso_openai_hoy["llamadas"] = 0
+
+    _uso_openai_hoy["tokens_entrada"] += tokens_entrada
+    _uso_openai_hoy["tokens_salida"] += tokens_salida
+    _uso_openai_hoy["costo_usd"] += (
+        tokens_entrada * OPENAI_PRECIO_USD_POR_TOKEN_ENTRADA
+        + tokens_salida * OPENAI_PRECIO_USD_POR_TOKEN_SALIDA
+    )
+    _uso_openai_hoy["llamadas"] += 1
+
+
+def uso_openai_hoy() -> dict:
+    """Snapshot de solo lectura del uso pago de HOY -- cuántas veces entró
+    el respaldo OpenAI (= cuántas veces Groq no alcanzó) y cuánto costó en
+    USD real, no una estimación de plan."""
+    return {**_uso_openai_hoy, "costo_usd": round(_uso_openai_hoy["costo_usd"], 4)}
 
 
 def uso_groq_hoy() -> dict:
@@ -2013,7 +2086,12 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = TOP_K_DEFA
         if bloque_noticias:
             contexto = f"{bloque_noticias}\n\n---\n\n{contexto}"
 
-    # 3. Síntesis con Ollama local
+    # 3. Síntesis con Groq (respaldo automático a OpenAI si Groq falla/agota
+    # cuota -- ver _llamar_llm_con_respaldo). Comentario corregido
+    # 2026-09-16: decía "Ollama local", quedó desactualizado desde el
+    # commit inicial del repo -- Ollama local está descartado para
+    # producción por latencia (ver docstring al inicio del archivo), no se
+    # usa aquí.
     respuesta = _generar_respuesta(contexto, question)
 
     # Autoevaluación barata post-generación (issue #31, primer paso): números
