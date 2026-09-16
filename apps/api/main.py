@@ -1190,9 +1190,10 @@ def _check_memoria() -> dict:
     adivinando rutas de cgroup sin poder verificarlas contra el contenedor
     real, se usa proceso_rss_mb (consistente y confiable en todas las
     mediciones) comparado contra RAM_INSTANCIA_MB, que el operador configura
-    a mano con el tamaño real del plan (ej. 2048 para una instancia de 2GB,
-    visible en el panel de DO). Sin esa env var, no se afirma "critico" —
-    mejor no dar una señal que reportar una falsa otra vez.
+    a mano con el tamaño real del plan (ej. 4096 para el límite de --memory
+    configurado en el servicio, visible en el panel de Cloud Run). Sin esa
+    env var, no se afirma "critico" — mejor no dar una señal que reportar
+    una falsa otra vez.
     """
     try:
         import psutil
