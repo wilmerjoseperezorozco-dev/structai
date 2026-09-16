@@ -27,6 +27,8 @@ export interface AskResponse {
   // general, así que el backend siempre la incluye (nunca null acá, a
   // diferencia de ConsultarResponse). Ver ConsultarResponse para el detalle.
   aviso_responsabilidad: string;
+  // Ver ConsultarResponse.consulta_id -- mismo propósito (idea 7).
+  consulta_id?: string | null;
 }
 
 /** Respuesta del agente delegador (/consultar) — cualquier dominio de
@@ -44,6 +46,10 @@ export interface ConsultarResponse {
   // componente que renderiza esto debe mostrarlo aparte del markdown de
   // `respuesta`, nunca mezclado con el texto generado.
   aviso_responsabilidad: string | null;
+  // id real en consultas_history (idea 7, feedback cerrado) -- null si el
+  // backend no pudo registrar la consulta (best-effort). Sin esto no hay
+  // forma de mandar POST /consultas/{id}/feedback sobre ESTA respuesta.
+  consulta_id?: string | null;
 }
 
 export interface APUItem {
@@ -213,6 +219,21 @@ export async function consultarDelegado(
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ pregunta, top_k }),
+  });
+}
+
+/** Feedback 👍/👎 sobre una respuesta puntual ya dada (idea 7, feedback
+ * cerrado) -- `consultaId` es el `consulta_id` que /ask o /consultar
+ * devolvieron para esa respuesta específica. */
+export async function enviarFeedback(
+  consultaId: string,
+  util: boolean,
+  comentario?: string
+): Promise<void> {
+  await api(`/consultas/${consultaId}/feedback`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ util, comentario: comentario ?? null }),
   });
 }
 
