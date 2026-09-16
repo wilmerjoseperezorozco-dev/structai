@@ -697,6 +697,19 @@ MOTOR_KEYWORD_MAP = {
         "gestion del riesgo", "gestión del riesgo", "vulnerabilidad ambiental",
         "estabilidad de taludes", "capacidad portante",
     ],
+    "vulnerabilidad_vivienda": [
+        "vulnerabilidad sismica de mi casa", "vulnerabilidad sísmica de mi casa",
+        "vulnerabilidad sismica de la vivienda", "vulnerabilidad sísmica de la vivienda",
+        "que tan vulnerable es mi casa", "qué tan vulnerable es mi casa",
+        "evaluacion de vulnerabilidad de vivienda", "evaluación de vulnerabilidad de vivienda",
+        "checklist de vulnerabilidad", "muros confinados", "mamposteria confinada",
+        "mampostería confinada", "mamposteria no reforzada", "mampostería no reforzada",
+        "vivienda de un piso mamposteria", "vivienda de dos pisos mamposteria",
+        "vigas de amarre o corona", "amarre de cubierta", "columnas de confinamiento",
+        "evaluacion visual rapida", "evaluación visual rápida", "rapid visual screening",
+        "titulo e nsr-10", "título e nsr-10", "casas de uno y dos pisos",
+        "mi casa aguanta un terremoto", "mi casa resiste un sismo",
+    ],
     "vias": [
         "radio minimo", "radio mínimo", "curva horizontal", "peralte", "distancia de visibilidad",
         "pendiente longitudinal", "ancho de carril", "bombeo de calzada", "diseño geometrico",
@@ -2325,6 +2338,7 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = TOP_K_DEFA
 # no valores de diseño estructural.
 DOMINIOS_CON_AVISO_RESPONSABILIDAD = frozenset({
     "normativa_general", "geopot", "aquai", "vias", "peru_e030", "ecuador_nec_se_ds",
+    "vulnerabilidad_vivienda",
 })
 
 AVISO_RESPONSABILIDAD_PROFESIONAL = (
@@ -2408,6 +2422,7 @@ def aviso_responsabilidad_para_dominio(dominio: str) -> Optional[str]:
 MOTOR_LABEL = {
     "aquai": "AquAI (acueducto, alcantarillado y saneamiento — RAS 2000)",
     "geopot": "GeoPot (sísmica NSR-10 y laboratorio de suelos/concreto/agregados)",
+    "vulnerabilidad_vivienda": "Vulnerabilidad Vivienda (checklist AIS, Título E NSR-10, vivienda de mampostería 1-2 pisos)",
     "vias": "motor-vías (diseño geométrico, pavimentos, mantenimiento vial — INVIAS)",
     "gerencia": "motor-gerencia (EVM y predicción de proyectos)",
     "apu_precios": "Precios de construcción (Barranquilla/Atlántico + INVIAS nacional, 140 provincias)",
@@ -2469,6 +2484,25 @@ sísmica (Aa/Av). Si citas un libro de referencia general de ingeniería
 geológica (ej. González de Vallejo), acláralo como lectura recomendada,
 NUNCA como si fuera texto verbatim de una norma colombiana — solo cita
 verbatim lo que esté literalmente en el contexto.
+{_REGLAS_ANTIINVENCION_MOTOR}"""
+
+VULNERABILIDAD_VIVIENDA_SYSTEM_PROMPT = f"""Eres un ingeniero estructural colombiano, especialista en
+evaluación de vulnerabilidad sísmica de vivienda de mampostería de 1-2
+pisos (Título E de la NSR-10), con el método de checklist ponderado de la
+Asociación Colombiana de Ingeniería Sísmica (AIS, 2004).
+
+VOZ Y TONO: hablas como el ingeniero que hace la visita de inspección
+visual a una vivienda — claro y concreto, con la jerga real: mampostería
+confinada/no reforzada/reforzada, vigas de amarre o corona, columnas de
+confinamiento, entrepiso, amarre de cubierta, irregularidad en planta/
+altura, calidad de la pega de mortero.
+
+IMPORTANTE: tú NUNCA calculas ni afirmas un puntaje o clasificación
+(BAJA/MEDIA/ALTA) de vulnerabilidad por tu cuenta -- ese cálculo es
+determinístico y vive en el endpoint /vulnerabilidad-vivienda/evaluar
+(15 criterios × peso por aspecto), no en una respuesta de chat. Tu rol es
+explicar QUÉ observar en cada criterio del checklist y remitir a ese
+endpoint (o al formulario de la app) para obtener la clasificación real.
 {_REGLAS_ANTIINVENCION_MOTOR}"""
 
 VIAS_SYSTEM_PROMPT = f"""Eres un ingeniero vial colombiano, especialista en diseño geométrico
@@ -2561,6 +2595,7 @@ aunque compartan símbolos.
 MOTOR_SYSTEM_PROMPT: dict[str, str] = {
     "aquai": AQUAI_SYSTEM_PROMPT,
     "geopot": GEOPOT_SYSTEM_PROMPT,
+    "vulnerabilidad_vivienda": VULNERABILIDAD_VIVIENDA_SYSTEM_PROMPT,
     "vias": VIAS_SYSTEM_PROMPT,
     "gerencia": GERENCIA_SYSTEM_PROMPT,
     "peru_e030": PERU_E030_SYSTEM_PROMPT,

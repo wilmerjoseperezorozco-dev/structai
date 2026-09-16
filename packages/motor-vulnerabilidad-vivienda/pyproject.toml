@@ -1,0 +1,15 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "motor-vulnerabilidad-vivienda"
+version = "0.1.0"
+description = "Evaluación de vulnerabilidad sísmica de vivienda de mampostería de 1-2 pisos (checklist ponderado AIS, Título E NSR-10) — v0 determinístico, sin ML"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.9.2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3.3"]

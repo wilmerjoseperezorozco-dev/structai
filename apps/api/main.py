@@ -518,6 +518,14 @@ except Exception as e:
     log.warning(f"✗ motor-geopot no disponible: {e}")
 
 try:
+    from routers.vulnerabilidad_vivienda import router as vulnerabilidad_vivienda_router
+    VULNERABILIDAD_VIVIENDA_AVAILABLE = True
+    log.info("✓ motor-vulnerabilidad-vivienda cargado")
+except Exception as e:
+    VULNERABILIDAD_VIVIENDA_AVAILABLE = False
+    log.warning(f"✗ motor-vulnerabilidad-vivienda no disponible: {e}")
+
+try:
     from routers.vias import router as vias_router
     VIAS_AVAILABLE = True
     log.info("✓ motor-vias cargado")
@@ -733,6 +741,9 @@ if AQUAI_AVAILABLE:
 if GEOPOT_AVAILABLE:
     app.include_router(geopot_router)
     app.include_router(geopot_router, prefix="/v1")
+if VULNERABILIDAD_VIVIENDA_AVAILABLE:
+    app.include_router(vulnerabilidad_vivienda_router)
+    app.include_router(vulnerabilidad_vivienda_router, prefix="/v1")
 if VIAS_AVAILABLE:
     app.include_router(vias_router)
     app.include_router(vias_router, prefix="/v1")
@@ -1276,6 +1287,7 @@ def health(request: Request, deep: bool = False):
         "motor_deformacion": DEFORM_AVAILABLE,
         "motor_aquai":       AQUAI_AVAILABLE,
         "motor_geopot":      GEOPOT_AVAILABLE,
+        "motor_vulnerabilidad_vivienda": VULNERABILIDAD_VIVIENDA_AVAILABLE,
         "motor_vias":        VIAS_AVAILABLE,
         "motor_gerencia":    GERENCIA_AVAILABLE,
         "motor_estructural": ESTRUCTURAL_AVAILABLE,
@@ -1425,6 +1437,7 @@ def data_status(request: Request):
             "deformacion": DEFORM_AVAILABLE,
             "aquai": AQUAI_AVAILABLE,
             "geopot": GEOPOT_AVAILABLE,
+            "vulnerabilidad_vivienda": VULNERABILIDAD_VIVIENDA_AVAILABLE,
             "vias": VIAS_AVAILABLE,
             "gerencia": GERENCIA_AVAILABLE,
             "estructural": ESTRUCTURAL_AVAILABLE,

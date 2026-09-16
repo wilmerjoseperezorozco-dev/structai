@@ -100,7 +100,16 @@ que siga siendo cierto.
   `/health`), motores cargados condicionalmente (`ENABLE_YOLO`,
   `ENABLE_ESTRUCTURAL`) para no arrastrar dependencias pesadas por defecto.
 - `packages/motor-*` — motores de dominio (aquai/hidrosanitario, apu/precios,
-  deformacion, geopot, vias, gerencia, estructural), cada uno con tests reales.
+  deformacion, geopot, vias, gerencia, estructural,
+  vulnerabilidad-vivienda), cada uno con tests reales.
+- `packages/motor-vulnerabilidad-vivienda` — evaluación de vulnerabilidad
+  sísmica de vivienda de mampostería de 1-2 pisos (Título E NSR-10), Fase 1
+  del issue #51: checklist ponderado real de 15 criterios de la AIS (2004),
+  NO una adaptación de FEMA P-154 (ver Fase 0 del issue). Endpoint dedicado
+  `/vulnerabilidad-vivienda/checklist` y `/vulnerabilidad-vivienda/evaluar`;
+  también enrutado por `/consultar` vía `rag_multi_norma.py` para preguntas
+  de chat sobre el método (el LLM nunca calcula el puntaje, solo explica
+  los criterios — el puntaje siempre sale del endpoint determinístico).
 - `packages/rag-audit-kit` — auditoría de cobertura de un corpus RAG contra su
   documento fuente (detección de huecos por numeral jerárquico, reportes por
   capítulo, heurística de confianza chunk-vs-fuente), extraída del método ya
