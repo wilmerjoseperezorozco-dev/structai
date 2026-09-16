@@ -1,0 +1,13 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "rag-audit-kit"
+version = "0.1.0"
+description = "Auditoría de cobertura de corpus RAG contra su documento fuente: detección de huecos por numeral jerárquico, reportes de cobertura por capítulo, y heurística de confianza chunk-vs-fuente. Extraído de la metodología usada manualmente para auditar los 11 títulos de la NSR-10 en StructAI — domain-agnostic por diseño (patrón de numeral configurable), no acoplado a NSR-10."
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3.3"]

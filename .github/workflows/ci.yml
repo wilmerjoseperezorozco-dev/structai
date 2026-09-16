@@ -154,7 +154,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        paquete: [motor-apu, motor-deformacion, motor-aquai, motor-geopot, motor-vias, motor-gerencia, motor-estructural]
+        # rag-audit-kit agregado 2026-09-16 (idea 1 del roadmap): sin
+        # dependencias propias (pyproject.toml declara dependencies = []),
+        # así que entra en la misma matriz sin tocar el paso de instalación
+        # de abajo -- /tmp/deps.txt queda vacío y el pip install se salta
+        # solo. Su test de validación real contra un PDF de NSR-10 se
+        # auto-salta en CI (@pytest.mark.skipif) porque ese PDF es fuente
+        # gitignored, no viaja con el checkout.
+        paquete: [motor-apu, motor-deformacion, motor-aquai, motor-geopot, motor-vias, motor-gerencia, motor-estructural, rag-audit-kit]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
