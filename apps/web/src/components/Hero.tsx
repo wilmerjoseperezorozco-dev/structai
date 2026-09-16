@@ -149,6 +149,12 @@ export function Hero() {
               >
                 Ver planes
               </Link>
+              <Link
+                href="/comparacion"
+                className="-mx-2 -my-1.5 inline-flex items-center gap-1 px-2 py-1.5 text-sm text-ink-400 transition hover:text-bronze-300"
+              >
+                ¿Por qué StructAI?
+              </Link>
             </div>
           </div>
         </div>

@@ -1,0 +1,93 @@
+{
+  "_fuente": "Contenido derivado 1:1 de docs/comparacion.md (criterios) y de preguntas ya verificadas en producción (scripts/evaluacion/dataset_baseline_nsr10.py, dataset_baseline_precios.py, apps/api/tests/test_rag_motores_regresion.py). No se inventó ningún hecho nuevo para esta página — cada respuesta_structai ya pasó por verificación real contra el sistema antes de escribirse aquí.",
+  "criterios": [
+    {
+      "criterio": "Cita la norma exacta (sección/artículo, no solo el nombre del reglamento)",
+      "structai": "Sí — cada respuesta de /ask incluye norma, sección y norma_ref verificable",
+      "generico": "No de forma confiable — puede citar un artículo que no existe o mezclar versiones de la norma sin advertirlo"
+    },
+    {
+      "criterio": "Si no tiene contenido cargado para un tema, lo dice explícitamente",
+      "structai": "Sí — el sistema responde que no hay contenido cargado en vez de inventar una respuesta",
+      "generico": "No — tiende a generar una respuesta plausible aunque no tenga la información real, sin señal de que está adivinando"
+    },
+    {
+      "criterio": "Precio de materiales con proveedor identificable",
+      "structai": "Sí — 78 proveedores mipyme reales (catálogo IAD MIPYMES, Colombia Compra Eficiente) más proveedores locales del Atlántico con SKU verificado",
+      "generico": "No — no tiene acceso a ninguna base de precios real; cualquier cifra es una estimación sin fuente verificable"
+    },
+    {
+      "criterio": "Costo de la búsqueda semántica (embeddings)",
+      "structai": "Cero — modelo local (sentence-transformers, 384 dimensiones), sin llamadas a un proveedor externo por consulta",
+      "generico": "No aplica — no hace búsqueda sobre un corpus propio"
+    },
+    {
+      "criterio": "Cobertura normativa verificable por título/capítulo",
+      "structai": "Sí — NSR-10 con núcleo verbatim real en varios títulos, 18 normas NTC, SGSST completo, RAS 2000 (11/11 módulos)",
+      "generico": "Depende del material que haya visto en su entrenamiento, sin forma de auditar qué tan actualizado o completo está"
+    },
+    {
+      "criterio": "Auditable — se puede verificar de dónde salió cada dato",
+      "structai": "Sí — cada chunk normativo y cada precio tiene una fuente registrada, y el pipeline de carga está versionado y es público",
+      "generico": "No — no hay forma de rastrear el origen de una afirmación específica"
+    }
+  ],
+  "preguntas_ejemplo": [
+    {
+      "id": "B-biblioteca-estanterias-7kNm2",
+      "categoria": "estructural",
+      "pregunta": "¿Cuál es la carga viva para estanterías en una biblioteca según la NSR-10?",
+      "respuesta_structai": "7.0 kN/m² (Título B, tabla de cargas vivas).",
+      "fuente": "NSR-10 Título B"
+    },
+    {
+      "id": "A-deriva-maxima-1-porciento",
+      "categoria": "estructural",
+      "pregunta": "¿Cuál es la deriva máxima permitida para una estructura de concreto reforzado?",
+      "respuesta_structai": "1.0% de la altura de piso (Título A).",
+      "fuente": "NSR-10 Título A"
+    },
+    {
+      "id": "precio-actividad-cielo-raso-duracustic",
+      "categoria": "precios",
+      "pregunta": "¿Cuánto cuesta el cielo raso Duracustic en Barranquilla?",
+      "respuesta_structai": "$33.183 COP por m² en Barranquilla (Catálogo Construdata).",
+      "fuente": "Motor APU — apu_precios_referencia"
+    },
+    {
+      "id": "precio-actividad-relleno-gravilla-rio",
+      "categoria": "precios",
+      "pregunta": "¿Cuánto vale el relleno con gravilla de río en Barranquilla?",
+      "respuesta_structai": "$51.557 COP por m³ en Barranquilla (Catálogo Construdata).",
+      "fuente": "Motor APU — apu_precios_referencia"
+    },
+    {
+      "id": "geopot-ip-muy-alta-50",
+      "categoria": "geotecnia",
+      "pregunta": "¿A partir de qué valor de índice de plasticidad (IP) se considera plasticidad muy alta?",
+      "respuesta_structai": "IP ≥ 50.",
+      "fuente": "Motor GeoPot"
+    },
+    {
+      "id": "geopot-coeficiente-uniformidad-cu",
+      "categoria": "geotecnia",
+      "pregunta": "¿Cómo se calcula el coeficiente de uniformidad Cu en un análisis granulométrico de suelos?",
+      "respuesta_structai": "Cu = D60 / D10.",
+      "fuente": "Motor GeoPot"
+    },
+    {
+      "id": "aquai-dotacion-neta-definicion",
+      "categoria": "agua",
+      "pregunta": "¿Qué es la dotación neta en un sistema de acueducto?",
+      "respuesta_structai": "La cantidad de agua (L/hab-día) requerida para satisfacer las necesidades básicas de un habitante, sin considerar las pérdidas técnicas.",
+      "fuente": "Motor AquAI — Resolución 0330 de 2017"
+    },
+    {
+      "id": "aquai-experiencia-profesional-5-anos",
+      "categoria": "agua",
+      "pregunta": "¿Cuántos años mínimos de experiencia específica debe tener el profesional responsable del diseño de un sistema de acueducto o alcantarillado?",
+      "respuesta_structai": "5 años, según la Resolución 0330 de 2017.",
+      "fuente": "Motor AquAI — Resolución 0330 de 2017"
+    }
+  ]
+}
