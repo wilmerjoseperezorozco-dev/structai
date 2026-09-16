@@ -101,6 +101,15 @@ que siga siendo cierto.
   `ENABLE_ESTRUCTURAL`) para no arrastrar dependencias pesadas por defecto.
 - `packages/motor-*` — motores de dominio (aquai/hidrosanitario, apu/precios,
   deformacion, geopot, vias, gerencia, estructural), cada uno con tests reales.
+- `packages/rag-audit-kit` — auditoría de cobertura de un corpus RAG contra su
+  documento fuente (detección de huecos por numeral jerárquico, reportes por
+  capítulo, heurística de confianza chunk-vs-fuente), extraída del método ya
+  usado a mano título por título en la NSR-10 — domain-agnostic, sin
+  dependencias externas. Usarlo (no reinventar el método) antes de auditar
+  cualquier título nuevo; ver `scripts/ingesta/generar_baseline_cobertura.py`
+  y `scripts/ingesta/verificar_cobertura_baseline.py` (este último corre en
+  CI, job `test-cobertura-ingesta`, bloqueando regresiones de cobertura en
+  títulos con baseline guardado).
 - `packages/construdata/rag_multi_norma.py` — RAG multi-norma + delegador de
   motores + respaldo LLM.
 - `packages/construdata/ideam_client.py` — datos abiertos IDEAM (datos.gov.co),

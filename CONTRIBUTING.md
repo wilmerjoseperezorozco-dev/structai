@@ -47,6 +47,7 @@ pytest tests/ --cov=src --cov-report=term-missing -v
 | `motor-vias` | **88%** | 46 pasan | 2026-07-20 |
 | `motor-gerencia` | **96%** | 38 pasan | 2026-07-20 |
 | `motor-estructural` | **86%** | 7 pasan | 2026-07-21 |
+| `rag-audit-kit` | **98%** (líneas 57-58 de `cobertura.py` sin cubrir) | 19 pasan | 2026-09-16 |
 
 `motor-aquai` pasó de 0% a 70% real (2026-07-19) escribiendo `tests/test_motor_aquai.py` — 35 tests que recalculan el valor esperado con la misma fórmula documentada en el módulo (o contra las tablas normativas de `ras2000_tablas.py`), no con números supuestos. `pdf_memoria.py` (generación de PDF, 0%) se dejó deliberadamente sin cubrir — no aporta valor de regresión de cálculo normativo. `rag_normativo.py` (búsqueda semántica sobre una tabla `normas_vigentes` que nunca se creó en Supabase, nunca conectado al flujo real) se eliminó por completo el 2026-08-02 junto con el endpoint `/aquai/normativa/buscar` que lo exponía — ver limpieza de código muerto de esa fecha.
 
@@ -61,6 +62,8 @@ pytest tests/ --cov=src --cov-report=term-missing -v
 **Actualización 2026-08-26**: `MultidisciplinaryPINN` se eliminó por completo (auditoría de higiene de ingeniería). No era solo "sin cubrir por estos tests" — se instanciaba en cada análisis real pero `.forward()`/`.loss_function()` nunca se llamaban desde ningún camino de código; el veredicto siempre salió 100% de `load_engine.py` (fórmulas clásicas, sin red neuronal). Los 7 tests de arriba siguen pasando sin cambios (nunca la importaban). Pipeline real hoy: BIM (IFC) → topología del nudo → chequeo NSR-10 A/B/C, sin PINN.
 
 **Con los 7 motores medidos, el piso real hoy es 70% (motor-aquai) y el techo 96% (motor-gerencia)** — se fija **75% como target mínimo por motor** (por debajo del promedio real, con margen para que futuros motores nuevos no bloqueen CI mientras se estabilizan). `motor-aquai` queda como el único bajo ese target — subirlo pasa por escribir tests para `pdf_memoria.py` o aceptar que ese archivo se excluya explícitamente de la medición de cobertura (`--cov-report` con `omit`), no por inventar tests triviales solo para subir el número.
+
+`rag-audit-kit` (agregado 2026-09-16, idea 1 del roadmap) no es un motor de dominio — es una herramienta de auditoría del propio corpus RAG, domain-agnostic. Se mide y lista acá por el mismo criterio de "cobertura real, no estimada", pero queda fuera del target de 75%/motor de arriba (ya lo supera con margen, 98%).
 
 ## Qué NO se ha estandarizado todavía (a propósito)
 
