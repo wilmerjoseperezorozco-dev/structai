@@ -394,6 +394,7 @@ try:
     from rag_multi_norma import RespuestaIAIndisponibleError
     from rag_multi_norma import uso_groq_hoy as _uso_groq_hoy_fn
     from rag_multi_norma import uso_openai_hoy as _uso_openai_hoy_fn
+    from rag_multi_norma import uso_cache_hoy as _uso_cache_hoy_fn
     from rag_multi_norma import AVISO_RESPONSABILIDAD_PROFESIONAL, aviso_responsabilidad_para_dominio
     RAG_AVAILABLE = True
     log.info("✓ rag_multi_norma cargado")
@@ -1286,6 +1287,7 @@ def health(request: Request, deep: bool = False):
     # de esto no había ninguna forma de ver, en vivo, cuánto costaba el día
     # sin ir a buscarlo al dashboard de OpenAI.
     uso_openai = _uso_openai_hoy_fn() if RAG_AVAILABLE else {"error": "rag_multi_norma no disponible"}
+    uso_cache = _uso_cache_hoy_fn() if RAG_AVAILABLE else {"error": "rag_multi_norma no disponible"}
 
     resultado["dependencias"] = {
         "supabase": supabase_check,
@@ -1293,6 +1295,7 @@ def health(request: Request, deep: bool = False):
         "memoria": memoria_check,
         "uso_groq_hoy": uso_groq,
         "uso_openai_hoy": uso_openai,
+        "uso_cache_hoy": uso_cache,
     }
 
     # "degraded" si algo activo falló pero el proceso sigue vivo y sirviendo;

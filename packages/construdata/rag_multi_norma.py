@@ -9,6 +9,7 @@ por respuesta, inviable para un SaaS con usuarios reales).
 Uso: from rag_multi_norma import ask, route_query
 ══════════════════════════════════════════════════════════════════
 """
+import hashlib
 import json
 import logging
 import os
@@ -250,6 +251,117 @@ def uso_openai_hoy() -> dict:
     el respaldo OpenAI (= cuántas veces Groq no alcanzó) y cuánto costó en
     USD real, no una estimación de plan."""
     return {**_uso_openai_hoy, "costo_usd": round(_uso_openai_hoy["costo_usd"], 4)}
+
+
+# ─── Caché de respuestas exactas (idea 2, la parte barata) ───────────────────
+# Agregado 2026-09-16: "misma pregunta = costo cero", sin Redis/Memorystore
+# -- Supabase ya está pagado y ya es compartido entre instancias de Cloud
+# Run (a diferencia de un cache en memoria de proceso, que no sobrevive un
+# cold start ni se comparte si max-instances > 1). Tabla:
+# rag_cache_respuestas (migración 20260916143000).
+#
+# Solo coincidencia EXACTA de pregunta normalizada -- nunca similitud
+# semántica: dos preguntas "parecidas" pueden tener respuestas correctas
+# distintas, cachear por similitud arriesgaría servir la respuesta
+# equivocada para ahorrar un llamado a Groq (que ya es gratis, el ahorro
+# real acá es de LATENCIA para el usuario, no solo de dinero).
+RAG_CACHE_TTL_DIAS = int(os.getenv("RAG_CACHE_TTL_DIAS", "30"))
+
+_ESPACIOS_MULTIPLES = re.compile(r"\s+")
+
+
+def _normalizar_pregunta_cache(question: str) -> str:
+    return _ESPACIOS_MULTIPLES.sub(" ", question.strip().lower())
+
+
+def _hash_cache(ruta: str, pregunta_normalizada: str) -> str:
+    return hashlib.sha256(f"{ruta}|{pregunta_normalizada}".encode("utf-8")).hexdigest()
+
+
+_uso_cache_hoy = {"fecha": None, "hits": 0, "misses": 0}
+
+
+def _registrar_cache(hit: bool) -> None:
+    import datetime
+
+    hoy = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+    if _uso_cache_hoy["fecha"] != hoy:
+        _uso_cache_hoy["fecha"] = hoy
+        _uso_cache_hoy["hits"] = 0
+        _uso_cache_hoy["misses"] = 0
+    _uso_cache_hoy["hits" if hit else "misses"] += 1
+
+
+def uso_cache_hoy() -> dict:
+    """Snapshot de solo lectura del uso del caché de HOY -- cuántas
+    preguntas se sirvieron gratis desde caché vs. cuántas fueron a la
+    pipeline real (retrieval + LLM)."""
+    return dict(_uso_cache_hoy)
+
+
+def _buscar_en_cache(ruta: str, question: str) -> Optional[dict]:
+    """None si no hay entrada válida (miss real, o expiró) -- nunca lanza:
+    un fallo de Supabase acá no debe tumbar una pregunta que sí puede
+    responderse por la vía normal, solo pierde el ahorro de esta vez."""
+    import datetime
+
+    pregunta_normalizada = _normalizar_pregunta_cache(question)
+    cache_id = _hash_cache(ruta, pregunta_normalizada)
+    try:
+        res = (
+            sb.table("rag_cache_respuestas")
+            .select("respuesta, expira_en, hits")
+            .eq("id", cache_id)
+            .limit(1)
+            .execute()
+        )
+    except Exception as e:
+        log.warning(f"Caché de respuestas no disponible (lectura): {e}")
+        _registrar_cache(hit=False)
+        return None
+
+    if not res.data:
+        _registrar_cache(hit=False)
+        return None
+
+    fila = res.data[0]
+    expira_en = datetime.datetime.fromisoformat(fila["expira_en"].replace("Z", "+00:00"))
+    if expira_en < datetime.datetime.now(datetime.timezone.utc):
+        _registrar_cache(hit=False)
+        return None
+
+    try:
+        sb.table("rag_cache_respuestas").update({
+            "hits": fila["hits"] + 1,
+            "ultimo_hit_en": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        }).eq("id", cache_id).execute()
+    except Exception as e:
+        # Contador de hits es solo observabilidad -- si falla el update no
+        # vale la pena descartar la respuesta cacheada que sí se recuperó.
+        log.warning(f"Caché de respuestas: no se pudo actualizar contador de hits: {e}")
+
+    _registrar_cache(hit=True)
+    return {**fila["respuesta"], "desde_cache": True}
+
+
+def _guardar_en_cache(ruta: str, question: str, respuesta: dict) -> None:
+    """Best-effort -- un fallo al guardar en caché nunca debe afectar la
+    respuesta que ya se le va a devolver al usuario."""
+    import datetime
+
+    pregunta_normalizada = _normalizar_pregunta_cache(question)
+    cache_id = _hash_cache(ruta, pregunta_normalizada)
+    expira_en = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=RAG_CACHE_TTL_DIAS)
+    try:
+        sb.table("rag_cache_respuestas").upsert({
+            "id": cache_id,
+            "ruta": ruta,
+            "pregunta_normalizada": pregunta_normalizada,
+            "respuesta": respuesta,
+            "expira_en": expira_en.isoformat(),
+        }, on_conflict="id").execute()
+    except Exception as e:
+        log.warning(f"Caché de respuestas no disponible (escritura): {e}")
 
 
 def uso_groq_hoy() -> dict:
@@ -2022,6 +2134,19 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = TOP_K_DEFA
     RAG multi-norma completo.
     Retorna: {respuesta, fuentes, normas_citadas, chunks_usados}
     """
+    # 0. Caché de respuestas exactas (idea 2, 2026-09-16) -- se salta a
+    # propósito si la pregunta tiene intención temporal ("noticias de
+    # hoy"...): esas respuestas cambian por diseño, cachearlas serviría
+    # contenido desactualizado sin que nadie se entere. norma_hint entra en
+    # la clave (vía `ruta`) porque la MISMA pregunta con un hint distinto
+    # puede recuperar contexto distinto.
+    usa_cache = not _quiere_actualidad(question)
+    ruta_cache = f"ask|hint={norma_hint or ''}"
+    if usa_cache:
+        cacheado = _buscar_en_cache(ruta_cache, question)
+        if cacheado is not None:
+            return cacheado
+
     # 1. Descomposición (issue #30) + routing automático si no hay norma
     # específica.
     #
@@ -2111,7 +2236,7 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = TOP_K_DEFA
         normas_citadas = [fuente_sgc] + normas_citadas
         fuentes = [{"norma": fuente_sgc, "seccion": sgc_registro["municipio"], "score": 1.0}] + fuentes
 
-    return {
+    resultado = {
         "respuesta": respuesta,
         "normas_citadas": normas_citadas,
         "normas_detectadas_router": target_normas,
@@ -2140,6 +2265,18 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = TOP_K_DEFA
         # sin número no la detecta este chequeo).
         "advertencia_posible_alucinacion": advertencia_alucinacion,
     }
+
+    # Guarda en caché (idea 2) -- best-effort, nunca bloquea la respuesta
+    # real si Supabase falla acá. Se salta si la pregunta era temporal
+    # (misma razón que el chequeo del paso 0) o si vino de un dato en vivo
+    # del SGC cuya frescura ya depende de otra fuente, no del corpus
+    # estático -- cachearlo no es incorrecto (el dato de zona sísmica no
+    # cambia día a día) pero se prioriza simple sobre exhaustivo en esta
+    # primera versión: solo se cachean respuestas 100% basadas en corpus.
+    if usa_cache and not sgc_registro:
+        _guardar_en_cache(ruta_cache, question, resultado)
+
+    return resultado
 
 
 # ─── AVISO DE RESPONSABILIDAD PROFESIONAL (issue #18) ────────────────────────
