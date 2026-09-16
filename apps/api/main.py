@@ -144,17 +144,25 @@ def registrar_consulta(
     user_id: str, pregunta: str, respuesta: str,
     normas_citadas: Optional[list] = None, normas_detectadas: Optional[list] = None,
     chunks_usados: int = 0, latencia_ms: int = 0, norma_hint: Optional[str] = None,
-) -> None:
+) -> Optional[str]:
+    """Retorna el `id` real de la fila insertada, o None si el insert falló
+    -- agregado 2026-09-16 (idea 7, feedback cerrado): antes esta función no
+    devolvía nada, así que /ask y /consultar no tenían forma de decirle al
+    frontend a qué consulta exacta atar un 👍/👎 después. Best-effort igual
+    que antes: un fallo acá sigue sin tumbar la respuesta real, solo deja
+    sin id de feedback a esa consulta puntual."""
     if _uso_sb is None:
-        return
+        return None
     try:
-        _uso_sb.table("consultas_history").insert({
+        res = _uso_sb.table("consultas_history").insert({
             "user_id": user_id, "pregunta": pregunta[:2000], "respuesta": (respuesta or "")[:4000],
             "normas_citadas": normas_citadas or [], "normas_detectadas": normas_detectadas or [],
             "chunks_usados": chunks_usados, "latencia_ms": latencia_ms, "norma_hint": norma_hint,
         }).execute()
+        return res.data[0]["id"] if res.data else None
     except Exception as e:
         log.warning(f"No se pudo registrar consulta en consultas_history: {e}")
+        return None
 
 
 def _construir_registro_apu(
@@ -762,6 +770,11 @@ class AskResponse(BaseModel):
     # su corpus es normativa_general), nunca generado por el LLM. Ver
     # rag_multi_norma.AVISO_RESPONSABILIDAD_PROFESIONAL.
     aviso_responsabilidad: Optional[str] = None
+    # id real de la fila en consultas_history (idea 7, 2026-09-16) -- None
+    # si registrar_consulta() falló (best-effort). El frontend lo necesita
+    # para poder mandar POST /consultas/{consulta_id}/feedback sobre ESTA
+    # respuesta específica, no una genérica.
+    consulta_id: Optional[str] = None
 
 
 class ConsultarRequest(BaseModel):
@@ -780,6 +793,8 @@ class ConsultarResponse(BaseModel):
     # (normativa_general/geopot/aquai/vias), None para apu_precios/gerencia.
     # Nunca generado por el LLM. Ver rag_multi_norma.aviso_responsabilidad_para_dominio().
     aviso_responsabilidad: Optional[str] = None
+    # Ver AskResponse.consulta_id -- mismo propósito, mismo patrón (idea 7).
+    consulta_id: Optional[str] = None
 
 
 class APUItem(BaseModel):
@@ -1506,7 +1521,7 @@ def ask_norma(request: Request, req: AskRequest):
         for f in result.get("fuentes", [])
     ]
 
-    registrar_consulta(
+    consulta_id = registrar_consulta(
         user.id, req.pregunta, result.get("respuesta", ""),
         normas_citadas=result.get("normas_citadas", []),
         normas_detectadas=result.get("normas_detectadas_router", []),
@@ -1524,6 +1539,7 @@ def ask_norma(request: Request, req: AskRequest):
         # sus respuestas, garantizado aquí, no depende de que el LLM lo
         # mencione (issue #18).
         aviso_responsabilidad=AVISO_RESPONSABILIDAD_PROFESIONAL,
+        consulta_id=consulta_id,
     )
 
 
@@ -1590,7 +1606,7 @@ def consultar_delegado(request: Request, req: ConsultarRequest):
         for f in result.get("fuentes", [])
     ]
 
-    registrar_consulta(
+    consulta_id = registrar_consulta(
         user.id, req.pregunta, result.get("respuesta", ""),
         normas_citadas=result.get("normas_citadas", []),
         chunks_usados=result.get("chunks_usados", 0), latencia_ms=latencia,
@@ -1607,7 +1623,45 @@ def consultar_delegado(request: Request, req: ConsultarRequest):
         # Determinístico por dominio (issue #18) -- None para apu_precios/
         # gerencia, el aviso fijo para normativa_general/geopot/aquai/vias.
         aviso_responsabilidad=aviso_responsabilidad_para_dominio(result.get("dominio", "")),
+        consulta_id=consulta_id,
     )
+
+
+# ── /consultas/{id}/feedback — 👍/👎 sobre una respuesta puntual (idea 7) ────
+# MVP deliberado, mismo criterio que /admin/usuarios: solo el botón +
+# almacenamiento reales, sin panel de frontend elaborado todavía -- el
+# dashboard agregado vive en /admin/feedback más abajo (solo lectura).
+
+class FeedbackRequest(BaseModel):
+    util: bool
+    comentario: Optional[str] = Field(None, max_length=1000)
+
+
+@app.post("/consultas/{consulta_id}/feedback", tags=["Normativa"])
+@app.post("/v1/consultas/{consulta_id}/feedback", tags=["Normativa"])
+def registrar_feedback(request: Request, consulta_id: str, req: FeedbackRequest):
+    """Guarda 👍/👎 (+ comentario opcional) sobre una respuesta ya dada,
+    identificada por el `consulta_id` que /ask o /consultar devolvieron.
+    RLS (consultas_update_own) ya exige auth.uid() = user_id -- el filtro
+    explícito de abajo es además defensa en profundidad, no solo RLS."""
+    user = get_current_user(request)
+    if _uso_sb is None:
+        raise HTTPException(status_code=503, detail="Cliente de Supabase no disponible")
+    try:
+        res = _uso_sb.table("consultas_history").update({
+            "feedback_util": req.util,
+            "feedback_comentario": req.comentario,
+        }).eq("id", consulta_id).eq("user_id", user.id).execute()
+    except Exception as e:
+        log.warning(f"No se pudo registrar feedback en consultas_history: {e}")
+        raise HTTPException(status_code=503, detail="No se pudo guardar el feedback, intenta de nuevo")
+
+    if not res.data:
+        # No existe esa fila, o no pertenece a este usuario -- RLS ya lo
+        # filtró en silencio (0 filas afectadas, no un error), el 404 acá
+        # es para que el frontend sepa que no se guardó nada.
+        raise HTTPException(status_code=404, detail="Consulta no encontrada")
+    return {"ok": True, "consulta_id": consulta_id}
 
 
 # ── /detect — YOLO Detección Estructural ─────────────────────────────────────
@@ -2277,6 +2331,52 @@ def admin_listar_usuarios(request: Request):
         "total": len(usuarios),
         "por_plan": {p: sum(1 for u in usuarios if u.get("plan") == p) for p in ("free", "pro", "enterprise")},
         "usuarios": usuarios,
+    }
+
+
+# ── /admin/feedback — dashboard agregado del 👍/👎 (idea 7, 2026-09-16) ──────
+# Mismo criterio MVP que /admin/usuarios: solo lectura agregada, sin panel
+# de frontend todavía. El objetivo real (loop feedback -> chunk sospechoso
+# -> auditoría -> re-ingesta verbatim) es un proceso manual apoyado en este
+# endpoint, no una automatización -- con 47 consultas históricas totales
+# hoy, automatizar ese loop sería resolver un problema que no existe
+# todavía a este volumen.
+
+@app.get("/admin/feedback", tags=["Admin"])
+@app.get("/v1/admin/feedback", tags=["Admin"])
+def admin_feedback(request: Request, limite: int = 50):
+    """Preguntas con feedback negativo (más recientes primero) + conteo
+    agregado util/no-útil/sin-feedback. Requiere profiles.role = 'admin'."""
+    require_admin(request)
+    if _uso_sb is None:
+        raise HTTPException(status_code=503, detail="Cliente de Supabase no disponible")
+
+    negativas = _uso_sb.table("consultas_history") \
+        .select("id, pregunta, respuesta, normas_citadas, norma_hint, created_at, feedback_comentario") \
+        .eq("feedback_util", False) \
+        .order("created_at", desc=True) \
+        .limit(limite) \
+        .execute()
+
+    # count="exact" con head=True -- pide solo el conteo (HEAD request, cero
+    # filas transferidas). Los conteos existentes de este archivo
+    # (verificar_limite_apu_mes/verificar_limite_chat_mes) usan count="exact"
+    # SIN head=True, así que sí descargan la columna "id" de cada fila
+    # contada -- inofensivo al volumen actual (47 filas), pero head=True es
+    # estrictamente mejor y no cuesta nada usarlo acá donde se escribe de cero.
+    total = _uso_sb.table("consultas_history").select("id", count="exact", head=True).execute()
+    utiles = _uso_sb.table("consultas_history").select("id", count="exact", head=True).eq("feedback_util", True).execute()
+    no_utiles = _uso_sb.table("consultas_history").select("id", count="exact", head=True).eq("feedback_util", False).execute()
+
+    total_n = total.count or 0
+    utiles_n = utiles.count or 0
+    no_utiles_n = no_utiles.count or 0
+    return {
+        "total_consultas": total_n,
+        "con_feedback_util": utiles_n,
+        "con_feedback_no_util": no_utiles_n,
+        "sin_feedback": total_n - utiles_n - no_utiles_n,
+        "peor_valoradas": negativas.data or [],
     }
 
 
