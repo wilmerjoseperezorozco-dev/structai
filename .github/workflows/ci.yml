@@ -252,6 +252,16 @@ jobs:
           SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           GROQ_API_KEY:         ${{ secrets.GROQ_API_KEY }}
+          # Bug real encontrado 2026-09-16 verificando el CI del PR #50: el
+          # caché de respuestas (rag_multi_norma.py) usa el Supabase REAL de
+          # producción -- sin esto, la primera corrida de CI cachea las
+          # ~125 preguntas de la batería de regresión, y CADA corrida
+          # siguiente (reruns de pytest.mark.flaky, o un nuevo push al mismo
+          # PR) sirve la MISMA respuesta congelada en vez de una generación
+          # fresca, anulando el mecanismo de reintento contra variación
+          # normal del LLM que esos tests ya tenían. Confirmado con SQL
+          # directo: hits=2 a 7 en ~125 filas tras 3 corridas del mismo PR.
+          RAG_CACHE_DISABLED:   "true"
           # Respaldo de 2 niveles (Groq -> OpenAI), NVIDIA retirado el
           # 2026-08-20 por inconsistencia de latencia (20s-199s en pruebas
           # reales, ver rag_multi_norma.py). Sin esto, si Groq se queda sin

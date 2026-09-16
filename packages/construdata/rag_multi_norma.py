@@ -267,6 +267,23 @@ def uso_openai_hoy() -> dict:
 # real acá es de LATENCIA para el usuario, no solo de dinero).
 RAG_CACHE_TTL_DIAS = int(os.getenv("RAG_CACHE_TTL_DIAS", "30"))
 
+# Bug real encontrado 2026-09-16 (mismo día que se agregó el caché,
+# verificando el CI del PR #50): test_rag_nsr10_regresion.py/
+# test_rag_motores_regresion.py corren contra el Supabase REAL de
+# producción (mismas credenciales que /ask en vivo) y usan
+# pytest.mark.flaky(reruns=1) para tolerar la variación normal de
+# fraseo del LLM entre corridas -- pero el caché de arriba interceptaba
+# esos reintentos y devolvía la MISMA respuesta ya guardada, anulando
+# por completo esa red de seguridad. Peor: cada re-ejecución del mismo
+# job de CI (ej. 3 pushes seguidos a un PR) volvía a servir la primera
+# respuesta generada, "congelando" un resultado (bueno o malo) en vez
+# de darle a cada corrida una oportunidad real de generación fresca.
+# Confirmado en vivo: las ~125 preguntas de la batería completa
+# quedaron con hits=2 a 7 tras 3 corridas de CI del mismo PR. Se
+# desactiva el caché explícitamente en el job de CI (ver ci.yml,
+# RAG_CACHE_DISABLED=true) -- en producción real sigue activo.
+RAG_CACHE_DISABLED = os.getenv("RAG_CACHE_DISABLED", "false").lower() == "true"
+
 _ESPACIOS_MULTIPLES = re.compile(r"\s+")
 
 
@@ -303,6 +320,9 @@ def _buscar_en_cache(ruta: str, question: str) -> Optional[dict]:
     """None si no hay entrada válida (miss real, o expiró) -- nunca lanza:
     un fallo de Supabase acá no debe tumbar una pregunta que sí puede
     responderse por la vía normal, solo pierde el ahorro de esta vez."""
+    if RAG_CACHE_DISABLED:
+        return None
+
     import datetime
 
     pregunta_normalizada = _normalizar_pregunta_cache(question)
@@ -347,6 +367,9 @@ def _buscar_en_cache(ruta: str, question: str) -> Optional[dict]:
 def _guardar_en_cache(ruta: str, question: str, respuesta: dict) -> None:
     """Best-effort -- un fallo al guardar en caché nunca debe afectar la
     respuesta que ya se le va a devolver al usuario."""
+    if RAG_CACHE_DISABLED:
+        return
+
     import datetime
 
     pregunta_normalizada = _normalizar_pregunta_cache(question)
