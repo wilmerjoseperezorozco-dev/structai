@@ -78,6 +78,16 @@ existir tanto en GitHub Actions (Settings → Secrets) como en Google Secret
 Manager (producción, proyecto `structai-507113`, región `us-east1`) — son
 almacenes separados, confirmar en ambos al rotar o agregar credenciales.
 
+**`GROQ_API_KEY` es la MISMA en CI y en producción** (issue #53,
+2026-09-17) — la cuota diaria (200K tokens) resultó ser una ventana móvil
+de 24h, no un reset a hora fija, así que cada corrida de la batería de
+regresión de CI competía por cuota real de producción. `ci.yml` fuerza
+`LLM_FORZAR_OPENAI=true` en el job `test-api`, que hace que
+`_llamar_llm_con_respaldo()` salte Groq por completo y use solo OpenAI —
+la cuota de Groq de producción queda intacta sin importar cuántas veces
+se reintente CI. En producción esta bandera no está seteada (default
+`false`), Groq sigue siendo el proveedor principal ahí.
+
 ## Infraestructura de producción (actualizado 2026-09-01)
 
 `apps/api` corre en **Google Cloud Run** (`structai-api`,
