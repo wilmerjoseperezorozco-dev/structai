@@ -104,6 +104,16 @@ openai_client = (
 if openai_client is None:
     log.warning("OPENAI_API_KEY no configurada — sin tercer respaldo si Groq y NVIDIA fallan.")
 
+# Issue #53 (2026-09-17): GROQ_API_KEY es la MISMA en CI y en producción --
+# cada corrida de la batería de regresión de CI (~125 preguntas, cada una
+# una llamada LLM real) gasta cuota real de producción. Además, la cuota
+# diaria de Groq (200K tokens) parece ser una ventana móvil de 24h, no un
+# reset a hora fija: confirmado en vivo que 8h después de agotarse seguía
+# reportando ~199.800/200.000 usados. Esta bandera (solo para CI, la cuota
+# de Groq en producción queda intacta) salta Groq por completo y va directo
+# a OpenAI -- no consume ni un token de Groq al correr la batería completa.
+LLM_FORZAR_OPENAI = os.getenv("LLM_FORZAR_OPENAI", "false").lower() == "true"
+
 
 def _llamar_llm_con_respaldo(messages: list, max_tokens_groq: int = 700) -> str:
     """Intenta Groq, luego OpenAI, en ese orden -- el respaldo solo se
@@ -112,24 +122,29 @@ def _llamar_llm_con_respaldo(messages: list, max_tokens_groq: int = 700) -> str:
     enmascarando el error real). Usado por _generar_respuesta() y
     ask_precios() -- unificado aquí para no duplicar la lógica en dos
     sitios. Lanza RespuestaIAIndisponibleError solo si ambos fallan o
-    OpenAI no está configurado."""
-    try:
-        response = groq_client.chat.completions.create(
-            model=GROQ_MODEL, messages=messages, temperature=0.1,
-            max_tokens=max_tokens_groq, extra_body={"reasoning_effort": "low"},
-        )
-        if response.usage is not None:
-            _registrar_uso_groq(response.usage.total_tokens)
-        contenido = response.choices[0].message.content
-        if contenido:
-            return contenido
-        log.warning("Groq devolvió respuesta vacía, intentando respaldo OpenAI.")
-    except (RateLimitError, APIConnectionError, InternalServerError) as e:
-        log.warning(f"Groq no disponible ({type(e).__name__}), intentando respaldo OpenAI: {e}")
-    except APIStatusError as e:
-        if e.status_code != 413:
-            raise
-        log.warning(f"Groq rechazó la petición por tamaño de contexto (413), intentando respaldo OpenAI: {e}")
+    OpenAI no está configurado.
+
+    Si LLM_FORZAR_OPENAI está activo (solo CI, ver issue #53), Groq ni
+    siquiera se llama -- va directo a OpenAI, para no gastar la cuota
+    compartida con producción."""
+    if not LLM_FORZAR_OPENAI:
+        try:
+            response = groq_client.chat.completions.create(
+                model=GROQ_MODEL, messages=messages, temperature=0.1,
+                max_tokens=max_tokens_groq, extra_body={"reasoning_effort": "low"},
+            )
+            if response.usage is not None:
+                _registrar_uso_groq(response.usage.total_tokens)
+            contenido = response.choices[0].message.content
+            if contenido:
+                return contenido
+            log.warning("Groq devolvió respuesta vacía, intentando respaldo OpenAI.")
+        except (RateLimitError, APIConnectionError, InternalServerError) as e:
+            log.warning(f"Groq no disponible ({type(e).__name__}), intentando respaldo OpenAI: {e}")
+        except APIStatusError as e:
+            if e.status_code != 413:
+                raise
+            log.warning(f"Groq rechazó la petición por tamaño de contexto (413), intentando respaldo OpenAI: {e}")
 
     if openai_client is not None:
         try:

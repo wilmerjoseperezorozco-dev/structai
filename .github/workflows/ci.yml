@@ -262,6 +262,17 @@ jobs:
           # normal del LLM que esos tests ya tenían. Confirmado con SQL
           # directo: hits=2 a 7 en ~125 filas tras 3 corridas del mismo PR.
           RAG_CACHE_DISABLED:   "true"
+          # Issue #53 (2026-09-17): GROQ_API_KEY es la misma en CI y en
+          # producción -- cada corrida completa de la batería de regresión
+          # (~125 preguntas) competía por la cuota diaria real de Groq
+          # (200K tokens) con los usuarios de producción, y esa cuota
+          # resultó ser una ventana móvil de 24h (8h después de agotarse
+          # seguía en ~199.800/200.000), no algo que se libere de un día
+          # para el otro. Saltar Groq del todo en CI y usar OpenAI directo
+          # (ya configurado como respaldo, ver LLM_FORZAR_OPENAI en
+          # rag_multi_norma.py) deja la cuota de Groq de producción
+          # completamente intacta.
+          LLM_FORZAR_OPENAI:    "true"
           # Respaldo de 2 niveles (Groq -> OpenAI), NVIDIA retirado el
           # 2026-08-20 por inconsistencia de latencia (20s-199s en pruebas
           # reales, ver rag_multi_norma.py). Sin esto, si Groq se queda sin
