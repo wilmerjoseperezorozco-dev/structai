@@ -9,6 +9,7 @@ por respuesta, inviable para un SaaS con usuarios reales).
 Uso: from rag_multi_norma import ask, route_query
 ══════════════════════════════════════════════════════════════════
 """
+import hashlib
 import json
 import logging
 import os
@@ -55,7 +56,26 @@ RERANKER_MODEL_NAME = "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1"
 # cada llamada en _generar_respuesta, así que se cachea solo).
 GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
 
-groq_client = OpenAI(api_key=os.environ["GROQ_API_KEY"], base_url="https://api.groq.com/openai/v1")
+# Timeout explícito -- agregado 2026-09-16 (idea 2 del roadmap de costos:
+# https://github.com/wilmerjoseperezorozco-dev/structai). Antes de este
+# cambio el cliente no tenía timeout propio (usaba el default del SDK de
+# OpenAI, ~10 minutos) -- si Groq se colgaba en vez de fallar rápido, la
+# petición completa quedaba esperando ese tiempo en vez de caer al respaldo.
+# 8s, no los 2s que se pidieron originalmente: el propio comentario de este
+# archivo documenta respuestas típicas de Groq en 1-3s, así que un corte a
+# 2s dispararía el respaldo en una fracción real de respuestas normales
+# (cualquier variación de red o un caso con reasoning_effort más largo), sin
+# ganar nada -- el respaldo (OpenAI, pago) empezaría a absorber tráfico que
+# Groq habría resuelto bien un segundo después. 8s da margen generoso sobre
+# el caso normal y sigue cortando mucho antes del cuelgue real que este
+# cambio busca evitar. Ajustar con datos reales de latencia (Sentry) si se
+# observa que 8s sigue siendo demasiado laxo o demasiado agresivo.
+GROQ_TIMEOUT_SEGUNDOS = float(os.getenv("GROQ_TIMEOUT_SEGUNDOS", "8.0"))
+
+groq_client = OpenAI(
+    api_key=os.environ["GROQ_API_KEY"], base_url="https://api.groq.com/openai/v1",
+    timeout=GROQ_TIMEOUT_SEGUNDOS, max_retries=0,
+)
 
 # ─── Respaldo NVIDIA NIM — RETIRADO el 2026-08-20 ─────────────────────────────
 # Se probó del 2026-08-02 al 2026-08-20 como segundo nivel de respaldo. Se
@@ -84,6 +104,16 @@ openai_client = (
 if openai_client is None:
     log.warning("OPENAI_API_KEY no configurada — sin tercer respaldo si Groq y NVIDIA fallan.")
 
+# Issue #53 (2026-09-17): GROQ_API_KEY es la MISMA en CI y en producción --
+# cada corrida de la batería de regresión de CI (~125 preguntas, cada una
+# una llamada LLM real) gasta cuota real de producción. Además, la cuota
+# diaria de Groq (200K tokens) parece ser una ventana móvil de 24h, no un
+# reset a hora fija: confirmado en vivo que 8h después de agotarse seguía
+# reportando ~199.800/200.000 usados. Esta bandera (solo para CI, la cuota
+# de Groq en producción queda intacta) salta Groq por completo y va directo
+# a OpenAI -- no consume ni un token de Groq al correr la batería completa.
+LLM_FORZAR_OPENAI = os.getenv("LLM_FORZAR_OPENAI", "false").lower() == "true"
+
 
 def _llamar_llm_con_respaldo(messages: list, max_tokens_groq: int = 700) -> str:
     """Intenta Groq, luego OpenAI, en ese orden -- el respaldo solo se
@@ -92,30 +122,37 @@ def _llamar_llm_con_respaldo(messages: list, max_tokens_groq: int = 700) -> str:
     enmascarando el error real). Usado por _generar_respuesta() y
     ask_precios() -- unificado aquí para no duplicar la lógica en dos
     sitios. Lanza RespuestaIAIndisponibleError solo si ambos fallan o
-    OpenAI no está configurado."""
-    try:
-        response = groq_client.chat.completions.create(
-            model=GROQ_MODEL, messages=messages, temperature=0.1,
-            max_tokens=max_tokens_groq, extra_body={"reasoning_effort": "low"},
-        )
-        if response.usage is not None:
-            _registrar_uso_groq(response.usage.total_tokens)
-        contenido = response.choices[0].message.content
-        if contenido:
-            return contenido
-        log.warning("Groq devolvió respuesta vacía, intentando respaldo OpenAI.")
-    except (RateLimitError, APIConnectionError, InternalServerError) as e:
-        log.warning(f"Groq no disponible ({type(e).__name__}), intentando respaldo OpenAI: {e}")
-    except APIStatusError as e:
-        if e.status_code != 413:
-            raise
-        log.warning(f"Groq rechazó la petición por tamaño de contexto (413), intentando respaldo OpenAI: {e}")
+    OpenAI no está configurado.
+
+    Si LLM_FORZAR_OPENAI está activo (solo CI, ver issue #53), Groq ni
+    siquiera se llama -- va directo a OpenAI, para no gastar la cuota
+    compartida con producción."""
+    if not LLM_FORZAR_OPENAI:
+        try:
+            response = groq_client.chat.completions.create(
+                model=GROQ_MODEL, messages=messages, temperature=0.1,
+                max_tokens=max_tokens_groq, extra_body={"reasoning_effort": "low"},
+            )
+            if response.usage is not None:
+                _registrar_uso_groq(response.usage.total_tokens)
+            contenido = response.choices[0].message.content
+            if contenido:
+                return contenido
+            log.warning("Groq devolvió respuesta vacía, intentando respaldo OpenAI.")
+        except (RateLimitError, APIConnectionError, InternalServerError) as e:
+            log.warning(f"Groq no disponible ({type(e).__name__}), intentando respaldo OpenAI: {e}")
+        except APIStatusError as e:
+            if e.status_code != 413:
+                raise
+            log.warning(f"Groq rechazó la petición por tamaño de contexto (413), intentando respaldo OpenAI: {e}")
 
     if openai_client is not None:
         try:
             response = openai_client.chat.completions.create(
                 model=OPENAI_MODEL, messages=messages, temperature=0.1, max_tokens=500,
             )
+            if response.usage is not None:
+                _registrar_uso_openai(response.usage.prompt_tokens, response.usage.completion_tokens)
             contenido = response.choices[0].message.content
             if contenido:
                 log.info(f"Respuesta generada con respaldo OpenAI ({OPENAI_MODEL}) porque Groq no estaba disponible.")
@@ -177,6 +214,192 @@ def _registrar_uso_groq(tokens_usados: int) -> None:
             # ya deja rastro en Cloud Logging (Google Cloud Run, desde el
             # 2026-09-01) aunque no llegue a Sentry.
             pass
+
+
+# ─── Costo real del respaldo OpenAI (idea 2 del roadmap de costos) ───────────
+# Agregado 2026-09-16: antes de este cambio, cada llamada exitosa al
+# respaldo OpenAI (línea de arriba) no dejaba ningún rastro de cuánto costó
+# -- el único contador real del archivo era el de Groq (gratis). El respaldo
+# es la única pierna paga de todo `_llamar_llm_con_respaldo`, así que es la
+# que de verdad hay que ver en dinero real, no solo en tokens.
+# Precios verificados en vivo (WebSearch, 2026-09-16, múltiples fuentes de
+# agosto 2026 coinciden): gpt-4o-mini = $0.15 / 1M tokens de entrada,
+# $0.60 / 1M tokens de salida -- USD, sin caché de prompt (no se está usando
+# acá). Se separan entrada/salida (no total_tokens) porque el precio real es
+# 4x distinto entre uno y otro -- un total_tokens ciego subestimaría el
+# costo real en preguntas con contexto largo y respuesta corta (el caso
+# típico de este RAG).
+OPENAI_PRECIO_USD_POR_TOKEN_ENTRADA = 0.15 / 1_000_000
+OPENAI_PRECIO_USD_POR_TOKEN_SALIDA = 0.60 / 1_000_000
+
+_uso_openai_hoy = {"fecha": None, "tokens_entrada": 0, "tokens_salida": 0, "costo_usd": 0.0, "llamadas": 0}
+
+
+def _registrar_uso_openai(tokens_entrada: int, tokens_salida: int) -> None:
+    """Mismo patrón que _registrar_uso_groq -- contador en memoria del
+    proceso, se reinicia solo comparando la fecha UTC en cada actualización.
+    A diferencia de Groq (cuota gratis con techo), acá no hay umbral de
+    alerta por token: cada llamada es dinero real desde la primera, así que
+    el número visible en /health?deep=true (ver apps/api/main.py) es el
+    costo acumulado del día, no un porcentaje de cuota."""
+    import datetime
+
+    hoy = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+    if _uso_openai_hoy["fecha"] != hoy:
+        _uso_openai_hoy["fecha"] = hoy
+        _uso_openai_hoy["tokens_entrada"] = 0
+        _uso_openai_hoy["tokens_salida"] = 0
+        _uso_openai_hoy["costo_usd"] = 0.0
+        _uso_openai_hoy["llamadas"] = 0
+
+    _uso_openai_hoy["tokens_entrada"] += tokens_entrada
+    _uso_openai_hoy["tokens_salida"] += tokens_salida
+    _uso_openai_hoy["costo_usd"] += (
+        tokens_entrada * OPENAI_PRECIO_USD_POR_TOKEN_ENTRADA
+        + tokens_salida * OPENAI_PRECIO_USD_POR_TOKEN_SALIDA
+    )
+    _uso_openai_hoy["llamadas"] += 1
+
+
+def uso_openai_hoy() -> dict:
+    """Snapshot de solo lectura del uso pago de HOY -- cuántas veces entró
+    el respaldo OpenAI (= cuántas veces Groq no alcanzó) y cuánto costó en
+    USD real, no una estimación de plan."""
+    return {**_uso_openai_hoy, "costo_usd": round(_uso_openai_hoy["costo_usd"], 4)}
+
+
+# ─── Caché de respuestas exactas (idea 2, la parte barata) ───────────────────
+# Agregado 2026-09-16: "misma pregunta = costo cero", sin Redis/Memorystore
+# -- Supabase ya está pagado y ya es compartido entre instancias de Cloud
+# Run (a diferencia de un cache en memoria de proceso, que no sobrevive un
+# cold start ni se comparte si max-instances > 1). Tabla:
+# rag_cache_respuestas (migración 20260916143000).
+#
+# Solo coincidencia EXACTA de pregunta normalizada -- nunca similitud
+# semántica: dos preguntas "parecidas" pueden tener respuestas correctas
+# distintas, cachear por similitud arriesgaría servir la respuesta
+# equivocada para ahorrar un llamado a Groq (que ya es gratis, el ahorro
+# real acá es de LATENCIA para el usuario, no solo de dinero).
+RAG_CACHE_TTL_DIAS = int(os.getenv("RAG_CACHE_TTL_DIAS", "30"))
+
+# Bug real encontrado 2026-09-16 (mismo día que se agregó el caché,
+# verificando el CI del PR #50): test_rag_nsr10_regresion.py/
+# test_rag_motores_regresion.py corren contra el Supabase REAL de
+# producción (mismas credenciales que /ask en vivo) y usan
+# pytest.mark.flaky(reruns=1) para tolerar la variación normal de
+# fraseo del LLM entre corridas -- pero el caché de arriba interceptaba
+# esos reintentos y devolvía la MISMA respuesta ya guardada, anulando
+# por completo esa red de seguridad. Peor: cada re-ejecución del mismo
+# job de CI (ej. 3 pushes seguidos a un PR) volvía a servir la primera
+# respuesta generada, "congelando" un resultado (bueno o malo) en vez
+# de darle a cada corrida una oportunidad real de generación fresca.
+# Confirmado en vivo: las ~125 preguntas de la batería completa
+# quedaron con hits=2 a 7 tras 3 corridas de CI del mismo PR. Se
+# desactiva el caché explícitamente en el job de CI (ver ci.yml,
+# RAG_CACHE_DISABLED=true) -- en producción real sigue activo.
+RAG_CACHE_DISABLED = os.getenv("RAG_CACHE_DISABLED", "false").lower() == "true"
+
+_ESPACIOS_MULTIPLES = re.compile(r"\s+")
+
+
+def _normalizar_pregunta_cache(question: str) -> str:
+    return _ESPACIOS_MULTIPLES.sub(" ", question.strip().lower())
+
+
+def _hash_cache(ruta: str, pregunta_normalizada: str) -> str:
+    return hashlib.sha256(f"{ruta}|{pregunta_normalizada}".encode("utf-8")).hexdigest()
+
+
+_uso_cache_hoy = {"fecha": None, "hits": 0, "misses": 0}
+
+
+def _registrar_cache(hit: bool) -> None:
+    import datetime
+
+    hoy = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+    if _uso_cache_hoy["fecha"] != hoy:
+        _uso_cache_hoy["fecha"] = hoy
+        _uso_cache_hoy["hits"] = 0
+        _uso_cache_hoy["misses"] = 0
+    _uso_cache_hoy["hits" if hit else "misses"] += 1
+
+
+def uso_cache_hoy() -> dict:
+    """Snapshot de solo lectura del uso del caché de HOY -- cuántas
+    preguntas se sirvieron gratis desde caché vs. cuántas fueron a la
+    pipeline real (retrieval + LLM)."""
+    return dict(_uso_cache_hoy)
+
+
+def _buscar_en_cache(ruta: str, question: str) -> Optional[dict]:
+    """None si no hay entrada válida (miss real, o expiró) -- nunca lanza:
+    un fallo de Supabase acá no debe tumbar una pregunta que sí puede
+    responderse por la vía normal, solo pierde el ahorro de esta vez."""
+    if RAG_CACHE_DISABLED:
+        return None
+
+    import datetime
+
+    pregunta_normalizada = _normalizar_pregunta_cache(question)
+    cache_id = _hash_cache(ruta, pregunta_normalizada)
+    try:
+        res = (
+            sb.table("rag_cache_respuestas")
+            .select("respuesta, expira_en, hits")
+            .eq("id", cache_id)
+            .limit(1)
+            .execute()
+        )
+    except Exception as e:
+        log.warning(f"Caché de respuestas no disponible (lectura): {e}")
+        _registrar_cache(hit=False)
+        return None
+
+    if not res.data:
+        _registrar_cache(hit=False)
+        return None
+
+    fila = res.data[0]
+    expira_en = datetime.datetime.fromisoformat(fila["expira_en"].replace("Z", "+00:00"))
+    if expira_en < datetime.datetime.now(datetime.timezone.utc):
+        _registrar_cache(hit=False)
+        return None
+
+    try:
+        sb.table("rag_cache_respuestas").update({
+            "hits": fila["hits"] + 1,
+            "ultimo_hit_en": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        }).eq("id", cache_id).execute()
+    except Exception as e:
+        # Contador de hits es solo observabilidad -- si falla el update no
+        # vale la pena descartar la respuesta cacheada que sí se recuperó.
+        log.warning(f"Caché de respuestas: no se pudo actualizar contador de hits: {e}")
+
+    _registrar_cache(hit=True)
+    return {**fila["respuesta"], "desde_cache": True}
+
+
+def _guardar_en_cache(ruta: str, question: str, respuesta: dict) -> None:
+    """Best-effort -- un fallo al guardar en caché nunca debe afectar la
+    respuesta que ya se le va a devolver al usuario."""
+    if RAG_CACHE_DISABLED:
+        return
+
+    import datetime
+
+    pregunta_normalizada = _normalizar_pregunta_cache(question)
+    cache_id = _hash_cache(ruta, pregunta_normalizada)
+    expira_en = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=RAG_CACHE_TTL_DIAS)
+    try:
+        sb.table("rag_cache_respuestas").upsert({
+            "id": cache_id,
+            "ruta": ruta,
+            "pregunta_normalizada": pregunta_normalizada,
+            "respuesta": respuesta,
+            "expira_en": expira_en.isoformat(),
+        }, on_conflict="id").execute()
+    except Exception as e:
+        log.warning(f"Caché de respuestas no disponible (escritura): {e}")
 
 
 def uso_groq_hoy() -> dict:
@@ -776,6 +999,20 @@ def _sin_tildes(s: str) -> str:
     return "".join(c for c in nfkd if not unicodedata.combining(c))
 
 
+def _grupos_sinonimos_detectados(query: str) -> list[list[str]]:
+    """Grupos de SINONIMOS_CONSTRUCCION cuyo término aparece (insensible a
+    tildes/mayúsculas) en la consulta. Lógica compartida por
+    _expandir_sinonimos_precios (arma el texto ampliado que se envía al
+    RPC) y por buscar_precios_apu (boost por coincidencia EXACTA de esos
+    mismos términos -- ver migración 20260913023000: se intentó primero
+    resolverlo en SQL con word_similarity(), pero eso también subía nombres
+    de actividad corruptos por artefactos de extracción de PDF en
+    apu_precios_referencia, ej. "en concreto" -- se revirtió y el boost
+    quedó del lado de Python, que ya conoce el vocabulario exacto)."""
+    q_norm = _sin_tildes(query.lower())
+    return [grupo for grupo in SINONIMOS_CONSTRUCCION if any(_sin_tildes(t.lower()) in q_norm for t in grupo)]
+
+
 def _expandir_sinonimos_precios(query: str) -> str:
     """Agrega al texto de búsqueda los sinónimos regionales de cualquier
     término de SINONIMOS_CONSTRUCCION que aparezca en la consulta (insensible
@@ -786,11 +1023,7 @@ def _expandir_sinonimos_precios(query: str) -> str:
     proveedor nacional) comparten el mismo tsquery construido a partir de
     p_query, las 4 se benefician con este único cambio, sin tocar la
     función SQL."""
-    q_norm = _sin_tildes(query.lower())
-    extra: list[str] = []
-    for grupo in SINONIMOS_CONSTRUCCION:
-        if any(_sin_tildes(t.lower()) in q_norm for t in grupo):
-            extra.extend(grupo)
+    extra: list[str] = [t for grupo in _grupos_sinonimos_detectados(query) for t in grupo]
     if not extra:
         return query
     # dedup preservando orden (un término puede aparecer en un solo grupo,
@@ -798,14 +1031,121 @@ def _expandir_sinonimos_precios(query: str) -> str:
     return query + " " + " ".join(dict.fromkeys(extra))
 
 
+def _nombre_coincide_con_sinonimo(nombre: str, terminos: list[str]) -> bool:
+    """True si `nombre` (una fila candidata de buscar_precios_apu) coincide
+    con alguno de los `terminos` de SINONIMOS_CONSTRUCCION ya detectados en
+    la consulta, en cualquiera de las dos direcciones -- substring de uno
+    dentro del otro, insensible a tildes/mayúsculas. Cubre tanto un
+    catálogo que abrevia el término completo (insumo "Maestro" vs. término
+    inyectado "maestro de obra": "maestro" es substring de "maestro de
+    obra") como un nombre largo que contiene el término literal (actividad
+    "Construcción de andén vehicular..." vs. término "andén"). Usado para
+    REORDENAR (no filtrar) el resultado de buscar_precios_apu(),
+    priorizando una coincidencia exacta de vocabulario de construcción
+    conocido por delante de la similitud parcial de trigram/texto completo
+    de una palabra común -- causa raíz real confirmada con SQL directo de
+    que "Maestro" ($4.377.262,50 COP) nunca aparecía en el top_k para
+    "capataz de obra" pese a que la expansión de sinónimos sí agrega
+    "maestro de obra" a la consulta (similarity('Maestro', <pregunta
+    larga>) = 0.138, muy por debajo de competidores sin relación real)."""
+    nombre_norm = _sin_tildes(nombre.lower()).strip()
+    if not nombre_norm:
+        return False
+    for termino in terminos:
+        termino_norm = _sin_tildes(termino.lower()).strip()
+        if termino_norm and (termino_norm in nombre_norm or nombre_norm in termino_norm):
+            return True
+    return False
+
+
+_CONECTORES_ES = frozenset({"de", "del", "la", "el", "los", "las", "en", "con", "por", "para", "y"})
+
+
+def _palabras_clave(terminos: list[str]) -> list[str]:
+    """Palabras individuales (>=4 letras, sin conectores) de los términos
+    de SINONIMOS_CONSTRUCCION que tienen MÁS DE UNA PALABRA (ej. "maestro
+    de obra", "acero de refuerzo") -- se buscan sueltas en vez de la frase
+    completa. Los términos de una sola palabra (ej. "andén", "concreto")
+    se ignoran aquí a propósito: ya los cubre bien el pool ampliado normal
+    de buscar_precios_apu(), y buscarlos sueltos de nuevo solo agrega
+    ruido (confirmado con SQL directo: buscar_precios_apu('concreto', 5)
+    devuelve "CONCRETO 1:3:3" con score=0.692, desplazando filas de andén
+    realmente relevantes de un top_k ya angosto).
+
+    La razón real de esta función es que una FRASE de varias palabras
+    empata por similitud de trigram con una fila totalmente distinta que
+    solo comparte el conector genérico: verificado con SQL directo que
+    similarity('MANO DE OBRA', 'maestro de obra') = 0.526 (ambas comparten
+    " de obra"), más alto que cualquier coincidencia real, mientras que la
+    palabra realmente distintiva de esa frase ("maestro") sola encuentra
+    la fila correcta ("Maestro") con score=1.0 y sin ruido --
+    buscar_precios_apu('maestro', 15) devuelve exactamente esa única
+    fila."""
+    palabras: list[str] = []
+    for termino in terminos:
+        crudo = re.findall(r"[a-zñ]+", _sin_tildes(termino.lower()))
+        if len(crudo) < 2:
+            continue
+        for palabra in crudo:
+            if palabra not in _CONECTORES_ES and len(palabra) >= 4 and palabra not in palabras:
+                palabras.append(palabra)
+    return palabras
+
+
 def buscar_precios_apu(query: str, top_k: int = 8) -> list[PrecioResult]:
     """Busca en la base de precios APU Barranquilla/Atlántico vía RPC
     buscar_precios_apu (texto completo español + trigram), ampliando antes
     la consulta con sinónimos regionales de construcción conocidos (ver
     SINONIMOS_CONSTRUCCION) para no perder resultados guardados con un
-    término equivalente distinto al que escribió el usuario."""
+    término equivalente distinto al que escribió el usuario.
+
+    Cuando la consulta activó algún grupo de SINONIMOS_CONSTRUCCION: (1) se
+    le pide al RPC un pool más grande que top_k con la consulta completa
+    ampliada; (2) además, se busca cada palabra clave de esos términos por
+    separado (ver _palabras_clave) con un p_limit chico, para encontrar
+    catálogos cortos (ej. el insumo "Maestro") que el ranking híbrido de
+    buscar_precios_apu() no puntúa competitivamente frente a una pregunta
+    larga en lenguaje natural, ni siquiera buscando la frase completa del
+    sinónimo (verificado con SQL directo, ver _palabras_clave). El
+    resultado combinado se reordena priorizando una coincidencia EXACTA de
+    los términos originales (ver _nombre_coincide_con_sinonimo) por delante
+    del score híbrido normal, y se trunca a top_k. Ver migración
+    20260913023000 (se intentó primero en SQL con word_similarity(),
+    revertido por subir también nombres de actividad corruptos en
+    apu_precios_referencia)."""
     query_ampliada = _expandir_sinonimos_precios(query)
-    result = sb.rpc("buscar_precios_apu", {"p_query": query_ampliada, "p_limit": top_k}).execute()
+    grupos = _grupos_sinonimos_detectados(query)
+    terminos_sinonimo = [t for grupo in grupos for t in grupo]
+
+    pool = max(top_k, 30) if grupos else top_k
+    result = sb.rpc("buscar_precios_apu", {"p_query": query_ampliada, "p_limit": pool}).execute()
+    filas = list(result.data)
+
+    if grupos:
+        vistos = {(f["tipo"], f["nombre"].strip().lower(), f.get("precio")) for f in filas}
+        for palabra in _palabras_clave(terminos_sinonimo):
+            extra = sb.rpc("buscar_precios_apu", {"p_query": palabra, "p_limit": 5}).execute()
+            for f in extra.data:
+                clave = (f["tipo"], f["nombre"].strip().lower(), f.get("precio"))
+                if clave not in vistos:
+                    vistos.add(clave)
+                    filas.append(f)
+        # Sube el score REAL (no solo la posición) de las filas con
+        # coincidencia exacta -- no alcanza con reordenar `filas` aquí:
+        # ask_precios() combina este resultado con
+        # buscar_precios_invias_vias() y vuelve a ordenar por p.score crudo
+        # antes de armar el contexto para el LLM (bug real encontrado en la
+        # re-corrida de RAGAS post-fix -- "Maestro" volvía a hundirse ahí
+        # pese a haber quedado primero en `filas`, porque su score crudo
+        # 0.137931 seguía siendo bajo). 0.95 es más alto que cualquier
+        # score crudo típico visto en este dataset (tope ~0.3-0.7 salvo
+        # coincidencia exacta de un término corto) pero deja margen bajo un
+        # 1.0 real.
+        for f in filas:
+            if _nombre_coincide_con_sinonimo(f["nombre"], terminos_sinonimo):
+                f["score"] = max(float(f.get("score") or 0.0), 0.95)
+        filas = sorted(filas, key=lambda r: r.get("score") or 0.0, reverse=True)
+    filas = filas[:top_k]
     return [
         PrecioResult(
             tipo=r["tipo"],
@@ -828,7 +1168,7 @@ def buscar_precios_apu(query: str, top_k: int = 8) -> list[PrecioResult]:
             score=r.get("score") or 0.0,
             actividad_id=r.get("actividad_id"),
         )
-        for r in result.data
+        for r in filas
     ]
 
 
@@ -1832,6 +2172,19 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = TOP_K_DEFA
     RAG multi-norma completo.
     Retorna: {respuesta, fuentes, normas_citadas, chunks_usados}
     """
+    # 0. Caché de respuestas exactas (idea 2, 2026-09-16) -- se salta a
+    # propósito si la pregunta tiene intención temporal ("noticias de
+    # hoy"...): esas respuestas cambian por diseño, cachearlas serviría
+    # contenido desactualizado sin que nadie se entere. norma_hint entra en
+    # la clave (vía `ruta`) porque la MISMA pregunta con un hint distinto
+    # puede recuperar contexto distinto.
+    usa_cache = not _quiere_actualidad(question)
+    ruta_cache = f"ask|hint={norma_hint or ''}"
+    if usa_cache:
+        cacheado = _buscar_en_cache(ruta_cache, question)
+        if cacheado is not None:
+            return cacheado
+
     # 1. Descomposición (issue #30) + routing automático si no hay norma
     # específica.
     #
@@ -1896,7 +2249,12 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = TOP_K_DEFA
         if bloque_noticias:
             contexto = f"{bloque_noticias}\n\n---\n\n{contexto}"
 
-    # 3. Síntesis con Ollama local
+    # 3. Síntesis con Groq (respaldo automático a OpenAI si Groq falla/agota
+    # cuota -- ver _llamar_llm_con_respaldo). Comentario corregido
+    # 2026-09-16: decía "Ollama local", quedó desactualizado desde el
+    # commit inicial del repo -- Ollama local está descartado para
+    # producción por latencia (ver docstring al inicio del archivo), no se
+    # usa aquí.
     respuesta = _generar_respuesta(contexto, question)
 
     # Autoevaluación barata post-generación (issue #31, primer paso): números
@@ -1916,7 +2274,7 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = TOP_K_DEFA
         normas_citadas = [fuente_sgc] + normas_citadas
         fuentes = [{"norma": fuente_sgc, "seccion": sgc_registro["municipio"], "score": 1.0}] + fuentes
 
-    return {
+    resultado = {
         "respuesta": respuesta,
         "normas_citadas": normas_citadas,
         "normas_detectadas_router": target_normas,
@@ -1945,6 +2303,18 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = TOP_K_DEFA
         # sin número no la detecta este chequeo).
         "advertencia_posible_alucinacion": advertencia_alucinacion,
     }
+
+    # Guarda en caché (idea 2) -- best-effort, nunca bloquea la respuesta
+    # real si Supabase falla acá. Se salta si la pregunta era temporal
+    # (misma razón que el chequeo del paso 0) o si vino de un dato en vivo
+    # del SGC cuya frescura ya depende de otra fuente, no del corpus
+    # estático -- cachearlo no es incorrecto (el dato de zona sísmica no
+    # cambia día a día) pero se prioriza simple sobre exhaustivo en esta
+    # primera versión: solo se cachean respuestas 100% basadas en corpus.
+    if usa_cache and not sgc_registro:
+        _guardar_en_cache(ruta_cache, question, resultado)
+
+    return resultado
 
 
 # ─── AVISO DE RESPONSABILIDAD PROFESIONAL (issue #18) ────────────────────────

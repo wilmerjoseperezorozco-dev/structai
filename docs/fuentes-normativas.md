@@ -304,3 +304,31 @@ confirmar que ya está en `scripts/ingesta/nsr10/raw/`, gitignored, antes de
 volver a descargarlo). Actualizar la sección "Estado real de ingesta" de
 este documento en el mismo commit que cierre un título — que no vuelva a
 vivir solo en memoria privada.
+
+## CI de cobertura (idea 6 del roadmap, 2026-09-16)
+
+`packages/rag-audit-kit` (idea 1) extrajo a código reusable el método de
+auditoría de numerales ya usado a mano título por título. El job
+`test-cobertura-ingesta` de `ci.yml` usa ese paquete en cada PR para
+verificar que la cobertura de cualquier título con un baseline guardado no
+haya **retrocedido** — no exige que el corpus ya esté completo (no lo
+está, ver tabla de arriba), solo que no pierda silenciosamente cobertura
+que ya tenía (una migración mal escrita, un borrado accidental, un bug en
+un script de ingesta).
+
+Cuando se cierra o avanza sustancialmente un título, generar/actualizar su
+baseline en el mismo commit:
+
+```bash
+python scripts/ingesta/generar_baseline_cobertura.py \
+  --pdf scripts/ingesta/nsr10/raw/<archivo>.pdf \
+  --prefijo "X." \
+  --titulo "NSR-10 Título X — <nombre>" \
+  --out scripts/ingesta/nsr10/cobertura_baseline/X.json
+```
+
+Hoy solo existe el baseline de Título I (generado al validar
+rag-audit-kit) — el resto se agrega progresivamente, no retroactivamente
+de una sola vez. El archivo baseline solo guarda etiquetas de numeral
+("I.3.3.2"), nunca el texto normativo — no hay problema de derechos de
+autor en commitearlo.

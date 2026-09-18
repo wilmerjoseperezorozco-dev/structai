@@ -16,9 +16,11 @@ import {
   Sparkles,
   LogIn,
   ArrowRight,
+  ThumbsUp,
+  ThumbsDown,
 } from "lucide-react";
 import type { Session } from "@supabase/supabase-js";
-import { consultarDelegado, type ConsultarResponse, type FuenteChunk } from "@/lib/api";
+import { consultarDelegado, enviarFeedback, type ConsultarResponse, type FuenteChunk } from "@/lib/api";
 import { supabase } from "@/lib/supabase";
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -30,6 +32,11 @@ interface Message {
   role: Role;
   text: string;
   meta?: ConsultarResponse;
+  // 👍/👎 ya enviado sobre esta respuesta (idea 7, feedback cerrado) --
+  // undefined = todavía sin decidir. Vive en el mensaje (no en estado
+  // aparte) para que persista en localStorage igual que el resto del
+  // historial, ver guardarHistorial().
+  feedbackUtil?: boolean;
 }
 
 // ── Sugerencias agrupadas por dominio ───────────────────────────────────────
@@ -243,7 +250,74 @@ function AvisoResponsabilidad({ texto }: { texto: string }) {
   );
 }
 
-function Bubble({ msg }: { msg: Message }) {
+// ── 👍/👎 sobre una respuesta puntual (idea 7, feedback cerrado) ────────────
+// Solo aparece cuando el backend devolvió consulta_id (best-effort — si
+// registrar_consulta() falló del lado del servidor, no hay a qué atar el
+// feedback y el botón no se muestra en vez de fallar en silencio al hacer
+// clic). Una vez enviado, se reemplaza por una confirmación fija -- no se
+// permite cambiar de opinión en esta primera versión, mismo criterio MVP
+// que /admin/usuarios (lo simple primero, ampliar si hace falta).
+function FeedbackButtons({
+  consultaId,
+  dado,
+  onDado,
+}: {
+  consultaId: string;
+  dado: boolean | undefined;
+  onDado: (util: boolean) => void;
+}) {
+  const [enviando, setEnviando] = useState<boolean | null>(null);
+
+  if (dado !== undefined) {
+    return (
+      <p className="text-[11px] text-concrete-600 px-1">
+        {dado ? "Gracias, marcaste esta respuesta como útil." : "Gracias por el aviso — vamos a revisarla."}
+      </p>
+    );
+  }
+
+  const enviar = async (util: boolean) => {
+    if (enviando !== null) return;
+    setEnviando(util);
+    try {
+      await enviarFeedback(consultaId, util);
+      onDado(util);
+    } catch {
+      // Best-effort -- si falla, se deja reintentar (no se marca como dado).
+      setEnviando(null);
+    }
+  };
+
+  return (
+    <div className="flex items-center gap-1 px-1">
+      <span className="text-[11px] text-concrete-600 mr-1">¿Te sirvió esta respuesta?</span>
+      <button
+        onClick={() => enviar(true)}
+        disabled={enviando !== null}
+        title="Útil"
+        className="p-1 rounded-lg text-concrete-500 hover:text-brand-400 hover:bg-concrete-800 disabled:opacity-50 transition"
+      >
+        {enviando === true ? <Loader2 size={13} className="animate-spin" /> : <ThumbsUp size={13} />}
+      </button>
+      <button
+        onClick={() => enviar(false)}
+        disabled={enviando !== null}
+        title="No útil"
+        className="p-1 rounded-lg text-concrete-500 hover:text-red-400 hover:bg-concrete-800 disabled:opacity-50 transition"
+      >
+        {enviando === false ? <Loader2 size={13} className="animate-spin" /> : <ThumbsDown size={13} />}
+      </button>
+    </div>
+  );
+}
+
+function Bubble({
+  msg,
+  onFeedbackGiven,
+}: {
+  msg: Message;
+  onFeedbackGiven: (msgId: string, util: boolean) => void;
+}) {
   const isUser = msg.role === "user";
   const isError = msg.role === "error";
 
@@ -289,6 +363,15 @@ function Bubble({ msg }: { msg: Message }) {
           <p className="text-[11px] text-concrete-600 mt-1 px-1 tabular-nums">
             {msg.meta.chunks_usados} fuentes consultadas · {(msg.meta.latencia_ms / 1000).toFixed(1)}s
           </p>
+          {msg.meta.consulta_id && (
+            <div className="mt-1">
+              <FeedbackButtons
+                consultaId={msg.meta.consulta_id}
+                dado={msg.feedbackUtil}
+                onDado={(util) => onFeedbackGiven(msg.id, util)}
+              />
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -446,6 +529,10 @@ export default function Chat() {
     }
   };
 
+  const handleFeedback = (msgId: string, util: boolean) => {
+    setMessages((m) => m.map((msg) => (msg.id === msgId ? { ...msg, feedbackUtil: util } : msg)));
+  };
+
   const onKey = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -482,7 +569,7 @@ export default function Chat() {
       {/* Historial */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 scrollbar-thin scrollbar-thumb-concrete-700">
         {messages.map((m) => (
-          <Bubble key={m.id} msg={m} />
+          <Bubble key={m.id} msg={m} onFeedbackGiven={handleFeedback} />
         ))}
 
         {loading && (

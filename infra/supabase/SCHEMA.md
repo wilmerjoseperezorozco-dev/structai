@@ -53,6 +53,8 @@ convención real de `id` de `nsr10_chunks`, ver `docs/CATALOGO_DATOS.md`
 | `compliance_checks` | Verificaciones de cumplimiento normativo |
 | `agent_results` | Resultados de agentes/automatizaciones |
 | `aquai_proyectos`, `geopot_proyectos`, `vias_proyectos`, `gerencia_proyectos` | Proyectos guardados por motor, uno por dominio |
+| `proyectos` | Tabla paraguas agregada 2026-09-16 (migración `proyectos_umbrella_municipio`): agrupa proyectos de un mismo usuario en varios motores bajo un mismo sitio físico + `municipio` (texto libre, mismo criterio que `sgc_amenaza_sismica_municipios`). Vínculo opcional vía `proyecto_id` en cada tabla de motor de arriba — con FK real en geopot/vias/gerencia, **sin FK** en `aquai_proyectos` (ese motor está diseñado para ser separable, ver su migración original). Preparación de esquema para un futuro batch de análisis cruzado (precios+norma+clima) que hoy NO se construyó — verificado con `count(*)` que las 4 tablas de motor tienen 0 filas reales, no hay uso todavía que justifique el batch en sí. |
+| `precio_submissions` | Agregada 2026-09-16 (migración `precio_submissions`, idea 4 del roadmap): reportes de precio crowdsourced desde `apps/native`. **Solo esquema — idea 4 se pausó inmediatamente después**, no hay pantalla de captura ni foto/QR/cifrado/incentivos/agregación construidos todavía. `estado='pendiente'` por defecto (no influye en precios mostrados sin moderación); sin política de UPDATE/DELETE para el usuario (envío inmutable una vez creado). |
 
 ### Otros
 

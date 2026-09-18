@@ -1,0 +1,1239 @@
+Construyendo 278 muestras reales (llamadas a ask(), Groq desactivado -> OpenAI directo)...
+  [01/278] preguntando: B-viento-no-es-sismo ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|##########| 199/199 [00:00<00:00, 3115.94it/s]
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|##########| 201/201 [00:00<00:00, 3231.31it/s]
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [02/278] preguntando: B-biblioteca-estanterias-7kNm2 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [03/278] preguntando: B-viento-minimo-040 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [04/278] preguntando: A-4-sistemas-estructurales ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [05/278] preguntando: A-ajuste-dinamico-80-90 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [06/278] preguntando: A-Aa-Av-Barranquilla ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [07/278] preguntando: A-deriva-maxima-1-porciento ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [08/278] preguntando: C-fc-minimo-general-17MPa ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [09/278] preguntando: C-fc-minimo-DMO-DES-21MPa ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [10/278] preguntando: C-recubrimiento-contacto-suelo-75mm ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [11/278] preguntando: C-factor-phi-traccion-090 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [12/278] preguntando: C-ganchos-sismicos-135grados ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [13/278] preguntando: C-cuantia-maxima-flexion-DES-0025 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [14/278] preguntando: C-fyt-maximo-confinamiento-700MPa ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [15/278] preguntando: C-diafragmas-espaciamiento-max-450mm ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [16/278] preguntando: D-supervision-tecnica-3000m2 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [17/278] preguntando: D-mortero-relleno-minimo-125MPa ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [18/278] preguntando: D-celdas-verticales-max-65porciento ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [19/278] preguntando: D-diametro-minimo-refuerzo-celdas-10mm ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [20/278] preguntando: D-espesor-minimo-no-reforzada-120mm ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [21/278] preguntando: D-no-reforzada-zona-baja-Aa-005 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [22/278] preguntando: D-morteros-probetas-cubos-50mm ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [23/278] preguntando: E-mortero-pega-75MPa ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [24/278] preguntando: E-espesor-muro-zona-alta-2pisos-110mm ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [25/278] preguntando: E-columnas-confinamiento-area-20000mm2 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [26/278] preguntando: G-m3-424-pies-tablares ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [27/278] preguntando: G-humedad-madera-estructural-19-12porciento ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [28/278] preguntando: G-guadua-uniones-clavadas-prohibidas ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [29/278] preguntando: G-guadua-humedad-cargas-admisibles-19porciento ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [30/278] preguntando: A-deriva-mamposteria-cortante-05porciento ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [31/278] preguntando: F-DCCR-formula-Ru-phiRn ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [32/278] preguntando: F-PCD-limites-luz20m-peralte18m ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [33/278] preguntando: J-hidrante-hospital-500m2-63Ls ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [34/278] preguntando: J-muro-cortafuego-categoria1-3horas ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [35/278] preguntando: K-fuerza-apertura-puerta-250N ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [36/278] preguntando: K-iluminacion-emergencia-15horas ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [37/278] preguntando: K-numero-salidas-501-1000-3salidas ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [38/278] preguntando: H-experiencia-geotecnista-5anos ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [39/278] preguntando: H-sondeos-categoria-alta-25m-4sondeos ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [40/278] preguntando: H-categoria-media-4a10niveles ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [41/278] preguntando: I-excepcion-titulo-E-15viviendas ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [42/278] preguntando: I-registro-supervisor-5anos ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [43/278] preguntando: I-dos-grados-supervision-AB ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [44/278] preguntando: B-impacto-ascensores-100porciento ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [45/278] preguntando: B-factor-rafaga-G085 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [46/278] preguntando: NTC1500-instalaciones-prohibidas-ascensor ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [47/278] preguntando: NTC174-modulo-finura-23-31 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [48/278] preguntando: NTC121-fraguado-inicial-45min ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [49/278] preguntando: Decreto1072-multa-no-reportar-AT-1000SMMLV ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [50/278] preguntando: Decreto1072-fase3-empresa-grande-6meses ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [51/278] preguntando: NTC174-terrones-arcilla-max-3porciento ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [52/278] preguntando: NTC121-expansion-autoclave-08porciento ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [53/278] preguntando: K-vidrio-templado-fragmenta-pequeños-pedazos ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [54/278] preguntando: K-tragaluz-angulo-15grados ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [55/278] preguntando: K-templado-vs-termoendurecido-compresion ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [56/278] preguntando: K-barandas-vidrio-factor-seguridad-4 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [57/278] preguntando: K-vidrio-2mm-prohibido ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [58/278] preguntando: K-esfuerzos-termicos-probabilidad-rotura-08porciento ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [59/278] preguntando: K-vidrio-inclinado-mas-de-15grados ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [60/278] preguntando: F-analisis-racional-phi-miembros-080-conexiones-065 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [61/278] preguntando: F-espesor-minimo-entregado-95porciento ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [62/278] preguntando: F-f41-alcance-espesor-maximo-254mm ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [63/278] preguntando: F-f42-max-wt-elemento-rigidizado-ambos-bordes-500 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [64/278] preguntando: F-f42-max-ht-almas-no-reforzadas-200 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [65/278] preguntando: F-f42-k-elemento-no-rigidizado-043 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [66/278] preguntando: F-f43-kv-almas-no-reforzadas-534 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [67/278] preguntando: F-f43-phi-tension-fluencia-seccion-bruta-090 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [68/278] preguntando: F-f43-phi-tension-rotura-seccion-neta-075 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [69/278] preguntando: F-f44-espesor-entramados-livianos-0455-2997 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [70/278] preguntando: F-f44-pbr1-riostra-compresion-001pn ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [71/278] preguntando: F-f45-tapon-diametro-efectivo-minimo-95mm ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [72/278] preguntando: F-f45-pernos-distancia-minima-3d ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [73/278] preguntando: F-f45-cierre-pnot-desgarramiento-tornillo-085 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [74/278] preguntando: F-f45-cierre-bloque-cortante-476mm ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [75/278] preguntando: F-f45-cierre-conexiones-otros-materiales ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [76/278] preguntando: F-f46-ntc3353-prueba-tension-seccion-completa ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [77/278] preguntando: F-f46-acero-virgen-cuatro-especimenes ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [78/278] preguntando: F-f46-dccr-tres-especimenes-15pct ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [79/278] preguntando: F-f47-recubrimiento-minimo-50mm ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [80/278] preguntando: F-f47-espesor-minimo-071mm-calibre22 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [81/278] preguntando: F-f47-apuntalamiento-75pct-7dias ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [82/278] preguntando: F-f48-espesor-046-300mm ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [83/278] preguntando: F-f48-perforaciones-espaciamiento-600mm ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [84/278] preguntando: F-f48-carga-axial-tablero-yeso-258kn ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [85/278] preguntando: F-f51-sistema-unidades-kgf ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [86/278] preguntando: F-f51-alcance-tipos-estructuras ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [87/278] preguntando: F-f52-6082-t6-esfuerzo-255kgf ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [88/278] preguntando: F-f52-durabilidad-a-agua-salada-proteccion ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [89/278] preguntando: F-f53-deflexion-voladizo-L180 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [90/278] preguntando: F-f53-phi-union-soldada ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [91/278] preguntando: F-f53-fatiga-crecimiento-grietas ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [92/278] preguntando: F-f541-2-esfuerzo-limite-po-6061-t6 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [93/278] preguntando: F-f543-totalmente-compacta-pandeo-local ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [94/278] preguntando: F-f543-beta0-elementos-salientes-no-soldados ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [95/278] preguntando: F-f544-kz-6061-t6 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [96/278] preguntando: F-f544-tiempo-recuperacion-serie-7000 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [97/278] preguntando: F-f544-eta-un-camino-calor-tc25 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [98/278] preguntando: F-f545-espaciamiento-40epsilon-ry ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [99/278] preguntando: F-f545-restricciones-laterales-3-porciento ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [100/278] preguntando: F-f545-vigas-ensambladas-f5541 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [101/278] preguntando: F-f546-tirante-excentrico-06ao ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [102/278] preguntando: F-f546-tres-tipos-conexion-excentrica ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [103/278] preguntando: F-f546-prs-menor-fluencia-falla-local ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [104/278] preguntando: SINT-barranquilla-Aa010-vs-mamposteria-no-reforzada-D ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [105/278] preguntando: SINT-fc-concreto-C-vs-mortero-relleno-D ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [106/278] preguntando: SINT-fc-DES-DMO-C-vs-mortero-pega-E ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [107/278] preguntando: SINT-phi-traccion-C-vs-phi-miembros-F ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [108/278] preguntando: SINT-mortero-relleno-D-vs-mortero-pega-E ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [109/278] preguntando: SINT-5anos-geotecnista-H-vs-registro-supervisor-I ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [110/278] preguntando: SINT-hidrante-J-vs-fuerza-puerta-K ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [111/278] preguntando: SINT-sistemas-sismicos-A-vs-viento-B ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [112/278] preguntando: SINT-material-D-vs-G ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [113/278] preguntando: SINT-conexiones-F-vs-G ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [114/278] preguntando: SINT-recubrimiento-C-vs-vidrio-barandas-K ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [115/278] preguntando: SINT-fc-concreto-C-vs-fraguado-NTC121 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [116/278] preguntando: COMP-fc-minimo-y-acero-corrugado ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [117/278] preguntando: COMP-pies-tablares-y-arena-rio ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [118/278] preguntando: COMP-recubrimiento-y-bloque-concreto ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [119/278] preguntando: COMP-deriva-maxima-y-cemento-argos ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [120/278] preguntando: COMP-ganchos-sismicos-y-ayudante ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [121/278] preguntando: COMP-mortero-relleno-y-baldosa ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [122/278] preguntando: COMP-supervision-mamposteria-y-codo-galvanizado ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [123/278] preguntando: COMP-fuerza-puerta-y-candado ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [124/278] preguntando: COLOQ-ganchos-flejes-columna ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [125/278] preguntando: COLOQ-recubrimiento-varilla-tierra ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [126/278] preguntando: COLOQ-resistencia-concreto-floja ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [127/278] preguntando: COLOQ-ladeo-piso-concreto ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [128/278] preguntando: COLOQ-humedad-madera-techo ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [129/278] preguntando: COLOQ-clavo-guadua ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [130/278] preguntando: COLOQ-dureza-puerta-emergencia ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [131/278] preguntando: COLOQ-tamano-obra-supervisor ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [132/278] preguntando: COLOQ-columna-confinamiento-gruesa ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [133/278] preguntando: COLOQ-formas-estructura-temblor ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [134/278] preguntando: H-asentamiento-maximo-aisladas-30cm ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [135/278] preguntando: H-fsicp-carga-muerta-viva-normal-30 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [136/278] preguntando: H-sobrecarga-minima-excavaciones-15kpa ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [137/278] preguntando: H-cohesion-arcillas-30porciento-1mes ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [138/278] preguntando: H-kst-amax-macizos-rocosos-100 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [139/278] preguntando: H-desplante-muro-gravedad-1m ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [140/278] preguntando: H-fs-deslizamiento-estatico-160 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [141/278] preguntando: H-componente-vertical-25km ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [142/278] preguntando: H-amplificacion-limite-04g ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [143/278] preguntando: H-historias-movimiento-minimo-tres ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [144/278] preguntando: H-plan-contingencia-3m ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [145/278] preguntando: H-desviacion-verticalidad-pilote-3-100 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [146/278] preguntando: H-profundidad-raices-6m ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [147/278] preguntando: H-punto-marchitamiento-pf-42 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [148/278] preguntando: H-criterio-colapsabilidad-gamma-dcrit ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [149/278] preguntando: H-suelo-dispersivo-sales-sodio-40-60 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [150/278] preguntando: H-inclinacion-talud-rehabilitacion-18grados ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [151/278] preguntando: H-n160-minimo-licuacion-30golpes ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [152/278] preguntando: A-phi-p-torsional-extrema-1bP-08 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [153/278] preguntando: A-piso-debil-extremo-5bA-65porciento ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [154/278] preguntando: ADV-titulo-L-fabricado ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [155/278] preguntando: ADV-titulo-M-bambu-laminado ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [156/278] preguntando: ADV-ntc-99999-acabados-pintura ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [157/278] preguntando: ADV-decibeles-ruido-obra ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [158/278] preguntando: ADV-marte-Aa-Av ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [159/278] preguntando: ADV-ntc-88888-iluminacion-led ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [160/278] preguntando: ADV-material-diamante-estructural ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [161/278] preguntando: ADV-puentes-colgantes-fuera-alcance ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [162/278] preguntando: ADV-decreto1077-granizo-cubiertas ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [163/278] preguntando: ADV-reactor-nuclear-fuera-alcance ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [164/278] preguntando: H-H9-minerales-expansivos-montmorilonita ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [165/278] preguntando: H-H9-sufijo-vertic-igac ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [166/278] preguntando: H-H9-sondeos-50porciento-zona-activa ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [167/278] preguntando: H-H9-drenaje-perimetral-2-10porciento ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [168/278] preguntando: H-H9-cuatro-tipos-suelos-colapsables ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [169/278] preguntando: H-H9-hidrocolapso-muy-severo-020 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [170/278] preguntando: H-H9-pf4-981kpa ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [171/278] preguntando: H-H9-eucalyptus-macarthuri-500Ldia ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [172/278] preguntando: H-H9-crecimiento-raices-20mm-dia ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [173/278] preguntando: H-H9-especie-agresiva-urapan ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [174/278] preguntando: H-H9-mitigacion-estructural-dos-caminos ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [175/278] preguntando: H-H9-recubrimiento-vegetativo-20porciento ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [176/278] preguntando: H-H9-limite-plastico-pf-4a5 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [177/278] preguntando: H-H9-limite-practico-pf-30 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [178/278] preguntando: H-H9-loess-suelos-eolicos ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [179/278] preguntando: H-H10-cinco-amenazas-sismicas-sitio ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [180/278] preguntando: H-H10-pleistoceno-11000anos ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [181/278] preguntando: H-H10-tres-tipos-cimentacion ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [182/278] preguntando: H-H10-mejoramiento-estructural-deslizamientos ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [183/278] preguntando: H-H10-jet-grouting-mejoramiento-suelo ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [184/278] preguntando: H-H10-base-fija-fuerza-controlada ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [185/278] preguntando: H-H10-fuentes-avalancha-inundacion ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [186/278] preguntando: H-H10-tres-medidas-mitigacion-licuacion ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [187/278] preguntando: H-H10-capacidad-ultima-geotecnista ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [188/278] preguntando: H-H10-zapatas-submuradas ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [189/278] preguntando: H-H10-vigas-equilibrio-desplazamiento-lateral ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [190/278] preguntando: H-H10-alcance-amenazas-sismogeotecnicas ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [191/278] preguntando: A-A33-ecuacion-A331-R ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [192/278] preguntando: A-A33-retroceso-esquina-15porciento ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [193/278] preguntando: A-A33-discontinuidad-diafragma-50porciento ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [194/278] preguntando: A-A33-phi-p-tipo-4P-08 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [195/278] preguntando: A-A33-phi-p-tipo-5P-09 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [196/278] preguntando: A-A33-piso-flexible-1aA ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [197/278] preguntando: A-A33-irregularidad-masa-2A-15veces ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [198/278] preguntando: A-A33-irregularidad-geometrica-3A-13veces ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [199/278] preguntando: A-A33-phi-a-tipo-4A-08 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [200/278] preguntando: B-equipos-fijos-cargas-muertas ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [201/278] preguntando: B-responsabilidad-verificar-pesos-obra ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [202/278] preguntando: A-A33-piso-debil-5aA-80porciento ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [203/278] preguntando: A-A33-zona-baja-1aP-1bP ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [204/278] preguntando: A-A33-zona-intermedia-1aP-1bP-3P-4P ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [205/278] preguntando: A-A33-DMI-phi-r-siempre-10 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [206/278] preguntando: A-A33-ecuacion-A332-sobrerresistencia ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [207/278] preguntando: SINT2-sobrecarga-H-vs-viento-B ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [208/278] preguntando: SINT2-sobrecarga-H-vs-biblioteca-B ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [209/278] preguntando: SINT2-talud-H10-vs-tragaluz-K ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [210/278] preguntando: SINT2-ganchos-C-vs-talud-H10 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [211/278] preguntando: SINT2-fs-deslizamiento-H-vs-vidrio-K ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [212/278] preguntando: SINT2-fc-C-vs-mortero-pega-E-17vs75 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [213/278] preguntando: SINT2-espesor-D-vs-acero-F ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [214/278] preguntando: SINT2-columna-E-vs-celdas-D-no-comparable ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [215/278] preguntando: SINT2-deriva-A-vs-fs-H-no-comparable ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [216/278] preguntando: SINT2-titulo-A-vs-H-cimentacion ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [217/278] preguntando: SINT2-vidrio-K-vs-guadua-G-uniones ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [218/278] preguntando: SINT2-supervision-D-vs-G-no-mismo-umbral ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [219/278] preguntando: SINT2-recubrimiento-C-vs-espesor-D ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [220/278] preguntando: SINT2-experiencia-H-vs-registro-I-distintos ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [221/278] preguntando: SINT2-hidrante-J-vs-puerta-K-unidades ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [222/278] preguntando: SINT2-suelo-colapsable-vs-expansivo-H ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [223/278] preguntando: SINT2-DMI-DMO-DES-A-vs-C ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [224/278] preguntando: SINT2-material-D-vs-G-distintos ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [225/278] preguntando: ADV2-titulo-N-sostenibilidad-fabricado ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [226/278] preguntando: ADV2-ntc-5555-puertas-madera ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [227/278] preguntando: ADV2-paneles-solares-fotovoltaicos ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [228/278] preguntando: ADV2-miami-Aa-Av ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [229/278] preguntando: ADV2-piscinas-fibra-vidrio ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [230/278] preguntando: ADV2-titanio-titulo-F ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [231/278] preguntando: ADV2-concreto-lunar-regolito ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [232/278] preguntando: ADV2-titulo-Z-ia-fabricado ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [233/278] preguntando: ADV2-ras2000-torres-eolicas ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [234/278] preguntando: ADV2-decibeles-sismo-titulo-A ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [235/278] preguntando: ADV2-drones-inspeccion-estructural ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [236/278] preguntando: ADV2-cimentaciones-luna-titulo-H ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [237/278] preguntando: ADV2-mamposteria-vidrio-fibra-carbono ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [238/278] preguntando: ADV2-ntc-12345-drones ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [239/278] preguntando: ADV2-limite-200-pisos-rascacielos ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [240/278] preguntando: ADV2-plataformas-petroleras-costa-afuera ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [241/278] preguntando: ADV2-tanques-septicos-titulo-K ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [242/278] preguntando: ADV2-bambu-asiatico-titulo-G ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [243/278] preguntando: COLOQ2-viento-minimo-040 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [244/278] preguntando: COLOQ2-fyt-confinamiento-700MPa ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [245/278] preguntando: COLOQ2-cuantia-maxima-flexion-DES ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [246/278] preguntando: COLOQ2-mortero-relleno-125MPa ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [247/278] preguntando: COLOQ2-celdas-verticales-65porciento ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [248/278] preguntando: COLOQ2-mortero-pega-75MPa ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [249/278] preguntando: COLOQ2-m3-424-pies-tablares ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [250/278] preguntando: COLOQ2-hidrante-hospital-500m2-63Ls ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [251/278] preguntando: COLOQ2-numero-salidas-501-1000 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [252/278] preguntando: COLOQ2-iluminacion-emergencia-15horas ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [253/278] preguntando: COLOQ2-experiencia-geotecnista-5anos ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [254/278] preguntando: COLOQ2-sondeos-categoria-alta-25m ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [255/278] preguntando: COLOQ2-dos-grados-supervision-AB ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [256/278] preguntando: COLOQ2-sobrecarga-excavaciones-15kpa ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [257/278] preguntando: COLOQ2-desplante-muro-gravedad-1m ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [258/278] preguntando: COLOQ2-plan-contingencia-3m ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [259/278] preguntando: COLOQ2-analisis-racional-phi ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [260/278] preguntando: COLOQ2-Aa-Av-Barranquilla ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [261/278] preguntando: COLOQ2-punto-marchitamiento-pf42 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [262/278] preguntando: COLOQ2-criterio-colapsabilidad ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [263/278] preguntando: COLOQ2-inclinacion-talud-18grados ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [264/278] preguntando: COLOQ2-n160-licuacion-30golpes ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [265/278] preguntando: COLOQ2-profundidad-raices-6m ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [266/278] preguntando: COLOQ2-suelo-dispersivo-sales-sodio ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [267/278] preguntando: COMP2-H-fs-h4-vs-h6 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [268/278] preguntando: COMP2-H-raices-vs-sondeos ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [269/278] preguntando: COMP2-H-talud-20grados-vs-fs-deslizamiento ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [270/278] preguntando: COMP2-A-phi-1bP-vs-1bA ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [271/278] preguntando: COMP2-A-zona-baja-vs-intermedia ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [272/278] preguntando: COMP2-C-fc-vs-phi-DES-DMO ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [273/278] preguntando: COMP2-F-phi-miembros-vs-conexiones ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [274/278] preguntando: COMP2-K-vidrio-barandas-vs-templado ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [275/278] preguntando: COMP2-D-supervision-vs-no-reforzada-3500m2 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [276/278] preguntando: COMP2-A-umbral-dinamico-vs-tabla-A34 ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [277/278] preguntando: COMP2-A-1aA-y-5aA-simultaneos ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+  [278/278] preguntando: COMP2-H-historias-vs-sondeos-categoria ...
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+Groq no disponible (APIConnectionError), intentando respaldo OpenAI: Connection error.
+C:\Users\HP\Desktop\optimizacion para negocios en el atlantico\tubara\construdata\scripts\evaluacion\ragas_52preguntas.py:109: DeprecationWarning: LangchainLLMWrapper is deprecated and will be removed in a future version. Use llm_factory instead: from openai import OpenAI; from ragas.llms import llm_factory; llm = llm_factory('gpt-4o-mini', client=OpenAI(api_key='...'))
+  juez_llm = LangchainLLMWrapper(ChatOpenAI(model="gpt-4o-mini", api_key=os.environ["OPENAI_API_KEY"]))
+C:\Users\HP\Desktop\optimizacion para negocios en el atlantico\tubara\construdata\scripts\evaluacion\ragas_52preguntas.py:110: DeprecationWarning: LangchainEmbeddingsWrapper is deprecated and will be removed in a future version. Use the modern embedding providers instead: embedding_factory('openai', model='text-embedding-3-small', client=openai_client) or from ragas.embeddings import OpenAIEmbeddings, GoogleEmbeddings, HuggingFaceEmbeddings
+  juez_embeddings = LangchainEmbeddingsWrapper(OpenAIEmbeddings(api_key=os.environ["OPENAI_API_KEY"]))
+Muestras guardadas en C:\Users\HP\Desktop\optimizacion para negocios en el atlantico\tubara\construdata\scripts\evaluacion\baseline_2026-09-09_278preguntas_muestras.jsonl
+Evaluando con RAGAS (n=278): faithfulness, answer_relevancy, context_precision, context_recall...
+Evaluating:   0%|          | 0/1112 [00:00<?, ?it/s]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:   0%|          | 1/1112 [00:02<40:39,  2.20s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:   0%|          | 2/1112 [00:03<36:10,  1.96s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:   1%|          | 9/1112 [00:05<09:29,  1.94it/s]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:   1%|          | 10/1112 [00:06<09:59,  1.84it/s]Evaluating:   1%|1         | 14/1112 [00:06<05:39,  3.23it/s]Evaluating:   1%|1         | 16/1112 [00:08<07:33,  2.42it/s]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:   2%|1         | 17/1112 [00:08<08:19,  2.19it/s]Evaluating:   2%|1         | 19/1112 [00:09<06:13,  2.92it/s]Evaluating:   2%|1         | 20/1112 [00:09<06:41,  2.72it/s]Evaluating:   2%|1         | 21/1112 [00:09<05:44,  3.17it/s]Evaluating:   2%|1         | 22/1112 [00:11<11:32,  1.57it/s]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:   2%|2         | 25/1112 [00:12<10:21,  1.75it/s]Evaluating:   2%|2         | 27/1112 [00:13<08:13,  2.20it/s]Evaluating:   3%|2         | 29/1112 [00:14<08:50,  2.04it/s]Evaluating:   3%|2         | 31/1112 [00:15<08:15,  2.18it/s]Evaluating:   3%|2         | 32/1112 [00:16<09:42,  1.85it/s]Evaluating:   3%|2         | 33/1112 [00:16<09:20,  1.92it/s]Evaluating:   3%|3         | 34/1112 [00:17<10:38,  1.69it/s]Evaluating:   3%|3         | 35/1112 [00:18<12:03,  1.49it/s]Evaluating:   3%|3         | 36/1112 [00:18<09:42,  1.85it/s]Evaluating:   3%|3         | 37/1112 [00:18<09:08,  1.96it/s]Evaluating:   3%|3         | 38/1112 [00:19<10:44,  1.67it/s]Evaluating:   4%|3         | 40/1112 [00:20<09:54,  1.80it/s]Evaluating:   4%|3         | 42/1112 [00:21<09:22,  1.90it/s]Evaluating:   4%|4         | 45/1112 [00:21<05:51,  3.03it/s]Evaluating:   4%|4         | 46/1112 [00:22<05:20,  3.33it/s]Evaluating:   4%|4         | 47/1112 [00:22<06:31,  2.72it/s]Evaluating:   4%|4         | 48/1112 [00:23<05:56,  2.99it/s]Evaluating:   5%|4         | 51/1112 [00:24<05:56,  2.98it/s]Evaluating:   5%|4         | 52/1112 [00:25<10:07,  1.74it/s]Evaluating:   5%|5         | 57/1112 [00:26<06:42,  2.62it/s]Evaluating:   5%|5         | 58/1112 [00:26<06:06,  2.88it/s]Evaluating:   5%|5         | 59/1112 [00:27<06:18,  2.78it/s]Evaluating:   5%|5         | 60/1112 [00:28<09:16,  1.89it/s]Evaluating:   6%|5         | 63/1112 [00:29<06:36,  2.65it/s]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:   6%|5         | 64/1112 [00:30<10:28,  1.67it/s]Evaluating:   6%|5         | 66/1112 [00:31<08:55,  1.95it/s]Evaluating:   6%|6         | 70/1112 [00:32<06:39,  2.61it/s]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:   6%|6         | 71/1112 [00:33<07:22,  2.35it/s]Evaluating:   7%|6         | 73/1112 [00:33<05:30,  3.14it/s]Evaluating:   7%|6         | 74/1112 [00:35<10:23,  1.67it/s]Evaluating:   7%|6         | 76/1112 [00:36<09:33,  1.81it/s]Evaluating:   7%|7         | 78/1112 [00:37<11:09,  1.54it/s]Evaluating:   7%|7         | 79/1112 [00:38<10:18,  1.67it/s]Evaluating:   7%|7         | 80/1112 [00:39<11:28,  1.50it/s]Evaluating:   7%|7         | 81/1112 [00:44<29:14,  1.70s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:   7%|7         | 82/1112 [00:46<33:14,  1.94s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:   7%|7         | 83/1112 [00:48<31:55,  1.86s/it]Evaluating:   8%|7         | 86/1112 [00:49<16:51,  1.01it/s]Evaluating:   8%|7         | 87/1112 [00:49<14:27,  1.18it/s]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:   8%|7         | 88/1112 [00:50<16:02,  1.06it/s]Evaluating:   8%|8         | 90/1112 [00:50<10:21,  1.64it/s]Evaluating:   8%|8         | 91/1112 [00:51<09:09,  1.86it/s]Evaluating:   8%|8         | 92/1112 [00:51<08:10,  2.08it/s]Evaluating:   8%|8         | 93/1112 [00:54<18:47,  1.11s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:   8%|8         | 94/1112 [00:57<27:45,  1.64s/it]Evaluating:   9%|8         | 96/1112 [01:01<28:48,  1.70s/it]Evaluating:   9%|8         | 97/1112 [01:03<33:18,  1.97s/it]Evaluating:   9%|8         | 99/1112 [01:06<28:07,  1.67s/it]Evaluating:   9%|9         | 101/1112 [01:06<19:40,  1.17s/it]Evaluating:   9%|9         | 102/1112 [01:08<19:28,  1.16s/it]Evaluating:   9%|9         | 103/1112 [01:09<19:19,  1.15s/it]Evaluating:   9%|9         | 104/1112 [01:11<23:33,  1.40s/it]Evaluating:   9%|9         | 105/1112 [01:13<25:11,  1.50s/it]Evaluating:  10%|9         | 106/1112 [01:13<19:12,  1.15s/it]Evaluating:  10%|9         | 107/1112 [01:15<22:45,  1.36s/it]Evaluating:  10%|9         | 108/1112 [01:17<28:14,  1.69s/it]Evaluating:  10%|9         | 109/1112 [01:22<40:38,  2.43s/it]Evaluating:  10%|9         | 110/1112 [01:23<37:25,  2.24s/it]Evaluating:  10%|9         | 111/1112 [01:25<33:09,  1.99s/it]Evaluating:  10%|#         | 112/1112 [01:27<34:43,  2.08s/it]Evaluating:  10%|#         | 114/1112 [01:28<21:47,  1.31s/it]Evaluating:  10%|#         | 116/1112 [01:29<16:08,  1.03it/s]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  11%|#         | 117/1112 [01:30<16:25,  1.01it/s]Evaluating:  11%|#         | 119/1112 [01:30<10:51,  1.52it/s]Evaluating:  11%|#         | 120/1112 [01:32<15:54,  1.04it/s]Evaluating:  11%|#         | 121/1112 [01:33<16:47,  1.02s/it]Evaluating:  11%|#         | 122/1112 [01:34<15:33,  1.06it/s]Evaluating:  11%|#1        | 123/1112 [01:35<15:38,  1.05it/s]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  11%|#1        | 124/1112 [01:36<15:05,  1.09it/s]Evaluating:  11%|#1        | 125/1112 [01:37<16:51,  1.02s/it]Evaluating:  11%|#1        | 127/1112 [01:37<10:35,  1.55it/s]Evaluating:  12%|#1        | 128/1112 [01:40<17:18,  1.06s/it]Evaluating:  12%|#1        | 129/1112 [01:47<41:55,  2.56s/it]Evaluating:  12%|#1        | 132/1112 [01:47<20:47,  1.27s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  12%|#1        | 133/1112 [01:48<20:37,  1.26s/it]Evaluating:  12%|#2        | 134/1112 [01:49<17:47,  1.09s/it]Evaluating:  12%|#2        | 135/1112 [01:50<16:42,  1.03s/it]Evaluating:  12%|#2        | 136/1112 [01:52<21:59,  1.35s/it]Evaluating:  12%|#2        | 137/1112 [01:57<38:56,  2.40s/it]Evaluating:  12%|#2        | 138/1112 [01:59<36:03,  2.22s/it]Evaluating:  12%|#2        | 139/1112 [02:00<31:06,  1.92s/it]Evaluating:  13%|#2        | 140/1112 [02:00<23:29,  1.45s/it]Evaluating:  13%|#2        | 141/1112 [02:00<17:09,  1.06s/it]Evaluating:  13%|#2        | 143/1112 [02:02<13:52,  1.16it/s]Evaluating:  13%|#3        | 146/1112 [02:04<12:34,  1.28it/s]Evaluating:  13%|#3        | 147/1112 [02:05<13:25,  1.20it/s]Evaluating:  13%|#3        | 148/1112 [02:08<21:04,  1.31s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  13%|#3        | 149/1112 [02:09<20:22,  1.27s/it]Evaluating:  13%|#3        | 150/1112 [02:09<15:49,  1.01it/s]Evaluating:  14%|#3        | 151/1112 [02:11<20:18,  1.27s/it]Evaluating:  14%|#3        | 152/1112 [02:12<19:10,  1.20s/it]Evaluating:  14%|#3        | 153/1112 [02:15<24:46,  1.55s/it]Evaluating:  14%|#3        | 154/1112 [02:16<22:46,  1.43s/it]Evaluating:  14%|#3        | 155/1112 [02:21<38:22,  2.41s/it]Evaluating:  14%|#4        | 156/1112 [02:25<45:24,  2.85s/it]Evaluating:  14%|#4        | 157/1112 [02:31<1:04:17,  4.04s/it]Evaluating:  14%|#4        | 158/1112 [02:33<50:24,  3.17s/it]  Evaluating:  14%|#4        | 159/1112 [02:33<38:48,  2.44s/it]Evaluating:  14%|#4        | 160/1112 [02:35<35:41,  2.25s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  14%|#4        | 161/1112 [02:41<51:19,  3.24s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  15%|#4        | 164/1112 [02:42<26:38,  1.69s/it]Evaluating:  15%|#5        | 167/1112 [02:42<15:42,  1.00it/s]Evaluating:  15%|#5        | 168/1112 [02:44<18:05,  1.15s/it]Evaluating:  15%|#5        | 171/1112 [02:45<11:15,  1.39it/s]Evaluating:  15%|#5        | 172/1112 [02:47<14:04,  1.11it/s]Evaluating:  16%|#5        | 174/1112 [02:49<14:36,  1.07it/s]Evaluating:  16%|#5        | 175/1112 [02:49<13:08,  1.19it/s]Evaluating:  16%|#5        | 176/1112 [02:49<11:18,  1.38it/s]Evaluating:  16%|#5        | 177/1112 [02:49<09:04,  1.72it/s]Evaluating:  16%|#6        | 178/1112 [02:52<16:19,  1.05s/it]Evaluating:  16%|#6        | 179/1112 [02:53<15:39,  1.01s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  16%|#6        | 180/1112 [02:54<18:27,  1.19s/it]Evaluating:  16%|#6        | 182/1112 [02:55<13:51,  1.12it/s]Evaluating:  16%|#6        | 183/1112 [02:56<13:09,  1.18it/s]Evaluating:  17%|#6        | 184/1112 [02:57<12:28,  1.24it/s]Evaluating:  17%|#6        | 185/1112 [02:58<14:33,  1.06it/s]Evaluating:  17%|#6        | 186/1112 [03:00<17:17,  1.12s/it]Evaluating:  17%|#6        | 187/1112 [03:01<17:10,  1.11s/it]Evaluating:  17%|#6        | 188/1112 [03:02<18:17,  1.19s/it]Evaluating:  17%|#6        | 189/1112 [03:04<22:43,  1.48s/it]Evaluating:  17%|#7        | 191/1112 [03:07<20:49,  1.36s/it]Evaluating:  17%|#7        | 192/1112 [03:09<25:31,  1.66s/it]Evaluating:  17%|#7        | 194/1112 [03:12<23:39,  1.55s/it]Evaluating:  18%|#7        | 195/1112 [03:14<22:53,  1.50s/it]Evaluating:  18%|#7        | 196/1112 [03:14<20:10,  1.32s/it]Evaluating:  18%|#7        | 197/1112 [03:16<22:21,  1.47s/it]Evaluating:  18%|#7        | 198/1112 [03:17<19:56,  1.31s/it]Evaluating:  18%|#7        | 200/1112 [03:19<18:28,  1.22s/it]Evaluating:  18%|#8        | 201/1112 [03:25<34:02,  2.24s/it]Evaluating:  18%|#8        | 202/1112 [03:26<28:45,  1.90s/it]Evaluating:  18%|#8        | 203/1112 [03:28<29:57,  1.98s/it]Evaluating:  18%|#8        | 204/1112 [03:29<26:09,  1.73s/it]Evaluating:  18%|#8        | 205/1112 [03:31<26:16,  1.74s/it]Evaluating:  19%|#8        | 206/1112 [03:31<20:50,  1.38s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  19%|#8        | 207/1112 [03:34<25:00,  1.66s/it]Evaluating:  19%|#8        | 208/1112 [03:38<36:16,  2.41s/it]Evaluating:  19%|#8        | 209/1112 [03:39<29:04,  1.93s/it]Evaluating:  19%|#8        | 210/1112 [03:40<25:26,  1.69s/it]Evaluating:  19%|#8        | 211/1112 [03:40<18:52,  1.26s/it]Evaluating:  19%|#9        | 212/1112 [03:44<29:55,  2.00s/it]Evaluating:  19%|#9        | 213/1112 [03:45<25:04,  1.67s/it]Evaluating:  19%|#9        | 214/1112 [03:48<33:15,  2.22s/it]Evaluating:  19%|#9        | 216/1112 [03:49<19:53,  1.33s/it]Evaluating:  20%|#9        | 217/1112 [03:50<18:46,  1.26s/it]Evaluating:  20%|#9        | 218/1112 [03:52<23:35,  1.58s/it]Evaluating:  20%|#9        | 219/1112 [03:53<19:33,  1.31s/it]Evaluating:  20%|#9        | 220/1112 [03:55<23:04,  1.55s/it]Evaluating:  20%|#9        | 222/1112 [03:57<19:17,  1.30s/it]Evaluating:  20%|##        | 223/1112 [04:00<24:21,  1.64s/it]Evaluating:  20%|##        | 227/1112 [04:00<12:03,  1.22it/s]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  21%|##        | 228/1112 [04:02<13:21,  1.10it/s]Evaluating:  21%|##        | 229/1112 [04:08<28:03,  1.91s/it]Evaluating:  21%|##        | 230/1112 [04:08<22:52,  1.56s/it]Evaluating:  21%|##        | 231/1112 [04:11<26:14,  1.79s/it]Evaluating:  21%|##1       | 234/1112 [04:14<20:52,  1.43s/it]Exception raised in Job[122]: TimeoutError()
+Evaluating:  21%|##1       | 235/1112 [04:15<19:25,  1.33s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  21%|##1       | 237/1112 [04:16<15:38,  1.07s/it]Evaluating:  22%|##1       | 240/1112 [04:20<16:42,  1.15s/it]Evaluating:  22%|##1       | 241/1112 [04:20<15:19,  1.06s/it]Evaluating:  22%|##1       | 242/1112 [04:23<18:47,  1.30s/it]Evaluating:  22%|##1       | 243/1112 [04:26<23:54,  1.65s/it]Evaluating:  22%|##1       | 244/1112 [04:26<20:43,  1.43s/it]Evaluating:  22%|##2       | 246/1112 [04:27<15:16,  1.06s/it]Evaluating:  22%|##2       | 247/1112 [04:28<14:02,  1.03it/s]Evaluating:  22%|##2       | 248/1112 [04:29<13:54,  1.03it/s]Evaluating:  22%|##2       | 249/1112 [04:31<16:25,  1.14s/it]Evaluating:  22%|##2       | 250/1112 [04:32<17:12,  1.20s/it]Evaluating:  23%|##2       | 251/1112 [04:34<21:31,  1.50s/it]Evaluating:  23%|##2       | 252/1112 [04:37<28:35,  2.00s/it]Evaluating:  23%|##2       | 253/1112 [04:39<25:37,  1.79s/it]Evaluating:  23%|##2       | 254/1112 [04:39<18:42,  1.31s/it]Evaluating:  23%|##2       | 255/1112 [04:41<22:11,  1.55s/it]Evaluating:  23%|##3       | 256/1112 [04:42<20:36,  1.44s/it]Evaluating:  23%|##3       | 257/1112 [04:47<34:55,  2.45s/it]Evaluating:  23%|##3       | 258/1112 [04:48<28:48,  2.02s/it]Evaluating:  23%|##3       | 259/1112 [04:51<31:01,  2.18s/it]Evaluating:  23%|##3       | 261/1112 [04:52<21:29,  1.52s/it]Evaluating:  24%|##3       | 262/1112 [04:53<17:58,  1.27s/it]Evaluating:  24%|##3       | 263/1112 [04:54<18:41,  1.32s/it]Evaluating:  24%|##3       | 264/1112 [04:57<23:32,  1.67s/it]Evaluating:  24%|##3       | 265/1112 [04:58<22:30,  1.59s/it]Evaluating:  24%|##3       | 266/1112 [05:00<24:18,  1.72s/it]Evaluating:  24%|##4       | 268/1112 [05:02<19:39,  1.40s/it]Evaluating:  24%|##4       | 269/1112 [05:03<17:31,  1.25s/it]Evaluating:  24%|##4       | 270/1112 [05:07<27:02,  1.93s/it]Evaluating:  24%|##4       | 271/1112 [05:07<21:04,  1.50s/it]Evaluating:  24%|##4       | 272/1112 [05:10<26:00,  1.86s/it]Evaluating:  25%|##4       | 273/1112 [05:11<23:10,  1.66s/it]Evaluating:  25%|##4       | 274/1112 [05:12<21:27,  1.54s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  25%|##4       | 275/1112 [05:14<22:38,  1.62s/it]Evaluating:  25%|##5       | 278/1112 [05:15<12:28,  1.11it/s]Evaluating:  25%|##5       | 279/1112 [05:16<13:19,  1.04it/s]Evaluating:  25%|##5       | 280/1112 [05:18<16:11,  1.17s/it]Evaluating:  25%|##5       | 283/1112 [05:18<08:38,  1.60it/s]Evaluating:  26%|##5       | 284/1112 [05:21<13:25,  1.03it/s]Evaluating:  26%|##5       | 286/1112 [05:29<29:41,  2.16s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  26%|##5       | 288/1112 [05:31<23:56,  1.74s/it]Evaluating:  26%|##6       | 292/1112 [05:32<13:54,  1.02s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  26%|##6       | 293/1112 [05:33<13:34,  1.01it/s]Evaluating:  27%|##6       | 295/1112 [05:35<12:56,  1.05it/s]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  27%|##6       | 296/1112 [05:35<11:59,  1.13it/s]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  27%|##6       | 299/1112 [05:38<10:48,  1.25it/s]Evaluating:  27%|##6       | 300/1112 [05:39<12:34,  1.08it/s]Evaluating:  27%|##7       | 301/1112 [05:41<14:27,  1.07s/it]Evaluating:  27%|##7       | 302/1112 [05:41<12:23,  1.09it/s]Evaluating:  27%|##7       | 303/1112 [05:44<17:01,  1.26s/it]Evaluating:  27%|##7       | 304/1112 [05:45<16:35,  1.23s/it]Evaluating:  27%|##7       | 305/1112 [05:50<29:56,  2.23s/it]Evaluating:  28%|##7       | 306/1112 [05:50<22:39,  1.69s/it]Evaluating:  28%|##7       | 307/1112 [05:51<19:37,  1.46s/it]Evaluating:  28%|##7       | 308/1112 [05:52<19:08,  1.43s/it]Evaluating:  28%|##7       | 310/1112 [05:55<19:09,  1.43s/it]Evaluating:  28%|##7       | 311/1112 [05:57<20:51,  1.56s/it]Evaluating:  28%|##8       | 313/1112 [06:00<20:21,  1.53s/it]Evaluating:  28%|##8       | 314/1112 [06:00<16:22,  1.23s/it]Evaluating:  28%|##8       | 315/1112 [06:02<19:07,  1.44s/it]Evaluating:  28%|##8       | 316/1112 [06:04<19:21,  1.46s/it]Evaluating:  29%|##8       | 317/1112 [06:04<14:50,  1.12s/it]Evaluating:  29%|##8       | 318/1112 [06:06<16:33,  1.25s/it]Evaluating:  29%|##8       | 319/1112 [06:07<18:52,  1.43s/it]Evaluating:  29%|##8       | 320/1112 [06:09<18:35,  1.41s/it]Evaluating:  29%|##8       | 321/1112 [06:12<25:49,  1.96s/it]Evaluating:  29%|##8       | 322/1112 [06:12<18:43,  1.42s/it]Evaluating:  29%|##9       | 323/1112 [06:13<17:26,  1.33s/it]Evaluating:  29%|##9       | 324/1112 [06:14<13:42,  1.04s/it]Evaluating:  29%|##9       | 325/1112 [06:14<10:34,  1.24it/s]Evaluating:  29%|##9       | 326/1112 [06:15<11:38,  1.13it/s]Evaluating:  29%|##9       | 327/1112 [06:16<12:33,  1.04it/s]Evaluating:  30%|##9       | 329/1112 [06:20<17:15,  1.32s/it]Evaluating:  30%|##9       | 330/1112 [06:22<21:29,  1.65s/it]Evaluating:  30%|##9       | 331/1112 [06:24<20:13,  1.55s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  30%|##9       | 332/1112 [06:25<18:17,  1.41s/it]Evaluating:  30%|###       | 334/1112 [06:26<14:07,  1.09s/it]Evaluating:  30%|###       | 335/1112 [06:29<19:59,  1.54s/it]Evaluating:  30%|###       | 336/1112 [06:30<17:20,  1.34s/it]Evaluating:  30%|###       | 337/1112 [06:32<20:09,  1.56s/it]Evaluating:  30%|###       | 338/1112 [06:33<18:05,  1.40s/it]Evaluating:  30%|###       | 339/1112 [06:33<13:22,  1.04s/it]Evaluating:  31%|###       | 340/1112 [06:35<16:33,  1.29s/it]Evaluating:  31%|###       | 341/1112 [06:35<13:28,  1.05s/it]Exception raised in Job[259]: RateLimitError(Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4o-mini in organization org-GKiIKkobpsJI0F9gB0gQ6gai on tokens per min (TPM): Limit 200000, Used 200000, Requested 1966. Please try again in 589ms. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}})
+Evaluating:  31%|###       | 342/1112 [06:37<14:51,  1.16s/it]Evaluating:  31%|###       | 343/1112 [06:37<11:15,  1.14it/s]Evaluating:  31%|###       | 344/1112 [06:39<16:59,  1.33s/it]Evaluating:  31%|###1      | 345/1112 [06:40<15:46,  1.23s/it]Evaluating:  31%|###1      | 346/1112 [06:43<20:30,  1.61s/it]Evaluating:  31%|###1      | 347/1112 [06:44<18:36,  1.46s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  31%|###1      | 348/1112 [06:45<15:39,  1.23s/it]Evaluating:  31%|###1      | 349/1112 [06:46<17:33,  1.38s/it]Evaluating:  31%|###1      | 350/1112 [06:47<13:38,  1.07s/it]Evaluating:  32%|###1      | 351/1112 [06:50<20:17,  1.60s/it]Evaluating:  32%|###1      | 355/1112 [06:51<10:52,  1.16it/s]Evaluating:  32%|###2      | 356/1112 [06:53<12:08,  1.04it/s]Evaluating:  32%|###2      | 357/1112 [06:57<21:48,  1.73s/it]Evaluating:  32%|###2      | 358/1112 [06:58<18:02,  1.44s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  32%|###2      | 359/1112 [07:02<26:52,  2.14s/it]Evaluating:  32%|###2      | 361/1112 [07:04<20:06,  1.61s/it]Evaluating:  33%|###2      | 362/1112 [07:04<16:52,  1.35s/it]Evaluating:  33%|###2      | 363/1112 [07:06<18:35,  1.49s/it]Evaluating:  33%|###2      | 366/1112 [07:06<09:36,  1.29it/s]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  33%|###3      | 367/1112 [07:09<14:47,  1.19s/it]Evaluating:  33%|###3      | 368/1112 [07:12<17:39,  1.42s/it]Evaluating:  33%|###3      | 369/1112 [07:12<14:54,  1.20s/it]Evaluating:  33%|###3      | 370/1112 [07:12<11:29,  1.08it/s]Evaluating:  33%|###3      | 371/1112 [07:15<18:13,  1.48s/it]Evaluating:  33%|###3      | 372/1112 [07:17<18:13,  1.48s/it]Evaluating:  34%|###3      | 373/1112 [07:19<19:57,  1.62s/it]Evaluating:  34%|###3      | 374/1112 [07:20<20:26,  1.66s/it]Evaluating:  34%|###3      | 375/1112 [07:23<23:28,  1.91s/it]Evaluating:  34%|###3      | 377/1112 [07:25<18:51,  1.54s/it]Evaluating:  34%|###3      | 378/1112 [07:30<29:13,  2.39s/it]Evaluating:  34%|###4      | 379/1112 [07:31<24:36,  2.01s/it]Evaluating:  34%|###4      | 380/1112 [07:32<19:17,  1.58s/it]Evaluating:  34%|###4      | 381/1112 [07:33<17:16,  1.42s/it]Evaluating:  34%|###4      | 382/1112 [07:33<13:38,  1.12s/it]Evaluating:  34%|###4      | 383/1112 [07:36<20:17,  1.67s/it]Evaluating:  35%|###4      | 384/1112 [07:37<16:56,  1.40s/it]Evaluating:  35%|###4      | 385/1112 [07:39<21:01,  1.74s/it]Evaluating:  35%|###4      | 386/1112 [07:41<22:43,  1.88s/it]Evaluating:  35%|###4      | 387/1112 [07:42<17:05,  1.41s/it]Evaluating:  35%|###4      | 388/1112 [07:44<20:08,  1.67s/it]Evaluating:  35%|###4      | 389/1112 [07:46<19:38,  1.63s/it]Evaluating:  35%|###5      | 390/1112 [07:46<14:33,  1.21s/it]Evaluating:  35%|###5      | 391/1112 [07:47<13:52,  1.15s/it]Evaluating:  35%|###5      | 392/1112 [07:49<18:39,  1.56s/it]Evaluating:  35%|###5      | 394/1112 [07:50<11:54,  1.00it/s]Evaluating:  36%|###5      | 395/1112 [07:53<18:10,  1.52s/it]Evaluating:  36%|###5      | 397/1112 [07:54<13:19,  1.12s/it]Evaluating:  36%|###5      | 398/1112 [07:57<19:18,  1.62s/it]Evaluating:  36%|###5      | 399/1112 [07:58<16:17,  1.37s/it]Evaluating:  36%|###5      | 400/1112 [08:03<26:06,  2.20s/it]Evaluating:  36%|###6      | 402/1112 [08:03<16:53,  1.43s/it]Evaluating:  36%|###6      | 403/1112 [08:04<14:13,  1.20s/it]Evaluating:  36%|###6      | 404/1112 [08:04<11:13,  1.05it/s]Evaluating:  36%|###6      | 405/1112 [08:05<10:35,  1.11it/s]Evaluating:  37%|###6      | 406/1112 [08:07<15:27,  1.31s/it]Evaluating:  37%|###6      | 407/1112 [08:10<19:30,  1.66s/it]Evaluating:  37%|###6      | 408/1112 [08:11<18:05,  1.54s/it]Evaluating:  37%|###6      | 409/1112 [08:13<19:31,  1.67s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  37%|###6      | 410/1112 [08:14<17:50,  1.53s/it]Evaluating:  37%|###7      | 412/1112 [08:15<11:15,  1.04it/s]Evaluating:  37%|###7      | 413/1112 [08:18<18:44,  1.61s/it]Evaluating:  37%|###7      | 414/1112 [08:20<19:02,  1.64s/it]Evaluating:  37%|###7      | 415/1112 [08:23<21:53,  1.88s/it]Evaluating:  37%|###7      | 416/1112 [08:24<19:39,  1.70s/it]Evaluating:  38%|###7      | 417/1112 [08:25<18:11,  1.57s/it]Evaluating:  38%|###7      | 418/1112 [08:27<19:23,  1.68s/it]Evaluating:  38%|###7      | 419/1112 [08:28<17:39,  1.53s/it]Evaluating:  38%|###7      | 420/1112 [08:30<17:59,  1.56s/it]Evaluating:  38%|###7      | 421/1112 [08:30<14:18,  1.24s/it]Evaluating:  38%|###7      | 422/1112 [08:33<19:47,  1.72s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  38%|###8      | 423/1112 [08:35<18:50,  1.64s/it]Evaluating:  38%|###8      | 425/1112 [08:37<15:04,  1.32s/it]Evaluating:  38%|###8      | 426/1112 [08:38<16:20,  1.43s/it]Evaluating:  38%|###8      | 428/1112 [08:39<11:51,  1.04s/it]Evaluating:  39%|###8      | 429/1112 [08:40<10:33,  1.08it/s]Evaluating:  39%|###8      | 430/1112 [08:41<10:18,  1.10it/s]Evaluating:  39%|###8      | 431/1112 [08:42<10:32,  1.08it/s]Evaluating:  39%|###8      | 432/1112 [08:44<14:01,  1.24s/it]Evaluating:  39%|###8      | 433/1112 [08:45<13:46,  1.22s/it]Evaluating:  39%|###9      | 434/1112 [08:46<14:31,  1.29s/it]Evaluating:  39%|###9      | 435/1112 [08:49<19:34,  1.73s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  39%|###9      | 436/1112 [08:54<29:50,  2.65s/it]Evaluating:  39%|###9      | 437/1112 [08:55<23:21,  2.08s/it]Evaluating:  39%|###9      | 438/1112 [08:59<30:13,  2.69s/it]Evaluating:  39%|###9      | 439/1112 [09:01<28:56,  2.58s/it]Evaluating:  40%|###9      | 441/1112 [09:02<17:21,  1.55s/it]Evaluating:  40%|###9      | 442/1112 [09:03<16:30,  1.48s/it]Evaluating:  40%|###9      | 443/1112 [09:05<18:10,  1.63s/it]Exception raised in Job[390]: RateLimitError(Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4o-mini in organization org-GKiIKkobpsJI0F9gB0gQ6gai on requests per min (RPM): Limit 500, Used 500, Requested 1. Please try again in 120ms. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'requests', 'param': None, 'code': 'rate_limit_exceeded'}})
+Evaluating:  40%|###9      | 444/1112 [09:05<13:37,  1.22s/it]Evaluating:  40%|####      | 446/1112 [09:06<09:17,  1.19it/s]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  40%|####      | 447/1112 [09:08<12:28,  1.13s/it]Evaluating:  40%|####      | 448/1112 [09:09<12:31,  1.13s/it]Evaluating:  40%|####      | 449/1112 [09:10<10:59,  1.00it/s]Evaluating:  40%|####      | 450/1112 [09:10<08:50,  1.25it/s]Evaluating:  41%|####      | 451/1112 [09:11<09:41,  1.14it/s]Evaluating:  41%|####      | 453/1112 [09:14<11:53,  1.08s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  41%|####      | 454/1112 [09:16<13:22,  1.22s/it]Evaluating:  41%|####1     | 456/1112 [09:18<12:35,  1.15s/it]Evaluating:  41%|####1     | 457/1112 [09:20<15:40,  1.44s/it]Evaluating:  41%|####1     | 458/1112 [09:20<12:13,  1.12s/it]Evaluating:  41%|####1     | 459/1112 [09:21<11:43,  1.08s/it]Evaluating:  41%|####1     | 460/1112 [09:21<09:22,  1.16it/s]Evaluating:  41%|####1     | 461/1112 [09:22<07:31,  1.44it/s]Evaluating:  42%|####1     | 462/1112 [09:22<07:01,  1.54it/s]Evaluating:  42%|####1     | 463/1112 [09:24<11:04,  1.02s/it]Evaluating:  42%|####1     | 464/1112 [09:26<13:05,  1.21s/it]Evaluating:  42%|####1     | 465/1112 [09:27<11:24,  1.06s/it]Evaluating:  42%|####1     | 466/1112 [09:28<11:59,  1.11s/it]Evaluating:  42%|####1     | 467/1112 [09:30<16:38,  1.55s/it]Evaluating:  42%|####2     | 468/1112 [09:32<15:36,  1.45s/it]Evaluating:  42%|####2     | 469/1112 [09:32<13:42,  1.28s/it]Exception raised in Job[354]: TimeoutError()
+Evaluating:  42%|####2     | 470/1112 [09:33<11:08,  1.04s/it]Evaluating:  42%|####2     | 471/1112 [09:34<12:07,  1.14s/it]Evaluating:  42%|####2     | 472/1112 [09:35<11:00,  1.03s/it]Evaluating:  43%|####2     | 473/1112 [09:36<10:20,  1.03it/s]Evaluating:  43%|####2     | 474/1112 [09:37<11:30,  1.08s/it]Evaluating:  43%|####2     | 475/1112 [09:39<13:03,  1.23s/it]Evaluating:  43%|####2     | 476/1112 [09:40<11:54,  1.12s/it]Exception raised in Job[384]: RateLimitError(Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4o-mini in organization org-GKiIKkobpsJI0F9gB0gQ6gai on tokens per min (TPM): Limit 200000, Used 200000, Requested 2094. Please try again in 628ms. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}})
+Evaluating:  43%|####2     | 478/1112 [09:40<06:42,  1.58it/s]Evaluating:  43%|####3     | 479/1112 [09:41<09:09,  1.15it/s]Evaluating:  43%|####3     | 480/1112 [09:43<11:26,  1.09s/it]Evaluating:  43%|####3     | 481/1112 [09:44<11:45,  1.12s/it]Evaluating:  43%|####3     | 482/1112 [09:47<17:21,  1.65s/it]Evaluating:  43%|####3     | 483/1112 [09:51<22:47,  2.17s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  44%|####3     | 484/1112 [09:51<18:10,  1.74s/it]Evaluating:  44%|####3     | 485/1112 [09:53<17:47,  1.70s/it]Evaluating:  44%|####3     | 486/1112 [09:54<14:42,  1.41s/it]Evaluating:  44%|####3     | 487/1112 [09:54<12:01,  1.15s/it]Evaluating:  44%|####3     | 489/1112 [09:57<13:06,  1.26s/it]Evaluating:  44%|####4     | 490/1112 [09:58<11:54,  1.15s/it]Evaluating:  44%|####4     | 491/1112 [10:00<14:23,  1.39s/it]Evaluating:  44%|####4     | 492/1112 [10:06<27:02,  2.62s/it]Evaluating:  44%|####4     | 493/1112 [10:07<22:20,  2.17s/it]Evaluating:  44%|####4     | 494/1112 [10:12<29:59,  2.91s/it]Evaluating:  45%|####4     | 495/1112 [10:15<32:06,  3.12s/it]Evaluating:  45%|####4     | 496/1112 [10:17<28:45,  2.80s/it]Evaluating:  45%|####4     | 497/1112 [10:24<41:35,  4.06s/it]Evaluating:  45%|####4     | 498/1112 [10:25<30:38,  2.99s/it]Evaluating:  45%|####4     | 499/1112 [10:26<24:01,  2.35s/it]Evaluating:  45%|####4     | 500/1112 [10:27<21:01,  2.06s/it]Evaluating:  45%|####5     | 501/1112 [10:29<19:19,  1.90s/it]Evaluating:  45%|####5     | 502/1112 [10:31<19:28,  1.92s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  45%|####5     | 503/1112 [10:32<17:52,  1.76s/it]Evaluating:  45%|####5     | 504/1112 [10:32<12:52,  1.27s/it]Evaluating:  45%|####5     | 505/1112 [10:32<09:19,  1.09it/s]Evaluating:  46%|####5     | 506/1112 [10:34<10:49,  1.07s/it]Evaluating:  46%|####5     | 507/1112 [10:35<10:19,  1.02s/it]Evaluating:  46%|####5     | 508/1112 [10:37<14:38,  1.45s/it]Evaluating:  46%|####5     | 511/1112 [10:39<10:23,  1.04s/it]Evaluating:  46%|####6     | 513/1112 [10:41<09:44,  1.02it/s]Evaluating:  46%|####6     | 514/1112 [10:42<10:24,  1.04s/it]Evaluating:  46%|####6     | 515/1112 [10:43<09:26,  1.05it/s]Evaluating:  46%|####6     | 517/1112 [10:43<06:45,  1.47it/s]Evaluating:  47%|####6     | 518/1112 [10:44<07:45,  1.27it/s]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  47%|####6     | 521/1112 [10:47<07:12,  1.37it/s]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  47%|####7     | 524/1112 [10:48<06:43,  1.46it/s]Evaluating:  47%|####7     | 525/1112 [10:49<06:24,  1.53it/s]Evaluating:  47%|####7     | 526/1112 [10:50<07:12,  1.35it/s]Evaluating:  47%|####7     | 527/1112 [10:50<06:00,  1.62it/s]Evaluating:  47%|####7     | 528/1112 [10:52<09:29,  1.03it/s]Evaluating:  48%|####7     | 529/1112 [10:59<23:24,  2.41s/it]Evaluating:  48%|####7     | 530/1112 [11:00<20:27,  2.11s/it]Evaluating:  48%|####7     | 531/1112 [11:01<16:06,  1.66s/it]Evaluating:  48%|####7     | 532/1112 [11:05<22:53,  2.37s/it]Evaluating:  48%|####7     | 533/1112 [11:06<18:21,  1.90s/it]Evaluating:  48%|####8     | 534/1112 [11:07<16:20,  1.70s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  48%|####8     | 535/1112 [11:09<17:20,  1.80s/it]Evaluating:  48%|####8     | 536/1112 [11:11<17:35,  1.83s/it]Evaluating:  48%|####8     | 537/1112 [11:13<18:33,  1.94s/it]Evaluating:  48%|####8     | 538/1112 [11:16<20:58,  2.19s/it]Evaluating:  48%|####8     | 539/1112 [11:18<20:57,  2.20s/it]Evaluating:  49%|####8     | 540/1112 [11:19<17:30,  1.84s/it]Evaluating:  49%|####8     | 541/1112 [11:23<23:28,  2.47s/it]Evaluating:  49%|####8     | 542/1112 [11:25<22:21,  2.35s/it]Evaluating:  49%|####8     | 543/1112 [11:26<17:14,  1.82s/it]Evaluating:  49%|####8     | 544/1112 [11:27<16:20,  1.73s/it]Evaluating:  49%|####9     | 545/1112 [11:30<18:20,  1.94s/it]Exception raised in Job[504]: RateLimitError(Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4o-mini in organization org-GKiIKkobpsJI0F9gB0gQ6gai on tokens per min (TPM): Limit 200000, Used 200000, Requested 4456. Please try again in 1.336s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}})
+LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  49%|####9     | 547/1112 [11:33<16:23,  1.74s/it]Evaluating:  49%|####9     | 548/1112 [11:35<17:41,  1.88s/it]Evaluating:  49%|####9     | 549/1112 [11:39<22:20,  2.38s/it]Evaluating:  49%|####9     | 550/1112 [11:41<21:05,  2.25s/it]Evaluating:  50%|####9     | 551/1112 [11:41<17:23,  1.86s/it]Evaluating:  50%|####9     | 552/1112 [11:42<15:06,  1.62s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  50%|####9     | 553/1112 [11:49<29:00,  3.11s/it]Evaluating:  50%|####9     | 555/1112 [11:52<21:19,  2.30s/it]Evaluating:  50%|#####     | 556/1112 [11:52<16:58,  1.83s/it]Evaluating:  50%|#####     | 558/1112 [11:56<16:18,  1.77s/it]Evaluating:  50%|#####     | 559/1112 [11:57<15:23,  1.67s/it]Evaluating:  50%|#####     | 560/1112 [12:01<20:01,  2.18s/it]Evaluating:  50%|#####     | 561/1112 [12:02<17:19,  1.89s/it]Evaluating:  51%|#####     | 562/1112 [12:03<16:34,  1.81s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  51%|#####     | 563/1112 [12:05<17:03,  1.86s/it]Exception raised in Job[462]: TimeoutError()
+Evaluating:  51%|#####     | 564/1112 [12:08<18:48,  2.06s/it]Evaluating:  51%|#####     | 565/1112 [12:11<22:33,  2.47s/it]Evaluating:  51%|#####     | 566/1112 [12:14<23:21,  2.57s/it]Evaluating:  51%|#####     | 567/1112 [12:15<19:26,  2.14s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  51%|#####1    | 568/1112 [12:17<17:32,  1.94s/it]Evaluating:  51%|#####1    | 570/1112 [12:18<12:26,  1.38s/it]Evaluating:  51%|#####1    | 571/1112 [12:19<11:19,  1.26s/it]Evaluating:  51%|#####1    | 572/1112 [12:20<11:11,  1.24s/it]Evaluating:  52%|#####1    | 573/1112 [12:21<10:12,  1.14s/it]Evaluating:  52%|#####1    | 574/1112 [12:23<10:49,  1.21s/it]Evaluating:  52%|#####1    | 575/1112 [12:25<12:52,  1.44s/it]Evaluating:  52%|#####1    | 577/1112 [12:25<08:53,  1.00it/s]Evaluating:  52%|#####1    | 578/1112 [12:29<15:23,  1.73s/it]Evaluating:  52%|#####2    | 579/1112 [12:33<19:20,  2.18s/it]Evaluating:  52%|#####2    | 580/1112 [12:34<17:18,  1.95s/it]Evaluating:  52%|#####2    | 581/1112 [12:36<17:42,  2.00s/it]Evaluating:  52%|#####2    | 582/1112 [12:47<39:21,  4.46s/it]Evaluating:  52%|#####2    | 583/1112 [12:48<30:07,  3.42s/it]Evaluating:  53%|#####2    | 584/1112 [12:49<24:26,  2.78s/it]Evaluating:  53%|#####2    | 585/1112 [12:55<32:52,  3.74s/it]Evaluating:  53%|#####2    | 586/1112 [12:58<31:38,  3.61s/it]Evaluating:  53%|#####2    | 587/1112 [13:01<29:51,  3.41s/it]Evaluating:  53%|#####2    | 588/1112 [13:08<37:40,  4.31s/it]Evaluating:  53%|#####2    | 589/1112 [13:15<44:47,  5.14s/it]Exception raised in Job[538]: TimeoutError()
+Evaluating:  53%|#####3    | 590/1112 [13:47<1:53:37, 13.06s/it]Exception raised in Job[547]: RateLimitError(Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4o-mini in organization org-GKiIKkobpsJI0F9gB0gQ6gai on requests per day (RPD): Limit 10000, Used 10000, Requested 1. Please try again in 8.64s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'requests', 'param': None, 'code': 'rate_limit_exceeded'}})
+Evaluating:  53%|#####3    | 591/1112 [13:56<1:43:07, 11.88s/it]Exception raised in Job[554]: TimeoutError()
+Evaluating:  53%|#####3    | 592/1112 [14:18<2:10:08, 15.02s/it]Exception raised in Job[562]: TimeoutError()
+Evaluating:  53%|#####3    | 593/1112 [14:33<2:08:43, 14.88s/it]Exception raised in Job[566]: TimeoutError()
+Evaluating:  53%|#####3    | 594/1112 [14:41<1:52:56, 13.08s/it]Exception raised in Job[570]: TimeoutError()
+Evaluating:  54%|#####3    | 595/1112 [14:52<1:46:36, 12.37s/it]Exception raised in Job[578]: TimeoutError()
+Evaluating:  54%|#####3    | 596/1112 [15:05<1:48:27, 12.61s/it]Exception raised in Job[582]: TimeoutError()
+Evaluating:  54%|#####3    | 597/1112 [15:15<1:41:23, 11.81s/it]Exception raised in Job[586]: TimeoutError()
+Evaluating:  54%|#####3    | 598/1112 [15:19<1:20:32,  9.40s/it]Exception raised in Job[590]: TimeoutError()
+Evaluating:  54%|#####3    | 599/1112 [15:25<1:10:17,  8.22s/it]Exception raised in Job[594]: TimeoutError()
+Evaluating:  54%|#####3    | 600/1112 [15:33<1:10:35,  8.27s/it]Exception raised in Job[598]: TimeoutError()
+Evaluating:  54%|#####4    | 601/1112 [15:48<1:28:04, 10.34s/it]Exception raised in Job[600]: TimeoutError()
+Evaluating:  54%|#####4    | 602/1112 [15:55<1:19:36,  9.37s/it]Exception raised in Job[602]: TimeoutError()
+Evaluating:  54%|#####4    | 603/1112 [16:01<1:11:28,  8.43s/it]Exception raised in Job[603]: TimeoutError()
+Evaluating:  54%|#####4    | 604/1112 [16:08<1:06:17,  7.83s/it]Exception raised in Job[604]: TimeoutError()
+Evaluating:  54%|#####4    | 605/1112 [16:15<1:04:14,  7.60s/it]Exception raised in Job[605]: TimeoutError()
+Evaluating:  54%|#####4    | 606/1112 [16:47<2:04:54, 14.81s/it]Exception raised in Job[606]: TimeoutError()
+Evaluating:  55%|#####4    | 607/1112 [16:56<1:50:14, 13.10s/it]Exception raised in Job[607]: TimeoutError()
+Evaluating:  55%|#####4    | 608/1112 [17:18<2:13:22, 15.88s/it]Exception raised in Job[608]: TimeoutError()
+Evaluating:  55%|#####4    | 609/1112 [17:33<2:09:49, 15.49s/it]Exception raised in Job[609]: TimeoutError()
+Evaluating:  55%|#####4    | 610/1112 [17:41<1:52:56, 13.50s/it]Exception raised in Job[610]: TimeoutError()
+Evaluating:  55%|#####4    | 611/1112 [17:52<1:45:12, 12.60s/it]Exception raised in Job[611]: TimeoutError()
+Evaluating:  55%|#####5    | 612/1112 [18:05<1:46:57, 12.84s/it]Exception raised in Job[612]: TimeoutError()
+Evaluating:  55%|#####5    | 613/1112 [18:15<1:39:34, 11.97s/it]Exception raised in Job[613]: TimeoutError()
+Evaluating:  55%|#####5    | 614/1112 [18:19<1:18:57,  9.51s/it]Exception raised in Job[614]: TimeoutError()
+Evaluating:  55%|#####5    | 615/1112 [18:25<1:08:44,  8.30s/it]Exception raised in Job[615]: TimeoutError()
+Evaluating:  55%|#####5    | 616/1112 [18:33<1:08:49,  8.33s/it]Exception raised in Job[616]: TimeoutError()
+Evaluating:  55%|#####5    | 617/1112 [18:48<1:25:37, 10.38s/it]Exception raised in Job[617]: TimeoutError()
+Evaluating:  56%|#####5    | 618/1112 [18:55<1:17:21,  9.40s/it]Exception raised in Job[618]: TimeoutError()
+Evaluating:  56%|#####5    | 619/1112 [19:01<1:09:21,  8.44s/it]Exception raised in Job[619]: TimeoutError()
+Evaluating:  56%|#####5    | 620/1112 [19:08<1:04:16,  7.84s/it]Exception raised in Job[620]: TimeoutError()
+Evaluating:  56%|#####5    | 621/1112 [19:15<1:02:18,  7.61s/it]Exception raised in Job[621]: TimeoutError()
+Evaluating:  56%|#####5    | 622/1112 [19:47<2:01:02, 14.82s/it]Exception raised in Job[622]: TimeoutError()
+Evaluating:  56%|#####6    | 623/1112 [19:56<1:46:45, 13.10s/it]Exception raised in Job[623]: TimeoutError()
+Evaluating:  56%|#####6    | 624/1112 [20:18<2:09:13, 15.89s/it]Exception raised in Job[624]: TimeoutError()
+Evaluating:  56%|#####6    | 625/1112 [20:33<2:05:42, 15.49s/it]Exception raised in Job[625]: TimeoutError()
+Evaluating:  56%|#####6    | 626/1112 [20:41<1:49:20, 13.50s/it]Exception raised in Job[626]: TimeoutError()
+Evaluating:  56%|#####6    | 627/1112 [20:52<1:41:53, 12.60s/it]Exception raised in Job[627]: TimeoutError()
+Evaluating:  56%|#####6    | 628/1112 [21:05<1:43:31, 12.83s/it]Exception raised in Job[628]: TimeoutError()
+Evaluating:  57%|#####6    | 629/1112 [21:15<1:36:24, 11.98s/it]Exception raised in Job[629]: TimeoutError()
+Evaluating:  57%|#####6    | 630/1112 [21:19<1:16:26,  9.52s/it]Exception raised in Job[630]: TimeoutError()
+Evaluating:  57%|#####6    | 631/1112 [21:25<1:06:30,  8.30s/it]Exception raised in Job[631]: TimeoutError()
+Evaluating:  57%|#####6    | 632/1112 [21:33<1:06:38,  8.33s/it]Exception raised in Job[632]: TimeoutError()
+Evaluating:  57%|#####6    | 633/1112 [21:48<1:22:49, 10.37s/it]Exception raised in Job[633]: TimeoutError()
+Evaluating:  57%|#####7    | 634/1112 [21:55<1:14:55,  9.40s/it]Exception raised in Job[634]: TimeoutError()
+Evaluating:  57%|#####7    | 635/1112 [22:01<1:07:04,  8.44s/it]Exception raised in Job[635]: TimeoutError()
+Evaluating:  57%|#####7    | 636/1112 [22:08<1:02:09,  7.84s/it]Exception raised in Job[636]: TimeoutError()
+Evaluating:  57%|#####7    | 637/1112 [22:15<1:00:16,  7.61s/it]Exception raised in Job[637]: TimeoutError()
+Evaluating:  57%|#####7    | 638/1112 [22:47<1:57:02, 14.82s/it]Exception raised in Job[638]: TimeoutError()
+Evaluating:  57%|#####7    | 639/1112 [22:56<1:43:17, 13.10s/it]Exception raised in Job[639]: TimeoutError()
+Evaluating:  58%|#####7    | 640/1112 [23:18<2:05:00, 15.89s/it]Exception raised in Job[640]: TimeoutError()
+Evaluating:  58%|#####7    | 641/1112 [23:33<2:01:33, 15.49s/it]Exception raised in Job[641]: TimeoutError()
+Evaluating:  58%|#####7    | 642/1112 [23:41<1:45:40, 13.49s/it]Exception raised in Job[642]: TimeoutError()
+Evaluating:  58%|#####7    | 643/1112 [23:52<1:38:34, 12.61s/it]Exception raised in Job[643]: TimeoutError()
+Evaluating:  58%|#####7    | 644/1112 [24:05<1:40:05, 12.83s/it]Exception raised in Job[644]: TimeoutError()
+Evaluating:  58%|#####8    | 645/1112 [24:15<1:33:11, 11.97s/it]Exception raised in Job[645]: TimeoutError()
+Evaluating:  58%|#####8    | 646/1112 [24:19<1:13:51,  9.51s/it]Exception raised in Job[646]: TimeoutError()
+Evaluating:  58%|#####8    | 647/1112 [24:25<1:04:16,  8.29s/it]Exception raised in Job[647]: TimeoutError()
+Evaluating:  58%|#####8    | 648/1112 [24:33<1:04:24,  8.33s/it]Exception raised in Job[648]: TimeoutError()
+Evaluating:  58%|#####8    | 649/1112 [24:48<1:20:04, 10.38s/it]Exception raised in Job[649]: TimeoutError()
+Evaluating:  58%|#####8    | 650/1112 [24:55<1:12:26,  9.41s/it]Exception raised in Job[650]: TimeoutError()
+Evaluating:  59%|#####8    | 651/1112 [25:01<1:04:51,  8.44s/it]Evaluating:  59%|#####8    | 652/1112 [25:08<1:00:13,  7.86s/it]Exception raised in Job[651]: TimeoutError()
+Exception raised in Job[652]: TimeoutError()
+Evaluating:  59%|#####8    | 654/1112 [25:15<44:40,  5.85s/it]  Evaluating:  59%|#####8    | 655/1112 [25:20<43:24,  5.70s/it]Evaluating:  59%|#####8    | 656/1112 [25:26<43:10,  5.68s/it]Evaluating:  59%|#####9    | 657/1112 [25:39<58:44,  7.75s/it]Evaluating:  59%|#####9    | 658/1112 [25:46<56:58,  7.53s/it]Evaluating:  59%|#####9    | 659/1112 [25:53<54:54,  7.27s/it]Exception raised in Job[654]: TimeoutError()
+Evaluating:  59%|#####9    | 660/1112 [25:56<45:25,  6.03s/it]Evaluating:  59%|#####9    | 661/1112 [26:11<1:06:21,  8.83s/it]Exception raised in Job[656]: TimeoutError()
+Evaluating:  60%|#####9    | 662/1112 [26:33<1:33:54, 12.52s/it]Evaluating:  60%|#####9    | 663/1112 [26:39<1:19:37, 10.64s/it]Evaluating:  60%|#####9    | 664/1112 [26:42<1:03:01,  8.44s/it]Exception raised in Job[657]: TimeoutError()
+Exception raised in Job[658]: TimeoutError()
+Evaluating:  60%|#####9    | 666/1112 [26:52<50:54,  6.85s/it]  Evaluating:  60%|#####9    | 667/1112 [26:57<47:42,  6.43s/it]Exception raised in Job[660]: TimeoutError()
+Evaluating:  60%|######    | 668/1112 [27:15<1:10:17,  9.50s/it]Exception raised in Job[662]: TimeoutError()
+Evaluating:  60%|######    | 669/1112 [27:25<1:09:32,  9.42s/it]Evaluating:  60%|######    | 670/1112 [27:27<54:03,  7.34s/it]  Exception raised in Job[663]: TimeoutError()
+Evaluating:  60%|######    | 671/1112 [27:33<52:02,  7.08s/it]Evaluating:  60%|######    | 672/1112 [27:57<1:28:50, 12.11s/it]Exception raised in Job[666]: TimeoutError()
+Evaluating:  61%|######    | 673/1112 [28:01<1:11:20,  9.75s/it]Exception raised in Job[668]: TimeoutError()
+Evaluating:  61%|######    | 674/1112 [28:08<1:04:08,  8.79s/it]Evaluating:  61%|######    | 675/1112 [28:13<55:14,  7.58s/it]  Exception raised in Job[670]: TimeoutError()
+Evaluating:  61%|######    | 676/1112 [28:20<55:00,  7.57s/it]Exception raised in Job[671]: TimeoutError()
+Evaluating:  61%|######    | 677/1112 [28:26<50:43,  7.00s/it]Evaluating:  61%|######    | 678/1112 [28:38<1:00:46,  8.40s/it]Exception raised in Job[674]: TimeoutError()
+Evaluating:  61%|######1   | 679/1112 [28:53<1:15:13, 10.42s/it]Exception raised in Job[675]: TimeoutError()
+Evaluating:  61%|######1   | 680/1112 [28:56<59:01,  8.20s/it]  Exception raised in Job[676]: TimeoutError()
+Evaluating:  61%|######1   | 681/1112 [29:11<1:14:50, 10.42s/it]Evaluating:  61%|######1   | 682/1112 [29:19<1:09:48,  9.74s/it]Evaluating:  61%|######1   | 683/1112 [29:30<1:12:10, 10.09s/it]Exception raised in Job[677]: TimeoutError()
+Evaluating:  62%|######1   | 684/1112 [29:33<55:12,  7.74s/it]  Evaluating:  62%|######1   | 685/1112 [29:35<43:44,  6.15s/it]Exception raised in Job[678]: TimeoutError()
+Evaluating:  62%|######1   | 686/1112 [29:39<38:33,  5.43s/it]Exception raised in Job[679]: TimeoutError()
+Evaluating:  62%|######1   | 687/1112 [29:42<33:46,  4.77s/it]Exception raised in Job[682]: TimeoutError()
+Evaluating:  62%|######1   | 688/1112 [29:57<55:38,  7.87s/it]Evaluating:  62%|######1   | 689/1112 [30:00<45:29,  6.45s/it]Evaluating:  62%|######2   | 690/1112 [30:03<36:48,  5.23s/it]Exception raised in Job[684]: TimeoutError()
+Evaluating:  62%|######2   | 691/1112 [30:25<1:11:44, 10.22s/it]Evaluating:  62%|######2   | 692/1112 [30:29<59:02,  8.43s/it]  Exception raised in Job[686]: TimeoutError()
+Evaluating:  62%|######2   | 693/1112 [30:33<49:57,  7.15s/it]Evaluating:  62%|######2   | 694/1112 [30:39<46:27,  6.67s/it]Exception raised in Job[688]: TimeoutError()
+Evaluating:  62%|######2   | 695/1112 [31:01<1:20:18, 11.56s/it]Evaluating:  63%|######2   | 696/1112 [31:05<1:02:29,  9.01s/it]Exception raised in Job[690]: TimeoutError()
+Evaluating:  63%|######2   | 697/1112 [31:13<1:01:13,  8.85s/it]Evaluating:  63%|######2   | 698/1112 [31:19<56:07,  8.14s/it]  Evaluating:  63%|######2   | 699/1112 [31:21<41:18,  6.00s/it]Exception raised in Job[692]: TimeoutError()
+Evaluating:  63%|######2   | 700/1112 [31:26<39:52,  5.81s/it]Exception raised in Job[693]: TimeoutError()
+Evaluating:  63%|######3   | 701/1112 [31:38<51:53,  7.57s/it]Evaluating:  63%|######3   | 702/1112 [31:40<42:01,  6.15s/it]Evaluating:  63%|######3   | 703/1112 [31:47<42:56,  6.30s/it]Exception raised in Job[694]: TimeoutError()
+Evaluating:  63%|######3   | 704/1112 [31:53<41:32,  6.11s/it]Evaluating:  63%|######3   | 705/1112 [31:59<42:26,  6.26s/it]Evaluating:  63%|######3   | 706/1112 [32:05<41:36,  6.15s/it]Exception raised in Job[696]: TimeoutError()
+Evaluating:  64%|######3   | 707/1112 [32:11<41:22,  6.13s/it]Evaluating:  64%|######3   | 708/1112 [32:22<49:46,  7.39s/it]Evaluating:  64%|######3   | 709/1112 [32:27<46:22,  6.91s/it]Exception raised in Job[698]: TimeoutError()
+Evaluating:  64%|######3   | 710/1112 [32:30<38:25,  5.73s/it]Exception raised in Job[700]: TimeoutError()
+Evaluating:  64%|######3   | 711/1112 [32:35<36:12,  5.42s/it]Exception raised in Job[702]: TimeoutError()
+Evaluating:  64%|######4   | 712/1112 [32:42<39:12,  5.88s/it]Evaluating:  64%|######4   | 713/1112 [33:06<1:14:42, 11.23s/it]Evaluating:  64%|######4   | 714/1112 [33:13<1:06:54, 10.09s/it]Exception raised in Job[706]: TimeoutError()
+Evaluating:  64%|######4   | 715/1112 [33:25<1:09:19, 10.48s/it]Evaluating:  64%|######4   | 716/1112 [33:31<1:00:52,  9.22s/it]Evaluating:  64%|######4   | 717/1112 [33:52<1:23:45, 12.72s/it]Evaluating:  65%|######4   | 718/1112 [33:57<1:09:12, 10.54s/it]Exception raised in Job[710]: TimeoutError()
+Evaluating:  65%|######4   | 719/1112 [34:01<56:43,  8.66s/it]  Evaluating:  65%|######4   | 720/1112 [34:13<1:02:02,  9.50s/it]Exception raised in Job[712]: TimeoutError()
+Exception raised in Job[714]: TimeoutError()
+Evaluating:  65%|######4   | 722/1112 [34:21<44:39,  6.87s/it]  Exception raised in Job[716]: TimeoutError()
+Evaluating:  65%|######5   | 723/1112 [34:38<1:01:46,  9.53s/it]Exception raised in Job[718]: TimeoutError()
+Evaluating:  65%|######5   | 724/1112 [34:47<1:00:35,  9.37s/it]Evaluating:  65%|######5   | 725/1112 [34:49<47:20,  7.34s/it]  Evaluating:  65%|######5   | 726/1112 [34:50<35:44,  5.56s/it]Exception raised in Job[720]: TimeoutError()
+Evaluating:  65%|######5   | 728/1112 [34:59<33:06,  5.17s/it]Exception raised in Job[722]: TimeoutError()
+Evaluating:  66%|######5   | 729/1112 [35:11<43:30,  6.82s/it]Evaluating:  66%|######5   | 730/1112 [35:23<51:24,  8.08s/it]Exception raised in Job[725]: TimeoutError()
+Evaluating:  66%|######5   | 731/1112 [35:30<50:06,  7.89s/it]Exception raised in Job[726]: TimeoutError()
+Evaluating:  66%|######5   | 732/1112 [35:35<44:19,  7.00s/it]Exception raised in Job[727]: TimeoutError()
+Evaluating:  66%|######5   | 733/1112 [35:42<44:08,  6.99s/it]Exception raised in Job[728]: TimeoutError()
+Evaluating:  66%|######6   | 734/1112 [36:06<1:14:22, 11.81s/it]Evaluating:  66%|######6   | 735/1112 [36:14<1:06:44, 10.62s/it]Evaluating:  66%|######6   | 736/1112 [36:15<49:32,  7.90s/it]  Exception raised in Job[730]: TimeoutError()
+Evaluating:  66%|######6   | 737/1112 [36:25<52:43,  8.44s/it]Evaluating:  66%|######6   | 738/1112 [36:34<54:25,  8.73s/it]Exception raised in Job[732]: TimeoutError()
+Evaluating:  67%|######6   | 740/1112 [36:52<54:32,  8.80s/it]Exception raised in Job[733]: TimeoutError()
+Evaluating:  67%|######6   | 741/1112 [36:57<49:16,  7.97s/it]Evaluating:  67%|######6   | 742/1112 [37:00<40:28,  6.56s/it]Exception raised in Job[734]: TimeoutError()
+Evaluating:  67%|######6   | 743/1112 [37:01<32:14,  5.24s/it]Evaluating:  67%|######6   | 744/1112 [37:32<1:16:12, 12.43s/it]Exception raised in Job[738]: TimeoutError()
+Evaluating:  67%|######6   | 745/1112 [37:38<1:04:16, 10.51s/it]Exception raised in Job[740]: TimeoutError()
+Evaluating:  67%|######7   | 746/1112 [37:50<1:05:46, 10.78s/it]Exception raised in Job[741]: TimeoutError()
+Evaluating:  67%|######7   | 747/1112 [37:50<46:58,  7.72s/it]  Exception raised in Job[742]: TimeoutError()
+Evaluating:  67%|######7   | 749/1112 [38:08<50:12,  8.30s/it]Exception raised in Job[746]: TimeoutError()
+Evaluating:  67%|######7   | 750/1112 [38:30<1:11:09, 11.79s/it]Evaluating:  68%|######7   | 751/1112 [38:33<56:09,  9.33s/it]  Exception raised in Job[748]: TimeoutError()
+Evaluating:  68%|######7   | 752/1112 [38:42<55:57,  9.33s/it]Evaluating:  68%|######7   | 753/1112 [38:48<49:42,  8.31s/it]Evaluating:  68%|######7   | 754/1112 [38:52<43:00,  7.21s/it]Exception raised in Job[749]: TimeoutError()
+Evaluating:  68%|######7   | 755/1112 [39:06<54:31,  9.16s/it]Evaluating:  68%|######7   | 756/1112 [39:07<40:10,  6.77s/it]Exception raised in Job[750]: TimeoutError()
+Evaluating:  68%|######8   | 757/1112 [39:14<39:22,  6.65s/it]Exception raised in Job[751]: TimeoutError()
+Evaluating:  68%|######8   | 758/1112 [39:15<30:04,  5.10s/it]Evaluating:  68%|######8   | 759/1112 [39:30<47:01,  7.99s/it]Evaluating:  68%|######8   | 760/1112 [39:32<37:00,  6.31s/it]Exception raised in Job[754]: TimeoutError()
+Evaluating:  68%|######8   | 761/1112 [39:34<29:19,  5.01s/it]Exception raised in Job[755]: TimeoutError()
+Evaluating:  69%|######8   | 762/1112 [39:52<51:26,  8.82s/it]Exception raised in Job[756]: TimeoutError()
+Evaluating:  69%|######8   | 763/1112 [39:57<45:24,  7.81s/it]Exception raised in Job[758]: TimeoutError()
+Evaluating:  69%|######8   | 764/1112 [40:01<39:06,  6.74s/it]Evaluating:  69%|######8   | 765/1112 [40:05<33:26,  5.78s/it]Evaluating:  69%|######8   | 766/1112 [40:16<42:57,  7.45s/it]Evaluating:  69%|######8   | 767/1112 [40:42<1:13:25, 12.77s/it]Exception raised in Job[762]: TimeoutError()
+Evaluating:  69%|######9   | 768/1112 [40:50<1:05:39, 11.45s/it]LLM returned 1 generations instead of requested 3. Proceeding with 1 generations.
+Evaluating:  69%|######9   | 769/1112 [40:53<51:21,  8.98s/it]  Exception raised in Job[764]: TimeoutError()
+Evaluating:  69%|######9   | 771/1112 [41:08<46:50,  8.24s/it]Evaluating:  69%|######9   | 772/1112 [41:11<39:19,  6.94s/it]Exception raised in Job[766]: TimeoutError()
+Evaluating:  70%|######9   | 774/1112 [41:33<48:25,  8.60s/it]Exception raised in Job[768]: TimeoutError()
+Evaluating:  70%|######9   | 775/1112 [41:48<56:27, 10.05s/it]Evaluating:  70%|######9   | 776/1112 [41:51<47:27,  8.47s/it]Exception raised in Job[770]: TimeoutError()
+Evaluating:  70%|######9   | 777/1112 [42:06<56:28, 10.11s/it]Exception raised in Job[771]: TimeoutError()
+Evaluating:  70%|######9   | 778/1112 [42:07<42:33,  7.64s/it]Evaluating:  70%|#######   | 779/1112 [42:26<1:00:20, 10.87s/it]Evaluating:  70%|#######   | 780/1112 [42:27<44:00,  7.95s/it]  Exception raised in Job[774]: TimeoutError()
+Evaluating:  70%|#######   | 781/1112 [42:30<35:34,  6.45s/it]Exception raised in Job[775]: TimeoutError()
+Evaluating:  70%|#######   | 782/1112 [42:32<28:50,  5.24s/it]Exception raised in Job[776]: TimeoutError()
+Evaluating:  70%|#######   | 783/1112 [42:34<23:30,  4.29s/it]Evaluating:  71%|#######   | 784/1112 [42:46<35:53,  6.57s/it]Exception raised in Job[778]: TimeoutError()
+Evaluating:  71%|#######   | 785/1112 [42:57<43:15,  7.94s/it]Evaluating:  71%|#######   | 786/1112 [43:09<49:59,  9.20s/it]Evaluating:  71%|#######   | 787/1112 [43:11<38:15,  7.06s/it]Evaluating:  71%|#######   | 788/1112 [43:25<48:22,  8.96s/it]Exception raised in Job[782]: TimeoutError()
+Evaluating:  71%|#######   | 789/1112 [43:42<1:00:43, 11.28s/it]Evaluating:  71%|#######1  | 790/1112 [43:43<44:44,  8.34s/it]  Evaluating:  71%|#######1  | 791/1112 [43:47<37:43,  7.05s/it]Exception raised in Job[784]: TimeoutError()
+Evaluating:  71%|#######1  | 792/1112 [43:53<36:06,  6.77s/it]Exception raised in Job[786]: TimeoutError()
+Evaluating:  71%|#######1  | 793/1112 [44:08<48:41,  9.16s/it]Exception raised in Job[788]: TimeoutError()
+Evaluating:  71%|#######1  | 794/1112 [44:11<38:45,  7.31s/it]Evaluating:  71%|#######1  | 795/1112 [44:26<51:25,  9.73s/it]Evaluating:  72%|#######1  | 796/1112 [44:44<1:04:00, 12.15s/it]Exception raised in Job[790]: TimeoutError()
+Evaluating:  72%|#######1  | 797/1112 [44:48<50:24,  9.60s/it]  Evaluating:  72%|#######1  | 798/1112 [44:53<43:37,  8.34s/it]Exception raised in Job[793]: TimeoutError()
+Evaluating:  72%|#######1  | 799/1112 [45:07<52:24, 10.05s/it]Exception raised in Job[794]: TimeoutError()
+Evaluating:  72%|#######1  | 800/1112 [45:26<1:06:32, 12.80s/it]Exception raised in Job[795]: TimeoutError()
+Evaluating:  72%|#######2  | 801/1112 [45:27<47:30,  9.17s/it]  Evaluating:  72%|#######2  | 802/1112 [45:27<33:45,  6.54s/it]Exception raised in Job[796]: TimeoutError()
+Evaluating:  72%|#######2  | 803/1112 [45:30<27:04,  5.26s/it]Exception raised in Job[798]: TimeoutError()
+Evaluating:  72%|#######2  | 804/1112 [45:34<25:33,  4.98s/it]Evaluating:  72%|#######2  | 805/1112 [45:53<47:09,  9.22s/it]Exception raised in Job[800]: TimeoutError()
+Evaluating:  73%|#######2  | 807/1112 [45:57<29:59,  5.90s/it]Exception raised in Job[802]: TimeoutError()
+Evaluating:  73%|#######2  | 808/1112 [46:11<40:21,  7.97s/it]Evaluating:  73%|#######2  | 809/1112 [46:13<31:58,  6.33s/it]Evaluating:  73%|#######2  | 810/1112 [46:30<45:57,  9.13s/it]Exception raised in Job[804]: TimeoutError()
+Evaluating:  73%|#######2  | 811/1112 [46:42<49:29,  9.87s/it]Evaluating:  73%|#######3  | 812/1112 [46:45<40:50,  8.17s/it]Exception raised in Job[806]: TimeoutError()
+Evaluating:  73%|#######3  | 813/1112 [46:47<31:11,  6.26s/it]Exception raised in Job[809]: TimeoutError()
+Evaluating:  73%|#######3  | 814/1112 [47:11<56:41, 11.41s/it]Evaluating:  73%|#######3  | 815/1112 [47:14<45:01,  9.10s/it]Evaluating:  73%|#######3  | 816/1112 [47:27<50:24, 10.22s/it]Exception raised in Job[810]: TimeoutError()
+Exception raised in Job[812]: TimeoutError()
+Evaluating:  74%|#######3  | 818/1112 [47:48<50:00, 10.21s/it]Evaluating:  74%|#######3  | 819/1112 [47:49<39:28,  8.09s/it]Exception raised in Job[814]: TimeoutError()
+Evaluating:  74%|#######3  | 820/1112 [48:07<51:39, 10.62s/it]Evaluating:  74%|#######3  | 821/1112 [48:19<53:22, 11.00s/it]Exception raised in Job[815]: TimeoutError()
+Evaluating:  74%|#######3  | 822/1112 [48:26<48:00,  9.93s/it]Evaluating:  74%|#######4  | 823/1112 [48:29<38:14,  7.94s/it]Exception raised in Job[818]: TimeoutError()
+Evaluating:  74%|#######4  | 824/1112 [48:30<27:40,  5.77s/it]Exception raised in Job[819]: TimeoutError()
+Evaluating:  74%|#######4  | 825/1112 [48:34<25:34,  5.35s/it]Evaluating:  74%|#######4  | 826/1112 [48:38<23:29,  4.93s/it]Exception raised in Job[822]: TimeoutError()
+Evaluating:  74%|#######4  | 828/1112 [48:57<33:28,  7.07s/it]Evaluating:  75%|#######4  | 829/1112 [49:06<35:49,  7.59s/it]Exception raised in Job[824]: TimeoutError()
+Evaluating:  75%|#######4  | 830/1112 [49:13<34:38,  7.37s/it]Evaluating:  75%|#######4  | 831/1112 [49:21<35:01,  7.48s/it]Evaluating:  75%|#######4  | 832/1112 [49:21<25:43,  5.51s/it]Evaluating:  75%|#######4  | 833/1112 [49:38<40:07,  8.63s/it]Exception raised in Job[826]: TimeoutError()
+Evaluating:  75%|#######5  | 834/1112 [49:42<33:25,  7.21s/it]Exception raised in Job[827]: TimeoutError()
+Evaluating:  75%|#######5  | 835/1112 [49:45<28:51,  6.25s/it]Exception raised in Job[829]: TimeoutError()
+Evaluating:  75%|#######5  | 836/1112 [50:11<54:47, 11.91s/it]Exception raised in Job[830]: TimeoutError()
+Evaluating:  75%|#######5  | 837/1112 [50:15<43:15,  9.44s/it]Evaluating:  75%|#######5  | 838/1112 [50:21<38:47,  8.49s/it]Exception raised in Job[832]: TimeoutError()
+Evaluating:  75%|#######5  | 839/1112 [50:27<36:05,  7.93s/it]Exception raised in Job[831]: TimeoutError()
+Evaluating:  76%|#######5  | 841/1112 [50:29<21:05,  4.67s/it]Exception raised in Job[834]: TimeoutError()
+Evaluating:  76%|#######5  | 842/1112 [50:49<38:26,  8.54s/it]Evaluating:  76%|#######5  | 843/1112 [51:12<55:15, 12.33s/it]Exception raised in Job[836]: TimeoutError()
+Evaluating:  76%|#######5  | 844/1112 [51:19<48:20, 10.82s/it]Exception raised in Job[838]: TimeoutError()
+Evaluating:  76%|#######5  | 845/1112 [51:29<47:17, 10.63s/it]Evaluating:  76%|#######6  | 846/1112 [51:39<45:18, 10.22s/it]Exception raised in Job[842]: TimeoutError()
+Exception raised in Job[841]: TimeoutError()
+Evaluating:  76%|#######6  | 849/1112 [51:56<34:09,  7.79s/it]Exception raised in Job[844]: TimeoutError()
+Evaluating:  76%|#######6  | 850/1112 [52:06<36:29,  8.36s/it]Exception raised in Job[846]: TimeoutError()
+Evaluating:  77%|#######6  | 851/1112 [52:21<42:55,  9.87s/it]Exception raised in Job[848]: TimeoutError()
+Evaluating:  77%|#######6  | 853/1112 [52:38<39:44,  9.21s/it]Evaluating:  77%|#######6  | 854/1112 [52:39<31:53,  7.42s/it]Evaluating:  77%|#######6  | 855/1112 [52:42<27:47,  6.49s/it]Exception raised in Job[850]: TimeoutError()
+Evaluating:  77%|#######6  | 856/1112 [52:46<23:57,  5.62s/it]Evaluating:  77%|#######7  | 857/1112 [53:05<39:51,  9.38s/it]Exception raised in Job[854]: TimeoutError()
+Evaluating:  77%|#######7  | 859/1112 [53:27<42:38, 10.11s/it]Exception raised in Job[856]: TimeoutError()
+Evaluating:  77%|#######7  | 860/1112 [53:29<34:08,  8.13s/it]Evaluating:  77%|#######7  | 861/1112 [53:31<27:38,  6.61s/it]Exception raised in Job[857]: TimeoutError()
+Evaluating:  78%|#######7  | 862/1112 [53:49<40:19,  9.68s/it]Exception raised in Job[858]: TimeoutError()
+Evaluating:  78%|#######7  | 863/1112 [54:12<55:24, 13.35s/it]Evaluating:  78%|#######7  | 864/1112 [54:24<53:14, 12.88s/it]Exception raised in Job[860]: TimeoutError()
+Evaluating:  78%|#######7  | 865/1112 [54:29<43:59, 10.69s/it]Exception raised in Job[862]: TimeoutError()
+Evaluating:  78%|#######7  | 866/1112 [54:39<42:02, 10.25s/it]Evaluating:  78%|#######7  | 867/1112 [54:41<32:46,  8.03s/it]Exception raised in Job[864]: TimeoutError()
+Evaluating:  78%|#######8  | 868/1112 [54:56<40:42, 10.01s/it]Evaluating:  78%|#######8  | 869/1112 [54:57<30:20,  7.49s/it]Exception raised in Job[865]: TimeoutError()
+Evaluating:  78%|#######8  | 870/1112 [55:06<31:59,  7.93s/it]Evaluating:  78%|#######8  | 871/1112 [55:15<32:52,  8.19s/it]Exception raised in Job[867]: TimeoutError()
+Exception raised in Job[866]: TimeoutError()
+Evaluating:  78%|#######8  | 872/1112 [55:21<30:22,  7.60s/it]Evaluating:  79%|#######8  | 874/1112 [55:24<18:26,  4.65s/it]Exception raised in Job[868]: TimeoutError()
+Evaluating:  79%|#######8  | 875/1112 [55:38<27:29,  6.96s/it]Exception raised in Job[869]: TimeoutError()
+Evaluating:  79%|#######8  | 876/1112 [55:39<21:19,  5.42s/it]Exception raised in Job[870]: TimeoutError()
+Evaluating:  79%|#######8  | 877/1112 [55:42<19:13,  4.91s/it]Exception raised in Job[871]: TimeoutError()
+Evaluating:  79%|#######8  | 878/1112 [55:46<17:09,  4.40s/it]Evaluating:  79%|#######9  | 879/1112 [55:57<25:13,  6.50s/it]Evaluating:  79%|#######9  | 880/1112 [56:24<47:25, 12.26s/it]Evaluating:  79%|#######9  | 881/1112 [56:24<34:10,  8.87s/it]Exception raised in Job[874]: TimeoutError()
+Evaluating:  79%|#######9  | 882/1112 [56:27<27:24,  7.15s/it]Exception raised in Job[876]: TimeoutError()
+Evaluating:  79%|#######9  | 883/1112 [56:31<23:31,  6.16s/it]Evaluating:  79%|#######9  | 884/1112 [57:11<1:01:33, 16.20s/it]Exception raised in Job[878]: TimeoutError()
+Evaluating:  80%|#######9  | 885/1112 [57:12<44:31, 11.77s/it]  Evaluating:  80%|#######9  | 886/1112 [57:19<38:58, 10.35s/it]Evaluating:  80%|#######9  | 887/1112 [57:23<31:07,  8.30s/it]Exception raised in Job[879]: TimeoutError()
+Evaluating:  80%|#######9  | 888/1112 [57:24<23:00,  6.17s/it]Exception raised in Job[880]: TimeoutError()
+Evaluating:  80%|#######9  | 889/1112 [57:29<21:52,  5.89s/it]Evaluating:  80%|########  | 890/1112 [57:42<28:48,  7.79s/it]Exception raised in Job[882]: TimeoutError()
+Evaluating:  80%|########  | 892/1112 [57:51<23:03,  6.29s/it]Evaluating:  80%|########  | 893/1112 [58:00<25:19,  6.94s/it]Exception raised in Job[886]: TimeoutError()
+Evaluating:  80%|########  | 894/1112 [58:15<33:29,  9.22s/it]Evaluating:  80%|########  | 895/1112 [58:23<31:44,  8.77s/it]Evaluating:  81%|########  | 896/1112 [58:23<22:54,  6.37s/it]Exception raised in Job[890]: TimeoutError()
+Evaluating:  81%|########  | 897/1112 [58:38<31:29,  8.79s/it]Exception raised in Job[892]: TimeoutError()
+Evaluating:  81%|########  | 898/1112 [58:42<27:00,  7.57s/it]Evaluating:  81%|########  | 899/1112 [58:52<28:49,  8.12s/it]Exception raised in Job[894]: TimeoutError()
+Evaluating:  81%|########  | 900/1112 [58:57<25:51,  7.32s/it]Evaluating:  81%|########1 | 901/1112 [59:17<38:19, 10.90s/it]Exception raised in Job[895]: TimeoutError()
+Evaluating:  81%|########1 | 902/1112 [59:24<34:05,  9.74s/it]Exception raised in Job[896]: TimeoutError()
+Evaluating:  81%|########1 | 903/1112 [59:24<24:30,  7.04s/it]Exception raised in Job[898]: TimeoutError()
+Evaluating:  81%|########1 | 904/1112 [59:31<24:12,  6.98s/it]Evaluating:  81%|########1 | 905/1112 [59:34<19:24,  5.62s/it]Evaluating:  81%|########1 | 906/1112 [59:42<22:25,  6.53s/it]Evaluating:  82%|########1 | 907/1112 [1:00:01<35:06, 10.28s/it]Evaluating:  82%|########1 | 908/1112 [1:00:18<41:44, 12.28s/it]Evaluating:  82%|########1 | 909/1112 [1:00:21<31:33,  9.33s/it]Exception raised in Job[902]: TimeoutError()
+Evaluating:  82%|########1 | 910/1112 [1:00:23<24:14,  7.20s/it]Exception raised in Job[905]: TimeoutError()
+Evaluating:  82%|########1 | 911/1112 [1:00:42<35:35, 10.63s/it]Exception raised in Job[906]: TimeoutError()
+Evaluating:  82%|########2 | 913/1112 [1:00:43<20:09,  6.08s/it]Evaluating:  82%|########2 | 914/1112 [1:00:44<15:55,  4.82s/it]Evaluating:  82%|########2 | 915/1112 [1:00:46<13:14,  4.03s/it]Exception raised in Job[907]: TimeoutError()
+Evaluating:  82%|########2 | 916/1112 [1:00:51<13:47,  4.22s/it]Exception raised in Job[908]: TimeoutError()
+Evaluating:  82%|########2 | 917/1112 [1:01:00<17:59,  5.54s/it]Exception raised in Job[909]: TimeoutError()
+Evaluating:  83%|########2 | 918/1112 [1:01:15<27:14,  8.43s/it]Evaluating:  83%|########2 | 919/1112 [1:01:19<22:26,  6.97s/it]Exception raised in Job[910]: TimeoutError()
+Evaluating:  83%|########2 | 920/1112 [1:01:23<19:40,  6.15s/it]Evaluating:  83%|########2 | 921/1112 [1:01:43<33:03, 10.38s/it]Exception raised in Job[914]: TimeoutError()
+Evaluating:  83%|########3 | 923/1112 [1:01:52<23:53,  7.59s/it]Exception raised in Job[915]: TimeoutError()
+Evaluating:  83%|########3 | 924/1112 [1:01:57<22:06,  7.05s/it]Evaluating:  83%|########3 | 925/1112 [1:02:09<26:04,  8.37s/it]Exception raised in Job[916]: TimeoutError()
+Evaluating:  83%|########3 | 926/1112 [1:02:17<25:02,  8.08s/it]Exception raised in Job[918]: TimeoutError()
+Evaluating:  83%|########3 | 927/1112 [1:02:24<24:33,  7.96s/it]Evaluating:  83%|########3 | 928/1112 [1:02:26<19:06,  6.23s/it]Exception raised in Job[920]: TimeoutError()
+Evaluating:  84%|########3 | 929/1112 [1:02:34<20:03,  6.57s/it]Evaluating:  84%|########3 | 930/1112 [1:03:02<39:39, 13.07s/it]Exception raised in Job[922]: TimeoutError()
+Evaluating:  84%|########3 | 932/1112 [1:03:19<32:58, 10.99s/it]Exception raised in Job[924]: TimeoutError()
+Evaluating:  84%|########3 | 934/1112 [1:03:21<20:30,  6.91s/it]Evaluating:  84%|########4 | 935/1112 [1:03:36<25:51,  8.77s/it]Exception raised in Job[926]: TimeoutError()
+Evaluating:  84%|########4 | 936/1112 [1:03:42<23:25,  7.99s/it]Exception raised in Job[928]: TimeoutError()
+Evaluating:  84%|########4 | 937/1112 [1:03:43<18:31,  6.35s/it]Evaluating:  84%|########4 | 938/1112 [1:03:44<14:18,  4.94s/it]Exception raised in Job[930]: TimeoutError()
+Evaluating:  84%|########4 | 939/1112 [1:03:46<11:42,  4.06s/it]Evaluating:  85%|########4 | 940/1112 [1:04:02<21:42,  7.57s/it]Exception raised in Job[934]: TimeoutError()
+Evaluating:  85%|########4 | 941/1112 [1:04:19<28:40, 10.06s/it]Evaluating:  85%|########4 | 942/1112 [1:04:27<27:16,  9.63s/it]Exception raised in Job[937]: TimeoutError()
+Evaluating:  85%|########4 | 944/1112 [1:04:43<24:58,  8.92s/it]Evaluating:  85%|########4 | 945/1112 [1:04:46<20:51,  7.49s/it]Exception raised in Job[938]: TimeoutError()
+Evaluating:  85%|########5 | 946/1112 [1:04:52<19:13,  6.95s/it]Evaluating:  85%|########5 | 947/1112 [1:04:55<16:05,  5.85s/it]Evaluating:  85%|########5 | 948/1112 [1:05:03<17:43,  6.49s/it]Evaluating:  85%|########5 | 949/1112 [1:05:03<12:45,  4.70s/it]Exception raised in Job[940]: TimeoutError()
+Evaluating:  85%|########5 | 950/1112 [1:05:09<13:57,  5.17s/it]Evaluating:  86%|########5 | 951/1112 [1:05:20<18:29,  6.89s/it]Exception raised in Job[942]: TimeoutError()
+Evaluating:  86%|########5 | 952/1112 [1:05:24<16:02,  6.02s/it]Exception raised in Job[944]: TimeoutError()
+Evaluating:  86%|########5 | 953/1112 [1:05:34<18:31,  6.99s/it]Evaluating:  86%|########5 | 954/1112 [1:05:46<22:49,  8.67s/it]Evaluating:  86%|########5 | 955/1112 [1:06:03<28:44, 10.98s/it]Exception raised in Job[946]: TimeoutError()
+Exception raised in Job[945]: TimeoutError()
+Evaluating:  86%|########6 | 958/1112 [1:06:03<12:27,  4.85s/it]Exception raised in Job[948]: TimeoutError()
+Evaluating:  86%|########6 | 959/1112 [1:06:19<18:39,  7.32s/it]Exception raised in Job[950]: TimeoutError()
+Evaluating:  86%|########6 | 960/1112 [1:06:36<23:59,  9.47s/it]Evaluating:  86%|########6 | 961/1112 [1:06:39<19:33,  7.77s/it]Exception raised in Job[954]: TimeoutError()
+Evaluating:  87%|########6 | 962/1112 [1:06:46<19:05,  7.63s/it]Evaluating:  87%|########6 | 963/1112 [1:07:06<27:39, 11.14s/it]Exception raised in Job[956]: TimeoutError()
+Evaluating:  87%|########6 | 964/1112 [1:07:19<28:12, 11.44s/it]Evaluating:  87%|########6 | 965/1112 [1:07:22<22:04,  9.01s/it]Exception raised in Job[958]: TimeoutError()
+Evaluating:  87%|########6 | 966/1112 [1:07:27<19:33,  8.04s/it]Evaluating:  87%|########6 | 967/1112 [1:07:31<16:17,  6.74s/it]Exception raised in Job[960]: TimeoutError()
+Evaluating:  87%|########7 | 969/1112 [1:07:46<17:12,  7.22s/it]Exception raised in Job[962]: TimeoutError()
+Evaluating:  87%|########7 | 970/1112 [1:07:55<17:42,  7.48s/it]Evaluating:  87%|########7 | 971/1112 [1:07:57<14:18,  6.09s/it]Evaluating:  87%|########7 | 972/1112 [1:08:21<25:23, 10.88s/it]Exception raised in Job[966]: TimeoutError()
+Evaluating:  88%|########7 | 974/1112 [1:08:21<14:28,  6.29s/it]Exception raised in Job[968]: TimeoutError()
+Evaluating:  88%|########7 | 975/1112 [1:08:34<17:37,  7.72s/it]Evaluating:  88%|########7 | 976/1112 [1:08:57<26:12, 11.56s/it]Exception raised in Job[972]: TimeoutError()
+Exception raised in Job[970]: TimeoutError()
+Evaluating:  88%|########7 | 977/1112 [1:09:03<22:48, 10.14s/it]Exception raised in Job[973]: TimeoutError()
+Evaluating:  88%|########8 | 979/1112 [1:09:03<12:50,  5.80s/it]Evaluating:  88%|########8 | 980/1112 [1:09:08<12:20,  5.61s/it]Exception raised in Job[974]: TimeoutError()
+Evaluating:  88%|########8 | 981/1112 [1:09:19<15:30,  7.10s/it]Evaluating:  88%|########8 | 982/1112 [1:09:24<13:40,  6.31s/it]Evaluating:  88%|########8 | 983/1112 [1:09:39<18:41,  8.69s/it]Exception raised in Job[976]: TimeoutError()
+Evaluating:  88%|########8 | 984/1112 [1:09:39<13:24,  6.28s/it]Evaluating:  89%|########8 | 985/1112 [1:09:57<20:27,  9.66s/it]Exception raised in Job[978]: TimeoutError()
+Evaluating:  89%|########8 | 987/1112 [1:10:06<15:36,  7.49s/it]Evaluating:  89%|########8 | 988/1112 [1:10:14<15:16,  7.39s/it]Exception raised in Job[982]: TimeoutError()
+Exception raised in Job[983]: TimeoutError()
+Evaluating:  89%|########8 | 989/1112 [1:10:31<20:25,  9.96s/it]Exception raised in Job[984]: TimeoutError()
+Evaluating:  89%|########9 | 991/1112 [1:10:46<18:13,  9.04s/it]Evaluating:  89%|########9 | 992/1112 [1:10:49<14:56,  7.47s/it]Exception raised in Job[986]: TimeoutError()
+Evaluating:  89%|########9 | 993/1112 [1:10:57<15:07,  7.63s/it]Exception raised in Job[988]: TimeoutError()
+Evaluating:  89%|########9 | 994/1112 [1:11:21<23:21, 11.88s/it]Exception raised in Job[989]: TimeoutError()
+Evaluating:  89%|########9 | 995/1112 [1:11:21<17:13,  8.83s/it]Evaluating:  90%|########9 | 996/1112 [1:11:23<13:07,  6.79s/it]Exception raised in Job[990]: TimeoutError()
+Evaluating:  90%|########9 | 998/1112 [1:11:34<11:42,  6.16s/it]Evaluating:  90%|########9 | 999/1112 [1:11:40<11:50,  6.28s/it]Exception raised in Job[994]: TimeoutError()
+Evaluating:  90%|########9 | 1000/1112 [1:12:03<19:31, 10.46s/it]Evaluating:  90%|######### | 1001/1112 [1:12:06<15:39,  8.46s/it]Evaluating:  90%|######### | 1002/1112 [1:12:14<15:27,  8.43s/it]Exception raised in Job[998]: TimeoutError()
+Evaluating:  90%|######### | 1003/1112 [1:12:39<23:28, 12.92s/it]Evaluating:  90%|######### | 1004/1112 [1:12:42<18:27, 10.25s/it]Exception raised in Job[1000]: TimeoutError()
+Evaluating:  90%|######### | 1006/1112 [1:12:57<15:44,  8.91s/it]Exception raised in Job[1001]: TimeoutError()
+Exception raised in Job[1002]: TimeoutError()
+Evaluating:  91%|######### | 1008/1112 [1:13:06<12:40,  7.31s/it]Evaluating:  91%|######### | 1009/1112 [1:13:13<12:04,  7.04s/it]Evaluating:  91%|######### | 1010/1112 [1:13:17<10:52,  6.40s/it]Exception raised in Job[1005]: TimeoutError()
+Evaluating:  91%|######### | 1011/1112 [1:13:31<14:13,  8.45s/it]Exception raised in Job[1004]: TimeoutError()
+Exception raised in Job[1006]: TimeoutError()
+Evaluating:  91%|#########1| 1013/1112 [1:13:46<13:19,  8.08s/it]Exception raised in Job[1008]: TimeoutError()
+Evaluating:  91%|#########1| 1014/1112 [1:13:57<14:04,  8.61s/it]Evaluating:  91%|#########1| 1015/1112 [1:14:07<14:36,  9.04s/it]Exception raised in Job[1010]: TimeoutError()
+Evaluating:  91%|#########1| 1016/1112 [1:14:21<16:37, 10.39s/it]Evaluating:  91%|#########1| 1017/1112 [1:14:23<12:51,  8.12s/it]Exception raised in Job[1011]: TimeoutError()
+Evaluating:  92%|#########1| 1019/1112 [1:14:32<10:03,  6.48s/it]Exception raised in Job[1014]: TimeoutError()
+Evaluating:  92%|#########1| 1020/1112 [1:14:40<10:32,  6.88s/it]Evaluating:  92%|#########1| 1021/1112 [1:14:53<12:42,  8.38s/it]Exception raised in Job[1016]: TimeoutError()
+Evaluating:  92%|#########1| 1022/1112 [1:15:06<14:20,  9.56s/it]Evaluating:  92%|#########1| 1023/1112 [1:15:19<15:30, 10.46s/it]Evaluating:  92%|#########2| 1024/1112 [1:15:27<14:28,  9.87s/it]Exception raised in Job[1018]: TimeoutError()
+Evaluating:  92%|#########2| 1025/1112 [1:15:39<14:57, 10.32s/it]Exception raised in Job[1019]: TimeoutError()
+Exception raised in Job[1020]: TimeoutError()
+Evaluating:  92%|#########2| 1026/1112 [1:15:42<12:00,  8.38s/it]Evaluating:  92%|#########2| 1028/1112 [1:15:51<09:08,  6.53s/it]Exception raised in Job[1022]: TimeoutError()
+Evaluating:  93%|#########2| 1029/1112 [1:15:57<08:49,  6.38s/it]Exception raised in Job[1024]: TimeoutError()
+Evaluating:  93%|#########2| 1030/1112 [1:16:13<12:01,  8.80s/it]Exception raised in Job[1025]: TimeoutError()
+Evaluating:  93%|#########2| 1031/1112 [1:16:17<10:15,  7.60s/it]Exception raised in Job[1026]: TimeoutError()
+Evaluating:  93%|#########2| 1032/1112 [1:16:31<12:40,  9.51s/it]Evaluating:  93%|#########2| 1033/1112 [1:16:33<09:30,  7.22s/it]Evaluating:  93%|#########2| 1034/1112 [1:16:43<10:41,  8.22s/it]Exception raised in Job[1030]: TimeoutError()
+Evaluating:  93%|#########3| 1036/1112 [1:17:07<12:30,  9.87s/it]Exception raised in Job[1033]: TimeoutError()
+Exception raised in Job[1032]: TimeoutError()
+Evaluating:  93%|#########3| 1037/1112 [1:17:24<14:19, 11.47s/it]Evaluating:  93%|#########3| 1039/1112 [1:17:27<08:59,  7.40s/it]Exception raised in Job[1034]: TimeoutError()
+Evaluating:  94%|#########3| 1040/1112 [1:17:32<08:21,  6.96s/it]Evaluating:  94%|#########3| 1041/1112 [1:17:43<09:12,  7.78s/it]Evaluating:  94%|#########3| 1043/1112 [1:17:43<05:19,  4.64s/it]Exception raised in Job[1036]: TimeoutError()
+Evaluating:  94%|#########3| 1044/1112 [1:17:53<06:43,  5.94s/it]Exception raised in Job[1038]: TimeoutError()
+Evaluating:  94%|#########3| 1045/1112 [1:18:19<12:00, 10.76s/it]Evaluating:  94%|#########4| 1046/1112 [1:18:26<10:43,  9.75s/it]Exception raised in Job[1039]: TimeoutError()
+Evaluating:  94%|#########4| 1048/1112 [1:18:27<06:18,  5.92s/it]Exception raised in Job[1042]: TimeoutError()
+Exception raised in Job[1041]: TimeoutError()
+Evaluating:  94%|#########4| 1049/1112 [1:18:42<08:27,  8.06s/it]Evaluating:  95%|#########4| 1051/1112 [1:18:53<07:04,  6.95s/it]Evaluating:  95%|#########4| 1052/1112 [1:18:54<05:34,  5.57s/it]Exception raised in Job[1044]: TimeoutError()
+Evaluating:  95%|#########4| 1053/1112 [1:18:57<04:55,  5.01s/it]Exception raised in Job[1046]: TimeoutError()
+Evaluating:  95%|#########4| 1054/1112 [1:19:17<08:34,  8.87s/it]Evaluating:  95%|#########4| 1055/1112 [1:19:34<10:36, 11.17s/it]Exception raised in Job[1050]: TimeoutError()
+Evaluating:  95%|#########4| 1056/1112 [1:19:43<09:53, 10.60s/it]Evaluating:  95%|#########5| 1057/1112 [1:20:01<11:28, 12.52s/it]Evaluating:  95%|#########5| 1059/1112 [1:20:17<09:22, 10.61s/it]Exception raised in Job[1052]: TimeoutError()
+Evaluating:  95%|#########5| 1060/1112 [1:20:24<08:17,  9.56s/it]Exception raised in Job[1054]: TimeoutError()
+Evaluating:  95%|#########5| 1061/1112 [1:20:27<06:43,  7.90s/it]Evaluating:  96%|#########5| 1062/1112 [1:20:35<06:37,  7.95s/it]Exception raised in Job[1056]: TimeoutError()
+Evaluating:  96%|#########5| 1063/1112 [1:20:43<06:26,  7.89s/it]Exception raised in Job[1058]: TimeoutError()
+Evaluating:  96%|#########5| 1064/1112 [1:20:43<04:35,  5.73s/it]Evaluating:  96%|#########5| 1065/1112 [1:21:02<07:30,  9.58s/it]Exception raised in Job[1060]: TimeoutError()
+Evaluating:  96%|#########5| 1067/1112 [1:21:19<06:48,  9.07s/it]Exception raised in Job[1062]: TimeoutError()
+Evaluating:  96%|#########6| 1068/1112 [1:21:26<06:15,  8.53s/it]Exception raised in Job[1063]: TimeoutError()
+Evaluating:  96%|#########6| 1069/1112 [1:21:27<04:51,  6.77s/it]Evaluating:  96%|#########6| 1070/1112 [1:21:36<05:06,  7.29s/it]Exception raised in Job[1064]: TimeoutError()
+Evaluating:  96%|#########6| 1071/1112 [1:21:42<04:46,  6.98s/it]Evaluating:  96%|#########6| 1072/1112 [1:21:52<05:08,  7.70s/it]Exception raised in Job[1066]: TimeoutError()
+Evaluating:  96%|#########6| 1073/1112 [1:21:53<03:45,  5.78s/it]Exception raised in Job[1067]: TimeoutError()
+Evaluating:  97%|#########6| 1074/1112 [1:21:54<02:43,  4.30s/it]Exception raised in Job[1068]: TimeoutError()
+Evaluating:  97%|#########6| 1075/1112 [1:21:57<02:27,  3.99s/it]Evaluating:  97%|#########6| 1076/1112 [1:22:12<04:24,  7.35s/it]Exception raised in Job[1070]: TimeoutError()
+Evaluating:  97%|#########6| 1077/1112 [1:22:34<06:52, 11.78s/it]Exception raised in Job[1072]: TimeoutError()
+Evaluating:  97%|#########6| 1078/1112 [1:23:01<09:09, 16.15s/it]Evaluating:  97%|#########7| 1079/1112 [1:23:03<06:36, 12.02s/it]Exception raised in Job[1074]: TimeoutError()
+Evaluating:  97%|#########7| 1081/1112 [1:23:17<05:02,  9.76s/it]Exception raised in Job[1076]: TimeoutError()
+Evaluating:  97%|#########7| 1082/1112 [1:23:27<04:50,  9.67s/it]Evaluating:  97%|#########7| 1083/1112 [1:23:28<03:39,  7.55s/it]Exception raised in Job[1078]: TimeoutError()
+Evaluating:  97%|#########7| 1084/1112 [1:23:43<04:22,  9.37s/it]Evaluating:  98%|#########7| 1085/1112 [1:23:46<03:28,  7.73s/it]Evaluating:  98%|#########7| 1086/1112 [1:23:59<03:56,  9.10s/it]Evaluating:  98%|#########7| 1087/1112 [1:24:01<02:55,  7.01s/it]Exception raised in Job[1082]: TimeoutError()
+Evaluating:  98%|#########7| 1088/1112 [1:24:19<04:07, 10.33s/it]Exception raised in Job[1083]: TimeoutError()
+Evaluating:  98%|#########7| 1089/1112 [1:24:26<03:33,  9.30s/it]Exception raised in Job[1084]: TimeoutError()
+Evaluating:  98%|#########8| 1090/1112 [1:24:28<02:39,  7.23s/it]Evaluating:  98%|#########8| 1091/1112 [1:24:29<01:52,  5.34s/it]Evaluating:  98%|#########8| 1092/1112 [1:24:31<01:28,  4.43s/it]Exception raised in Job[1085]: TimeoutError()
+Evaluating:  98%|#########8| 1093/1112 [1:24:36<01:27,  4.58s/it]Exception raised in Job[1086]: TimeoutError()
+Evaluating:  98%|#########8| 1094/1112 [1:24:42<01:31,  5.06s/it]Exception raised in Job[1088]: TimeoutError()
+Evaluating:  98%|#########8| 1095/1112 [1:24:53<01:54,  6.71s/it]Exception raised in Job[1090]: TimeoutError()
+Evaluating:  99%|#########8| 1096/1112 [1:24:57<01:34,  5.89s/it]Evaluating:  99%|#########8| 1097/1112 [1:25:11<02:05,  8.38s/it]Evaluating:  99%|#########8| 1098/1112 [1:25:13<01:29,  6.38s/it]Exception raised in Job[1091]: TimeoutError()
+Evaluating:  99%|#########8| 1100/1112 [1:25:18<00:57,  4.76s/it]Exception raised in Job[1093]: TimeoutError()
+Evaluating:  99%|#########9| 1101/1112 [1:26:01<02:34, 14.08s/it]Exception raised in Job[1094]: TimeoutError()
+Evaluating:  99%|#########9| 1102/1112 [1:26:03<01:49, 11.00s/it]Exception raised in Job[1095]: TimeoutError()
+Exception raised in Job[1098]: TimeoutError()
+Evaluating:  99%|#########9| 1104/1112 [1:26:28<01:33, 11.68s/it]Evaluating:  99%|#########9| 1105/1112 [1:26:32<01:08,  9.81s/it]Evaluating:  99%|#########9| 1106/1112 [1:26:42<00:59,  9.96s/it]Evaluating: 100%|#########9| 1107/1112 [1:26:57<00:56, 11.30s/it]Exception raised in Job[1102]: TimeoutError()
+Evaluating: 100%|#########9| 1108/1112 [1:27:01<00:36,  9.05s/it]Exception raised in Job[1104]: TimeoutError()
+Evaluating: 100%|#########9| 1109/1112 [1:27:26<00:40, 13.58s/it]Exception raised in Job[1106]: TimeoutError()
+Evaluating: 100%|#########9| 1110/1112 [1:27:29<00:21, 10.73s/it]Exception raised in Job[1108]: TimeoutError()
+Evaluating: 100%|#########9| 1111/1112 [1:27:36<00:09,  9.58s/it]Exception raised in Job[1110]: TimeoutError()
+Evaluating: 100%|##########| 1112/1112 [1:27:53<00:00, 11.69s/it]Evaluating: 100%|##########| 1112/1112 [1:27:53<00:00,  4.74s/it]
+
+=== SCORECARD (media ± std, n=278 preguntas) ===
+  faithfulness: 0.750 ± 0.256  (min=0.000, max=1.000)
+  answer_relevancy: 0.773 ± 0.334  (min=0.000, max=0.989)
+  context_precision: 0.754 ± 0.245  (min=0.000, max=1.000)
+  context_recall: 0.822 ± 0.347  (min=0.000, max=1.000)
+
+=== Por categoría ===
+  ADV        faithfulness      : nan (n=10)
+  ADV        answer_relevancy  : nan (n=10)
+  ADV        context_precision : nan (n=10)
+  ADV        context_recall    : nan (n=10)
+  COLOQ      faithfulness      : 0.594 (n=10)
+  COLOQ      answer_relevancy  : 0.786 (n=10)
+  COLOQ      context_precision : 0.606 (n=10)
+  COLOQ      context_recall    : 0.600 (n=10)
+  COMP       faithfulness      : 0.472 (n=8)
+  COMP       answer_relevancy  : 0.000 (n=8)
+  COMP       context_precision : 0.610 (n=8)
+  COMP       context_recall    : 0.500 (n=8)
+  SINT       faithfulness      : 0.744 (n=12)
+  SINT       answer_relevancy  : 0.926 (n=12)
+  SINT       context_precision : 0.915 (n=12)
+  SINT       context_recall    : 0.917 (n=12)
+  original   faithfulness      : 0.774 (n=238)
+  original   answer_relevancy  : 0.794 (n=238)
+  original   context_precision : 0.759 (n=238)
+  original   context_recall    : 0.840 (n=238)
+
+Detalle por pregunta: C:\Users\HP\Desktop\optimizacion para negocios en el atlantico\tubara\construdata\scripts\evaluacion\baseline_2026-09-09_278preguntas_scorecard.csv
+Resumen media±std (general + por categoría): C:\Users\HP\Desktop\optimizacion para negocios en el atlantico\tubara\construdata\scripts\evaluacion\baseline_2026-09-09_278preguntas_resumen.csv

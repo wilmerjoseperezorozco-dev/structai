@@ -1,5 +1,10 @@
 # StructAI frente a un asistente de IA genérico
 
+> Versión interactiva de esta misma comparación, con preguntas reales
+> filtrables por dominio y botones para repetirlas en vivo en
+> ChatGPT/Copilot/Perplexity: [structai.online/comparacion](https://www.structai.online/comparacion)
+> (agregado 2026-09-16).
+
 ## Por qué esta comparación, y no otra
 
 No comparo StructAI contra un producto comercial específico de la competencia — no tengo acceso verificado a sus bases de datos internas, y afirmar algo sobre una herramienta ajena sin poder probarlo no es un estándar que me interese aplicar aquí. La comparación que sí puedo sostener con evidencia, y la que en la práctica decide si un ingeniero usa StructAI o no, es esta: **¿qué pasa si en vez de StructAI le preguntas lo mismo directamente a un asistente de IA de propósito general** (ChatGPT, Claude, Gemini, sin ninguna base de datos normativa ni de precios conectada)?

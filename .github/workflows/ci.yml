@@ -154,7 +154,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        paquete: [motor-apu, motor-deformacion, motor-aquai, motor-geopot, motor-vias, motor-gerencia, motor-estructural]
+        # rag-audit-kit agregado 2026-09-16 (idea 1 del roadmap): sin
+        # dependencias propias (pyproject.toml declara dependencies = []),
+        # así que entra en la misma matriz sin tocar el paso de instalación
+        # de abajo -- /tmp/deps.txt queda vacío y el pip install se salta
+        # solo. Su test de validación real contra un PDF de NSR-10 se
+        # auto-salta en CI (@pytest.mark.skipif) porque ese PDF es fuente
+        # gitignored, no viaja con el checkout.
+        paquete: [motor-apu, motor-deformacion, motor-aquai, motor-geopot, motor-vias, motor-gerencia, motor-estructural, rag-audit-kit]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -177,6 +184,33 @@ jobs:
       - name: Correr pytest
         working-directory: packages/${{ matrix.paquete }}
         run: pytest tests/ -v
+
+  # ── 4b. Cobertura de ingesta — idea 6 del roadmap (2026-09-16) ─────
+  # No re-extrae del PDF fuente (gitignored, no viaja con el checkout) --
+  # compara cada baseline ya congelado (scripts/ingesta/*/cobertura_baseline/
+  # *.json, generados a mano cuando sí se tiene el PDF) contra el estado EN
+  # VIVO del corpus. Bloquea el merge solo si la cobertura de un título CON
+  # baseline retrocedió -- no exige que todo el corpus esté ya completo
+  # (no lo está, ver docs/fuentes-normativas.md), exige que no siga
+  # bajando desde donde ya estaba. Para que esto bloquee un PR de verdad,
+  # falta marcarlo como "required check" en Settings -> Branches del repo
+  # -- hoy corre y reporta, pero GitHub no impide el merge todavía sin ese
+  # paso adicional en la configuración del repo (no algo que se pueda
+  # hacer desde este workflow).
+  test-cobertura-ingesta:
+    name: 📐 Cobertura de ingesta (regresión)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '${{ env.PYTHON_VERSION }}' }
+      - name: Instalar dependencias
+        run: pip install supabase python-dotenv
+      - name: Verificar cobertura contra baselines
+        run: python scripts/ingesta/verificar_cobertura_baseline.py
+        env:
+          SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
 
   # ── 5. Tests de integración — apps/api (RAG, rate limit, health) ──
   test-api:
@@ -218,6 +252,27 @@ jobs:
           SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           GROQ_API_KEY:         ${{ secrets.GROQ_API_KEY }}
+          # Bug real encontrado 2026-09-16 verificando el CI del PR #50: el
+          # caché de respuestas (rag_multi_norma.py) usa el Supabase REAL de
+          # producción -- sin esto, la primera corrida de CI cachea las
+          # ~125 preguntas de la batería de regresión, y CADA corrida
+          # siguiente (reruns de pytest.mark.flaky, o un nuevo push al mismo
+          # PR) sirve la MISMA respuesta congelada en vez de una generación
+          # fresca, anulando el mecanismo de reintento contra variación
+          # normal del LLM que esos tests ya tenían. Confirmado con SQL
+          # directo: hits=2 a 7 en ~125 filas tras 3 corridas del mismo PR.
+          RAG_CACHE_DISABLED:   "true"
+          # Issue #53 (2026-09-17): GROQ_API_KEY es la misma en CI y en
+          # producción -- cada corrida completa de la batería de regresión
+          # (~125 preguntas) competía por la cuota diaria real de Groq
+          # (200K tokens) con los usuarios de producción, y esa cuota
+          # resultó ser una ventana móvil de 24h (8h después de agotarse
+          # seguía en ~199.800/200.000), no algo que se libere de un día
+          # para el otro. Saltar Groq del todo en CI y usar OpenAI directo
+          # (ya configurado como respaldo, ver LLM_FORZAR_OPENAI en
+          # rag_multi_norma.py) deja la cuota de Groq de producción
+          # completamente intacta.
+          LLM_FORZAR_OPENAI:    "true"
           # Respaldo de 2 niveles (Groq -> OpenAI), NVIDIA retirado el
           # 2026-08-20 por inconsistencia de latencia (20s-199s en pruebas
           # reales, ver rag_multi_norma.py). Sin esto, si Groq se queda sin
