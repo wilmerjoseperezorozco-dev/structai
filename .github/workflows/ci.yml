@@ -161,7 +161,7 @@ jobs:
         # solo. Su test de validación real contra un PDF de NSR-10 se
         # auto-salta en CI (@pytest.mark.skipif) porque ese PDF es fuente
         # gitignored, no viaja con el checkout.
-        paquete: [motor-apu, motor-deformacion, motor-aquai, motor-geopot, motor-vias, motor-gerencia, motor-estructural, rag-audit-kit]
+        paquete: [motor-apu, motor-deformacion, motor-aquai, motor-geopot, motor-vulnerabilidad-vivienda, motor-vias, motor-gerencia, motor-estructural, rag-audit-kit]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
