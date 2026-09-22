@@ -99,8 +99,26 @@ completo")**:
   etc.). Cobertura del título tras la Fase 1: 85/555 (15.3%).
   Scripts: `_ingest_titulo_a_a{4,7,8,11,13}_verbatim.py` +
   `_resplit_titulo_a_a{4,7,8,11,13}_por_limite_tokens.py`.
-  **Siguientes fases (no iniciadas)**: Fase 2 — A.2 (Zonas de amenaza
-  sísmica, 77 faltantes, alto valor real); Fase 3 — A.1 (Alcance, 68);
+  **Fase 2 cerrada el mismo día**: A.2 (Zonas de amenaza sísmica y
+  movimientos sísmicos de diseño) — el capítulo de mayor valor real del
+  título (Aa/Av, espectro de diseño A.2.6 citado por prácticamente
+  todos los demás capítulos), resultó ser 27 páginas (A-13 a A-38), muy
+  por encima de lo que sugerían sus "77 faltantes". Incluye Tabla
+  A.2.3-2 completa (32 ciudades capitales con Aa/Av/zona), las 6
+  clasificaciones de perfil de suelo (Tabla A.2.4-1), el espectro de
+  diseño completo (aceleraciones/velocidades/desplazamientos, A.2.6.1 a
+  A.2.6.3), los 4 grupos de uso y coeficiente de importancia (A.2.5), y
+  el alcance completo de microzonificación sísmica (A.2.9) y estudios
+  particulares de sitio (A.2.10). El Apéndice A-4 (Aa/Av de TODOS los
+  municipios) se dejó fuera a propósito — no tiene numerales "A.2.x" (no
+  es parte del cuerpo del capítulo) y esa misma información ya la sirve
+  en vivo el SGC (`sgc_amenaza_sismica.py`). Verificado con `ask()` real
+  (Sa=1.2·Av·Fv·I/T, Aa=Av=0.10 para Barranquilla, los 6 tipos de perfil
+  A-F, Grupo IV/I=1.50 para hospitales). Scripts:
+  `_ingest_titulo_a_a2_verbatim.py` +
+  `_resplit_titulo_a_a2_por_limite_tokens.py`. Cobertura tras la Fase 2:
+  116/555 (20.9%).
+  **Siguientes fases (no iniciadas)**: Fase 3 — A.1 (Alcance, 68);
   Fase 4 — A.5+A.6 (59); Fase 5 — cerrar A.3 (75, parcialmente
   cubierto); Fase 6 — expandir A.9+A.10 de condensado a verbatim real
   (121, los más grandes); Fase 7 — A.12 (34).
