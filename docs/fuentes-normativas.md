@@ -181,9 +181,43 @@ completo")**:
   Scripts: `_ingest_titulo_a_a3_verbatim.py` +
   `_resplit_titulo_a_a3_por_limite_tokens.py`. Cobertura tras la Fase
   5, re-auditada completa: 194/555 (35.0%).
-  **Siguientes fases (no iniciadas)**: Fase 6 — expandir A.9+A.10 de
-  condensado a verbatim real (121, el bloque más grande que queda);
-  Fase 7 — A.12 (34).
+  **Fase 6 cerrada el mismo día**: A.9 (Elementos no estructurales) +
+  A.10 (Evaluación e intervención de edificaciones construidas antes
+  de la vigencia del Reglamento) — el bloque más grande del título (9
+  + 15 páginas, A-87 a A-111). **Hallazgo real**: los 21 chunks de A.9
+  y los 17 de A.10 ya cargados NO eran verbatim — texto condensado de
+  una ingesta anterior, mismo patrón que A.3 (Fase 5). Se borraron y se
+  reemplazaron por transcripción real completa. A.9 cubre: grados de
+  desempeño (Tabla A.9.2-1), la ecuación de fuerza sísmica de diseño
+  Fp completa (A.9.4-1/2), los 4 tipos de anclaje según Rp (especiales/
+  dúctiles/no dúctiles/húmedos), elementos de fachada y "columnas
+  cautivas", y las 2 tablas completas de coeficientes ap/Rp (A.9.5-1
+  acabados, A.9.6-1 instalaciones). A.10 cubre: el procedimiento de
+  evaluación completo (las 12 etapas de A.10.1.4), los movimientos
+  sísmicos con seguridad limitada (coeficiente Ae, Tablas A.10.3-1/2
+  con las 32 ciudades capitales), los índices de sobreesfuerzo y
+  flexibilidad, los 3 tipos de modificación (ampliación adosada, en
+  altura, actualización), rehabilitación sísmica según edad de la
+  edificación (NSR-98/Decreto 1400/patrimonio histórico), y reparación
+  de edificaciones dañadas por sismos. 12+19 chunks-padre → 107+145
+  chunks reales. Verificado con `ask()` real (grado Superior para
+  Grupo IV, activación del interruptor automático a 0.5·Aa, Ae=0.05
+  para Barranquilla, R'=1.0 para mampostería no reforzada sin
+  información, límite de 10% para modificaciones menores); un caso
+  (Rp=0.5 para anclaje húmedo) confirmó dato correcto en la base con
+  miss de retrieval, mismo patrón ya documentado. **Hallazgo
+  operativo real durante la re-auditoría**: el propio script de
+  auditoría de cobertura sufrió el bug de paginación de Supabase ya
+  documentado en otros scripts del proyecto (`.select().execute()` sin
+  `.range()` trunca en 1000 filas) — `nsr10_chunks` ya supera 1200
+  filas con prefijo "A.", así que la primera corrida post-Fase-6 dio
+  un falso 32.1% (mostrando A.9/A.10 en 0%); corregido paginando la
+  consulta, cobertura real confirmada. Scripts:
+  `_ingest_titulo_a_a{9,10}_verbatim.py` +
+  `_resplit_titulo_a_a{9,10}_por_limite_tokens.py`. Cobertura tras la
+  Fase 6, re-auditada completa y paginada: 245/555 (44.1%).
+  **Siguiente fase (no iniciada)**: Fase 7 — A.12 (34, indispensables y
+  umbral de daño, la única que queda).
 - **Título B — auditado 2026-09-08, hueco real confirmado también, aún
   sin cerrar** (ver fila de arriba): 7 secciones completas sin chunk
   (B.3.3 cargas muertas mínimas, B.3.5 equipos fijos, B.3.6
