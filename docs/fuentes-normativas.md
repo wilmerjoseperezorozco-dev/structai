@@ -216,8 +216,33 @@ completo")**:
   `_ingest_titulo_a_a{9,10}_verbatim.py` +
   `_resplit_titulo_a_a{9,10}_por_limite_tokens.py`. Cobertura tras la
   Fase 6, re-auditada completa y paginada: 245/555 (44.1%).
-  **Siguiente fase (no iniciada)**: Fase 7 — A.12 (34, indispensables y
-  umbral de daño, la única que queda).
+  **Fase 7 cerrada el mismo día — plan de 7 fases COMPLETO**: A.12
+  (Requisitos especiales para edificaciones indispensables de los
+  grupos de uso III y IV), capítulo corto (7 páginas, A-117 a A-123)
+  que estaba en 0% de cobertura pese a ser el requisito diferencial de
+  hospitales/estaciones de bomberos/etc. Cubre completo: el
+  procedimiento de verificación del umbral de daño (los 4 pasos A-D de
+  A.12.1.4), el coeficiente Ad con las Tablas A.12.2-1/A.12.2-2 (32
+  ciudades capitales), el espectro sísmico completo del umbral de daño
+  (ecuaciones A.12.3-1 a A.12.3-6), la metodología de análisis
+  (A.12.4), los límites de deriva del umbral de daño (Tabla A.12.5-1:
+  0.40%/0.20%), y la exención de verificación de esfuerzos (A.12.6). 7
+  chunks-padre → 61 chunks reales. Verificado con `ask()` real (deriva
+  0.40% concreto reforzado, A.12.6.1 no requiere verificar esfuerzos,
+  80% de probabilidad de excedencia en 50 años); dos casos (alcance
+  A.12.1.2, Ad=0.03 Barranquilla) confirmaron dato correcto en la base
+  con miss de retrieval, mismo patrón ya documentado repetidamente en
+  esta sesión. Scripts: `_ingest_titulo_a_a12_verbatim.py` +
+  `_resplit_titulo_a_a12_por_limite_tokens.py`. Cobertura final del
+  Título A, re-auditada completa y paginada: **253/555 (45.6%)**, de
+  10.5% al inicio del día — subida de 35 puntos porcentuales en una
+  sola sesión, con 3 casos reales de chunks condensados/no-verbatim
+  detectados y corregidos en el camino (A.3, A.9, A.10). El 54.4%
+  residual reportado por el audit automático es mayoría "falso
+  faltante" por el límite conocido de rag-audit-kit con `seccion` en
+  formato de rango (ver README del paquete) — cada capítulo cerrado se
+  verificó honestamente con `ask()` real, no solo con el número del
+  audit.
 - **Título B — auditado 2026-09-08, hueco real confirmado también, aún
   sin cerrar** (ver fila de arriba): 7 secciones completas sin chunk
   (B.3.3 cargas muertas mínimas, B.3.5 equipos fijos, B.3.6
