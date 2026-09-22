@@ -133,9 +133,25 @@ completo")**:
   estructurales). Scripts: `_ingest_titulo_a_a1_verbatim.py` +
   `_resplit_titulo_a_a1_por_limite_tokens.py`. Cobertura tras la Fase 3:
   151/555 (27.2%).
-  **Siguientes fases (no iniciadas)**: Fase 4 — A.5+A.6 (59); Fase 5 —
-  cerrar A.3 (75, parcialmente cubierto); Fase 6 — expandir A.9+A.10 de
-  condensado a verbatim real (121, los más grandes); Fase 7 — A.12 (34).
+  **Fase 4 cerrada el mismo día**: A.5 (Método del análisis dinámico) +
+  A.6 (Requisitos de la deriva), ambos citados por A.3/A.4/A.10. A.5
+  cubre el análisis dinámico espectral y cronológico completo (número
+  mínimo de modos = 90% de masa participante, combinación modal,
+  ajuste del cortante dinámico al 80%/90% del método estático). A.6
+  cubre los límites de deriva (Tabla A.6.4-1: 1.0% concreto/acero/
+  madera, 0.5% mampostería sin requisitos especiales), efectos P-Delta
+  (índice de estabilidad Qi, límite 0.30), y la separación sísmica
+  completa entre edificaciones vecinas (Tabla A.6.5-1: 1%/2%/3% de la
+  altura según pisos y coincidencia de losas). 8 + 9 chunks-padre → 68
+  + 70 chunks reales. Verificado con `ask()` real (90% masa
+  participante, derivas 1.0%/0.5%, Qi>0.30 obliga a rigidizar, 3% de
+  separación sísmica cuando no coinciden losas). Scripts:
+  `_ingest_titulo_a_a{5,6}_verbatim.py` +
+  `_resplit_titulo_a_a{5,6}_por_limite_tokens.py`. Cobertura tras la
+  Fase 4: 166/555 (29.9%).
+  **Siguientes fases (no iniciadas)**: Fase 5 — cerrar A.3 (75,
+  parcialmente cubierto); Fase 6 — expandir A.9+A.10 de condensado a
+  verbatim real (121, los más grandes); Fase 7 — A.12 (34).
 - **Título B — auditado 2026-09-08, hueco real confirmado también, aún
   sin cerrar** (ver fila de arriba): 7 secciones completas sin chunk
   (B.3.3 cargas muertas mínimas, B.3.5 equipos fijos, B.3.6
