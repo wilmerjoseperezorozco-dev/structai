@@ -118,10 +118,24 @@ completo")**:
   `_ingest_titulo_a_a2_verbatim.py` +
   `_resplit_titulo_a_a2_por_limite_tokens.py`. Cobertura tras la Fase 2:
   116/555 (20.9%).
-  **Siguientes fases (no iniciadas)**: Fase 3 — A.1 (Alcance, 68);
-  Fase 4 — A.5+A.6 (59); Fase 5 — cerrar A.3 (75, parcialmente
-  cubierto); Fase 6 — expandir A.9+A.10 de condensado a verbatim real
-  (121, los más grandes); Fase 7 — A.12 (34).
+  **Fase 3 cerrada el mismo día**: A.1 (Introducción — alcance de las
+  disposiciones), capítulo corto (11 páginas, A-1 a A-11) pero
+  introductorio, citado por casi todos los demás capítulos: A.1.2.3
+  (alcance del Reglamento), la Tabla A.1.3-1 completa (los 12 pasos del
+  procedimiento de diseño estructural, edificaciones nuevas vs.
+  existentes), A.1.3.9 (umbral de 3000 m² para supervisión técnica
+  obligatoria y exención de 15 viviendas bajo Título E), A.1.5 (planos y
+  memorias: qué debe firmar cada profesional), A.1.6 (obligatoriedad de
+  normas NTC) y A.1.7 (Sistema Internacional SI, NTC 1000). 22
+  chunks-padre → 127 chunks reales. Verificado con `ask()` real (umbral
+  3000 m² de supervisión técnica, exención de 15 viviendas del Título E,
+  Sistema SI + NTC 1000, firma del ingeniero civil en planos
+  estructurales). Scripts: `_ingest_titulo_a_a1_verbatim.py` +
+  `_resplit_titulo_a_a1_por_limite_tokens.py`. Cobertura tras la Fase 3:
+  151/555 (27.2%).
+  **Siguientes fases (no iniciadas)**: Fase 4 — A.5+A.6 (59); Fase 5 —
+  cerrar A.3 (75, parcialmente cubierto); Fase 6 — expandir A.9+A.10 de
+  condensado a verbatim real (121, los más grandes); Fase 7 — A.12 (34).
 - **Título B — auditado 2026-09-08, hueco real confirmado también, aún
   sin cerrar** (ver fila de arriba): 7 secciones completas sin chunk
   (B.3.3 cargas muertas mínimas, B.3.5 equipos fijos, B.3.6
