@@ -149,9 +149,41 @@ completo")**:
   `_ingest_titulo_a_a{5,6}_verbatim.py` +
   `_resplit_titulo_a_a{5,6}_por_limite_tokens.py`. Cobertura tras la
   Fase 4: 166/555 (29.9%).
-  **Siguientes fases (no iniciadas)**: Fase 5 — cerrar A.3 (75,
-  parcialmente cubierto); Fase 6 — expandir A.9+A.10 de condensado a
-  verbatim real (121, los más grandes); Fase 7 — A.12 (34).
+  **Fase 5 cerrada el mismo día**: A.3 (Requisitos generales de diseño
+  sismo resistente) — el capítulo más citado de todo el título (todos
+  los demás remiten a "el sistema del Capítulo A.3", "el coeficiente
+  R", "las irregularidades de la tabla A.3-6/A.3-7"), 24 páginas (A-39
+  a A-62). **Hallazgo real al inspeccionar lo ya cargado antes de
+  escribir el script**: buena parte de A.3.1, A.3.2, A.3.4 y A.3.8-A.3.9
+  (25 chunks) NO era verbatim — era texto condensado/parafraseado de
+  una ingesta anterior, mismo patrón ya documentado en A.9/A.10/Título
+  J (ej. `A_3_2_r1` decía "Se reconocen CUATRO sistemas
+  estructurales..." en vez del texto real). Esos 25 chunks se borraron
+  y se reemplazaron por transcripción verbatim real; A.3.3.1-3.3.9 y
+  las 4 tablas de coeficientes R0/Ω0 por sistema estructural (Tablas
+  A.3-1 a A.3-4) ya eran verbatim correctas de una sesión anterior y no
+  se retocaron. Se agregó lo que faltaba entero: A.3.0 nomenclatura,
+  A.3.1 completo (incluye el R0=1.5 de sistemas prefabricados), A.3.2
+  completo (los 4 sistemas con sus requisitos), A.3.4 completo (los 4
+  métodos de análisis y cuándo usar cada uno), A.3.5, A.3.6 completo
+  (torsión, diafragmas, muros, péndulo invertido, aceleraciones
+  verticales — el bloque más grande del capítulo), A.3.7, A.3.8-A.3.9
+  completos, y las Tablas A.3-5 (mezcla de sistemas en altura), A.3-6
+  (las 5 irregularidades en planta con sus φp) y A.3-7 (las 6
+  irregularidades en altura con sus φa) — antes inexistentes. 19
+  chunks-padre → 171 chunks reales. Verificado con `ask()` real (4
+  sistemas estructurales, 25% cortante mínimo del pórtico en sistema
+  dual, cuándo usar fuerza horizontal equivalente en irregulares,
+  φp=0.8 para irregularidad torsional extrema 1bP, R0=1.5 prefabricados
+  sin evidencia experimental); un quinto caso (fuerza de amarre de
+  vigas de cimentación) confirmó dato correcto en la base pero con miss
+  de retrieval — mismo patrón de variación conocido, no error de datos.
+  Scripts: `_ingest_titulo_a_a3_verbatim.py` +
+  `_resplit_titulo_a_a3_por_limite_tokens.py`. Cobertura tras la Fase
+  5, re-auditada completa: 194/555 (35.0%).
+  **Siguientes fases (no iniciadas)**: Fase 6 — expandir A.9+A.10 de
+  condensado a verbatim real (121, el bloque más grande que queda);
+  Fase 7 — A.12 (34).
 - **Título B — auditado 2026-09-08, hueco real confirmado también, aún
   sin cerrar** (ver fila de arriba): 7 secciones completas sin chunk
   (B.3.3 cargas muertas mínimas, B.3.5 equipos fijos, B.3.6
