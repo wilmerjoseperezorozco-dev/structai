@@ -76,11 +76,34 @@ completo")**:
   licuación, suelos problemáticos, rehabilitación sísmica) nunca se
   había ingestado. Los 181 encabezados quedaron cerrados en verbatim
   completo (H.1-H.10) antes de terminar la sesión.
-- **Título A — auditado 2026-09-07, hueco real confirmado también, aún
-  parcialmente sin cerrar** (ver fila de arriba): 189 de 542 numerales
-  (35%) sin chunk, incluyendo 6 capítulos completos (A.1/A.7/A.8/A.11/
-  A.12/A.13). El capítulo de irregularidades (A.3.3, no A.3.6 como se
-  creyó al principio) ya se cerró en verbatim completo el mismo día.
+- **Título A — re-auditado con `rag-audit-kit` 2026-09-22, hueco real
+  mucho más grande de lo estimado el 2026-09-07** (el audit anterior
+  medía a nivel de capítulo, "¿existe algo de A.10?"; este audit mide
+  numeral por numeral contra la columna `seccion` real): **555 numerales
+  reales** extraídos de los 14 PDFs (páginas 43-218), solo **58/555
+  (10.5%)** cubiertos antes de esta sesión. Hallazgo clave: A.9 y A.10
+  ya tenían chunks reales, pero con `seccion` en formato de rango
+  condensado (ej. `"A.10.1 a A.10.9"`, 14 chunks cortos) — contenido
+  parafraseado, no verbatim numeral por numeral, mismo patrón ya
+  documentado en A.3.3/B.3.4/Título J.
+  **Fase 1 del plan de cierre por fases cerrada el mismo día**: A.4
+  (Método de la fuerza horizontal equivalente), A.7 (Interacción
+  suelo-estructura), A.8 (Efectos sísmicos sobre elementos no
+  estructurales), A.11 (Instrumentación sísmica) y A.13 (Definiciones y
+  nomenclatura — resultó ser un glosario de 14 páginas/~150 términos,
+  no los "3 numerales" que sugería el audit automático, porque el
+  regex de numerales no detecta entradas de glosario sin numeración).
+  Los 5 capítulos verificados con `ask()` real citando valores y
+  fórmulas exactos (Vs=Sa·g·M, Fp=(ax·g/R0)·Mp, umbral de 20.000 m²
+  para instrumentación en zona alta, período de retorno de 475 años,
+  etc.). Cobertura del título tras la Fase 1: 85/555 (15.3%).
+  Scripts: `_ingest_titulo_a_a{4,7,8,11,13}_verbatim.py` +
+  `_resplit_titulo_a_a{4,7,8,11,13}_por_limite_tokens.py`.
+  **Siguientes fases (no iniciadas)**: Fase 2 — A.2 (Zonas de amenaza
+  sísmica, 77 faltantes, alto valor real); Fase 3 — A.1 (Alcance, 68);
+  Fase 4 — A.5+A.6 (59); Fase 5 — cerrar A.3 (75, parcialmente
+  cubierto); Fase 6 — expandir A.9+A.10 de condensado a verbatim real
+  (121, los más grandes); Fase 7 — A.12 (34).
 - **Título B — auditado 2026-09-08, hueco real confirmado también, aún
   sin cerrar** (ver fila de arriba): 7 secciones completas sin chunk
   (B.3.3 cargas muertas mínimas, B.3.5 equipos fijos, B.3.6
