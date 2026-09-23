@@ -243,14 +243,41 @@ completo")**:
   formato de rango (ver README del paquete) — cada capítulo cerrado se
   verificó honestamente con `ask()` real, no solo con el número del
   audit.
-- **Título B — auditado 2026-09-08, hueco real confirmado también, aún
-  sin cerrar** (ver fila de arriba): 7 secciones completas sin chunk
-  (B.3.3 cargas muertas mínimas, B.3.5 equipos fijos, B.3.6
-  consideraciones especiales, B.4.3 carga parcial, B.4.6 puente grúas,
-  B.4.7 efectos dinámicos, B.4.8 empozamiento de agua y granizo).
-  Menos grave en proporción que A y H originalmente, pero B.3.3
-  (cargas muertas mínimas) es una tabla de referencia de uso diario en
-  la práctica, no solo un detalle administrativo.
+- **Título B — re-auditado con `rag-audit-kit` 2026-09-23, hueco real
+  mucho más grande de lo que decía la nota de 2026-09-08** (esa nota
+  hablaba de "7 secciones sin chunk"; el re-audit numeral por numeral
+  contra los 6 PDFs fuente encontró **186 numerales reales, solo 50/186
+  (26.9%) cubiertos** antes de esta sesión): B.1 (Requisitos
+  generales) 1/16, B.2 (Combinaciones de carga) 5/20, B.3 (Cargas
+  muertas) 7/10 — el mejor, solo falta B.3.4 (condensado, ya
+  identificado en 2026-09-08), B.4 (Cargas vivas) 6/25, B.5 (Empuje de
+  tierra/presión hidrostática) 1/8, y **B.6 (Fuerzas de viento) 30/107
+  — el capítulo dominante**, 62 páginas (mucho más grande de lo
+  estimado), de las cuales solo ~36 son prosa normativa real (B.6.1 a
+  B.6.5, Métodos 1 y 2); las ~24 páginas finales de B.6.6 (Método 3)
+  son casi enteramente figuras de coeficientes de presión (Cp/GCp por
+  forma de cubierta/ángulo/zona), mismo patrón que los mapas de
+  amenaza sísmica de Título A dejados fuera del alcance verbatim —
+  pendiente de decisión explícita en la fase que llegue a B.6.6.
+  **Plan de cierre por fases** (por tamaño/valor):
+  - **Fase 1 (cerrada 2026-09-23)**: B.1 (Requisitos generales,
+    completo, 2 páginas) + B.5 (Empuje de tierra y presión
+    hidrostática, completo, cabe en 1 página). 2+1 chunks-padre → 12+9
+    chunks reales. Verificado con `ask()` real (empuje bajo nivel
+    freático, coeficiente activo con libertad de giro/traslación,
+    integridad estructural ante daño local, zonas inundables).
+    Cobertura tras Fase 1: 56/186 (30.1%).
+  - **Fase 2**: B.2 (Combinaciones de carga, 15 faltantes — se
+    multiplica en todo el resto de títulos).
+  - **Fase 3**: cerrar B.3 (solo B.3.4, condensado→verbatim, texto ya
+    transcrito en sesión previa) + B.4 completo (Cargas vivas, 19
+    faltantes, incluye B.4.8 cargas de granizo).
+  - **Fase 4**: B.6.1–B.6.4 (Alcance/Definiciones/Nomenclatura/
+    Procedimiento simplificado del viento).
+  - **Fase 5**: B.6.5 (Método 2 — el bloque más grande y denso, ~10
+    páginas, 26 ecuaciones).
+  - **Fase 6**: B.6.6 (Método 3, corto) + decisión sobre las figuras
+    de coeficientes de presión.
 - **Título I — re-auditado 2026-09-09, único de 6 títulos re-auditados
   que salió limpio** (ver fila de arriba): 62 de 63 numerales reales con
   chunk verbatim confirmado, el numeral restante era un falso positivo
