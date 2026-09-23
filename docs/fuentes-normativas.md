@@ -267,8 +267,21 @@ completo")**:
     freático, coeficiente activo con libertad de giro/traslación,
     integridad estructural ante daño local, zonas inundables).
     Cobertura tras Fase 1: 56/186 (30.1%).
-  - **Fase 2**: B.2 (Combinaciones de carga, 15 faltantes — se
-    multiplica en todo el resto de títulos).
+  - **Fase 2 (cerrada 2026-09-23)**: B.2 (Combinaciones de carga,
+    completo, 5 páginas B-3 a B-7) — se multiplica en todo el resto de
+    títulos. Cubre el glosario bilingüe completo de definiciones
+    (B.2.1.1), la nomenclatura completa (B.2.2), las 10 combinaciones
+    de esfuerzos de trabajo (B.2.3, ecuaciones B.2.3-1 a B.2.3-10) y
+    las 7 combinaciones mayoradas por el método de la resistencia
+    (B.2.4, ecuaciones B.2.4-1 a B.2.4-7) con sus 7 notas de aplicación
+    (factor de reducción a 0.5 para L, 1.3W sin factor de
+    direccionalidad, advertencia explícita de no mezclar factores de
+    carga NSR-10 con φ de NSR-98). 7 chunks-padre → 48 chunks reales.
+    Verificado con `ask()` real (1.4(D+F), reducción a 0.5 de L y sus
+    excepciones, 1.3W sin direccionalidad, advertencia NSR-98).
+    Scripts: `_ingest_titulo_b_b2_verbatim.py` +
+    `_resplit_titulo_b_b2_por_limite_tokens.py`. Cobertura tras la
+    Fase 2: 69/186 (37.1%).
   - **Fase 3**: cerrar B.3 (solo B.3.4, condensado→verbatim, texto ya
     transcrito en sesión previa) + B.4 completo (Cargas vivas, 19
     faltantes, incluye B.4.8 cargas de granizo).
