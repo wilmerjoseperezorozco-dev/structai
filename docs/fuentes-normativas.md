@@ -282,15 +282,39 @@ completo")**:
     Scripts: `_ingest_titulo_b_b2_verbatim.py` +
     `_resplit_titulo_b_b2_por_limite_tokens.py`. Cobertura tras la
     Fase 2: 69/186 (37.1%).
-  - **Fase 3**: cerrar B.3 (solo B.3.4, condensado→verbatim, texto ya
-    transcrito en sesión previa) + B.4 completo (Cargas vivas, 19
-    faltantes, incluye B.4.8 cargas de granizo).
-  - **Fase 4**: B.6.1–B.6.4 (Alcance/Definiciones/Nomenclatura/
-    Procedimiento simplificado del viento).
-  - **Fase 5**: B.6.5 (Método 2 — el bloque más grande y denso, ~10
-    páginas, 26 ecuaciones).
-  - **Fase 6**: B.6.6 (Método 3, corto) + decisión sobre las figuras
-    de coeficientes de presión.
+  - **Fase 3 (cerrada 2026-09-23)**: B.3.4 (Elementos no
+    estructurales, dentro de Cargas muertas — 3 chunks condensados
+    reemplazados por 6 tablas reales completas, B.3.4.1-1 a
+    B.3.4.3-1) + B.4 completo (Cargas vivas — 9 chunks condensados de
+    B.4.1-4.2/4.4-4.5 reemplazados, y B.4.3/B.4.6/B.4.7/B.4.8
+    completamente ausentes agregados: carga parcial, puente grúas,
+    efectos dinámicos, empozamiento de agua y de granizo). 7+11
+    chunks-padre → 50+41 chunks reales. Verificado por SQL directo
+    contra la base (0.25 kN/m² pañete en yeso/concreto para cielo
+    raso, 20% de fuerza horizontal para puente grúas con cabina de
+    operación) — la verificación end-to-end con `ask()` no pudo
+    completarse por una inestabilidad real e intermitente de
+    conectividad de Supabase durante esta sesión (confirmada con
+    curl/MCP, no causada por la ingesta). **Hallazgo importante que
+    reescribe el resto del plan**: al inspeccionar el corpus se
+    encontró que B.6 (Fuerzas de viento) YA tenía prácticamente todo
+    su texto normativo (B.6.1-B.6.4 completos, B.6.5 Método 2
+    completo con sus 26 ecuaciones, B.6.6 Método 3 completo) cargado
+    verbatim desde una sesión previa (2026-09-08, ver commits
+    `cbc4d6d`/`8a3f4ac`) — solo bajo `seccion` en formato de rango que
+    el audit automático no reconocía como cobertura completa. Scripts:
+    `_ingest_titulo_b_b34_verbatim.py` + `_ingest_titulo_b_b4_verbatim.py`
+    + sus resplits. Cobertura tras la Fase 3: 78/186 (41.9%).
+  - **Fase 4 (re-alcance)**: dado el hallazgo de Fase 3, ya no hacen
+    falta 3 fases separadas para B.6 — el trabajo pendiente real es
+    (a) cerrar B.1 (13 faltantes, Requisitos generales — curiosamente
+    aún con hueco real pese a ser corto) y B.5 (3 faltantes
+    residuales), y (b) una revisión de calidad puntual de 2 pasajes de
+    B.6.5 ya marcados con "NOTA DE FIDELIDAD" en el propio chunk
+    (posible reordenamiento OCR en fórmulas de B.6.5.12.4.2 y
+    B.6.5-19) más la decisión, aún pendiente, sobre las ~19 figuras de
+    coeficientes de presión (Cp/GCp) de B.6.5/B.6.6 dejadas fuera de
+    alcance verbatim.
 - **Título I — re-auditado 2026-09-09, único de 6 títulos re-auditados
   que salió limpio** (ver fila de arriba): 62 de 63 numerales reales con
   chunk verbatim confirmado, el numeral restante era un falso positivo
