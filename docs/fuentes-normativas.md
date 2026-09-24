@@ -315,6 +315,40 @@ completo")**:
     B.6.5-19) más la decisión, aún pendiente, sobre las ~19 figuras de
     coeficientes de presión (Cp/GCp) de B.6.5/B.6.6 dejadas fuera de
     alcance verbatim.
+  - **Fase 4 (cerrada 2026-09-23)**: verificación de B.1/B.5 y cierre
+    de la revisión de calidad de B.6.5. Los "13 faltantes" de B.1 y
+    "3 faltantes" de B.5 resultaron ser **falsos negativos** del
+    audit automático — se confirmó por consulta SQL directa que todo
+    el contenido de ambos capítulos (transcrito completo en la Fase 1)
+    ya está presente verbatim; el residual es el mismo límite conocido
+    de `rag-audit-kit` con `seccion` en formato de rango. En el
+    camino se encontraron y borraron 6 chunks condensados duplicados
+    (`NSR10-B-B_1_r1-3`, `NSR10-B-B_5_r1-3`) que habían quedado sin
+    limpiar de antes de la Fase 1, redundantes con el verbatim real ya
+    cargado. Los 2 pasajes de B.6.5 marcados "NOTA DE FIDELIDAD" se
+    verificaron contra la página B-35 del PDF: el texto de B.6.5.12.4.2
+    resultó correcto (no corrupto), y la ecuación B.6.5-19
+    (excentricidad para estructuras flexibles) que antes solo se
+    describía sin la fórmula real, se completó con la fórmula
+    verificada (3 chunks nuevos, reemplazando el chunk incompleto y su
+    nota de fidelidad ahora resuelta). **Decisión del usuario sobre las
+    ~19 figuras Cp/GCp**: quedan documentadas como
+    [issue #56](https://github.com/wilmerjoseperezorozco-dev/structai/issues/56)
+    para decidir su alcance en una sesión futura, en vez de resolverlas
+    ahora. Cobertura tras la Fase 4 (sin cambio numérico esperado —
+    fase de limpieza/verificación, no de contenido nuevo): 78/186
+    (41.9%).
+  - **Hallazgo operativo real de esta sesión**: durante la Fase 3-4 se
+    encontró que el cliente Python (httpx) con HTTP/2 fallaba de forma
+    consistente y reproducible en peticiones POST/DELETE contra
+    Supabase (`RemoteProtocolError: ConnectionTerminated`), mientras
+    curl y HTTP/1.1 funcionaban sin problema — confirmado que NO era
+    un incidente de plataforma (producción y REST API respondían bien
+    por curl) sino algo específico a la negociación HTTP/2 desde esta
+    sesión/red. Solución aplicada: forzar `httpx.Client(http2=False)`
+    al crear el cliente de Supabase — ver
+    `_fix_titulo_b_b65_ecuacion_19.py` para el patrón reusable si
+    reaparece en scripts futuros.
 - **Título I — re-auditado 2026-09-09, único de 6 títulos re-auditados
   que salió limpio** (ver fila de arriba): 62 de 63 numerales reales con
   chunk verbatim confirmado, el numeral restante era un falso positivo
