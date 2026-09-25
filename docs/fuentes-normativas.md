@@ -376,11 +376,39 @@ completo")**:
   dada su complejidad" — se detectó antes de ingestar y se corrigió
   releyendo la página con cuidado celda por celda, marcando explícitamente
   las celdas en blanco de la tabla real (no inventadas) y dejando una nota
-  de verificación honesta para cualquier uso de diseño real. Pendiente:
-  J.3.4 (tablas alfabéticas grandes de potencial combustible por material,
-  ~150+ filas) y J.3.4.3 en adelante, J.3.5, y Capítulo J.4 completo (43
-  numerales, tablas NFPA de detección/extinción) — continúa en sesiones
-  sucesivas, mismo método.
+  de verificación honesta para cualquier uso de diseño real. **Offset de
+  páginas corregido 2026-09-24** (el docstring original del script de
+  J.3 parte 1 decía "páginas reales 44-47" para J-11 a J-14, offset
+  equivocado — confirmado por lectura visual directa que el offset real
+  es página_J = página_real − 29, ej. página real 46 = pie de página
+  "J-17"). **J.3.4 y J.3.5 completos (2026-09-24)**: las dos tablas
+  alfabéticas grandes de potencial combustible (J.3.4-1 por área ~100
+  filas, J.3.4-2 por masa ~100 filas), la tabla de resistencia
+  normalizada J.3.4-3, J.3.4.3.1-3.8, y todo J.3.5 (elementos de
+  concreto/mampostería/acero estructural, tablas J.3.5-1 a J.3.5-10,
+  ecuaciones J.3.5-1/2/3) — reemplazando 12 chunks condensados
+  confirmados por lectura directa de su `texto` antes de borrar (patrón
+  "resumen disfrazado de completo" de siempre: minúsculas sin tildes,
+  `seccion` genérico o en rango). Cobertura de J.3 tras esto: 53/54
+  (el 1 restante es el mismo falso negativo conocido de rag-audit-kit
+  con `seccion` en formato no numeral, ej. "J.3.5-6"). **Bug real
+  encontrado y corregido en el propio script de ingesta**: un chunk
+  nuevo reusó el mismo id base que un chunk condensado viejo
+  (`NSR10-J-J_3_5_3`); como el script hacía upsert y LUEGO borraba
+  `IDS_OBSOLETOS`, el borrado eliminó también las piezas nuevas recién
+  insertadas con el mismo id — solo sobrevivió la pieza `_r4` (la vieja
+  solo tenía `_r1..r3`). Fix: invertir el orden (borrar obsoletos
+  primero, upsert después), documentado en el propio script para no
+  repetirlo. Verificado con `ask()` real tras el fix (mampostería de
+  arcilla maciza a 2h → 100mm, correcto contra la tabla). **Limitación
+  de retrieval observada, no de datos**: una pregunta puntual por un
+  solo material dentro de la tabla J.3.4-1 (~100 filas alfabéticas) no
+  siempre recupera el chunk correcto pese a que el dato está verbatim
+  confirmado por SQL directo — limitación conocida de embeddings contra
+  contenido tabular denso, no exclusiva de este título. Pendiente:
+  Capítulo J.4 completo (44 numerales, tablas NFPA de detección/
+  extinción por grupo de ocupación) — continúa en sesiones sucesivas,
+  mismo método.
 - **Título K — re-auditado y CERRADO el mismo día 2026-09-09, corrige
   un hallazgo anterior** (ver fila de arriba): K.1-K.4.2 y K.4.3.1-9 ya
   estaban completos, pero K.4.3.10-16 (7 numerales, incluidos 3 de
