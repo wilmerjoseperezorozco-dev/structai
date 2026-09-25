@@ -56,7 +56,7 @@ Todo lo que sigue se comprueba ahora mismo contra producción: [`GET /data-statu
 
 | Corpus | Contenido | Cifra real hoy |
 |---|---|---|
-| **NSR-10** | Los 11 títulos (A–K) cargados. Los 11 ya pasaron auditoría estricta numeral por numeral (barrido completo) — detalle título por título [más abajo ↓](#auditoría-verbatim-de-la-nsr-10-título-por-título) | 8.454 chunks |
+| **NSR-10** | Los 11 títulos (A–K) cargados. Los 11 ya pasaron auditoría estricta numeral por numeral (barrido completo) — detalle título por título [más abajo ↓](#auditoría-verbatim-de-la-nsr-10-título-por-título) | 10.443 chunks |
 | **NTC + SGSST** | 18 normas técnicas colombianas (ICONTEC) + marco de Seguridad y Salud en el Trabajo (Decreto 1072/2015, Ley 1562/2012, Res. 0312/2019) | 294 chunks |
 | **Motores de dominio** (AquAI/RAS 2000, GeoPot, Vías/INVIAS, Gerencia) | Corpus propio por motor, normativa específica de cada disciplina | 4.060 chunks |
 | **Precios de referencia** | Actividades de construcción con desglose de insumos. Para 927 de 4.566 actividades (20,3%) el chat ya devuelve el desglose material/mano de obra/equipo real, no solo el precio todo-costo | 4.566 actividades · 10.281 insumos |
@@ -79,19 +79,19 @@ Método: extraer con `pypdf`/`pdftotext` cada numeral real del PDF fuente y comp
 
 | Título | Estado | Numerales reales | Hallazgo clave |
 |---|:---:|---|---|
-| **A** — Requisitos generales | 🟡 Parcial | — | 6 capítulos completos aún sin cobertura; el de irregularidades (A.3.3) ya cerrado |
-| **B** — Cargas | 🟡 Parcial | 7 secciones | 3 de 7 secciones ya cerradas, cierre progresivo |
+| **A** — Requisitos generales | 🟡 Parcial | 253/555 (45,6%) | Subió de 10,5% a 45,6% en una sola sesión (plan de 7 fases); 3 casos reales de chunks condensados/no-verbatim detectados y corregidos en A.3/A.9/A.10 |
+| **B** — Cargas | 🟡 Parcial | 78/186 (41,9%) | B.6 (Viento, el capítulo dominante) ya estaba prácticamente completo desde antes y no se había notado — el resto (B.1–B.5) cerrado por fases |
 | **C** — Concreto estructural | ✅ Cerrado | 26 huecos → 0 | El más grande del corpus (~1,4% faltante); hallazgo mayor: el capítulo C.18.5 completo (preesforzado) no tenía ni un chunk |
 | **D** — Mampostería | ✅ Cerrado | 9 huecos → 0 | Hueco puntual, cerrado el mismo día que se encontró |
 | **E** — Vivienda de 1 y 2 pisos | ✅ Limpio | 252 | Único hallazgo sin confirmar: remisión cruzada a un numeral (E.7.26.2) que no existe como encabezado real, probable typo del documento fuente |
-| **F** — Estructuras metálicas | 🟡 Parcial | — | F.1–F.4 (acero) 100% verbatim; falta cerrar el tramo final de F.5 (aluminio) |
+| **F** — Estructuras metálicas | 🟡 Parcial | — | F.1–F.4 (acero) y F.5.1–F.5.7.6 (aluminio: miembros, láminas, vigas ensambladas, uniones mecánicas/soldadas/pegadas, metodología de fatiga) 100% verbatim; falta F.5.7.7 en adelante + F.5.8 + apéndices F.5.A–F.5.F |
 | **G** — Madera y guadua | ✅ Cerrado | 18 huecos → 0 | Incluye la corrección de un typo real del documento (G.12.4.2.2 impreso → G.12.3.2.2 real) |
 | **H** — Estudios geotécnicos | ✅ Cerrado | H.3.3–H.10 | Cubría solo ~18% al auditarlo; cerrado por completo la misma sesión |
 | **I** — Supervisión técnica | ✅ Limpio | — | Sin hallazgos |
-| **J** — Requisitos de protección contra incendio | 🔴 Pendiente | 159 reales, 49 chunks | El hueco más grande y de tipo distinto: casi todo el título está en resumen parafraseado, no verbatim — candidato a re-ingesta completa, dejado explícito para otra sesión |
+| **J** — Protección contra incendio | ✅ Cerrado | 158/159 (99,4%) | Era resumen parafraseado casi completo, no verbatim — re-ingestado desde cero: tablas de potencial combustible y resistencia al fuego (J.3), sistemas de detección/extinción por grupo de ocupación (J.4) |
 | **K** — Requisitos complementarios | ✅ Cerrado | K.4.3.10–16 | Corregía una afirmación propia anterior de "K.4.3 completo" |
 
-**Resumen honesto**: 8 de los 10 títulos re-auditados tenían algún hueco real (todos menos I y E). De esos 8, **H, K, G, D y C ya están cerrados en verbatim completo** — solo quedan **A, B y J** con hueco real pendiente, J el más grande y explícitamente diferido. Detalle completo, con cada numeral y cada excepción documentada, en [`docs/fuentes-normativas.md`](docs/fuentes-normativas.md).
+**Resumen honesto**: de los 10 títulos con auditoría estricta numeral por numeral, **H, K, G, D, C y J ya están cerrados en verbatim completo** (J fue el hueco más grande del corpus, resuelto por completo re-ingestando desde cero) — solo quedan **A y B** con hueco real pendiente, ambos en cierre progresivo por fases. F.5 (aluminio) avanza con método propio, ya cubre miembros, láminas, vigas ensambladas y todas las uniones; falta solo la clasificación de detalles de fatiga y los apéndices. Detalle completo, con cada numeral y cada excepción documentada, en [`docs/fuentes-normativas.md`](docs/fuentes-normativas.md).
 
 ## Infraestructura del RAG — rendimiento medido, no solo diseñado
 
@@ -171,7 +171,7 @@ Cada motor expone su propio router FastAPI, su propia tabla en Supabase y su pro
 StructAI es un piloto en producción real, con usuarios reales, no una maqueta ni una cobertura nacional completa:
 
 - **Precios con SKU real** (marca, especificación técnica) cubre el Atlántico. La capa nacional (78 proveedores mipyme) tiene ciudad/departamento real para 70 — los 8 restantes son casos genuinamente ambiguos (homónimos, uniones temporales sin registro regular) y se quedan como "Nacional" en vez de adivinar.
-- **A, B y J** de la NSR-10 siguen con hueco real — ver la [tabla título por título](#auditoría-verbatim-de-la-nsr-10-título-por-título) arriba, con J como el caso explícitamente diferido.
+- **A y B** de la NSR-10 siguen con hueco real (J ya se cerró) — ver la [tabla título por título](#auditoría-verbatim-de-la-nsr-10-título-por-título) arriba.
 - **Orinoquía, Pacífico** (más allá de las estaciones IDEAM ya integradas) **y Bogotá** son las regiones donde la expansión de cobertura está activa pero no cerrada.
 - **No hay validación externa todavía.** Ningún ingeniero estructural certificado ajeno a este proyecto ha revisado formalmente la metodología de extracción — es exactamente el tipo de colaboración que busco, ver [más abajo](#colaboración-con-universidades-gremios-y-cámaras-de-comercio).
 
@@ -313,7 +313,7 @@ Venezuela had the *smallest* magnitude and still more than nine times Ecuador's 
 
 | Corpus | Real figure |
 |---|---:|
-| NSR-10 (all 11 titles, strict numeral-by-numeral audit, full sweep — [table above](#auditoría-verbatim-de-la-nsr-10-título-por-título)) | 8,454 chunks |
+| NSR-10 (all 11 titles, strict numeral-by-numeral audit, full sweep — [table above](#auditoría-verbatim-de-la-nsr-10-título-por-título)) | 10,443 chunks |
 | NTC + occupational health & safety framework | 294 chunks |
 | Domain engines (AquAI, GeoPot, Vías, Gerencia) | 4,060 chunks |
 | Reference pricing (927/4,566 activities with real supply breakdown) | 4,566 activities · 10,281 supplies |
@@ -321,7 +321,7 @@ Venezuela had the *smallest* magnitude and still more than nine times Ecuador's 
 | Official live data: seismic hazard, streamflow anomaly, soils, housing vulnerability, emergency history | 1,121 municipalities (SGC) · 949 stations (IDEAM) · 169,088 soil units (IGAC) · 1,099 municipalities (Sisbén) · 41,893 events (UNGRD) |
 | Peru (E.030, current 2026 edition) & Ecuador (NEC-SE-DS), verbatim, live in chat | 204 chunks + 1,884 districts (Peru) · 395 chunks + 512 localities (Ecuador) |
 
-**NSR-10 audit, honestly**: 8 of 10 re-audited titles had a real gap (all but I and E). Of those, **H, K, G, D and C are already closed in full verbatim** the same day the gap was found — only **A, B and J** remain open, J being the largest and explicitly deferred (159 real numerals, only 49 chunks, mostly paraphrased summary instead of verbatim — a candidate for full re-ingestion).
+**NSR-10 audit, honestly**: of the 10 strictly re-audited titles, **H, K, G, D, C and J are already closed in full verbatim** — J was the largest real gap in the corpus (159 real numerals, mostly paraphrased summary instead of verbatim) and has since been fully re-ingested from scratch, now 158/159 (99.4%). Only **A (253/555, 45.6%)** and **B (78/186, 41.9%)** remain open, both in progressive phased closure. F.5 (aluminum) tracks progress its own way — members, plates, built-up beams and all connection types (mechanical/welded/bonded) are done; only the fatigue-detail classification and appendices remain.
 
 <details>
 <summary><b>RAG infrastructure — measured performance, not just design</b></summary>
@@ -356,7 +356,7 @@ Key findings: the 12-question baseline showed context recall was already perfect
 
 **The 7 engines**: APU (unit pricing) · Structural/`motor-deformacion` (beam deflection, column buckling, Monte Carlo) · AquAI (water/sewerage, RAS 2000, real IDEAM data) · GeoPot (geotechnics) · Vías (INVIAS road design) · Gerencia (EVM + predictive ML) · InfraCortex (BIM/IFC shear check, disabled by default for RAM — code complete, 7 tests, 86% coverage).
 
-**What this isn't yet.** A real production pilot, not a mockup or full national coverage. Pricing with real SKUs covers Atlántico only; NSR-10 Titles A, B and J still have real gaps (J deferred, largest, ~159 numerals mostly in paraphrase not verbatim); Orinoquía, the Pacific, and Bogotá are active but not closed; no external validation yet by a certified structural engineer outside this project — exactly the collaboration I'm looking for.
+**What this isn't yet.** A real production pilot, not a mockup or full national coverage. Pricing with real SKUs covers Atlántico only; NSR-10 Titles A and B still have real gaps (J closed as of this update); Orinoquía, the Pacific, and Bogotá are active but not closed; no external validation yet by a certified structural engineer outside this project — exactly the collaboration I'm looking for.
 
 **Where this is going.** Seismic vulnerability assessment of already-built housing (NSR-10 A.10 + AIS 2004 → Build Change → AIS 410-23) · real environmental/geological data already at national scale, more engines to follow the same discipline · truly national regulatory and pricing coverage · applied research on trustworthy AI in high-stakes domains — the question behind my thesis.
 
@@ -383,7 +383,7 @@ cd apps/api  && pip install -r requirements.txt && uvicorn main:app --reload
 
 7 motores de dominio (6 activos en producción, 1 desactivado por defecto por RAM), trazabilidad normativa completa sobre NSR-10, RAS 2000/Res. 0330, INVIAS, NTC y SGSST. Marca pública: **StructAI**.
 
-**Cobertura en vivo**: 8.454 chunks de NSR-10 en los 11 títulos — todos auditados numeral por numeral; H, K, G, D y C ya cerrados en verbatim completo el mismo día que se encontró el hueco; solo A, B y J siguen pendientes (J el más grande, dejado explícito para otra sesión). 294 de NTC/SGSST, 4.060 de motores de dominio, 4.566 actividades / 10.281 insumos / 102 proveedores verificados. Compruébalo tú mismo: [`/data-status`](https://structai-api-235651108862.us-east1.run.app/data-status).
+**Cobertura en vivo**: 10.443 chunks de NSR-10 en los 11 títulos — todos auditados numeral por numeral; H, K, G, D, C y J ya cerrados en verbatim completo (J era el hueco más grande del corpus, re-ingestado desde cero); solo A (45,6%) y B (41,9%) siguen en cierre progresivo. 294 de NTC/SGSST, 4.060 de motores de dominio, 4.566 actividades / 10.281 insumos / 102 proveedores verificados. Compruébalo tú mismo: [`/data-status`](https://structai-api-235651108862.us-east1.run.app/data-status).
 
 **Infraestructura del RAG**: 4 bugs reales de rendimiento encontrados y corregidos esta sesión (truncamiento silencioso de embeddings, índice `ivfflat` con ~10% de recall real, índice de texto desalineado, CTE materializada anulando los índices) — `search_knowledge()` bajó de 3.803 ms a 626 ms (~83%), con correctez verificada en cada paso. Detalle completo arriba, en "Infraestructura del RAG".
 
