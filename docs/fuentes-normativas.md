@@ -405,10 +405,18 @@ completo")**:
   solo material dentro de la tabla J.3.4-1 (~100 filas alfabéticas) no
   siempre recupera el chunk correcto pese a que el dato está verbatim
   confirmado por SQL directo — limitación conocida de embeddings contra
-  contenido tabular denso, no exclusiva de este título. Pendiente:
-  Capítulo J.4 completo (44 numerales, tablas NFPA de detección/
-  extinción por grupo de ocupación) — continúa en sesiones sucesivas,
-  mismo método.
+  contenido tabular denso, no exclusiva de este título. **Título J
+  CERRADO 2026-09-24**: Capítulo J.4 completo (44/44 numerales —
+  J.4.1 Alcance, J.4.2 detección/alarma con la tabla J.4.2-1 por
+  grupo/subgrupo de ocupación, J.4.3 extinción con la tabla J.4.3-1 de
+  normas NFPA y las 9 subsecciones por grupo de ocupación A/C/F/I/L/M/
+  P/R-2/R-3, cada una con rociadores automáticos/tomas fijas para
+  bomberos/extintores portátiles), reemplazando los últimos 6 chunks
+  condensados. Cobertura final del título: **158/159 (99.4%)** — J.1
+  5/5, J.2 56/56, J.3 53/54 (el 1 restante es el mismo falso negativo
+  conocido de rag-audit-kit), J.4 44/44. Verificado con `ask()` real
+  (NFPA 13 para rociadores en almacenamiento grupo A, 5 kg de polvo
+  químico seco por cada 10 vehículos en estacionamientos).
 - **Título K — re-auditado y CERRADO el mismo día 2026-09-09, corrige
   un hallazgo anterior** (ver fila de arriba): K.1-K.4.2 y K.4.3.1-9 ya
   estaban completos, pero K.4.3.10-16 (7 numerales, incluidos 3 de
