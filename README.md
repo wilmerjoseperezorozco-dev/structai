@@ -124,7 +124,7 @@ StructAI no es un chatbot con un PDF pegado en el prompt. Es un sistema de recup
 4. **Cada respuesta se rastrea hasta su fuente** (`normas_registro`, con estado de vigencia y derogación), y el pipeline de carga está versionado en `scripts/ingesta/`, no oculto.
 5. **La verificación es un proceso repetido, no una promesa.** Antes de dar por buena una sección nueva del corpus, se prueba con preguntas reales contra el motor de búsqueda. Cuando el propio pipeline tuvo un error real, quedó documentado en el historial de migraciones, no parchado en silencio.
 
-Es, en el fondo, el mismo método científico aplicado a software: hipótesis, verificación contra la fuente primaria, corrección explícita del error propio — también la base metodológica de mi trabajo de grado sobre NSR-10/SGSST/NTC, próximo a sustentar. StructAI es la prueba de concepto aplicada de esa investigación.
+Es, en el fondo, el mismo método científico aplicado a software: hipótesis, verificación contra la fuente primaria, corrección explícita del error propio — también la base metodológica de mi trabajo de grado, *"StructAI: desarrollo y evaluación de una plataforma web inteligente para la gestión de proyectos de ingeniería civil basada en inteligencia artificial"*, sustentado y aprobado con **Meritorio (4.7/5.0)** en la Corporación Universidad de la Costa (CUC) el 24 de septiembre de 2026. StructAI es la prueba de concepto aplicada de esa investigación — ya con validación académica formal, no solo una promesa de tesis.
 
 ## Evaluación empírica del RAG — medido, no solo diseñado
 
@@ -173,7 +173,7 @@ StructAI es un piloto en producción real, con usuarios reales, no una maqueta n
 - **Precios con SKU real** (marca, especificación técnica) cubre el Atlántico. La capa nacional (78 proveedores mipyme) tiene ciudad/departamento real para 70 — los 8 restantes son casos genuinamente ambiguos (homónimos, uniones temporales sin registro regular) y se quedan como "Nacional" en vez de adivinar.
 - **A y B** de la NSR-10 siguen con hueco real (J ya se cerró) — ver la [tabla título por título](#auditoría-verbatim-de-la-nsr-10-título-por-título) arriba.
 - **Orinoquía, Pacífico** (más allá de las estaciones IDEAM ya integradas) **y Bogotá** son las regiones donde la expansión de cobertura está activa pero no cerrada.
-- **No hay validación externa todavía.** Ningún ingeniero estructural certificado ajeno a este proyecto ha revisado formalmente la metodología de extracción — es exactamente el tipo de colaboración que busco, ver [más abajo](#colaboración-con-universidades-gremios-y-cámaras-de-comercio).
+- **Validación externa formal, todavía acotada.** El trabajo de grado que sustenta StructAI fue evaluado y aprobado con Meritorio (4.7/5.0) por un jurado de 3 evaluadores de la CUC, incluido un jurado externo — pero eso valida el proyecto como investigación académica, no equivale a que un ingeniero estructural certificado ajeno haya revisado en detalle la metodología de extracción normativa numeral por numeral. Esa revisión técnica específica sigue siendo exactamente el tipo de colaboración que busco, ver [más abajo](#colaboración-con-universidades-gremios-y-cámaras-de-comercio).
 
 Roadmap completo, cada punto abierto o cerrado: [issues del repositorio](https://github.com/wilmerjoseperezorozco-dev/structai/issues) y su [milestone activo](https://github.com/wilmerjoseperezorozco-dev/structai/milestone/1).
 
@@ -356,7 +356,7 @@ Key findings: the 12-question baseline showed context recall was already perfect
 
 **The 7 engines**: APU (unit pricing) · Structural/`motor-deformacion` (beam deflection, column buckling, Monte Carlo) · AquAI (water/sewerage, RAS 2000, real IDEAM data) · GeoPot (geotechnics) · Vías (INVIAS road design) · Gerencia (EVM + predictive ML) · InfraCortex (BIM/IFC shear check, disabled by default for RAM — code complete, 7 tests, 86% coverage).
 
-**What this isn't yet.** A real production pilot, not a mockup or full national coverage. Pricing with real SKUs covers Atlántico only; NSR-10 Titles A and B still have real gaps (J closed as of this update); Orinoquía, the Pacific, and Bogotá are active but not closed; no external validation yet by a certified structural engineer outside this project — exactly the collaboration I'm looking for.
+**What this isn't yet.** A real production pilot, not a mockup or full national coverage. Pricing with real SKUs covers Atlántico only; NSR-10 Titles A and B still have real gaps (J closed as of this update); Orinoquía, the Pacific, and Bogotá are active but not closed. The undergraduate thesis behind StructAI was defended and approved with Meritorio (4.7/5.0) by a 3-person CUC jury, including an external evaluator — real academic validation, but distinct from a certified structural engineer independently reviewing the numeral-by-numeral extraction methodology in detail, which is still exactly the collaboration I'm looking for.
 
 **Where this is going.** Seismic vulnerability assessment of already-built housing (NSR-10 A.10 + AIS 2004 → Build Change → AIS 410-23) · real environmental/geological data already at national scale, more engines to follow the same discipline · truly national regulatory and pricing coverage · applied research on trustworthy AI in high-stakes domains — the question behind my thesis.
 
