@@ -144,13 +144,22 @@ def registrar_consulta(
     user_id: str, pregunta: str, respuesta: str,
     normas_citadas: Optional[list] = None, normas_detectadas: Optional[list] = None,
     chunks_usados: int = 0, latencia_ms: int = 0, norma_hint: Optional[str] = None,
+    dominio_enrutado: Optional[str] = None, metodo_enrutamiento: Optional[str] = None,
+    score_enrutamiento: Optional[float] = None,
 ) -> Optional[str]:
     """Retorna el `id` real de la fila insertada, o None si el insert falló
     -- agregado 2026-09-16 (idea 7, feedback cerrado): antes esta función no
     devolvía nada, así que /ask y /consultar no tenían forma de decirle al
     frontend a qué consulta exacta atar un 👍/👎 después. Best-effort igual
     que antes: un fallo acá sigue sin tumbar la respuesta real, solo deja
-    sin id de feedback a esa consulta puntual."""
+    sin id de feedback a esa consulta puntual.
+
+    dominio_enrutado/metodo_enrutamiento/score_enrutamiento agregados
+    2026-09-28 (issue #35, criterio de aceptación pendiente: "se puede
+    loggear/auditar qué ruta tomó cada consulta real"). Vienen de
+    ask_delegado() (result['metodo_enrutamiento']/['score_enrutamiento']) --
+    /ask usa ask() directo, sin enrutamiento de motor, así que quedan None
+    para esas consultas, lo cual es correcto (nunca pasaron por el router)."""
     if _uso_sb is None:
         return None
     try:
@@ -158,6 +167,8 @@ def registrar_consulta(
             "user_id": user_id, "pregunta": pregunta[:2000], "respuesta": (respuesta or "")[:4000],
             "normas_citadas": normas_citadas or [], "normas_detectadas": normas_detectadas or [],
             "chunks_usados": chunks_usados, "latencia_ms": latencia_ms, "norma_hint": norma_hint,
+            "dominio_enrutado": dominio_enrutado, "metodo_enrutamiento": metodo_enrutamiento,
+            "score_enrutamiento": score_enrutamiento,
         }).execute()
         return res.data[0]["id"] if res.data else None
     except Exception as e:
@@ -1623,6 +1634,9 @@ def consultar_delegado(request: Request, req: ConsultarRequest):
         user.id, req.pregunta, result.get("respuesta", ""),
         normas_citadas=result.get("normas_citadas", []),
         chunks_usados=result.get("chunks_usados", 0), latencia_ms=latencia,
+        dominio_enrutado=result.get("dominio"),
+        metodo_enrutamiento=result.get("metodo_enrutamiento"),
+        score_enrutamiento=result.get("score_enrutamiento"),
     )
 
     return ConsultarResponse(

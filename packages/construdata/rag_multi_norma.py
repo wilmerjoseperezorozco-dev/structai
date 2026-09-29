@@ -862,15 +862,23 @@ def route_motor(query: str) -> Optional[str]:
     return max(scores.items(), key=lambda x: x[1])[0]
 
 
-def route_motores_multiples(query: str) -> list[str]:
-    """Como route_motor() pero devuelve TODOS los dominios con score > 0,
-    ordenados de mayor a menor. Detecta preguntas compuestas — ej. "precio
-    del cemento + qué es la dotación neta" — que antes se enrutaban
-    completas a un solo dominio (el de mayor score) y perdían la otra mitad
-    de la pregunta aunque el dato sí existiera. Bug real encontrado
-    2026-08-09 con captura de pantalla del usuario: "dotación neta" (3 pts
-    en aquai) le ganaba a "precio de" (1 pt en apu_precios), y la respuesta
-    de precio de cemento se perdía por completo pese a estar en la base.
+def _route_con_metodo(query: str) -> tuple[list[str], str, Optional[float]]:
+    """Motor real de route_motores_multiples() -- además del resultado,
+    expone QUÉ método decidió (para poder loggear/auditar el enrutamiento en
+    consultas_history, criterio de aceptación del issue #35) y, si fue el
+    contrastivo, con qué score de similitud coseno. Devuelve
+    (dominios, metodo, score) donde metodo es uno de:
+    "keyword" | "contrastivo" | "ninguno" (cayó a normativa_general).
+
+    Como route_motores_multiples() pero devuelve TODOS los dominios con
+    score > 0, ordenados de mayor a menor. Detecta preguntas compuestas —
+    ej. "precio del cemento + qué es la dotación neta" — que antes se
+    enrutaban completas a un solo dominio (el de mayor score) y perdían la
+    otra mitad de la pregunta aunque el dato sí existiera. Bug real
+    encontrado 2026-08-09 con captura de pantalla del usuario: "dotación
+    neta" (3 pts en aquai) le ganaba a "precio de" (1 pt en apu_precios), y
+    la respuesta de precio de cemento se perdía por completo pese a estar
+    en la base.
 
     Si el enrutador de palabras clave no encuentra NADA, se prueba el
     enrutador contrastivo (motor_router_contrastivo.py, embeddings +
@@ -883,20 +891,29 @@ def route_motores_multiples(query: str) -> list[str]:
     (13 ya verificadas en test_rag_motores_regresion.py + 10 nuevas)."""
     scores = _score_motores(query)
     if scores:
-        return [m for m, _ in sorted(scores.items(), key=lambda x: -x[1])]
+        dominios = [m for m, _ in sorted(scores.items(), key=lambda x: -x[1])]
+        return dominios, "keyword", None
 
     try:
         # Import local: motor_router_contrastivo.py importa embed_query de
         # este mismo módulo, un import a nivel de módulo aquí sería circular.
         from motor_router_contrastivo import route_motores_contrastivo
-        motor_contrastivo, _score = route_motores_contrastivo(query, top_k=1)[0]
+        motor_contrastivo, score = route_motores_contrastivo(query, top_k=1)[0]
     except Exception as e:
         log.warning(f"Enrutador contrastivo no disponible, se mantiene normativa_general por defecto: {e}")
-        return []
+        return [], "ninguno", None
 
     if motor_contrastivo == "normativa_general":
-        return []
-    return [motor_contrastivo]
+        return [], "ninguno", round(score, 4)
+    return [motor_contrastivo], "contrastivo", round(score, 4)
+
+
+def route_motores_multiples(query: str) -> list[str]:
+    """Envoltorio de compatibilidad de _route_con_metodo() para las llamadas
+    existentes (tests, scripts de evaluación) que no necesitan el método ni
+    el score -- solo la lista de dominios."""
+    dominios, _metodo, _score = _route_con_metodo(query)
+    return dominios
 
 
 # ─── BÚSQUEDA DE PRECIOS APU (Barranquilla/Atlántico) ─────────────────────────
@@ -2749,11 +2766,31 @@ def ask_delegado(question: str, top_k: int = TOP_K_DEFAULT_RAG) -> dict:
     (NSR-10/NTC/seguridad industrial), busca en la fuente correcta y sintetiza
     con Groq. Esto es lo que expone /consultar en la API.
 
+    Envoltorio delgado sobre _ask_delegado_interno(): usa _route_con_metodo()
+    (en vez de route_motores_multiples()) para además capturar QUÉ método de
+    enrutamiento decidió (keyword/contrastivo/ninguno) y con qué score, y
+    los agrega al dict de respuesta como metodo_enrutamiento/
+    score_enrutamiento -- aditivo, no rompe el contrato existente. Esto es
+    lo que apps/api/main.py necesita para loggear la decisión de
+    enrutamiento en consultas_history, el criterio de aceptación pendiente
+    del issue #35 ("se puede loggear/auditar qué ruta tomó cada consulta
+    real, para poder medir después si el enrutamiento acierta").
+    """
+    motores, metodo_enrutamiento, score_enrutamiento = _route_con_metodo(question)
+    resultado = _ask_delegado_interno(question, motores, top_k)
+    resultado["metodo_enrutamiento"] = metodo_enrutamiento
+    resultado["score_enrutamiento"] = score_enrutamiento
+    return resultado
+
+
+def _ask_delegado_interno(question: str, motores: list[str], top_k: int) -> dict:
+    """Cuerpo real de ask_delegado() -- recibe `motores` ya calculado por
+    _route_con_metodo() en vez de volver a enrutar internamente.
+
     Si la pregunta es compuesta (ej. mezcla precio + normativa) y apu_precios
     puntúa junto a otro dominio, delega a _ask_delegado_compuesto() para no
-    perder ninguna de las dos mitades — ver route_motores_multiples().
+    perder ninguna de las dos mitades — ver _route_con_metodo().
     """
-    motores = route_motores_multiples(question)
     if "apu_precios" in motores and len(motores) > 1:
         return _ask_delegado_compuesto(question, motores, top_k)
 
