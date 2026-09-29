@@ -1,0 +1,934 @@
+{
+  "grupo_alto": [
+    {
+      "municipio": "BOGOTA, D.C.",
+      "pendiente_pct": 0.6173053098601121
+    },
+    {
+      "municipio": "BALBOA",
+      "pendiente_pct": 25.58104145497374
+    },
+    {
+      "municipio": "LA VEGA",
+      "pendiente_pct": 7.610978240756556
+    },
+    {
+      "municipio": "BUCARASICA",
+      "pendiente_pct": 33.43613259288938
+    },
+    {
+      "municipio": "PEREIRA",
+      "pendiente_pct": 1.9418569547594244
+    },
+    {
+      "municipio": "LA PLATA",
+      "pendiente_pct": 2.756158675985962
+    },
+    {
+      "municipio": "SAN FRANCISCO",
+      "pendiente_pct": 2.978525035209162
+    },
+    {
+      "municipio": "EL TAMBO",
+      "pendiente_pct": 3.803688867387557
+    },
+    {
+      "municipio": "OCAÑA",
+      "pendiente_pct": 0.8715739008949666
+    },
+    {
+      "municipio": "PACHO",
+      "pendiente_pct": 9.084706291285027
+    },
+    {
+      "municipio": "TOLEDO",
+      "pendiente_pct": 21.512861830669987
+    },
+    {
+      "municipio": "LA PEÑA",
+      "pendiente_pct": 19.736425806208548
+    },
+    {
+      "municipio": "VENECIA",
+      "pendiente_pct": 10.162373020385887
+    },
+    {
+      "municipio": "SANTA MARIA",
+      "pendiente_pct": 6.855335901953209
+    },
+    {
+      "municipio": "ARBOLEDAS",
+      "pendiente_pct": 2.7302829413881766
+    }
+  ],
+  "grupo_bajo": [
+    {
+      "municipio": "REMOLINO",
+      "pendiente_pct": 0.2823119659785793
+    },
+    {
+      "municipio": "CALOTO",
+      "pendiente_pct": 2.935569363567043
+    },
+    {
+      "municipio": "SABANAGRANDE",
+      "pendiente_pct": 0.5015508654290379
+    },
+    {
+      "municipio": "TENERIFE",
+      "pendiente_pct": 0.6695616174092077
+    },
+    {
+      "municipio": "MARGARITA",
+      "pendiente_pct": 0.31563437339485567
+    },
+    {
+      "municipio": "PAILITAS",
+      "pendiente_pct": 0.582001027552731
+    },
+    {
+      "municipio": "DIBULLA",
+      "pendiente_pct": 0.7368558639873738
+    },
+    {
+      "municipio": "ARENAL",
+      "pendiente_pct": 0.19962470555355935
+    },
+    {
+      "municipio": "SAN DIEGO",
+      "pendiente_pct": 1.5503078778904726
+    },
+    {
+      "municipio": "ALTOS DEL ROSARIO",
+      "pendiente_pct": 0.6564132649601703
+    },
+    {
+      "municipio": "MAHATES",
+      "pendiente_pct": 0.5210357781825444
+    },
+    {
+      "municipio": "SOPLAVIENTO",
+      "pendiente_pct": 0.11159360290153462
+    },
+    {
+      "municipio": "TURBACO",
+      "pendiente_pct": 6.0518312786570645
+    },
+    {
+      "municipio": "PUERTO CAICEDO",
+      "pendiente_pct": 1.517837098828757
+    },
+    {
+      "municipio": "HATILLO DE LOBA",
+      "pendiente_pct": 0.15781718669742784
+    },
+    {
+      "municipio": "TRINIDAD",
+      "pendiente_pct": 0.2544725672532033
+    },
+    {
+      "municipio": "FORTUL",
+      "pendiente_pct": 0.9599644698801926
+    },
+    {
+      "municipio": "LA TOLA",
+      "pendiente_pct": 0.5015508654290379
+    },
+    {
+      "municipio": "SIACHOQUE",
+      "pendiente_pct": 3.5531655510295774
+    },
+    {
+      "municipio": "PISBA",
+      "pendiente_pct": 11.363275814832864
+    },
+    {
+      "municipio": "AGUADA",
+      "pendiente_pct": 28.683029466176535
+    },
+    {
+      "municipio": "TAME",
+      "pendiente_pct": 1.563107334547633
+    },
+    {
+      "municipio": "PALMAR DE VARELA",
+      "pendiente_pct": 0.6312687467897113
+    },
+    {
+      "municipio": "TALAIGUA NUEVO",
+      "pendiente_pct": 0.07057799149464483
+    },
+    {
+      "municipio": "HATO COROZAL",
+      "pendiente_pct": 0.8615141784261623
+    },
+    {
+      "municipio": "ALGARROBO",
+      "pendiente_pct": 0.3035674197657514
+    },
+    {
+      "municipio": "VALLE DEL GUAMUEZ",
+      "pendiente_pct": 0.8715739008949666
+    },
+    {
+      "municipio": "FLORESTA",
+      "pendiente_pct": 1.8465285263704236
+    },
+    {
+      "municipio": "ROLDANILLO",
+      "pendiente_pct": 1.7359890536717062
+    },
+    {
+      "municipio": "FONSECA",
+      "pendiente_pct": 0.42639855797688003
+    },
+    {
+      "municipio": "SIMIJACA",
+      "pendiente_pct": 3.5727385174063646
+    },
+    {
+      "municipio": "SUESCA",
+      "pendiente_pct": 6.187158346855892
+    },
+    {
+      "municipio": "SUSA",
+      "pendiente_pct": 4.742137296851629
+    },
+    {
+      "municipio": "LA GLORIA",
+      "pendiente_pct": 0.09981235277677968
+    },
+    {
+      "municipio": "URIBIA",
+      "pendiente_pct": 0.5089451345064065
+    },
+    {
+      "municipio": "INÍRIDA",
+      "pendiente_pct": 0.24953088194194917
+    },
+    {
+      "municipio": "FLORIDA",
+      "pendiente_pct": 1.2516405361904075
+    },
+    {
+      "municipio": "VETAS",
+      "pendiente_pct": 24.463038436272225
+    },
+    {
+      "municipio": "CALAMAR",
+      "pendiente_pct": 0.1497185291651695
+    },
+    {
+      "municipio": "PUERTO ESCONDIDO",
+      "pendiente_pct": 2.355656110752974
+    },
+    {
+      "municipio": "ULLOA",
+      "pendiente_pct": 8.020001736729048
+    },
+    {
+      "municipio": "SAN PABLO DE BORBUR",
+      "pendiente_pct": 33.28566129105369
+    },
+    {
+      "municipio": "LA CAPILLA",
+      "pendiente_pct": 6.714189347563437
+    },
+    {
+      "municipio": "LENGUAZAQUE",
+      "pendiente_pct": 3.449307540948512
+    },
+    {
+      "municipio": "CHINAVITA",
+      "pendiente_pct": 21.94294613227865
+    },
+    {
+      "municipio": "PELAYA",
+      "pendiente_pct": 0.7057799149464483
+    },
+    {
+      "municipio": "LA MONTAÑITA",
+      "pendiente_pct": 0.4601122119062606
+    },
+    {
+      "municipio": "SOCHA",
+      "pendiente_pct": 14.83212905631823
+    },
+    {
+      "municipio": "CASTILLA LA NUEVA",
+      "pendiente_pct": 1.0105230532257652
+    },
+    {
+      "municipio": "TIERRALTA",
+      "pendiente_pct": 0.5210357781825444
+    },
+    {
+      "municipio": "SAN JUAN DE BETULIA",
+      "pendiente_pct": 0.2910005137763655
+    },
+    {
+      "municipio": "CICUCO",
+      "pendiente_pct": 0.389779697963162
+    },
+    {
+      "municipio": "TUTA",
+      "pendiente_pct": 2.398094337991369
+    },
+    {
+      "municipio": "MORROA",
+      "pendiente_pct": 1.089967344783884
+    },
+    {
+      "municipio": "EL ROBLE",
+      "pendiente_pct": 0.9175138894303827
+    },
+    {
+      "municipio": "OIBA",
+      "pendiente_pct": 9.082924102686949
+    },
+    {
+      "municipio": "URUMITA",
+      "pendiente_pct": 2.1592713351682775
+    },
+    {
+      "municipio": "SAN MIGUEL DE SEMA",
+      "pendiente_pct": 4.762315022990696
+    },
+    {
+      "municipio": "HATONUEVO",
+      "pendiente_pct": 0.1497185291651695
+    },
+    {
+      "municipio": "REGIDOR",
+      "pendiente_pct": 0.31563437339485567
+    },
+    {
+      "municipio": "LORICA",
+      "pendiente_pct": 1.7889815475840343
+    },
+    {
+      "municipio": "ALMEIDA",
+      "pendiente_pct": 5.545202796051763
+    },
+    {
+      "municipio": "CAUCASIA",
+      "pendiente_pct": 1.0586698724196726
+    },
+    {
+      "municipio": "SAN ESTANISLAO",
+      "pendiente_pct": 1.2595749455148286
+    },
+    {
+      "municipio": "SOLANO",
+      "pendiente_pct": 1.4550025688818273
+    },
+    {
+      "municipio": "SAN BENITO ABAD",
+      "pendiente_pct": 0.35987855586137957
+    },
+    {
+      "municipio": "CERINZA",
+      "pendiente_pct": 9.380502768273232
+    },
+    {
+      "municipio": "SAN ANTERO",
+      "pendiente_pct": 0.7485926458258475
+    },
+    {
+      "municipio": "BOAVITA",
+      "pendiente_pct": 20.42193422925912
+    },
+    {
+      "municipio": "EL MOLINO",
+      "pendiente_pct": 1.4009331304765242
+    },
+    {
+      "municipio": "PUEBLOVIEJO",
+      "pendiente_pct": 0.0
+    },
+    {
+      "municipio": "ARJONA",
+      "pendiente_pct": 0.6714189347563436
+    },
+    {
+      "municipio": "PUERTO TRIUNFO",
+      "pendiente_pct": 1.1159360290153462
+    },
+    {
+      "municipio": "ENCISO",
+      "pendiente_pct": 23.11884431608646
+    },
+    {
+      "municipio": "COYAIMA",
+      "pendiente_pct": 1.8546037625326435
+    },
+    {
+      "municipio": "EL RETORNO",
+      "pendiente_pct": 0.8484049986026272
+    },
+    {
+      "municipio": "COTORRA",
+      "pendiente_pct": 0.09981235277677968
+    },
+    {
+      "municipio": "MIRANDA",
+      "pendiente_pct": 4.196869094428203
+    },
+    {
+      "municipio": "CABUYARO",
+      "pendiente_pct": 0.19962470555355935
+    },
+    {
+      "municipio": "TRUJILLO",
+      "pendiente_pct": 7.438029655068859
+    },
+    {
+      "municipio": "AMBALEMA",
+      "pendiente_pct": 2.315130256067234
+    },
+    {
+      "municipio": "NOBSA",
+      "pendiente_pct": 8.917020194636903
+    },
+    {
+      "municipio": "PUERTO NARIÑO",
+      "pendiente_pct": 1.9742923748205858
+    },
+    {
+      "municipio": "VILLA RICA",
+      "pendiente_pct": 0.4601122119062606
+    },
+    {
+      "municipio": "RIVERA",
+      "pendiente_pct": 4.287286220887638
+    },
+    {
+      "municipio": "SABANETA",
+      "pendiente_pct": 5.222771370603717
+    },
+    {
+      "municipio": "PUERTO LLERAS",
+      "pendiente_pct": 0.2910005137763655
+    },
+    {
+      "municipio": "SAN LUIS DE PALENQUE",
+      "pendiente_pct": 0.22318720580306925
+    },
+    {
+      "municipio": "ATRATO",
+      "pendiente_pct": 1.413323178275472
+    },
+    {
+      "municipio": "MEDIO ATRATO",
+      "pendiente_pct": 1.8465285263704236
+    },
+    {
+      "municipio": "ALBANIA",
+      "pendiente_pct": 0.40235645727525005
+    },
+    {
+      "municipio": "FUNZA",
+      "pendiente_pct": 0.4601122119062606
+    },
+    {
+      "municipio": "AQUITANIA",
+      "pendiente_pct": 10.008770459551005
+    },
+    {
+      "municipio": "PIJIÑO DEL CARMEN",
+      "pendiente_pct": 0.6391108952601958
+    },
+    {
+      "municipio": "SALDAÑA",
+      "pendiente_pct": 0.2057684366200374
+    },
+    {
+      "municipio": "PINILLOS",
+      "pendiente_pct": 0.1497185291651695
+    },
+    {
+      "municipio": "MONGUA",
+      "pendiente_pct": 10.225408972231323
+    },
+    {
+      "municipio": "CAMPO DE LA CRUZ",
+      "pendiente_pct": 0.15781718669742784
+    },
+    {
+      "municipio": "MALAMBO",
+      "pendiente_pct": 0.849871559763964
+    },
+    {
+      "municipio": "SOLEDAD",
+      "pendiente_pct": 1.0979358805445765
+    },
+    {
+      "municipio": "FALAN",
+      "pendiente_pct": 10.494664924561297
+    },
+    {
+      "municipio": "SOLITA",
+      "pendiente_pct": 1.2752956780433424
+    },
+    {
+      "municipio": "MEDIO SAN JUAN",
+      "pendiente_pct": 1.2723628362660162
+    },
+    {
+      "municipio": "GAMARRA",
+      "pendiente_pct": 0.2544725672532033
+    },
+    {
+      "municipio": "CONFINES",
+      "pendiente_pct": 8.54562214805639
+    },
+    {
+      "municipio": "PACHAVITA",
+      "pendiente_pct": 14.009331304765244
+    },
+    {
+      "municipio": "SAN MATEO",
+      "pendiente_pct": 8.285026537887626
+    },
+    {
+      "municipio": "PONEDERA",
+      "pendiente_pct": 0.8047129145505001
+    },
+    {
+      "municipio": "IZA",
+      "pendiente_pct": 3.9429037839069916
+    },
+    {
+      "municipio": "VENTAQUEMADA",
+      "pendiente_pct": 10.17033510382908
+    },
+    {
+      "municipio": "TURBO",
+      "pendiente_pct": 0.389779697963162
+    },
+    {
+      "municipio": "VILLAVIEJA",
+      "pendiente_pct": 1.8465285263704236
+    },
+    {
+      "municipio": "CARTAGO",
+      "pendiente_pct": 0.598874116660678
+    },
+    {
+      "municipio": "CUCAITA",
+      "pendiente_pct": 8.618754760635278
+    },
+    {
+      "municipio": "SAN JACINTO DEL CAUCA",
+      "pendiente_pct": 0.17993927793068978
+    },
+    {
+      "municipio": "CHIMICHAGUA",
+      "pendiente_pct": 0.8615141784261623
+    },
+    {
+      "municipio": "SAN FERNANDO",
+      "pendiente_pct": 0.17993927793068978
+    },
+    {
+      "municipio": "LA UVITA",
+      "pendiente_pct": 14.803554956600742
+    },
+    {
+      "municipio": "CANTAGALLO",
+      "pendiente_pct": 0.04990617638838984
+    },
+    {
+      "municipio": "GUARANDA",
+      "pendiente_pct": 0.2687529847454039
+    },
+    {
+      "municipio": "COVEÑAS",
+      "pendiente_pct": 0.849871559763964
+    },
+    {
+      "municipio": "EL PASO",
+      "pendiente_pct": 0.2544725672532033
+    },
+    {
+      "municipio": "SAN MARCOS",
+      "pendiente_pct": 0.4519196479686898
+    },
+    {
+      "municipio": "GUACAMAYAS",
+      "pendiente_pct": 21.245030566382322
+    },
+    {
+      "municipio": "MAICAO",
+      "pendiente_pct": 0.429309162127332
+    },
+    {
+      "municipio": "SAN PEDRO DE CARTAGO",
+      "pendiente_pct": 15.04197324479276
+    },
+    {
+      "municipio": "SANTA ROSA DE VITERBO",
+      "pendiente_pct": 2.8389552947115213
+    },
+    {
+      "municipio": "TOCA",
+      "pendiente_pct": 7.256330588125905
+    },
+    {
+      "municipio": "ARROYOHONDO",
+      "pendiente_pct": 0.8062589542362115
+    },
+    {
+      "municipio": "EL BANCO",
+      "pendiente_pct": 0.2544725672532033
+    },
+    {
+      "municipio": "TOTA",
+      "pendiente_pct": 18.71168843056604
+    },
+    {
+      "municipio": "PUERTO CARREÑO",
+      "pendiente_pct": 0.3035674197657514
+    },
+    {
+      "municipio": "VIJES",
+      "pendiente_pct": 10.347080178644912
+    },
+    {
+      "municipio": "ZARZAL",
+      "pendiente_pct": 2.8481520887492064
+    },
+    {
+      "municipio": "SOMONDOCO",
+      "pendiente_pct": 18.309514440695636
+    },
+    {
+      "municipio": "POLONUEVO",
+      "pendiente_pct": 0.7093000361097086
+    },
+    {
+      "municipio": "MOTAVITA",
+      "pendiente_pct": 4.861179247768564
+    },
+    {
+      "municipio": "EL ENCANTO",
+      "pendiente_pct": 2.210004174700017
+    },
+    {
+      "municipio": "CAIMITO",
+      "pendiente_pct": 0.5841368183175444
+    },
+    {
+      "municipio": "MADRID",
+      "pendiente_pct": 1.8646486298029112
+    },
+    {
+      "municipio": "ASTREA",
+      "pendiente_pct": 0.4601122119062606
+    },
+    {
+      "municipio": "EL CASTILLO",
+      "pendiente_pct": 0.40235645727525005
+    },
+    {
+      "municipio": "CRAVO NORTE",
+      "pendiente_pct": 0.15781718669742784
+    },
+    {
+      "municipio": "RIOHACHA",
+      "pendiente_pct": 0.5015508654290379
+    },
+    {
+      "municipio": "SUTATAUSA",
+      "pendiente_pct": 1.7834040389273804
+    },
+    {
+      "municipio": "AYAPEL",
+      "pendiente_pct": 0.6391108952601958
+    },
+    {
+      "municipio": "LA JAGUA DEL PILAR",
+      "pendiente_pct": 2.3301428374513424
+    },
+    {
+      "municipio": "MOÑITOS",
+      "pendiente_pct": 0.7485926458258475
+    },
+    {
+      "municipio": "EL BAGRE",
+      "pendiente_pct": 2.1232130979940362
+    },
+    {
+      "municipio": "ARAUCA",
+      "pendiente_pct": 0.09981235277677968
+    },
+    {
+      "municipio": "CERRITO",
+      "pendiente_pct": 13.485845668701636
+    },
+    {
+      "municipio": "EL COPEY",
+      "pendiente_pct": 1.2081006145356934
+    },
+    {
+      "municipio": "PUERTO RICO",
+      "pendiente_pct": 0.7368558639873738
+    },
+    {
+      "municipio": "LA MACARENA",
+      "pendiente_pct": 1.223464953101296
+    },
+    {
+      "municipio": "SUAN",
+      "pendiente_pct": 0.35288995747322416
+    },
+    {
+      "municipio": "PIEDRAS",
+      "pendiente_pct": 5.54048471652656
+    },
+    {
+      "municipio": "CANALETE",
+      "pendiente_pct": 0.22318720580306925
+    },
+    {
+      "municipio": "PESCA",
+      "pendiente_pct": 5.267407195256423
+    },
+    {
+      "municipio": "CUMARIBO",
+      "pendiente_pct": 1.5599173162542206
+    },
+    {
+      "municipio": "LA PINTADA",
+      "pendiente_pct": 1.1259346601068472
+    },
+    {
+      "municipio": "PUEBLO NUEVO",
+      "pendiente_pct": 0.7890859334871391
+    },
+    {
+      "municipio": "ARATOCA",
+      "pendiente_pct": 12.673614292135394
+    },
+    {
+      "municipio": "GUAMO",
+      "pendiente_pct": 0.2057684366200374
+    },
+    {
+      "municipio": "BERBEO",
+      "pendiente_pct": 14.234112912527841
+    },
+    {
+      "municipio": "BARRANCO DE LOBA",
+      "pendiente_pct": 0.14115598298928966
+    },
+    {
+      "municipio": "ZETAQUIRA",
+      "pendiente_pct": 32.219838720402706
+    },
+    {
+      "municipio": "PALMITO",
+      "pendiente_pct": 0.5690179587870494
+    },
+    {
+      "municipio": "SANTA CATALINA",
+      "pendiente_pct": 0.6091825176534966
+    },
+    {
+      "municipio": "SANTA ANA",
+      "pendiente_pct": 0.6787973863504335
+    },
+    {
+      "municipio": "MAJAGUAL",
+      "pendiente_pct": 0.07057799149464483
+    },
+    {
+      "municipio": "PUERTO SANTANDER",
+      "pendiente_pct": 6.274895490522438
+    },
+    {
+      "municipio": "FUENTE DE ORO",
+      "pendiente_pct": 1.6657004100569566
+    },
+    {
+      "municipio": "MORELIA",
+      "pendiente_pct": 1.3391232348184154
+    },
+    {
+      "municipio": "CUBARRAL",
+      "pendiente_pct": 3.5221882837453364
+    },
+    {
+      "municipio": "PUERTO CONCORDIA",
+      "pendiente_pct": 0.19962470555355935
+    },
+    {
+      "municipio": "PAIPA",
+      "pendiente_pct": 5.114835299764027
+    },
+    {
+      "municipio": "NUEVA GRANADA",
+      "pendiente_pct": 0.2910005137763655
+    },
+    {
+      "municipio": "ZAMBRANO",
+      "pendiente_pct": 0.5841368183175444
+    },
+    {
+      "municipio": "SANTANA",
+      "pendiente_pct": 15.291988641509821
+    },
+    {
+      "municipio": "MOGOTES",
+      "pendiente_pct": 2.3975749889137052
+    },
+    {
+      "municipio": "CURILLO",
+      "pendiente_pct": 0.7266448965225893
+    },
+    {
+      "municipio": "SOCORRO",
+      "pendiente_pct": 14.064778886734894
+    },
+    {
+      "municipio": "SAN CARLOS DE GUAROA",
+      "pendiente_pct": 0.33478080870460386
+    },
+    {
+      "municipio": "TIBASOSA",
+      "pendiente_pct": 5.745065848667769
+    },
+    {
+      "municipio": "OCAMONTE",
+      "pendiente_pct": 4.830856006839167
+    },
+    {
+      "municipio": "MOLAGAVITA",
+      "pendiente_pct": 14.08610116764733
+    },
+    {
+      "municipio": "FRANCISCO PIZARRO",
+      "pendiente_pct": 2.4336617838936023
+    },
+    {
+      "municipio": "SAN BERNARDO DEL VIENTO",
+      "pendiente_pct": 0.2687529847454039
+    },
+    {
+      "municipio": "TIPACOQUE",
+      "pendiente_pct": 18.656968660903512
+    },
+    {
+      "municipio": "ARBOLETES",
+      "pendiente_pct": 0.7634177017596098
+    },
+    {
+      "municipio": "FIRAVITOBA",
+      "pendiente_pct": 3.8456910706488774
+    },
+    {
+      "municipio": "SORA",
+      "pendiente_pct": 7.167923888129433
+    },
+    {
+      "municipio": "PEDRAZA",
+      "pendiente_pct": 0.6030186236672344
+    },
+    {
+      "municipio": "CARMEN DE CARUPA",
+      "pendiente_pct": 4.90250396863609
+    },
+    {
+      "municipio": "CORRALES",
+      "pendiente_pct": 5.741162802915273
+    },
+    {
+      "municipio": "LA CUMBRE",
+      "pendiente_pct": 8.913248691562252
+    },
+    {
+      "municipio": "SITIONUEVO",
+      "pendiente_pct": 0.1497185291651695
+    },
+    {
+      "municipio": "EL DONCELLO",
+      "pendiente_pct": 3.2835836925771513
+    },
+    {
+      "municipio": "SAN GIL",
+      "pendiente_pct": 2.7466538718842606
+    },
+    {
+      "municipio": "BARRANCAS",
+      "pendiente_pct": 1.5923120666690442
+    },
+    {
+      "municipio": "FLANDES",
+      "pendiente_pct": 0.2687529847454039
+    },
+    {
+      "municipio": "ARAUQUITA",
+      "pendiente_pct": 0.15781718669742784
+    },
+    {
+      "municipio": "PLANETA RICA",
+      "pendiente_pct": 1.1746518840519644
+    },
+    {
+      "municipio": "BOSCONIA",
+      "pendiente_pct": 0.5512317351971924
+    },
+    {
+      "municipio": "PIVIJAY",
+      "pendiente_pct": 0.5690179587870494
+    },
+    {
+      "municipio": "SABANA DE TORRES",
+      "pendiente_pct": 1.0680388149794735
+    },
+    {
+      "municipio": "BELMIRA",
+      "pendiente_pct": 6.921142850237287
+    },
+    {
+      "municipio": "SAN ALBERTO",
+      "pendiente_pct": 0.6312687467897113
+    },
+    {
+      "municipio": "LA APARTADA",
+      "pendiente_pct": 0.11159360290153462
+    },
+    {
+      "municipio": "EL CHARCO",
+      "pendiente_pct": 0.6487802930490678
+    },
+    {
+      "municipio": "MOMIL",
+      "pendiente_pct": 0.7266448965225893
+    },
+    {
+      "municipio": "TAMALAMEQUE",
+      "pendiente_pct": 0.11159360290153462
+    },
+    {
+      "municipio": "ESPINAL",
+      "pendiente_pct": 0.35987855586137957
+    },
+    {
+      "municipio": "LA PRIMAVERA",
+      "pendiente_pct": 0.19962470555355935
+    },
+    {
+      "municipio": "PUERTO NARE",
+      "pendiente_pct": 0.3195554476300979
+    },
+    {
+      "municipio": "GALERAS",
+      "pendiente_pct": 0.6009499430466871
+    },
+    {
+      "municipio": "TENJO",
+      "pendiente_pct": 9.476655962687786
+    }
+  ]
+}
