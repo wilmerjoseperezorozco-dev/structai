@@ -189,6 +189,7 @@ def a_formato_chat(ej: Ejemplo) -> dict:
         ],
         "_metadata": {
             "pregunta": ej.pregunta,
+            "reference": ej.reference,
             "fuente": ej.fuente_archivo,
             "faithfulness": ej.faithfulness,
             "context_recall": ej.context_recall,
