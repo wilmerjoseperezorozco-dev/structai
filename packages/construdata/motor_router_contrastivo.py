@@ -63,6 +63,9 @@ EJEMPLOS_POR_DOMINIO: dict[str, list[str]] = {
         "que es la dotacion bruta y como se calcula",
         "cual es la profundidad minima de instalacion de una tuberia de acueducto",
         "que criterios exige la CRA para la prestacion del servicio de alcantarillado",
+        "de que depende el valor de la dotacion neta y la dotacion bruta de agua potable en un proyecto de acueducto",
+        "que normativa colombiana regula el calculo de dotaciones de agua potable para acueductos",
+        "de que factores depende el calculo de la dotacion bruta de una red de acueducto",
     ],
     "geopot": [
         "como se clasifica un suelo segun el sistema unificado de clasificacion de suelos",
@@ -147,6 +150,11 @@ EJEMPLOS_POR_DOMINIO: dict[str, list[str]] = {
         "que capitulo de la NSR-10 regula el diseño de cimentaciones",
         "que dice la ley 1562 de 2012 sobre el sistema de riesgos laborales",
         "cuales son los requisitos minimos de un estudio geotecnico segun el titulo H",
+        "que elementos de proteccion personal exige la normativa colombiana de seguridad y salud en el trabajo en una obra",
+        "cuales son las obligaciones del empleador en materia de seguridad industrial segun el decreto 1072 de 2015 en Colombia",
+        "a partir de que altura de edificacion la NSR-10 exige un sistema estructural de resistencia sismica especial en Colombia",
+        "que categorias de sistema de resistencia sismica define la normativa colombiana NSR-10",
+        "cual es el marco legal colombiano para la seguridad y salud en el trabajo en el sector de la construccion",
     ],
 }
 

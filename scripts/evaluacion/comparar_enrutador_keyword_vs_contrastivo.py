@@ -79,15 +79,27 @@ CASOS_NUEVOS = [
 TODOS_LOS_CASOS = CASOS_REGRESION_EXISTENTE + CASOS_NUEVOS
 
 
+def route_combinado(pregunta: str) -> str | None:
+    """El diseño real que se conecta a producción: keyword primero (rápido,
+    sin costo de embedding); si no encuentra nada, se prueba el contrastivo."""
+    dominio_keyword = route_motor(pregunta)
+    if dominio_keyword:
+        return dominio_keyword
+    return route_motores_contrastivo(pregunta, top_k=1)[0][0]
+
+
 def main() -> None:
     aciertos_keyword = 0
     aciertos_contrastivo = 0
+    aciertos_combinado = 0
     fallos_keyword: list[tuple[str, str, str | None]] = []
     fallos_contrastivo: list[tuple[str, str, str]] = []
+    fallos_combinado: list[tuple[str, str, str | None]] = []
 
     for pregunta, dominio_real in TODOS_LOS_CASOS:
         dominio_keyword = route_motor(pregunta)
         dominio_contrastivo = route_motores_contrastivo(pregunta, top_k=1)[0][0]
+        dominio_combinado = route_combinado(pregunta)
 
         if dominio_keyword == dominio_real:
             aciertos_keyword += 1
@@ -99,10 +111,16 @@ def main() -> None:
         else:
             fallos_contrastivo.append((pregunta, dominio_real, dominio_contrastivo))
 
+        if dominio_combinado == dominio_real:
+            aciertos_combinado += 1
+        else:
+            fallos_combinado.append((pregunta, dominio_real, dominio_combinado))
+
     total = len(TODOS_LOS_CASOS)
     print(f"Total de casos: {total}\n")
-    print(f"Enrutador actual (keyword):      {aciertos_keyword}/{total} ({100*aciertos_keyword/total:.1f}%)")
-    print(f"Enrutador nuevo (contrastivo):    {aciertos_contrastivo}/{total} ({100*aciertos_contrastivo/total:.1f}%)")
+    print(f"Enrutador actual (keyword):           {aciertos_keyword}/{total} ({100*aciertos_keyword/total:.1f}%)")
+    print(f"Enrutador nuevo (contrastivo):         {aciertos_contrastivo}/{total} ({100*aciertos_contrastivo/total:.1f}%)")
+    print(f"Combinado (keyword -> contrastivo):    {aciertos_combinado}/{total} ({100*aciertos_combinado/total:.1f}%)")
 
     print("\n--- Fallos del enrutador keyword (actual) ---")
     for pregunta, esperado, obtenido in fallos_keyword:
@@ -110,6 +128,10 @@ def main() -> None:
 
     print("\n--- Fallos del enrutador contrastivo (nuevo) ---")
     for pregunta, esperado, obtenido in fallos_contrastivo:
+        print(f"  [{esperado} -> {obtenido}] {pregunta}")
+
+    print("\n--- Fallos del combinado (el que se conecta a producción) ---")
+    for pregunta, esperado, obtenido in fallos_combinado:
         print(f"  [{esperado} -> {obtenido}] {pregunta}")
 
 

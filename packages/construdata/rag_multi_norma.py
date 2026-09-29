@@ -870,9 +870,33 @@ def route_motores_multiples(query: str) -> list[str]:
     de la pregunta aunque el dato sí existiera. Bug real encontrado
     2026-08-09 con captura de pantalla del usuario: "dotación neta" (3 pts
     en aquai) le ganaba a "precio de" (1 pt en apu_precios), y la respuesta
-    de precio de cemento se perdía por completo pese a estar en la base."""
+    de precio de cemento se perdía por completo pese a estar en la base.
+
+    Si el enrutador de palabras clave no encuentra NADA, se prueba el
+    enrutador contrastivo (motor_router_contrastivo.py, embeddings +
+    centroides por dominio — misma idea de CLM-8B de Stanford/NVIDIA,
+    2026-09-23) antes de rendirse a normativa_general por defecto. Nunca
+    anula una decisión con la que el enrutador de palabras clave sí acertó
+    algo (aunque esté equivocado) — solo rellena huecos genuinos. Medido en
+    scripts/evaluacion/comparar_enrutador_keyword_vs_contrastivo.py: el
+    combinado sube de 65.2% a 95.7% de precisión sobre 23 preguntas reales
+    (13 ya verificadas en test_rag_motores_regresion.py + 10 nuevas)."""
     scores = _score_motores(query)
-    return [m for m, _ in sorted(scores.items(), key=lambda x: -x[1])]
+    if scores:
+        return [m for m, _ in sorted(scores.items(), key=lambda x: -x[1])]
+
+    try:
+        # Import local: motor_router_contrastivo.py importa embed_query de
+        # este mismo módulo, un import a nivel de módulo aquí sería circular.
+        from motor_router_contrastivo import route_motores_contrastivo
+        motor_contrastivo, _score = route_motores_contrastivo(query, top_k=1)[0]
+    except Exception as e:
+        log.warning(f"Enrutador contrastivo no disponible, se mantiene normativa_general por defecto: {e}")
+        return []
+
+    if motor_contrastivo == "normativa_general":
+        return []
+    return [motor_contrastivo]
 
 
 # ─── BÚSQUEDA DE PRECIOS APU (Barranquilla/Atlántico) ─────────────────────────
