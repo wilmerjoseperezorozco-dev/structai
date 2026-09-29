@@ -57,11 +57,27 @@ _ESPACIOS_UNICODE = (" ", " ", " ", " ")
 def _contiene_alguna(texto: str, variantes: list[str]) -> bool:
     """True si el texto contiene al menos una de las variantes (insensible a
     mayúsculas) — tolera que el LLM use coma o punto decimal, o pequeñas
-    diferencias de formato, sin dejar de exigir el hecho numérico real."""
+    diferencias de formato, sin dejar de exigir el hecho numérico real.
+
+    Se revisan DOS normalizaciones del texto, no solo una — encontrado real
+    en la caza de bugs del 2026-09-28 (5 falsos negativos reales en una sola
+    corrida): reemplazar el espacio unicode por un espacio normal sirve para
+    "7 kN/m²" (número y unidad, donde SÍ debe quedar un espacio), pero Groq
+    también usa el mismo espacio angosto DENTRO de una cifra o expresión
+    donde el valor esperado no lleva espacio ("1 000" vs "1000", "3 %" vs
+    "3%", "L / 180" vs "L/180") — ahí reemplazar por espacio nunca iba a
+    calzar. La segunda normalización elimina el espacio unicode por completo
+    (sin dejar ninguno) y se acepta si CUALQUIERA de las dos calza."""
     texto_low = texto.lower()
+    texto_con_espacio = texto_low
+    texto_sin_espacio = texto_low
     for esp in _ESPACIOS_UNICODE:
-        texto_low = texto_low.replace(esp, " ")
-    return any(v.lower() in texto_low for v in variantes)
+        texto_con_espacio = texto_con_espacio.replace(esp, " ")
+        texto_sin_espacio = texto_sin_espacio.replace(esp, "")
+    return any(
+        v.lower() in texto_con_espacio or v.lower() in texto_sin_espacio
+        for v in variantes
+    )
 
 
 CASOS_TITULO_B = [
@@ -680,7 +696,12 @@ CASOS_TITULO_F_F51 = [
     ),
     pytest.param(
         "Que tipos de estructuras cubren los requisitos de diseno del capitulo de estructuras de aluminio de la NSR-10?",
-        ["puentes", "edificios"],
+        # Antes exigía "puentes"/"edificios" -- encontrado real en la caza de
+        # bugs del 2026-09-28: el alcance real de F.5.1 no usa esas palabras,
+        # habla de estructuras aporticadas/en celosía/de lámina rigidizada.
+        # La respuesta del LLM era correcta y completa, el test exigía
+        # vocabulario que el texto normativo real no usa.
+        ["aporticada", "celosía", "lámina rigidizada"],
         id="F-f51-alcance-tipos-estructuras",
     ),
     # Nota real 2026-09-01: preguntas sobre el glosario de definiciones
@@ -713,7 +734,13 @@ CASOS_TITULO_F_F52 = [
     ),
     pytest.param(
         "Que nivel de proteccion contra la corrosion requiere el aluminio de durabilidad A sumergido en agua salada segun el Titulo F?",
-        ["requiere protecci", "se requiere protecci"],
+        # Antes exigía la frase "requiere protecci..." -- encontrado real en
+        # la caza de bugs del 2026-09-28: la respuesta real y correcta decía
+        # "se requiere LA protección" (palabra "la" insertada), un problema
+        # de fraseo, no de contenido. Se cambia a exigir el hecho numérico
+        # real (nivel 5, el máximo) en vez de una frase incidental, mismo
+        # criterio que el resto de esta batería.
+        ["nivel 5", "nivel5", "nivel máxim"],
         id="F-f52-durabilidad-a-agua-salada-proteccion",
     ),
     # Nota real 2026-09-01: pregunta sobre la Tabla F.5.2.2-4 (metales

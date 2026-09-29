@@ -71,7 +71,15 @@ def _contiene_alguna(texto: str, variantes: list[str]) -> bool:
     "\\[ \\text{CPI} = \\frac{\\text{EV}}{\\text{AC}} \\]" -> "cpi = ev/ac") —
     encontrado real en CI (2026-08-21, respaldo OpenAI por cuota de Groq
     agotada): el respaldo a veces redacta la misma fórmula correcta en LaTeX
-    en vez de texto plano, y el test comparaba contra texto plano únicamente."""
+    en vez de texto plano, y el test comparaba contra texto plano únicamente.
+    Finalmente, revisa DOS normalizaciones de espacio, no solo una —
+    encontrado real en la caza de bugs del 2026-09-28 (5 falsos negativos
+    reales en test_rag_nsr10_regresion.py por el mismo patrón): reemplazar
+    el espacio unicode por un espacio normal sirve para "EV / AC" (con
+    espacio), pero Groq también lo usa DENTRO de una cifra donde el valor
+    esperado no lleva espacio ("1 000" vs "1000", "3 %" vs "3%") — ahí
+    reemplazar por espacio nunca iba a calzar. Se acepta si cualquiera de
+    las dos normalizaciones (con espacio o sin él) calza."""
     texto_low = texto.lower().translate(_SUBINDICES_UNICODE)
     # \text{} se desenvuelve ANTES que \frac{}{}: en "\frac{\text{EV}}{\text{AC}}"
     # el contenido de cada argumento de \frac trae llaves anidadas de \text, y
@@ -80,9 +88,15 @@ def _contiene_alguna(texto: str, variantes: list[str]) -> bool:
     texto_low = _LATEX_FRAC.sub(r"\1/\2", texto_low)
     for delim in _LATEX_DELIMITADORES:
         texto_low = texto_low.replace(delim, "")
+    texto_con_espacio = texto_low
+    texto_sin_espacio = texto_low
     for esp in _ESPACIOS_UNICODE:
-        texto_low = texto_low.replace(esp, " ")
-    return any(v.lower() in texto_low for v in variantes)
+        texto_con_espacio = texto_con_espacio.replace(esp, " ")
+        texto_sin_espacio = texto_sin_espacio.replace(esp, "")
+    return any(
+        v.lower() in texto_con_espacio or v.lower() in texto_sin_espacio
+        for v in variantes
+    )
 
 
 CASOS_AQUAI = [
