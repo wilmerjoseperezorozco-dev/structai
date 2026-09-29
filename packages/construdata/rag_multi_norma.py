@@ -689,6 +689,34 @@ def route_query(query: str) -> list[str]:
     return [n for n, s in sorted(scores.items(), key=lambda x: -x[1]) if s >= max_s * 0.5][:3]
 
 
+# Detecta una norma citada EXPLÍCITAMENTE por número+año en la pregunta (ej.
+# "según la Resolución 0330 de 2017") -- issue #58: la búsqueda por motor
+# (motor_chunks) nunca pasaba norma_filter, a diferencia del camino NSR-10
+# (route_query() arriba), así que una pregunta que cita una resolución
+# específica competía sin filtro contra TODO el corpus del motor, y una
+# norma con muchos chunks (ej. Resolución CRA 955/956, ~2 docenas de
+# artículos administrativos) desplazaba por volumen a la norma correcta
+# aunque tuviera solo 1-2 chunks. Confirmado con retrieval real: el chunk
+# de "dotación bruta" (Resolución 0330 de 2017) rankeaba en la posición 8
+# de 50 -- fuera del top 6 -- detrás de puro contenido de CRA 955/956.
+#
+# El grupo capturado deliberadamente EXCLUYE la palabra acentuada
+# ("Resolución"/"Decreto"/"Ley") y se queda solo con el número+año -- mismo
+# motivo que el fix de tildes de #59: search_knowledge() filtra con ILIKE
+# case-insensitive pero NO accent-insensitive contra motor_chunks.norma_ref
+# (que sí lleva tilde, ej. "Resolución 0330 de 2017"), así que incluir la
+# palabra con o sin tilde arriesgaba un mismatch silencioso otra vez.
+_NORMA_EXPLICITA_RE = re.compile(
+    r"(?:resoluci[oó]n\s+(?:cra\s+|invias\s+)?|decreto\s+|ley\s+)(\d+(?:-\d+)?\s+de\s+\d{4})",
+    re.IGNORECASE,
+)
+
+
+def detectar_norma_explicita(query: str) -> Optional[str]:
+    m = _NORMA_EXPLICITA_RE.search(query)
+    return m.group(1) if m else None
+
+
 # ─── AGENTE DELEGADOR — routing por dominio de ingeniería ────────────────────
 # Cada motor tiene su propio corpus de chunks en motor_chunks (columna `motor`).
 # Solo se registra aquí un dominio cuando YA tiene chunks reales ingestados
@@ -2892,7 +2920,20 @@ def _ask_delegado_interno(question: str, motores: list[str], top_k: int) -> dict
         }
 
     if motor:
-        chunks = search(question, top_k=top_k, motor_filter=motor)
+        # Si la pregunta cita una norma específica por número+año (issue
+        # #58), se busca TAMBIÉN filtrando por esa norma dentro del motor y
+        # se une con la búsqueda global (nunca exclusivo -- mismo criterio
+        # ya documentado en _recuperar_candidatos_normativa(): un filtro de
+        # prioridad, no una condición que pueda dejar la pregunta sin
+        # candidatos si el texto no calza exacto).
+        norma_explicita = detectar_norma_explicita(question)
+        if norma_explicita:
+            chunks_norma = search(question, top_k=top_k, motor_filter=motor, norma_filter=norma_explicita)
+            chunks_global = search(question, top_k=top_k, motor_filter=motor)
+            seen_ids = {c.chunk_id for c in chunks_norma}
+            chunks = chunks_norma + [c for c in chunks_global if c.chunk_id not in seen_ids]
+        else:
+            chunks = search(question, top_k=top_k, motor_filter=motor)
         # Para vias, un precio INVIAS encontrado también cuenta como "sí hay
         # contenido" -- calculado aquí (antes del early-return de abajo) para
         # no descartar la pregunta solo porque motor_chunks no tuvo match,
