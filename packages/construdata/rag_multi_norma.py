@@ -25,6 +25,7 @@ import sgc_amenaza_sismica
 import sgc_movimientos_masa
 import igac_client
 import ideam_client
+import ideam_deforestacion_client
 import noticias_colombia
 import pais_zonificacion
 
@@ -2154,9 +2155,12 @@ def _bloque_contexto_sgc(sgc_registro: dict) -> str:
     estadística de vulnerabilidad de vivienda por material de pared
     (muestra Sisbén IV, ver _bloque_vulnerabilidad_vivienda()) y el
     histórico real de emergencias reportadas a la UNGRD (post-evento, ver
-    _bloque_historico_emergencias()). Cada pieza es independiente -- si
-    una fuente no responde o no tiene datos para ese municipio, las demás
-    se siguen mostrando igual."""
+    _bloque_historico_emergencias()); desde 2026-09-29 suma también la
+    clasificación real de cambio de cobertura de bosque natural del IDEAM/
+    SMByC (deforestación/regeneración/bosque estable en el punto central
+    del municipio, ver ideam_deforestacion_client.py, issue #67). Cada
+    pieza es independiente -- si una fuente no responde o no tiene datos
+    para ese municipio, las demás se siguen mostrando igual."""
     partes = [sgc_amenaza_sismica.formatear_respuesta(sgc_registro)]
     lat, lon = sgc_registro.get("latitud"), sgc_registro.get("longitud")
     if lat is not None and lon is not None:
@@ -2185,6 +2189,11 @@ def _bloque_contexto_sgc(sgc_registro: dict) -> str:
     )
     if bloque_historico:
         partes.append(bloque_historico)
+    cambio_bosque = ideam_deforestacion_client.consultar_cambio_bosque(
+        sgc_registro["municipio"], sgc_registro.get("departamento")
+    )
+    if cambio_bosque:
+        partes.append(ideam_deforestacion_client.formatear_respuesta(cambio_bosque))
     return "\n\n".join(partes)
 
 
