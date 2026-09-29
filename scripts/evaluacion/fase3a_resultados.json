@@ -1,0 +1,4322 @@
+[
+  {
+    "municipio": "Abejorral",
+    "pct_vulnerable": 69.31,
+    "n_eventos": 26,
+    "impacto_normalizado": 0.15384615384615385
+  },
+  {
+    "municipio": "Amalfi",
+    "pct_vulnerable": 55.02,
+    "n_eventos": 46,
+    "impacto_normalizado": 0.1956521739130435
+  },
+  {
+    "municipio": "Andes",
+    "pct_vulnerable": 40.46,
+    "n_eventos": 39,
+    "impacto_normalizado": 0.3333333333333333
+  },
+  {
+    "municipio": "Angostura",
+    "pct_vulnerable": 74.82,
+    "n_eventos": 18,
+    "impacto_normalizado": 0.1111111111111111
+  },
+  {
+    "municipio": "Arboletes",
+    "pct_vulnerable": 66.91,
+    "n_eventos": 18,
+    "impacto_normalizado": 0.3333333333333333
+  },
+  {
+    "municipio": "Argelia",
+    "pct_vulnerable": 20.86,
+    "n_eventos": 84,
+    "impacto_normalizado": 0.13095238095238096
+  },
+  {
+    "municipio": "Armenia",
+    "pct_vulnerable": 68.55,
+    "n_eventos": 121,
+    "impacto_normalizado": 3.8925619834710745
+  },
+  {
+    "municipio": "Barbosa",
+    "pct_vulnerable": 39.16,
+    "n_eventos": 77,
+    "impacto_normalizado": 0.36363636363636365
+  },
+  {
+    "municipio": "Belmira",
+    "pct_vulnerable": 66.86,
+    "n_eventos": 7,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Bello",
+    "pct_vulnerable": 26.94,
+    "n_eventos": 190,
+    "impacto_normalizado": 1.4894736842105263
+  },
+  {
+    "municipio": "Betania",
+    "pct_vulnerable": 17.07,
+    "n_eventos": 52,
+    "impacto_normalizado": 0.21153846153846154
+  },
+  {
+    "municipio": "Betulia",
+    "pct_vulnerable": 39.09,
+    "n_eventos": 80,
+    "impacto_normalizado": 0.15
+  },
+  {
+    "municipio": "Briceño",
+    "pct_vulnerable": 63.17,
+    "n_eventos": 19,
+    "impacto_normalizado": 2.1052631578947367
+  },
+  {
+    "municipio": "Caicedo",
+    "pct_vulnerable": 55.7,
+    "n_eventos": 21,
+    "impacto_normalizado": 0.38095238095238093
+  },
+  {
+    "municipio": "Caldas",
+    "pct_vulnerable": 29.64,
+    "n_eventos": 72,
+    "impacto_normalizado": 0.6666666666666666
+  },
+  {
+    "municipio": "Campamento",
+    "pct_vulnerable": 65.58,
+    "n_eventos": 26,
+    "impacto_normalizado": 0.23076923076923078
+  },
+  {
+    "municipio": "Cañasgordas",
+    "pct_vulnerable": 68.74,
+    "n_eventos": 19,
+    "impacto_normalizado": 1.0
+  },
+  {
+    "municipio": "Caramanta",
+    "pct_vulnerable": 94.99,
+    "n_eventos": 18,
+    "impacto_normalizado": 0.2777777777777778
+  },
+  {
+    "municipio": "Carepa",
+    "pct_vulnerable": 45.71,
+    "n_eventos": 55,
+    "impacto_normalizado": 0.38181818181818183
+  },
+  {
+    "municipio": "El Carmen De Viboral",
+    "pct_vulnerable": 31.96,
+    "n_eventos": 24,
+    "impacto_normalizado": 0.20833333333333334
+  },
+  {
+    "municipio": "Carolina",
+    "pct_vulnerable": 69.49,
+    "n_eventos": 7,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Caucasia",
+    "pct_vulnerable": 56.14,
+    "n_eventos": 54,
+    "impacto_normalizado": 0.5
+  },
+  {
+    "municipio": "Cisneros",
+    "pct_vulnerable": 48.57,
+    "n_eventos": 11,
+    "impacto_normalizado": 0.18181818181818182
+  },
+  {
+    "municipio": "Concordia",
+    "pct_vulnerable": 43.2,
+    "n_eventos": 51,
+    "impacto_normalizado": 0.5882352941176471
+  },
+  {
+    "municipio": "Copacabana",
+    "pct_vulnerable": 39.85,
+    "n_eventos": 71,
+    "impacto_normalizado": 0.29577464788732394
+  },
+  {
+    "municipio": "Dabeiba",
+    "pct_vulnerable": 50.21,
+    "n_eventos": 71,
+    "impacto_normalizado": 2.619718309859155
+  },
+  {
+    "municipio": "El Bagre",
+    "pct_vulnerable": 43.64,
+    "n_eventos": 55,
+    "impacto_normalizado": 0.5818181818181818
+  },
+  {
+    "municipio": "Envigado",
+    "pct_vulnerable": 11.82,
+    "n_eventos": 38,
+    "impacto_normalizado": 0.02631578947368421
+  },
+  {
+    "municipio": "Fredonia",
+    "pct_vulnerable": 45.64,
+    "n_eventos": 39,
+    "impacto_normalizado": 0.1282051282051282
+  },
+  {
+    "municipio": "Frontino",
+    "pct_vulnerable": 48.56,
+    "n_eventos": 24,
+    "impacto_normalizado": 0.2916666666666667
+  },
+  {
+    "municipio": "Giraldo",
+    "pct_vulnerable": 37.37,
+    "n_eventos": 10,
+    "impacto_normalizado": 0.2
+  },
+  {
+    "municipio": "Girardota",
+    "pct_vulnerable": 17.35,
+    "n_eventos": 21,
+    "impacto_normalizado": 0.2857142857142857
+  },
+  {
+    "municipio": "Granada",
+    "pct_vulnerable": 62.9,
+    "n_eventos": 190,
+    "impacto_normalizado": 0.05263157894736842
+  },
+  {
+    "municipio": "Guadalupe",
+    "pct_vulnerable": 85.69,
+    "n_eventos": 51,
+    "impacto_normalizado": 0.17647058823529413
+  },
+  {
+    "municipio": "Guarne",
+    "pct_vulnerable": 72.84,
+    "n_eventos": 10,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Heliconia",
+    "pct_vulnerable": 66.14,
+    "n_eventos": 30,
+    "impacto_normalizado": 0.26666666666666666
+  },
+  {
+    "municipio": "Hispania",
+    "pct_vulnerable": 24.03,
+    "n_eventos": 17,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Ituango",
+    "pct_vulnerable": 64.72,
+    "n_eventos": 35,
+    "impacto_normalizado": 1.6
+  },
+  {
+    "municipio": "La Ceja",
+    "pct_vulnerable": 25.32,
+    "n_eventos": 59,
+    "impacto_normalizado": 0.23728813559322035
+  },
+  {
+    "municipio": "La Estrella",
+    "pct_vulnerable": 13.31,
+    "n_eventos": 28,
+    "impacto_normalizado": 0.5357142857142857
+  },
+  {
+    "municipio": "La Pintada",
+    "pct_vulnerable": 8.31,
+    "n_eventos": 27,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Liborina",
+    "pct_vulnerable": 58.49,
+    "n_eventos": 34,
+    "impacto_normalizado": 0.4411764705882353
+  },
+  {
+    "municipio": "Maceo",
+    "pct_vulnerable": 41.82,
+    "n_eventos": 17,
+    "impacto_normalizado": 0.058823529411764705
+  },
+  {
+    "municipio": "Marinilla",
+    "pct_vulnerable": 21.88,
+    "n_eventos": 28,
+    "impacto_normalizado": 0.07142857142857142
+  },
+  {
+    "municipio": "Montebello",
+    "pct_vulnerable": 96.28,
+    "n_eventos": 36,
+    "impacto_normalizado": 0.9166666666666666
+  },
+  {
+    "municipio": "Nariño",
+    "pct_vulnerable": 35.77,
+    "n_eventos": 64,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Olaya",
+    "pct_vulnerable": 47.68,
+    "n_eventos": 21,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Peñol",
+    "pct_vulnerable": 29.91,
+    "n_eventos": 33,
+    "impacto_normalizado": 0.06060606060606061
+  },
+  {
+    "municipio": "Peque",
+    "pct_vulnerable": 60.05,
+    "n_eventos": 18,
+    "impacto_normalizado": 1.7222222222222223
+  },
+  {
+    "municipio": "Pueblorrico",
+    "pct_vulnerable": 16.03,
+    "n_eventos": 6,
+    "impacto_normalizado": 1.3333333333333333
+  },
+  {
+    "municipio": "Puerto Nare",
+    "pct_vulnerable": 18.72,
+    "n_eventos": 26,
+    "impacto_normalizado": 0.46153846153846156
+  },
+  {
+    "municipio": "Puerto Triunfo",
+    "pct_vulnerable": 41.23,
+    "n_eventos": 13,
+    "impacto_normalizado": 1.4615384615384615
+  },
+  {
+    "municipio": "Remedios",
+    "pct_vulnerable": 57.89,
+    "n_eventos": 54,
+    "impacto_normalizado": 0.2777777777777778
+  },
+  {
+    "municipio": "Retiro",
+    "pct_vulnerable": 23.74,
+    "n_eventos": 46,
+    "impacto_normalizado": 0.08695652173913043
+  },
+  {
+    "municipio": "Rionegro",
+    "pct_vulnerable": 17.92,
+    "n_eventos": 119,
+    "impacto_normalizado": 0.19327731092436976
+  },
+  {
+    "municipio": "Sabanalarga",
+    "pct_vulnerable": 79.09,
+    "n_eventos": 141,
+    "impacto_normalizado": 0.02127659574468085
+  },
+  {
+    "municipio": "Sabaneta",
+    "pct_vulnerable": 2.93,
+    "n_eventos": 6,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Salgar",
+    "pct_vulnerable": 28.53,
+    "n_eventos": 35,
+    "impacto_normalizado": 0.17142857142857143
+  },
+  {
+    "municipio": "San Carlos",
+    "pct_vulnerable": 33.77,
+    "n_eventos": 38,
+    "impacto_normalizado": 0.10526315789473684
+  },
+  {
+    "municipio": "San Francisco",
+    "pct_vulnerable": 29.02,
+    "n_eventos": 127,
+    "impacto_normalizado": 0.11811023622047244
+  },
+  {
+    "municipio": "San Luis",
+    "pct_vulnerable": 40.33,
+    "n_eventos": 121,
+    "impacto_normalizado": 0.30578512396694213
+  },
+  {
+    "municipio": "San Rafael",
+    "pct_vulnerable": 20.02,
+    "n_eventos": 24,
+    "impacto_normalizado": 0.5
+  },
+  {
+    "municipio": "San Roque",
+    "pct_vulnerable": 57.12,
+    "n_eventos": 48,
+    "impacto_normalizado": 0.10416666666666667
+  },
+  {
+    "municipio": "Santa Rosa De Osos",
+    "pct_vulnerable": 51.24,
+    "n_eventos": 31,
+    "impacto_normalizado": 0.5161290322580645
+  },
+  {
+    "municipio": "Santo Domingo",
+    "pct_vulnerable": 50.61,
+    "n_eventos": 11,
+    "impacto_normalizado": 0.7272727272727273
+  },
+  {
+    "municipio": "El Santuario",
+    "pct_vulnerable": 55.28,
+    "n_eventos": 25,
+    "impacto_normalizado": 0.48
+  },
+  {
+    "municipio": "Segovia",
+    "pct_vulnerable": 53.29,
+    "n_eventos": 20,
+    "impacto_normalizado": 0.55
+  },
+  {
+    "municipio": "Tarso",
+    "pct_vulnerable": 43.67,
+    "n_eventos": 12,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Toledo",
+    "pct_vulnerable": 67.73,
+    "n_eventos": 104,
+    "impacto_normalizado": 0.0673076923076923
+  },
+  {
+    "municipio": "Turbo",
+    "pct_vulnerable": 39.52,
+    "n_eventos": 34,
+    "impacto_normalizado": 0.6176470588235294
+  },
+  {
+    "municipio": "Uramita",
+    "pct_vulnerable": 42.72,
+    "n_eventos": 38,
+    "impacto_normalizado": 2.3947368421052633
+  },
+  {
+    "municipio": "Urrao",
+    "pct_vulnerable": 36.6,
+    "n_eventos": 67,
+    "impacto_normalizado": 0.1044776119402985
+  },
+  {
+    "municipio": "Valdivia",
+    "pct_vulnerable": 29.41,
+    "n_eventos": 49,
+    "impacto_normalizado": 0.5102040816326531
+  },
+  {
+    "municipio": "Venecia",
+    "pct_vulnerable": 32.68,
+    "n_eventos": 93,
+    "impacto_normalizado": 0.3010752688172043
+  },
+  {
+    "municipio": "Yarumal",
+    "pct_vulnerable": 42.78,
+    "n_eventos": 14,
+    "impacto_normalizado": 0.6428571428571429
+  },
+  {
+    "municipio": "Zaragoza",
+    "pct_vulnerable": 59.7,
+    "n_eventos": 33,
+    "impacto_normalizado": 1.1818181818181819
+  },
+  {
+    "municipio": "Barranquilla",
+    "pct_vulnerable": 11.11,
+    "n_eventos": 61,
+    "impacto_normalizado": 0.9836065573770492
+  },
+  {
+    "municipio": "Baranoa",
+    "pct_vulnerable": 14.87,
+    "n_eventos": 57,
+    "impacto_normalizado": 0.5964912280701754
+  },
+  {
+    "municipio": "Campo De La Cruz",
+    "pct_vulnerable": 6.16,
+    "n_eventos": 13,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Candelaria",
+    "pct_vulnerable": 2.12,
+    "n_eventos": 26,
+    "impacto_normalizado": 0.038461538461538464
+  },
+  {
+    "municipio": "Galapa",
+    "pct_vulnerable": 11.16,
+    "n_eventos": 85,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Juan De Acosta",
+    "pct_vulnerable": 6.7,
+    "n_eventos": 34,
+    "impacto_normalizado": 0.3235294117647059
+  },
+  {
+    "municipio": "Luruaco",
+    "pct_vulnerable": 21.17,
+    "n_eventos": 23,
+    "impacto_normalizado": 0.13043478260869565
+  },
+  {
+    "municipio": "Malambo",
+    "pct_vulnerable": 7.97,
+    "n_eventos": 67,
+    "impacto_normalizado": 0.029850746268656716
+  },
+  {
+    "municipio": "Palmar De Varela",
+    "pct_vulnerable": 10.7,
+    "n_eventos": 20,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Polonuevo",
+    "pct_vulnerable": 1.91,
+    "n_eventos": 72,
+    "impacto_normalizado": 0.013888888888888888
+  },
+  {
+    "municipio": "Ponedera",
+    "pct_vulnerable": 7.23,
+    "n_eventos": 13,
+    "impacto_normalizado": 0.6923076923076923
+  },
+  {
+    "municipio": "Puerto Colombia",
+    "pct_vulnerable": 12.07,
+    "n_eventos": 43,
+    "impacto_normalizado": 3.8372093023255816
+  },
+  {
+    "municipio": "Sabanagrande",
+    "pct_vulnerable": 15.29,
+    "n_eventos": 71,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Sabanalarga",
+    "pct_vulnerable": 13.21,
+    "n_eventos": 141,
+    "impacto_normalizado": 0.02127659574468085
+  },
+  {
+    "municipio": "Soledad",
+    "pct_vulnerable": 15.31,
+    "n_eventos": 79,
+    "impacto_normalizado": 0.11392405063291139
+  },
+  {
+    "municipio": "Suan",
+    "pct_vulnerable": 1.1,
+    "n_eventos": 10,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Altos Del Rosario",
+    "pct_vulnerable": 40.98,
+    "n_eventos": 7,
+    "impacto_normalizado": 10.0
+  },
+  {
+    "municipio": "Arenal",
+    "pct_vulnerable": 27.77,
+    "n_eventos": 8,
+    "impacto_normalizado": 0.75
+  },
+  {
+    "municipio": "Arjona",
+    "pct_vulnerable": 29.27,
+    "n_eventos": 46,
+    "impacto_normalizado": 0.06521739130434782
+  },
+  {
+    "municipio": "Arroyohondo",
+    "pct_vulnerable": 25.56,
+    "n_eventos": 15,
+    "impacto_normalizado": 0.3333333333333333
+  },
+  {
+    "municipio": "Barranco De Loba",
+    "pct_vulnerable": 46.86,
+    "n_eventos": 26,
+    "impacto_normalizado": 6.769230769230769
+  },
+  {
+    "municipio": "Calamar",
+    "pct_vulnerable": 15.93,
+    "n_eventos": 27,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Cantagallo",
+    "pct_vulnerable": 47.28,
+    "n_eventos": 9,
+    "impacto_normalizado": 1.5555555555555556
+  },
+  {
+    "municipio": "Cicuco",
+    "pct_vulnerable": 31.64,
+    "n_eventos": 20,
+    "impacto_normalizado": 1.9
+  },
+  {
+    "municipio": "Clemencia",
+    "pct_vulnerable": 35.41,
+    "n_eventos": 22,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "El Guamo",
+    "pct_vulnerable": 41.1,
+    "n_eventos": 6,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Hatillo De Loba",
+    "pct_vulnerable": 41.19,
+    "n_eventos": 10,
+    "impacto_normalizado": 0.3
+  },
+  {
+    "municipio": "Mahates",
+    "pct_vulnerable": 25.38,
+    "n_eventos": 15,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Margarita",
+    "pct_vulnerable": 47.18,
+    "n_eventos": 11,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Montecristo",
+    "pct_vulnerable": 62.84,
+    "n_eventos": 40,
+    "impacto_normalizado": 2.65
+  },
+  {
+    "municipio": "Morales",
+    "pct_vulnerable": 45.2,
+    "n_eventos": 53,
+    "impacto_normalizado": 0.5849056603773585
+  },
+  {
+    "municipio": "Pinillos",
+    "pct_vulnerable": 49.11,
+    "n_eventos": 14,
+    "impacto_normalizado": 5.357142857142857
+  },
+  {
+    "municipio": "Regidor",
+    "pct_vulnerable": 57.27,
+    "n_eventos": 15,
+    "impacto_normalizado": 0.13333333333333333
+  },
+  {
+    "municipio": "San Estanislao",
+    "pct_vulnerable": 15.71,
+    "n_eventos": 10,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "San Fernando",
+    "pct_vulnerable": 38.41,
+    "n_eventos": 9,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "San Jacinto",
+    "pct_vulnerable": 54.85,
+    "n_eventos": 10,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "San Jacinto Del Cauca",
+    "pct_vulnerable": 51.54,
+    "n_eventos": 15,
+    "impacto_normalizado": 0.13333333333333333
+  },
+  {
+    "municipio": "San Juan Nepomuceno",
+    "pct_vulnerable": 22.28,
+    "n_eventos": 52,
+    "impacto_normalizado": 0.07692307692307693
+  },
+  {
+    "municipio": "San Pablo",
+    "pct_vulnerable": 55.7,
+    "n_eventos": 60,
+    "impacto_normalizado": 0.4666666666666667
+  },
+  {
+    "municipio": "Santa Catalina",
+    "pct_vulnerable": 17.85,
+    "n_eventos": 15,
+    "impacto_normalizado": 0.6666666666666666
+  },
+  {
+    "municipio": "Santa Rosa",
+    "pct_vulnerable": 49.52,
+    "n_eventos": 49,
+    "impacto_normalizado": 0.8775510204081632
+  },
+  {
+    "municipio": "Santa Rosa Del Sur",
+    "pct_vulnerable": 50.33,
+    "n_eventos": 22,
+    "impacto_normalizado": 1.0454545454545454
+  },
+  {
+    "municipio": "Soplaviento",
+    "pct_vulnerable": 18.15,
+    "n_eventos": 10,
+    "impacto_normalizado": 0.1
+  },
+  {
+    "municipio": "Talaigua Nuevo",
+    "pct_vulnerable": 35.4,
+    "n_eventos": 10,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Tiquisio",
+    "pct_vulnerable": 56.16,
+    "n_eventos": 14,
+    "impacto_normalizado": 0.07142857142857142
+  },
+  {
+    "municipio": "Turbaco",
+    "pct_vulnerable": 27.99,
+    "n_eventos": 40,
+    "impacto_normalizado": 1.325
+  },
+  {
+    "municipio": "Villanueva",
+    "pct_vulnerable": 39.01,
+    "n_eventos": 96,
+    "impacto_normalizado": 0.041666666666666664
+  },
+  {
+    "municipio": "Zambrano",
+    "pct_vulnerable": 24.59,
+    "n_eventos": 24,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Tunja",
+    "pct_vulnerable": 7.96,
+    "n_eventos": 57,
+    "impacto_normalizado": 0.05263157894736842
+  },
+  {
+    "municipio": "Almeida",
+    "pct_vulnerable": 41.9,
+    "n_eventos": 17,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Aquitania",
+    "pct_vulnerable": 21.87,
+    "n_eventos": 59,
+    "impacto_normalizado": 0.01694915254237288
+  },
+  {
+    "municipio": "Arcabuco",
+    "pct_vulnerable": 14.5,
+    "n_eventos": 7,
+    "impacto_normalizado": 0.5714285714285714
+  },
+  {
+    "municipio": "Berbeo",
+    "pct_vulnerable": 61.81,
+    "n_eventos": 1,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Boavita",
+    "pct_vulnerable": 61.7,
+    "n_eventos": 18,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Briceño",
+    "pct_vulnerable": 54.17,
+    "n_eventos": 19,
+    "impacto_normalizado": 2.1052631578947367
+  },
+  {
+    "municipio": "Buenavista",
+    "pct_vulnerable": 35.45,
+    "n_eventos": 39,
+    "impacto_normalizado": 0.2564102564102564
+  },
+  {
+    "municipio": "Caldas",
+    "pct_vulnerable": 17.84,
+    "n_eventos": 72,
+    "impacto_normalizado": 0.6666666666666666
+  },
+  {
+    "municipio": "Campohermoso",
+    "pct_vulnerable": 49.06,
+    "n_eventos": 7,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Cerinza",
+    "pct_vulnerable": 30.02,
+    "n_eventos": 3,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Chinavita",
+    "pct_vulnerable": 24.01,
+    "n_eventos": 20,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Chiscas",
+    "pct_vulnerable": 64.08,
+    "n_eventos": 7,
+    "impacto_normalizado": 0.7142857142857143
+  },
+  {
+    "municipio": "Chita",
+    "pct_vulnerable": 61.22,
+    "n_eventos": 27,
+    "impacto_normalizado": 0.07407407407407407
+  },
+  {
+    "municipio": "Chitaraque",
+    "pct_vulnerable": 16.87,
+    "n_eventos": 4,
+    "impacto_normalizado": 0.25
+  },
+  {
+    "municipio": "Coper",
+    "pct_vulnerable": 33.78,
+    "n_eventos": 7,
+    "impacto_normalizado": 0.14285714285714285
+  },
+  {
+    "municipio": "Corrales",
+    "pct_vulnerable": 57.99,
+    "n_eventos": 5,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Cucaita",
+    "pct_vulnerable": 36.76,
+    "n_eventos": 6,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Chivor",
+    "pct_vulnerable": 45.98,
+    "n_eventos": 8,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Duitama",
+    "pct_vulnerable": 14.66,
+    "n_eventos": 42,
+    "impacto_normalizado": 0.16666666666666666
+  },
+  {
+    "municipio": "El Cocuy",
+    "pct_vulnerable": 79.02,
+    "n_eventos": 9,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "El Espino",
+    "pct_vulnerable": 47.23,
+    "n_eventos": 23,
+    "impacto_normalizado": 0.043478260869565216
+  },
+  {
+    "municipio": "Firavitoba",
+    "pct_vulnerable": 24.83,
+    "n_eventos": 28,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Floresta",
+    "pct_vulnerable": 63.36,
+    "n_eventos": 16,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Garagoa",
+    "pct_vulnerable": 28.4,
+    "n_eventos": 17,
+    "impacto_normalizado": 0.058823529411764705
+  },
+  {
+    "municipio": "Guacamayas",
+    "pct_vulnerable": 59.22,
+    "n_eventos": 6,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Guateque",
+    "pct_vulnerable": 26.85,
+    "n_eventos": 40,
+    "impacto_normalizado": 0.05
+  },
+  {
+    "municipio": "Iza",
+    "pct_vulnerable": 40.67,
+    "n_eventos": 17,
+    "impacto_normalizado": 0.058823529411764705
+  },
+  {
+    "municipio": "Jenesano",
+    "pct_vulnerable": 18.31,
+    "n_eventos": 24,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Labranzagrande",
+    "pct_vulnerable": 65.91,
+    "n_eventos": 17,
+    "impacto_normalizado": 0.23529411764705882
+  },
+  {
+    "municipio": "La Capilla",
+    "pct_vulnerable": 30.6,
+    "n_eventos": 2,
+    "impacto_normalizado": 0.5
+  },
+  {
+    "municipio": "La Victoria",
+    "pct_vulnerable": 40.16,
+    "n_eventos": 3,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "La Uvita",
+    "pct_vulnerable": 51.48,
+    "n_eventos": 6,
+    "impacto_normalizado": 1.0
+  },
+  {
+    "municipio": "Villa De Leyva",
+    "pct_vulnerable": 17.6,
+    "n_eventos": 19,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Macanal",
+    "pct_vulnerable": 31.76,
+    "n_eventos": 13,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Miraflores",
+    "pct_vulnerable": 37.12,
+    "n_eventos": 52,
+    "impacto_normalizado": 0.057692307692307696
+  },
+  {
+    "municipio": "Mongua",
+    "pct_vulnerable": 45.81,
+    "n_eventos": 15,
+    "impacto_normalizado": 0.06666666666666667
+  },
+  {
+    "municipio": "Motavita",
+    "pct_vulnerable": 23.86,
+    "n_eventos": 11,
+    "impacto_normalizado": 0.2727272727272727
+  },
+  {
+    "municipio": "Muzo",
+    "pct_vulnerable": 47.98,
+    "n_eventos": 18,
+    "impacto_normalizado": 0.8333333333333334
+  },
+  {
+    "municipio": "Nobsa",
+    "pct_vulnerable": 7.13,
+    "n_eventos": 22,
+    "impacto_normalizado": 0.09090909090909091
+  },
+  {
+    "municipio": "Otanche",
+    "pct_vulnerable": 63.47,
+    "n_eventos": 15,
+    "impacto_normalizado": 0.6
+  },
+  {
+    "municipio": "Pachavita",
+    "pct_vulnerable": 40.24,
+    "n_eventos": 1,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Paipa",
+    "pct_vulnerable": 16.59,
+    "n_eventos": 53,
+    "impacto_normalizado": 0.07547169811320754
+  },
+  {
+    "municipio": "Pajarito",
+    "pct_vulnerable": 32.24,
+    "n_eventos": 15,
+    "impacto_normalizado": 253.33333333333334
+  },
+  {
+    "municipio": "Panqueba",
+    "pct_vulnerable": 50.22,
+    "n_eventos": 7,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Pauna",
+    "pct_vulnerable": 39.31,
+    "n_eventos": 20,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Paya",
+    "pct_vulnerable": 74.59,
+    "n_eventos": 6,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Pesca",
+    "pct_vulnerable": 48.71,
+    "n_eventos": 48,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Pisba",
+    "pct_vulnerable": 80.12,
+    "n_eventos": 7,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "San Eduardo",
+    "pct_vulnerable": 36.81,
+    "n_eventos": 2,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "San Luis De Gaceno",
+    "pct_vulnerable": 27.19,
+    "n_eventos": 3,
+    "impacto_normalizado": 2.0
+  },
+  {
+    "municipio": "San Mateo",
+    "pct_vulnerable": 52.46,
+    "n_eventos": 20,
+    "impacto_normalizado": 0.15
+  },
+  {
+    "municipio": "San Miguel De Sema",
+    "pct_vulnerable": 40.78,
+    "n_eventos": 8,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "San Pablo De Borbur",
+    "pct_vulnerable": 69.07,
+    "n_eventos": 11,
+    "impacto_normalizado": 0.6363636363636364
+  },
+  {
+    "municipio": "Santana",
+    "pct_vulnerable": 9.72,
+    "n_eventos": 4,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Santa Rosa De Viterbo",
+    "pct_vulnerable": 22.44,
+    "n_eventos": 8,
+    "impacto_normalizado": 0.75
+  },
+  {
+    "municipio": "Sativanorte",
+    "pct_vulnerable": 79.32,
+    "n_eventos": 18,
+    "impacto_normalizado": 0.05555555555555555
+  },
+  {
+    "municipio": "Sativasur",
+    "pct_vulnerable": 57.01,
+    "n_eventos": 12,
+    "impacto_normalizado": 0.9166666666666666
+  },
+  {
+    "municipio": "Siachoque",
+    "pct_vulnerable": 29.03,
+    "n_eventos": 5,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Socha",
+    "pct_vulnerable": 40.1,
+    "n_eventos": 17,
+    "impacto_normalizado": 1.0588235294117647
+  },
+  {
+    "municipio": "Sogamoso",
+    "pct_vulnerable": 13.28,
+    "n_eventos": 71,
+    "impacto_normalizado": 0.16901408450704225
+  },
+  {
+    "municipio": "Somondoco",
+    "pct_vulnerable": 52.22,
+    "n_eventos": 16,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Sora",
+    "pct_vulnerable": 35,
+    "n_eventos": 7,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Sutatenza",
+    "pct_vulnerable": 56.61,
+    "n_eventos": 25,
+    "impacto_normalizado": 0.12
+  },
+  {
+    "municipio": "Tasco",
+    "pct_vulnerable": 48.73,
+    "n_eventos": 16,
+    "impacto_normalizado": 2.9375
+  },
+  {
+    "municipio": "Tenza",
+    "pct_vulnerable": 48.05,
+    "n_eventos": 10,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Tibasosa",
+    "pct_vulnerable": 18.32,
+    "n_eventos": 22,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Tipacoque",
+    "pct_vulnerable": 48.8,
+    "n_eventos": 6,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Toca",
+    "pct_vulnerable": 38.12,
+    "n_eventos": 8,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Tota",
+    "pct_vulnerable": 31.54,
+    "n_eventos": 27,
+    "impacto_normalizado": 0.1111111111111111
+  },
+  {
+    "municipio": "Tuta",
+    "pct_vulnerable": 22.14,
+    "n_eventos": 25,
+    "impacto_normalizado": 0.04
+  },
+  {
+    "municipio": "Ventaquemada",
+    "pct_vulnerable": 12.99,
+    "n_eventos": 16,
+    "impacto_normalizado": 0.25
+  },
+  {
+    "municipio": "Zetaquira",
+    "pct_vulnerable": 61.29,
+    "n_eventos": 9,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Manizales",
+    "pct_vulnerable": 43.72,
+    "n_eventos": 76,
+    "impacto_normalizado": 1.5263157894736843
+  },
+  {
+    "municipio": "Aguadas",
+    "pct_vulnerable": 79.81,
+    "n_eventos": 69,
+    "impacto_normalizado": 0.057971014492753624
+  },
+  {
+    "municipio": "Anserma",
+    "pct_vulnerable": 37.4,
+    "n_eventos": 43,
+    "impacto_normalizado": 0.3953488372093023
+  },
+  {
+    "municipio": "Aranzazu",
+    "pct_vulnerable": 65.54,
+    "n_eventos": 29,
+    "impacto_normalizado": 0.2413793103448276
+  },
+  {
+    "municipio": "Filadelfia",
+    "pct_vulnerable": 42.12,
+    "n_eventos": 58,
+    "impacto_normalizado": 0.017241379310344827
+  },
+  {
+    "municipio": "La Dorada",
+    "pct_vulnerable": 24.75,
+    "n_eventos": 56,
+    "impacto_normalizado": 0.05357142857142857
+  },
+  {
+    "municipio": "La Merced",
+    "pct_vulnerable": 48.65,
+    "n_eventos": 9,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Manzanares",
+    "pct_vulnerable": 28.58,
+    "n_eventos": 25,
+    "impacto_normalizado": 0.64
+  },
+  {
+    "municipio": "Marmato",
+    "pct_vulnerable": 30.78,
+    "n_eventos": 89,
+    "impacto_normalizado": 0.30337078651685395
+  },
+  {
+    "municipio": "Marquetalia",
+    "pct_vulnerable": 14.95,
+    "n_eventos": 17,
+    "impacto_normalizado": 0.4117647058823529
+  },
+  {
+    "municipio": "Marulanda",
+    "pct_vulnerable": 68.21,
+    "n_eventos": 16,
+    "impacto_normalizado": 0.75
+  },
+  {
+    "municipio": "Neira",
+    "pct_vulnerable": 47.47,
+    "n_eventos": 57,
+    "impacto_normalizado": 0.38596491228070173
+  },
+  {
+    "municipio": "Norcasia",
+    "pct_vulnerable": 25.81,
+    "n_eventos": 40,
+    "impacto_normalizado": 0.05
+  },
+  {
+    "municipio": "Palestina",
+    "pct_vulnerable": 34.78,
+    "n_eventos": 32,
+    "impacto_normalizado": 0.28125
+  },
+  {
+    "municipio": "Pensilvania",
+    "pct_vulnerable": 52.74,
+    "n_eventos": 49,
+    "impacto_normalizado": 0.5714285714285714
+  },
+  {
+    "municipio": "Riosucio",
+    "pct_vulnerable": 27.82,
+    "n_eventos": 72,
+    "impacto_normalizado": 1.7916666666666667
+  },
+  {
+    "municipio": "Risaralda",
+    "pct_vulnerable": 40.67,
+    "n_eventos": 8,
+    "impacto_normalizado": 0.375
+  },
+  {
+    "municipio": "Salamina",
+    "pct_vulnerable": 74.25,
+    "n_eventos": 87,
+    "impacto_normalizado": 0.367816091954023
+  },
+  {
+    "municipio": "Victoria",
+    "pct_vulnerable": 8.97,
+    "n_eventos": 11,
+    "impacto_normalizado": 0.2727272727272727
+  },
+  {
+    "municipio": "Viterbo",
+    "pct_vulnerable": 26.5,
+    "n_eventos": 25,
+    "impacto_normalizado": 0.12
+  },
+  {
+    "municipio": "Florencia",
+    "pct_vulnerable": 49.98,
+    "n_eventos": 113,
+    "impacto_normalizado": 0.3008849557522124
+  },
+  {
+    "municipio": "Albania",
+    "pct_vulnerable": 39.3,
+    "n_eventos": 44,
+    "impacto_normalizado": 0.1590909090909091
+  },
+  {
+    "municipio": "Curillo",
+    "pct_vulnerable": 54.56,
+    "n_eventos": 12,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "El Doncello",
+    "pct_vulnerable": 37.92,
+    "n_eventos": 10,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "La Montañita",
+    "pct_vulnerable": 69.68,
+    "n_eventos": 13,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Morelia",
+    "pct_vulnerable": 37.81,
+    "n_eventos": 2,
+    "impacto_normalizado": 1.0
+  },
+  {
+    "municipio": "Puerto Rico",
+    "pct_vulnerable": 47.48,
+    "n_eventos": 150,
+    "impacto_normalizado": 0.02666666666666667
+  },
+  {
+    "municipio": "Solano",
+    "pct_vulnerable": 81.78,
+    "n_eventos": 6,
+    "impacto_normalizado": 5.0
+  },
+  {
+    "municipio": "Solita",
+    "pct_vulnerable": 68.32,
+    "n_eventos": 5,
+    "impacto_normalizado": 0.2
+  },
+  {
+    "municipio": "Almaguer",
+    "pct_vulnerable": 95.23,
+    "n_eventos": 42,
+    "impacto_normalizado": 0.16666666666666666
+  },
+  {
+    "municipio": "Argelia",
+    "pct_vulnerable": 68.61,
+    "n_eventos": 84,
+    "impacto_normalizado": 0.13095238095238096
+  },
+  {
+    "municipio": "Balboa",
+    "pct_vulnerable": 54.75,
+    "n_eventos": 188,
+    "impacto_normalizado": 0.10106382978723404
+  },
+  {
+    "municipio": "Buenos Aires",
+    "pct_vulnerable": 43.54,
+    "n_eventos": 37,
+    "impacto_normalizado": 0.2702702702702703
+  },
+  {
+    "municipio": "Caldono",
+    "pct_vulnerable": 39.72,
+    "n_eventos": 93,
+    "impacto_normalizado": 0.010752688172043012
+  },
+  {
+    "municipio": "Caloto",
+    "pct_vulnerable": 43.56,
+    "n_eventos": 44,
+    "impacto_normalizado": 0.045454545454545456
+  },
+  {
+    "municipio": "Corinto",
+    "pct_vulnerable": 45.65,
+    "n_eventos": 36,
+    "impacto_normalizado": 2.0555555555555554
+  },
+  {
+    "municipio": "El Tambo",
+    "pct_vulnerable": 54.16,
+    "n_eventos": 157,
+    "impacto_normalizado": 0.2229299363057325
+  },
+  {
+    "municipio": "Florencia",
+    "pct_vulnerable": 64.68,
+    "n_eventos": 113,
+    "impacto_normalizado": 0.3008849557522124
+  },
+  {
+    "municipio": "Guapi",
+    "pct_vulnerable": 76.22,
+    "n_eventos": 17,
+    "impacto_normalizado": 10.117647058823529
+  },
+  {
+    "municipio": "La Sierra",
+    "pct_vulnerable": 76.77,
+    "n_eventos": 69,
+    "impacto_normalizado": 1.608695652173913
+  },
+  {
+    "municipio": "La Vega",
+    "pct_vulnerable": 84.06,
+    "n_eventos": 167,
+    "impacto_normalizado": 0.25149700598802394
+  },
+  {
+    "municipio": "Mercaderes",
+    "pct_vulnerable": 53.92,
+    "n_eventos": 63,
+    "impacto_normalizado": 0.15873015873015872
+  },
+  {
+    "municipio": "Miranda",
+    "pct_vulnerable": 19.59,
+    "n_eventos": 56,
+    "impacto_normalizado": 0.08928571428571429
+  },
+  {
+    "municipio": "Morales",
+    "pct_vulnerable": 51.9,
+    "n_eventos": 53,
+    "impacto_normalizado": 0.5849056603773585
+  },
+  {
+    "municipio": "Padilla",
+    "pct_vulnerable": 23.09,
+    "n_eventos": 26,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Piamonte",
+    "pct_vulnerable": 87.06,
+    "n_eventos": 37,
+    "impacto_normalizado": 0.3783783783783784
+  },
+  {
+    "municipio": "Puerto Tejada",
+    "pct_vulnerable": 4.34,
+    "n_eventos": 31,
+    "impacto_normalizado": 0.8387096774193549
+  },
+  {
+    "municipio": "Rosas",
+    "pct_vulnerable": 56.43,
+    "n_eventos": 54,
+    "impacto_normalizado": 2.2962962962962963
+  },
+  {
+    "municipio": "Santander De Quilichao",
+    "pct_vulnerable": 39.59,
+    "n_eventos": 139,
+    "impacto_normalizado": 0.4244604316546763
+  },
+  {
+    "municipio": "Santa Rosa",
+    "pct_vulnerable": 81.02,
+    "n_eventos": 49,
+    "impacto_normalizado": 0.8775510204081632
+  },
+  {
+    "municipio": "Silvia",
+    "pct_vulnerable": 35.39,
+    "n_eventos": 75,
+    "impacto_normalizado": 0.05333333333333334
+  },
+  {
+    "municipio": "Sucre",
+    "pct_vulnerable": 86.84,
+    "n_eventos": 91,
+    "impacto_normalizado": 0.8461538461538461
+  },
+  {
+    "municipio": "Villa Rica",
+    "pct_vulnerable": 4.76,
+    "n_eventos": 17,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Valledupar",
+    "pct_vulnerable": 28.88,
+    "n_eventos": 139,
+    "impacto_normalizado": 0.5899280575539568
+  },
+  {
+    "municipio": "Aguachica",
+    "pct_vulnerable": 28.53,
+    "n_eventos": 97,
+    "impacto_normalizado": 0.030927835051546393
+  },
+  {
+    "municipio": "Astrea",
+    "pct_vulnerable": 40.29,
+    "n_eventos": 20,
+    "impacto_normalizado": 0.15
+  },
+  {
+    "municipio": "Becerril",
+    "pct_vulnerable": 52.72,
+    "n_eventos": 28,
+    "impacto_normalizado": 0.32142857142857145
+  },
+  {
+    "municipio": "Bosconia",
+    "pct_vulnerable": 41.24,
+    "n_eventos": 59,
+    "impacto_normalizado": 0.11864406779661017
+  },
+  {
+    "municipio": "Chimichagua",
+    "pct_vulnerable": 42.79,
+    "n_eventos": 15,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "El Copey",
+    "pct_vulnerable": 46.75,
+    "n_eventos": 28,
+    "impacto_normalizado": 0.03571428571428571
+  },
+  {
+    "municipio": "El Paso",
+    "pct_vulnerable": 36.03,
+    "n_eventos": 93,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Gamarra",
+    "pct_vulnerable": 27.4,
+    "n_eventos": 5,
+    "impacto_normalizado": 0.2
+  },
+  {
+    "municipio": "La Gloria",
+    "pct_vulnerable": 46.36,
+    "n_eventos": 6,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "La Jagua De Ibirico",
+    "pct_vulnerable": 34.94,
+    "n_eventos": 35,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Pailitas",
+    "pct_vulnerable": 29.16,
+    "n_eventos": 6,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Pelaya",
+    "pct_vulnerable": 33.5,
+    "n_eventos": 14,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Pueblo Bello",
+    "pct_vulnerable": 35.27,
+    "n_eventos": 39,
+    "impacto_normalizado": 1.2564102564102564
+  },
+  {
+    "municipio": "La Paz",
+    "pct_vulnerable": 31.39,
+    "n_eventos": 37,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "San Alberto",
+    "pct_vulnerable": 23.4,
+    "n_eventos": 28,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "San Diego",
+    "pct_vulnerable": 30.94,
+    "n_eventos": 19,
+    "impacto_normalizado": 0.10526315789473684
+  },
+  {
+    "municipio": "Tamalameque",
+    "pct_vulnerable": 32.1,
+    "n_eventos": 30,
+    "impacto_normalizado": 0.5333333333333333
+  },
+  {
+    "municipio": "Ayapel",
+    "pct_vulnerable": 28.21,
+    "n_eventos": 30,
+    "impacto_normalizado": 10.066666666666666
+  },
+  {
+    "municipio": "Buenavista",
+    "pct_vulnerable": 43.82,
+    "n_eventos": 39,
+    "impacto_normalizado": 0.2564102564102564
+  },
+  {
+    "municipio": "Canalete",
+    "pct_vulnerable": 79.16,
+    "n_eventos": 11,
+    "impacto_normalizado": 0.36363636363636365
+  },
+  {
+    "municipio": "Cotorra",
+    "pct_vulnerable": 7.61,
+    "n_eventos": 8,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "La Apartada",
+    "pct_vulnerable": 24.78,
+    "n_eventos": 15,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Lorica",
+    "pct_vulnerable": 39.47,
+    "n_eventos": 109,
+    "impacto_normalizado": 0.045871559633027525
+  },
+  {
+    "municipio": "Momil",
+    "pct_vulnerable": 38.14,
+    "n_eventos": 8,
+    "impacto_normalizado": 1.125
+  },
+  {
+    "municipio": "Moñitos",
+    "pct_vulnerable": 52.76,
+    "n_eventos": 8,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Planeta Rica",
+    "pct_vulnerable": 34.45,
+    "n_eventos": 50,
+    "impacto_normalizado": 0.08
+  },
+  {
+    "municipio": "Pueblo Nuevo",
+    "pct_vulnerable": 36.23,
+    "n_eventos": 21,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Puerto Escondido",
+    "pct_vulnerable": 60.63,
+    "n_eventos": 10,
+    "impacto_normalizado": 6.2
+  },
+  {
+    "municipio": "Puerto Libertador",
+    "pct_vulnerable": 54.16,
+    "n_eventos": 27,
+    "impacto_normalizado": 0.037037037037037035
+  },
+  {
+    "municipio": "San Antero",
+    "pct_vulnerable": 27.34,
+    "n_eventos": 5,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "San Bernardo Del Viento",
+    "pct_vulnerable": 38.48,
+    "n_eventos": 11,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "San Carlos",
+    "pct_vulnerable": 30.98,
+    "n_eventos": 38,
+    "impacto_normalizado": 0.10526315789473684
+  },
+  {
+    "municipio": "San Pelayo",
+    "pct_vulnerable": 26.19,
+    "n_eventos": 18,
+    "impacto_normalizado": 0.2777777777777778
+  },
+  {
+    "municipio": "Tierralta",
+    "pct_vulnerable": 52.75,
+    "n_eventos": 46,
+    "impacto_normalizado": 0.021739130434782608
+  },
+  {
+    "municipio": "Valencia",
+    "pct_vulnerable": 56.78,
+    "n_eventos": 10,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Agua De Dios",
+    "pct_vulnerable": 22.09,
+    "n_eventos": 35,
+    "impacto_normalizado": 0.02857142857142857
+  },
+  {
+    "municipio": "Anapoima",
+    "pct_vulnerable": 13.94,
+    "n_eventos": 52,
+    "impacto_normalizado": 0.15384615384615385
+  },
+  {
+    "municipio": "Anolaima",
+    "pct_vulnerable": 19.02,
+    "n_eventos": 61,
+    "impacto_normalizado": 0.03278688524590164
+  },
+  {
+    "municipio": "Bituima",
+    "pct_vulnerable": 28.64,
+    "n_eventos": 38,
+    "impacto_normalizado": 0.2631578947368421
+  },
+  {
+    "municipio": "Cabrera",
+    "pct_vulnerable": 57.94,
+    "n_eventos": 63,
+    "impacto_normalizado": 0.047619047619047616
+  },
+  {
+    "municipio": "Cachipay",
+    "pct_vulnerable": 13.53,
+    "n_eventos": 44,
+    "impacto_normalizado": 0.13636363636363635
+  },
+  {
+    "municipio": "Carmen De Carupa",
+    "pct_vulnerable": 26.54,
+    "n_eventos": 12,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Chipaque",
+    "pct_vulnerable": 35.16,
+    "n_eventos": 47,
+    "impacto_normalizado": 0.0425531914893617
+  },
+  {
+    "municipio": "Cogua",
+    "pct_vulnerable": 8.1,
+    "n_eventos": 52,
+    "impacto_normalizado": 0.038461538461538464
+  },
+  {
+    "municipio": "Cota",
+    "pct_vulnerable": 13.7,
+    "n_eventos": 33,
+    "impacto_normalizado": 0.15151515151515152
+  },
+  {
+    "municipio": "El Colegio",
+    "pct_vulnerable": 17.19,
+    "n_eventos": 88,
+    "impacto_normalizado": 0.1590909090909091
+  },
+  {
+    "municipio": "El Rosal",
+    "pct_vulnerable": 11.43,
+    "n_eventos": 45,
+    "impacto_normalizado": 0.4444444444444444
+  },
+  {
+    "municipio": "Fosca",
+    "pct_vulnerable": 30.42,
+    "n_eventos": 49,
+    "impacto_normalizado": 0.22448979591836735
+  },
+  {
+    "municipio": "Funza",
+    "pct_vulnerable": 14.22,
+    "n_eventos": 34,
+    "impacto_normalizado": 0.029411764705882353
+  },
+  {
+    "municipio": "Gama",
+    "pct_vulnerable": 41.35,
+    "n_eventos": 24,
+    "impacto_normalizado": 0.08333333333333333
+  },
+  {
+    "municipio": "Girardot",
+    "pct_vulnerable": 26.26,
+    "n_eventos": 77,
+    "impacto_normalizado": 0.12987012987012986
+  },
+  {
+    "municipio": "Granada",
+    "pct_vulnerable": 20.4,
+    "n_eventos": 190,
+    "impacto_normalizado": 0.05263157894736842
+  },
+  {
+    "municipio": "Guaduas",
+    "pct_vulnerable": 18.7,
+    "n_eventos": 81,
+    "impacto_normalizado": 0.07407407407407407
+  },
+  {
+    "municipio": "Guasca",
+    "pct_vulnerable": 21.48,
+    "n_eventos": 26,
+    "impacto_normalizado": 0.11538461538461539
+  },
+  {
+    "municipio": "Guatavita",
+    "pct_vulnerable": 15.97,
+    "n_eventos": 20,
+    "impacto_normalizado": 0.1
+  },
+  {
+    "municipio": "Guayabetal",
+    "pct_vulnerable": 16.05,
+    "n_eventos": 63,
+    "impacto_normalizado": 0.4126984126984127
+  },
+  {
+    "municipio": "La Calera",
+    "pct_vulnerable": 18.26,
+    "n_eventos": 84,
+    "impacto_normalizado": 0.11904761904761904
+  },
+  {
+    "municipio": "La Mesa",
+    "pct_vulnerable": 26.11,
+    "n_eventos": 102,
+    "impacto_normalizado": 0.0784313725490196
+  },
+  {
+    "municipio": "La Palma",
+    "pct_vulnerable": 40.09,
+    "n_eventos": 79,
+    "impacto_normalizado": 0.13924050632911392
+  },
+  {
+    "municipio": "La Peña",
+    "pct_vulnerable": 41.98,
+    "n_eventos": 83,
+    "impacto_normalizado": 0.024096385542168676
+  },
+  {
+    "municipio": "La Vega",
+    "pct_vulnerable": 24.61,
+    "n_eventos": 167,
+    "impacto_normalizado": 0.25149700598802394
+  },
+  {
+    "municipio": "Lenguazaque",
+    "pct_vulnerable": 17.21,
+    "n_eventos": 12,
+    "impacto_normalizado": 0.25
+  },
+  {
+    "municipio": "Madrid",
+    "pct_vulnerable": 8.72,
+    "n_eventos": 31,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Manta",
+    "pct_vulnerable": 45.69,
+    "n_eventos": 45,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Medina",
+    "pct_vulnerable": 31.83,
+    "n_eventos": 34,
+    "impacto_normalizado": 0.029411764705882353
+  },
+  {
+    "municipio": "Mosquera",
+    "pct_vulnerable": 11.76,
+    "n_eventos": 53,
+    "impacto_normalizado": 0.1509433962264151
+  },
+  {
+    "municipio": "Nariño",
+    "pct_vulnerable": 34.86,
+    "n_eventos": 64,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Nilo",
+    "pct_vulnerable": 20.89,
+    "n_eventos": 59,
+    "impacto_normalizado": 0.01694915254237288
+  },
+  {
+    "municipio": "Nimaima",
+    "pct_vulnerable": 32.83,
+    "n_eventos": 23,
+    "impacto_normalizado": 0.43478260869565216
+  },
+  {
+    "municipio": "Nocaima",
+    "pct_vulnerable": 35.45,
+    "n_eventos": 63,
+    "impacto_normalizado": 0.015873015873015872
+  },
+  {
+    "municipio": "Venecia",
+    "pct_vulnerable": 43.67,
+    "n_eventos": 93,
+    "impacto_normalizado": 0.3010752688172043
+  },
+  {
+    "municipio": "Pacho",
+    "pct_vulnerable": 22.3,
+    "n_eventos": 174,
+    "impacto_normalizado": 0.10919540229885058
+  },
+  {
+    "municipio": "Paime",
+    "pct_vulnerable": 53.48,
+    "n_eventos": 20,
+    "impacto_normalizado": 1.25
+  },
+  {
+    "municipio": "Pandi",
+    "pct_vulnerable": 42.25,
+    "n_eventos": 57,
+    "impacto_normalizado": 1.105263157894737
+  },
+  {
+    "municipio": "Paratebueno",
+    "pct_vulnerable": 18.85,
+    "n_eventos": 49,
+    "impacto_normalizado": 0.12244897959183673
+  },
+  {
+    "municipio": "Pasca",
+    "pct_vulnerable": 72.12,
+    "n_eventos": 29,
+    "impacto_normalizado": 0.10344827586206896
+  },
+  {
+    "municipio": "Puerto Salgar",
+    "pct_vulnerable": 35.6,
+    "n_eventos": 30,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Quebradanegra",
+    "pct_vulnerable": 31.59,
+    "n_eventos": 41,
+    "impacto_normalizado": 0.2682926829268293
+  },
+  {
+    "municipio": "Quetame",
+    "pct_vulnerable": 22.55,
+    "n_eventos": 49,
+    "impacto_normalizado": 1.1224489795918366
+  },
+  {
+    "municipio": "Quipile",
+    "pct_vulnerable": 33.15,
+    "n_eventos": 61,
+    "impacto_normalizado": 0.01639344262295082
+  },
+  {
+    "municipio": "Apulo",
+    "pct_vulnerable": 20.48,
+    "n_eventos": 43,
+    "impacto_normalizado": 0.09302325581395349
+  },
+  {
+    "municipio": "Ricaurte",
+    "pct_vulnerable": 13.18,
+    "n_eventos": 100,
+    "impacto_normalizado": 0.17
+  },
+  {
+    "municipio": "San Antonio Del Tequendama",
+    "pct_vulnerable": 14.34,
+    "n_eventos": 38,
+    "impacto_normalizado": 0.07894736842105263
+  },
+  {
+    "municipio": "San Bernardo",
+    "pct_vulnerable": 57.37,
+    "n_eventos": 63,
+    "impacto_normalizado": 0.3968253968253968
+  },
+  {
+    "municipio": "San Cayetano",
+    "pct_vulnerable": 45.9,
+    "n_eventos": 47,
+    "impacto_normalizado": 0.2553191489361702
+  },
+  {
+    "municipio": "San Francisco",
+    "pct_vulnerable": 26.28,
+    "n_eventos": 127,
+    "impacto_normalizado": 0.11811023622047244
+  },
+  {
+    "municipio": "Sasaima",
+    "pct_vulnerable": 25.25,
+    "n_eventos": 94,
+    "impacto_normalizado": 0.18085106382978725
+  },
+  {
+    "municipio": "Silvania",
+    "pct_vulnerable": 21.33,
+    "n_eventos": 60,
+    "impacto_normalizado": 0.08333333333333333
+  },
+  {
+    "municipio": "Simijaca",
+    "pct_vulnerable": 13.3,
+    "n_eventos": 28,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Soacha",
+    "pct_vulnerable": 16.81,
+    "n_eventos": 206,
+    "impacto_normalizado": 0.32524271844660196
+  },
+  {
+    "municipio": "Subachoque",
+    "pct_vulnerable": 12.91,
+    "n_eventos": 14,
+    "impacto_normalizado": 0.14285714285714285
+  },
+  {
+    "municipio": "Suesca",
+    "pct_vulnerable": 19.24,
+    "n_eventos": 53,
+    "impacto_normalizado": 0.018867924528301886
+  },
+  {
+    "municipio": "Susa",
+    "pct_vulnerable": 24.88,
+    "n_eventos": 13,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Sutatausa",
+    "pct_vulnerable": 22.86,
+    "n_eventos": 22,
+    "impacto_normalizado": 1.0909090909090908
+  },
+  {
+    "municipio": "Tabio",
+    "pct_vulnerable": 13.37,
+    "n_eventos": 36,
+    "impacto_normalizado": 0.05555555555555555
+  },
+  {
+    "municipio": "Tausa",
+    "pct_vulnerable": 8.8,
+    "n_eventos": 23,
+    "impacto_normalizado": 0.043478260869565216
+  },
+  {
+    "municipio": "Tena",
+    "pct_vulnerable": 23.03,
+    "n_eventos": 69,
+    "impacto_normalizado": 0.18840579710144928
+  },
+  {
+    "municipio": "Tenjo",
+    "pct_vulnerable": 19.31,
+    "n_eventos": 34,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Tibacuy",
+    "pct_vulnerable": 33.81,
+    "n_eventos": 35,
+    "impacto_normalizado": 0.05714285714285714
+  },
+  {
+    "municipio": "Tibirita",
+    "pct_vulnerable": 45.19,
+    "n_eventos": 34,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Tocaima",
+    "pct_vulnerable": 38.23,
+    "n_eventos": 129,
+    "impacto_normalizado": 0.023255813953488372
+  },
+  {
+    "municipio": "Ubaque",
+    "pct_vulnerable": 25.27,
+    "n_eventos": 51,
+    "impacto_normalizado": 0.0196078431372549
+  },
+  {
+    "municipio": "Une",
+    "pct_vulnerable": 29.56,
+    "n_eventos": 38,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Vergara",
+    "pct_vulnerable": 32.34,
+    "n_eventos": 30,
+    "impacto_normalizado": 0.16666666666666666
+  },
+  {
+    "municipio": "Villeta",
+    "pct_vulnerable": 23.64,
+    "n_eventos": 99,
+    "impacto_normalizado": 0.1414141414141414
+  },
+  {
+    "municipio": "Atrato",
+    "pct_vulnerable": 37.7,
+    "n_eventos": 14,
+    "impacto_normalizado": 1.0
+  },
+  {
+    "municipio": "Condoto",
+    "pct_vulnerable": 20.48,
+    "n_eventos": 16,
+    "impacto_normalizado": 0.0625
+  },
+  {
+    "municipio": "El Carmen De Atrato",
+    "pct_vulnerable": 64.48,
+    "n_eventos": 20,
+    "impacto_normalizado": 2.65
+  },
+  {
+    "municipio": "El Litoral Del San Juan",
+    "pct_vulnerable": 93.6,
+    "n_eventos": 24,
+    "impacto_normalizado": 0.75
+  },
+  {
+    "municipio": "Istmina",
+    "pct_vulnerable": 48.06,
+    "n_eventos": 40,
+    "impacto_normalizado": 1.75
+  },
+  {
+    "municipio": "Medio Atrato",
+    "pct_vulnerable": 80.53,
+    "n_eventos": 20,
+    "impacto_normalizado": 0.75
+  },
+  {
+    "municipio": "Medio San Juan",
+    "pct_vulnerable": 56.74,
+    "n_eventos": 25,
+    "impacto_normalizado": 0.52
+  },
+  {
+    "municipio": "Riosucio",
+    "pct_vulnerable": 92.32,
+    "n_eventos": 72,
+    "impacto_normalizado": 1.7916666666666667
+  },
+  {
+    "municipio": "Neiva",
+    "pct_vulnerable": 28.8,
+    "n_eventos": 273,
+    "impacto_normalizado": 0.16117216117216118
+  },
+  {
+    "municipio": "Acevedo",
+    "pct_vulnerable": 56.33,
+    "n_eventos": 42,
+    "impacto_normalizado": 0.07142857142857142
+  },
+  {
+    "municipio": "Agrado",
+    "pct_vulnerable": 75.45,
+    "n_eventos": 32,
+    "impacto_normalizado": 0.1875
+  },
+  {
+    "municipio": "Aipe",
+    "pct_vulnerable": 38.19,
+    "n_eventos": 91,
+    "impacto_normalizado": 0.08791208791208792
+  },
+  {
+    "municipio": "Algeciras",
+    "pct_vulnerable": 39.28,
+    "n_eventos": 94,
+    "impacto_normalizado": 0.031914893617021274
+  },
+  {
+    "municipio": "Altamira",
+    "pct_vulnerable": 34.89,
+    "n_eventos": 22,
+    "impacto_normalizado": 0.045454545454545456
+  },
+  {
+    "municipio": "Baraya",
+    "pct_vulnerable": 82.55,
+    "n_eventos": 59,
+    "impacto_normalizado": 0.01694915254237288
+  },
+  {
+    "municipio": "Campoalegre",
+    "pct_vulnerable": 31.1,
+    "n_eventos": 111,
+    "impacto_normalizado": 0.0990990990990991
+  },
+  {
+    "municipio": "Colombia",
+    "pct_vulnerable": 78.52,
+    "n_eventos": 54,
+    "impacto_normalizado": 0.018518518518518517
+  },
+  {
+    "municipio": "Gigante",
+    "pct_vulnerable": 33.44,
+    "n_eventos": 60,
+    "impacto_normalizado": 0.13333333333333333
+  },
+  {
+    "municipio": "Guadalupe",
+    "pct_vulnerable": 56.72,
+    "n_eventos": 51,
+    "impacto_normalizado": 0.17647058823529413
+  },
+  {
+    "municipio": "Hobo",
+    "pct_vulnerable": 44.09,
+    "n_eventos": 70,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Isnos",
+    "pct_vulnerable": 55.79,
+    "n_eventos": 74,
+    "impacto_normalizado": 0.02702702702702703
+  },
+  {
+    "municipio": "La Argentina",
+    "pct_vulnerable": 50.27,
+    "n_eventos": 60,
+    "impacto_normalizado": 0.08333333333333333
+  },
+  {
+    "municipio": "La Plata",
+    "pct_vulnerable": 47.33,
+    "n_eventos": 144,
+    "impacto_normalizado": 0.1875
+  },
+  {
+    "municipio": "Oporapa",
+    "pct_vulnerable": 62.05,
+    "n_eventos": 67,
+    "impacto_normalizado": 0.014925373134328358
+  },
+  {
+    "municipio": "Paicol",
+    "pct_vulnerable": 63.14,
+    "n_eventos": 54,
+    "impacto_normalizado": 0.1111111111111111
+  },
+  {
+    "municipio": "Palermo",
+    "pct_vulnerable": 50.96,
+    "n_eventos": 178,
+    "impacto_normalizado": 0.011235955056179775
+  },
+  {
+    "municipio": "Palestina",
+    "pct_vulnerable": 64.92,
+    "n_eventos": 32,
+    "impacto_normalizado": 0.28125
+  },
+  {
+    "municipio": "Pital",
+    "pct_vulnerable": 55.09,
+    "n_eventos": 59,
+    "impacto_normalizado": 0.01694915254237288
+  },
+  {
+    "municipio": "Pitalito",
+    "pct_vulnerable": 27.18,
+    "n_eventos": 189,
+    "impacto_normalizado": 0.12169312169312169
+  },
+  {
+    "municipio": "Rivera",
+    "pct_vulnerable": 32.48,
+    "n_eventos": 98,
+    "impacto_normalizado": 0.030612244897959183
+  },
+  {
+    "municipio": "Saladoblanco",
+    "pct_vulnerable": 53.91,
+    "n_eventos": 62,
+    "impacto_normalizado": 0.016129032258064516
+  },
+  {
+    "municipio": "Suaza",
+    "pct_vulnerable": 72.89,
+    "n_eventos": 51,
+    "impacto_normalizado": 1.3137254901960784
+  },
+  {
+    "municipio": "Tarqui",
+    "pct_vulnerable": 50.07,
+    "n_eventos": 37,
+    "impacto_normalizado": 0.02702702702702703
+  },
+  {
+    "municipio": "Tesalia",
+    "pct_vulnerable": 40.03,
+    "n_eventos": 68,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Tello",
+    "pct_vulnerable": 54.4,
+    "n_eventos": 109,
+    "impacto_normalizado": 0.009174311926605505
+  },
+  {
+    "municipio": "Teruel",
+    "pct_vulnerable": 40.86,
+    "n_eventos": 63,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Villavieja",
+    "pct_vulnerable": 54.77,
+    "n_eventos": 33,
+    "impacto_normalizado": 0.030303030303030304
+  },
+  {
+    "municipio": "Riohacha",
+    "pct_vulnerable": 38.09,
+    "n_eventos": 115,
+    "impacto_normalizado": 0.09565217391304348
+  },
+  {
+    "municipio": "Albania",
+    "pct_vulnerable": 49.91,
+    "n_eventos": 44,
+    "impacto_normalizado": 0.1590909090909091
+  },
+  {
+    "municipio": "Barrancas",
+    "pct_vulnerable": 41.81,
+    "n_eventos": 20,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Dibulla",
+    "pct_vulnerable": 22.39,
+    "n_eventos": 25,
+    "impacto_normalizado": 0.92
+  },
+  {
+    "municipio": "El Molino",
+    "pct_vulnerable": 24.92,
+    "n_eventos": 15,
+    "impacto_normalizado": 0.06666666666666667
+  },
+  {
+    "municipio": "Fonseca",
+    "pct_vulnerable": 44.43,
+    "n_eventos": 64,
+    "impacto_normalizado": 0.0625
+  },
+  {
+    "municipio": "Hatonuevo",
+    "pct_vulnerable": 37.55,
+    "n_eventos": 12,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "La Jagua Del Pilar",
+    "pct_vulnerable": 36.47,
+    "n_eventos": 16,
+    "impacto_normalizado": 0.1875
+  },
+  {
+    "municipio": "Maicao",
+    "pct_vulnerable": 19.87,
+    "n_eventos": 80,
+    "impacto_normalizado": 0.0875
+  },
+  {
+    "municipio": "Manaure",
+    "pct_vulnerable": 57.52,
+    "n_eventos": 66,
+    "impacto_normalizado": 2.287878787878788
+  },
+  {
+    "municipio": "San Juan Del Cesar",
+    "pct_vulnerable": 35.71,
+    "n_eventos": 46,
+    "impacto_normalizado": 0.10869565217391304
+  },
+  {
+    "municipio": "Uribia",
+    "pct_vulnerable": 46.98,
+    "n_eventos": 21,
+    "impacto_normalizado": 25.238095238095237
+  },
+  {
+    "municipio": "Urumita",
+    "pct_vulnerable": 35.82,
+    "n_eventos": 30,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Villanueva",
+    "pct_vulnerable": 50.1,
+    "n_eventos": 96,
+    "impacto_normalizado": 0.041666666666666664
+  },
+  {
+    "municipio": "Santa Marta",
+    "pct_vulnerable": 14.05,
+    "n_eventos": 195,
+    "impacto_normalizado": 0.5743589743589743
+  },
+  {
+    "municipio": "Algarrobo",
+    "pct_vulnerable": 16.04,
+    "n_eventos": 43,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Aracataca",
+    "pct_vulnerable": 12.63,
+    "n_eventos": 68,
+    "impacto_normalizado": 0.04411764705882353
+  },
+  {
+    "municipio": "Concordia",
+    "pct_vulnerable": 22.76,
+    "n_eventos": 51,
+    "impacto_normalizado": 0.5882352941176471
+  },
+  {
+    "municipio": "El Banco",
+    "pct_vulnerable": 42.86,
+    "n_eventos": 65,
+    "impacto_normalizado": 0.015384615384615385
+  },
+  {
+    "municipio": "Guamal",
+    "pct_vulnerable": 48.38,
+    "n_eventos": 56,
+    "impacto_normalizado": 93.0
+  },
+  {
+    "municipio": "Nueva Granada",
+    "pct_vulnerable": 55.11,
+    "n_eventos": 33,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Pedraza",
+    "pct_vulnerable": 27.3,
+    "n_eventos": 6,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Pijiño Del Carmen",
+    "pct_vulnerable": 52.62,
+    "n_eventos": 3,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Pivijay",
+    "pct_vulnerable": 33,
+    "n_eventos": 13,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Plato",
+    "pct_vulnerable": 39.59,
+    "n_eventos": 21,
+    "impacto_normalizado": 0.09523809523809523
+  },
+  {
+    "municipio": "Puebloviejo",
+    "pct_vulnerable": 11.81,
+    "n_eventos": 11,
+    "impacto_normalizado": 4.0
+  },
+  {
+    "municipio": "Remolino",
+    "pct_vulnerable": 11.85,
+    "n_eventos": 2,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Salamina",
+    "pct_vulnerable": 7.94,
+    "n_eventos": 87,
+    "impacto_normalizado": 0.367816091954023
+  },
+  {
+    "municipio": "Santa Ana",
+    "pct_vulnerable": 24.3,
+    "n_eventos": 12,
+    "impacto_normalizado": 0.08333333333333333
+  },
+  {
+    "municipio": "Sitionuevo",
+    "pct_vulnerable": 35.11,
+    "n_eventos": 113,
+    "impacto_normalizado": 37.10619469026549
+  },
+  {
+    "municipio": "Tenerife",
+    "pct_vulnerable": 32.62,
+    "n_eventos": 13,
+    "impacto_normalizado": 1.1538461538461537
+  },
+  {
+    "municipio": "Zona Bananera",
+    "pct_vulnerable": 15.17,
+    "n_eventos": 106,
+    "impacto_normalizado": 0.19811320754716982
+  },
+  {
+    "municipio": "Villavicencio",
+    "pct_vulnerable": 11.02,
+    "n_eventos": 374,
+    "impacto_normalizado": 0.9037433155080213
+  },
+  {
+    "municipio": "Cabuyaro",
+    "pct_vulnerable": 16.61,
+    "n_eventos": 50,
+    "impacto_normalizado": 0.02
+  },
+  {
+    "municipio": "Castilla La Nueva",
+    "pct_vulnerable": 12.62,
+    "n_eventos": 27,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Cubarral",
+    "pct_vulnerable": 17.83,
+    "n_eventos": 17,
+    "impacto_normalizado": 0.11764705882352941
+  },
+  {
+    "municipio": "Cumaral",
+    "pct_vulnerable": 15.89,
+    "n_eventos": 48,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "El Calvario",
+    "pct_vulnerable": 75.97,
+    "n_eventos": 10,
+    "impacto_normalizado": 1.2
+  },
+  {
+    "municipio": "El Castillo",
+    "pct_vulnerable": 46.17,
+    "n_eventos": 72,
+    "impacto_normalizado": 0.16666666666666666
+  },
+  {
+    "municipio": "El Dorado",
+    "pct_vulnerable": 21.68,
+    "n_eventos": 46,
+    "impacto_normalizado": 0.021739130434782608
+  },
+  {
+    "municipio": "Fuente De Oro",
+    "pct_vulnerable": 23.15,
+    "n_eventos": 42,
+    "impacto_normalizado": 0.3333333333333333
+  },
+  {
+    "municipio": "Granada",
+    "pct_vulnerable": 33.91,
+    "n_eventos": 190,
+    "impacto_normalizado": 0.05263157894736842
+  },
+  {
+    "municipio": "Guamal",
+    "pct_vulnerable": 13.75,
+    "n_eventos": 56,
+    "impacto_normalizado": 93.0
+  },
+  {
+    "municipio": "Mesetas",
+    "pct_vulnerable": 58.56,
+    "n_eventos": 34,
+    "impacto_normalizado": 0.058823529411764705
+  },
+  {
+    "municipio": "La Macarena",
+    "pct_vulnerable": 79.11,
+    "n_eventos": 98,
+    "impacto_normalizado": 0.02040816326530612
+  },
+  {
+    "municipio": "Puerto Concordia",
+    "pct_vulnerable": 78.91,
+    "n_eventos": 30,
+    "impacto_normalizado": 0.2
+  },
+  {
+    "municipio": "Puerto Lleras",
+    "pct_vulnerable": 55.93,
+    "n_eventos": 56,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Puerto Rico",
+    "pct_vulnerable": 53.07,
+    "n_eventos": 150,
+    "impacto_normalizado": 0.02666666666666667
+  },
+  {
+    "municipio": "Restrepo",
+    "pct_vulnerable": 13.6,
+    "n_eventos": 55,
+    "impacto_normalizado": 0.05454545454545454
+  },
+  {
+    "municipio": "San Carlos De Guaroa",
+    "pct_vulnerable": 11.83,
+    "n_eventos": 29,
+    "impacto_normalizado": 0.10344827586206896
+  },
+  {
+    "municipio": "San Juan De Arama",
+    "pct_vulnerable": 31.27,
+    "n_eventos": 65,
+    "impacto_normalizado": 0.06153846153846154
+  },
+  {
+    "municipio": "San Juanito",
+    "pct_vulnerable": 59.88,
+    "n_eventos": 5,
+    "impacto_normalizado": 5.6
+  },
+  {
+    "municipio": "Vistahermosa",
+    "pct_vulnerable": 48.88,
+    "n_eventos": 48,
+    "impacto_normalizado": 0.020833333333333332
+  },
+  {
+    "municipio": "Pasto",
+    "pct_vulnerable": 23.68,
+    "n_eventos": 174,
+    "impacto_normalizado": 0.017241379310344827
+  },
+  {
+    "municipio": "Aldana",
+    "pct_vulnerable": 41.57,
+    "n_eventos": 9,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Ancuya",
+    "pct_vulnerable": 23.03,
+    "n_eventos": 48,
+    "impacto_normalizado": 1.8125
+  },
+  {
+    "municipio": "Arboleda",
+    "pct_vulnerable": 72.2,
+    "n_eventos": 46,
+    "impacto_normalizado": 1.3043478260869565
+  },
+  {
+    "municipio": "Barbacoas",
+    "pct_vulnerable": 66.51,
+    "n_eventos": 35,
+    "impacto_normalizado": 3.5428571428571427
+  },
+  {
+    "municipio": "Buesaco",
+    "pct_vulnerable": 64.1,
+    "n_eventos": 50,
+    "impacto_normalizado": 0.22
+  },
+  {
+    "municipio": "Cumbal",
+    "pct_vulnerable": 34.43,
+    "n_eventos": 51,
+    "impacto_normalizado": 0.058823529411764705
+  },
+  {
+    "municipio": "Cumbitara",
+    "pct_vulnerable": 40.1,
+    "n_eventos": 19,
+    "impacto_normalizado": 0.10526315789473684
+  },
+  {
+    "municipio": "El Charco",
+    "pct_vulnerable": 89.2,
+    "n_eventos": 11,
+    "impacto_normalizado": 3.5454545454545454
+  },
+  {
+    "municipio": "El Peñol",
+    "pct_vulnerable": 34.01,
+    "n_eventos": 10,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "El Rosario",
+    "pct_vulnerable": 83.26,
+    "n_eventos": 34,
+    "impacto_normalizado": 1.9411764705882353
+  },
+  {
+    "municipio": "El Tambo",
+    "pct_vulnerable": 66.36,
+    "n_eventos": 157,
+    "impacto_normalizado": 0.2229299363057325
+  },
+  {
+    "municipio": "Funes",
+    "pct_vulnerable": 75.6,
+    "n_eventos": 18,
+    "impacto_normalizado": 0.05555555555555555
+  },
+  {
+    "municipio": "Guachucal",
+    "pct_vulnerable": 54.47,
+    "n_eventos": 17,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Guaitarilla",
+    "pct_vulnerable": 84.35,
+    "n_eventos": 29,
+    "impacto_normalizado": 0.5517241379310345
+  },
+  {
+    "municipio": "Iles",
+    "pct_vulnerable": 60.32,
+    "n_eventos": 18,
+    "impacto_normalizado": 0.05555555555555555
+  },
+  {
+    "municipio": "Ipiales",
+    "pct_vulnerable": 32.11,
+    "n_eventos": 50,
+    "impacto_normalizado": 0.04
+  },
+  {
+    "municipio": "La Cruz",
+    "pct_vulnerable": 34.9,
+    "n_eventos": 48,
+    "impacto_normalizado": 0.22916666666666666
+  },
+  {
+    "municipio": "La Florida",
+    "pct_vulnerable": 55.07,
+    "n_eventos": 27,
+    "impacto_normalizado": 0.4444444444444444
+  },
+  {
+    "municipio": "La Llanada",
+    "pct_vulnerable": 24.74,
+    "n_eventos": 7,
+    "impacto_normalizado": 0.14285714285714285
+  },
+  {
+    "municipio": "La Tola",
+    "pct_vulnerable": 70.64,
+    "n_eventos": 5,
+    "impacto_normalizado": 5.2
+  },
+  {
+    "municipio": "Leiva",
+    "pct_vulnerable": 60.61,
+    "n_eventos": 32,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Linares",
+    "pct_vulnerable": 35.31,
+    "n_eventos": 32,
+    "impacto_normalizado": 2.71875
+  },
+  {
+    "municipio": "Los Andes",
+    "pct_vulnerable": 44.73,
+    "n_eventos": 17,
+    "impacto_normalizado": 0.23529411764705882
+  },
+  {
+    "municipio": "Mallama",
+    "pct_vulnerable": 28.59,
+    "n_eventos": 27,
+    "impacto_normalizado": 1.3333333333333333
+  },
+  {
+    "municipio": "Mosquera",
+    "pct_vulnerable": 96.74,
+    "n_eventos": 53,
+    "impacto_normalizado": 0.1509433962264151
+  },
+  {
+    "municipio": "Nariño",
+    "pct_vulnerable": 53.6,
+    "n_eventos": 64,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Olaya Herrera",
+    "pct_vulnerable": 91.55,
+    "n_eventos": 17,
+    "impacto_normalizado": 7.529411764705882
+  },
+  {
+    "municipio": "Ospina",
+    "pct_vulnerable": 63.96,
+    "n_eventos": 20,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Francisco Pizarro",
+    "pct_vulnerable": 91.28,
+    "n_eventos": 5,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Policarpa",
+    "pct_vulnerable": 60.11,
+    "n_eventos": 33,
+    "impacto_normalizado": 0.6363636363636364
+  },
+  {
+    "municipio": "Providencia",
+    "pct_vulnerable": 81.13,
+    "n_eventos": 25,
+    "impacto_normalizado": 44.2
+  },
+  {
+    "municipio": "Puerres",
+    "pct_vulnerable": 73.5,
+    "n_eventos": 13,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Pupiales",
+    "pct_vulnerable": 54.04,
+    "n_eventos": 8,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Ricaurte",
+    "pct_vulnerable": 64.83,
+    "n_eventos": 100,
+    "impacto_normalizado": 0.17
+  },
+  {
+    "municipio": "Samaniego",
+    "pct_vulnerable": 34.09,
+    "n_eventos": 43,
+    "impacto_normalizado": 0.06976744186046512
+  },
+  {
+    "municipio": "San Bernardo",
+    "pct_vulnerable": 54.68,
+    "n_eventos": 63,
+    "impacto_normalizado": 0.3968253968253968
+  },
+  {
+    "municipio": "San Lorenzo",
+    "pct_vulnerable": 80.36,
+    "n_eventos": 37,
+    "impacto_normalizado": 0.7567567567567568
+  },
+  {
+    "municipio": "San Pablo",
+    "pct_vulnerable": 44.21,
+    "n_eventos": 60,
+    "impacto_normalizado": 0.4666666666666667
+  },
+  {
+    "municipio": "San Pedro De Cartago",
+    "pct_vulnerable": 75.27,
+    "n_eventos": 5,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Santacruz",
+    "pct_vulnerable": 67.67,
+    "n_eventos": 24,
+    "impacto_normalizado": 0.041666666666666664
+  },
+  {
+    "municipio": "Sapuyes",
+    "pct_vulnerable": 26.75,
+    "n_eventos": 12,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Taminango",
+    "pct_vulnerable": 47.13,
+    "n_eventos": 28,
+    "impacto_normalizado": 0.03571428571428571
+  },
+  {
+    "municipio": "Tangua",
+    "pct_vulnerable": 72.79,
+    "n_eventos": 26,
+    "impacto_normalizado": 0.5384615384615384
+  },
+  {
+    "municipio": "Yacuanquer",
+    "pct_vulnerable": 75.23,
+    "n_eventos": 21,
+    "impacto_normalizado": 0.19047619047619047
+  },
+  {
+    "municipio": "Arboledas",
+    "pct_vulnerable": 68.28,
+    "n_eventos": 77,
+    "impacto_normalizado": 0.23376623376623376
+  },
+  {
+    "municipio": "Bochalema",
+    "pct_vulnerable": 29.35,
+    "n_eventos": 50,
+    "impacto_normalizado": 0.12
+  },
+  {
+    "municipio": "Bucarasica",
+    "pct_vulnerable": 66.39,
+    "n_eventos": 86,
+    "impacto_normalizado": 0.08139534883720931
+  },
+  {
+    "municipio": "Cucutilla",
+    "pct_vulnerable": 84.66,
+    "n_eventos": 49,
+    "impacto_normalizado": 0.3877551020408163
+  },
+  {
+    "municipio": "Durania",
+    "pct_vulnerable": 57.91,
+    "n_eventos": 38,
+    "impacto_normalizado": 0.05263157894736842
+  },
+  {
+    "municipio": "El Carmen",
+    "pct_vulnerable": 78.88,
+    "n_eventos": 29,
+    "impacto_normalizado": 0.13793103448275862
+  },
+  {
+    "municipio": "El Tarra",
+    "pct_vulnerable": 47.31,
+    "n_eventos": 25,
+    "impacto_normalizado": 0.08
+  },
+  {
+    "municipio": "El Zulia",
+    "pct_vulnerable": 36.84,
+    "n_eventos": 56,
+    "impacto_normalizado": 1.2678571428571428
+  },
+  {
+    "municipio": "Gramalote",
+    "pct_vulnerable": 71.99,
+    "n_eventos": 53,
+    "impacto_normalizado": 0.07547169811320754
+  },
+  {
+    "municipio": "Labateca",
+    "pct_vulnerable": 58.75,
+    "n_eventos": 26,
+    "impacto_normalizado": 0.038461538461538464
+  },
+  {
+    "municipio": "La Esperanza",
+    "pct_vulnerable": 42.31,
+    "n_eventos": 51,
+    "impacto_normalizado": 0.29411764705882354
+  },
+  {
+    "municipio": "La Playa",
+    "pct_vulnerable": 72.12,
+    "n_eventos": 25,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Los Patios",
+    "pct_vulnerable": 17.19,
+    "n_eventos": 43,
+    "impacto_normalizado": 0.3953488372093023
+  },
+  {
+    "municipio": "Lourdes",
+    "pct_vulnerable": 46.65,
+    "n_eventos": 13,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Mutiscua",
+    "pct_vulnerable": 41.4,
+    "n_eventos": 31,
+    "impacto_normalizado": 0.16129032258064516
+  },
+  {
+    "municipio": "Ocaña",
+    "pct_vulnerable": 45.14,
+    "n_eventos": 124,
+    "impacto_normalizado": 0.03225806451612903
+  },
+  {
+    "municipio": "Pamplona",
+    "pct_vulnerable": 36.68,
+    "n_eventos": 72,
+    "impacto_normalizado": 0.013888888888888888
+  },
+  {
+    "municipio": "Pamplonita",
+    "pct_vulnerable": 32.49,
+    "n_eventos": 41,
+    "impacto_normalizado": 0.0975609756097561
+  },
+  {
+    "municipio": "Puerto Santander",
+    "pct_vulnerable": 7.48,
+    "n_eventos": 12,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Ragonvalia",
+    "pct_vulnerable": 35.61,
+    "n_eventos": 18,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Salazar",
+    "pct_vulnerable": 50.54,
+    "n_eventos": 57,
+    "impacto_normalizado": 0.07017543859649122
+  },
+  {
+    "municipio": "San Calixto",
+    "pct_vulnerable": 84.88,
+    "n_eventos": 46,
+    "impacto_normalizado": 0.08695652173913043
+  },
+  {
+    "municipio": "San Cayetano",
+    "pct_vulnerable": 31.65,
+    "n_eventos": 47,
+    "impacto_normalizado": 0.2553191489361702
+  },
+  {
+    "municipio": "Santiago",
+    "pct_vulnerable": 49.57,
+    "n_eventos": 38,
+    "impacto_normalizado": 0.15789473684210525
+  },
+  {
+    "municipio": "Sardinata",
+    "pct_vulnerable": 40.19,
+    "n_eventos": 46,
+    "impacto_normalizado": 0.6086956521739131
+  },
+  {
+    "municipio": "Silos",
+    "pct_vulnerable": 41.42,
+    "n_eventos": 34,
+    "impacto_normalizado": 0.38235294117647056
+  },
+  {
+    "municipio": "Teorama",
+    "pct_vulnerable": 75.07,
+    "n_eventos": 26,
+    "impacto_normalizado": 0.23076923076923078
+  },
+  {
+    "municipio": "Toledo",
+    "pct_vulnerable": 48.83,
+    "n_eventos": 104,
+    "impacto_normalizado": 0.0673076923076923
+  },
+  {
+    "municipio": "Villa Caro",
+    "pct_vulnerable": 80.35,
+    "n_eventos": 37,
+    "impacto_normalizado": 0.02702702702702703
+  },
+  {
+    "municipio": "Villa Del Rosario",
+    "pct_vulnerable": 20,
+    "n_eventos": 33,
+    "impacto_normalizado": 0.09090909090909091
+  },
+  {
+    "municipio": "Armenia",
+    "pct_vulnerable": 20.41,
+    "n_eventos": 121,
+    "impacto_normalizado": 3.8925619834710745
+  },
+  {
+    "municipio": "Buenavista",
+    "pct_vulnerable": 14.11,
+    "n_eventos": 39,
+    "impacto_normalizado": 0.2564102564102564
+  },
+  {
+    "municipio": "Circasia",
+    "pct_vulnerable": 24.24,
+    "n_eventos": 24,
+    "impacto_normalizado": 0.08333333333333333
+  },
+  {
+    "municipio": "Filandia",
+    "pct_vulnerable": 28.94,
+    "n_eventos": 23,
+    "impacto_normalizado": 0.043478260869565216
+  },
+  {
+    "municipio": "La Tebaida",
+    "pct_vulnerable": 17.12,
+    "n_eventos": 48,
+    "impacto_normalizado": 0.125
+  },
+  {
+    "municipio": "Montenegro",
+    "pct_vulnerable": 36.17,
+    "n_eventos": 33,
+    "impacto_normalizado": 1.2424242424242424
+  },
+  {
+    "municipio": "Pijao",
+    "pct_vulnerable": 36.11,
+    "n_eventos": 57,
+    "impacto_normalizado": 0.017543859649122806
+  },
+  {
+    "municipio": "Quimbaya",
+    "pct_vulnerable": 21.5,
+    "n_eventos": 26,
+    "impacto_normalizado": 0.23076923076923078
+  },
+  {
+    "municipio": "Salento",
+    "pct_vulnerable": 29.96,
+    "n_eventos": 43,
+    "impacto_normalizado": 0.2558139534883721
+  },
+  {
+    "municipio": "Pereira",
+    "pct_vulnerable": 26.48,
+    "n_eventos": 288,
+    "impacto_normalizado": 1.3680555555555556
+  },
+  {
+    "municipio": "Balboa",
+    "pct_vulnerable": 40.18,
+    "n_eventos": 188,
+    "impacto_normalizado": 0.10106382978723404
+  },
+  {
+    "municipio": "Dosquebradas",
+    "pct_vulnerable": 18.42,
+    "n_eventos": 164,
+    "impacto_normalizado": 0.14634146341463414
+  },
+  {
+    "municipio": "La Celia",
+    "pct_vulnerable": 42.17,
+    "n_eventos": 89,
+    "impacto_normalizado": 0.056179775280898875
+  },
+  {
+    "municipio": "La Virginia",
+    "pct_vulnerable": 14.41,
+    "n_eventos": 50,
+    "impacto_normalizado": 0.12
+  },
+  {
+    "municipio": "Marsella",
+    "pct_vulnerable": 37.56,
+    "n_eventos": 84,
+    "impacto_normalizado": 0.03571428571428571
+  },
+  {
+    "municipio": "Pueblo Rico",
+    "pct_vulnerable": 40.5,
+    "n_eventos": 69,
+    "impacto_normalizado": 1.6376811594202898
+  },
+  {
+    "municipio": "Santa Rosa De Cabal",
+    "pct_vulnerable": 29.77,
+    "n_eventos": 117,
+    "impacto_normalizado": 1.1111111111111112
+  },
+  {
+    "municipio": "Santuario",
+    "pct_vulnerable": 54.8,
+    "n_eventos": 52,
+    "impacto_normalizado": 0.1346153846153846
+  },
+  {
+    "municipio": "Bucaramanga",
+    "pct_vulnerable": 12.34,
+    "n_eventos": 258,
+    "impacto_normalizado": 0.1434108527131783
+  },
+  {
+    "municipio": "Aguada",
+    "pct_vulnerable": 61.48,
+    "n_eventos": 5,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Albania",
+    "pct_vulnerable": 82.4,
+    "n_eventos": 44,
+    "impacto_normalizado": 0.1590909090909091
+  },
+  {
+    "municipio": "Aratoca",
+    "pct_vulnerable": 38.46,
+    "n_eventos": 30,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Barbosa",
+    "pct_vulnerable": 18.32,
+    "n_eventos": 77,
+    "impacto_normalizado": 0.36363636363636365
+  },
+  {
+    "municipio": "Barichara",
+    "pct_vulnerable": 57.27,
+    "n_eventos": 25,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Barrancabermeja",
+    "pct_vulnerable": 31.92,
+    "n_eventos": 68,
+    "impacto_normalizado": 0.5441176470588235
+  },
+  {
+    "municipio": "Betulia",
+    "pct_vulnerable": 67.73,
+    "n_eventos": 80,
+    "impacto_normalizado": 0.15
+  },
+  {
+    "municipio": "Cabrera",
+    "pct_vulnerable": 37.25,
+    "n_eventos": 63,
+    "impacto_normalizado": 0.047619047619047616
+  },
+  {
+    "municipio": "California",
+    "pct_vulnerable": 54.55,
+    "n_eventos": 4,
+    "impacto_normalizado": 1.25
+  },
+  {
+    "municipio": "Capitanejo",
+    "pct_vulnerable": 56.21,
+    "n_eventos": 13,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Cerrito",
+    "pct_vulnerable": 35.03,
+    "n_eventos": 21,
+    "impacto_normalizado": 0.09523809523809523
+  },
+  {
+    "municipio": "Charta",
+    "pct_vulnerable": 62.18,
+    "n_eventos": 17,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Chima",
+    "pct_vulnerable": 52.42,
+    "n_eventos": 17,
+    "impacto_normalizado": 0.11764705882352941
+  },
+  {
+    "municipio": "Cimitarra",
+    "pct_vulnerable": 45.67,
+    "n_eventos": 49,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Confines",
+    "pct_vulnerable": 13.98,
+    "n_eventos": 4,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Coromoro",
+    "pct_vulnerable": 52.69,
+    "n_eventos": 20,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "El Guacamayo",
+    "pct_vulnerable": 42.88,
+    "n_eventos": 10,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Encino",
+    "pct_vulnerable": 26.89,
+    "n_eventos": 19,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Enciso",
+    "pct_vulnerable": 42.32,
+    "n_eventos": 14,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Floridablanca",
+    "pct_vulnerable": 30.31,
+    "n_eventos": 39,
+    "impacto_normalizado": 0.46153846153846156
+  },
+  {
+    "municipio": "Guaca",
+    "pct_vulnerable": 56.31,
+    "n_eventos": 18,
+    "impacto_normalizado": 0.05555555555555555
+  },
+  {
+    "municipio": "Guadalupe",
+    "pct_vulnerable": 20.18,
+    "n_eventos": 51,
+    "impacto_normalizado": 0.17647058823529413
+  },
+  {
+    "municipio": "Hato",
+    "pct_vulnerable": 36.78,
+    "n_eventos": 14,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "La Belleza",
+    "pct_vulnerable": 58.39,
+    "n_eventos": 11,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "La Paz",
+    "pct_vulnerable": 56.08,
+    "n_eventos": 37,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Lebrija",
+    "pct_vulnerable": 16.93,
+    "n_eventos": 40,
+    "impacto_normalizado": 0.1
+  },
+  {
+    "municipio": "Los Santos",
+    "pct_vulnerable": 36.83,
+    "n_eventos": 56,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Macaravita",
+    "pct_vulnerable": 63.89,
+    "n_eventos": 10,
+    "impacto_normalizado": 0.6
+  },
+  {
+    "municipio": "Matanza",
+    "pct_vulnerable": 62.38,
+    "n_eventos": 32,
+    "impacto_normalizado": 0.09375
+  },
+  {
+    "municipio": "Mogotes",
+    "pct_vulnerable": 49.93,
+    "n_eventos": 36,
+    "impacto_normalizado": 0.027777777777777776
+  },
+  {
+    "municipio": "Molagavita",
+    "pct_vulnerable": 79.84,
+    "n_eventos": 10,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Ocamonte",
+    "pct_vulnerable": 37.48,
+    "n_eventos": 19,
+    "impacto_normalizado": 0.15789473684210525
+  },
+  {
+    "municipio": "Oiba",
+    "pct_vulnerable": 23.22,
+    "n_eventos": 21,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Onzaga",
+    "pct_vulnerable": 62.05,
+    "n_eventos": 22,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Palmar",
+    "pct_vulnerable": 45.04,
+    "n_eventos": 7,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Palmas Del Socorro",
+    "pct_vulnerable": 14.48,
+    "n_eventos": 9,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Piedecuesta",
+    "pct_vulnerable": 13.54,
+    "n_eventos": 73,
+    "impacto_normalizado": 0.2191780821917808
+  },
+  {
+    "municipio": "Pinchote",
+    "pct_vulnerable": 20.45,
+    "n_eventos": 7,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Puente Nacional",
+    "pct_vulnerable": 30.32,
+    "n_eventos": 10,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Puerto Parra",
+    "pct_vulnerable": 39.46,
+    "n_eventos": 22,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Puerto Wilches",
+    "pct_vulnerable": 25.75,
+    "n_eventos": 73,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Rionegro",
+    "pct_vulnerable": 33.66,
+    "n_eventos": 119,
+    "impacto_normalizado": 0.19327731092436976
+  },
+  {
+    "municipio": "Sabana De Torres",
+    "pct_vulnerable": 30.12,
+    "n_eventos": 133,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "San Benito",
+    "pct_vulnerable": 7.28,
+    "n_eventos": 10,
+    "impacto_normalizado": 0.3
+  },
+  {
+    "municipio": "San Gil",
+    "pct_vulnerable": 20.45,
+    "n_eventos": 15,
+    "impacto_normalizado": 0.3333333333333333
+  },
+  {
+    "municipio": "San Miguel",
+    "pct_vulnerable": 56.46,
+    "n_eventos": 25,
+    "impacto_normalizado": 0.52
+  },
+  {
+    "municipio": "Simacota",
+    "pct_vulnerable": 48.26,
+    "n_eventos": 27,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Socorro",
+    "pct_vulnerable": 13.71,
+    "n_eventos": 16,
+    "impacto_normalizado": 0.125
+  },
+  {
+    "municipio": "Suaita",
+    "pct_vulnerable": 44.68,
+    "n_eventos": 13,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Sucre",
+    "pct_vulnerable": 80.16,
+    "n_eventos": 91,
+    "impacto_normalizado": 0.8461538461538461
+  },
+  {
+    "municipio": "Tona",
+    "pct_vulnerable": 35.81,
+    "n_eventos": 26,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Vetas",
+    "pct_vulnerable": 33.1,
+    "n_eventos": 2,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Villanueva",
+    "pct_vulnerable": 63.08,
+    "n_eventos": 96,
+    "impacto_normalizado": 0.041666666666666664
+  },
+  {
+    "municipio": "Zapatoca",
+    "pct_vulnerable": 57.24,
+    "n_eventos": 34,
+    "impacto_normalizado": 0.029411764705882353
+  },
+  {
+    "municipio": "Sincelejo",
+    "pct_vulnerable": 30.52,
+    "n_eventos": 27,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Buenavista",
+    "pct_vulnerable": 17.76,
+    "n_eventos": 39,
+    "impacto_normalizado": 0.2564102564102564
+  },
+  {
+    "municipio": "Caimito",
+    "pct_vulnerable": 35.29,
+    "n_eventos": 28,
+    "impacto_normalizado": 0.03571428571428571
+  },
+  {
+    "municipio": "Corozal",
+    "pct_vulnerable": 38.94,
+    "n_eventos": 14,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Coveñas",
+    "pct_vulnerable": 23.3,
+    "n_eventos": 43,
+    "impacto_normalizado": 0.06976744186046512
+  },
+  {
+    "municipio": "El Roble",
+    "pct_vulnerable": 41.19,
+    "n_eventos": 5,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Galeras",
+    "pct_vulnerable": 18.98,
+    "n_eventos": 22,
+    "impacto_normalizado": 0.09090909090909091
+  },
+  {
+    "municipio": "Guaranda",
+    "pct_vulnerable": 37.78,
+    "n_eventos": 28,
+    "impacto_normalizado": 0.14285714285714285
+  },
+  {
+    "municipio": "Los Palmitos",
+    "pct_vulnerable": 14.78,
+    "n_eventos": 5,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Majagual",
+    "pct_vulnerable": 58.83,
+    "n_eventos": 26,
+    "impacto_normalizado": 0.19230769230769232
+  },
+  {
+    "municipio": "Morroa",
+    "pct_vulnerable": 32.67,
+    "n_eventos": 3,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Ovejas",
+    "pct_vulnerable": 34.53,
+    "n_eventos": 34,
+    "impacto_normalizado": 2.5
+  },
+  {
+    "municipio": "Palmito",
+    "pct_vulnerable": 43.96,
+    "n_eventos": 4,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "San Benito Abad",
+    "pct_vulnerable": 30.32,
+    "n_eventos": 18,
+    "impacto_normalizado": 0.05555555555555555
+  },
+  {
+    "municipio": "San Juan De Betulia",
+    "pct_vulnerable": 28.37,
+    "n_eventos": 2,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "San Marcos",
+    "pct_vulnerable": 21.13,
+    "n_eventos": 56,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "San Onofre",
+    "pct_vulnerable": 34.33,
+    "n_eventos": 18,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "San Pedro",
+    "pct_vulnerable": 28.24,
+    "n_eventos": 28,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Sucre",
+    "pct_vulnerable": 54.7,
+    "n_eventos": 91,
+    "impacto_normalizado": 0.8461538461538461
+  },
+  {
+    "municipio": "Alpujarra",
+    "pct_vulnerable": 65.22,
+    "n_eventos": 22,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Alvarado",
+    "pct_vulnerable": 54.68,
+    "n_eventos": 72,
+    "impacto_normalizado": 0.027777777777777776
+  },
+  {
+    "municipio": "Ambalema",
+    "pct_vulnerable": 28.32,
+    "n_eventos": 19,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Armero",
+    "pct_vulnerable": 14.64,
+    "n_eventos": 26,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Ataco",
+    "pct_vulnerable": 64.5,
+    "n_eventos": 46,
+    "impacto_normalizado": 0.1956521739130435
+  },
+  {
+    "municipio": "Cajamarca",
+    "pct_vulnerable": 21.11,
+    "n_eventos": 37,
+    "impacto_normalizado": 0.16216216216216217
+  },
+  {
+    "municipio": "Casabianca",
+    "pct_vulnerable": 50.76,
+    "n_eventos": 37,
+    "impacto_normalizado": 0.4594594594594595
+  },
+  {
+    "municipio": "Chaparral",
+    "pct_vulnerable": 59.97,
+    "n_eventos": 136,
+    "impacto_normalizado": 0.25
+  },
+  {
+    "municipio": "Coello",
+    "pct_vulnerable": 24.89,
+    "n_eventos": 59,
+    "impacto_normalizado": 0.1016949152542373
+  },
+  {
+    "municipio": "Coyaima",
+    "pct_vulnerable": 62.47,
+    "n_eventos": 52,
+    "impacto_normalizado": 0.15384615384615385
+  },
+  {
+    "municipio": "Cunday",
+    "pct_vulnerable": 66.11,
+    "n_eventos": 22,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Dolores",
+    "pct_vulnerable": 54.86,
+    "n_eventos": 23,
+    "impacto_normalizado": 0.08695652173913043
+  },
+  {
+    "municipio": "Espinal",
+    "pct_vulnerable": 9.17,
+    "n_eventos": 53,
+    "impacto_normalizado": 0.2641509433962264
+  },
+  {
+    "municipio": "Falan",
+    "pct_vulnerable": 35.11,
+    "n_eventos": 7,
+    "impacto_normalizado": 0.2857142857142857
+  },
+  {
+    "municipio": "Flandes",
+    "pct_vulnerable": 16.4,
+    "n_eventos": 15,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Fresno",
+    "pct_vulnerable": 34.92,
+    "n_eventos": 44,
+    "impacto_normalizado": 0.36363636363636365
+  },
+  {
+    "municipio": "Guamo",
+    "pct_vulnerable": 34.65,
+    "n_eventos": 108,
+    "impacto_normalizado": 0.14814814814814814
+  },
+  {
+    "municipio": "Herveo",
+    "pct_vulnerable": 44.81,
+    "n_eventos": 35,
+    "impacto_normalizado": 0.2857142857142857
+  },
+  {
+    "municipio": "Honda",
+    "pct_vulnerable": 14.09,
+    "n_eventos": 54,
+    "impacto_normalizado": 0.1111111111111111
+  },
+  {
+    "municipio": "Icononzo",
+    "pct_vulnerable": 46.13,
+    "n_eventos": 24,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Melgar",
+    "pct_vulnerable": 22.83,
+    "n_eventos": 73,
+    "impacto_normalizado": 0.1917808219178082
+  },
+  {
+    "municipio": "Murillo",
+    "pct_vulnerable": 56.87,
+    "n_eventos": 23,
+    "impacto_normalizado": 0.043478260869565216
+  },
+  {
+    "municipio": "Natagaima",
+    "pct_vulnerable": 69.44,
+    "n_eventos": 58,
+    "impacto_normalizado": 0.05172413793103448
+  },
+  {
+    "municipio": "Ortega",
+    "pct_vulnerable": 53.22,
+    "n_eventos": 153,
+    "impacto_normalizado": 0.0915032679738562
+  },
+  {
+    "municipio": "Palocabildo",
+    "pct_vulnerable": 44.39,
+    "n_eventos": 35,
+    "impacto_normalizado": 0.3142857142857143
+  },
+  {
+    "municipio": "Piedras",
+    "pct_vulnerable": 31.76,
+    "n_eventos": 11,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Planadas",
+    "pct_vulnerable": 47.85,
+    "n_eventos": 37,
+    "impacto_normalizado": 0.10810810810810811
+  },
+  {
+    "municipio": "Prado",
+    "pct_vulnerable": 41.7,
+    "n_eventos": 59,
+    "impacto_normalizado": 0.3559322033898305
+  },
+  {
+    "municipio": "Rioblanco",
+    "pct_vulnerable": 48.04,
+    "n_eventos": 50,
+    "impacto_normalizado": 0.28
+  },
+  {
+    "municipio": "Roncesvalles",
+    "pct_vulnerable": 64.51,
+    "n_eventos": 16,
+    "impacto_normalizado": 0.25
+  },
+  {
+    "municipio": "Rovira",
+    "pct_vulnerable": 48.6,
+    "n_eventos": 33,
+    "impacto_normalizado": 0.2727272727272727
+  },
+  {
+    "municipio": "Saldaña",
+    "pct_vulnerable": 19.33,
+    "n_eventos": 14,
+    "impacto_normalizado": 0.21428571428571427
+  },
+  {
+    "municipio": "San Antonio",
+    "pct_vulnerable": 50.54,
+    "n_eventos": 23,
+    "impacto_normalizado": 0.08695652173913043
+  },
+  {
+    "municipio": "San Luis",
+    "pct_vulnerable": 29.16,
+    "n_eventos": 121,
+    "impacto_normalizado": 0.30578512396694213
+  },
+  {
+    "municipio": "Santa Isabel",
+    "pct_vulnerable": 60.1,
+    "n_eventos": 7,
+    "impacto_normalizado": 0.2857142857142857
+  },
+  {
+    "municipio": "Valle De San Juan",
+    "pct_vulnerable": 48.36,
+    "n_eventos": 20,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Venadillo",
+    "pct_vulnerable": 45.14,
+    "n_eventos": 91,
+    "impacto_normalizado": 0.03296703296703297
+  },
+  {
+    "municipio": "Villahermosa",
+    "pct_vulnerable": 52.33,
+    "n_eventos": 43,
+    "impacto_normalizado": 0.20930232558139536
+  },
+  {
+    "municipio": "Villarrica",
+    "pct_vulnerable": 49.84,
+    "n_eventos": 31,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Ansermanuevo",
+    "pct_vulnerable": 29.4,
+    "n_eventos": 18,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Argelia",
+    "pct_vulnerable": 49.74,
+    "n_eventos": 84,
+    "impacto_normalizado": 0.13095238095238096
+  },
+  {
+    "municipio": "Buenaventura",
+    "pct_vulnerable": 54.18,
+    "n_eventos": 46,
+    "impacto_normalizado": 5.1521739130434785
+  },
+  {
+    "municipio": "Guadalajara De Buga",
+    "pct_vulnerable": 17.35,
+    "n_eventos": 29,
+    "impacto_normalizado": 0.034482758620689655
+  },
+  {
+    "municipio": "Bugalagrande",
+    "pct_vulnerable": 18.49,
+    "n_eventos": 20,
+    "impacto_normalizado": 0.1
+  },
+  {
+    "municipio": "Caicedonia",
+    "pct_vulnerable": 31.73,
+    "n_eventos": 14,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Calima",
+    "pct_vulnerable": 31.58,
+    "n_eventos": 9,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Candelaria",
+    "pct_vulnerable": 7.31,
+    "n_eventos": 26,
+    "impacto_normalizado": 0.038461538461538464
+  },
+  {
+    "municipio": "Cartago",
+    "pct_vulnerable": 17.22,
+    "n_eventos": 17,
+    "impacto_normalizado": 0.23529411764705882
+  },
+  {
+    "municipio": "Dagua",
+    "pct_vulnerable": 41.31,
+    "n_eventos": 62,
+    "impacto_normalizado": 1.596774193548387
+  },
+  {
+    "municipio": "El Cairo",
+    "pct_vulnerable": 79.8,
+    "n_eventos": 8,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "El Cerrito",
+    "pct_vulnerable": 9.49,
+    "n_eventos": 24,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "El Dovio",
+    "pct_vulnerable": 38.72,
+    "n_eventos": 13,
+    "impacto_normalizado": 0.07692307692307693
+  },
+  {
+    "municipio": "Florida",
+    "pct_vulnerable": 7.4,
+    "n_eventos": 32,
+    "impacto_normalizado": 0.0625
+  },
+  {
+    "municipio": "Ginebra",
+    "pct_vulnerable": 27.53,
+    "n_eventos": 24,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "La Cumbre",
+    "pct_vulnerable": 46.78,
+    "n_eventos": 6,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "La Victoria",
+    "pct_vulnerable": 18.3,
+    "n_eventos": 3,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Obando",
+    "pct_vulnerable": 21.66,
+    "n_eventos": 29,
+    "impacto_normalizado": 0.10344827586206896
+  },
+  {
+    "municipio": "Palmira",
+    "pct_vulnerable": 5.85,
+    "n_eventos": 55,
+    "impacto_normalizado": 0.23636363636363636
+  },
+  {
+    "municipio": "Pradera",
+    "pct_vulnerable": 17.11,
+    "n_eventos": 22,
+    "impacto_normalizado": 0.045454545454545456
+  },
+  {
+    "municipio": "Restrepo",
+    "pct_vulnerable": 38.12,
+    "n_eventos": 55,
+    "impacto_normalizado": 0.05454545454545454
+  },
+  {
+    "municipio": "Roldanillo",
+    "pct_vulnerable": 17.13,
+    "n_eventos": 35,
+    "impacto_normalizado": 0.05714285714285714
+  },
+  {
+    "municipio": "San Pedro",
+    "pct_vulnerable": 12,
+    "n_eventos": 28,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Sevilla",
+    "pct_vulnerable": 43.17,
+    "n_eventos": 22,
+    "impacto_normalizado": 0.09090909090909091
+  },
+  {
+    "municipio": "Toro",
+    "pct_vulnerable": 56.85,
+    "n_eventos": 26,
+    "impacto_normalizado": 1.9615384615384615
+  },
+  {
+    "municipio": "Trujillo",
+    "pct_vulnerable": 43.73,
+    "n_eventos": 19,
+    "impacto_normalizado": 0.3684210526315789
+  },
+  {
+    "municipio": "Ulloa",
+    "pct_vulnerable": 27.48,
+    "n_eventos": 1,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Versalles",
+    "pct_vulnerable": 66.57,
+    "n_eventos": 9,
+    "impacto_normalizado": 0.1111111111111111
+  },
+  {
+    "municipio": "Vijes",
+    "pct_vulnerable": 33.33,
+    "n_eventos": 9,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Yotoco",
+    "pct_vulnerable": 23.01,
+    "n_eventos": 39,
+    "impacto_normalizado": 0.02564102564102564
+  },
+  {
+    "municipio": "Yumbo",
+    "pct_vulnerable": 28.58,
+    "n_eventos": 71,
+    "impacto_normalizado": 0.028169014084507043
+  },
+  {
+    "municipio": "Zarzal",
+    "pct_vulnerable": 13.81,
+    "n_eventos": 11,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Arauca",
+    "pct_vulnerable": 53.96,
+    "n_eventos": 224,
+    "impacto_normalizado": 0.04017857142857143
+  },
+  {
+    "municipio": "Arauquita",
+    "pct_vulnerable": 62.23,
+    "n_eventos": 57,
+    "impacto_normalizado": 1.2982456140350878
+  },
+  {
+    "municipio": "Cravo Norte",
+    "pct_vulnerable": 73.28,
+    "n_eventos": 41,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Fortul",
+    "pct_vulnerable": 57.57,
+    "n_eventos": 10,
+    "impacto_normalizado": 5.4
+  },
+  {
+    "municipio": "Saravena",
+    "pct_vulnerable": 61.09,
+    "n_eventos": 39,
+    "impacto_normalizado": 0.5128205128205128
+  },
+  {
+    "municipio": "Tame",
+    "pct_vulnerable": 57.69,
+    "n_eventos": 50,
+    "impacto_normalizado": 0.26
+  },
+  {
+    "municipio": "Yopal",
+    "pct_vulnerable": 39.38,
+    "n_eventos": 259,
+    "impacto_normalizado": 0.015444015444015444
+  },
+  {
+    "municipio": "Aguazul",
+    "pct_vulnerable": 9.01,
+    "n_eventos": 220,
+    "impacto_normalizado": 0.013636363636363636
+  },
+  {
+    "municipio": "Hato Corozal",
+    "pct_vulnerable": 40.44,
+    "n_eventos": 74,
+    "impacto_normalizado": 0.0945945945945946
+  },
+  {
+    "municipio": "La Salina",
+    "pct_vulnerable": 52.97,
+    "n_eventos": 10,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Monterrey",
+    "pct_vulnerable": 12.65,
+    "n_eventos": 55,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Paz De Ariporo",
+    "pct_vulnerable": 28.39,
+    "n_eventos": 106,
+    "impacto_normalizado": 0.14150943396226415
+  },
+  {
+    "municipio": "Pore",
+    "pct_vulnerable": 31.12,
+    "n_eventos": 117,
+    "impacto_normalizado": 0.27350427350427353
+  },
+  {
+    "municipio": "Recetor",
+    "pct_vulnerable": 66.67,
+    "n_eventos": 7,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Sabanalarga",
+    "pct_vulnerable": 11.89,
+    "n_eventos": 141,
+    "impacto_normalizado": 0.02127659574468085
+  },
+  {
+    "municipio": "San Luis De Palenque",
+    "pct_vulnerable": 27.46,
+    "n_eventos": 49,
+    "impacto_normalizado": 0.02040816326530612
+  },
+  {
+    "municipio": "Tauramena",
+    "pct_vulnerable": 19.77,
+    "n_eventos": 24,
+    "impacto_normalizado": 0.041666666666666664
+  },
+  {
+    "municipio": "Trinidad",
+    "pct_vulnerable": 20.17,
+    "n_eventos": 52,
+    "impacto_normalizado": 0.038461538461538464
+  },
+  {
+    "municipio": "Villanueva",
+    "pct_vulnerable": 20.82,
+    "n_eventos": 96,
+    "impacto_normalizado": 0.041666666666666664
+  },
+  {
+    "municipio": "Mocoa",
+    "pct_vulnerable": 44.48,
+    "n_eventos": 40,
+    "impacto_normalizado": 0.425
+  },
+  {
+    "municipio": "Orito",
+    "pct_vulnerable": 65.72,
+    "n_eventos": 22,
+    "impacto_normalizado": 0.18181818181818182
+  },
+  {
+    "municipio": "Puerto Caicedo",
+    "pct_vulnerable": 55.64,
+    "n_eventos": 20,
+    "impacto_normalizado": 0.05
+  },
+  {
+    "municipio": "Sibundoy",
+    "pct_vulnerable": 25.08,
+    "n_eventos": 20,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "San Francisco",
+    "pct_vulnerable": 49.53,
+    "n_eventos": 127,
+    "impacto_normalizado": 0.11811023622047244
+  },
+  {
+    "municipio": "San Miguel",
+    "pct_vulnerable": 59.24,
+    "n_eventos": 25,
+    "impacto_normalizado": 0.52
+  },
+  {
+    "municipio": "Santiago",
+    "pct_vulnerable": 29.2,
+    "n_eventos": 38,
+    "impacto_normalizado": 0.15789473684210525
+  },
+  {
+    "municipio": "Valle Del Guamuez",
+    "pct_vulnerable": 50.95,
+    "n_eventos": 21,
+    "impacto_normalizado": 0.19047619047619047
+  },
+  {
+    "municipio": "Providencia",
+    "pct_vulnerable": 57.17,
+    "n_eventos": 25,
+    "impacto_normalizado": 44.2
+  },
+  {
+    "municipio": "Leticia",
+    "pct_vulnerable": 54.26,
+    "n_eventos": 44,
+    "impacto_normalizado": 0.13636363636363635
+  },
+  {
+    "municipio": "Inírida",
+    "pct_vulnerable": 43.29,
+    "n_eventos": 7,
+    "impacto_normalizado": 0.42857142857142855
+  },
+  {
+    "municipio": "Calamar",
+    "pct_vulnerable": 90.95,
+    "n_eventos": 27,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "El Retorno",
+    "pct_vulnerable": 72.94,
+    "n_eventos": 3,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Miraflores",
+    "pct_vulnerable": 91.83,
+    "n_eventos": 52,
+    "impacto_normalizado": 0.057692307692307696
+  },
+  {
+    "municipio": "Puerto Carreño",
+    "pct_vulnerable": 46.44,
+    "n_eventos": 258,
+    "impacto_normalizado": 0.007751937984496124
+  },
+  {
+    "municipio": "La Primavera",
+    "pct_vulnerable": 40.3,
+    "n_eventos": 48,
+    "impacto_normalizado": 0.0
+  },
+  {
+    "municipio": "Cumaribo",
+    "pct_vulnerable": 67.93,
+    "n_eventos": 49,
+    "impacto_normalizado": 0.22448979591836735
+  }
+]
