@@ -48,6 +48,7 @@ class EspectroDiseno(BaseModel):
     SD1: float
     T0:  float
     Ts:  float
+    TL:  float
 
 
 class AnalisisNudoResponse(BaseModel):

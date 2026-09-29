@@ -176,6 +176,7 @@ async def analizar_nudo(
                 "SD1": round(esp["SD1"], 4),
                 "T0":  round(esp["T0"],  4),
                 "Ts":  round(esp["Ts"],  4),
+                "TL":  round(esp["TL"],  4),
             },
             Vs_basal_kN=round(resultado["Vs_basal_N"] / 1000, 2),
             Vu_sismo_kN=round(resultado["Vu_sismo_N"] / 1000, 2),

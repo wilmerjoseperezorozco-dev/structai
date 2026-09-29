@@ -17,7 +17,7 @@ import numpy as np
 import pytest
 
 from src.infracortex_core import InfracortexEngine
-from src.load_engine import calcular_demanda_cortante_nudo, chequeo_nsr10_nudo, ZONA_SISMICA_ATLANTICO, CARGAS_GRAVEDAD_DEFAULT
+from src.load_engine import calcular_demanda_cortante_nudo, chequeo_nsr10_nudo, ZONA_SISMICA_ATLANTICO, CARGAS_GRAVEDAD_DEFAULT, _espectro, _sa
 from src.vision_engine import InfracortexVisionSensor, DeteccionEstribo, ResultadoEspaciado
 
 PROPS_CONCRETO = {"fc": 28.0, "fy": 420.0, "b": 300.0, "h": 300.0, "d": 265.0, "Av": 56.5, "s": 75.0}
@@ -114,6 +114,32 @@ def test_chequeo_nsr10_nudo_falla_cuando_demanda_supera_capacidad():
     chequeo = chequeo_nsr10_nudo(PROPS_CONCRETO, Vu_N=200_000.0)  # 200 kN >> 116.52 kN disponibles
     assert chequeo["cumple"] is False
     assert chequeo["margen_pct"] < 0
+
+
+def test_espectro_nsr10_A_2_6_valores_oficiales():
+    """Regresión (2026-09-30): la version anterior de _espectro()/_sa()
+    usaba la convencion ASCE7/IBC (Ts=SD1/SDS con SD1=Av*Fv*I) en vez de
+    las ecuaciones oficiales NSR-10 A.2.6 -- daba TC=0.40*Av*Fv/(Aa*Fa)
+    en vez del 0.48 real (A.2.6-2) y omitia el factor 1.2 de la ecuacion
+    A.2.6-1, subestimando Sa hasta ~17% para T>TC. El caso de 3 pisos ya
+    cubierto en test_calcular_demanda_cortante_nudo_valores_reales cae
+    en la meseta (T=0.3396 < TC=0.96) y NUNCA ejercito el bug -- por eso
+    quedo invisible. Este test cubre las 3 ramas reales con la zona
+    sismica del Atlantico ya usada en el resto del archivo."""
+    esp = _espectro(ZONA_SISMICA_ATLANTICO)
+
+    assert esp["SDS"] == pytest.approx(0.45, abs=1e-4)
+    assert esp["SD1"] == pytest.approx(0.432, abs=1e-4)   # 1.2*Av*Fv*I -- antes 0.36 (sin el 1.2)
+    assert esp["Ts"] == pytest.approx(0.96, abs=1e-4)     # TC real -- antes 0.80
+    assert esp["TL"] == pytest.approx(4.32, abs=1e-4)     # ausente antes
+
+    # Meseta (T <= TC)
+    assert _sa(0.3396, esp) == pytest.approx(0.45, abs=1e-4)
+    assert _sa(0.96, esp) == pytest.approx(0.45, abs=1e-4)
+    # Rama descendente 1.2*Av*Fv*I/T (TC < T <= TL) -- la que tenia el bug del 20%
+    assert _sa(2.0, esp) == pytest.approx(0.216, abs=1e-4)
+    # Rama de periodo largo 1.2*Av*Fv*I*TL/T^2 (T > TL) -- antes inexistente
+    assert _sa(5.0, esp) == pytest.approx(0.07465, abs=1e-4)
 
 
 # ── vision_engine — inspección de estribos ───────────────────────────────────

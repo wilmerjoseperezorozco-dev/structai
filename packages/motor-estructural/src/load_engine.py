@@ -28,19 +28,48 @@ CARGAS_GRAVEDAD_DEFAULT: dict = {
 
 
 def _espectro(p: dict) -> dict:
-    SDS = 2.5 * p["Aa"] * p["Fa"] * p["I"]
-    SD1 = p["Av"] * p["Fv"] * p["I"]
-    T0  = 0.2 * SD1 / SDS
-    Ts  = SD1 / SDS
-    return {"SDS": SDS, "SD1": SD1, "T0": T0, "Ts": Ts}
+    """Espectro elastico de aceleraciones NSR-10 A.2.6 (formulas
+    verbatim, ver NSR10-A2-A_2_6_r1/r2/r3 en nsr10_chunks). Corregido
+    2026-09-30: la version anterior usaba la convencion ASCE7/IBC
+    (SDS/SD1/T0=0.2*SD1/SDS/Ts=SD1/SDS) en vez de las ecuaciones
+    oficiales colombianas -- daba un periodo de transicion
+    Ts=0.40*Av*Fv/(Aa*Fa), distinto del TC=0.48*Av*Fv/(Aa*Fa) real
+    (ecuacion A.2.6-2), y omitia el factor 1.2 de la ecuacion A.2.6-1
+    (Sa=1.2*Av*Fv*I/T), subestimando Sa hasta ~17% para periodos largos
+    -- un error del lado inseguro (no conservador) para edificios de
+    periodo medio/alto, justo donde mas importa. Los nombres de campo
+    (SDS/SD1/T0/Ts) se mantienen por compatibilidad con EspectroDiseno
+    (schema real de /estructural/analizar-nudo), pero SD1 y Ts ahora
+    contienen los valores NSR-10 correctos (1.2*Av*Fv*I y TC), no los
+    de la convencion estadounidense.
+
+    La rama T<T0 (ecuaciones A.2.6-6/7) es exclusiva de modos SUPERIORES
+    en analisis dinamico segun el propio texto verificado de la norma
+    (NSR10-A2-A_2_6_r3: "solo para modos diferentes al fundamental") --
+    no se usa en _sa(), donde T es el periodo FUNDAMENTAL para fuerza
+    estatica equivalente. T0 se calcula con su formula real (A.2.6-6)
+    solo por completitud del schema, no se aplica como rama en _sa().
+    TL (A.2.6-4) es la rama de periodo largo, ausente antes -- ahora
+    implementada (ecuacion A.2.6-5)."""
+    Aa, Av, Fa, Fv, I = p["Aa"], p["Av"], p["Fa"], p["Fv"], p["I"]
+    SDS = 2.5 * Aa * Fa * I
+    SD1 = 1.2 * Av * Fv * I
+    T0  = 0.1 * Aa * Fa / (Av * Fv)   # A.2.6-6 -- informativo, no usado en _sa()
+    Ts  = 0.48 * Av * Fv / (Aa * Fa)  # TC real, A.2.6-2
+    TL  = 2.4 * Fv                    # A.2.6-4
+    return {"SDS": SDS, "SD1": SD1, "T0": T0, "Ts": Ts, "TL": TL}
 
 
 def _sa(T: float, esp: dict) -> float:
-    if T < esp["T0"]:
-        return esp["SDS"] * (0.4 + 0.6 * T / esp["T0"])
-    elif T <= esp["Ts"]:
+    """T es el periodo fundamental -- la rama T<T0 no aplica (ver
+    docstring de _espectro). T<=Ts(=TC real): meseta constante
+    (A.2.6-3). Ts<T<=TL: rama descendente 1/T (A.2.6-1). T>TL: rama de
+    periodo largo 1/T^2 (A.2.6-5)."""
+    if T <= esp["Ts"]:
         return esp["SDS"]
-    return esp["SD1"] / T
+    elif T <= esp["TL"]:
+        return esp["SD1"] / T
+    return esp["SD1"] * esp["TL"] / T**2
 
 
 def _periodo(p: dict, h_mm: float) -> float:
