@@ -1,0 +1,1166 @@
+{
+  "grupo_alto": [
+    {
+      "municipio": "BOGOTA, D.C.",
+      "geologia": 186,
+      "distancia_cauce_m": 6137.944341836571
+    },
+    {
+      "municipio": "BALBOA",
+      "geologia": 110,
+      "distancia_cauce_m": 5626.571144136057
+    },
+    {
+      "municipio": "LA VEGA",
+      "geologia": 60,
+      "distancia_cauce_m": 7019.457444863686
+    },
+    {
+      "municipio": "BUCARASICA",
+      "geologia": 14,
+      "distancia_cauce_m": 2091.697449183492
+    },
+    {
+      "municipio": "PEREIRA",
+      "geologia": 182,
+      "distancia_cauce_m": 1634.5897352678974
+    },
+    {
+      "municipio": "LA PLATA",
+      "geologia": 187,
+      "distancia_cauce_m": 315.7850436173616
+    },
+    {
+      "municipio": "SAN FRANCISCO",
+      "geologia": 93,
+      "distancia_cauce_m": 14129.495880094764
+    },
+    {
+      "municipio": "EL TAMBO",
+      "geologia": 182,
+      "distancia_cauce_m": 11937.673774507097
+    },
+    {
+      "municipio": "OCAÑA",
+      "geologia": 42,
+      "distancia_cauce_m": 3844.323899473046
+    },
+    {
+      "municipio": "PACHO",
+      "geologia": 93,
+      "distancia_cauce_m": 140.13557701930404
+    },
+    {
+      "municipio": "TOLEDO",
+      "geologia": 131,
+      "distancia_cauce_m": 3343.2419851755712
+    },
+    {
+      "municipio": "LA PEÑA",
+      "geologia": 79,
+      "distancia_cauce_m": 1749.9463903054407
+    },
+    {
+      "municipio": "VENECIA",
+      "geologia": 142,
+      "distancia_cauce_m": 9859.667319822292
+    },
+    {
+      "municipio": "SANTA MARIA",
+      "geologia": 47,
+      "distancia_cauce_m": 543.1256693543428
+    },
+    {
+      "municipio": "ARBOLEDAS",
+      "geologia": 84,
+      "distancia_cauce_m": 2984.760833998008
+    }
+  ],
+  "grupo_bajo": [
+    {
+      "municipio": "SAN CARLOS DE GUAROA",
+      "geologia": 189,
+      "distancia_cauce_m": 243.10376840089
+    },
+    {
+      "municipio": "AGUADA",
+      "geologia": 79,
+      "distancia_cauce_m": 4262.902597567799
+    },
+    {
+      "municipio": "SOCORRO",
+      "geologia": 79,
+      "distancia_cauce_m": 4259.521216754852
+    },
+    {
+      "municipio": "PAIPA",
+      "geologia": 189,
+      "distancia_cauce_m": 741.4558280691958
+    },
+    {
+      "municipio": "SAN JUAN DE BETULIA",
+      "geologia": 186,
+      "distancia_cauce_m": 7937.2317062706215
+    },
+    {
+      "municipio": "CABUYARO",
+      "geologia": 187,
+      "distancia_cauce_m": 542.9014899387387
+    },
+    {
+      "municipio": "MOLAGAVITA",
+      "geologia": 106,
+      "distancia_cauce_m": 8169.521242382095
+    },
+    {
+      "municipio": "LA PRIMAVERA",
+      "geologia": 183,
+      "distancia_cauce_m": 22842.1772336877
+    },
+    {
+      "municipio": "HATILLO DE LOBA",
+      "geologia": 189,
+      "distancia_cauce_m": 5995.737177053285
+    },
+    {
+      "municipio": "ARBOLETES",
+      "geologia": 169,
+      "distancia_cauce_m": 12150.375628050375
+    },
+    {
+      "municipio": "CALOTO",
+      "geologia": 187,
+      "distancia_cauce_m": 6023.906844483443
+    },
+    {
+      "municipio": "SAN JACINTO DEL CAUCA",
+      "geologia": 187,
+      "distancia_cauce_m": 462.1938110572
+    },
+    {
+      "municipio": "SAN MIGUEL DE SEMA",
+      "geologia": 79,
+      "distancia_cauce_m": 6232.029680093102
+    },
+    {
+      "municipio": "GUAMO",
+      "geologia": 191,
+      "distancia_cauce_m": 427.082405760745
+    },
+    {
+      "municipio": "PLANETA RICA",
+      "geologia": 175,
+      "distancia_cauce_m": 35582.91093480836
+    },
+    {
+      "municipio": "VIJES",
+      "geologia": 104,
+      "distancia_cauce_m": 1642.0304815923887
+    },
+    {
+      "municipio": "SAN MARCOS",
+      "geologia": 186,
+      "distancia_cauce_m": 3829.0274698704698
+    },
+    {
+      "municipio": "PINILLOS",
+      "geologia": 189,
+      "distancia_cauce_m": 1593.8894848476475
+    },
+    {
+      "municipio": "ATRATO",
+      "geologia": 189,
+      "distancia_cauce_m": 256.4800083270462
+    },
+    {
+      "municipio": "CERRITO",
+      "geologia": 106,
+      "distancia_cauce_m": 241.27837047391458
+    },
+    {
+      "municipio": "AQUITANIA",
+      "geologia": 106,
+      "distancia_cauce_m": 5818.726040694818
+    },
+    {
+      "municipio": "CARMEN DE CARUPA",
+      "geologia": 106,
+      "distancia_cauce_m": 3177.688431103819
+    },
+    {
+      "municipio": "MORROA",
+      "geologia": 175,
+      "distancia_cauce_m": 10510.838874072506
+    },
+    {
+      "municipio": "MIRANDA",
+      "geologia": 187,
+      "distancia_cauce_m": 2034.13033135042
+    },
+    {
+      "municipio": "MOMIL",
+      "geologia": 189,
+      "distancia_cauce_m": 15243.146065771427
+    },
+    {
+      "municipio": "SAN BERNARDO DEL VIENTO",
+      "geologia": 189,
+      "distancia_cauce_m": 750.4395553275455
+    },
+    {
+      "municipio": "MARGARITA",
+      "geologia": 189,
+      "distancia_cauce_m": 4.977920309191453
+    },
+    {
+      "municipio": "NOBSA",
+      "geologia": 80,
+      "distancia_cauce_m": 1668.489081156202
+    },
+    {
+      "municipio": "EL CASTILLO",
+      "geologia": 189,
+      "distancia_cauce_m": 1439.0027779609218
+    },
+    {
+      "municipio": "BARRANCAS",
+      "geologia": 187,
+      "distancia_cauce_m": 1483.001763856644
+    },
+    {
+      "municipio": "BOSCONIA",
+      "geologia": 189,
+      "distancia_cauce_m": 8778.616816868693
+    },
+    {
+      "municipio": "EL ROBLE",
+      "geologia": 186,
+      "distancia_cauce_m": 9363.479020394405
+    },
+    {
+      "municipio": "PUERTO ESCONDIDO",
+      "geologia": 168,
+      "distancia_cauce_m": 1367.9334599657643
+    },
+    {
+      "municipio": "PUERTO TRIUNFO",
+      "geologia": 189,
+      "distancia_cauce_m": 11010.831616291554
+    },
+    {
+      "municipio": "LA UVITA",
+      "geologia": 185,
+      "distancia_cauce_m": 9452.56709031917
+    },
+    {
+      "municipio": "ALTOS DEL ROSARIO",
+      "geologia": 189,
+      "distancia_cauce_m": 643.5461580866357
+    },
+    {
+      "municipio": "ASTREA",
+      "geologia": 175,
+      "distancia_cauce_m": 19157.71385741839
+    },
+    {
+      "municipio": "BOAVITA",
+      "geologia": 106,
+      "distancia_cauce_m": 6955.855772890591
+    },
+    {
+      "municipio": "MEDIO ATRATO",
+      "geologia": 175,
+      "distancia_cauce_m": 473.84088662463273
+    },
+    {
+      "municipio": "GUACAMAYAS",
+      "geologia": 106,
+      "distancia_cauce_m": 1628.810352382627
+    },
+    {
+      "municipio": "SAN MATEO",
+      "geologia": 123,
+      "distancia_cauce_m": 7617.114293936051
+    },
+    {
+      "municipio": "RIVERA",
+      "geologia": 187,
+      "distancia_cauce_m": 7751.5929288128655
+    },
+    {
+      "municipio": "PELAYA",
+      "geologia": 187,
+      "distancia_cauce_m": 2864.7418943013254
+    },
+    {
+      "municipio": "NUEVA GRANADA",
+      "geologia": 168,
+      "distancia_cauce_m": 18922.725187826145
+    },
+    {
+      "municipio": "SOLANO",
+      "geologia": 189,
+      "distancia_cauce_m": 2135.323966207551
+    },
+    {
+      "municipio": "ROLDANILLO",
+      "geologia": 101,
+      "distancia_cauce_m": 2922.1941420940498
+    },
+    {
+      "municipio": "INÍRIDA",
+      "geologia": 1,
+      "distancia_cauce_m": 20163.002667658187
+    },
+    {
+      "municipio": "SAN FERNANDO",
+      "geologia": 189,
+      "distancia_cauce_m": 314.4783020043161
+    },
+    {
+      "municipio": "VENTAQUEMADA",
+      "geologia": 106,
+      "distancia_cauce_m": 11665.679315748213
+    },
+    {
+      "municipio": "LENGUAZAQUE",
+      "geologia": 123,
+      "distancia_cauce_m": 244.13382212607064
+    },
+    {
+      "municipio": "CORRALES",
+      "geologia": 131,
+      "distancia_cauce_m": 270.55436411656353
+    },
+    {
+      "municipio": "CERINZA",
+      "geologia": 187,
+      "distancia_cauce_m": 8790.707938688647
+    },
+    {
+      "municipio": "MADRID",
+      "geologia": 186,
+      "distancia_cauce_m": 179.26643085852265
+    },
+    {
+      "municipio": "VETAS",
+      "geologia": 5,
+      "distancia_cauce_m": 5323.526472484521
+    },
+    {
+      "municipio": "VALLE DEL GUAMUEZ",
+      "geologia": 187,
+      "distancia_cauce_m": 6814.060258201418
+    },
+    {
+      "municipio": "COYAIMA",
+      "geologia": 163,
+      "distancia_cauce_m": 544.4054779836065
+    },
+    {
+      "municipio": "ARROYOHONDO",
+      "geologia": 128,
+      "distancia_cauce_m": 30256.72561768395
+    },
+    {
+      "municipio": "POLONUEVO",
+      "geologia": 183,
+      "distancia_cauce_m": null
+    },
+    {
+      "municipio": "ENCISO",
+      "geologia": 106,
+      "distancia_cauce_m": 954.2686708862487
+    },
+    {
+      "municipio": "EL PASO",
+      "geologia": 189,
+      "distancia_cauce_m": 3762.626750497344
+    },
+    {
+      "municipio": "SUTATAUSA",
+      "geologia": 106,
+      "distancia_cauce_m": 6112.464746424112
+    },
+    {
+      "municipio": "ARATOCA",
+      "geologia": 15,
+      "distancia_cauce_m": 6328.072901867837
+    },
+    {
+      "municipio": "EL COPEY",
+      "geologia": 189,
+      "distancia_cauce_m": 10240.579120789842
+    },
+    {
+      "municipio": "MONGUA",
+      "geologia": 106,
+      "distancia_cauce_m": 5614.394158470408
+    },
+    {
+      "municipio": "PUERTO LLERAS",
+      "geologia": 189,
+      "distancia_cauce_m": 16958.932518457248
+    },
+    {
+      "municipio": "AYAPEL",
+      "geologia": 186,
+      "distancia_cauce_m": 2694.885907373952
+    },
+    {
+      "municipio": "ARAUCA",
+      "geologia": 189,
+      "distancia_cauce_m": 1829.5239726162667
+    },
+    {
+      "municipio": "TAMALAMEQUE",
+      "geologia": 189,
+      "distancia_cauce_m": 15378.969283879997
+    },
+    {
+      "municipio": "SAN ESTANISLAO",
+      "geologia": 188,
+      "distancia_cauce_m": null
+    },
+    {
+      "municipio": "TURBACO",
+      "geologia": 181,
+      "distancia_cauce_m": null
+    },
+    {
+      "municipio": "LA GLORIA",
+      "geologia": 189,
+      "distancia_cauce_m": 1928.0659851501048
+    },
+    {
+      "municipio": "LA CAPILLA",
+      "geologia": 75,
+      "distancia_cauce_m": 6603.291783449237
+    },
+    {
+      "municipio": "SOLEDAD",
+      "geologia": 189,
+      "distancia_cauce_m": null
+    },
+    {
+      "municipio": "PESCA",
+      "geologia": 131,
+      "distancia_cauce_m": 5565.994611142081
+    },
+    {
+      "municipio": "MAHATES",
+      "geologia": 189,
+      "distancia_cauce_m": null
+    },
+    {
+      "municipio": "TOTA",
+      "geologia": 106,
+      "distancia_cauce_m": 4198.341582296678
+    },
+    {
+      "municipio": "DIBULLA",
+      "geologia": 150,
+      "distancia_cauce_m": 18356.26796112725
+    },
+    {
+      "municipio": "FRANCISCO PIZARRO",
+      "geologia": 192,
+      "distancia_cauce_m": 13150.586939684763
+    },
+    {
+      "municipio": "CARTAGO",
+      "geologia": 186,
+      "distancia_cauce_m": 1903.5489981213652
+    },
+    {
+      "municipio": "SOCHA",
+      "geologia": 123,
+      "distancia_cauce_m": 2154.738622017042
+    },
+    {
+      "municipio": "MOGOTES",
+      "geologia": 42,
+      "distancia_cauce_m": 16084.542485820062
+    },
+    {
+      "municipio": "FLORESTA",
+      "geologia": 24,
+      "distancia_cauce_m": 8905.28425487932
+    },
+    {
+      "municipio": "MOÑITOS",
+      "geologia": 192,
+      "distancia_cauce_m": 22369.706631066067
+    },
+    {
+      "municipio": "PUERTO CAICEDO",
+      "geologia": 189,
+      "distancia_cauce_m": 1002.9282700865543
+    },
+    {
+      "municipio": "SAN BENITO ABAD",
+      "geologia": 189,
+      "distancia_cauce_m": 3632.6412086025116
+    },
+    {
+      "municipio": "ULLOA",
+      "geologia": 182,
+      "distancia_cauce_m": 9796.177147056263
+    },
+    {
+      "municipio": "HATONUEVO",
+      "geologia": 88,
+      "distancia_cauce_m": 5975.914496805158
+    },
+    {
+      "municipio": "PIVIJAY",
+      "geologia": 189,
+      "distancia_cauce_m": 11848.781360550507
+    },
+    {
+      "municipio": "VILLA RICA",
+      "geologia": 182,
+      "distancia_cauce_m": 3575.885186428204
+    },
+    {
+      "municipio": "SAN GIL",
+      "geologia": 79,
+      "distancia_cauce_m": 224.16879970900447
+    },
+    {
+      "municipio": "SORA",
+      "geologia": 189,
+      "distancia_cauce_m": 6069.35566255774
+    },
+    {
+      "municipio": "PUERTO NARIÑO",
+      "geologia": 148,
+      "distancia_cauce_m": 6253.74380678669
+    },
+    {
+      "municipio": "EL BAGRE",
+      "geologia": 175,
+      "distancia_cauce_m": 1567.3443154130057
+    },
+    {
+      "municipio": "EL BANCO",
+      "geologia": 168,
+      "distancia_cauce_m": 1079.9356613183134
+    },
+    {
+      "municipio": "PIEDRAS",
+      "geologia": 182,
+      "distancia_cauce_m": 7767.747030726183
+    },
+    {
+      "municipio": "EL CHARCO",
+      "geologia": 189,
+      "distancia_cauce_m": 242.12906827021962
+    },
+    {
+      "municipio": "SANTANA",
+      "geologia": 79,
+      "distancia_cauce_m": 4070.2708247615183
+    },
+    {
+      "municipio": "LA APARTADA",
+      "geologia": 175,
+      "distancia_cauce_m": 1693.861451073735
+    },
+    {
+      "municipio": "CANALETE",
+      "geologia": 189,
+      "distancia_cauce_m": 457.4270736875889
+    },
+    {
+      "municipio": "FLANDES",
+      "geologia": 191,
+      "distancia_cauce_m": 1278.9585528161113
+    },
+    {
+      "municipio": "ALGARROBO",
+      "geologia": 189,
+      "distancia_cauce_m": 891.8901374980306
+    },
+    {
+      "municipio": "LA MACARENA",
+      "geologia": 136,
+      "distancia_cauce_m": 920.2662986050709
+    },
+    {
+      "municipio": "SALDAÑA",
+      "geologia": 163,
+      "distancia_cauce_m": 594.5111402765583
+    },
+    {
+      "municipio": "SANTA CATALINA",
+      "geologia": 189,
+      "distancia_cauce_m": null
+    },
+    {
+      "municipio": "FLORIDA",
+      "geologia": 187,
+      "distancia_cauce_m": 5374.500185249869
+    },
+    {
+      "municipio": "SUAN",
+      "geologia": 193,
+      "distancia_cauce_m": 21763.674673912017
+    },
+    {
+      "municipio": "TUTA",
+      "geologia": 176,
+      "distancia_cauce_m": 295.6060817630806
+    },
+    {
+      "municipio": "SOLITA",
+      "geologia": 189,
+      "distancia_cauce_m": 24480.382906742336
+    },
+    {
+      "municipio": "PUERTO SANTANDER",
+      "geologia": 1,
+      "distancia_cauce_m": 614.1759917152151
+    },
+    {
+      "municipio": "CURILLO",
+      "geologia": 136,
+      "distancia_cauce_m": 2776.545330646376
+    },
+    {
+      "municipio": "LA MONTAÑITA",
+      "geologia": 136,
+      "distancia_cauce_m": 4132.540018360338
+    },
+    {
+      "municipio": "IZA",
+      "geologia": 189,
+      "distancia_cauce_m": 9870.1437172757
+    },
+    {
+      "municipio": "PUEBLO NUEVO",
+      "geologia": 175,
+      "distancia_cauce_m": 34210.02556849228
+    },
+    {
+      "municipio": "SAN PEDRO DE CARTAGO",
+      "geologia": 150,
+      "distancia_cauce_m": 9866.349117592232
+    },
+    {
+      "municipio": "FALAN",
+      "geologia": 57,
+      "distancia_cauce_m": 3856.103331005379
+    },
+    {
+      "municipio": "SAN DIEGO",
+      "geologia": 189,
+      "distancia_cauce_m": 6057.859292132089
+    },
+    {
+      "municipio": "CAIMITO",
+      "geologia": 186,
+      "distancia_cauce_m": 1867.48564236596
+    },
+    {
+      "municipio": "AMBALEMA",
+      "geologia": 191,
+      "distancia_cauce_m": 394.3139421456708
+    },
+    {
+      "municipio": "FONSECA",
+      "geologia": 187,
+      "distancia_cauce_m": 771.756032549816
+    },
+    {
+      "municipio": "CRAVO NORTE",
+      "geologia": 183,
+      "distancia_cauce_m": 576.9414430781038
+    },
+    {
+      "municipio": "HATO COROZAL",
+      "geologia": 187,
+      "distancia_cauce_m": 4344.758596645785
+    },
+    {
+      "municipio": "SAN PABLO DE BORBUR",
+      "geologia": 79,
+      "distancia_cauce_m": 850.6592679240621
+    },
+    {
+      "municipio": "PUERTO NARE",
+      "geologia": 189,
+      "distancia_cauce_m": 2172.2722600485654
+    },
+    {
+      "municipio": "SUSA",
+      "geologia": 186,
+      "distancia_cauce_m": 5632.47446177387
+    },
+    {
+      "municipio": "TRINIDAD",
+      "geologia": 189,
+      "distancia_cauce_m": 600.6116514817597
+    },
+    {
+      "municipio": "FORTUL",
+      "geologia": 189,
+      "distancia_cauce_m": 4297.447989374302
+    },
+    {
+      "municipio": "PISBA",
+      "geologia": 106,
+      "distancia_cauce_m": 779.2177618394694
+    },
+    {
+      "municipio": "MOTAVITA",
+      "geologia": 106,
+      "distancia_cauce_m": 8645.662500331757
+    },
+    {
+      "municipio": "URIBIA",
+      "geologia": 189,
+      "distancia_cauce_m": 1168.576993913149
+    },
+    {
+      "municipio": "EL MOLINO",
+      "geologia": 187,
+      "distancia_cauce_m": 9349.935710454522
+    },
+    {
+      "municipio": "CALAMAR",
+      "geologia": 153,
+      "distancia_cauce_m": 722.6234683585759
+    },
+    {
+      "municipio": "CHINAVITA",
+      "geologia": 75,
+      "distancia_cauce_m": 1459.3609426181017
+    },
+    {
+      "municipio": "TIBASOSA",
+      "geologia": 189,
+      "distancia_cauce_m": 3477.8687987002077
+    },
+    {
+      "municipio": "PUERTO RICO",
+      "geologia": 187,
+      "distancia_cauce_m": 997.3532369639595
+    },
+    {
+      "municipio": "ESPINAL",
+      "geologia": 191,
+      "distancia_cauce_m": 8039.851308273675
+    },
+    {
+      "municipio": "ZARZAL",
+      "geologia": 189,
+      "distancia_cauce_m": 3397.8996685308384
+    },
+    {
+      "municipio": "CASTILLA LA NUEVA",
+      "geologia": 187,
+      "distancia_cauce_m": 1046.4253196583159
+    },
+    {
+      "municipio": "SAN ALBERTO",
+      "geologia": 189,
+      "distancia_cauce_m": 710.0268353381596
+    },
+    {
+      "municipio": "PACHAVITA",
+      "geologia": 75,
+      "distancia_cauce_m": 2819.6257790217496
+    },
+    {
+      "municipio": "SANTA ROSA DE VITERBO",
+      "geologia": 187,
+      "distancia_cauce_m": 7571.119805055922
+    },
+    {
+      "municipio": "BELMIRA",
+      "geologia": 100,
+      "distancia_cauce_m": 303.9689887466429
+    },
+    {
+      "municipio": "FUNZA",
+      "geologia": 186,
+      "distancia_cauce_m": 3529.5043660134784
+    },
+    {
+      "municipio": "MEDIO SAN JUAN",
+      "geologia": 156,
+      "distancia_cauce_m": 158.05004565746253
+    },
+    {
+      "municipio": "FUENTE DE ORO",
+      "geologia": 187,
+      "distancia_cauce_m": 4667.531288234436
+    },
+    {
+      "municipio": "URUMITA",
+      "geologia": 187,
+      "distancia_cauce_m": 8812.987056640393
+    },
+    {
+      "municipio": "ARJONA",
+      "geologia": 189,
+      "distancia_cauce_m": null
+    },
+    {
+      "municipio": "LA PINTADA",
+      "geologia": 142,
+      "distancia_cauce_m": 316.0192129325093
+    },
+    {
+      "municipio": "TALAIGUA NUEVO",
+      "geologia": 175,
+      "distancia_cauce_m": 568.3204084237998
+    },
+    {
+      "municipio": "COVEÑAS",
+      "geologia": 192,
+      "distancia_cauce_m": 9171.444266452283
+    },
+    {
+      "municipio": "CHIMICHAGUA",
+      "geologia": 193,
+      "distancia_cauce_m": 12445.874610965353
+    },
+    {
+      "municipio": "PEDRAZA",
+      "geologia": 193,
+      "distancia_cauce_m": 17505.160107135736
+    },
+    {
+      "municipio": "ZETAQUIRA",
+      "geologia": 75,
+      "distancia_cauce_m": 1827.5976392338737
+    },
+    {
+      "municipio": "CAUCASIA",
+      "geologia": 189,
+      "distancia_cauce_m": 922.8820364304673
+    },
+    {
+      "municipio": "PUEBLOVIEJO",
+      "geologia": 193,
+      "distancia_cauce_m": 13626.309947793838
+    },
+    {
+      "municipio": "CUCAITA",
+      "geologia": 189,
+      "distancia_cauce_m": 4545.490452615237
+    },
+    {
+      "municipio": "EL RETORNO",
+      "geologia": 153,
+      "distancia_cauce_m": 26574.318640493268
+    },
+    {
+      "municipio": "SANTA ANA",
+      "geologia": 175,
+      "distancia_cauce_m": 739.5398330600024
+    },
+    {
+      "municipio": "CICUCO",
+      "geologia": 175,
+      "distancia_cauce_m": 622.1545236070706
+    },
+    {
+      "municipio": "CANTAGALLO",
+      "geologia": 189,
+      "distancia_cauce_m": 2276.2390876216814
+    },
+    {
+      "municipio": "SABANAGRANDE",
+      "geologia": 189,
+      "distancia_cauce_m": 35698.70542702046
+    },
+    {
+      "municipio": "PUERTO CONCORDIA",
+      "geologia": 153,
+      "distancia_cauce_m": 577.6351859763469
+    },
+    {
+      "municipio": "SABANETA",
+      "geologia": 33,
+      "distancia_cauce_m": 700.0463669644347
+    },
+    {
+      "municipio": "PALMAR DE VARELA",
+      "geologia": 193,
+      "distancia_cauce_m": 33701.88196066018
+    },
+    {
+      "municipio": "CUBARRAL",
+      "geologia": 187,
+      "distancia_cauce_m": 4955.1732904441715
+    },
+    {
+      "municipio": "PALMITO",
+      "geologia": 157,
+      "distancia_cauce_m": 10922.495270714595
+    },
+    {
+      "municipio": "LORICA",
+      "geologia": 157,
+      "distancia_cauce_m": 1590.5745594649302
+    },
+    {
+      "municipio": "REMOLINO",
+      "geologia": 193,
+      "distancia_cauce_m": 29043.829422781888
+    },
+    {
+      "municipio": "EL ENCANTO",
+      "geologia": 189,
+      "distancia_cauce_m": 1665.6687721511648
+    },
+    {
+      "municipio": "GALERAS",
+      "geologia": 186,
+      "distancia_cauce_m": 3527.3035420973238
+    },
+    {
+      "municipio": "GUARANDA",
+      "geologia": 189,
+      "distancia_cauce_m": 13755.934786556663
+    },
+    {
+      "municipio": "VILLAVIEJA",
+      "geologia": 163,
+      "distancia_cauce_m": 1243.0881141240923
+    },
+    {
+      "municipio": "OCAMONTE",
+      "geologia": 79,
+      "distancia_cauce_m": 2159.5141786052845
+    },
+    {
+      "municipio": "COTORRA",
+      "geologia": 189,
+      "distancia_cauce_m": 4798.75469045576
+    },
+    {
+      "municipio": "MORELIA",
+      "geologia": 189,
+      "distancia_cauce_m": 572.1675744698395
+    },
+    {
+      "municipio": "BERBEO",
+      "geologia": 187,
+      "distancia_cauce_m": 1407.3754970870407
+    },
+    {
+      "municipio": "SITIONUEVO",
+      "geologia": 193,
+      "distancia_cauce_m": 30998.198789164107
+    },
+    {
+      "municipio": "REGIDOR",
+      "geologia": 189,
+      "distancia_cauce_m": 7474.056036838563
+    },
+    {
+      "municipio": "ARENAL",
+      "geologia": 189,
+      "distancia_cauce_m": 6256.857131061801
+    },
+    {
+      "municipio": "BARRANCO DE LOBA",
+      "geologia": 189,
+      "distancia_cauce_m": 2962.0856861618067
+    },
+    {
+      "municipio": "MAICAO",
+      "geologia": 183,
+      "distancia_cauce_m": 20878.86469231037
+    },
+    {
+      "municipio": "SIACHOQUE",
+      "geologia": 176,
+      "distancia_cauce_m": 4697.141259417959
+    },
+    {
+      "municipio": "ALBANIA",
+      "geologia": 189,
+      "distancia_cauce_m": 24025.511266203335
+    },
+    {
+      "municipio": "PIJIÑO DEL CARMEN",
+      "geologia": 193,
+      "distancia_cauce_m": 6690.917891465791
+    },
+    {
+      "municipio": "MALAMBO",
+      "geologia": 183,
+      "distancia_cauce_m": null
+    },
+    {
+      "municipio": "PONEDERA",
+      "geologia": 192,
+      "distancia_cauce_m": 33305.955627552124
+    },
+    {
+      "municipio": "LA JAGUA DEL PILAR",
+      "geologia": 187,
+      "distancia_cauce_m": 4682.078317170728
+    },
+    {
+      "municipio": "EL DONCELLO",
+      "geologia": 187,
+      "distancia_cauce_m": 6600.958344782912
+    },
+    {
+      "municipio": "ARAUQUITA",
+      "geologia": 189,
+      "distancia_cauce_m": 859.9541371246636
+    },
+    {
+      "municipio": "TOCA",
+      "geologia": 176,
+      "distancia_cauce_m": 7634.451222670964
+    },
+    {
+      "municipio": "CAMPO DE LA CRUZ",
+      "geologia": 193,
+      "distancia_cauce_m": 24746.99539200958
+    },
+    {
+      "municipio": "FIRAVITOBA",
+      "geologia": 189,
+      "distancia_cauce_m": 9521.178639863594
+    },
+    {
+      "municipio": "SAN LUIS DE PALENQUE",
+      "geologia": 189,
+      "distancia_cauce_m": 721.4875793852127
+    },
+    {
+      "municipio": "MAJAGUAL",
+      "geologia": 187,
+      "distancia_cauce_m": 11568.663015815979
+    },
+    {
+      "municipio": "TIPACOQUE",
+      "geologia": 106,
+      "distancia_cauce_m": 3347.9046251816303
+    },
+    {
+      "municipio": "TRUJILLO",
+      "geologia": 104,
+      "distancia_cauce_m": 3907.0620553725475
+    },
+    {
+      "municipio": "GAMARRA",
+      "geologia": 189,
+      "distancia_cauce_m": 3693.954830254868
+    },
+    {
+      "municipio": "TAME",
+      "geologia": 187,
+      "distancia_cauce_m": 3313.511574761217
+    },
+    {
+      "municipio": "TENJO",
+      "geologia": 186,
+      "distancia_cauce_m": 4758.447913131514
+    },
+    {
+      "municipio": "CONFINES",
+      "geologia": 79,
+      "distancia_cauce_m": 8731.551210780211
+    },
+    {
+      "municipio": "SOMONDOCO",
+      "geologia": 75,
+      "distancia_cauce_m": 1807.0809511051689
+    },
+    {
+      "municipio": "LA TOLA",
+      "geologia": 189,
+      "distancia_cauce_m": 6422.82830405065
+    },
+    {
+      "municipio": "LA CUMBRE",
+      "geologia": 104,
+      "distancia_cauce_m": 10782.507698509604
+    },
+    {
+      "municipio": "TURBO",
+      "geologia": 189,
+      "distancia_cauce_m": 7471.412634254597
+    },
+    {
+      "municipio": "CUMARIBO",
+      "geologia": 153,
+      "distancia_cauce_m": 4237.231121813508
+    },
+    {
+      "municipio": "SAN ANTERO",
+      "geologia": 124,
+      "distancia_cauce_m": 16611.39370992849
+    },
+    {
+      "municipio": "SIMIJACA",
+      "geologia": 186,
+      "distancia_cauce_m": 1034.645128555899
+    },
+    {
+      "municipio": "PUERTO CARREÑO",
+      "geologia": 188,
+      "distancia_cauce_m": 3523.7958500442696
+    },
+    {
+      "municipio": "OIBA",
+      "geologia": 79,
+      "distancia_cauce_m": 8744.117085075919
+    },
+    {
+      "municipio": "ALMEIDA",
+      "geologia": 75,
+      "distancia_cauce_m": 4681.710164875702
+    },
+    {
+      "municipio": "RIOHACHA",
+      "geologia": 189,
+      "distancia_cauce_m": 3122.957249920403
+    },
+    {
+      "municipio": "TENERIFE",
+      "geologia": 193,
+      "distancia_cauce_m": 13327.985435178083
+    },
+    {
+      "municipio": "TIERRALTA",
+      "geologia": 189,
+      "distancia_cauce_m": 949.8041285642059
+    },
+    {
+      "municipio": "SUESCA",
+      "geologia": 113,
+      "distancia_cauce_m": 1076.5701690999092
+    },
+    {
+      "municipio": "ZAMBRANO",
+      "geologia": 193,
+      "distancia_cauce_m": 1820.3983600760303
+    },
+    {
+      "municipio": "SOPLAVIENTO",
+      "geologia": 193,
+      "distancia_cauce_m": null
+    },
+    {
+      "municipio": "PAILITAS",
+      "geologia": 189,
+      "distancia_cauce_m": 12371.543579106134
+    },
+    {
+      "municipio": "SABANA DE TORRES",
+      "geologia": 187,
+      "distancia_cauce_m": 7986.525587915822
+    }
+  ]
+}
