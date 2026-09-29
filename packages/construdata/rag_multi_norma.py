@@ -554,12 +554,21 @@ def _descomponer_pregunta(question: str) -> list[str]:
     return [question]
 
 
-def _fusionar_candidatos(chunks_por_pregunta: list[list["ChunkResult"]], limite: int = 40) -> list["ChunkResult"]:
+def _fusionar_candidatos(chunks_por_pregunta: list[list["ChunkResult"]], limite: int = 60) -> list["ChunkResult"]:
     """Une los candidatos recuperados para cada (sub)pregunta, deduplicando
     por chunk_id -- si el mismo chunk aparece en más de una sub-búsqueda se
     queda con el score más alto, no lo cuenta dos veces -- y trunca al pool
-    que se re-rankea después (mismo límite ya usado antes de este cambio en
-    la rama multi-norma de ask())."""
+    que se re-rankea después.
+
+    Límite subido de 40 a 60 (issue #59, 2026-09-29): con el corpus ya
+    crecido (ingesta masiva de Título F/J), una pregunta descompuesta en 2
+    sub-preguntas (issue #30) aporta hasta ~80 candidatos únicos entre
+    ambas ramas (norma-filtrada + global) -- confirmado en vivo que el
+    chunk correcto de C.9.3.2.1 (factores phi tracción/cortante) rankeaba
+    en las posiciones 43 y 51 de 79, justo por fuera del límite de 40
+    anterior. El cross-encoder sigue siendo el que decide el orden final
+    (ver PESO_RERANKER) -- esto solo le da margen real para considerar
+    candidatos que antes se descartaban ANTES de que pudiera evaluarlos."""
     mejores: dict[str, "ChunkResult"] = {}
     for chunks in chunks_por_pregunta:
         for c in chunks:
@@ -658,12 +667,21 @@ KEYWORD_MAP = {
 }
 
 def route_query(query: str) -> list[str]:
-    """Devuelve las normas más relevantes para la consulta (máx 3)."""
-    q = query.lower()
+    """Devuelve las normas más relevantes para la consulta (máx 3).
+
+    Normaliza tildes en ambos lados de la comparación (issue #59) -- sin
+    esto, una sub-pregunta generada por _descomponer_pregunta() (el LLM
+    devuelve "reducción"/"φ" con acentos) no matcheaba contra KEYWORD_MAP
+    (escrito sin tildes, ej. "factor de reduccion de resistencia"),
+    dejando target_normas=[] y perdiendo el filtro por Título C que sí
+    habría traído el chunk correcto -- confirmado con la pregunta real de
+    C.9.3.2.1 (factores phi tracción/cortante), que caía a Título F por
+    esta causa exacta."""
+    q = _sin_tildes(query.lower())
     scores: dict[str, int] = {}
     for norma, keywords in KEYWORD_MAP.items():
         for kw in keywords:
-            if kw in q:
+            if _sin_tildes(kw.lower()) in q:
                 scores[norma] = scores.get(norma, 0) + (2 if len(kw) > 8 else 1)
     if not scores:
         return []
@@ -844,11 +862,15 @@ MOTOR_KEYWORD_MAP = {
 
 
 def _score_motores(query: str) -> dict[str, int]:
-    q = query.lower()
+    # Mismo fix de tildes que route_query() (issue #59) -- MOTOR_KEYWORD_MAP
+    # ya listaba duplicados con/sin tilde como parche manual para esto, pero
+    # normalizar en la comparación es más robusto que mantener duplicados a
+    # mano y cierra el mismo hueco para cualquier keyword que falte duplicar.
+    q = _sin_tildes(query.lower())
     scores: dict[str, int] = {}
     for motor, keywords in MOTOR_KEYWORD_MAP.items():
         for kw in keywords:
-            if kw in q:
+            if _sin_tildes(kw.lower()) in q:
                 scores[motor] = scores.get(motor, 0) + (2 if len(kw) > 10 else 1)
     return scores
 
@@ -2269,9 +2291,8 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = TOP_K_DEFA
         candidatos_por_pregunta.append(candidatos_sub)
 
     # Fusiona (dedup por chunk_id, se queda con el score más alto) y acota el
-    # pool antes de re-rankear -- mismo límite (40) que ya se usaba antes de
-    # este cambio en la rama multi-norma.
-    candidatos = _fusionar_candidatos(candidatos_por_pregunta, limite=40)
+    # pool antes de re-rankear -- límite 60 (ver _fusionar_candidatos, issue #59).
+    candidatos = _fusionar_candidatos(candidatos_por_pregunta, limite=60)
 
     # Re-ranking: cross-encoder sobre el pool de candidatos fusionado,
     # evaluado contra la pregunta ORIGINAL completa (no las sub-preguntas) --
