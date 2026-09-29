@@ -17,11 +17,12 @@
 4. [Infraestructura del RAG — rendimiento medido, no solo diseñado](#infraestructura-del-rag--rendimiento-medido-no-solo-diseñado)
 5. [La metodología](#la-metodología--cómo-funciona-esto-de-verdad)
 6. [Evaluación empírica RAGAS](#evaluación-empírica-del-rag--medido-no-solo-diseñado)
-7. [Los 7 motores](#los-7-motores)
-8. [Lo que todavía no es](#lo-que-todavía-no-es--honestidad-antes-que-marketing)
-9. [Hacia dónde va esto](#hacia-dónde-va-esto--lo-aplicativo-y-lo-que-viene)
-10. [Colaboración institucional](#colaboración-con-universidades-gremios-y-cámaras-de-comercio)
-11. [Arquitectura, estructura del repo, desarrollo local, deploy, secrets](#arquitectura-rag--cómo-está-construido-sin-rodeos)
+7. [Dataset propio verificado — de evaluación a fine-tuning](#dataset-propio-verificado--de-evaluación-a-fine-tuning)
+8. [Los 7 motores](#los-7-motores)
+9. [Lo que todavía no es](#lo-que-todavía-no-es--honestidad-antes-que-marketing)
+10. [Hacia dónde va esto](#hacia-dónde-va-esto--lo-aplicativo-y-lo-que-viene)
+11. [Colaboración institucional](#colaboración-con-universidades-gremios-y-cámaras-de-comercio)
+12. [Arquitectura, estructura del repo, desarrollo local, deploy, secrets](#arquitectura-rag--cómo-está-construido-sin-rodeos)
 
 </details>
 
@@ -149,6 +150,20 @@ Medido con RAGAS (fidelidad, relevancia de respuesta, precisión y cobertura de 
 - **Precios** (55 preguntas, rama aparte): fidelidad 0,792 ± 0,313, relevancia 0,686 ± 0,426, precisión de contexto 0,682 ± 0,369, cobertura 0,727 ± 0,449. Proveedor y proveedor nacional casi perfectos (0,85–1,0); insumos individuales el más débil. La categoría adversarial (materiales inventados) muestra relevancia 0,000 — verificado a mano que **no es una falla real**: el sistema sí rechaza inventar un precio, pero esa métrica de RAGAS penaliza un "no lo tengo" honesto. El hallazgo real sin corregir: jerga regional ("vereda" vs. "andén") no siempre encuentra el precio real cuando compite contra filas casi duplicadas.
 
 </details>
+
+## Dataset propio verificado — de evaluación a fine-tuning
+
+Las corridas RAGAS de arriba no son solo un número de calidad — son la materia prima de un dataset de entrenamiento propio, construido con evidencia, no generado sintéticamente. Todo el pipeline vive en [`scripts/evaluacion/`](scripts/evaluacion/) y es reproducible.
+
+| Paso | Script | Qué hace |
+|---|---|---|
+| 1. Exportar | [`exportar_dataset_qlora.py`](scripts/evaluacion/exportar_dataset_qlora.py) | Recupera las preguntas únicas de todas las corridas RAGAS reales, deduplica quedándose con la más reciente por pregunta, filtra por `faithfulness≥0.9` y `context_recall≥0.85` |
+| 2. Verificar lo dudoso | [`revisar_manual_qlora.py`](scripts/evaluacion/revisar_manual_qlora.py) | Los casos donde RAGAS no pudo calcular una métrica (NaN) se verifican con un chequeo de fundamentación numérica — todo número citado en la respuesta debe aparecer literalmente en el contexto recuperado o en la pregunta, misma lógica que ya usa `_detectar_posible_alucinacion_numerica()` en producción |
+| 3. Fusionar | [`fusionar_promovidos_qlora.py`](scripts/evaluacion/fusionar_promovidos_qlora.py) | Combina todo en un split train/heldout reproducible (semilla fija) |
+
+**Resultado actual**: 209 pares verificados (178 train / 31 heldout), formato chat (`system`/`user`/`assistant`) compatible con Unsloth/Axolotl, usando el `SYSTEM_PROMPT` real de producción y el mismo formato exacto de contexto que ve el LLM en `/consultar`. Publicado en [`scripts/evaluacion/qlora_export/`](scripts/evaluacion/qlora_export/) — nada de esto es una promesa, cada par es auditable con su pregunta, respuesta y puntaje de origen.
+
+La verificación automática ya encontró y excluyó ejemplos reales que un filtro puramente numérico habría dejado pasar: una respuesta que agregó una conversión de unidades inventada ("120mm equivalen a 120,000mm"), y otra que usó un valor externo (el módulo de elasticidad del acero, no presente en el contexto recuperado) para derivar un número — ambos documentados en el propio dataset (`excluidos_bajo_puntaje.jsonl`, `revisar_manual_pendiente.jsonl`).
 
 ## Los 7 motores
 
