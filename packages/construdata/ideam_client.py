@@ -50,6 +50,8 @@ from typing import Optional
 
 import httpx
 
+import divipola
+
 BASE_URL = "https://www.datos.gov.co/resource"
 
 DATASETS = {
@@ -134,7 +136,17 @@ def _resolver_departamento(valor: str) -> str:
     completo de Socrata normalice bien el término (confirmado en vivo que
     NO lo hace siempre: 'Guainia' no encontraba 'Guainía' via $q pese a que
     la estación existe). Si no hay match conocido, devuelve 'valor' tal
-    cual (deja que _where_ilike intente su patrón normal)."""
+    cual (deja que _where_ilike intente su patrón normal).
+
+    Issue #17: valida/normaliza primero contra divipola.py (fuente única
+    DANE) -- NUNCA reemplaza el valor de filtro por la forma canónica DANE
+    directamente, porque el catálogo de IDEAM guarda la mayoría de
+    departamentos SIN tilde (ver docstring de _where_ilike: solo Bogotá/
+    Boyacá/Guainía/Nariño/Quindío la conservan) -- eso rompería la igualdad
+    exacta de _where_exacto(). divipola solo se usa para confirmar que
+    'valor' es un departamento real de Colombia (atrapa typos reales que
+    _sin_tildes().upper() no distingue de un nombre válido) antes de
+    resolverlo contra la forma que IDEAM realmente tiene almacenada."""
     global _CACHE_DEPARTAMENTOS
     if _CACHE_DEPARTAMENTOS is None:
         filas = _get(DATASETS["estaciones"], {"$select": "distinct departamento", "$limit": 100})
@@ -142,7 +154,18 @@ def _resolver_departamento(valor: str) -> str:
             _sin_tildes(f["departamento"]).upper(): f["departamento"]
             for f in filas if f.get("departamento")
         }
-    return _CACHE_DEPARTAMENTOS.get(_sin_tildes(valor).upper(), valor)
+    # Prueba la forma validada por DIVIPOLA primero y el valor original como
+    # respaldo -- DIVIPOLA da la forma OFICIAL completa ("Bogota, D.C."),
+    # pero IDEAM guarda solo "Bogota" (sin el sufijo ", D.C."), confirmado
+    # en vivo contra el catalogo real de 33 departamentos -- no es un caso
+    # de tilde, es un sufijo distinto, asi que probar ambas formas evita
+    # que la validacion DIVIPOLA rompa un caso que antes si resolvia.
+    valor_validado = divipola.resolver_departamento(valor) or valor
+    for candidato in (valor_validado, valor):
+        resultado = _CACHE_DEPARTAMENTOS.get(_sin_tildes(candidato).upper())
+        if resultado:
+            return resultado
+    return valor
 
 
 def _coincide(valor_fila: Optional[str], valor_buscado: str) -> bool:

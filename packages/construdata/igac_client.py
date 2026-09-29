@@ -47,6 +47,8 @@ from typing import Optional
 
 import httpx
 
+import divipola
+
 BASE_URL = "https://www.datos.gov.co/resource"
 DATASET_UFH = "fy2r-gwsd"  # Unidades Físicas Homogéneas (IGAC/UPRA)
 
@@ -68,6 +70,23 @@ def _get(params: dict) -> list[dict]:
 
 def _sin_tildes(s: str) -> str:
     return "".join(c for c in unicodedata.normalize("NFD", s) if unicodedata.category(c) != "Mn")
+
+
+def _normalizar_entrada(municipio: str, departamento: Optional[str]) -> tuple[str, Optional[str]]:
+    """Issue #17: normaliza municipio/departamento contra divipola.py (DANE)
+    ANTES de armar el filtro de igualdad exacta -- este cliente nunca tuvo
+    su propio resolver (el docstring de _where_exacto asumía tildes
+    consistentes en el dataset, pero eso no protege a un llamador que pase
+    el nombre SIN tilde, ej. 'Cordoba' en vez de 'Córdoba': upper() en SQL
+    no quita tildes, así que la igualdad exacta fallaba en silencio). Si
+    divipola no reconoce el nombre, se usa el original tal cual -- nunca se
+    descarta un municipio real solo porque no está en el dataset DIVIPOLA
+    (serían 0 resultados de cualquier forma, pero no por este paso)."""
+    depto_canon = divipola.resolver_departamento(departamento) if departamento else None
+    resuelto = divipola.resolver_municipio(municipio, depto_canon or departamento)
+    municipio_final = resuelto["municipio"] if resuelto else municipio
+    departamento_final = depto_canon or departamento
+    return municipio_final, departamento_final
 
 
 def _where_exacto(campo: str, valor: str) -> str:
@@ -162,6 +181,7 @@ def consultar_suelos_municipio(
     municipio). Devuelve lista vacía si no hay match (municipio urbano sin
     cobertura rural, o nombre no reconocido) -- nunca lanza, degrada según
     el mismo patrón que ideam_client.py/sgc_amenaza_sismica.py."""
+    municipio, departamento = _normalizar_entrada(municipio, departamento)
     filas = _consultar_supabase(municipio, departamento, limit)
     if filas:
         return filas

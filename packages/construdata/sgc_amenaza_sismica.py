@@ -49,6 +49,8 @@ from typing import Optional
 
 import httpx
 
+import divipola
+
 log = logging.getLogger(__name__)
 
 _SERVICE_URL = (
@@ -77,6 +79,25 @@ def _normalizar(texto: str) -> str:
 _PAGINA = 1000  # el servicio reporta maxRecordCount=1000 pese a tener 1.123 registros
 
 
+def _canonicalizar_departamento(registro: dict) -> dict:
+    """Reemplaza registro['departamento'] por la forma canónica DIVIPOLA/DANE
+    (issue #17) -- el SGC (Supabase cacheado o servicio ArcGIS en vivo) no
+    garantiza la misma grafía exacta que otras fuentes (IDEAM/IGAC), y este
+    registro es lo que rag_multi_norma.py reenvía tal cual a
+    igac_client.consultar_suelos_municipio()/ideam_client.caudal_por_municipio().
+    Dejar el departamento ya canonicalizado aquí, en el punto de entrada real
+    del pipeline geográfico, evita que cada cliente downstream tenga que
+    adivinar por separado. Nunca reemplaza 'municipio' (la clave de matching
+    de este módulo sigue siendo el nombre tal cual lo trae el SGC) ni pierde
+    el dato si DIVIPOLA no lo reconoce -- se queda con el original."""
+    depto = registro.get("departamento")
+    if depto:
+        canon = divipola.resolver_departamento(depto)
+        if canon:
+            registro = {**registro, "departamento": canon}
+    return registro
+
+
 def _agrupar(registros: list[dict]) -> dict[str, list[dict]]:
     """Agrupa por nombre de municipio normalizado, preservando TODOS los
     registros por nombre (no solo el último) -- 68 nombres de municipio se
@@ -84,6 +105,7 @@ def _agrupar(registros: list[dict]) -> dict[str, list[dict]]:
     86 de los 1.123 municipios reales (bug encontrado 2026-08-22)."""
     agrupado: dict[str, list[dict]] = {}
     for r in registros:
+        r = _canonicalizar_departamento(r)
         agrupado.setdefault(_normalizar(r["municipio"]), []).append(r)
     return agrupado
 
