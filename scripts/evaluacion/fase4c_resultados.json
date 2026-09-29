@@ -1,0 +1,20 @@
+{
+  "matriz": {
+    "El Nino|alto (>p90)": 6058,
+    "El Nino|normal": 72501,
+    "El Nino|bajo (<p10)": 16861,
+    "Neutral|alto (>p90)": 14856,
+    "Neutral|normal": 127615,
+    "Neutral|bajo (<p10)": 15805,
+    "La Nina|alto (>p90)": 18114,
+    "La Nina|normal": 72592,
+    "La Nina|bajo (<p10)": 6185
+  },
+  "chi2": 13519.09053089828,
+  "p": 0.0,
+  "gl": 4,
+  "cramers_v": 0.1388547805016771,
+  "usadas": 350587,
+  "descartadas_sin_stats": 0,
+  "descartadas_sin_oni": 1435
+}
