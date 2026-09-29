@@ -43,7 +43,18 @@ no se debilito la verificacion para evitar este bloqueo. Pendiente real:
 o bien conseguir/instalar el certificado intermedio correcto, o pedir
 permiso explicito y acotado para este host publico especifico, o
 recolectar los mismos datos vía el navegador (mas lento, ~25+ llamadas
-manuales) en vez de este script."""
+manuales) en vez de este script.
+
+RESUELTO 2026-09-29 (a pedido explicito): en vez de forzar el permiso o
+debilitar TLS, se recolectaron los 25 departamentos + centroides reales
+(formula del area con signo/shoelace, calculada en el propio navegador,
+sin shapely) + conteo real de eventos por radio, TODO ejecutado como
+fetch() dentro del navegador (que sí resuelve el certificado de
+geocatmin.ingemmet.gob.pe con su propio trust store, sin tocar la
+verificacion TLS de Python) -- ver fase4b_peru_regiones_recolectado.json.
+Este script YA NO llama a geocatmin.ingemmet.gob.pe directamente: carga
+ese JSON y solo usa httpx para OpenTopoData (api.opentopodata.org), que
+nunca tuvo problema de certificado."""
 import io
 import json
 import math
@@ -54,77 +65,20 @@ from pathlib import Path
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 import httpx
 from scipy.stats import mannwhitneyu
-from shapely.geometry import shape
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+_REGIONES_RECOLECTADO = PROJECT_ROOT / "scripts" / "evaluacion" / "fase4b_peru_regiones_recolectado.json"
 
-_INGEMMET_REGIONES = (
-    "https://geocatmin.ingemmet.gob.pe/arcgis/rest/services/"
-    "SERV_SUSCEPTIBLE_MOV_MASA_REGIONAL/MapServer/0/query"
-)
-_INGEMMET_PELIGROS = (
-    "https://geocatmin.ingemmet.gob.pe/arcgis/rest/services/"
-    "SERV_PELIGROS_GEOLOGICOS/MapServer/0/query"
-)
 _OPENTOPODATA = "https://api.opentopodata.org/v1/srtm30m"
-_RADIO_METROS = 60000  # 60km -- mucho mas grande que los 15km de Colombia,
-# a proposito: la unidad aqui es departamento, no municipio.
 _TIMEOUT = 20.0
 
 
 def obtener_regiones() -> list[dict]:
-    """Descarga los 25 departamentos reales con su geometria (INEI 2011,
-    via INGEMMET) y calcula un centroide real por poligono (shapely) --
-    no se inventa ninguna coordenada."""
-    resp = httpx.get(
-        _INGEMMET_REGIONES,
-        params={
-            "where": "1=1",
-            "outFields": "NOM_DPTO,CAPITAL",
-            "returnGeometry": "true",
-            "geometryPrecision": 4,
-            "outSR": 4326,
-            "f": "json",
-        },
-        timeout=_TIMEOUT,
-    )
-    resp.raise_for_status()
-    data = resp.json()
-    regiones = []
-    for f in data.get("features", []):
-        rings = f["geometry"]["rings"]
-        # geometria esriPolygon -> geojson-like para shapely (mismo anillo
-        # exterior mas grande si hay islas/multi-parte, criterio simple y
-        # razonable para un centroide aproximado)
-        anillo_mayor = max(rings, key=lambda r: len(r))
-        poligono = shape({"type": "Polygon", "coordinates": [anillo_mayor]})
-        centroide = poligono.centroid
-        regiones.append({
-            "departamento": f["attributes"]["NOM_DPTO"],
-            "capital": f["attributes"]["CAPITAL"],
-            "lon": centroide.x,
-            "lat": centroide.y,
-        })
-    return regiones
-
-
-def contar_peligros_cercanos(lat: float, lon: float) -> int:
-    resp = httpx.get(
-        _INGEMMET_PELIGROS,
-        params={
-            "geometry": f"{lon},{lat}",
-            "geometryType": "esriGeometryPoint",
-            "inSR": 4326,
-            "spatialRel": "esriSpatialRelIntersects",
-            "distance": _RADIO_METROS,
-            "units": "esriSRUnit_Meter",
-            "returnCountOnly": "true",
-            "f": "json",
-        },
-        timeout=_TIMEOUT,
-    )
-    resp.raise_for_status()
-    return resp.json().get("count", 0)
+    """Carga los 25 departamentos + centroides + conteo de peligros ya
+    recolectados EN VIVO desde el navegador (ver docstring del modulo) --
+    no vuelve a llamar a geocatmin.ingemmet.gob.pe desde Python."""
+    with open(_REGIONES_RECOLECTADO, encoding="utf-8") as f:
+        return json.load(f)
 
 
 def consultar_elevaciones_batch(puntos: list[tuple[float, float]]) -> list[float | None]:
@@ -167,16 +121,11 @@ def rank_biserial(x, y, alternative="two-sided"):
 
 
 def main() -> None:
-    print("=== Descargando los 25 departamentos reales de Peru (INGEMMET/INEI 2011) ===")
+    print("=== Cargando los 25 departamentos reales de Peru (recolectados via navegador, INGEMMET/INEI 2011) ===")
     regiones = obtener_regiones()
-    print(f"Departamentos obtenidos: {len(regiones)}")
+    print(f"Departamentos cargados: {len(regiones)}")
     for r in regiones:
-        print(f"  {r['departamento']:20} centroide=({r['lat']:.3f},{r['lon']:.3f})")
-
-    print(f"\n=== Contando eventos reales de 'Peligros Geologicos' (INGEMMET, radio {_RADIO_METROS/1000:.0f}km) por departamento ===")
-    for r in regiones:
-        r["n_peligros"] = contar_peligros_cercanos(r["lat"], r["lon"])
-        print(f"  {r['departamento']:20} {r['n_peligros']} eventos")
+        print(f"  {r['departamento']:20} centroide=({r['lat']:.3f},{r['lon']:.3f}) n_peligros={r['n_peligros']}")
 
     print("\n=== Consultando elevacion real (SRTM30m, OpenTopoData) -- 5 puntos x 25 departamentos ===")
     puntos = []
