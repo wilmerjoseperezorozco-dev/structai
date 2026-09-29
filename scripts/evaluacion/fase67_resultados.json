@@ -1,0 +1,2258 @@
+[
+  {
+    "grupo": "ALTO",
+    "municipio": "BOGOTA, D.C.",
+    "departamento": "BOGOTA, D.C.",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "ALTO",
+    "municipio": "BALBOA",
+    "departamento": "RISARALDA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "ALTO",
+    "municipio": "LA VEGA",
+    "departamento": "CUNDINAMARCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "ALTO",
+    "municipio": "BUCARASICA",
+    "departamento": "NORTE DE SANTANDER",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "ALTO",
+    "municipio": "PEREIRA",
+    "departamento": "RISARALDA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "ALTO",
+    "municipio": "LA PLATA",
+    "departamento": "HUILA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "ALTO",
+    "municipio": "SAN FRANCISCO",
+    "departamento": "CUNDINAMARCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "ALTO",
+    "municipio": "EL TAMBO",
+    "departamento": "NARIÑO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "ALTO",
+    "municipio": "OCAÑA",
+    "departamento": "NORTE DE SANTANDER",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "ALTO",
+    "municipio": "PACHO",
+    "departamento": "CUNDINAMARCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "ALTO",
+    "municipio": "TOLEDO",
+    "departamento": "NORTE DE SANTANDER",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "ALTO",
+    "municipio": "LA PEÑA",
+    "departamento": "CUNDINAMARCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "ALTO",
+    "municipio": "VENECIA",
+    "departamento": "CUNDINAMARCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "ALTO",
+    "municipio": "SANTA MARIA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "ALTO",
+    "municipio": "ARBOLEDAS",
+    "departamento": "NORTE DE SANTANDER",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ACANDI",
+    "departamento": "CHOCO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ACHI",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "AGUADA",
+    "departamento": "SANTANDER",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "AGUSTIN CODAZZI",
+    "departamento": "CESAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ALBANIA",
+    "departamento": "LA GUAJIRA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ALCALA",
+    "departamento": "VALLE DEL CAUCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ALGARROBO",
+    "departamento": "MAGDALENA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ALMEIDA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ALTO BAUDO",
+    "departamento": "CHOCO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ALTOS DEL ROSARIO",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "AMBALEMA",
+    "departamento": "TOLIMA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "AQUITANIA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ARATOCA",
+    "departamento": "SANTANDER",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ARAUCA",
+    "departamento": "ARAUCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ARAUQUITA",
+    "departamento": "ARAUCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ARBOLETES",
+    "departamento": "ANTIOQUIA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ARENAL",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ARIGUANI",
+    "departamento": "MAGDALENA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ARJONA",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ARROYOHONDO",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ASTREA",
+    "departamento": "CESAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ATRATO",
+    "departamento": "CHOCO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "AYAPEL",
+    "departamento": "CORDOBA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "BAGADO",
+    "departamento": "CHOCO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "BAJO BAUDO",
+    "departamento": "CHOCO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "BARRANCA DE UPIA",
+    "departamento": "META",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "BARRANCAS",
+    "departamento": "LA GUAJIRA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "BARRANCO DE LOBA",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "BARRANCOMINAS",
+    "departamento": "GUAINIA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "BELALCAZAR",
+    "departamento": "CALDAS",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "BELEN DE BAJIRA",
+    "departamento": "CHOCO",
+    "categoria": "Sin dato"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "BELEN DE LOS ANDAQUIES",
+    "departamento": "CAQUETA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "BELMIRA",
+    "departamento": "ANTIOQUIA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "BERBEO",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "BOAVITA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "BOJAYA",
+    "departamento": "CHOCO",
+    "categoria": "Bosque"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "BOSCONIA",
+    "departamento": "CESAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "BUSBANZA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CABUYARO",
+    "departamento": "META",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CACERES",
+    "departamento": "ANTIOQUIA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CAIMITO",
+    "departamento": "SUCRE",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CAJICA",
+    "departamento": "CUNDINAMARCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CALAMAR",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CALOTO",
+    "departamento": "CAUCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CAMPO DE LA CRUZ",
+    "departamento": "ATLANTICO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CANALETE",
+    "departamento": "CORDOBA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CANTAGALLO",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CANTON DE SAN PABLO",
+    "departamento": "CHOCO",
+    "categoria": "Sin dato"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CARMEN DE CARUPA",
+    "departamento": "CUNDINAMARCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CARMEN DEL DARIEN",
+    "departamento": "CHOCO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CARTAGENA DEL CHAIRA",
+    "departamento": "CAQUETA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CARTAGO",
+    "departamento": "VALLE DEL CAUCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CARURU",
+    "departamento": "VAUPES",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CASTILLA LA NUEVA",
+    "departamento": "META",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CAUCASIA",
+    "departamento": "ANTIOQUIA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CERETE",
+    "departamento": "CORDOBA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CERINZA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CERRITO",
+    "departamento": "SANTANDER",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CERRO SAN ANTONIO",
+    "departamento": "MAGDALENA",
+    "categoria": "Sin dato"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CHALAN",
+    "departamento": "SUCRE",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CHIBOLO",
+    "departamento": "MAGDALENA",
+    "categoria": "Sin dato"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CHIMICHAGUA",
+    "departamento": "CESAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CHINAVITA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CHINU",
+    "departamento": "CORDOBA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CHIPATA",
+    "departamento": "SANTANDER",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CHIQUIZA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CHIRIGUANA",
+    "departamento": "CESAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CHIVATA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CICUCO",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CIENAGA DE ORO",
+    "departamento": "CORDOBA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "COMBITA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CONFINES",
+    "departamento": "SANTANDER",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CORRALES",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CORREGIMIENTO MAPIRIPANA",
+    "departamento": "GUAINIA",
+    "categoria": "Sin dato"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "COTORRA",
+    "departamento": "CORDOBA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "COVARACHIA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "COVEÑAS",
+    "departamento": "SUCRE",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "COYAIMA",
+    "departamento": "TOLIMA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CRAVO NORTE",
+    "departamento": "ARAUCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CUBARA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CUBARAL",
+    "departamento": "BOYACA",
+    "categoria": "Sin dato"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CUBARRAL",
+    "departamento": "META",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CUCAITA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CUITIVA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CUMARIBO",
+    "departamento": "VICHADA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CURILLO",
+    "departamento": "CAQUETA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CURITI",
+    "departamento": "SANTANDER",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "CURUMANI",
+    "departamento": "CESAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "DIBULLA",
+    "departamento": "LA GUAJIRA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "DISTRACCION",
+    "departamento": "LA GUAJIRA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "EL BAGRE",
+    "departamento": "ANTIOQUIA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "EL BANCO",
+    "departamento": "MAGDALENA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "EL CASTILLO",
+    "departamento": "META",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "EL CHARCO",
+    "departamento": "NARIÑO",
+    "categoria": "Bosque"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "EL COPEY",
+    "departamento": "CESAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "EL DONCELLO",
+    "departamento": "CAQUETA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "EL ENCANTO",
+    "departamento": "AMAZONAS",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "EL MOLINO",
+    "departamento": "LA GUAJIRA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "EL PASO",
+    "departamento": "CESAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "EL PIÑON",
+    "departamento": "MAGDALENA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "EL RETEN",
+    "departamento": "MAGDALENA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "EL RETORNO",
+    "departamento": "GUAVIARE",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "EL ROBLE",
+    "departamento": "SUCRE",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ENCISO",
+    "departamento": "SANTANDER",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ESPINAL",
+    "departamento": "TOLIMA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "FALAN",
+    "departamento": "TOLIMA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "FIRAVITOBA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "FLANDES",
+    "departamento": "TOLIMA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "FLORESTA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "FLORIDA",
+    "departamento": "VALLE DEL CAUCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "FONSECA",
+    "departamento": "LA GUAJIRA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "FORTUL",
+    "departamento": "ARAUCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "FRANCISCO PIZARRO",
+    "departamento": "NARIÑO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "FUENTE DE ORO",
+    "departamento": "META",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "FUNDACION",
+    "departamento": "MAGDALENA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "FUNZA",
+    "departamento": "CUNDINAMARCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "FUQUENE",
+    "departamento": "CUNDINAMARCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "GACHANTIVA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "GALAN",
+    "departamento": "SANTANDER",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "GALERAS",
+    "departamento": "SUCRE",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "GAMARRA",
+    "departamento": "CESAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "GONZALEZ",
+    "departamento": "CESAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "GUACAMAYAS",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "GUACARI",
+    "departamento": "VALLE DEL CAUCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "GUACHENE",
+    "departamento": "CAUCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "GUAINIA",
+    "departamento": "GUAINIA",
+    "categoria": "Sin dato"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "GUAMO",
+    "departamento": "TOLIMA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "GUAPI",
+    "departamento": "CAUCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "GUARANDA",
+    "departamento": "SUCRE",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "GUATAQUI",
+    "departamento": "CUNDINAMARCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "GUEPSA",
+    "departamento": "SANTANDER",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "GUICAN",
+    "departamento": "BOYACA",
+    "categoria": "Sin dato"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "HATILLO DE LOBA",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "HATO COROZAL",
+    "departamento": "CASANARE",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "HATONUEVO",
+    "departamento": "LA GUAJIRA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "IMUES",
+    "departamento": "NARIÑO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "INIRIDA",
+    "departamento": "GUAINIA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "INÍRIDA",
+    "departamento": "GUAINIA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "IZA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "JARDIN",
+    "departamento": "ANTIOQUIA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "JORDAN",
+    "departamento": "SANTANDER",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "LA APARTADA",
+    "departamento": "CORDOBA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "LA CAPILLA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "LA CUMBRE",
+    "departamento": "VALLE DEL CAUCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "LA GLORIA",
+    "departamento": "CESAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "LA JAGUA DEL PILAR",
+    "departamento": "LA GUAJIRA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "LA MACARENA",
+    "departamento": "META",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "LA MONTAÑITA",
+    "departamento": "CAQUETA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "LA PINTADA",
+    "departamento": "ANTIOQUIA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "LA PRIMAVERA",
+    "departamento": "VICHADA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "LA TOLA",
+    "departamento": "NARIÑO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "LA URIBE",
+    "departamento": "META",
+    "categoria": "Sin dato"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "LA UVITA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "LAGUNAS",
+    "departamento": "PERÚ",
+    "categoria": "Sin dato"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "LEJANIAS",
+    "departamento": "META",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "LENGUAZAQUE",
+    "departamento": "CUNDINAMARCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "LORICA",
+    "departamento": "CORDOBA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "LOS CORDOBAS",
+    "departamento": "CORDOBA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MADRID",
+    "departamento": "CUNDINAMARCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MAHATES",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MAICAO",
+    "departamento": "LA GUAJIRA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MAJAGUAL",
+    "departamento": "SUCRE",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MALAMBO",
+    "departamento": "ATLANTICO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MANATI",
+    "departamento": "ATLANTICO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MAPIRIPAN",
+    "departamento": "META",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MARGARITA",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MARIA LA BAJA",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MARIPI",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MARIQUITA",
+    "departamento": "TOLIMA",
+    "categoria": "Sin dato"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MEDIO ATRATO",
+    "departamento": "CHOCO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MEDIO SAN JUAN",
+    "departamento": "CHOCO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MILAN",
+    "departamento": "CAQUETA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MIRANDA",
+    "departamento": "CAUCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MOGOTES",
+    "departamento": "SANTANDER",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MOLAGAVITA",
+    "departamento": "SANTANDER",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MOLINO",
+    "departamento": "LA GUAJIRA",
+    "categoria": "Sin dato"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MOMIL",
+    "departamento": "CORDOBA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MONGUA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MONGUI",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MONTELIBANO",
+    "departamento": "CORDOBA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MONTERIA",
+    "departamento": "CORDOBA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MORELIA",
+    "departamento": "CAQUETA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MORROA",
+    "departamento": "SUCRE",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MOTAVITA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MOÑITOS",
+    "departamento": "CORDOBA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "MURINDO",
+    "departamento": "ANTIOQUIA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "NOBSA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "NOROSI",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "NOVITA",
+    "departamento": "CHOCO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "NUEVA GRANADA",
+    "departamento": "MAGDALENA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "NUEVO COLON",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "NUQUI",
+    "departamento": "CHOCO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "OCAMONTE",
+    "departamento": "SANTANDER",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "OCÉANO PACÍFICO",
+    "departamento": "CHOCO",
+    "categoria": "Sin dato"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "OIBA",
+    "departamento": "SANTANDER",
+    "categoria": "Sin dato"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "OICATA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "OROCUE",
+    "departamento": "CASANARE",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PACHAVITA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PAILITAS",
+    "departamento": "CESAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PAIPA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PALMAR DE VARELA",
+    "departamento": "ATLANTICO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PALMITO",
+    "departamento": "SUCRE",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PEDRAZA",
+    "departamento": "MAGDALENA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PELAYA",
+    "departamento": "CESAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PESCA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PIEDRAS",
+    "departamento": "TOLIMA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PIJIÑO DEL CARMEN",
+    "departamento": "MAGDALENA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PINILLOS",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PISBA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PIVIJAY",
+    "departamento": "MAGDALENA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PLANETA RICA",
+    "departamento": "CORDOBA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "POLONUEVO",
+    "departamento": "ATLANTICO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PONEDERA",
+    "departamento": "ATLANTICO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PUEBLO NUEVO",
+    "departamento": "CORDOBA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PUEBLOVIEJO",
+    "departamento": "MAGDALENA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PUERTO ALEGRIA",
+    "departamento": "AMAZONAS",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PUERTO ASIS",
+    "departamento": "PUTUMAYO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PUERTO CAICEDO",
+    "departamento": "PUTUMAYO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PUERTO CARREÑO",
+    "departamento": "VICHADA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PUERTO CONCORDIA",
+    "departamento": "META",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PUERTO ESCONDIDO",
+    "departamento": "CORDOBA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PUERTO GAITAN",
+    "departamento": "META",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PUERTO GUZMAN",
+    "departamento": "PUTUMAYO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PUERTO LEGUIZAMO",
+    "departamento": "PUTUMAYO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PUERTO LLERAS",
+    "departamento": "META",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PUERTO NARE",
+    "departamento": "ANTIOQUIA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PUERTO NARIÑO",
+    "departamento": "AMAZONAS",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PUERTO RICO",
+    "departamento": "META",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PUERTO RONDON",
+    "departamento": "ARAUCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PUERTO SANTANDER",
+    "departamento": "NORTE DE SANTANDER",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PUERTO TRIUNFO",
+    "departamento": "ANTIOQUIA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PURIFICACION",
+    "departamento": "TOLIMA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "PURISIMA",
+    "departamento": "CORDOBA",
+    "categoria": "Sin dato"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "RAMIRIQUI",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "RAQUIRA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "REGIDOR",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "REMOLINO",
+    "departamento": "MAGDALENA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "REPELON",
+    "departamento": "ATLANTICO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "RIO VIEJO",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "RIOFRIO",
+    "departamento": "VALLE DEL CAUCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "RIOHACHA",
+    "departamento": "LA GUAJIRA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "RIVERA",
+    "departamento": "HUILA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ROBERTO PAYAN",
+    "departamento": "NARIÑO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ROLDANILLO",
+    "departamento": "VALLE DEL CAUCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SABANA DE TORRES",
+    "departamento": "SANTANDER",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SABANAGRANDE",
+    "departamento": "ATLANTICO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SABANAS DE SAN ANGEL",
+    "departamento": "MAGDALENA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SABANETA",
+    "departamento": "ANTIOQUIA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SABOYA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SACAMA",
+    "departamento": "CASANARE",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAHAGUN",
+    "departamento": "CORDOBA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SALDAÑA",
+    "departamento": "TOLIMA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAMACA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAMPUES",
+    "departamento": "SUCRE",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN ALBERTO",
+    "departamento": "CESAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN ANDRES DE TUMACO",
+    "departamento": "NARIÑO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN ANDRES SOTAVENTO",
+    "departamento": "CORDOBA",
+    "categoria": "Sin dato"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN ANTERO",
+    "departamento": "CORDOBA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN BENITO ABAD",
+    "departamento": "SUCRE",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN BERNARDO DEL VIENTO",
+    "departamento": "CORDOBA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN CARLOS DE GUAROA",
+    "departamento": "META",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN CRISTOBAL",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN DIEGO",
+    "departamento": "CESAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN ESTANISLAO",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN FERNANDO",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN GIL",
+    "departamento": "SANTANDER",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN JACINTO DEL CAUCA",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN JOSE DE MIRANDA",
+    "departamento": "SANTANDER",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN JOSE DE PARE",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN JOSE DE URE",
+    "departamento": "CORDOBA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN JOSE DEL FRAGUA",
+    "departamento": "CAQUETA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN JUAN DE BETULIA",
+    "departamento": "SUCRE",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN JUAN DE URABA",
+    "departamento": "ANTIOQUIA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN LUIS DE PALENQUE",
+    "departamento": "CASANARE",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN LUIS DE SINCE",
+    "departamento": "SUCRE",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN MARCOS",
+    "departamento": "SUCRE",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN MATEO",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN MIGUEL DE SEMA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN PABLO DE BORBUR",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN PEDRO DE CARTAGO",
+    "departamento": "NARIÑO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN SEBASTIAN DE BUENAVISTA",
+    "departamento": "MAGDALENA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN VICENTE DEL CAGUAN",
+    "departamento": "CAQUETA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SAN ZENON",
+    "departamento": "MAGDALENA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SANTA ANA",
+    "departamento": "MAGDALENA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SANTA BARBARA DE PINTO",
+    "departamento": "MAGDALENA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SANTA CATALINA",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SANTA LUCIA",
+    "departamento": "ATLANTICO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SANTA ROSA DE VITERBO",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SANTA ROSALIA",
+    "departamento": "VICHADA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SANTA SOFIA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SANTAN ANA",
+    "departamento": "MAGDALENA",
+    "categoria": "Sin dato"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SANTANA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SANTIAGO DE TOLU",
+    "departamento": "SUCRE",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SIACHOQUE",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SIMIJACA",
+    "departamento": "CUNDINAMARCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SIPI",
+    "departamento": "CHOCO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SITIONUEVO",
+    "departamento": "MAGDALENA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SOATA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SOCHA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SOCORRO",
+    "departamento": "SANTANDER",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SOLANO",
+    "departamento": "CAQUETA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SOLEDAD",
+    "departamento": "ATLANTICO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SOLITA",
+    "departamento": "CAQUETA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SOMONDOCO",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SOPLAVIENTO",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SORA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SORACA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SOTAQUIRA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SUAN",
+    "departamento": "ATLANTICO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SUESCA",
+    "departamento": "CUNDINAMARCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SUSA",
+    "departamento": "CUNDINAMARCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SUSACON",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SUTAMARCHAN",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "SUTATAUSA",
+    "departamento": "CUNDINAMARCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "TALAIGUA NUEVO",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "TAMALAMEQUE",
+    "departamento": "CESAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "TAME",
+    "departamento": "ARAUCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "TENERIFE",
+    "departamento": "MAGDALENA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "TENJO",
+    "departamento": "CUNDINAMARCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "TIBANA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "TIBASOSA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "TIBU",
+    "departamento": "NORTE DE SANTANDER",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "TIERRALTA",
+    "departamento": "CORDOBA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "TIPACOQUE",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "TOCA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "TOCANCIPA",
+    "departamento": "CUNDINAMARCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "TOGUI",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "TOLU VIEJO",
+    "departamento": "SUCRE",
+    "categoria": "Sin dato"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "TOPAGA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "TOTA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "TRINIDAD",
+    "departamento": "CASANARE",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "TRUJILLO",
+    "departamento": "VALLE DEL CAUCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "TUBARA",
+    "departamento": "ATLANTICO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "TUCHIN",
+    "departamento": "CORDOBA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "TULUA",
+    "departamento": "VALLE DEL CAUCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "TURBACO",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "TURBANA",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "TURBO",
+    "departamento": "ANTIOQUIA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "TUTA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "TUTAZA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ULLOA",
+    "departamento": "VALLE DEL CAUCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "UMBITA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "UNGUIA",
+    "departamento": "CHOCO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "UNION PANAMERICANA",
+    "departamento": "CHOCO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "URIBIA",
+    "departamento": "LA GUAJIRA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "URUMITA",
+    "departamento": "LA GUAJIRA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "VALLE DEL GUAMUEZ",
+    "departamento": "PUTUMAYO",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "VAUPES",
+    "departamento": "VAUPES",
+    "categoria": "Sin dato"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "VENTAQUEMADA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "VETAS",
+    "departamento": "SANTANDER",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "VIGIA DEL FUERTE",
+    "departamento": "ANTIOQUIA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "VIJES",
+    "departamento": "VALLE DEL CAUCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "VILLA RICA",
+    "departamento": "CAUCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "VILLAVIEJA",
+    "departamento": "HUILA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "YAVARATE",
+    "departamento": "VAUPES",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "YOLOMBO",
+    "departamento": "ANTIOQUIA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "YONDO",
+    "departamento": "ANTIOQUIA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ZAMBRANO",
+    "departamento": "BOLIVAR",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ZAPAYAN",
+    "departamento": "MAGDALENA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ZARZAL",
+    "departamento": "VALLE DEL CAUCA",
+    "categoria": "No bosque estable"
+  },
+  {
+    "grupo": "BAJO",
+    "municipio": "ZETAQUIRA",
+    "departamento": "BOYACA",
+    "categoria": "No bosque estable"
+  }
+]

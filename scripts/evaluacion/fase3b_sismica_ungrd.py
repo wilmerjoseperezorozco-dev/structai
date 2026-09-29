@@ -23,7 +23,9 @@ from dotenv import load_dotenv
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 load_dotenv(PROJECT_ROOT / "apps" / "api" / ".env")
 sys.path.insert(0, str(PROJECT_ROOT / "packages" / "construdata"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 import rag_multi_norma as rm
+from _utils_zona_muda import construir_universos
 from scipy.stats import mannwhitneyu
 import statistics
 
@@ -56,13 +58,10 @@ def main() -> None:
     todos_eventos = _paginar("ungrd_emergencias", "municipio,departamento,evento")
     print(f"Total eventos: {len(todos_eventos)}")
 
-    municipios_con_algun_evento = {
-        (e["municipio"] or "").strip().upper() for e in todos_eventos if e.get("municipio")
-    }
-    municipios_con_sismo = {
-        (e["municipio"] or "").strip().upper() for e in todos_eventos
-        if e["evento"] == "SISMO" and e.get("municipio")
-    }
+    municipios_con_algun_evento, municipios_sin_sismo_pero_reportan, conteo_sismo = construir_universos(
+        todos_eventos, {"SISMO"}
+    )
+    municipios_con_sismo = set(conteo_sismo)
     print(f"Municipios con AL MENOS 1 evento de cualquier tipo: {len(municipios_con_algun_evento)}")
     print(f"Municipios con AL MENOS 1 evento SISMO: {len(municipios_con_sismo)}")
 
@@ -77,8 +76,7 @@ def main() -> None:
 
     # Grupo CON sismo real
     aa_con_sismo = [aa_por_municipio[m] for m in municipios_con_sismo if m in aa_por_municipio]
-    # Grupo SIN sismo, pero que SI reportan otras cosas (filtro de zona muda, mismo criterio de #61/#62)
-    municipios_sin_sismo_pero_reportan = (municipios_con_algun_evento - municipios_con_sismo)
+    # Grupo SIN sismo, pero que SI reportan otras cosas (filtro de zona muda -- ver _utils_zona_muda.py)
     aa_sin_sismo = [aa_por_municipio[m] for m in municipios_sin_sismo_pero_reportan if m in aa_por_municipio]
 
     print(f"\nGrupo CON sismo real: n={len(aa_con_sismo)}")

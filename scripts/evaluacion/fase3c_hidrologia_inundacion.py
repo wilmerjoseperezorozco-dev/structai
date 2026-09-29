@@ -16,8 +16,10 @@ from dotenv import load_dotenv
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 load_dotenv(PROJECT_ROOT / "apps" / "api" / ".env")
 sys.path.insert(0, str(PROJECT_ROOT / "packages" / "construdata"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 import rag_multi_norma as rm
 import ideam_client
+from _utils_zona_muda import construir_universos, grupo_alto_top_n
 from scipy.stats import mannwhitneyu
 import statistics
 
@@ -51,20 +53,13 @@ def main() -> None:
     todos_eventos = _paginar("ungrd_emergencias", "municipio,departamento,evento")
     print(f"Total eventos: {len(todos_eventos)}")
 
-    municipios_con_algun_evento = {
-        (e["municipio"] or "").strip().upper() for e in todos_eventos if e.get("municipio")
-    }
-    from collections import Counter
-    conteo_inundacion: Counter = Counter()
-    for e in todos_eventos:
-        if e["evento"] in EVENTOS_INUNDACION:
-            clave = (e["municipio"] or "").strip().upper()
-            if clave:
-                conteo_inundacion[clave] += 1
+    municipios_con_algun_evento, grupo_bajo_claves, conteo_inundacion = construir_universos(
+        todos_eventos, EVENTOS_INUNDACION
+    )
     print(f"Total eventos de inundación/creciente/avenida: {sum(conteo_inundacion.values())}")
     print(f"Municipios distintos con al menos 1 de estos eventos: {len(conteo_inundacion)}")
 
-    top15_inundacion = [m for m, _ in conteo_inundacion.most_common(15)]
+    top15_inundacion = grupo_alto_top_n(conteo_inundacion, n=15)
 
     print("\n=== Contando estaciones IDEAM reales por municipio (catálogo completo, paginado) ===")
     estaciones = []
@@ -87,7 +82,6 @@ def main() -> None:
             densidad_por_municipio[clave] += 1
 
     print("\n=== Grupo ALTO (top 15 inundación) vs BAJO (0 inundación, pero reportan otras cosas) ===")
-    grupo_bajo_claves = municipios_con_algun_evento - set(conteo_inundacion)
     print(f"Grupo ALTO: {len(top15_inundacion)} municipios")
     print(f"Grupo BAJO (0 inundación, filtro zona muda aplicado): {len(grupo_bajo_claves)} municipios")
 

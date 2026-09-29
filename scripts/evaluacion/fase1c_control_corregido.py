@@ -21,7 +21,9 @@ from dotenv import load_dotenv
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 load_dotenv(PROJECT_ROOT / "apps" / "api" / ".env")
 sys.path.insert(0, str(PROJECT_ROOT / "packages" / "construdata"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 import rag_multi_norma as rm
+from _utils_zona_muda import construir_universos, grupo_alto_top_n
 from scipy.stats import chi2_contingency
 
 TAM_PAGINA = 1000
@@ -52,22 +54,21 @@ def perfil_pendiente(municipio: str) -> Counter:
 def main() -> None:
     print("=== Reconstruyendo universos reales ===")
     todos_eventos = _paginar("ungrd_emergencias", "municipio,evento", None)
-    municipios_con_algun_evento = {
-        (e["municipio"] or "").strip().upper() for e in todos_eventos if e.get("municipio")
-    }
-    conteo_mm: Counter = Counter()
-    for e in todos_eventos:
-        if e["evento"] == "MOVIMIENTO EN MASA":
-            clave = (e["municipio"] or "").strip().upper()
-            if clave:
-                conteo_mm[clave] += 1
+    municipios_con_algun_evento, grupo_bajo_corregido, conteo_mm = construir_universos(
+        todos_eventos, {"MOVIMIENTO EN MASA"}
+    )
 
+    # Solo para el print comparativo "antes/despues" -- NO alimenta grupo_bajo_corregido
+    # (ese ya sale limpio de construir_universos(), sin cruzar contra esta tabla).
+    # Nota real encontrada 2026-09-29 refactorizando este script: cruzar "universo" (con
+    # tildes, ej. "ACANDÍ") contra conteo_mm (sin tildes, tal como los trae UNGRD) pierde
+    # ~370 municipios reales por desajuste de tildes -- por eso grupo_bajo_corregido ya NO
+    # depende de esta tabla, evita ese bug por diseño en vez de normalizar tildes aqui.
     todos_municipios = _paginar("sgc_amenaza_sismica_municipios", "municipio", None)
     universo = {(m["municipio"] or "").strip().upper() for m in todos_municipios}
 
-    top15 = [m for m, _ in conteo_mm.most_common(15)]
+    top15 = grupo_alto_top_n(conteo_mm, n=15)
     grupo_bajo_viejo = universo - set(conteo_mm)
-    grupo_bajo_corregido = grupo_bajo_viejo & municipios_con_algun_evento
 
     print(f"Grupo ALTO: {len(top15)} municipios")
     print(f"Grupo BAJO viejo (Fase 1, sin filtrar por reporte): {len(grupo_bajo_viejo)}")
