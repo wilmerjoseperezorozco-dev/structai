@@ -60,16 +60,37 @@ def _espectro(p: dict) -> dict:
     return {"SDS": SDS, "SD1": SD1, "T0": T0, "Ts": Ts, "TL": TL}
 
 
-def _sa(T: float, esp: dict) -> float:
+def _eta_amortiguamiento(xi_pct: float) -> float:
+    """Factor de correccion por amortiguamiento del Eurocodigo 8 (EN
+    1998-1 SS3.2.2.2, verificado en vivo 2026-09-30 contra
+    eurocodeapplied.com) -- NSR-10 A.2.6 no tiene ningun mecanismo
+    nativo equivalente, asume 5% de amortiguamiento critico fijo
+    siempre (ver issue #75). Extension de ingenieria NO normativa,
+    pensada para aislamiento sismico/disipadores de energia donde el
+    amortiguamiento real difiere del 5% estandar -- StructAI no calcula
+    ese xi_pct, debe venir de un estudio aparte del usuario.
+
+    eta = max(sqrt(10/(5+xi_pct)), 0.55)
+
+    Con xi_pct=5.0 (caso normal, sin aislamiento) da exactamente 1.0 --
+    el espectro no cambia, cero regresion para el 99% de los usuarios
+    que nunca pasan este parametro."""
+    return max((10.0 / (5.0 + xi_pct)) ** 0.5, 0.55)
+
+
+def _sa(T: float, esp: dict, xi_pct: float = 5.0) -> float:
     """T es el periodo fundamental -- la rama T<T0 no aplica (ver
     docstring de _espectro). T<=Ts(=TC real): meseta constante
     (A.2.6-3). Ts<T<=TL: rama descendente 1/T (A.2.6-1). T>TL: rama de
-    periodo largo 1/T^2 (A.2.6-5)."""
+    periodo largo 1/T^2 (A.2.6-5). xi_pct (issue #75, extension NO
+    normativa) escala las 3 ramas por _eta_amortiguamiento() -- con el
+    default 5.0 el factor es exactamente 1.0."""
+    eta = _eta_amortiguamiento(xi_pct)
     if T <= esp["Ts"]:
-        return esp["SDS"]
+        return eta * esp["SDS"]
     elif T <= esp["TL"]:
-        return esp["SD1"] / T
-    return esp["SD1"] * esp["TL"] / T**2
+        return eta * esp["SD1"] / T
+    return eta * esp["SD1"] * esp["TL"] / T**2
 
 
 def _periodo(p: dict, h_mm: float) -> float:
@@ -80,10 +101,16 @@ def calcular_demanda_cortante_nudo(
     cargas: dict,
     zona: dict,
     altura_piso_mm: float = 3000.0,
+    xi_pct: float = 5.0,
 ) -> dict:
     """
     Calcula Vu de diseño combinando gravedad + sismo NSR-10 C.9.2.
     Retorna diccionario con todos los valores intermedios y finales.
+
+    xi_pct (issue #75, extension NO normativa de Eurocodigo 8): amortiguamiento
+    viscoso real de la estructura en %, solo relevante con aislamiento
+    sismico/disipadores. Default 5.0 = comportamiento NSR-10 estandar,
+    sin cambio alguno.
     """
     At    = cargas["tributaria_viga"]
     CM    = (cargas["peso_propio_losa"] + cargas["carga_muerta_adicional"]) * At * 1000
@@ -93,7 +120,7 @@ def calcular_demanda_cortante_nudo(
 
     esp   = _espectro(zona)
     T     = _periodo(zona, altura_piso_mm * n)
-    Sa    = _sa(T, esp)
+    Sa    = _sa(T, esp, xi_pct)
     Vs    = (Sa / zona["R"]) * W
 
     # Distribución vertical k=1 (T<0.5s — típico Atlántico)
@@ -114,6 +141,8 @@ def calcular_demanda_cortante_nudo(
         "T_seg":         T,
         "Sa":            Sa,
         "espectro":      esp,
+        "xi_pct":                xi_pct,
+        "eta_amortiguamiento":   _eta_amortiguamiento(xi_pct),
         "Vs_basal_N":    Vs,
         "Ve_nudo_N":     Ve,
         "Vu_gravedad_N": Vu_grav,

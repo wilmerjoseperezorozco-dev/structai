@@ -17,7 +17,7 @@ import numpy as np
 import pytest
 
 from src.infracortex_core import InfracortexEngine
-from src.load_engine import calcular_demanda_cortante_nudo, chequeo_nsr10_nudo, ZONA_SISMICA_ATLANTICO, CARGAS_GRAVEDAD_DEFAULT, _espectro, _sa
+from src.load_engine import calcular_demanda_cortante_nudo, chequeo_nsr10_nudo, ZONA_SISMICA_ATLANTICO, CARGAS_GRAVEDAD_DEFAULT, _espectro, _sa, _eta_amortiguamiento
 from src.vision_engine import InfracortexVisionSensor, DeteccionEstribo, ResultadoEspaciado
 
 PROPS_CONCRETO = {"fc": 28.0, "fy": 420.0, "b": 300.0, "h": 300.0, "d": 265.0, "Av": 56.5, "s": 75.0}
@@ -140,6 +140,53 @@ def test_espectro_nsr10_A_2_6_valores_oficiales():
     assert _sa(2.0, esp) == pytest.approx(0.216, abs=1e-4)
     # Rama de periodo largo 1.2*Av*Fv*I*TL/T^2 (T > TL) -- antes inexistente
     assert _sa(5.0, esp) == pytest.approx(0.07465, abs=1e-4)
+
+
+def test_eta_amortiguamiento_default_5pct_es_exactamente_1() -> None:
+    """Issue #75 -- con xi_pct=5.0 (NSR-10 estándar, sin aislamiento) el
+    factor de Eurocódigo 8 debe dar EXACTAMENTE 1.0, no solo aproximado
+    -- si diera 0.9999999 por ruido de punto flotante, cada cálculo
+    default (99% de los usuarios, que nunca tocan este parámetro)
+    quedaría contaminado por un factor que no debería existir."""
+    assert _eta_amortiguamiento(5.0) == 1.0
+
+
+def test_eta_amortiguamiento_valores_publicados() -> None:
+    """eta = max(sqrt(10/(5+xi)), 0.55), EN 1998-1 §3.2.2.2. xi=20% es el
+    valor de referencia citado en la literatura de aislamiento sísmico
+    (amortiguamiento efectivo típico de un sistema de aislamiento de
+    base) -- eta=0.632 calculado a mano: sqrt(10/25)=sqrt(0.4)=0.6325.
+    xi=30% ejercita el piso de 0.55 (sqrt(10/35)=0.5345 < 0.55, se
+    clampa) -- caso real de disipadores de alto amortiguamiento."""
+    assert _eta_amortiguamiento(20.0) == pytest.approx(0.6325, abs=1e-4)
+    assert _eta_amortiguamiento(30.0) == pytest.approx(0.55, abs=1e-4)  # clamp del piso
+
+
+def test_sa_con_xi_pct_distinto_de_5_escala_las_3_ramas() -> None:
+    """Issue #75 -- extensión NO normativa: con xi_pct=20 cada rama del
+    espectro debe escalarse por el mismo eta=0.6325 verificado arriba,
+    sobre los valores oficiales ya cubiertos en
+    test_espectro_nsr10_A_2_6_valores_oficiales."""
+    esp = _espectro(ZONA_SISMICA_ATLANTICO)
+    eta = _eta_amortiguamiento(20.0)
+
+    assert _sa(0.3396, esp, xi_pct=20.0) == pytest.approx(eta * 0.45, abs=1e-4)
+    assert _sa(2.0, esp, xi_pct=20.0) == pytest.approx(eta * 0.216, abs=1e-4)
+    assert _sa(5.0, esp, xi_pct=20.0) == pytest.approx(eta * 0.07465, abs=1e-4)
+    # Default sin pasar xi_pct sigue siendo el comportamiento NSR-10 puro
+    assert _sa(0.3396, esp) == pytest.approx(0.45, abs=1e-4)
+
+
+def test_calcular_demanda_cortante_nudo_xi_pct_default_no_cambia_resultado() -> None:
+    """Regresión de cero-cambio: llamar sin xi_pct debe dar exactamente
+    los mismos valores que antes de que existiera el parámetro (mismos
+    números que test_calcular_demanda_cortante_nudo_valores_reales)."""
+    resultado = calcular_demanda_cortante_nudo(
+        CARGAS_GRAVEDAD_DEFAULT, ZONA_SISMICA_ATLANTICO, altura_piso_mm=3000.0
+    )
+    assert resultado["xi_pct"] == 5.0
+    assert resultado["eta_amortiguamiento"] == 1.0
+    assert resultado["Sa"] == pytest.approx(0.45, abs=1e-3)
 
 
 # ── vision_engine — inspección de estribos ───────────────────────────────────

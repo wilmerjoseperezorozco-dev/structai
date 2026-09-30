@@ -49,6 +49,12 @@ class EspectroDiseno(BaseModel):
     T0:  float
     Ts:  float
     TL:  float
+    xi_pct: float = Field(5.0, description="Amortiguamiento viscoso usado [%] -- 5.0 es el estándar NSR-10")
+    eta_amortiguamiento: float = Field(1.0, description="Factor de Eurocódigo 8 aplicado al espectro (issue #75) -- 1.0 con xi_pct=5.0, sin efecto")
+    nota_no_normativa: Optional[str] = Field(
+        None,
+        description="Presente solo si xi_pct != 5.0: aclara que el ajuste por amortiguamiento es una extensión de ingeniería (Eurocódigo 8), no un requisito de NSR-10",
+    )
 
 
 class AnalisisNudoResponse(BaseModel):

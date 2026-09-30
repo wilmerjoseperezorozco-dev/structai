@@ -117,6 +117,7 @@ async def analizar_nudo(
     Av:           float      = Form(56.5, description="Área estribos [mm²]"),
     s:            float      = Form(75.0, description="Separación estribos [mm]"),
     num_pisos:    int        = Form(3,    description="Pisos que convergen al nudo"),
+    xi_pct:       float      = Form(5.0,  description="Amortiguamiento viscoso real [%] -- extensión NO normativa (Eurocódigo 8, issue #75) para aislamiento sísmico/disipadores; 5.0 = estándar NSR-10, sin efecto"),
     user:         AuthenticatedUser = Depends(get_current_user),
 ):
     """
@@ -156,7 +157,9 @@ async def analizar_nudo(
 
         # Cargas y demanda sísmica
         cargas = {**CARGAS_DEFAULT, "numero_pisos": num_pisos}
-        resultado = calcular_demanda_cortante(cargas, ZONA_SISMICA, altura_piso_mm=float(posicion_mm[2]))
+        resultado = calcular_demanda_cortante(
+            cargas, ZONA_SISMICA, altura_piso_mm=float(posicion_mm[2]), xi_pct=xi_pct
+        )
 
         # Chequeo NSR-10
         props = {"fc": fc, "fy": fy, "b": b, "h": h, "d": d, "Av": Av, "s": s}
@@ -177,6 +180,14 @@ async def analizar_nudo(
                 "T0":  round(esp["T0"],  4),
                 "Ts":  round(esp["Ts"],  4),
                 "TL":  round(esp["TL"],  4),
+                "xi_pct": resultado["xi_pct"],
+                "eta_amortiguamiento": round(resultado["eta_amortiguamiento"], 4),
+                "nota_no_normativa": (
+                    "El ajuste por amortiguamiento (η de Eurocódigo 8) es una extensión de "
+                    "ingeniería, no un requisito de NSR-10 -- válido solo si xi_pct refleja un "
+                    "estudio real de aislamiento sísmico/disipadores (issue #75)."
+                    if resultado["xi_pct"] != 5.0 else None
+                ),
             },
             Vs_basal_kN=round(resultado["Vs_basal_N"] / 1000, 2),
             Vu_sismo_kN=round(resultado["Vu_sismo_N"] / 1000, 2),
