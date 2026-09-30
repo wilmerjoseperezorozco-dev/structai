@@ -80,10 +80,18 @@ from google.genai import types  # noqa: E402
 
 import rag_multi_norma as rmn  # noqa: E402
 
-# Mismo proyecto/región que el resto de la infraestructura de StructAI en
-# GCP (ver CLAUDE.md) -- no se inventa un proyecto nuevo para esto.
+# Mismo proyecto que el resto de la infraestructura de StructAI en GCP
+# (ver CLAUDE.md) -- no se inventa un proyecto nuevo para esto. REGIÓN:
+# "global", NO "us-east1" -- corrección real 2026-09-30, la primera
+# corrida dio 404 "Publisher Model not found" en las 81/81 preguntas
+# contra us-east1 (mismo proyecto que ya sirve Cloud Run sin problema,
+# así que no era un tema de permisos/proyecto). Modelos Gemini muy
+# recientes (gemini-3.8-flash se lanzó días antes de esta evaluación)
+# suelen desplegarse primero al endpoint "global" antes que a regiones
+# específicas -- caso real documentado del mismo síntoma (404 en región
+# regional, resuelto con location="global").
 GCP_PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "structai-507113")
-GCP_REGION = os.environ.get("GCP_REGION", "us-east1")
+GCP_REGION = os.environ.get("GCP_REGION", "global")
 GEMINI_MODEL = "gemini-3.8-flash"
 
 _ESPACIOS_UNICODE = (" ", " ", " ", " ")
