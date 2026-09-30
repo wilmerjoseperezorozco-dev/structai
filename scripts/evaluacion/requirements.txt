@@ -73,3 +73,11 @@ sentence-transformers
 # ── Evaluación ──
 # ragas==0.3.9, NO la última (0.4.x) -- ver el bug real documentado arriba.
 ragas==0.3.9
+
+# ── Gemini vía Vertex AI (issue #83) ──
+# SDK oficial, no el endpoint OpenAI-compatible -- Vertex usa OAuth2 con
+# token que expira cada hora (a diferencia de Groq/OpenAI, API keys
+# estáticas); este SDK refresca el token internamente, evita manejarlo a
+# mano. Requiere credenciales reales antes de correr
+# comparar_groq_vs_gemini_vertex.py -- ver el docstring de ese script.
+google-genai
