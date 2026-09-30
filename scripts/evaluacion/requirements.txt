@@ -70,6 +70,13 @@ httpx
 python-dotenv
 sentence-transformers
 
+# Necesario porque comparar_groq_vs_*.py importa dinámicamente
+# apps/api/tests/test_rag_nsr10_regresion.py para reusar sus CASOS_* ya
+# verificados a mano -- ese archivo hace `import pytest` a nivel de
+# módulo (usa pytest.param). Encontrado real 2026-09-30 corriendo
+# comparar_groq_vs_gemini_vertex.py en un venv aislado nuevo sin pytest.
+pytest
+
 # ── Evaluación ──
 # ragas==0.3.9, NO la última (0.4.x) -- ver el bug real documentado arriba.
 ragas==0.3.9
