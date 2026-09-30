@@ -1572,7 +1572,7 @@ def ask_norma(request: Request, req: AskRequest):
 _cache_consultar = TTLCache(ttl_seconds=6 * 3600, max_size=1000)
 
 
-@app.post("/consultar", response_model=ConsultarResponse, tags=["Normativa"])
+@app.post("/consultar", response_model=ConsultarResponse, tags=["Normativa"], operation_id="consultar")
 @app.post("/v1/consultar", response_model=ConsultarResponse, tags=["Normativa"])
 @limiter.limit("10/minute")
 def consultar_delegado(request: Request, req: ConsultarRequest):
@@ -2405,6 +2405,21 @@ def admin_feedback(request: Request, limite: int = 50):
         "sin_feedback": total_n - utiles_n - no_utiles_n,
         "peor_valoradas": negativas.data or [],
     }
+
+
+# ════════════════════════════════════════════════════════════════════════════════
+# MCP SERVER (issue #78) -- opcional, mismo patron que ENABLE_YOLO/ENABLE_ESTRUCTURAL.
+# Debe montarse aqui, DESPUES de que todas las rutas de arriba ya esten
+# registradas -- fastapi_mcp introspecciona app.routes al construirse.
+# ════════════════════════════════════════════════════════════════════════════════
+
+ENABLE_MCP = os.environ.get("ENABLE_MCP", "false").lower() == "true"
+if ENABLE_MCP:
+    from mcp_server import montar_mcp
+    montar_mcp(app)
+    log.info("✓ MCP server habilitado (ENABLE_MCP=true) — /mcp")
+else:
+    log.info("○ MCP server desactivado (ENABLE_MCP=false)")
 
 
 # ════════════════════════════════════════════════════════════════════════════════

@@ -27,6 +27,13 @@ uvicorn[standard]==0.32.1
 python-multipart==0.0.32       # necesario para UploadFile/Form -- 0.0.12 -> 0.0.32 parcha 4 CVEs HIGH (DoS/arbitrary file write)
 pydantic==2.9.2
 
+# ── MCP server (issue #78) — opcional, detrás de ENABLE_MCP=false por defecto.
+# fastapi-mcp==0.4.0 envuelve /consultar como herramienta MCP sin duplicar
+# lógica (introspecciona app.routes), reenvía el header authorization tal
+# cual hacia auth.get_current_user() -- mismo JWT de Supabase del chat web,
+# sin sistema de login nuevo. Verificado en vivo 2026-09-30 (TestClient real).
+fastapi-mcp==0.4.0
+
 # ── RAG / Embeddings ─────────────────────────────────────────
 # supabase>=2.15 requerido: 2.9.1 valida las keys con una regex de JWT viejo
 # (xxx.yyy.zzz) y rechaza como "Invalid API key" el formato nuevo de Supabase
