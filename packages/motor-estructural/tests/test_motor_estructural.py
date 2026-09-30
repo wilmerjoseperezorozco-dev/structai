@@ -17,7 +17,7 @@ import numpy as np
 import pytest
 
 from src.infracortex_core import InfracortexEngine
-from src.load_engine import calcular_demanda_cortante_nudo, chequeo_nsr10_nudo, ZONA_SISMICA_ATLANTICO, CARGAS_GRAVEDAD_DEFAULT, _espectro, _sa, _eta_amortiguamiento
+from src.load_engine import calcular_demanda_cortante_nudo, chequeo_nsr10_nudo, ZONA_SISMICA_ATLANTICO, CARGAS_GRAVEDAD_DEFAULT, _espectro, _sa, _eta_amortiguamiento, _factor_B_amortiguamiento
 from src.vision_engine import InfracortexVisionSensor, DeteccionEstribo, ResultadoEspaciado
 
 PROPS_CONCRETO = {"fc": 28.0, "fy": 420.0, "b": 300.0, "h": 300.0, "d": 265.0, "Av": 56.5, "s": 75.0}
@@ -187,6 +187,73 @@ def test_calcular_demanda_cortante_nudo_xi_pct_default_no_cambia_resultado() -> 
     assert resultado["xi_pct"] == 5.0
     assert resultado["eta_amortiguamiento"] == 1.0
     assert resultado["Sa"] == pytest.approx(0.45, abs=1e-3)
+
+
+def test_factor_B_amortiguamiento_valores_exactos_tabla_N5() -> None:
+    """Issue #77 -- Tabla N°5 de la NTE E.031 de Perú (DS-030-2019-VIVIENDA),
+    misma familia normativa que ASCE 7-05/FEMA 450 (los documentos que
+    NSR-10 A.3.8.1 exige textualmente). Los 6 puntos exactos de la
+    tabla, sin interpolar."""
+    assert _factor_B_amortiguamiento(2.0) == pytest.approx(0.8, abs=1e-9)
+    assert _factor_B_amortiguamiento(5.0) == pytest.approx(1.0, abs=1e-9)
+    assert _factor_B_amortiguamiento(10.0) == pytest.approx(1.2, abs=1e-9)
+    assert _factor_B_amortiguamiento(20.0) == pytest.approx(1.5, abs=1e-9)
+    assert _factor_B_amortiguamiento(30.0) == pytest.approx(1.7, abs=1e-9)
+    assert _factor_B_amortiguamiento(40.0) == pytest.approx(1.9, abs=1e-9)
+
+
+def test_factor_B_amortiguamiento_interpolacion_lineal() -> None:
+    """La propia Tabla N°5 exige interpolación lineal entre puntos --
+    xi=15 está a medio camino entre (10, 1.2) y (20, 1.5) -> B=1.35
+    calculado a mano; xi=25 a medio camino entre (20,1.5) y (30,1.7) ->
+    B=1.6."""
+    assert _factor_B_amortiguamiento(15.0) == pytest.approx(1.35, abs=1e-9)
+    assert _factor_B_amortiguamiento(25.0) == pytest.approx(1.6, abs=1e-9)
+
+
+def test_factor_B_amortiguamiento_clampea_fuera_de_tabla() -> None:
+    """La norma no define valores fuera de [2%, 40%] -- se clampea al
+    extremo más cercano en vez de extrapolar (xi=1 -> igual que xi=2;
+    xi=60 -> igual que xi=40)."""
+    assert _factor_B_amortiguamiento(1.0) == pytest.approx(0.8, abs=1e-9)
+    assert _factor_B_amortiguamiento(60.0) == pytest.approx(1.9, abs=1e-9)
+
+
+def test_sa_metodo_asce_fema_divide_en_vez_de_multiplicar() -> None:
+    """Issue #77 -- a diferencia de eta (multiplica), el factor B de
+    ASCE 7-05/FEMA 450 DIVIDE a Sa (convención real de la tabla: B es la
+    razón Sa_5%/Sa_efectivo). Con xi_pct=20 el divisor es 1.5 -- Sa debe
+    quedar en 1/1.5 de su valor NSR-10 puro, sobre los mismos valores ya
+    verificados en test_espectro_nsr10_A_2_6_valores_oficiales."""
+    esp = _espectro(ZONA_SISMICA_ATLANTICO)
+    assert _sa(0.3396, esp, xi_pct=20.0, metodo_amortiguamiento="asce_fema") == pytest.approx(0.45 / 1.5, abs=1e-4)
+    assert _sa(2.0, esp, xi_pct=20.0, metodo_amortiguamiento="asce_fema") == pytest.approx(0.216 / 1.5, abs=1e-4)
+    # Default (sin especificar metodo) sigue siendo Eurocodigo, comportamiento de #75 intacto
+    eta20 = _eta_amortiguamiento(20.0)
+    assert _sa(0.3396, esp, xi_pct=20.0) == pytest.approx(eta20 * 0.45, abs=1e-4)
+
+
+def test_sa_metodo_asce_fema_default_5pct_no_cambia_resultado() -> None:
+    """Con xi_pct=5.0 (default), 'asce_fema' y 'eurocodigo' deben dar
+    EXACTAMENTE el mismo resultado que el NSR-10 puro -- B(5.0)=1.0
+    igual que eta(5.0)=1.0, cero regresión en ambos métodos."""
+    esp = _espectro(ZONA_SISMICA_ATLANTICO)
+    sa_puro = _sa(0.3396, esp)
+    assert _sa(0.3396, esp, xi_pct=5.0, metodo_amortiguamiento="asce_fema") == pytest.approx(sa_puro, abs=1e-9)
+    assert _sa(0.3396, esp, xi_pct=5.0, metodo_amortiguamiento="eurocodigo") == pytest.approx(sa_puro, abs=1e-9)
+
+
+def test_calcular_demanda_cortante_nudo_expone_ambos_metodos() -> None:
+    """El resultado siempre trae eta y factor_B informativos (issue #75
+    y #77), más metodo_amortiguamiento indicando cuál se aplicó
+    realmente a Sa."""
+    resultado = calcular_demanda_cortante_nudo(
+        CARGAS_GRAVEDAD_DEFAULT, ZONA_SISMICA_ATLANTICO, altura_piso_mm=3000.0,
+        xi_pct=20.0, metodo_amortiguamiento="asce_fema",
+    )
+    assert resultado["metodo_amortiguamiento"] == "asce_fema"
+    assert resultado["factor_B_amortiguamiento"] == pytest.approx(1.5, abs=1e-9)
+    assert resultado["eta_amortiguamiento"] == pytest.approx(_eta_amortiguamiento(20.0), abs=1e-9)
 
 
 # ── vision_engine — inspección de estribos ───────────────────────────────────

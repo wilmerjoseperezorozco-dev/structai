@@ -117,7 +117,8 @@ async def analizar_nudo(
     Av:           float      = Form(56.5, description="Área estribos [mm²]"),
     s:            float      = Form(75.0, description="Separación estribos [mm]"),
     num_pisos:    int        = Form(3,    description="Pisos que convergen al nudo"),
-    xi_pct:       float      = Form(5.0,  description="Amortiguamiento viscoso real [%] -- extensión NO normativa (Eurocódigo 8, issue #75) para aislamiento sísmico/disipadores; 5.0 = estándar NSR-10, sin efecto"),
+    xi_pct:       float      = Form(5.0,  description="Amortiguamiento viscoso real [%] para aislamiento sísmico/disipadores; 5.0 = estándar NSR-10, sin efecto"),
+    metodo_amortiguamiento: str = Form("eurocodigo", description="'eurocodigo' (extensión NO normativa, issue #75) o 'asce_fema' (trazable a NSR-10 A.3.8.1, issue #77)"),
     user:         AuthenticatedUser = Depends(get_current_user),
 ):
     """
@@ -158,7 +159,8 @@ async def analizar_nudo(
         # Cargas y demanda sísmica
         cargas = {**CARGAS_DEFAULT, "numero_pisos": num_pisos}
         resultado = calcular_demanda_cortante(
-            cargas, ZONA_SISMICA, altura_piso_mm=float(posicion_mm[2]), xi_pct=xi_pct
+            cargas, ZONA_SISMICA, altura_piso_mm=float(posicion_mm[2]),
+            xi_pct=xi_pct, metodo_amortiguamiento=metodo_amortiguamiento,
         )
 
         # Chequeo NSR-10
@@ -181,11 +183,19 @@ async def analizar_nudo(
                 "Ts":  round(esp["Ts"],  4),
                 "TL":  round(esp["TL"],  4),
                 "xi_pct": resultado["xi_pct"],
+                "metodo_amortiguamiento": resultado["metodo_amortiguamiento"],
                 "eta_amortiguamiento": round(resultado["eta_amortiguamiento"], 4),
+                "factor_B_amortiguamiento": round(resultado["factor_B_amortiguamiento"], 4),
                 "nota_no_normativa": (
-                    "El ajuste por amortiguamiento (η de Eurocódigo 8) es una extensión de "
-                    "ingeniería, no un requisito de NSR-10 -- válido solo si xi_pct refleja un "
-                    "estudio real de aislamiento sísmico/disipadores (issue #75)."
+                    (
+                        "El ajuste por amortiguamiento (η de Eurocódigo 8) es una extensión de "
+                        "ingeniería, no un requisito de NSR-10 -- válido solo si xi_pct refleja un "
+                        "estudio real de aislamiento sísmico/disipadores (issue #75)."
+                        if resultado["metodo_amortiguamiento"] != "asce_fema" else
+                        "El ajuste por amortiguamiento (factor B, ASCE 7-05/FEMA 450) es trazable a "
+                        "NSR-10 A.3.8.1, que exige uno de esos dos documentos para aislamiento sísmico "
+                        "en Colombia -- válido solo si xi_pct refleja un estudio real (issue #77)."
+                    )
                     if resultado["xi_pct"] != 5.0 else None
                 ),
             },

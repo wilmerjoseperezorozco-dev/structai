@@ -78,19 +78,72 @@ def _eta_amortiguamiento(xi_pct: float) -> float:
     return max((10.0 / (5.0 + xi_pct)) ** 0.5, 0.55)
 
 
-def _sa(T: float, esp: dict, xi_pct: float = 5.0) -> float:
+# Tabla N.5 de la NTE E.031 "Aislamiento Sismico" de Peru (DS-030-2019-VIVIENDA,
+# El Peruano, 6-nov-2019) -- misma familia normativa que ASCE/SEI 7-05 y FEMA 450,
+# los DOS documentos que NSR-10 A.3.8.1 exige textualmente para aislamiento sismico
+# en Colombia (verificado contra nsr10_chunks, ids NSR10-A-A_3_8_aislamiento_sismico_base_p1-p4,
+# issue #77). A diferencia de eta (Eurocodigo, issue #75, extension NO normativa),
+# esta tabla SI es trazable a lo que la norma colombiana nombra por documento y
+# edicion -- aunque no se confirmo byte a byte contra el PDF original de ASCE 7-05/
+# FEMA 450 (escaneos sin capa de texto, sin acceso), solo contra esta fuente
+# primaria legible de la misma familia normativa.
+_TABLA_B_AMORTIGUAMIENTO: tuple[tuple[float, float], ...] = (
+    (2.0, 0.8),
+    (5.0, 1.0),
+    (10.0, 1.2),
+    (20.0, 1.5),
+    (30.0, 1.7),
+    (40.0, 1.9),
+)
+
+
+def _factor_B_amortiguamiento(xi_pct: float) -> float:
+    """Factor B de ASCE 7-05/FEMA 450 (via Tabla N.5 de Peru E.031, issue #77)
+    -- interpolacion lineal entre puntos de la tabla, tal como la propia norma
+    indica ("para valores intermedios... se obtendra por interpolacion
+    lineal"). Fuera de la tabla (xi_pct<2% o >40%) se clampea al extremo mas
+    cercano (0.8/1.9) en vez de extrapolar, porque la norma no define esos
+    rangos.
+
+    Con xi_pct=5.0 (default, caso normal) da exactamente 1.0 -- mismo
+    contrato de cero-regresion que _eta_amortiguamiento(). Se usa como
+    DIVISOR de Sa (Sa_efectivo = Sa_5% / B), no como multiplicador --
+    convencion real de la tabla (B=razon entre Sa al 5% y Sa al
+    amortiguamiento efectivo)."""
+    if xi_pct <= _TABLA_B_AMORTIGUAMIENTO[0][0]:
+        return _TABLA_B_AMORTIGUAMIENTO[0][1]
+    if xi_pct >= _TABLA_B_AMORTIGUAMIENTO[-1][0]:
+        return _TABLA_B_AMORTIGUAMIENTO[-1][1]
+    for (xi_lo, b_lo), (xi_hi, b_hi) in zip(_TABLA_B_AMORTIGUAMIENTO, _TABLA_B_AMORTIGUAMIENTO[1:]):
+        if xi_lo <= xi_pct <= xi_hi:
+            frac = (xi_pct - xi_lo) / (xi_hi - xi_lo)
+            return b_lo + frac * (b_hi - b_lo)
+    raise AssertionError("xi_pct fuera de rango tras los chequeos de clamp -- no deberia ocurrir")
+
+
+def _sa(T: float, esp: dict, xi_pct: float = 5.0, metodo_amortiguamiento: str = "eurocodigo") -> float:
     """T es el periodo fundamental -- la rama T<T0 no aplica (ver
     docstring de _espectro). T<=Ts(=TC real): meseta constante
     (A.2.6-3). Ts<T<=TL: rama descendente 1/T (A.2.6-1). T>TL: rama de
-    periodo largo 1/T^2 (A.2.6-5). xi_pct (issue #75, extension NO
-    normativa) escala las 3 ramas por _eta_amortiguamiento() -- con el
-    default 5.0 el factor es exactamente 1.0."""
-    eta = _eta_amortiguamiento(xi_pct)
+    periodo largo 1/T^2 (A.2.6-5). xi_pct escala las 3 ramas -- con el
+    default 5.0 el factor es exactamente 1.0 sin importar el metodo.
+
+    metodo_amortiguamiento (issue #77) elige COMO se escala:
+    - "eurocodigo" (default, issue #75): multiplica por
+      _eta_amortiguamiento(xi_pct) -- extension de ingenieria NO
+      normativa, NSR-10 no reconoce Eurocodigo 8.
+    - "asce_fema": divide por _factor_B_amortiguamiento(xi_pct) -- SI
+      trazable a NSR-10 A.3.8.1, que exige literalmente ASCE/SEI 7-05 o
+      FEMA 450 para aislamiento sismico en Colombia."""
+    if metodo_amortiguamiento == "asce_fema":
+        factor = 1.0 / _factor_B_amortiguamiento(xi_pct)
+    else:
+        factor = _eta_amortiguamiento(xi_pct)
     if T <= esp["Ts"]:
-        return eta * esp["SDS"]
+        return factor * esp["SDS"]
     elif T <= esp["TL"]:
-        return eta * esp["SD1"] / T
-    return eta * esp["SD1"] * esp["TL"] / T**2
+        return factor * esp["SD1"] / T
+    return factor * esp["SD1"] * esp["TL"] / T**2
 
 
 def _periodo(p: dict, h_mm: float) -> float:
@@ -102,15 +155,19 @@ def calcular_demanda_cortante_nudo(
     zona: dict,
     altura_piso_mm: float = 3000.0,
     xi_pct: float = 5.0,
+    metodo_amortiguamiento: str = "eurocodigo",
 ) -> dict:
     """
     Calcula Vu de diseño combinando gravedad + sismo NSR-10 C.9.2.
     Retorna diccionario con todos los valores intermedios y finales.
 
-    xi_pct (issue #75, extension NO normativa de Eurocodigo 8): amortiguamiento
-    viscoso real de la estructura en %, solo relevante con aislamiento
-    sismico/disipadores. Default 5.0 = comportamiento NSR-10 estandar,
-    sin cambio alguno.
+    xi_pct: amortiguamiento viscoso real de la estructura en %, solo
+    relevante con aislamiento sismico/disipadores. Default 5.0 =
+    comportamiento NSR-10 estandar, sin cambio alguno.
+
+    metodo_amortiguamiento: "eurocodigo" (default, issue #75, extension
+    NO normativa) o "asce_fema" (issue #77, trazable a NSR-10 A.3.8.1).
+    Ver docstring de _sa().
     """
     At    = cargas["tributaria_viga"]
     CM    = (cargas["peso_propio_losa"] + cargas["carga_muerta_adicional"]) * At * 1000
@@ -120,7 +177,7 @@ def calcular_demanda_cortante_nudo(
 
     esp   = _espectro(zona)
     T     = _periodo(zona, altura_piso_mm * n)
-    Sa    = _sa(T, esp, xi_pct)
+    Sa    = _sa(T, esp, xi_pct, metodo_amortiguamiento)
     Vs    = (Sa / zona["R"]) * W
 
     # Distribución vertical k=1 (T<0.5s — típico Atlántico)
@@ -142,7 +199,9 @@ def calcular_demanda_cortante_nudo(
         "Sa":            Sa,
         "espectro":      esp,
         "xi_pct":                xi_pct,
+        "metodo_amortiguamiento": metodo_amortiguamiento,
         "eta_amortiguamiento":   _eta_amortiguamiento(xi_pct),
+        "factor_B_amortiguamiento": _factor_B_amortiguamiento(xi_pct),
         "Vs_basal_N":    Vs,
         "Ve_nudo_N":     Ve,
         "Vu_gravedad_N": Vu_grav,

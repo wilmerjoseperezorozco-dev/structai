@@ -50,10 +50,12 @@ class EspectroDiseno(BaseModel):
     Ts:  float
     TL:  float
     xi_pct: float = Field(5.0, description="Amortiguamiento viscoso usado [%] -- 5.0 es el estándar NSR-10")
-    eta_amortiguamiento: float = Field(1.0, description="Factor de Eurocódigo 8 aplicado al espectro (issue #75) -- 1.0 con xi_pct=5.0, sin efecto")
+    metodo_amortiguamiento: str = Field("eurocodigo", description="'eurocodigo' (issue #75, extensión no normativa) o 'asce_fema' (issue #77, trazable a NSR-10 A.3.8.1)")
+    eta_amortiguamiento: float = Field(1.0, description="Factor de Eurocódigo 8 -- 1.0 con xi_pct=5.0, sin efecto (issue #75)")
+    factor_B_amortiguamiento: float = Field(1.0, description="Factor B de ASCE 7-05/FEMA 450 (Tabla N°5, vía NTE E.031 Perú) -- 1.0 con xi_pct=5.0, sin efecto (issue #77)")
     nota_no_normativa: Optional[str] = Field(
         None,
-        description="Presente solo si xi_pct != 5.0: aclara que el ajuste por amortiguamiento es una extensión de ingeniería (Eurocódigo 8), no un requisito de NSR-10",
+        description="Presente solo si xi_pct != 5.0: aclara el estatus normativo del ajuste por amortiguamiento aplicado",
     )
 
 
