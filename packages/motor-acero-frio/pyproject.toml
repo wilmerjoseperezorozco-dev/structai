@@ -1,0 +1,13 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "motor-acero-frio"
+version = "0.1.0"
+description = "Acero formado en frío (NSR-10 F.4 / AISI S100) — MVP: ancho efectivo (Winter), issue #81"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3.3"]
