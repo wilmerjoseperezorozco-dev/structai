@@ -41,3 +41,15 @@ def test_carga_mas_de_1000_municipios() -> None:
         f"Solo se cargaron {total} municipios de sgc_amenaza_sismica_municipios -- "
         "PostgREST truncó la consulta sin paginar, mismo bug de 2026-09-03."
     )
+
+
+def test_bogota_sin_sufijo_dc_resuelve() -> None:
+    """Bug real encontrado 2026-09-30 investigando la integración de
+    microzonificación local (issue #76): el nombre oficial del SGC es
+    'Bogotá, D.C.', pero nadie escribe ese sufijo en una pregunta normal
+    ('sismo en Bogotá hoy'). Antes del alias en `_agrupar()`, las tres
+    variantes de abajo devolvían None."""
+    for texto in ("Bogotá", "sismo en Bogotá hoy", "edificio en Bogota"):
+        r = sgc.detectar_municipio_en_texto(texto)
+        assert r is not None, f"'{texto}' no resolvió ningún municipio (regresión del alias de Bogotá)"
+        assert r["municipio"] == "Bogotá, D.C.", f"'{texto}' resolvió a '{r['municipio']}', se esperaba 'Bogotá, D.C.'"

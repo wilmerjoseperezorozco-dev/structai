@@ -26,6 +26,7 @@ import sgc_movimientos_masa
 import igac_client
 import ideam_client
 import ideam_deforestacion_client
+import microzonificacion_local
 import noticias_colombia
 import pais_zonificacion
 
@@ -2194,6 +2195,9 @@ def _bloque_contexto_sgc(sgc_registro: dict) -> str:
     )
     if cambio_bosque:
         partes.append(ideam_deforestacion_client.formatear_respuesta(cambio_bosque))
+    microzonificacion = microzonificacion_local.consultar_microzonificacion(sgc_registro["municipio"])
+    if microzonificacion:
+        partes.append(microzonificacion_local.formatear_aviso(microzonificacion))
     return "\n\n".join(partes)
 
 

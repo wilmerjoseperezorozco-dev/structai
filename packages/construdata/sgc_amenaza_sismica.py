@@ -107,6 +107,19 @@ def _agrupar(registros: list[dict]) -> dict[str, list[dict]]:
     for r in registros:
         r = _canonicalizar_departamento(r)
         agrupado.setdefault(_normalizar(r["municipio"]), []).append(r)
+    # Alias real: "Bogotá" sola casi nunca se escribe con el sufijo ", D.C."
+    # en una pregunta normal ("sismo en Bogotá hoy") -- es demasiado
+    # importante (capital, ~8M hab.) para dejarla sin resolver solo porque
+    # el nombre oficial del SGC es "Bogotá, D.C.". Mismo alias que ya existe
+    # en divipola.py para este exacto problema -- replicado aquí porque este
+    # módulo mantiene su propio caché independiente, no usa divipola para
+    # resolver el texto de entrada. Bug real encontrado 2026-09-30
+    # investigando la integración de microzonificación local (issue #76):
+    # "Bogotá" o "Bogota" solos devolvían None, solo matcheaba "Bogotá D.C."
+    # exacto.
+    bogota = agrupado.get(_normalizar("Bogotá, D.C."))
+    if bogota:
+        agrupado.setdefault(_normalizar("Bogota"), bogota)
     return agrupado
 
 
