@@ -61,6 +61,34 @@ def test_enable_mcp_true_monta_un_unico_tool_consultar(monkeypatch) -> None:
     assert nombres == ["consultar"], f"Se esperaba solo el tool 'consultar', se encontraron: {nombres}"
 
 
+def test_enable_mcp_oauth_false_no_rompe_el_montaje_bearer(monkeypatch) -> None:
+    """Default (ENABLE_MCP_OAUTH=false): /mcp se monta igual que siempre,
+    solo con el camino de bearer token -- confirma que agregar el
+    parámetro OAuth no cambió el comportamiento por defecto."""
+    monkeypatch.setenv("ENABLE_MCP", "true")
+    monkeypatch.setenv("ENABLE_MCP_OAUTH", "false")
+    main = _reimportar_main()
+    assert any(r.path == "/mcp" for r in main.app.routes)
+
+
+def test_enable_mcp_oauth_true_no_lanza_al_construir_authconfig(monkeypatch) -> None:
+    """ENABLE_MCP_OAUTH=true construye un AuthConfig real apuntando a
+    SUPABASE_URL sin lanzar excepción -- NO verifica el round-trip OAuth
+    completo (requiere el toggle 'OAuth Server' activado en el dashboard
+    de Supabase, que sigue apagado -- ver issue #78, no se activa desde
+    código)."""
+    monkeypatch.setenv("ENABLE_MCP", "true")
+    monkeypatch.setenv("ENABLE_MCP_OAUTH", "true")
+    main = _reimportar_main()
+    assert any(r.path == "/mcp" for r in main.app.routes)
+
+    from mcp_server import _auth_config_oauth
+    cfg = _auth_config_oauth()
+    assert cfg is not None
+    assert cfg.issuer.endswith("/auth/v1")
+    assert cfg.authorize_url.endswith("/auth/v1/oauth/authorize")
+
+
 def test_tool_consultar_reusa_el_schema_real_de_consultarrequest(monkeypatch) -> None:
     """El input schema del tool MCP debe salir del ConsultarRequest real
     (pregunta/top_k) -- confirma que fastapi_mcp está introspeccionando

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, Calculator, BookOpen, FolderOpen, User, Loader2, Droplets, Mountain, Route, LineChart } from "lucide-react";
+import { LayoutDashboard, Calculator, BookOpen, FolderOpen, User, Loader2, Droplets, Mountain, Route, LineChart, Plug } from "lucide-react";
 import clsx from "clsx";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
@@ -25,6 +25,10 @@ const NAV_ITEMS_COMPLETO = [
   { href: "/gerencia", label: "Gerencia", icon: LineChart },
   { href: "/nsr10", label: "NSR-10", icon: BookOpen },
   { href: "/proyectos", label: "Proyectos", icon: FolderOpen },
+  // Fuera del enfoque de motores del piloto (issue #78) -- es una
+  // función de cuenta/integración, mismo tipo que Perfil, no un motor de
+  // dominio nuevo -- se mantiene visible aunque SOLO_ENFOQUE_PILOTO=true.
+  { href: "/integraciones", label: "Integraciones", icon: Plug },
   { href: "/perfil", label: "Perfil", icon: User },
 ];
 
