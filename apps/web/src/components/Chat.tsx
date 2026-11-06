@@ -620,8 +620,24 @@ export default function Chat() {
         </div>
       )}
 
+      {/* Aviso de IA (issue #85) -- EU AI Act Art. 50 exige que sea perceptible
+          "a más tardar en la primera interacción" y explícitamente declara
+          insuficiente un aviso enterrado solo en Términos/Privacidad (que
+          StructAI ya tenía, pero no acá). Fijo en esta zona (no en el
+          historial scrolleable) para que se vea siempre, incluso antes de
+          escribir la primera pregunta -- no depende de hacer scroll ni de
+          un clic. Separado a propósito de <AvisoResponsabilidad>: ese es
+          condicional por dominio (issue #18, solo diseño/cálculo), este
+          aplica a TODA respuesta sin excepción. */}
+      <div className="px-4 pt-1">
+        <p className="flex items-center gap-1.5 text-[11px] text-concrete-600">
+          <Sparkles size={11} className="flex-shrink-0 text-concrete-600" />
+          Las respuestas de StructAI son generadas por inteligencia artificial.
+        </p>
+      </div>
+
       {/* Input */}
-      <div className="px-4 pb-4">
+      <div className="px-4 pt-2 pb-4">
         <div className="flex items-end gap-2 bg-concrete-800 border border-concrete-700 focus-within:border-brand-500 rounded-2xl px-4 py-3 transition">
           <TextareaAutosize
             value={input}
