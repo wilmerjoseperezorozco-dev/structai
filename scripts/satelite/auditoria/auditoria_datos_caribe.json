@@ -1,0 +1,13 @@
+{
+ "n_municipios": 195,
+ "n_eventos": 5670,
+ "vif": {
+  "fraccion < 10 m": 2.2571175414987135,
+  "elevacion media": 12.60953621204609,
+  "pendiente media": 85.89307359205021,
+  "pendiente p90": 47.7077458380996,
+  "rango de elevacion": 8.577944013896403,
+  "fraccion pend > 15 %": 25.36021199506818,
+  "IGAC inundable": 2.377375076788401
+ }
+}

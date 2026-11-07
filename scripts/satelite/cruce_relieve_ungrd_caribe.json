@@ -1,0 +1,149 @@
+{
+ "n": 195,
+ "veredicto": "el IC por bloques de la especificacion principal incluye 0: NO hay evidencia de asociacion",
+ "curva": {
+  "principal (conteo crudo) | sin controles": {
+   "rho": -0.09946111268995134,
+   "ic_bloques": [
+    -0.30373425983986324,
+    0.12450511529497142
+   ]
+  },
+  "principal (conteo crudo) | log(pob)": {
+   "rho": -0.049931453927432395,
+   "ic_bloques": [
+    -0.23316757601055224,
+    0.14173150858675726
+   ]
+  },
+  "principal (conteo crudo) | log(pob)+log(area) [PRINCIPAL]": {
+   "rho": 0.003124263789679927,
+   "ic_bloques": [
+    -0.14042768518219576,
+    0.16917516250553577
+   ]
+  },
+  "principal (conteo crudo) | log(pob)+log(area)+%cabecera": {
+   "rho": 0.0028129582580409,
+   "ic_bloques": [
+    -0.15500233934077878,
+    0.1717845331765992
+   ]
+  },
+  "principal (conteo crudo) | log(pob)+total reportes [ILUSTRATIVA, sesgada]": {
+   "rho": -0.022234491717948942,
+   "ic_bloques": [
+    -0.20814024910768342,
+    0.14210313679557485
+   ]
+  },
+  "duplicados colapsados | sin controles": {
+   "rho": -0.16133267254077474,
+   "ic_bloques": [
+    -0.3668389377213777,
+    0.08270491326395606
+   ]
+  },
+  "duplicados colapsados | log(pob)": {
+   "rho": -0.12023901108316158,
+   "ic_bloques": [
+    -0.29333917734725734,
+    0.07924241955504692
+   ]
+  },
+  "duplicados colapsados | log(pob)+log(area) [PRINCIPAL]": {
+   "rho": -0.06605108511979714,
+   "ic_bloques": [
+    -0.2074721580023363,
+    0.09244461390885346
+   ]
+  },
+  "duplicados colapsados | log(pob)+log(area)+%cabecera": {
+   "rho": -0.06754341255419097,
+   "ic_bloques": [
+    -0.2070710994158526,
+    0.09847655098906981
+   ]
+  },
+  "duplicados colapsados | log(pob)+total reportes [ILUSTRATIVA, sesgada]": {
+   "rho": -0.10251651384300856,
+   "ic_bloques": [
+    -0.298499333726709,
+    0.07589096768117111
+   ]
+  },
+  "sin 2022 | sin controles": {
+   "rho": -0.23324075899072275,
+   "ic_bloques": [
+    -0.39764714888076436,
+    -0.0554557871528967
+   ]
+  },
+  "sin 2022 | log(pob)": {
+   "rho": -0.20652864873704743,
+   "ic_bloques": [
+    -0.3413380793289072,
+    -0.04178560163660887
+   ]
+  },
+  "sin 2022 | log(pob)+log(area) [PRINCIPAL]": {
+   "rho": -0.16196774137279707,
+   "ic_bloques": [
+    -0.27643199131844215,
+    -0.0022160997681003767
+   ]
+  },
+  "sin 2022 | log(pob)+log(area)+%cabecera": {
+   "rho": -0.16239758235282428,
+   "ic_bloques": [
+    -0.2648881578531012,
+    0.0004415748681764242
+   ]
+  },
+  "sin 2022 | log(pob)+total reportes [ILUSTRATIVA, sesgada]": {
+   "rho": -0.199012651378734,
+   "ic_bloques": [
+    -0.33639348952110965,
+    -0.04885524394079789
+   ]
+  }
+ },
+ "predictores": {
+  "fraccion < 10 m [PRINCIPAL]": {
+   "rho": 0.003124263789679927,
+   "ic_bloques": [
+    -0.1459698942816946,
+    0.16538016054851362
+   ]
+  },
+  "IGAC fraccion con inundacion": {
+   "rho": 0.10155126198328439,
+   "ic_bloques": [
+    -0.03948359618256842,
+    0.23639435286527136
+   ]
+  },
+  "elevacion media (invertida)": {
+   "rho": 0.13440938931903593,
+   "ic_bloques": [
+    -0.04692816851318204,
+    0.3323672730566581
+   ]
+  },
+  "pendiente media (invertida)": {
+   "rho": 0.09426324998914835,
+   "ic_bloques": [
+    -0.03496488684600947,
+    0.26069106925916474
+   ]
+  }
+ },
+ "sens_sin_zonas_mudas": {
+  "rho": 0.03209819958478912,
+  "ic": [
+   -0.10597628246849877,
+   0.21629594230065127
+  ],
+  "n": 156
+ }
+}

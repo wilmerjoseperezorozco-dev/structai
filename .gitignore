@@ -58,3 +58,5 @@ scripts/evaluacion/_resultados.csv
 packages/yolo/dataset/
 packages/yolo/runs/
 packages/yolo/*.pt
+scripts/satelite/_cache/
+scripts/secop/_cache/
