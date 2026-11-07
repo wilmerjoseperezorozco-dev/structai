@@ -17,9 +17,11 @@ Precios y costos de obra, métricas del RAG sin LLM y anomalías de caudal. En c
 
 - Costo paramétrico de pavimentos (espesores de `motor-vias` × precios INVIAS 2026-1) y ejercicio de periodo de retorno económico de alcantarillas, con protocolo preregistrado. Resultados en `scripts/precios/RESULTADOS_COSTO_PARAMETRICO.md`. Tag `research/costo-parametrico`.
 - Transmisión de TRM y petróleo al ICOCIV (DANE, 69 meses) y Monte Carlo del costo en riesgo de una obra vial, con protocolo preregistrado y validación fuera de muestra. Resultados en `scripts/precios/RESULTADOS_P3_P4.md`. Tag `research/icociv-p3-p4`.
+- Coherencia espacio-temporal de las anomalías de caudal IDEAM (sincronía, dependencia de ENSO y alcance espacial), con protocolo preregistrado. Tag `research/coherencia-anomalias`.
 - Política de versiones, `CHANGELOG.md`, milestones por fase y portada nueva (`README.md`; el detalle completo pasa a `docs/DETALLE_TECNICO.md`).
 
 ### Limitaciones documentadas
+- Las estaciones IDEAM no son independientes (correlación mediana de 0,46 a menos de 50 km): con bootstrap por departamento, el z robusto sin persistencia deja de superar a la regla de producción (p Holm 0,0875); la mejora por persistencia se sostiene. Los intervalos de la curva de crecimiento de alcantarillas se ensancharon 1,3 a 2,1 veces.
 - `motor-vias` entrega la misma estructura de pavimento flexible (5/15/15 cm) en 28 de 32 combinaciones; probable error de unidades en los coeficientes estructurales (issue #103). Los costos paramétricos se presentan como el costo de lo que el motor entrega hoy.
 - El periodo de retorno económico de alcantarillas resultó en el borde de la malla (T = 100) y casi insensible al costo; no se emite recomendación.
 - La sensibilidad de la revisión de precios ante un error ×10 es de 0,64, por debajo del criterio preregistrado de 0,90: no se presenta como un detector confiable de errores de unidad.

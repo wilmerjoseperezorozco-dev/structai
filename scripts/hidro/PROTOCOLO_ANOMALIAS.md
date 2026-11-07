@@ -19,3 +19,11 @@ Para cada mes de prueba se multiplica el caudal por un factor f ∈ {1,5; 2; 3} 
 
 ## Limitaciones declaradas
 La inyección crea un pico de un solo mes; una creciente real es persistente y espacialmente correlacionada. El AUC no mide cuán útil es el detector para decidir. Los registros mensuales promedian días de crecida y pueden ocultar picos. Estados de aprobación `Preliminar` pueden cambiar. Esto sigue siendo una **señal estadística de investigación, nunca una alerta oficial** (competencia de IDEAM y UNGRD).
+
+---
+
+## Enmienda 1 (2026-11-07, posterior a los resultados; se declara como tal)
+
+Las pruebas C1 y C2 remuestrearon estaciones sueltas. `coherencia_anomalias.py` mostró después que las estaciones de una región están fuertemente correlacionadas (correlación mediana de los z mensuales entre pares: 0,46 a menos de 50 km y 0,20 a 400-800 km), así que el bootstrap por estación subestima la incertidumbre. Se recalcularon con bootstrap por departamento (31 conglomerados, `anomalias_conglomerados.py`):
+- **C1 (M1 − B0):** Δ AUC = +0,0012, IC95 % [−0,0002; +0,0025], p ajustado por Holm = 0,0875. **Ya no es significativo**: el z robusto sin persistencia no supera a la regla de producción. Mejora en el 55 % de las estaciones.
+- **C2 (M2 − M1):** Δ AUC = +0,0457, IC95 % [+0,0400; +0,0509], p ajustado = 0,001. **Se sostiene**; mejora en el 99 % de las estaciones.
