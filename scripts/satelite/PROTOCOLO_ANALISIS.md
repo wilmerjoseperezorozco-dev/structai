@@ -300,3 +300,9 @@ Mejora del límite de la sección 11: "la cercanía geográfica no garantiza con
 - **Límites:** no usar datos del evento de agosto de 2026 ni conclusiones sobre daños sin revisión; los valores son de referencia y no de diseño.
 
 **Limitaciones comunes:** las de §15, §19, §21 y §22 (sesgo de reporte, fecha de reporte, CHIRPS de 5 km, máximo horario del IDEAM, DEM de 90 m, autocorrelación espacial); la inferencia sobre cinco hipótesis aún puede sobreestimar; los resultados son regionales y comparativos, no de diseño.
+
+
+### Aclaraciones al §23 (2026-11-07, antes de correr H1, H2, H4 y H5; H3 ya se había corrido)
+- **Familia de Holm:** H1, H2, H3, H4a y H4b, con **p-valores bootstrap bilaterales** (bloques por departamento, 2.000 réplicas; p = 2·mín(P(Δ ≤ 0), P(Δ ≥ 0)) con corrección +1). **H5 se evalúa por su regla** (sin p-valor) y se reporta aparte.
+- **H3 ya se corrió una vez** antes de programar la corrida final (resultado previo a Holm: ΔAUC = +0,0153, IC95 % [+0,0055; +0,0288]). La candidata cambia dos cosas a la vez respecto de la línea base (usa logaritmos y omite la curvatura), así que **la atribución de la mejora es ambigua**; se añade un control exploratorio (lineal sin curvatura) que no entra a la familia.
+- **Corrida programada:** `corrida_final.sh` ejecuta cada análisis cuando su insumo esté listo y `consolidar_corrida.py` aplica Holm. Resultados en `resultados_corrida/`. Un insumo ausente se reporta como «no disponible», no como resultado nulo.
