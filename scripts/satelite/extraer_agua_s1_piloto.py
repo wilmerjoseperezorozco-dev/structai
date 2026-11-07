@@ -21,7 +21,7 @@ Limitaciones conocidas del radar para agua: superficies lisas secas (asfalto,
 arena) y sombras de relieve dan falsos positivos; el viento rugoso sobre el agua
 da falsos negativos. Se mitiga con frecuencia temporal, no se elimina.
 
-Uso: python scripts/satelite/extraer_agua_s1_piloto.py [orbita_relativa] [max_escenas]
+Uso: python scripts/satelite/extraer_agua_s1_piloto.py [orbita_relativa] [max_escenas, defecto 200]
 """
 from __future__ import annotations
 
@@ -66,7 +66,7 @@ def escenas(orbita: int, maximo: int, bbox: list[float]) -> list[dict]:
 
 def main() -> None:
     orbita = int(sys.argv[1]) if len(sys.argv) > 1 else 142
-    maximo = int(sys.argv[2]) if len(sys.argv) > 2 else 40
+    maximo = int(sys.argv[2]) if len(sys.argv) > 2 else 200
     gj = json.load(open(AQUI / "poligonos_atlantico_igac.geojson", encoding="utf-8"))
     pts = [p for f in gj["features"] for ring in f["geometry"]["coordinates"] for p in ring]
     bbox = [min(p[0] for p in pts), min(p[1] for p in pts), max(p[0] for p in pts), max(p[1] for p in pts)]
@@ -98,7 +98,7 @@ def main() -> None:
         except Exception as e:
             print(f"  escena {i} omitida: {type(e).__name__}: {str(e)[:80]}")
             continue
-        stack.append(10 * np.log10(np.where(vv > 0, vv, np.nan)))
+        stack.append((10 * np.log10(np.where(vv > 0, vv, np.nan))).astype("float16"))
         fechas.append(f["properties"]["datetime"][:10])
         print(f"  [{i}/{len(fs)}] {fechas[-1]} ok")
 
