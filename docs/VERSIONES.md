@@ -42,7 +42,7 @@ Un milestone agrupa los issues de una fase y suele coincidir con un release. Los
 
 1. `master` limpio y la CI en verde.
 2. Mover lo de `[Sin publicar]` en [`CHANGELOG.md`](../CHANGELOG.md) a la nueva versión, con fecha y periodo.
-3. Alinear la versión de los `package.json`.
+3. Actualizar `API_VERSION` en `apps/api/main.py` (la versión que reporta `/health`). Los `package.json` de los workspaces no se versionan con el monorepo: la versión pública es el tag.
 4. Tag anotado: `git tag -a vX.Y.Z -m "…"` y `git push origin vX.Y.Z`.
 5. Release en GitHub con el título `vX.Y.Z — <nombre>` y las notas tomadas del CHANGELOG.
 6. Cerrar el milestone de la fase y abrir el siguiente.

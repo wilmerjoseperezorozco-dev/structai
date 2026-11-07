@@ -16,6 +16,7 @@
 | Calcular sin salir de la plataforma | Motores activos: estructural, acueducto y alcantarillado, geotecnia, vías, gerencia (EVM), APU y vulnerabilidad de vivienda de mampostería (AIS). El BIM (InfraCortex) está probado pero desactivado por defecto en producción por memoria | `packages/motor-*` |
 | Conocer el sitio de la obra | Amenaza sísmica SGC por municipio, microzonificación de Bogotá, Cali y Pereira, caudales IDEAM, suelos IGAC, emergencias UNGRD | [`/data-status`](https://structai-api-235651108862.us-east1.run.app/data-status) |
 | Saber si una norma sigue vigente | Registro de normas con cadena de modificaciones y estado de verificación (cadena completa en 6 de 64; el resto, parcial o sin revisar) | `normas_registro` |
+| Caracterizar un sitio antes de diseñar | **Informe de sitio** por municipio: amenaza sísmica, suelos, caudales, vulnerabilidad de vivienda, emergencias, susceptibilidad a movimientos en masa y contexto de ENSO, más los títulos de la NSR-10 a consultar; se entrega con datos verificados, sin texto del modelo de lenguaje | [`docs/investigacion/oceanos_azules_y_plugins.md`](docs/investigacion/oceanos_azules_y_plugins.md) |
 | Replicar el método fuera de Colombia | E.030 (Perú, edición RM 183-2026) y NEC-SE-DS (Ecuador), verbatim y con aviso profesional propio | [`docs/DETALLE_TECNICO.md`](docs/DETALLE_TECNICO.md) |
 
 ## Estado verificado (7-nov-2026, contra producción)
@@ -55,6 +56,11 @@ Cada análisis se **preregistra antes de ejecutarse**, usa corrección por compa
 | Respuesta de los máximos anuales a ENSO | Hay efecto dentro de la muestra, pero ni el modelo por estación (41 %) ni el agrupado por región (52 %) superan en predicción a la GEV estacionaria; solo en Andina y Caribe el agrupado gana 60-66 % (exploratorio) | `research/h4-prima` |
 | Precios atípicos y recomendador de insumos | Umbral conforme |z| > 2,82 con 5 % de marca; **no alcanza** el 0,90 de sensibilidad preregistrado ante un error ×10 (0,64) | `research/precios-p1-p3` |
 | Fórmulas candidatas con logaritmos | Estado preregistrado antes de ejecutar H1–H6 | `research/protocolo-23` |
+| Hipótesis H1-H5 (logaritmos, ENSO, umbrales) | Con Holm: confirmadas H3 (los logaritmos mejoran la susceptibilidad, +0,015 de AUC) y H4a (efecto de ENSO dentro de la muestra); **no** H4b, H2 ni H1 (ENSO y terreno no mejoran la predicción) | `research/h1-h5` |
+| Umbrales de lluvia para movimientos en masa | La lluvia acumulada de 5 días discrimina (AUC 0,775) pero la curva intensidad-duración no mejora a un umbral simple y dispara casi siempre | `research/protocolo-19` (en cierre) |
+| Relación no lineal con rezago (Pacífico y Atlántico → clima del Caribe) | Un modelo lineal estacional da una habilidad modesta que no es robusta tras corregir por comparaciones múltiples; **ningún modelo no lineal la mejora** | `research/rezagos-no-lineales` |
+| Valor informativo y costo de los datos | Una conclusión de efecto promedio se conserva con el 5 % de las estaciones y un modelo de susceptibilidad con el 25 % de las filas; las líneas base simples bastan | `research/valor-informativo-p0-p1` |
+| Comparación con modelos no medidos | El método simple que respeta la forma del problema alcanza lo que alcanzan los complejos (logística con splines no inferior al boosting) | `research/comparativo-modelos` |
 
 Bibliografía verificada y registro de riesgos de la investigación: [`docs/investigacion/`](docs/investigacion/). Los resultados nulos (por ejemplo, relieve frente a inundaciones UNGRD en el Caribe, n = 195) se publican igual que los positivos.
 

@@ -627,9 +627,12 @@ async def _lifespan(_app: FastAPI):
     # tampoco tenía un @app.on_event("shutdown") que reemplazar.
 
 
+# Versión pública de la API: coincide con el tag del monorepo (docs/VERSIONES.md). Se actualiza en cada release.
+API_VERSION = "1.16.0"
+
 app = FastAPI(
     title="Construdata API",
-    version="1.0.0",
+    version=API_VERSION,
     description="Backend unificado: RAG normativo NTC/NSR-10, Motor APU y detección estructural YOLO",
     docs_url="/docs",
     redoc_url="/redoc",
@@ -1308,7 +1311,7 @@ def health(request: Request, deep: bool = False):
 
     resultado = {
         "status": "ok",
-        "version": "1.0.0",
+        "version": API_VERSION,
         "modulos": modulos,
         "apu_count": len(CATALOGO_APU) if APU_AVAILABLE else 0,
     }

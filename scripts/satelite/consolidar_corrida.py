@@ -22,12 +22,16 @@ def leer(nombre):
 def main() -> None:
     h12, h3, h45 = leer("hipotesis_h1_h2.json"), leer("hipotesis_h3.json"), leer("hipotesis_h4_h5.json")
     familia = {}
+    mejora = {}   # dirección del efecto: True si la candidata es MEJOR que su referencia (los p-valores son bilaterales: «significativo» también incluye ser significativamente PEOR)
     if h12:
         familia["H1 (umbral normalizado)"] = h12["H1"]["p"]; familia["H2 (umbral con covariables)"] = h12["H2"]["p"]
+        mejora["H1 (umbral normalizado)"] = h12["H1"]["dif"] > 0; mejora["H2 (umbral con covariables)"] = h12["H2"]["dif"] > 0
     if h3 and "p" in h3:
-        familia["H3 (susceptibilidad en log)"] = h3["p"]
+        familia["H3 (susceptibilidad en log)"] = h3["p"]; mejora["H3 (susceptibilidad en log)"] = h3["dif"] > 0
     if h45:
         familia["H4a (GEV con ONI, campo)"] = h45["resumen"]["H4a"]["p"]; familia["H4b (GEV con ONI, predictiva)"] = h45["resumen"]["H4b"]["p"]
+        mejora["H4a (GEV con ONI, campo)"] = h45["resumen"]["H4a"]["estadistico"] > 0.05      # fracción de estaciones con efecto frente al azar (0,05)
+        mejora["H4b (GEV con ONI, predictiva)"] = h45["resumen"]["H4b"]["estadistico"] > 0.5  # fracción de estaciones donde la candidata gana frente al azar (0,5)
     print("== Estado de los insumos ==")
     for nombre, d in (("H1/H2 (umbrales)", h12), ("H3 (susceptibilidad)", h3), ("H4/H5 (crecientes)", h45)):
         print(f"  {nombre}: {'disponible' if d else 'NO disponible (no terminó o falló: ver su registro)'}")
@@ -37,7 +41,13 @@ def main() -> None:
         aj = min(1.0, p * (m - i))
         rechaza = sigue and aj < 0.05
         sigue = rechaza
-        print(f"  {nombre:<36} p = {p:.4f}  p ajustado (Holm) = {aj:.4f}  -> {'significativo' if rechaza else 'NO significativo tras Holm'}")
+        if not rechaza:
+            veredicto = "NO significativo tras Holm"
+        elif mejora.get(nombre, True):
+            veredicto = "significativo y la candidata MEJORA: hipótesis confirmada"
+        else:
+            veredicto = "significativo pero la candidata es PEOR: hipótesis NO confirmada"
+        print(f"  {nombre:<36} p = {p:.4f}  p ajustado (Holm) = {aj:.4f}  -> {veredicto}")
     if not familia:
         print("  (sin p-valores disponibles)")
     if h45 and any(r.get("h5") for r in h45["estaciones"]):

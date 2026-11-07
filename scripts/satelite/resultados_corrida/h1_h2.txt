@@ -1,0 +1,10 @@
+Positivos: calibración 3189, prueba 1253; negativos 1537467
+  H1 región fuera = Caribe: curva normalizada E = 0.03·D^1.65 (%MAP); bruta E = 0.6·D^1.59 (mm)
+  H1 región fuera = Andina: curva normalizada E = 0.03·D^1.61 (%MAP); bruta E = 0.7·D^1.59 (mm)
+  H1 región fuera = Pacifica: curva normalizada E = 0.03·D^1.69 (%MAP); bruta E = 0.5·D^1.66 (mm)
+  H1 región fuera = Orinoquia: curva normalizada E = 0.03·D^1.65 (%MAP); bruta E = 0.6·D^1.59 (mm)
+  H1: región Amazonia sin eventos suficientes; se omite
+H1 ΔTSS (normalizado − bruto) = -0.008 IC95% [-0.027, +0.012] -> sin diferencia demostrada
+  H2 coeficientes (log E = c0 + c1·log D + c2·log(1+pend p90) + c3·ONI): -4.075, [1.478, 0.186, -0.294]
+H2 ΔTSS (con covariables − curva global) = -0.031 IC95% [-0.036, -0.026] -> PEOR
+   TSS reservado: línea base +0.090; candidata +0.059

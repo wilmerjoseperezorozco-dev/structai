@@ -4,33 +4,36 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y 
 
 Cada versión corresponde a un tag `vX.Y.Z` sobre `master`. Los estados cerrados de investigación llevan además un tag `research/…` (ver la política). Las versiones `v1.1.0`–`v1.9.0` conservan también su tag descriptivo original por compatibilidad de enlaces.
 
-## [Sin publicar] → v1.16.0
+## [1.16.0] — Precios y costos de obra, plugins del chat y comparación de métodos
 
-Precios y costos de obra, métricas del RAG sin LLM y anomalías de caudal. En curso: costo paramétrico de pavimentos y periodo de retorno de alcantarillas.
+Periodo: 7–8 de noviembre de 2026.
 
 ### Agregado
-- Revisión de precios frente al catálogo IAD MIPYMES (`motor-apu`): tamizaje robusto por ítem, umbral conforme (|z| > 2,82) y evaluación por inyección de errores. Tag `research/precios-p1-p3`.
-- Recomendador de insumos para APU por vecinos, validado ocultando un insumo a la vez.
-- Métricas de evaluación del RAG que no dependen de un LLM: recall@K, MRR, NDCG, soporte de citas, proxy de alucinación numérica, abstención y latencia. Tag `research/metricas-sin-llm`.
-- Anomalías de caudal IDEAM: comparación de la regla de producción con un z robusto estacional con persistencia. Tag `research/anomalias-caudal`.
-- Resultados de H6 y de la frecuencia de crecientes (protocolos 21 y 24). Tags `research/protocolo-21`, `research/protocolo-24`, `research/h6`.
+- **Plugins determinísticos del chat** (`packages/construdata/plugins_chat.py`, issue #104): fase de ENSO por región, vigencia de normas, revisión de un precio, insumos de una actividad INVIAS, susceptibilidad a movimientos en masa por municipio e **informe de sitio** (reúne los datos oficiales del municipio, la susceptibilidad, el contexto de ENSO y los títulos de la NSR-10 a consultar). El modelo de lenguaje solo explica; cada plugin lleva su fuente, su fecha y sus límites, y nunca rompe el chat. 70 pruebas.
+- **Modo degradado:** si Groq y OpenAI no están disponibles y algún plugin respondió, se devuelve esa respuesta verificada en lugar de un error. El informe de sitio se entrega sin pasar por el modelo de lenguaje.
+- **Susceptibilidad municipal:** mapa oficial del SGC más un índice relativo de StructAI validado contra él; se omite en las regiones donde no concuerda (Andina ρ = 0,10; Pacífica ρ = −0,26).
+- **Revisión de precios y recomendador de insumos** (`motor-apu`): tamizaje robusto frente al catálogo IAD con umbral conforme, y sugerencia de insumos por vecinos.
+- **Documentación:** `docs/ESTADO_DEL_ARTE.md` (brecha y estado del arte por línea), `docs/investigacion/oceanos_azules_y_plugins.md`, `docs/investigacion/relaciones_no_lineales_con_rezago.md`, política de versiones y portada nueva.
 
-- Costo paramétrico de pavimentos (espesores de `motor-vias` × precios INVIAS 2026-1) y ejercicio de periodo de retorno económico de alcantarillas, con protocolo preregistrado. Resultados en `scripts/precios/RESULTADOS_COSTO_PARAMETRICO.md`. Tag `research/costo-parametrico`.
-- Transmisión de TRM y petróleo al ICOCIV (DANE, 69 meses) y Monte Carlo del costo en riesgo de una obra vial, con protocolo preregistrado y validación fuera de muestra. Resultados en `scripts/precios/RESULTADOS_P3_P4.md`. Tag `research/icociv-p3-p4`.
-- Coherencia espacio-temporal de las anomalías de caudal IDEAM (sincronía, dependencia de ENSO y alcance espacial), con protocolo preregistrado. Tag `research/coherencia-anomalias`.
-- H4′: respuesta de los máximos anuales de caudal a ENSO con ventanas de ONI alternativas y pendiente agrupada por región, con validación cronológica; ninguna prueba confirmatoria cumple. Tag `research/h4-prima`.
-- Registro de costos de datos y frontera costo-utilidad de subconjuntos (estaciones, anomalías, susceptibilidad), con no inferioridad preregistrada: un modelo de susceptibilidad conserva su AUC con el 25 % de las filas; las líneas base simples bastan y no se justifica el aprendizaje por refuerzo con esta evidencia. Tag `research/valor-informativo-p0-p1`.
-- Comparación con modelos no medidos antes (susceptibilidad, detectores de anomalía, intervalos de costo): el método más simple alcanza lo que alcanzan los complejos. Documento de estado del arte (`docs/ESTADO_DEL_ARTE.md`). Tag `research/comparativo-modelos`.
-- Relación no lineal con rezago entre ONI, TNA y el clima del Caribe (lluvia y temperatura), con protocolo preregistrado: no hay evidencia de que la no linealidad mejore la predicción; el modelo lineal estacional da una habilidad modesta no robusta tras corregir por comparaciones múltiples. Tag `research/rezagos-no-lineales`.
-- Primer lote de plugins del chat (ENSO por región, vigencia de normas, revisión de un precio, insumos de una actividad), con pruebas (`packages/construdata/plugins_chat.py`, issue #104), más susceptibilidad a movimientos en masa por municipio (mapa oficial del SGC e índice relativo validado contra él, omitido donde no concuerda) e informe de sitio, con modo degradado: si el modelo de lenguaje no está disponible y algún plugin respondió, se devuelve esa respuesta verificada en lugar de un error.
-- Política de versiones, `CHANGELOG.md`, milestones por fase y portada nueva (`README.md`; el detalle completo pasa a `docs/DETALLE_TECNICO.md`).
+### Investigación (todas con protocolo preregistrado; los resultados negativos se publican)
+- Precios y costos: revisión de precios y recomendador (`research/precios-p1-p3`); transmisión de TRM y petróleo al ICOCIV y Monte Carlo del costo en riesgo (`research/icociv-p3-p4`); costo paramétrico de pavimentos y periodo de retorno de alcantarillas (`research/costo-parametrico`).
+- Caudales y clima: métricas del RAG sin LLM (`research/metricas-sin-llm`); anomalías de caudal (`research/anomalias-caudal`); coherencia espacio-temporal (`research/coherencia-anomalias`); respuesta de los máximos anuales a ENSO (`research/h4-prima`); relación no lineal con rezago ONI/TNA → clima del Caribe (`research/rezagos-no-lineales`).
+- Susceptibilidad y datos: frecuencia de crecientes y H6 (`research/protocolo-21`, `-24`, `research/h6`); valor informativo y costo de los datos (`research/valor-informativo-p0-p1`); comparación con modelos no medidos antes (`research/comparativo-modelos`).
+
+### Corregido
+- **`motor-vias` (issue #103):** el diseño de pavimento flexible usaba los coeficientes de AASHTO-93 (por pulgada) con espesores en cm, por lo que entregaba 5/15/15 cm en casi todos los casos y subdiseñaba para tránsito medio y alto. Ahora convierte unidades, redondea la subbase hacia arriba, permite fijar el espesor de rodadura y ya no declara «cumple» cuando la subbase requerida supera el máximo. El costo paramétrico se recalculó (ESAL 5 M y CBR 8 %: de 5/15/15 a 5/15/40 cm).
+- **Enrutamiento:** una pregunta sobre un municipio colombiano podía ir al corpus de la E.030 de Perú (el enrutador contrastivo aceptaba confianzas de 0,40). Ahora se descartan los corpus de Perú y Ecuador si la pregunta menciona un municipio colombiano y no nombra esos países (problema de fondo en el issue #107).
+- **Intervalos:** los de la curva de crecimiento de alcantarillas se ensancharon 1,3 a 2,1 veces al remuestrear por departamento (las estaciones no son independientes); el z robusto sin persistencia dejó de superar a la regla de producción de anomalías (p Holm 0,0875) y la mejora por persistencia se sostiene.
+- **Versión:** la API reportaba `1.0.0`; ahora reporta la del release.
 
 ### Limitaciones documentadas
-- Las estaciones IDEAM no son independientes (correlación mediana de 0,46 a menos de 50 km): con bootstrap por departamento, el z robusto sin persistencia deja de superar a la regla de producción (p Holm 0,0875); la mejora por persistencia se sostiene. Los intervalos de la curva de crecimiento de alcantarillas se ensancharon 1,3 a 2,1 veces.
-- `motor-vias` entrega la misma estructura de pavimento flexible (5/15/15 cm) en 28 de 32 combinaciones; probable error de unidades en los coeficientes estructurales (issue #103). Los costos paramétricos se presentan como el costo de lo que el motor entrega hoy.
-- El periodo de retorno económico de alcantarillas resultó en el borde de la malla (T = 100) y casi insensible al costo; no se emite recomendación.
-- La sensibilidad de la revisión de precios ante un error ×10 es de 0,64, por debajo del criterio preregistrado de 0,90: no se presenta como un detector confiable de errores de unidad.
-- Las estimaciones de crecientes por estación no resultaron calibradas (la excedencia observada del Q10 fue 0,135); no se usan como base de diseño.
+- **Sin desplegar a producción al publicar este release:** el despliegue a Cloud Run es manual.
+- **Pavimentos (issue #106):** la conversión del pavimento rígido (SN/0,39) y los espesores mínimos por tránsito no están verificados contra el Manual de INVIAS; no usar el costo paramétrico como diseño.
+- **Precios:** la sensibilidad ante un error ×10 es 0,64 (criterio 0,90); el ítem «Cemento Gris» del catálogo mezcla unidades (issue #105).
+- **Periodo de retorno de alcantarillas:** el óptimo cae en el borde de la malla (T = 100) y es casi insensible al costo; no se emite recomendación.
+- **ENSO:** existe dentro de la muestra pero no mejora la predicción de crecientes, energía ni (de forma robusta tras corregir por comparaciones múltiples) lluvia mensual; se usa como contexto.
+- **Calidad del RAG:** proxy de alucinación numérica de 15,4 %, latencia p95 de 81 s y Títulos A y B de la NSR-10 con 45,6 % y 41,9 % de cobertura verbatim.
+- **Integración continua:** la batería de integración de `apps/api` falla mientras OpenAI no tenga crédito (el CI fuerza OpenAI para proteger la cuota de Groq, issue #53).
 
 ## [1.15.0] — Programa de investigación del Caribe y registro de vigencia normativa
 
