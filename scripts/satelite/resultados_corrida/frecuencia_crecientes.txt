@@ -1,0 +1,51 @@
+Estaciones incluidas: 504; descartadas: {'registro corto o sin datos desde 2000': 460}; con >10% de valores repetidos: 160
+  25/504
+  50/504
+  75/504
+  100/504
+  125/504
+  150/504
+  175/504
+  200/504
+  225/504
+  250/504
+  275/504
+  300/504
+  325/504
+  350/504
+  375/504
+  400/504
+  425/504
+  450/504
+  475/504
+  500/504
+
+===== TODAS las estaciones incluidas: 504 estaciones =====
+C1 fraccion de anios de prueba que supera Q2: 0.452 IC95% [0.411, 0.493] (esperado 0.50) -> NO calibrado
+C1 fraccion de anios de prueba que supera Q10: 0.135 IC95% [0.113, 0.159] (esperado 0.10) -> NO calibrado
+C2 estaciones con GEV rechazado (KS bootstrap p<0.05): 22.4% (criterio <= 15%) -> NO cumple
+C3 GEV vs LP3 (log-verosimilitud predictiva): GEV gana en 48.2% IC95% [44.2%, 52.8%]; mediana diferencia +nan
+   (referencia) GEV vs Gumbel: GEV gana en 48.4%
+Tendencia significativa (Mann-Kendall 5%): 43.7% (azar ~5%); de ellas al alza 30%
+Incertidumbre: mediana (ancho IC95% de Q50 / Q50) = 0.49; xi fuera de [-0.5, 0.5]: 11.1%
+Razon Q100/Q10 (GEV) mediana 1.45
+
+===== SIN valores repetidos (> 10%): 344 estaciones =====
+C1 fraccion de anios de prueba que supera Q2: 0.477 IC95% [0.436, 0.516] (esperado 0.50) -> calibrado
+C1 fraccion de anios de prueba que supera Q10: 0.142 IC95% [0.118, 0.167] (esperado 0.10) -> NO calibrado
+C2 estaciones con GEV rechazado (KS bootstrap p<0.05): 17.7% (criterio <= 15%) -> NO cumple
+C3 GEV vs LP3 (log-verosimilitud predictiva): GEV gana en 49.1% IC95% [44.6%, 54.2%]; mediana diferencia +nan
+   (referencia) GEV vs Gumbel: GEV gana en 50.6%
+Tendencia significativa (Mann-Kendall 5%): 41.3% (azar ~5%); de ellas al alza 35%
+Incertidumbre: mediana (ancho IC95% de Q50 / Q50) = 0.37; xi fuera de [-0.5, 0.5]: 9.9%
+Razon Q100/Q10 (GEV) mediana 1.35
+
+===== Caribe: 88 estaciones =====
+C1 fraccion de anios de prueba que supera Q2: 0.352 IC95% [0.246, 0.449] (esperado 0.50) -> NO calibrado
+C1 fraccion de anios de prueba que supera Q10: 0.087 IC95% [0.050, 0.128] (esperado 0.10) -> calibrado
+C2 estaciones con GEV rechazado (KS bootstrap p<0.05): 30.7% (criterio <= 15%) -> NO cumple
+C3 GEV vs LP3 (log-verosimilitud predictiva): GEV gana en 51.1% IC95% [42.4%, 65.5%]; mediana diferencia +nan
+   (referencia) GEV vs Gumbel: GEV gana en 55.7%
+Tendencia significativa (Mann-Kendall 5%): 54.5% (azar ~5%); de ellas al alza 19%
+Incertidumbre: mediana (ancho IC95% de Q50 / Q50) = 0.38; xi fuera de [-0.5, 0.5]: 19.3%
+Razon Q100/Q10 (GEV) mediana 1.38

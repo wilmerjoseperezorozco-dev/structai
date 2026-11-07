@@ -1,0 +1,1 @@
+Estaciones incluidas: 504; descartadas: {'registro corto o sin datos desde 2000': 460}; con >10% de valores repetidos: 160
