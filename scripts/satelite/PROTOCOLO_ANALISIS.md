@@ -160,3 +160,33 @@ Mejora del límite de la sección 11: "la cercanía geográfica no garantiza con
 - **Comparación pre-declarada:** contra el resultado de la sección 11 (estación más cercana sin verificar conexión: ρ = +0,41 [+0,06; +0,57] a 25 km).
 - **Regla fija:** "reforzada" si el IC del principal excluye 0 **y** el ρ es ≥ al de la sección 11; "debilitada" si el IC incluye 0 o el ρ es menor; "insuficiente" si hay < 30 municipios elegibles. También se reporta el estimado de los pares **no conectados** (si hay ≥ 15) como contraste.
 - **Limitaciones declaradas:** DEM de superficie a 90 m; ajuste de la estación a la red es una elección y puede caer en un cauce vecino; las cuadrículas son departamentales con margen de 0,15°, así que la conexión entre departamentos queda indeterminada si la ruta sale de la cuadrícula; solo ~68 estaciones utilizables; un caudal medido en un tramo no es el que inunda un municipio aguas abajo (atenuación, afluentes).
+
+
+## 15. Mapa de sensibilidad de la lluvia a El Niño y La Niña, 1981-2024 (CHIRPS v3.0 + ONI), definido ANTES de correrlo (2026-11-07)
+
+**Pregunta:** ¿cómo responde la lluvia mensual de cada municipio de Colombia a El Niño y a La Niña, es **asimétrica**, y varía por región natural?
+
+- **Datos:** CHIRPS v3.0 mensual, 1.120 municipios (polígonos IGAC), 1981-01 a 2024-12 (528 meses); ONI de NOAA CPC (mes central de cada trimestre móvil).
+- **Anomalía:** por municipio y por mes calendario, z = (lluvia − media del mes) / DE del mes, con media y DE de 1981-2024. Quita la estacionalidad.
+- **Predictores:** `NIÑO = máx(ONI, 0)` y `NIÑA = máx(−ONI, 0)`. Modelo por municipio: z = a + δ·NIÑO + γ·NIÑA. **δ < 0** significa que El Niño seca; **γ > 0** significa que La Niña moja. **Rezago principal: 0** (el ONI ya es una media de 3 meses); rezagos 1-3 solo descriptivos.
+- **Asimetría:** |δ| − |γ| (> 0: El Niño pesa más que La Niña).
+- **Regiones** (por departamento): Caribe (08, 13, 20, 23, 44, 47, 70); Andina (05, 11, 15, 17, 25, 41, 54, 63, 66, 68, 73); Pacífica (19, 27, 52, 76); Orinoquía (50, 81, 85, 99); Amazonía (18, 86, 91, 94, 95, 97).
+- **Inferencia:** bootstrap de bloques móviles de 12 meses (2.000 réplicas), remuestreando el **mismo** índice de tiempo para todos los municipios; las regiones se evalúan sobre la serie z media regional.
+- **Confirmatorios por región:** R1: δ < 0 con IC que excluye 0. R2: γ > 0 con IC que excluye 0. R3: IC de |δ| − |γ| que excluye 0 (asimetría).
+- **Validación temporal reservada:** ajuste 1981-2010, prueba 2011-2024; R² fuera de muestra = 1 − SSE(modelo) / SSE(climatología) sobre la serie regional, con IC de bloques. "ENSO explica la lluvia de la región" solo si **(R1 o R2) y R² fuera de muestra > 0 con IC que excluye 0**.
+- **Mapas:** δ, γ y |δ| − |γ| por municipio, y máscara de los municipios cuyo IC (bloques) excluye 0. **Significancia de campo:** se reporta la fracción de municipios marcados; con 5 % esperable por azar, y municipios vecinos comparten píxeles de CHIRPS (la fracción NO equivale a pruebas independientes).
+- **Descriptivo:** desviación % de la lluvia regional respecto de su climatología durante cada episodio (ONI ≥ +0,5 o ≤ −0,5 durante ≥ 5 meses consecutivos).
+- **Limitaciones declaradas:** ≈ 11 episodios de cada fase (inferencia efectiva mucho menor que 528 meses); CHIRPS es un producto satelital con estaciones y su calidad en los años 80 es menor; resolución ~5 km; el ONI resume el Pacífico central y no captura el Atlántico/Caribe; correlación espacial entre municipios; no se modelan otras oscilaciones (p. ej. MJO, NAO).
+
+
+## 16. Contraste del relieve y de SIMMA con el Mapa Nacional de Amenaza por Movimientos en Masa del SGC (1:100.000), definido ANTES de correrlo (2026-11-07)
+
+**Pregunta:** ¿el relieve del DEM (y la densidad de inventario SIMMA) concuerda, por municipio, con la amenaza que publica el SGC? Es una referencia independiente del piloto de susceptibilidad (que solo contaba con puntos SIMMA).
+
+- **Datos:** SGC, capa `Municipios_100K` (1.122 municipios): porcentaje de área en amenaza baja/media/alta/muy alta. **Índice SGC = % alta + % muy alta.** Se excluyen municipios con categoría `SIN` o `CD`. DEM: 195 municipios del Caribe ya calculados (`dem_poligonos_caribe.json`). SIMMA: puntos del inventario dentro del polígono municipal, por 100 km².
+- **Confirmatorios (Spearman, IC95 % bootstrap de bloques por departamento, 2.000 réplicas):**
+  - **C1:** ρ(pendiente p90 del DEM, índice SGC) > 0 con IC que excluye 0.
+  - **C2:** ρ(densidad SIMMA, índice SGC) > 0 con IC que excluye 0.
+  - **C3:** el índice SGC aporta sobre la pendiente: ρ parcial(densidad SIMMA, índice SGC | pendiente p90) > 0 con IC que excluye 0.
+- **Descriptivo:** concordancia de terciles; municipios con mayor desacuerdo (rangos).
+- **Limitaciones declaradas:** el mapa SGC es un modelo (no observación) y posiblemente usa pendiente como insumo, por lo que C1 es parcialmente circular: se interpreta como **consistencia**, no como validación; SIMMA tiene sesgo de reporte/acceso; municipios planos del Caribe tienen poca variación (rango restringido); DEM a ~90 m frente a escala 1:100.000; el análisis es municipal (falacia ecológica).

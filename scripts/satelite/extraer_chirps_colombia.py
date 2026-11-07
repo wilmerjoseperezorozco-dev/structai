@@ -74,8 +74,11 @@ def main() -> None:
     pix = {}
     t0 = time.time()
     # NOTA: con cache por mes, el primer mes siempre se lee para construir las mascaras de pixeles.
-    with rasterio.Env(GDAL_HTTP_TIMEOUT=60, GDAL_HTTP_MAX_RETRY=3, GDAL_HTTP_RETRY_DELAY=2,
-                      GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR", CPL_VSIL_CURL_ALLOWED_EXTENSIONS=".tif"):
+    # El archivo mensual esta organizado en franjas de una fila (~29 KB) y GDAL pide por defecto trozos de 16 KB:
+    # cada mes generaba cientos de solicitudes HTTP (causa probable de los 429). Con trozos de 16 MB bastan 1-2 por mes.
+    with rasterio.Env(GDAL_HTTP_TIMEOUT=120, GDAL_HTTP_MAX_RETRY=3, GDAL_HTTP_RETRY_DELAY=5,
+                      GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR", CPL_VSIL_CURL_ALLOWED_EXTENSIONS=".tif",
+                      CPL_VSIL_CURL_CHUNK_SIZE="16777216", GDAL_HTTP_MERGE_CONSECUTIVE_RANGES="YES", VSI_CACHE="FALSE"):
         for k, (a, m) in enumerate(meses):
             cf = CACHE / "chirps_mes" / f"{a}-{m:02d}.json"
             if cf.exists() and pix:                       # mes ya extraido (reanudable)
