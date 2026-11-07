@@ -153,17 +153,41 @@ def test_velocidad_no_multiplo_de_10_falla():
     assert any("múltiplos de 10" in e for e in [r.mensaje]) or "10" in r.mensaje or not r.cumple
 
 
-def test_pendiente_excede_maximo_tabla_real():
+def _pendiente(tipo, v, pend, calzadas=1):
     motor = _motor_geometrico()
-    # pendientes_maximas[TERCIARIA][PLANO] = 6
     params = ParametrosDiseno(
-        tipo_via=TipoViaG.TERCIARIA, velocidad_diseno=40, topografia=TopografiaG.PLANO,
-        volumen_transito=300, pendiente_longitudinal=8.0,
+        tipo_via=tipo, velocidad_diseno=v, topografia=TopografiaG.PLANO,
+        volumen_transito=300, pendiente_longitudinal=pend, calzadas=calzadas,
     )
     r = motor.validar(params)
-    restr = next(x for x in r.restricciones_aplicadas if "Pendiente" in x["nombre"])
-    assert restr["maximo"] == 6
-    assert restr["cumple"] is False
+    return next(x for x in r.restricciones_aplicadas if "Pendiente" in x["nombre"])
+
+
+def test_pendiente_excede_maximo_tabla_4_2():
+    # Tabla 4.2, Terciaria a VTV 40 km/h: 10 %. (La tabla anterior por topografia daba 6 %.)
+    restr = _pendiente(TipoViaG.TERCIARIA, 40, 11.0)
+    assert restr["maximo"] == 10 and restr["cumple"] is False
+    assert _pendiente(TipoViaG.TERCIARIA, 40, 10.0)["cumple"] is True
+
+
+def test_pendientes_maximas_coinciden_con_la_tabla_4_2_oficial():
+    """Valores leidos visualmente del PDF oficial INV-2008 (Capitulo 4, p. 128)."""
+    m = ManualINVIAS2008().pendientes_maximas_vtv
+    assert m["primaria_2_calzadas"] == {70: 6, 80: 6, 90: 6, 100: 5, 110: 5, 120: 4, 130: 4}
+    assert m["primaria_1_calzada"] == {60: 8, 70: 7, 80: 6, 90: 6, 100: 5, 110: 5, 120: 5}
+    assert m["secundaria"] == {40: 10, 50: 9, 60: 8, 70: 7, 80: 6, 90: 6, 100: 6}
+    assert m["terciaria"] == {20: 14, 30: 12, 40: 10, 50: 10, 60: 10}
+
+
+def test_primaria_distingue_una_y_dos_calzadas():
+    assert _pendiente(TipoViaG.PRIMARIA, 70, 6.5, calzadas=1)["maximo"] == 7
+    assert _pendiente(TipoViaG.PRIMARIA, 70, 6.5, calzadas=2)["maximo"] == 6
+
+
+def test_combinacion_que_el_manual_no_contempla_no_cumple():
+    # Primaria de una calzada a 40 km/h: guion en la Tabla 4.2.
+    restr = _pendiente(TipoViaG.PRIMARIA, 40, 3.0)
+    assert restr["maximo"] is None and restr["cumple"] is False
 
 
 def test_ancho_carril_bajo_minimo_terciaria():

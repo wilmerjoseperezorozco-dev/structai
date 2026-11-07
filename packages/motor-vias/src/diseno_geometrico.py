@@ -55,6 +55,7 @@ class ParametrosDiseno:
     ancho_carril: Optional[float] = None                # metros
     bombeo: Optional[float] = None                       # %
     tipo_superficie: Optional[TipoSuperficie] = None
+    calzadas: int = 1                                    # solo importa en vías Primarias (Tabla 4.2)
 
 
 @dataclass
@@ -137,26 +138,22 @@ class ManualINVIAS2008:
 
         # Pendiente longitudinal máxima (%) por tipo de vía y topografía.
         # Tabla 4.1 del Capítulo 4.
-        self.pendientes_maximas = {
-            TipoVia.PRIMARIA: {
-                Topografia.PLANO: 4,
-                Topografia.ONDULADO: 5,
-                Topografia.MONTANOSO: 7,
-                Topografia.ESCARPADO: 9,
-            },
-            TipoVia.SECUNDARIA: {
-                Topografia.PLANO: 5,
-                Topografia.ONDULADO: 6,
-                Topografia.MONTANOSO: 8,
-                Topografia.ESCARPADO: 10,
-            },
-            TipoVia.TERCIARIA: {
-                Topografia.PLANO: 6,
-                Topografia.ONDULADO: 8,
-                Topografia.MONTANOSO: 10,
-                Topografia.ESCARPADO: 12,
-            },
+        self.pendientes_maximas_vtv = {
+            # Tabla 4.2 del Capítulo 4 (Manual INVIAS 2008), verificada visualmente
+            # contra el PDF oficial el 2026-11-06: pendiente máxima (%) de una
+            # tangente vertical según su Velocidad Específica VTV (km/h). Un guion
+            # del manual significa que esa categoría no se diseña a esa velocidad
+            # (aquí: ausente). Reemplaza una tabla anterior por topografía que no
+            # está en el manual y en varios casos permitía más que él.
+            "primaria_2_calzadas": {70: 6, 80: 6, 90: 6, 100: 5, 110: 5, 120: 4, 130: 4},
+            "primaria_1_calzada": {60: 8, 70: 7, 80: 6, 90: 6, 100: 5, 110: 5, 120: 5},
+            "secundaria": {40: 10, 50: 9, 60: 8, 70: 7, 80: 6, 90: 6, 100: 6},
+            "terciaria": {20: 14, 30: 12, 40: 10, 50: 10, 60: 10},
         }
+        # Aumento permitido de 2 puntos cuando una tangente vertical de pendiente
+        # máxima va entre dos curvas verticales consecutivas sin tramo recto
+        # (texto bajo la Tabla 4.2). No se aplica automáticamente.
+        self.aumento_pendiente_curvas_consecutivas = 2
 
         # Ancho mínimo de carril (m) por tipo de vía. Capítulo 5.
         self.ancho_carril_minimo = {
@@ -206,6 +203,16 @@ class ManualINVIAS2008:
             if a <= velocidad <= b:
                 return tabla[a] + (tabla[b] - tabla[a]) * (velocidad - a) / (b - a)
         return tabla[vs[-1]]
+
+    def pendiente_maxima(self, tipo_via: "TipoVia", velocidad: float, calzadas: int = 1) -> tuple[Optional[int], str]:
+        """Pendiente máxima (%) de la Tabla 4.2 y su origen; None si el manual
+        no contempla esa categoría a esa velocidad."""
+        if tipo_via == TipoVia.PRIMARIA:
+            clave = "primaria_2_calzadas" if calzadas >= 2 else "primaria_1_calzada"
+        else:
+            clave = tipo_via.value
+        valor = self.pendientes_maximas_vtv[clave].get(int(velocidad)) if float(velocidad) == int(velocidad) else None
+        return valor, f"Capítulo 4 - Tabla 4.2 ({clave.replace('_', ' ')}, VTV {velocidad:g} km/h)"
 
     def _cargar_restricciones(self):
         """Define las restricciones técnicas del manual."""
@@ -361,22 +368,32 @@ class MotorValidacion:
         })
 
     def _validar_pendiente(self, params: ParametrosDiseno, restricciones: List[Dict[str, Any]]):
-        """Valida que la pendiente longitudinal no exceda el máximo según tipo de vía y topografía."""
-        pendiente_max = self.manual.pendientes_maximas.get(params.tipo_via, {}).get(params.topografia, 8)
-        cumple = abs(params.pendiente_longitudinal) <= pendiente_max
+        """Valida la pendiente longitudinal contra la Tabla 4.2 del manual, que
+        depende de la categoría de la vía y de la velocidad específica de la
+        tangente vertical (se usa la velocidad de diseño como VTV)."""
+        pendiente_max, origen = self.manual.pendiente_maxima(
+            params.tipo_via, params.velocidad_diseno, params.calzadas)
 
-        if not cumple:
+        if pendiente_max is None:
+            cumple = False
             self._errores.append(
-                f"Pendiente {params.pendiente_longitudinal:.1f}% excede el máximo "
-                f"{pendiente_max}% para vía {params.tipo_via.value} en topografía {params.topografia.value}"
+                f"El manual (Tabla 4.2) no define pendiente máxima para vía {params.tipo_via.value} "
+                f"a {params.velocidad_diseno:g} km/h: la categoría no se diseña a esa velocidad"
             )
+        else:
+            cumple = abs(params.pendiente_longitudinal) <= pendiente_max
+            if not cumple:
+                self._errores.append(
+                    f"Pendiente {params.pendiente_longitudinal:.1f}% excede el máximo "
+                    f"{pendiente_max}% para vía {params.tipo_via.value} a {params.velocidad_diseno:g} km/h"
+                )
 
         restricciones.append({
             "nombre": "Pendiente longitudinal máxima",
             "valor": params.pendiente_longitudinal,
             "maximo": pendiente_max,
             "cumple": cumple,
-            "referencia": "Capítulo 4 - Tabla 4.1",
+            "referencia": origen,
         })
 
     def _validar_ancho_carril(self, params: ParametrosDiseno, restricciones: List[Dict[str, Any]]):
