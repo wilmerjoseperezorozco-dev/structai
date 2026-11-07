@@ -76,3 +76,23 @@ Sin historia propia no hay validación temporal de nada que toque precios de la 
 - **P2a — Recomendar el insumo que falta:** para cada actividad con ≥ 4 insumos se oculta un insumo al azar (semilla fija, 5 repeticiones) y se pide el ranking de insumos a partir de los restantes. Modelos: (1) **popularidad** (insumos más frecuentes), (2) **co-ocurrencia** (PMI entre insumos), (3) **vecinos** (similitud coseno TF-IDF entre actividades y votación de los k = 10 más parecidos). Métricas: **acierto@5, acierto@10 y MRR**, con IC95 % por bootstrap de bloques por capítulo del numeral. **Criterio:** el modelo de vecinos supera a la popularidad en acierto@10 con IC de la diferencia que excluye 0.
 - **P2b — Auditoría de proporciones por inyección de errores:** detector = z robusto de la participación de cada línea en el costo frente a la participación del mismo insumo en las 10 actividades más parecidas. Evaluación **por inyección** (no hay errores reales etiquetados): se corrompe una línea de actividades elegidas al azar (cantidad ×10, ×0,1 o eliminación de la línea de mayor participación) y se mide la **sensibilidad con una tasa de falsos positivos fija de 5 %** sobre las líneas sin tocar. **Criterio:** sensibilidad ≥ 0,5 para ×10 y ×0,1 con IC que excluya 0,2.
 - **Límites:** las actividades de INVIAS son de obra vial y cubren solo una parte de la construcción; la composición es de referencia; la inyección de errores mide cuánto detecta el método errores *sintéticos*, no los reales; no hay presupuestos de proyectos, así que no se evalúa recomendación por co-ocurrencia en obras.
+
+---
+
+# P3 y P4 — transmisión y Monte Carlo del costo: reglas fijadas ANTES de correr (2026-11-07)
+
+**Datos.** ICOCIV (DANE, anexo de septiembre de 2026, base diciembre 2020 = 100): índice total (Anexo 1) y por grupo de obra (Anexo 16), mensual de 2021-01 a 2026-09 (69 meses); grupos «Carreteras, calles y vías» (530201) y «Tuberías…» (530203). Series externas mensuales: TRM (media del mes), IPC (índice), WTI en USD (FRED, aproximación del petróleo; no es el precio del asfalto) y ONI. Todas se transforman en variación logarítmica mensual (el ONI queda en nivel).
+
+**Límite de complejidad (por tener 69 puntos).** Un regresor externo a la vez, a lo sumo 6 rezagos, errores HAC (Newey-West, 6 rezagos). No se ajustan modelos con varios regresores ni más de 2 parámetros por serie.
+
+**P3 — transmisión.**
+1. *Descriptivo.* Media, desviación y autocorrelación (rezagos 1-6) de las variaciones mensuales; comparación del subperiodo 2021-2022 con 2023-2026.
+2. *Confirmatorio (familia de 2, Holm).* Proyecciones locales: respuesta acumulada de ln ICOCIV-carreteras entre t−1 y t+h a una variación logarítmica de (a) TRM y (b) WTI en t, controlando por la variación rezagada del propio índice, h = 0…6. Se prueba h = 6; signo esperado positivo. Se reporta además la potencia: el efecto mínimo detectable al 80 %.
+3. *Exploratorio (sin ajuste, rotulado).* IPC y ONI; y la interacción «subperiodo 2021-2022 × choque de TRM» (¿la transmisión depende del régimen inflacionario?).
+
+**P4 — Monte Carlo del costo.** Generador: bootstrap por bloques de 3 meses de las variaciones mensuales de ICOCIV-carreteras (conserva autocorrelación), en dos variantes: muestra completa y solo 2023-2026. Salida: multiplicador de costo a 6 y 12 meses (P5, P50, P95), y el «costo en riesgo» (P95 − mediana) como porcentaje del presupuesto.
+- *Validación fuera de muestra* con origen móvil (orígenes desde el mes 30): cobertura empírica del intervalo nominal 80 % a 6 meses. Criterio: cobertura en [0,65; 0,95]; fuera de ese rango, «intervalos no calibrados». Se informa el tamaño efectivo de muestra (las ventanas se solapan) y no se afirma más allá.
+- *Referencia:* el generador se compara con el supuesto ingenuo de crecimiento constante.
+- *Cota (no estimación):* si el cemento asfáltico (≈ un tercio del costo por m² del ítem 4) se moviera uno a uno con WTI × TRM, se reporta el multiplicador resultante como cota superior.
+
+**No se concluye:** un pronóstico de precios, ni una elasticidad estructural. Con 69 meses y un periodo atípico, cualquier transmisión se presenta como asociación de corto plazo.
