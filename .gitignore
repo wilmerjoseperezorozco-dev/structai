@@ -65,3 +65,9 @@ scripts/macro/_cache/
 
 # Muestras de susceptibilidad (15 MB, reproducibles con muestrear_susceptibilidad.py y agregar_cobertura_worldcover.py)
 scripts/satelite/susceptibilidad_muestras*.csv
+
+# Cachés de descarga de scripts/clima (temperatura IDEAM, TNA), reproducibles con extraer_temperatura_caribe.py
+scripts/clima/_cache/
+scripts/clima/*.log
+scripts/datos/*.log
+scripts/hidro/*.log

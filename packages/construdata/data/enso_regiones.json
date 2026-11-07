@@ -1,0 +1,135 @@
+{
+ "fuente": "StructAI, scripts/hidro/coherencia_anomalias.py (610 estaciones IDEAM, 1934-2026); tag research/coherencia-anomalias",
+ "regiones": {
+  "Amazonia": {
+   "nombre": "Amazonía",
+   "estaciones": 37,
+   "altas_nina": {
+    "nina_pct": 1.5,
+    "neutral_pct": 2.6,
+    "dif_pp": -1.1,
+    "ic_pp": [
+     -2.0,
+     -0.3
+    ],
+    "p_holm": 0.997
+   },
+   "bajas_nino_exploratorio": {
+    "nino_pct": 4.2,
+    "neutral_pct": 4.6,
+    "dif_pp": -0.4
+   }
+  },
+  "Andina": {
+   "nombre": "Andina",
+   "estaciones": 329,
+   "altas_nina": {
+    "nina_pct": 5.8,
+    "neutral_pct": 2.2,
+    "dif_pp": 3.6,
+    "ic_pp": [
+     2.0,
+     5.3
+    ],
+    "p_holm": 0.005
+   },
+   "bajas_nino_exploratorio": {
+    "nino_pct": 5.3,
+    "neutral_pct": 3.3,
+    "dif_pp": 2.0
+   }
+  },
+  "Caribe": {
+   "nombre": "Caribe",
+   "estaciones": 97,
+   "altas_nina": {
+    "nina_pct": 4.9,
+    "neutral_pct": 2.2,
+    "dif_pp": 2.7,
+    "ic_pp": [
+     1.1,
+     4.4
+    ],
+    "p_holm": 0.006
+   },
+   "bajas_nino_exploratorio": {
+    "nino_pct": 9.3,
+    "neutral_pct": 3.5,
+    "dif_pp": 5.8
+   }
+  },
+  "Orinoquia": {
+   "nombre": "Orinoquía",
+   "estaciones": 43,
+   "altas_nina": {
+    "nina_pct": 2.8,
+    "neutral_pct": 2.5,
+    "dif_pp": 0.3,
+    "ic_pp": [
+     -0.8,
+     1.7
+    ],
+    "p_holm": 0.541
+   },
+   "bajas_nino_exploratorio": {
+    "nino_pct": 5.3,
+    "neutral_pct": 4.5,
+    "dif_pp": 0.8
+   }
+  },
+  "Pacifica": {
+   "nombre": "Pacífica",
+   "estaciones": 104,
+   "altas_nina": {
+    "nina_pct": 5.4,
+    "neutral_pct": 2.1,
+    "dif_pp": 3.2,
+    "ic_pp": [
+     1.7,
+     5.2
+    ],
+    "p_holm": 0.005
+   },
+   "bajas_nino_exploratorio": {
+    "nino_pct": 5.8,
+    "neutral_pct": 3.1,
+    "dif_pp": 2.7
+   }
+  }
+ },
+ "departamentos": {
+  "ANTIOQUIA": "Andina",
+  "BOYACA": "Andina",
+  "CUNDINAMARCA": "Andina",
+  "SANTANDER": "Andina",
+  "NORTE DE SANTANDER": "Andina",
+  "TOLIMA": "Andina",
+  "HUILA": "Andina",
+  "CALDAS": "Andina",
+  "QUINDIO": "Andina",
+  "RISARALDA": "Andina",
+  "BOGOTA D.C.": "Andina",
+  "BOGOTA": "Andina",
+  "ATLANTICO": "Caribe",
+  "BOLIVAR": "Caribe",
+  "CESAR": "Caribe",
+  "CORDOBA": "Caribe",
+  "LA GUAJIRA": "Caribe",
+  "MAGDALENA": "Caribe",
+  "SUCRE": "Caribe",
+  "CAUCA": "Pacifica",
+  "CHOCO": "Pacifica",
+  "NARINO": "Pacifica",
+  "VALLE DEL CAUCA": "Pacifica",
+  "META": "Orinoquia",
+  "ARAUCA": "Orinoquia",
+  "CASANARE": "Orinoquia",
+  "VICHADA": "Orinoquia",
+  "CAQUETA": "Amazonia",
+  "PUTUMAYO": "Amazonia",
+  "AMAZONAS": "Amazonia",
+  "GUAINIA": "Amazonia",
+  "GUAVIARE": "Amazonia",
+  "VAUPES": "Amazonia"
+ }
+}

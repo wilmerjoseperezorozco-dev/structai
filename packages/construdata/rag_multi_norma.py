@@ -30,8 +30,29 @@ import microzonificacion_local
 import precio_vigencia
 import noticias_colombia
 import pais_zonificacion
+import plugins_chat
 
 log = logging.getLogger(__name__)
+
+
+def _con_plugins(resultado: dict, question: str) -> dict:
+    """Añade al final de la respuesta los resultados de los plugins determinísticos (ENSO por región, vigencia de normas, revisión de un precio, insumos de una
+    actividad -- ver plugins_chat.py). Devuelve una copia; es idempotente (si ask() ya los aplicó, ask_delegado() no los repite) y NUNCA rompe el chat: ante cualquier
+    fallo devuelve la respuesta original sin tocar."""
+    try:
+        return plugins_chat.aplicar(resultado, question, sb=sb, detectar_municipio=sgc_amenaza_sismica.detectar_municipio_en_texto)
+    except Exception as e:  # noqa: BLE001
+        log.warning("plugins_chat.aplicar falló, se devuelve la respuesta sin plugins: %s", e)
+        return resultado
+
+
+def _respuesta_degradada(question: str) -> Optional[dict]:
+    """Ver plugins_chat.respuesta_degradada: respuesta solo con plugins cuando Groq y OpenAI no están disponibles; None si ningún plugin aplica."""
+    try:
+        return plugins_chat.respuesta_degradada(question, sb=sb, detectar_municipio=sgc_amenaza_sismica.detectar_municipio_en_texto)
+    except Exception as e:  # noqa: BLE001
+        log.warning("respuesta degradada falló: %s", e)
+        return None
 
 sb = create_client(os.environ["SUPABASE_URL"], os.environ["SUPABASE_SERVICE_KEY"])
 
@@ -2313,7 +2334,7 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = TOP_K_DEFA
     if usa_cache:
         cacheado = _buscar_en_cache(ruta_cache, question)
         if cacheado is not None:
-            return cacheado
+            return _con_plugins(cacheado, question)
 
     # 1. Descomposición (issue #30) + routing automático si no hay norma
     # específica.
@@ -2384,7 +2405,14 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = TOP_K_DEFA
     # commit inicial del repo -- Ollama local está descartado para
     # producción por latencia (ver docstring al inicio del archivo), no se
     # usa aquí.
-    respuesta = _generar_respuesta(contexto, question)
+    try:
+        respuesta = _generar_respuesta(contexto, question)
+    except RespuestaIAIndisponibleError:
+        # Modo degradado: si algún plugin determinístico tiene respuesta (vigencia, ENSO, precio, insumos), se devuelve en vez de fallar por completo.
+        degradado = _respuesta_degradada(question)
+        if degradado is None:
+            raise
+        return degradado
 
     # Autoevaluación barata post-generación (issue #31, primer paso): números
     # que el LLM cita pero que no aparecen en el contexto realmente
@@ -2443,7 +2471,9 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = TOP_K_DEFA
     if usa_cache and not sgc_registro:
         _guardar_en_cache(ruta_cache, question, resultado)
 
-    return resultado
+    # Los plugins se aplican DESPUÉS de guardar en caché: la respuesta cacheada queda sin ellos (el ONI actual cambia, la vigencia puede cambiar) y se recalculan
+    # en cada consulta, incluidos los aciertos de caché (ver el `return` del paso 0).
+    return _con_plugins(resultado, question)
 
 
 # ─── AVISO DE RESPONSABILIDAD PROFESIONAL (issue #18) ────────────────────────
@@ -2852,7 +2882,17 @@ def ask_delegado(question: str, top_k: int = TOP_K_DEFAULT_RAG) -> dict:
     real, para poder medir después si el enrutamiento acierta").
     """
     motores, metodo_enrutamiento, score_enrutamiento = _route_con_metodo(question)
-    resultado = _ask_delegado_interno(question, motores, top_k)
+    try:
+        resultado = _ask_delegado_interno(question, motores, top_k)
+    except RespuestaIAIndisponibleError:
+        degradado = _respuesta_degradada(question)
+        if degradado is None:
+            raise
+        degradado["dominio"] = "+".join(motores) if motores else "normativa_general"
+        degradado["metodo_enrutamiento"] = metodo_enrutamiento
+        degradado["score_enrutamiento"] = score_enrutamiento
+        return degradado
+    resultado = _con_plugins(resultado, question)
     resultado["metodo_enrutamiento"] = metodo_enrutamiento
     resultado["score_enrutamiento"] = score_enrutamiento
     return resultado
