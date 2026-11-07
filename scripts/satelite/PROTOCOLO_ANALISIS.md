@@ -347,3 +347,5 @@ Mejora del límite de la sección 11: "la cercanía geográfica no garantiza con
 **Diagnóstico del régimen (c):** desviación estándar del ONI de la ventana en el tramo de calibración y en el de prueba (mediana entre estaciones). Si en el tramo de prueba es menor que la mitad del de calibración, un fallo predictivo no es interpretable.
 
 **No se concluye:** una relación causal ni una predicción operativa. Un éxito significaría que la respuesta a ENSO es transferible en el tiempo; un fracaso, que con estos datos y esta forma no es predecible.
+
+**Aclaración §25 (antes de la corrida completa, tras una prueba de humo con 24 estaciones).** Cuando el valor de prueba cae fuera del soporte de la GEV estacionaria (log-verosimilitud −∞), se aplica la convención de H4: el candidato gana si su verosimilitud es finita (Δ = +∞), y pierde si es −∞ o indefinida (nan). Se reporta aparte cuántas estaciones tienen Δ no finito. La mediana de Δ se calcula solo con valores finitos.
