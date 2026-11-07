@@ -95,33 +95,44 @@ class ManualINVIAS2008:
 
     def _cargar_tablas(self):
         """Tablas del manual INVIAS."""
-        # Radios mínimos (m) en función de la velocidad de diseño (km/h)
-        # y el peralte máximo (%). Tabla 3.2 del Capítulo 3.
-        self.radios_minimos = {
-            30: {6: 25, 8: 20, 10: 15},
-            40: {6: 45, 8: 35, 10: 25},
-            50: {6: 70, 8: 55, 10: 40},
-            60: {6: 105, 8: 80, 10: 60},
-            70: {6: 150, 8: 115, 10: 90},
-            80: {6: 205, 8: 160, 10: 125},
-            90: {6: 270, 8: 210, 10: 165},
-            100: {6: 345, 8: 270, 10: 215},
-            110: {6: 430, 8: 340, 10: 270},
-            120: {6: 530, 8: 420, 10: 335},
+        # Coeficiente de fricción transversal máxima fTmáx por velocidad
+        # específica VCH (km/h). Tabla 3.1 del Capítulo 3 (valores AASHTO),
+        # verificada contra el PDF oficial del CD INV-2008 el 2026-11-06.
+        self.friccion_transversal_maxima = {
+            20: 0.35, 30: 0.28, 40: 0.23, 50: 0.19, 60: 0.17, 70: 0.15,
+            80: 0.14, 90: 0.13, 100: 0.12, 110: 0.11, 120: 0.09, 130: 0.08,
         }
 
-        # Distancia de visibilidad de parada (m). Tabla 3.4 INVIAS.
+        # Radios mínimos REDONDEADOS (m) que publica el manual, por peralte
+        # máximo emáx: Tabla 3.2 (emáx 8 %, vías Primarias y Secundarias) y
+        # Tabla 3.3 (emáx 6 %, vías Terciarias). Copiados del PDF oficial.
+        # Corrigen una tabla anterior de este repo que quedaba 15-44 % por
+        # debajo del manual (lado inseguro) e incluía una columna de 10 %
+        # que el manual no publica. RCmín = V^2 / (127 (emáx + fTmáx)).
+        self.radios_minimos_tabulados = {
+            8: {40: 41, 50: 73, 60: 113, 70: 168, 80: 229,
+                90: 304, 100: 394, 110: 501, 120: 667, 130: 832},
+            6: {20: 15, 30: 21, 40: 43, 50: 79, 60: 123},
+        }
+        self.peralte_maximo_por_tipo_via = {
+            TipoVia.PRIMARIA: 8, TipoVia.SECUNDARIA: 8, TipoVia.TERCIARIA: 6,
+        }
+
+        # Distancia de visibilidad de parada en tramos a nivel (m, REDONDEADA).
+        # Tabla 2.6 del Capítulo 2, verificada contra el PDF oficial INV-2008
+        # (2026-11-06). Reemplaza una tabla anterior que difería hasta 30 %.
         self.distancia_visibilidad_parada = {
-            30: 35, 40: 55, 50: 75, 60: 100,
-            70: 130, 80: 160, 90: 195, 100: 235,
-            110: 280, 120: 330,
+            20: 20, 30: 35, 40: 50, 50: 65, 60: 85, 70: 105,
+            80: 130, 90: 160, 100: 185, 110: 220, 120: 250, 130: 285,
         }
 
-        # Distancia de visibilidad de adelantamiento (m). Tabla 3.5 INVIAS.
+        # Distancia mínima de visibilidad de adelantamiento, carreteras de dos
+        # carriles (m, REDONDEADA). Tabla 2.9 del Capítulo 2, verificada contra el
+        # PDF oficial (2026-11-06). El valor de 20 km/h es extrapolado según el
+        # propio manual. La tabla anterior de este repo difería hasta 20 %.
         self.distancia_visibilidad_adelantamiento = {
-            30: 140, 40: 200, 50: 280, 60: 360,
-            70: 460, 80: 570, 90: 690, 100: 820,
-            110: 970, 120: 1130,
+            20: 130, 30: 200, 40: 270, 50: 345, 60: 410, 70: 485,
+            80: 540, 90: 615, 100: 670, 110: 730, 120: 775, 130: 815,
         }
 
         # Pendiente longitudinal máxima (%) por tipo de vía y topografía.
@@ -167,6 +178,34 @@ class ManualINVIAS2008:
             TipoSuperficie.CONCRETO: 2.0,
             TipoSuperficie.AFIRMADO: 3.0,
         }
+
+    def radio_minimo(self, velocidad: float, tipo_via: "TipoVia") -> tuple[float, str]:
+        """Radio mínimo de curva horizontal (m) y su origen.
+
+        El peralte máximo lo fija el tipo de vía (manual 3.1.3.2: 8 % en
+        Primarias/Secundarias, 6 % en Terciarias), no el peralte de diseño de
+        cada curva. Si el manual publica el valor, se devuelve ese; si no
+        (p. ej. emáx 6 % con V > 60), se calcula con la misma ecuación y la
+        Tabla 3.1 y se marca como calculado."""
+        emax = self.peralte_maximo_por_tipo_via[tipo_via]
+        tabulado = self.radios_minimos_tabulados[emax].get(int(velocidad))
+        if tabulado is not None and float(velocidad) == int(velocidad):
+            return float(tabulado), f"Capítulo 3 - Tabla {'3.2' if emax == 8 else '3.3'}"
+        f = self._friccion(velocidad)
+        return round(velocidad ** 2 / (127 * (emax / 100 + f)), 1), "ecuación 3.1.3.4 con Tabla 3.1 (no tabulado)"
+
+    def _friccion(self, velocidad: float) -> float:
+        """fTmáx de la Tabla 3.1; interpola entre velocidades tabuladas."""
+        tabla = self.friccion_transversal_maxima
+        vs = sorted(tabla)
+        if velocidad <= vs[0]:
+            return tabla[vs[0]]
+        if velocidad >= vs[-1]:
+            return tabla[vs[-1]]
+        for a, b in zip(vs, vs[1:]):
+            if a <= velocidad <= b:
+                return tabla[a] + (tabla[b] - tabla[a]) * (velocidad - a) / (b - a)
+        return tabla[vs[-1]]
 
     def _cargar_restricciones(self):
         """Define las restricciones técnicas del manual."""
@@ -284,22 +323,17 @@ class MotorValidacion:
         })
 
     def _validar_radio_curva(self, params: ParametrosDiseno, restricciones: List[Dict[str, Any]]):
-        """Valida el radio mínimo de curva horizontal según tabla INVIAS."""
+        """Valida el radio mínimo de curva horizontal según el Capítulo 3 del
+        Manual INVIAS 2008 (Tablas 3.1 a 3.3)."""
         v = params.velocidad_diseno
-        peralte_efectivo = params.peralte if params.peralte else 6.0
-
-        if v in self.manual.radios_minimos:
-            peraltes_disponibles = sorted(self.manual.radios_minimos[v].keys())
-            peralte_usado = min(peraltes_disponibles, key=lambda x: abs(x - peralte_efectivo))
-            radio_minimo = self.manual.radios_minimos[v][peralte_usado]
-        else:
-            radio_minimo = self._interpolar_radio(v, peralte_efectivo)
+        radio_minimo, origen = self.manual.radio_minimo(v, params.tipo_via)
+        emax = self.manual.peralte_maximo_por_tipo_via[params.tipo_via]
 
         cumple = params.radio_curva >= radio_minimo
         if not cumple:
             self._errores.append(
                 f"Radio de curva {params.radio_curva:.2f} m es menor que el mínimo "
-                f"({radio_minimo:.2f} m) para V={v} km/h y peralte={peralte_efectivo:.1f}%"
+                f"({radio_minimo:.2f} m) para V={v} km/h y peralte máximo {emax}%"
             )
 
         restricciones.append({
@@ -307,30 +341,8 @@ class MotorValidacion:
             "valor": params.radio_curva,
             "minimo": radio_minimo,
             "cumple": cumple,
-            "referencia": "Capítulo 3 - Tabla 3.2",
+            "referencia": origen,
         })
-
-    def _interpolar_radio(self, velocidad: float, peralte: float) -> float:
-        """Interpola linealmente el radio mínimo para velocidades no estándar."""
-        velocidades = sorted(self.manual.radios_minimos.keys())
-
-        def _radio_para(v: int) -> float:
-            peraltes = self.manual.radios_minimos[v].keys()
-            peralte_cercano = min(peraltes, key=lambda x: abs(x - peralte))
-            return self.manual.radios_minimos[v][peralte_cercano]
-
-        if velocidad <= velocidades[0]:
-            return _radio_para(velocidades[0])
-        if velocidad >= velocidades[-1]:
-            return _radio_para(velocidades[-1])
-
-        for i in range(len(velocidades) - 1):
-            v1, v2 = velocidades[i], velocidades[i + 1]
-            if v1 <= velocidad <= v2:
-                r1, r2 = _radio_para(v1), _radio_para(v2)
-                return r1 + (r2 - r1) * (velocidad - v1) / (v2 - v1)
-
-        return 0.0
 
     def _validar_peralte(self, params: ParametrosDiseno, restricciones: List[Dict[str, Any]]):
         """Valida que el peralte no exceda el máximo permitido."""
@@ -418,14 +430,13 @@ class MotorValidacion:
             sugerencias.append("Considere aumentar la velocidad de diseño si la topografía lo permite.")
 
         if params.radio_curva:
-            v = params.velocidad_diseno
-            if v in self.manual.radios_minimos:
-                radio_recomendado = max(self.manual.radios_minimos[v].values()) * 1.5
-                if params.radio_curva < radio_recomendado:
-                    sugerencias.append(
-                        f"Para mayor comodidad y seguridad, use un radio de al menos "
-                        f"{radio_recomendado:.0f} m (1.5 veces el mínimo)."
-                    )
+            radio_min, _ = self.manual.radio_minimo(params.velocidad_diseno, params.tipo_via)
+            radio_recomendado = radio_min * 1.5
+            if params.radio_curva < radio_recomendado:
+                sugerencias.append(
+                    f"Para mayor comodidad y seguridad, use un radio de al menos "
+                    f"{radio_recomendado:.0f} m (1.5 veces el mínimo)."
+                )
 
         if params.pendiente_longitudinal and params.pendiente_longitudinal > 5:
             sugerencias.append("En pendientes > 5%, considere carriles de ascenso para vehículos pesados.")

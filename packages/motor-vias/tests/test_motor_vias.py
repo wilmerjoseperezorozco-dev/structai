@@ -61,18 +61,76 @@ def _motor_geometrico():
     return MotorValidacion(ManualINVIAS2008())
 
 
-def test_radio_curva_tabla_real_v80_peralte6():
+def test_radio_curva_tabla_oficial_v80_primaria():
     motor = _motor_geometrico()
-    # Tabla real: radios_minimos[80][6] = 205 m
+    # Manual INVIAS 2008, Tabla 3.2 (emáx 8 %, vías Primarias): V=80 -> 229 m.
+    # (La tabla anterior de este repo decía 205 m, 10 % por debajo del manual.)
     params = ParametrosDiseno(
         tipo_via=TipoViaG.PRIMARIA, velocidad_diseno=80, topografia=TopografiaG.MONTANOSO,
-        volumen_transito=5000, radio_curva=180, peralte=6.0,
+        volumen_transito=5000, radio_curva=220, peralte=6.0,
     )
     r = motor.validar(params)
     restr = next(x for x in r.restricciones_aplicadas if x["nombre"] == "Radio mínimo de curva")
-    assert restr["minimo"] == 205
-    assert restr["cumple"] is False   # 180 < 205
+    assert restr["minimo"] == 229
+    assert restr["cumple"] is False   # 220 < 229
     assert r.cumple is False
+
+
+# Valores copiados del PDF oficial (Capitulo 3.pdf del CD INV-2008, Tablas 3.1-3.3).
+_TABLA_3_1 = {20: 0.35, 30: 0.28, 40: 0.23, 50: 0.19, 60: 0.17, 70: 0.15,
+              80: 0.14, 90: 0.13, 100: 0.12, 110: 0.11, 120: 0.09, 130: 0.08}
+_TABLA_3_2 = {40: 41, 50: 73, 60: 113, 70: 168, 80: 229, 90: 304, 100: 394, 110: 501, 120: 667, 130: 832}
+_TABLA_3_3 = {20: 15, 30: 21, 40: 43, 50: 79, 60: 123}
+
+
+def test_tablas_coinciden_con_el_manual_oficial():
+    m = ManualINVIAS2008()
+    assert m.friccion_transversal_maxima == _TABLA_3_1
+    assert m.radios_minimos_tabulados[8] == _TABLA_3_2
+    assert m.radios_minimos_tabulados[6] == _TABLA_3_3
+
+
+def test_tablas_oficiales_son_consistentes_con_la_ecuacion_fisica():
+    """RCmin = V^2 / (127 (emax + fTmax)): cada fila publicada debe salir de la
+    ecuacion con la Tabla 3.1 (tolerancia 1 m por el redondeo del manual). La unica
+    excepcion es V=20 km/h con emax 6 %, que el manual adopta en 15 m por comodidad
+    (nota (1) de la Tabla 3.3, calculado 7,7 m)."""
+    for emax, tabla in ((8, _TABLA_3_2), (6, _TABLA_3_3)):
+        for v, publicado in tabla.items():
+            if (emax, v) == (6, 20):
+                continue
+            calculado = v ** 2 / (127 * (emax / 100 + _TABLA_3_1[v]))
+            assert abs(calculado - publicado) <= 1.0, (emax, v, calculado, publicado)
+
+
+def test_radio_minimo_nunca_por_debajo_de_la_ecuacion():
+    """Guarda contra el error original (tabla 15-44 % por debajo del manual)."""
+    m = ManualINVIAS2008()
+    for tipo in TipoViaG:
+        for v in range(30, 130, 10):
+            valor, _ = m.radio_minimo(v, tipo)
+            emax = m.peralte_maximo_por_tipo_via[tipo]
+            fisico = v ** 2 / (127 * (emax / 100 + _TABLA_3_1[v]))
+            assert valor >= fisico - 1.0, (tipo, v, valor, fisico)
+
+
+def test_visibilidad_parada_y_adelantamiento_coinciden_con_el_manual():
+    """Tablas 2.6 (parada a nivel) y 2.9 (adelantamiento), columna REDONDEADA, del
+    PDF oficial INV-2008. La tabla anterior del repo difería hasta 30 %."""
+    m = ManualINVIAS2008()
+    assert m.distancia_visibilidad_parada == {
+        20: 20, 30: 35, 40: 50, 50: 65, 60: 85, 70: 105,
+        80: 130, 90: 160, 100: 185, 110: 220, 120: 250, 130: 285}
+    assert m.distancia_visibilidad_adelantamiento == {
+        20: 130, 30: 200, 40: 270, 50: 345, 60: 410, 70: 485,
+        80: 540, 90: 615, 100: 670, 110: 730, 120: 775, 130: 815}
+
+
+def test_radio_no_tabulado_se_calcula_y_se_marca():
+    m = ManualINVIAS2008()
+    valor, origen = m.radio_minimo(80, TipoViaG.TERCIARIA)   # emáx 6 % y V>60: no está en la Tabla 3.3
+    assert abs(valor - 80 ** 2 / (127 * (0.06 + 0.14))) < 0.1
+    assert "no tabulado" in origen
 
 
 def test_radio_curva_suficiente_cumple():
