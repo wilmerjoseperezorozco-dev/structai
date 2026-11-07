@@ -1,0 +1,281 @@
+{
+ "d092_anexo.pdf": {
+  "05044": {
+   "municipio": "Anzá",
+   "aa": 0.2,
+   "av": 0.25,
+   "zona": "Alta",
+   "ae": 0.14,
+   "ad": 0.08,
+   "pagina": 9
+  },
+  "05129": {
+   "municipio": "Caldas",
+   "aa": 0.2,
+   "av": 0.25,
+   "zona": "Alta",
+   "ae": 0.16,
+   "ad": 0.08,
+   "pagina": 9
+  },
+  "05660": {
+   "municipio": "San Luis",
+   "aa": 0.15,
+   "av": 0.2,
+   "zona": "Intermedia",
+   "ae": 0.12,
+   "ad": 0.06,
+   "pagina": 9
+  },
+  "05042": {
+   "municipio": "Santafé de Antioquia",
+   "aa": 0.2,
+   "av": 0.25,
+   "zona": "Alta",
+   "ae": 0.13,
+   "ad": 0.07,
+   "pagina": 9
+  },
+  "05809": {
+   "municipio": "Titiribí",
+   "aa": 0.2,
+   "av": 0.25,
+   "zona": "Alta",
+   "ae": 0.15,
+   "ad": 0.08,
+   "pagina": 9
+  },
+  "15299": {
+   "municipio": "Garagoa",
+   "aa": 0.25,
+   "av": 0.25,
+   "zona": "Alta",
+   "ae": 0.16,
+   "ad": 0.08,
+   "pagina": 10
+  },
+  "15442": {
+   "municipio": "Maripí",
+   "aa": 0.15,
+   "av": 0.15,
+   "zona": "Intermedia",
+   "ae": 0.13,
+   "ad": 0.07,
+   "pagina": 10
+  },
+  "15455": {
+   "municipio": "Miraflores",
+   "aa": 0.25,
+   "av": 0.25,
+   "zona": "Alta",
+   "ae": 0.16,
+   "ad": 0.08,
+   "pagina": 10
+  },
+  "15500": {
+   "municipio": "Oicatá",
+   "aa": 0.2,
+   "av": 0.2,
+   "zona": "Intermedia",
+   "ae": 0.13,
+   "ad": 0.06,
+   "pagina": 10
+  },
+  "15511": {
+   "municipio": "Pachavita",
+   "aa": 0.2,
+   "av": 0.25,
+   "zona": "Alta",
+   "ae": 0.16,
+   "ad": 0.07,
+   "pagina": 10
+  },
+  "15514": {
+   "municipio": "Páez",
+   "aa": 0.3,
+   "av": 0.3,
+   "zona": "Alta",
+   "ae": 0.16,
+   "ad": 0.08,
+   "pagina": 10
+  },
+  "15600": {
+   "municipio": "Ráquira",
+   "aa": 0.15,
+   "av": 0.2,
+   "zona": "Intermedia",
+   "ae": 0.09,
+   "ad": 0.05,
+   "pagina": 10
+  },
+  "15740": {
+   "municipio": "Siachoque",
+   "aa": 0.2,
+   "av": 0.25,
+   "zona": "Alta",
+   "ae": 0.16,
+   "ad": 0.08,
+   "pagina": 10
+  },
+  "18150": {
+   "municipio": "Cartagena del Chairá",
+   "aa": 0.05,
+   "av": 0.05,
+   "zona": "Baja",
+   "ae": 0.04,
+   "ad": 0.02,
+   "pagina": 10
+  },
+  "85225": {
+   "municipio": "Nunchía",
+   "aa": 0.2,
+   "av": 0.2,
+   "zona": "Intermedia",
+   "ae": 0.09,
+   "ad": 0.04,
+   "pagina": 10
+  },
+  "85263": {
+   "municipio": "Pore",
+   "aa": 0.2,
+   "av": 0.2,
+   "zona": "Intermedia",
+   "ae": 0.08,
+   "ad": 0.04,
+   "pagina": 10
+  },
+  "85315": {
+   "municipio": "Sácama",
+   "aa": 0.35,
+   "av": 0.25,
+   "zona": "Alta",
+   "ae": 0.16,
+   "ad": 0.08,
+   "pagina": 10
+  },
+  "85400": {
+   "municipio": "Támara",
+   "aa": 0.35,
+   "av": 0.2,
+   "zona": "Alta",
+   "ae": 0.16,
+   "ad": 0.08,
+   "pagina": 10
+  },
+  "19533": {
+   "municipio": "Piamonte",
+   "aa": 0.25,
+   "av": 0.25,
+   "zona": "Alta",
+   "ae": 0.09,
+   "ad": 0.05,
+   "pagina": 10
+  },
+  "27413": {
+   "municipio": "Lloró",
+   "aa": 0.25,
+   "av": 0.35,
+   "zona": "Alta",
+   "ae": 0.24,
+   "ad": 0.1,
+   "pagina": 10
+  },
+  "27600": {
+   "municipio": "Río Quito",
+   "aa": 0.4,
+   "av": 0.4,
+   "zona": "Alta",
+   "ae": 0.24,
+   "ad": 0.1,
+   "pagina": 11
+  },
+  "23001": {
+   "municipio": "Montería",
+   "aa": 0.1,
+   "av": 0.15,
+   "zona": "Intermedia",
+   "ae": 0.07,
+   "ad": 0.04,
+   "pagina": 11
+  },
+  "25317": {
+   "municipio": "Guachetá",
+   "aa": 0.15,
+   "av": 0.2,
+   "zona": "Intermedia",
+   "ae": 0.08,
+   "ad": 0.05,
+   "pagina": 11
+  },
+  "25377": {
+   "municipio": "La Calera",
+   "aa": 0.15,
+   "av": 0.25,
+   "zona": "Alta",
+   "ae": 0.11,
+   "ad": 0.05,
+   "pagina": 11
+  },
+  "25518": {
+   "municipio": "Paime",
+   "aa": 0.15,
+   "av": 0.15,
+   "zona": "Intermedia",
+   "ae": 0.12,
+   "ad": 0.06,
+   "pagina": 11
+  },
+  "25839": {
+   "municipio": "Ubalá",
+   "aa": 0.25,
+   "av": 0.25,
+   "zona": "Alta",
+   "ae": 0.16,
+   "ad": 0.06,
+   "pagina": 11
+  },
+  "50001": {
+   "municipio": "Villavicencio",
+   "aa": 0.35,
+   "av": 0.3,
+   "zona": "Alta",
+   "ae": 0.2,
+   "ad": 0.07,
+   "pagina": 11
+  },
+  "54001": {
+   "municipio": "Cúcuta",
+   "aa": 0.35,
+   "av": 0.3,
+   "zona": "Alta",
+   "ae": 0.25,
+   "ad": 0.1,
+   "pagina": 11
+  },
+  "54003": {
+   "municipio": "Abrego",
+   "aa": 0.25,
+   "av": 0.2,
+   "zona": "Alta",
+   "ae": 0.07,
+   "ad": 0.04,
+   "pagina": 11
+  }
+ },
+ "d1166_2025.pdf": {},
+ "d1401.pdf": {},
+ "d2113.pdf": {},
+ "d340.pdf": {},
+ "d945_dms.pdf": {},
+ "d_modif_minvivienda.pdf": {
+  "17777": {
+   "municipio": "Supía",
+   "aa": 0.25,
+   "av": 0.3,
+   "zona": "Alta",
+   "ae": 0.2,
+   "ad": 0.1,
+   "pagina": 3
+  }
+ }
+}
