@@ -49,8 +49,47 @@ Conclusión: lo que se crea como investigación **no llega solo al chat**. Para 
 
 **Problemas para segundo orden:** confusión entre sismicidad natural e inducida, catálogo incompleto a magnitudes bajas, pocos eventos, ausencia de datos de inyección y colas pesadas para la magnitud máxima.
 
+## 3b. Océano azul C: ingeniería eléctrica
+
+**Lo verificado.**
+- Hay producción mensual de electricidad por fuente desde el año 2000 en datos abiertos (UPME, 2.786 filas) y ya extrajimos datos de XM (aportes hídricos, precio de bolsa) para la hipótesis 13.
+- Resultado propio, 284 meses: por cada +1 °C del ONI los aportes hídricos bajan ×0,84 (IC −0,20 a −0,12 en log) y el precio de bolsa sube ×1,35 (IC +0,14 a +0,40). **Pero al añadir ENSO el pronóstico fuera de muestra empeora** (error 1,13 frente a 0,70): la relación existe y no es predictiva con esta forma simple. Es el mismo patrón que en las crecientes (H4).
+- Contexto de 2026: XM reportó aportes al 60 % del promedio histórico y El Niño en formación; la generación depende en 60-80 % de la hidráulica ([Finance Colombia](https://www.financecolombia.com/el-nino-warming-patterns-signal-operational-risks-for-colombian-power-and-agriculture/); [Rio Times](https://www.riotimesonline.com/colombia-reservoirs-slip-as-wildfire-alerts-spread/)). Un estudio con VAR halla efecto significativo de los eventos extremos de ENSO sobre los precios de la electricidad, mayor cuando los precios ya están altos.
+
+**Problemas para segundo orden:** endogeneidad entre demanda y precio; regulación (precio de escasez) que crea umbrales; rupturas estructurales; pocos ciclos de ENSO. Para «ciudad inteligente» (microrredes, respuesta de la demanda) hacen falta medidores inteligentes cuyos datos no son abiertos.
+
+## 3c. Océano azul D: oceanografía y costa
+
+**Lo verificado.**
+- El conjunto «Nivel del Mar» del IDEAM en datos abiertos tiene **solo dos estaciones**: Tesoro-INVEMAR (Bolívar, 2012-2020, 194.733 observaciones) y Juanchaco (Pacífico, 2005-2020). No cubre Barranquilla y termina en 2020. Ocho años no bastan para una tendencia de nivel del mar.
+- El Índice de Calidad de Aguas Marinas y Costeras (INVEMAR, 1.715 filas) incluye estaciones como Bocas de Ceniza (Atlántico).
+- INVEMAR reporta las mayores tasas de erosión de origen humano del Caribe continental en Magdalena (5,3 m/año), Córdoba (3,3) y La Guajira (3,2) ([resumen FAO](https://agris.fao.org/search/es/records/67488e107625988a371d78df)); también hay estudios de la afectación por ascenso del nivel del mar ([INVEMAR](https://boletin.invemar.org.co/ojs/index.php/boletin/article/download/871/735/3920)).
+- No encontré datos abiertos de oleaje, mareas ni batimetría. Los caudales del Magdalena sí están en nuestros datos del IDEAM.
+
+**Problemas para segundo orden:** pocas estaciones y series cortas; la línea de costa se puede medir por satélite (Sentinel-2, Landsat) pero requiere un protocolo propio; el oleaje y las tormentas (tercer orden) no tienen datos abiertos; los espigones del Magdalena confunden la tendencia natural.
+
+## 3d. Océano azul E: composición del suelo
+
+**Lo verificado.** Tenemos 169.088 unidades de suelo del IGAC en la base. SoilGrids (global, 250 m) explica en promedio cerca del 61 % de la variación en su validación, sin validación local para Colombia que yo haya encontrado, y es grueso para el trabajo geotécnico de un sitio ([SoilGrids250m](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5313206/)).
+
+**Un estudio de segundo orden realizable con lo que ya tenemos:** ¿se puede predecir la clase de sitio de la NSR-10 (A a F) a partir de las capas de suelo? La validación existe: las microzonificaciones de Bogotá, Cali y Pereira dan la clase y la velocidad de onda de corte. Es un problema acotado, con verdad de referencia y con un plugin natural (clase de suelo estimada con su incertidumbre).
+
+**Problemas:** los estudios de suelos de obra son privados; la textura no equivale a las propiedades geotécnicas (SPT, Vs30); la resolución de 250 m no ve la variación a escala de lote.
+
+## 3e. Océano azul F: ecología evolutiva y biodiversidad
+
+**Lo verificado.** SiB Colombia es el nodo nacional de GBIF, con millones de registros de presencia en acceso abierto con licencias Creative Commons ([GBIF](https://www.gbif.org/news/82303/colombia-launches-new-national-biodiversity-data-portal)); en 2026 reportó 2.940.251 registros publicados en dos años con el sector privado. En datos.gov.co hay el listado oficial de especies silvestres amenazadas (Ministerio de Ambiente) y conjuntos de fauna y flora de algunas corporaciones regionales. No encontré aplicaciones de evaluación de impacto ni de ecología evolutiva con estos datos.
+
+**Por qué importa a la ingeniería civil:** licenciamiento ambiental y conectividad ecológica de vías.
+
+**Problemas para segundo orden:** los registros de presencia se concentran donde hay gente y carreteras (sesgo de muestreo), faltan los datos de ausencia, y los modelos de distribución (de presencia sola) son frágiles. La parte «evolutiva» (diversidad filogenética, endemismo) necesita árboles filogenéticos que no verifiqué como abiertos: **es una expedición**, no un paso inmediato. Conecta con el proyecto de conservación del tití cabeciblanco del Atlántico.
+
 ## 4. Cómo mejorar de forma iterativa
 El ciclo que ya usamos: verificar el dato en vivo → protocolo preregistrado → línea base simple → comparación con alternativas → publicar también el resultado negativo → **conectar al chat solo lo que superó su criterio**, con su aviso y su fecha de datos.
+
+**Una lección que se repite en tres dominios.** Las crecientes (H4), la energía (H13) y, en menor medida, el costo de obra muestran el mismo patrón: la relación con ENSO existe dentro de la muestra pero un modelo simple con ENSO **no mejora el pronóstico fuera de muestra**. Antes de abrir más océanos conviene resolver eso (ventanas, rezagos, agrupación por región, validación hacia adelante), porque cada océano nuevo heredará el mismo problema.
+
+**Datos limitantes de cada océano:** acuíferos (sin series de nivel), microsismos (catálogo sin acceso verificado y sin datos de inyección), electricidad (sin medidores inteligentes abiertos), costa (dos estaciones de nivel del mar), suelos (sin estudios de obra), biodiversidad (solo presencia).
 
 ## 5. Catálogo de plugins candidatos
 
@@ -71,6 +110,10 @@ El ciclo que ya usamos: verificar el dato en vivo → protocolo preregistrado �
 | 11 | Agua subterránea | dato | «¿Hay un acuífero en esta zona?» | No hay datos verificados | Alto | Solo concesiones por corporación regional |
 | 12 | WhatsApp, ERP, Excel, Revit | externo | Consultas desde el celular o el sistema de costos | Issues #79 y #80 | Alto | Revit/BIM es el diferenciador de los competidores |
 | 13 | Servidor MCP ampliado | externo | Exponer más herramientas a asistentes de IA | Prototipo con una herramienta | Medio | Control de uso y costo |
+| 14 | Riesgo energético para la obra | skill | «¿Hay riesgo de racionamiento o de precios altos de energía este año?» | Datos de XM y UPME ya los usamos | Medio | La relación con ENSO es real pero no predictiva fuera de muestra; presentar como contexto |
+| 15 | Clase de sitio NSR-10 estimada | motor | «¿Qué clase de suelo (A-F) es probable aquí?» | Falta el estudio de validación contra microzonificaciones | Medio-alto | Solo con incertidumbre explícita; no sustituye el estudio de suelos |
+| 16 | Fauna amenazada cerca de la obra | dato | «¿Hay especies amenazadas registradas cerca del proyecto?» | Acceso a SiB/GBIF por verificar | Medio | Registros de presencia con sesgo; es una revisión previa, no un estudio de impacto |
+| 17 | Costa: erosión y nivel del mar | dato | «¿Qué tan expuesta está esta costa?» | Datos abiertos muy limitados | Alto | Prioridad baja hasta tener datos |
 
 **Orden sugerido:** 1, 5, 3 y 4 (rápidos y ya existentes), luego 2, que integra todo y es la base natural de una «ciudad inteligente». Los océanos azules (10 y 11) quedan condicionados a verificar datos.
 
