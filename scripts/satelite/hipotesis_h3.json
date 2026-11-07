@@ -7,6 +7,8 @@
   0.028758927069232863
  ],
  "veredicto": "MEJORA",
+ "p": 0.0009995002498750624,
+ "auc_control_sin_curvatura": 0.7735837358796103,
  "por_region": {
   "Caribe": [
    0.568503501340019,
