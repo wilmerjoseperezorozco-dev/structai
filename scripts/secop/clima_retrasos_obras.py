@@ -196,8 +196,10 @@ def main() -> None:
     else:
         v = f"NO hay evidencia de asociacion (IC incluye 1); con n={n} solo se detectarian RM >= {mde:.2f}"
     print(f"\nVEREDICTO (regla fija): {v}")
-    print("LIMITES: muestra pequena; prorrogas con muchas causas; fechas autorreportadas e inconsistentes; CHIRPS ~5 km mensual; "
-          "asociacion != causalidad. Solo alcaldias (sitio ~ ciudad).")
+    sitio = ("ubicacion de ejecucion de SECOP (solo contratos con un unico municipio de ejecucion)" if MODO == "ubicacion"
+             else "solo alcaldias (sitio ~ ciudad)")
+    print(f"LIMITES: prorrogas con muchas causas; fechas autorreportadas e inconsistentes; CHIRPS ~5 km mensual; "
+          f"asociacion != causalidad. Sitio de obra: {sitio}.")
     (AQUI / f"clima_retrasos_obras_{AMBITO}{'_ubicacion' if MODO == 'ubicacion' else ''}.json").write_text(json.dumps(
         {"n": n, "prorrogas": int(y.sum()), "mde": mde, "veredicto": v,
          "resultados": {k: {"rm": r[0], "ic": [r[1], r[2]]} for k, r in res.items()}}, ensure_ascii=False, indent=1), encoding="utf-8")

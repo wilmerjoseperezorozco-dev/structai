@@ -130,3 +130,20 @@ El piloto del Caribe quedó **inconcluyente**, no nulo: 306 contratos en solo 20
 ### 12c. Mejora del límite "ciudad de la entidad ≠ sitio de obra" (2026-11-06)
 
 El resultado nacional restringido a alcaldías es informativo (RM 1,00 [0,84; 1,17], n = 2.522, MDE 1,13), pero descarta 39.884 contratos de otras entidades. Se usa la **ubicación de ejecución** de SECOP II (`gra4-pcp2`, solo `id_contrato` y `localizaci_n`; proveedor no descargado) para incluir todas las entidades. **Regla:** solo contratos con **exactamente un** municipio de ejecución; el resto del diseño (ventana, exposición, controles, regla de veredicto) es el de la sección 12. Se reporta junto al resultado de alcaldías; una conclusión que cambie entre ambos no es robusta. Se corre con `clima_retrasos_obras.py colombia ubicacion`.
+
+
+## 13. El Niño y la energía eléctrica: hidrología y precio de bolsa (XM + ONI), definido ANTES de correrlo (2026-11-06)
+
+**Pregunta:** ¿el ENSO (índice ONI) mueve los aportes hídricos y el precio de bolsa de la energía en Colombia, y es **asimétrico** (El Niño ≠ La Niña)?
+
+- **Datos (mensuales, 2000-01 a 2026-10):** XM (API pública) `AporEner` y `AporEnerMediHist` (aportes de energía y su media histórica), `PPPrecBolsNaci` (precio de bolsa nacional ponderado diario, COP/kWh) y `PorcVoluUtilDiar` (volumen útil, descriptivo); ONI de NOAA CPC (mes central de cada trimestre móvil; NDJ del año Y se centra en dic. de Y−1); IPC total del DANE para deflactar a pesos de septiembre de 2026.
+- **Variables:** `y_aportes` = log(media mensual de AporEner / media mensual de AporEnerMediHist); `y_precio` = log(precio de bolsa mensual medio × IPC_sep2026 / IPC_mes); `x` = ONI del mismo mes (la serie ya es una media móvil de 3 meses). **Rezagos 1, 2 y 3 meses: solo descriptivos**, no confirmatorios.
+- **Controles (principales):** 11 variables de mes calendario y tendencia temporal lineal y cuadrática. **Robustez:** añadir log del WTI mensual (FRED, proxy del costo de combustibles de la generación térmica).
+- **Estimador:** MCO con errores robustos a autocorrelación (Newey-West, 12 rezagos) y **IC95 % por bootstrap de bloques móviles de 12 meses** (5.000 réplicas); la inferencia es el bootstrap.
+- **Confirmatorio 1 (hidrología):** β de `x` en `y_aportes` es **negativo** y su IC excluye 0.
+- **Confirmatorio 2 (precio):** β de `x` en `y_precio` es **positivo** y su IC excluye 0; efecto reportado como % de cambio por +1 °C de ONI.
+- **Confirmatorio 3 (asimetría):** `y_precio` ~ ONI⁺ (= máx(ONI, 0)) + ONI⁻ (= mín(ONI, 0)); se reporta la diferencia de magnitudes |β⁺| − |β⁻| con IC de bloques. Hipótesis nula: simetría.
+- **Validación temporal reservada:** ajustar con 2000-2018 y evaluar en 2019-2026 el error absoluto medio de `y_precio` con y sin ONI (con el mismo conjunto de controles); "ENSO aporta" solo si **el error baja** en el periodo reservado.
+- **Regla fija:** "ENSO afecta el precio de bolsa" solo si se cumplen el confirmatorio 2 **y** la mejora en el periodo reservado. Si el confirmatorio 1 falla, no se afirma el mecanismo hidrológico aunque haya correlación con el precio.
+- **Descriptivo adicional:** tabla por episodio de El Niño (ONI ≥ +0,5 durante ≥ 5 trimestres consecutivos): pico del precio real frente a la media de los 12 meses previos.
+- **Limitaciones declaradas:** ~320 meses pero **pocos episodios independientes de ENSO** (la inferencia efectiva es mucho menor que n); cambios regulatorios y de mercado (p. ej. cargo por confiabilidad, entrada de nuevas plantas, Hidroituango) alteran el nivel y no se modelan; el precio de bolsa depende del gas y de la demanda, no solo de la hidrología; el IPC total deflacta con un índice que mezcla componentes; las cifras recientes de XM y del DANE son provisionales.

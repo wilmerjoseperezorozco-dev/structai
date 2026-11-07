@@ -43,6 +43,23 @@ def poligonos(d: str) -> list[dict]:
     return json.loads(f.read_text(encoding="utf-8"))["features"]
 
 
+def leer_mes(a: int, m: int):
+    """Lee la ventana de Colombia de un mes, con reintentos y espera creciente ante 429/errores de red."""
+    for intento in range(7):
+        try:
+            with rasterio.open(BASE.format(a=a, m=m)) as ds:
+                w = from_bounds(*BBOX, transform=ds.transform).round_offsets().round_lengths()
+                z = ds.read(1, window=w).astype("float64")
+                tr = ds.window_transform(w)
+            z[z <= NODATA + 1] = np.nan
+            return z, tr
+        except rasterio.errors.RasterioIOError as e:
+            espera = min(30 * 2 ** intento, 600)
+            print(f"  {a}-{m:02d}: {str(e)[:50]}; espero {espera}s (intento {intento + 1})", flush=True)
+            time.sleep(espera)
+    raise RuntimeError(f"no se pudo leer {a}-{m:02d}")
+
+
 def main() -> None:
     pols = {}
     for d in DEPTOS:
@@ -56,14 +73,17 @@ def main() -> None:
     serie = {c: [] for c in pols}
     pix = {}
     t0 = time.time()
+    # NOTA: con cache por mes, el primer mes siempre se lee para construir las mascaras de pixeles.
     with rasterio.Env(GDAL_HTTP_TIMEOUT=60, GDAL_HTTP_MAX_RETRY=3, GDAL_HTTP_RETRY_DELAY=2,
                       GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR", CPL_VSIL_CURL_ALLOWED_EXTENSIONS=".tif"):
         for k, (a, m) in enumerate(meses):
-            with rasterio.open(BASE.format(a=a, m=m)) as ds:
-                w = from_bounds(*BBOX, transform=ds.transform).round_offsets().round_lengths()
-                z = ds.read(1, window=w).astype("float64")
-                tr = ds.window_transform(w)
-            z[z <= NODATA + 1] = np.nan
+            cf = CACHE / "chirps_mes" / f"{a}-{m:02d}.json"
+            if cf.exists() and pix:                       # mes ya extraido (reanudable)
+                vals = json.loads(cf.read_text(encoding="utf-8"))
+                for c in pols:
+                    serie[c].append(vals.get(c))
+                continue
+            z, tr = leer_mes(a, m)
             if not pix:
                 for c, (g, _) in pols.items():
                     mk = features.geometry_mask([g.__geo_interface__], out_shape=z.shape, transform=tr, invert=True, all_touched=True)
@@ -74,9 +94,19 @@ def main() -> None:
                         if 0 <= int(r) < z.shape[0] and 0 <= int(cc) < z.shape[1]:
                             mk[int(r), int(cc)] = True
                     pix[c] = mk
+            if cf.exists():                               # primer mes: solo se leyo para armar las mascaras
+                vals = json.loads(cf.read_text(encoding="utf-8"))
+                for c in pols:
+                    serie[c].append(vals.get(c))
+                continue
+            vals = {}
             for c in pols:
                 v = z[pix[c]]
-                serie[c].append(float(np.nanmean(v)) if np.isfinite(v).any() else None)
+                vals[c] = float(np.nanmean(v)) if np.isfinite(v).any() else None
+                serie[c].append(vals[c])
+            cf.parent.mkdir(exist_ok=True)
+            cf.write_text(json.dumps(vals), encoding="utf-8")
+            time.sleep(1.0)                               # cortesia con el servidor (evita el 429)
             if k % 12 == 11:
                 print(f"  {a}: listo ({time.time() - t0:.0f}s)", flush=True)
     faltan = {c for c in pols if any(v is None for v in serie[c])}
