@@ -16,6 +16,7 @@ Precios y costos de obra, métricas del RAG sin LLM y anomalías de caudal. En c
 - Resultados de H6 y de la frecuencia de crecientes (protocolos 21 y 24). Tags `research/protocolo-21`, `research/protocolo-24`, `research/h6`.
 
 - Costo paramétrico de pavimentos (espesores de `motor-vias` × precios INVIAS 2026-1) y ejercicio de periodo de retorno económico de alcantarillas, con protocolo preregistrado. Resultados en `scripts/precios/RESULTADOS_COSTO_PARAMETRICO.md`. Tag `research/costo-parametrico`.
+- Transmisión de TRM y petróleo al ICOCIV (DANE, 69 meses) y Monte Carlo del costo en riesgo de una obra vial, con protocolo preregistrado y validación fuera de muestra. Resultados en `scripts/precios/RESULTADOS_P3_P4.md`. Tag `research/icociv-p3-p4`.
 - Política de versiones, `CHANGELOG.md`, milestones por fase y portada nueva (`README.md`; el detalle completo pasa a `docs/DETALLE_TECNICO.md`).
 
 ### Limitaciones documentadas
