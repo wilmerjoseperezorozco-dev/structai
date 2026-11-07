@@ -27,6 +27,7 @@ import igac_client
 import ideam_client
 import ideam_deforestacion_client
 import microzonificacion_local
+import precio_vigencia
 import noticias_colombia
 import pais_zonificacion
 
@@ -1060,6 +1061,8 @@ class PrecioResult:
     # el resto de tipos (insumo/proveedor/proveedor_nacional) y para
     # resultados de buscar_precios_invias_vias(), que no pasa por este RPC.
     actividad_id: Optional[str] = None
+    # Aviso de plausibilidad (ver precio_vigencia.py); None si el precio es creible.
+    advertencia: Optional[str] = None
 
     @property
     def fuente_display(self) -> str:
@@ -1251,6 +1254,8 @@ def buscar_precios_apu(query: str, top_k: int = 8) -> list[PrecioResult]:
             if _nombre_coincide_con_sinonimo(f["nombre"], terminos_sinonimo):
                 f["score"] = max(float(f.get("score") or 0.0), 0.95)
         filas = sorted(filas, key=lambda r: r.get("score") or 0.0, reverse=True)
+    # Un precio 0 no es un precio (filas placeholder, ver precio_vigencia.py).
+    filas = [f for f in filas if precio_vigencia.precio_utilizable(f.get("precio"), f.get("precio_solo_mano_obra"))]
     filas = filas[:top_k]
     return [
         PrecioResult(
@@ -1273,6 +1278,7 @@ def buscar_precios_apu(query: str, top_k: int = 8) -> list[PrecioResult]:
             categoria_fuente=r.get("categoria_fuente"),
             score=r.get("score") or 0.0,
             actividad_id=r.get("actividad_id"),
+            advertencia=precio_vigencia.advertencia_plausibilidad(r["nombre"], r.get("unidad"), r.get("precio")),
         )
         for r in filas
     ]
@@ -1420,8 +1426,9 @@ def _format_precio_context(p: PrecioResult, incluir_desglose: bool = False) -> s
     if p.region:
         partes.append(f"región: {p.region}")
     partes.append(f"fuente: {p.fuente_display}")
-    if p.fecha_captura:
-        partes.append(f"fecha: {p.fecha_captura}")
+    partes.append(precio_vigencia.etiqueta_fecha(p.tipo_fuente, p.fecha_captura))
+    if p.advertencia:
+        partes.append(f"ADVERTENCIA: {p.advertencia}")
     if p.categoria_fuente and "rango $" in p.categoria_fuente:
         partes.append(f"variabilidad real de mercado: {p.categoria_fuente}")
     texto = " | ".join(partes)
@@ -1534,8 +1541,11 @@ INSTRUCCIONES:
    fechas), muéstralos todos con su fuente — no promedies ni elijas uno solo sin
    decir que hay más de uno.
 3. Siempre indica la fuente (ej. "Catálogo Construdata", "Contrato real ejecutado",
-   "INVIAS") y la fecha de captura de cada precio que cites — un profesional
-   necesita saber de dónde y de cuándo es el dato para decidir si confía en él.
+   "INVIAS") de cada precio que cites. Si el contexto dice "cargado en
+   StructAI", esa fecha es la de CARGA, NO la del precio: nunca la presentes
+   como "captura", "vigente" ni "actual". Di que la fecha real del precio no
+   está registrada y que puede ser de años anteriores, y que lo confirme con
+   una cotización vigente antes de presupuestar.
 4. NUNCA menciones nombre de obra, dirección, calle, barrio o municipio
    específico de ningún proyecto — aunque aparezca en tus instrucciones o en
    metadatos internos. Si necesitas referirte al origen, di solo el tipo de
@@ -1569,6 +1579,9 @@ INSTRUCCIONES:
     exacto") en vez de mezclar todo como si fuera un solo precio nacional.
     Si el contexto ya viene filtrado a una sola provincia/departamento
     (porque la pregunta la mencionó), no hace falta pedir nada más.
+11. Si un ítem trae "ADVERTENCIA", NO des su precio como válido: dile al usuario
+    que ese dato está desactualizado y qué fuente oficial consultar. No lo
+    promedies ni lo uses para comparar con otros precios.
 {_CONTEXTO_COLOMBIA_COMPARTIDO}"""
 
 
@@ -1611,7 +1624,7 @@ def ask_precios(question: str, top_k: int = 8) -> dict:
                 if p.precio is not None else p.nombre
             ),
             "contenido": (
-                f"Fecha de captura: {p.fecha_captura or 'sin fecha'}"
+                precio_vigencia.etiqueta_fecha(p.tipo_fuente, p.fecha_captura).capitalize()
                 + (f" · Región: {p.region}" if p.region else "")
             ),
             "score": p.score,
@@ -2789,7 +2802,7 @@ def _ask_delegado_compuesto(question: str, motores: list[str], top_k: int) -> di
                 if p.precio is not None else p.nombre
             ),
             "contenido": (
-                f"Fecha de captura: {p.fecha_captura or 'sin fecha'}"
+                precio_vigencia.etiqueta_fecha(p.tipo_fuente, p.fecha_captura).capitalize()
                 + (f" · Región: {p.region}" if p.region else "")
             ),
             "score": p.score,
