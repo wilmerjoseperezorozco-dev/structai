@@ -269,3 +269,34 @@ Mejora del límite de la sección 11: "la cercanía geográfica no garantiza con
   - **S3:** el puntaje de pesos de evidencia alcanza un AUC espacial no inferior en más de 0,02 al de la regresión logística (si la independencia no se sostiene, se espera que sea inferior; se reporta).
 - **Descriptivo:** pesos por clase (cuáles aumentan y cuáles reducen la susceptibilidad); AUC por región natural; comparación con el índice del SGC (§16) donde haya municipios comunes.
 - **Limitaciones declaradas:** SIMMA es un inventario con sesgo de acceso y de cartografía (zonas estudiadas, no todo el país), y sin fecha ni magnitud; el fondo puede incluir movimientos no inventariados; la geología a 1:1.000.000 es gruesa y las unidades se agrupan por edad, no por litología real; las fallas a esa escala omiten estructuras locales; las clases por cuantiles dependen de la muestra; AUC espacial por departamento sigue sobreestimando si hay autocorrelación entre departamentos vecinos; **no es un mapa de amenaza normativo** (no incluye detonantes ni probabilidad temporal) y no sustituye una zonificación con estudio de campo.
+
+
+## 23. Fórmulas candidatas con logaritmos y contraste con la normativa: hipótesis, línea base y criterios, definidos ANTES de correrlos (2026-11-07)
+
+**Alcance y límites (valen para toda la sección):**
+- Son **hipótesis de investigación**. Ninguna fórmula se incorpora al producto ni sustituye una norma o una curva oficial. Las normas vigentes (NSR-10 y las demás) se siguen citando textualmente.
+- **Nada de lo que sigue cambia el texto de la NSR-10.** Una modificación del reglamento solo puede salir de su proceso oficial (Comisión Asesora Permanente y Ministerio de Vivienda). Aquí solo se genera evidencia que podría aportarse a ese proceso por los canales institucionales; la decisión de aportarla es del usuario.
+- **Línea base obligatoria:** toda candidata se compara con (i) el modelo ya definido en el protocolo correspondiente y (ii) cuando exista, la ecuación publicada, **solo después de leer la fuente y registrar sus coeficientes, unidades y rango de validez**. Hasta entonces no se afirma que se «contradice» una ecuación publicada.
+- **Familia de hipótesis:** cinco ejecutables (H1-H5). Se corrige por **Holm a α = 0,05** sobre esa familia; cada resultado se reporta con su p-valor ajustado.
+- **Mejora** = la diferencia pareada de la métrica fuera de muestra respecto de la línea base tiene IC95 % (bootstrap de bloques por departamento, 2.000 réplicas) que excluye 0, con **a lo sumo 2 parámetros adicionales**. **Contradicción** = lo mismo en sentido contrario, con datos que no se usaron para ajustar. Ninguna de las dos se afirma si el análisis se rotula exploratorio.
+- **Datos reservados:** los mismos cortes de cada protocolo de origen (calibración 2019-2022 y prueba 2023-2024 para lluvia y deslizamientos; 70/30 cronológico para crecientes; un departamento fuera para susceptibilidad). Nada se elige con los datos de prueba.
+
+**H1 — umbral E–D normalizado por la lluvia anual media (§19).** Candidata: log(E/MAP) = log a + b·log D. Línea base: log E = log a + b·log D con los mismos datos. Métrica: TSS con la regla del percentil 5. **Prueba de transferencia:** ajuste en cuatro regiones y prueba en la quinta (dejar una región fuera); **mejora** si el TSS normalizado supera al no normalizado con IC que excluye 0. Se reporta además el coeficiente b de cada región (¿cambia con la normalización?).
+
+**H2 — umbral E–D con terreno y ENSO (§19).** Regresión cuantil τ = 0,05 de log E sobre log D, **más** log(pendiente p90 municipal) y ONI del mes del evento (2 parámetros adicionales). Línea base: la curva global de H1. Métrica: TSS reservado (2023-2024) y razón de verosimilitud pseudo-cuantil. **Mejora** si ΔTSS tiene IC que excluye 0.
+
+**H3 — susceptibilidad con variables continuas en logaritmo (§22).** logit p = β₀ + β₁·log(pendiente) + β₂·log(1 + distancia a falla) + términos de edad geológica (clases). Línea base: la regresión logística del §22 con variables discretizadas por cuantiles. Métrica: AUC dejando un departamento fuera; **mejora** si ΔAUC (pareado por réplica) excluye 0.
+
+**H4 — GEV con el ONI como covariable de localización (§21).** Candidata: μ(t) = μ₀ + μ₁·ONI̅(t), con ONI̅ = media anual (enero-diciembre) del ONI del año del máximo; sensibilidad (descriptiva) con el rezago de un año. Línea base: GEV estacionaria del §21. **H4a (significancia de campo):** fracción de estaciones con razón de verosimilitud p < 0,05 mayor que 5 % con IC (bloques) que excluye 0,05. **H4b (predictiva):** en el 30 % reservado, la candidata tiene mayor log-verosimilitud predictiva que la estacionaria en más del 50 % de las estaciones (IC que excluye 50 %). Control de FDR (Benjamini-Hochberg, q = 0,10) en el listado por estación. Limitación declarada: el valor anual no trae la fecha del máximo.
+
+**H5 — forma ξ compartida por región (§21).** La GEV con ξ fijado en la mediana regional (calculada solo con el 70 % de calibración de las demás estaciones de la región) frente a la GEV con ξ libre. **Mejora** si la log-verosimilitud predictiva reservada no es peor que −0,5 por estación en mediana y el ancho relativo del IC de Q50 se reduce (mediana de la razón < 1).
+
+**H6 — escalamiento de duraciones para curvas IDF (Bell, 1969, calibrado).** **No se ejecuta**: no hay lluvia sub-horaria histórica abierta (verificado el 7 de noviembre de 2026). Queda registrada para cuando se disponga de pluviógrafos del IDEAM o de una fuente comparable.
+
+**Pista B — contraste descriptivo de la amenaza sísmica de la NSR-10 con el modelo nacional del SGC (sin criterios confirmatorios).**
+- **Pregunta:** ¿cuánto y dónde difiere, por municipio, la aceleración Aa de diseño de la NSR-10 (Apéndice A-4) del valor del Modelo Nacional de Amenaza Sísmica del SGC para el mismo período de retorno?
+- **Datos y verificación previa:** Aa por municipio tomado de la ingesta textual del Título A; modelo SGC (Resolución 080 de 2020) con su sistema de consulta. **Antes de calcular, verificar** que ambas fuentes sean descargables con licencia que lo permita, y registrar que Aa (aceleración efectiva sobre roca) y la aceleración pico del modelo **no son idénticas** (definiciones, suelo de referencia y período de retorno pueden diferir).
+- **Producto:** tabla y mapa de diferencias relativas con su incertidumbre, y lista de municipios donde la diferencia supera 25 %; no se propone ninguna fórmula ni valor de reemplazo.
+- **Límites:** no usar datos del evento de agosto de 2026 ni conclusiones sobre daños sin revisión; los valores son de referencia y no de diseño.
+
+**Limitaciones comunes:** las de §15, §19, §21 y §22 (sesgo de reporte, fecha de reporte, CHIRPS de 5 km, máximo horario del IDEAM, DEM de 90 m, autocorrelación espacial); la inferencia sobre cinco hipótesis aún puede sobreestimar; los resultados son regionales y comparativos, no de diseño.
