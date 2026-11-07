@@ -1,0 +1,20 @@
+{
+ "n_municipios_elegibles": 128,
+ "auc_medio": 0.7711366495566677,
+ "ic_bloques": [
+  0.7409945628528937,
+  0.804290640225385
+ ],
+ "veredicto_lluvia": "la lluvia discrimina meses con inundacion (IC excluye 0,5)",
+ "moderacion_hand": {
+  "rho": -0.19013243261591112,
+  "ic_bloques": [
+   -0.24839374139448298,
+   -0.07328931572629052
+  ],
+  "veredicto": "HAND modera: el IC excluye 0"
+ },
+ "regional": {
+  "rho_lluvia_vs_n_municipios": 0.8190294701425205
+ }
+}

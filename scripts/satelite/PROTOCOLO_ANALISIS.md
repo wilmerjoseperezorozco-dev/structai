@@ -78,3 +78,18 @@ Motivo: la fracción < 10 m no es física para llanuras del interior (sección 8
 - **Sensibilidad (no confirmatoria):** umbrales de red de 1 y 25 km²; cortes HAND < 5 y < 15 m; HAND mediana.
 - **Estatus honesto:** se propone **después** de ver un resultado nulo, así que es **exploratorio con respecto al análisis anterior** aunque la definición se fije antes de verlo. Se reporta con las mismas reglas (correlación parcial, IC por bloques, controles principales, regla de veredicto) y se compara contra el predictor anterior; no se presenta como "confirmación".
 - **Limitaciones:** resolución 90 m (el DEM es de superficie); el umbral de red es una elección; municipios en la costa y ciénagas tienen áreas sin dato.
+
+
+## 10. El "cuándo": precipitación mensual (CHIRPS v3.0) y reportes de inundación, definido ANTES de correrlo (2026-11-06)
+
+Motivo: HAND explica *dónde*, y solo en el año de lluvias extremas (sección 9). La pregunta siguiente es si la lluvia explica *cuándo* se reporta una inundación y si el efecto depende de HAND.
+
+- **Unidad:** municipio-mes, 195 × 72 (2019-01 a 2024-12).
+- **Resultado:** al menos un reporte de inundación (UNGRD) en el mes (0/1). Sin dependencia del conteo ni de los duplicados.
+- **Predictor:** anomalía estandarizada de la precipitación mensual dentro de cada municipio (z con su propia media y DE de 2019-2024). Es relativa al clima local, no absoluta.
+- **Estimador por municipio:** AUC de la anomalía para distinguir meses con inundación de meses sin ella; solo municipios con ≥ 3 meses con inundación y ≥ 12 sin ella.
+- **Resumen:** AUC medio entre municipios con IC95 % por remuestreo de **departamentos**; fracción de municipios con AUC > 0,5.
+- **Moderador (confirmatorio-3):** correlación de Spearman entre el AUC municipal y la fracción con HAND < 10 m (red 5 km²), con IC por bloques. Hipótesis: la lluvia predice mejor los reportes donde el terreno es bajo respecto al cauce.
+- **Regla fija:** "la lluvia discrimina" solo si el IC del AUC medio excluye 0,5; "HAND modera" solo si el IC de la correlación excluye 0.
+- **Estatus:** el efecto de la lluvia es una hipótesis física fuerte y casi previsible; la parte informativa es el tamaño del AUC y la moderación por HAND (exploratoria).
+- **Limitaciones:** CHIRPS a ~5 km (municipios pequeños quedan con 1-3 píxeles); precipitación mensual no captura crecientes de horas; los reportes UNGRD dependen de la capacidad de reportar (se mitiga comparando cada municipio consigo mismo).
