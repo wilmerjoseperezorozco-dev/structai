@@ -102,9 +102,9 @@ def main() -> None:
     veredicto2 = ("HAND modera: el IC excluye 0" if lom > 0 or him < 0 else "el IC incluye 0: NO hay evidencia de que HAND module el efecto de la lluvia")
     print(f"   VEREDICTO (regla fija): {veredicto2}")
     tercil = np.percentile(hv, [33.3, 66.7])
-    for nombre, m in [("HAND bajo (tercil inferior de la fraccion)", hv <= tercil[0]), ("intermedio", (hv > tercil[0]) & (hv <= tercil[1])),
-                      ("HAND alto en fraccion (tercil superior)", hv > tercil[1])]:
-        print(f"   {nombre:<44} AUC medio {av[m].mean():.3f} (n={int(m.sum())})")
+    for nombre, m in [("MENOS llanura (tercil inferior de la fraccion HAND<10 m)", hv <= tercil[0]), ("intermedio", (hv > tercil[0]) & (hv <= tercil[1])),
+                      ("MAS llanura (tercil superior)", hv > tercil[1])]:
+        print(f"   {nombre:<56} AUC medio {av[m].mean():.3f} (n={int(m.sum())})")
     print("\nLIMITES: CHIRPS a ~5 km (municipios chicos = 1-3 pixeles); lluvia mensual no capta crecientes de horas; "
           "UNGRD mide reportes; el efecto de la lluvia es casi previsible: lo informativo es su tamano y la moderacion por HAND (exploratoria).")
     (AQUI / "cuando_inundaciones_caribe.json").write_text(json.dumps({

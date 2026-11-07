@@ -93,3 +93,17 @@ Motivo: HAND explica *dónde*, y solo en el año de lluvias extremas (sección 9
 - **Regla fija:** "la lluvia discrimina" solo si el IC del AUC medio excluye 0,5; "HAND modera" solo si el IC de la correlación excluye 0.
 - **Estatus:** el efecto de la lluvia es una hipótesis física fuerte y casi previsible; la parte informativa es el tamaño del AUC y la moderación por HAND (exploratoria).
 - **Limitaciones:** CHIRPS a ~5 km (municipios pequeños quedan con 1-3 píxeles); precipitación mensual no captura crecientes de horas; los reportes UNGRD dependen de la capacidad de reportar (se mitiga comparando cada municipio consigo mismo).
+
+
+## 11. Hipótesis fluvial: caudal de estaciones IDEAM vs lluvia local (definido ANTES de correrlo, 2026-11-06)
+
+Hipótesis (propuesta para explicar el signo contrario de la sección 10): en municipios con mucho terreno bajo respecto al cauce (HAND), los reportes de inundación siguen la anomalía del **caudal de un río cercano** mejor que la **lluvia local del mes**.
+
+- **Datos:** `ideam_caudal_historico` (valores mensuales por estación), estaciones del Caribe por coordenadas (no por nombre de departamento). Se usa 2019-2024, mismo panel municipio-mes de la sección 10.
+- **Estación por municipio:** la estación más cercana al polígono municipal, a ≤ 25 km (sensibilidad: 50 km), con ≥ 48 meses con dato en 2019-2024. Sin escoger la que mejor funcione.
+- **Predictor fluvial:** anomalía z del caudal mensual respecto de la propia estación (media y DE de sus meses disponibles).
+- **Comparación pareada por municipio:** AUC de la anomalía de caudal menos AUC de la anomalía de lluvia, **en los mismos meses** (solo meses con dato de caudal), con los mismos criterios de elegibilidad de la sección 10 (≥ 3 meses con inundación y ≥ 12 sin ella dentro de esos meses).
+- **Prueba principal:** correlación de Spearman entre la fracción con HAND < 10 m y la diferencia de AUC (caudal − lluvia); hipótesis: **positiva**. IC95 % por remuestreo de departamentos.
+- **Secundarias:** diferencia media de AUC en el tercil bajo y en el alto de HAND; AUC medio del caudal.
+- **Regla fija:** "hipótesis fluvial apoyada" solo si el IC de la correlación principal excluye 0 **y es positivo**. Si es negativo o incluye 0, no se apoya.
+- **Limitaciones declaradas:** la cercanía geográfica no garantiza conexión hidrológica (no se verifica que la estación esté aguas arriba del municipio); series mensuales (no captan crecientes de horas); cobertura de estaciones decreciente; la mayoría de estaciones está en cauces medianos y pequeños, no en el cauce principal.
