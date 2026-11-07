@@ -5,6 +5,7 @@ E1 — Emparejamiento: descripción con ruido (se descarta cada palabra con prob
 E2 — Detección con referencia construida con el 80 % de las cotizaciones de cada ítem y prueba con el 20 % restante (separado por proveedor):
      (a) tasa de marca sobre cotizaciones reales sin tocar (incluye errores naturales; NO es una tasa de falsos positivos), criterio ≤ 5 %;
      (b) sensibilidad al inyectar factores ×2, ×3, ×5, ×10 y ×0,1 en cotizaciones de prueba, criterio ≥ 0,90 para ×10 y ×0,1.
+     Versión 2 (umbral conforme 2,83 y escala contraída): mismo criterio, fijado antes de adoptar el umbral conforme.
 IC95 % por bootstrap de ítems.
 """
 from __future__ import annotations
@@ -51,11 +52,14 @@ def main() -> None:
     provs = q.proveedor_id.unique(); RNG.shuffle(provs); prueba_p = set(provs[: int(0.2 * len(provs))])
     ent = q[~q.proveedor_id.isin(prueba_p)]; prue = q[q.proveedor_id.isin(prueba_p)]
     items = []
+    res_glob = np.concatenate([np.log(g.p.to_numpy()) - np.median(np.log(g.p.to_numpy())) for _, g in ent.groupby("item_no") if len(g) >= 20])
+    glob = float(np.median(np.abs(res_glob)) * 1.4826)
     for item_no, g in ent.groupby("item_no"):
         l = np.log(g.p.to_numpy())
         if len(l) < 20:
             continue
         med = float(np.median(l)); mad = float(np.median(np.abs(l - med)) * 1.4826)
+        mad = float(np.sqrt((len(l) * mad ** 2 + 5 * glob ** 2) / (len(l) + 5)))   # misma contracción que construir_referencia_iad.py
         r = it[it.item_no == item_no].iloc[0]
         items.append({"item_no": int(item_no), "nombre": r.item_nombre, "unidad": r.unidad, "n": len(l), "mediana": float(np.exp(med)), "mad_log": mad, "q05": 0, "q95": 0})
     ref = ReferenciaPrecios(items)

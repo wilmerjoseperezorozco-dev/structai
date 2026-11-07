@@ -3,8 +3,8 @@
 QUÉ ES: una herramienta de TAMIZAJE. Dice si un precio es estadísticamente extremo respecto a lo que cotizan otros proveedores para el ítem más
 parecido; NO dice si el precio es un error ni si es "el precio de mercado" (el catálogo es de un solo momento y son precios de referencia).
 
-Método (ver scripts/precios/PROTOCOLO_PRECIOS.md): z robusto del logaritmo, z = (ln p − ln mediana) / max(MAD_log, PISO_ESCALA), con MAD_log = 1,4826·MAD;
-extremo si |z| > UMBRAL_Z. El PISO_ESCALA evita marcar de más los ítems cuyas cotizaciones son casi idénticas. Solo numpy.
+Método (ver scripts/precios/PROTOCOLO_PRECIOS.md): z robusto del logaritmo, z = (ln p − ln mediana) / escala, con la escala del ítem (1,4826·MAD) contraída hacia la
+global para los ítems con pocas cotizaciones; extremo si |z| > UMBRAL_Z, un umbral CONFORME calibrado para marcar ≈ 5 % de las cotizaciones del catálogo. Solo numpy.
 """
 from __future__ import annotations
 
@@ -18,8 +18,8 @@ from pathlib import Path
 import numpy as np
 
 RUTA_REFERENCIA = Path(__file__).resolve().parents[1] / "data" / "referencia_precios_iad.json"
-UMBRAL_Z = 3.5
-PISO_ESCALA = 0.25
+UMBRAL_Z = 2.82      # umbral CONFORME (split conformal, α = 5 %, scripts/precios/p3b_conforme_por_proveedor.py, proveedores dejados fuera): marca ≈ 5 % de las cotizaciones del catálogo
+PISO_ESCALA = 0.05
 SIMILITUD_MINIMA = 0.45
 
 
