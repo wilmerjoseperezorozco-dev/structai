@@ -15,7 +15,12 @@ Precios y costos de obra, métricas del RAG sin LLM y anomalías de caudal. En c
 - Anomalías de caudal IDEAM: comparación de la regla de producción con un z robusto estacional con persistencia. Tag `research/anomalias-caudal`.
 - Resultados de H6 y de la frecuencia de crecientes (protocolos 21 y 24). Tags `research/protocolo-21`, `research/protocolo-24`, `research/h6`.
 
+- Costo paramétrico de pavimentos (espesores de `motor-vias` × precios INVIAS 2026-1) y ejercicio de periodo de retorno económico de alcantarillas, con protocolo preregistrado. Resultados en `scripts/precios/RESULTADOS_COSTO_PARAMETRICO.md`. Tag `research/costo-parametrico`.
+- Política de versiones, `CHANGELOG.md`, milestones por fase y portada nueva (`README.md`; el detalle completo pasa a `docs/DETALLE_TECNICO.md`).
+
 ### Limitaciones documentadas
+- `motor-vias` entrega la misma estructura de pavimento flexible (5/15/15 cm) en 28 de 32 combinaciones; probable error de unidades en los coeficientes estructurales (issue #103). Los costos paramétricos se presentan como el costo de lo que el motor entrega hoy.
+- El periodo de retorno económico de alcantarillas resultó en el borde de la malla (T = 100) y casi insensible al costo; no se emite recomendación.
 - La sensibilidad de la revisión de precios ante un error ×10 es de 0,64, por debajo del criterio preregistrado de 0,90: no se presenta como un detector confiable de errores de unidad.
 - Las estimaciones de crecientes por estación no resultaron calibradas (la excedencia observada del Q10 fue 0,135); no se usan como base de diseño.
 
