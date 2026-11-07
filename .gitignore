@@ -61,3 +61,4 @@ packages/yolo/*.pt
 scripts/satelite/_cache/
 scripts/secop/_cache/
 scripts/precios/_cache/
+scripts/macro/_cache/

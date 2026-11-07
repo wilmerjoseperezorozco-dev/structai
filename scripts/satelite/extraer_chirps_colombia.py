@@ -51,7 +51,8 @@ def main() -> None:
             if not g.is_empty:
                 pols[ft["properties"]["CODIGO"]] = (g, ft["properties"]["NOMBRE_ENT"])
     print(f"Municipios con poligono: {len(pols)}", flush=True)
-    meses = [(a, m) for a in range(2019, 2025) for m in range(1, 13)]
+    a0, a1 = (int(sys.argv[1]), int(sys.argv[2])) if len(sys.argv) > 2 else (2019, 2024)
+    meses = [(a, m) for a in range(a0, a1 + 1) for m in range(1, 13)]
     serie = {c: [] for c in pols}
     pix = {}
     t0 = time.time()
@@ -82,7 +83,8 @@ def main() -> None:
     out = {"fuente": "CHIRPS v3.0 mensual (mm/mes), 0.05 grados", "meses": [f"{a}-{m:02d}" for a, m in meses],
            "municipios": {c: {"nombre": pols[c][1], "depto": c[:2], "precip_mm": serie[c], "n_pixeles": int(pix[c].sum())}
                           for c in pols if c not in faltan}}
-    (AQUI / "chirps_mensual_colombia.json").write_text(json.dumps(out, ensure_ascii=False), encoding="utf-8")
+    nombre = "chirps_mensual_colombia.json" if (a0, a1) == (2019, 2024) else f"chirps_mensual_colombia_{a0}_{a1}.json"
+    (AQUI / nombre).write_text(json.dumps(out, ensure_ascii=False), encoding="utf-8")
     print(f"\n{len(out['municipios'])} municipios con serie completa; {len(faltan)} descartados por pixeles sin dato", flush=True)
 
 
