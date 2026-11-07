@@ -211,3 +211,30 @@ Mejora del límite de la sección 11: "la cercanía geográfica no garantiza con
 - **Confirmatorios** (Spearman, IC95 % bootstrap de bloques por departamento, 2.000 réplicas): **F1** ρ(fracción inundada, fracción HAND<10 m) > 0 con IC que excluye 0. **F2** ρ parcial(fracción inundada, HAND<10 | fracción cota<10 m) > 0 con IC que excluye 0 (el HAND aporta más allá de la altitud).
 - **Descriptivo:** concordancia de terciles; municipios con mayor desacuerdo.
 - **Limitaciones declaradas:** las huellas son una cartografía de una sola emergencia (no una frecuencia); pueden incluir cuerpos de agua permanentes (ciénagas, ríos grandes) y por tanto inflar la fracción en municipios ribereños; escala 1:100.000 frente a un DEM de ~90 m; el HAND es de superficie y no resuelve llanuras; análisis municipal (falacia ecológica); sin control de escorrentía local ni defensas.
+
+
+## 19. Umbrales de lluvia acumulada–duración para movimientos en masa (E–D), definidos ANTES de correrlos (2026-11-07)
+
+**Pregunta:** ¿la lluvia acumulada de CHIRPS discrimina los días con movimiento en masa reportado de los días sin él, se puede resumir en una curva E–D (E = a·D^b) y esa regla conserva capacidad en años no usados para calibrar? ¿Cambia por región?
+
+- **Datos:** eventos `MOVIMIENTO EN MASA` de la UNGRD (tabla `ungrd_emergencias`, 2019-2024, 7.451 eventos, 712 municipios, fecha y municipio; **la fecha es la del reporte**, no necesariamente la de ocurrencia). Lluvia: CHIRPS v3.0 diario (sat, final), media municipal sobre los píxeles del polígono (`extraer_chirps_diario_colombia.py`).
+- **Unidad:** municipio-día. **Positivo:** ≥ 1 evento ese día. **Negativo:** día sin evento en municipios con ≥ 1 evento en el periodo (capacidad de reporte demostrada), excluyendo ±2 días alrededor de cada evento.
+- **Predictores:** lluvia acumulada E_D = suma de los D días que terminan el día del evento (inclusive), D ∈ {1, 2, 3, 5, 7, 10, 15, 30}; versión normalizada E_D / lluvia anual media del municipio.
+- **Calibración:** 2019-2022. **Prueba reservada:** 2023-2024.
+- **Confirmatorios:**
+  - **T1:** AUC de E_D (positivos vs negativos) > 0,5 en la prueba reservada, con IC95 % bootstrap de bloques por departamento (2.000 réplicas), para el D* elegido solo con la calibración (D de mayor AUC).
+  - **T2:** curva E–D. Para cada D, umbral = percentil 5 de E_D de los positivos de calibración; se ajusta log E = log a + b·log D por mínimos cuadrados. Regla de alerta: E_D ≥ a·D^b para algún D. **TSS = sensibilidad − tasa de falsas alarmas > 0** en la prueba reservada, con IC (bloques por departamento).
+  - **T3:** la regla de T2 supera a la regla de un solo D* (TSS mayor), o se declara que no aporta.
+- **Heterogeneidad:** T1 y T2 por región natural (sección 15); se reportan a, b y TSS por región cuando haya ≥ 100 eventos de calibración.
+- **Limitaciones declaradas:** la fecha es la del reporte; **2022 aporta 4.176 de 7.451 eventos** (dominio de una temporada); CHIRPS a 5 km y media municipal subestiman la intensidad convectiva local; los días «negativos» pueden incluir eventos no reportados (inflan las falsas alarmas); sin humedad antecedente del suelo; no es un sistema de alerta temprana operativo ni sustituye la evaluación local; el TSS no equivale a probabilidad de ocurrencia.
+
+
+## 20. Distribución del área de los movimientos en masa del inventario SIMMA (polígonos), definida ANTES de correrla (2026-11-07)
+
+**Pregunta:** ¿qué distribución describe el área de los 209 polígonos de movimientos en masa publicados por el SGC, y cuánto cambia el resultado según el tipo de movimiento?
+
+- **Datos:** SGC, `SIMMA/Capas_Principales/MapServer/3` (Poligono, 209 objetos con tipo y subtipo, sin fecha ni volumen). Área en m² con geometría proyectada MAGNA-SIRGAS Origen Nacional (EPSG:9377).
+- **Ajuste:** log-normal, inversa gamma de tres parámetros (Malamud et al. 2004 como referencia funcional) y ley de potencia por cola (método de Clauset: xmin por mínimo KS, α por máxima verosimilitud). Comparación por AIC (log-normal vs inversa gamma) y razón de verosimilitud de Vuong frente a la log-normal en la cola.
+- **Confirmatorios:** **M1** la log-normal o la inversa gamma se ajusta con KS p > 0,05 (bootstrap paramétrico, 1.000 réplicas). **M2** la cola sigue una ley de potencia con α entre 1,5 y 3,5 y KS p > 0,05.
+- **Descriptivo:** mediana, percentiles 50/90/99 de área; ajuste por tipo con ≥ 30 polígonos.
+- **Limitaciones declaradas:** 209 polígonos son una **muestra no probabilística** (cartografía de detalle en zonas específicas, no un inventario completo del país); los inventarios subrepresentan los eventos pequeños, lo que sesga hacia la izquierda el máximo de la distribución; **no hay volumen medido**, y la conversión área→volumen exigiría relaciones empíricas ajenas a estos datos; sin fecha no hay frecuencia temporal, solo distribución de tamaños; **no sirve para dimensionar barreras ni obras de contención**, que requieren energía de impacto y trayectoria.
