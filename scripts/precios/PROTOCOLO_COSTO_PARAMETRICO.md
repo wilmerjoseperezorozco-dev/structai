@@ -42,3 +42,12 @@ Preregistrado el 2026-11-07, antes de calcular. Parte del programa de precios (i
 **Resultado a reportar.** T* que minimiza el costo esperado para cada combinación (Q_2, m, r, escenario de probabilidad), y la **robustez**: el resultado se llama robusto solo si T* es el mismo en ≥ 80 % de las combinaciones de la malla y en ≥ 80 % de los remuestreos de la curva de crecimiento. Si no, se reporta «sin recomendación robusta» y la dependencia de m.
 
 **No se concluye:** un periodo de retorno de diseño para ninguna obra real, ni se compara con la práctica normativa sin citar la norma; es un análisis de cómo cambia el óptimo con la pérdida y la descalibración. La pérdida m es un supuesto, no un dato.
+
+---
+
+## Enmienda 1 (2026-11-07, posterior a los resultados del ítem 5; se declara como tal)
+
+Motivo: al publicar el ítem 5 se señaló que (a) los intervalos de la curva de crecimiento remuestreaban estaciones como si fueran independientes y (b) el criterio de robustez no tenía comprobación de borde. Cambios, fijados antes de ejecutar la corrección:
+1. **Bootstrap por conglomerados.** Se remuestrean departamentos completos (con todas sus estaciones limpias) en lugar de estaciones sueltas. Se reporta el ancho P10-P90 de x_T con ambos métodos, el efecto de diseño (cociente de anchos al cuadrado), el número efectivo de estaciones independientes (n / efecto de diseño) y la correlación intraclase (ICC) de ln x_100 por departamento.
+2. **Comprobación de borde.** Si T\* coincide con el mayor periodo evaluado, el veredicto es «no informativo» aunque se cumpla el criterio de robustez.
+3. La robustez se vuelve a calcular con los remuestreos por conglomerados; el criterio de ≥ 80 % no cambia.
