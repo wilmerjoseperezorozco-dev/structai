@@ -1,0 +1,364 @@
+[
+ {
+  "codigo": "50001",
+  "municipio": "Villavicencio",
+  "departamento": "Meta",
+  "dif": {
+   "aa": [
+    0.25,
+    0.35
+   ]
+  }
+ },
+ {
+  "codigo": "05660",
+  "municipio": "San Luis",
+  "departamento": "Antioquia",
+  "dif": {
+   "av": [
+    0.25,
+    0.2
+   ],
+   "zona": [
+    "Alta",
+    "Intermedia"
+   ]
+  }
+ },
+ {
+  "codigo": "15514",
+  "municipio": "Páez",
+  "departamento": "Boyacá",
+  "dif": {
+   "av": [
+    0.25,
+    0.3
+   ]
+  }
+ },
+ {
+  "codigo": "15455",
+  "municipio": "Miraflores",
+  "departamento": "Boyacá",
+  "dif": {
+   "aa": [
+    0.2,
+    0.25
+   ]
+  }
+ },
+ {
+  "codigo": "18150",
+  "municipio": "Cartagena del Chairá",
+  "departamento": "Caquetá",
+  "dif": {
+   "av": [
+    0.15,
+    0.05
+   ],
+   "zona": [
+    "Intermedia",
+    "Baja"
+   ]
+  }
+ },
+ {
+  "codigo": "19533",
+  "municipio": "Piamonte",
+  "departamento": "Cauca",
+  "dif": {
+   "av": [
+    0.2,
+    0.25
+   ]
+  }
+ },
+ {
+  "codigo": "25317",
+  "municipio": "Guachetá",
+  "departamento": "Cundinamarca",
+  "dif": {
+   "av": [
+    0.15,
+    0.2
+   ]
+  }
+ },
+ {
+  "codigo": "25518",
+  "municipio": "Paime",
+  "departamento": "Cundinamarca",
+  "dif": {
+   "av": [
+    0.2,
+    0.15
+   ]
+  }
+ },
+ {
+  "codigo": "15511",
+  "municipio": "Pachavita",
+  "departamento": "Boyacá",
+  "dif": {
+   "aa": [
+    0.25,
+    0.2
+   ]
+  }
+ },
+ {
+  "codigo": "15500",
+  "municipio": "Oicatá",
+  "departamento": "Boyacá",
+  "dif": {
+   "av": [
+    0.25,
+    0.2
+   ],
+   "zona": [
+    "Alta",
+    "Intermedia"
+   ]
+  }
+ },
+ {
+  "codigo": "27600",
+  "municipio": "Río Quito",
+  "departamento": "Chocó",
+  "dif": {
+   "aa": [
+    0.35,
+    0.4
+   ]
+  }
+ },
+ {
+  "codigo": "85225",
+  "municipio": "Nunchía",
+  "departamento": "Casanare",
+  "dif": {
+   "av": [
+    0.15,
+    0.2
+   ]
+  }
+ },
+ {
+  "codigo": "05129",
+  "municipio": "Caldas",
+  "departamento": "Antioquia",
+  "dif": {
+   "av": [
+    0.2,
+    0.25
+   ],
+   "zona": [
+    "Intermedia",
+    "Alta"
+   ]
+  }
+ },
+ {
+  "codigo": "15442",
+  "municipio": "Maripí",
+  "departamento": "Boyacá",
+  "dif": {
+   "aa": [
+    0.2,
+    0.15
+   ]
+  }
+ },
+ {
+  "codigo": "05809",
+  "municipio": "Titiribí",
+  "departamento": "Antioquia",
+  "dif": {
+   "av": [
+    0.2,
+    0.25
+   ],
+   "zona": [
+    "Intermedia",
+    "Alta"
+   ]
+  }
+ },
+ {
+  "codigo": "05044",
+  "municipio": "Anzá",
+  "departamento": "Antioquia",
+  "dif": {
+   "av": [
+    0.3,
+    0.25
+   ]
+  }
+ },
+ {
+  "codigo": "25839",
+  "municipio": "Ubalá",
+  "departamento": "Cundinamarca",
+  "dif": {
+   "aa": [
+    0.35,
+    0.25
+   ]
+  }
+ },
+ {
+  "codigo": "25377",
+  "municipio": "La Calera",
+  "departamento": "Cundinamarca",
+  "dif": {
+   "av": [
+    0.2,
+    0.25
+   ],
+   "zona": [
+    "Intermedia",
+    "Alta"
+   ]
+  }
+ },
+ {
+  "codigo": "85315",
+  "municipio": "Sácama",
+  "departamento": "Casanare",
+  "dif": {
+   "av": [
+    0.2,
+    0.25
+   ]
+  }
+ },
+ {
+  "codigo": "05042",
+  "municipio": "Santafé de Antioquia",
+  "departamento": "Antioquia",
+  "dif": {
+   "av": [
+    0.2,
+    0.25
+   ],
+   "zona": [
+    "Intermedia",
+    "Alta"
+   ]
+  }
+ },
+ {
+  "codigo": "85400",
+  "municipio": "Támara",
+  "departamento": "Casanare",
+  "dif": {
+   "av": [
+    0.15,
+    0.2
+   ]
+  }
+ },
+ {
+  "codigo": "85263",
+  "municipio": "Pore",
+  "departamento": "Casanare",
+  "dif": {
+   "av": [
+    0.15,
+    0.2
+   ]
+  }
+ },
+ {
+  "codigo": "54001",
+  "municipio": "Cúcuta",
+  "departamento": "Norte de Santander",
+  "dif": {
+   "av": [
+    0.25,
+    0.3
+   ]
+  }
+ },
+ {
+  "codigo": "23001",
+  "municipio": "Montería",
+  "departamento": "Córdoba",
+  "dif": {
+   "av": [
+    0.2,
+    0.15
+   ]
+  }
+ },
+ {
+  "codigo": "54003",
+  "municipio": "Abrego",
+  "departamento": "Norte de Santander",
+  "dif": {
+   "aa": [
+    0.3,
+    0.25
+   ]
+  }
+ },
+ {
+  "codigo": "47318",
+  "municipio": "Guamal",
+  "departamento": "Magdalena",
+  "dif": {
+   "ae": [
+    0.04,
+    0.05
+   ],
+   "ad": [
+    0.02,
+    0.03
+   ]
+  }
+ },
+ {
+  "codigo": "15299",
+  "municipio": "Garagoa",
+  "departamento": "Boyacá",
+  "dif": {
+   "av": [
+    0.3,
+    0.25
+   ]
+  }
+ },
+ {
+  "codigo": "15600",
+  "municipio": "Ráquira",
+  "departamento": "Boyacá",
+  "dif": {
+   "aa": [
+    0.2,
+    0.15
+   ]
+  }
+ },
+ {
+  "codigo": "15740",
+  "municipio": "Siachoque",
+  "departamento": "Boyacá",
+  "dif": {
+   "aa": [
+    0.15,
+    0.2
+   ]
+  }
+ },
+ {
+  "codigo": "27413",
+  "municipio": "Lloró",
+  "departamento": "Chocó",
+  "dif": {
+   "aa": [
+    0.4,
+    0.25
+   ]
+  }
+ }
+]

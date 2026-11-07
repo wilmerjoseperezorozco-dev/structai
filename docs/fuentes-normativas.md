@@ -128,7 +128,7 @@ completo")**:
   particulares de sitio (A.2.10). El Apéndice A-4 (Aa/Av de TODOS los
   municipios) se dejó fuera a propósito — no tiene numerales "A.2.x" (no
   es parte del cuerpo del capítulo) y esa misma información ya la sirve
-  en vivo el SGC (`sgc_amenaza_sismica.py`). Verificado con `ask()` real
+  en vivo el SGC (`sgc_amenaza_sismica.py`). **Actualización 2026-11-07:** el Apéndice A-4 se ingestó después, como TABLA estructurada (no chunks RAG) `nsr10_apendice_a4_municipios` (1.117 códigos DANE; PDF `NSR-10-191-218.pdf`, páginas A-153 a A-174; script `scripts/ingesta/nsr10/_ingest_apendice_a4_aa_av.py`). Es el texto ORIGINAL de 2010: la NSR-10 fue modificada por los decretos 2525/2010, 092/2011, 340/2012, 945/2017, 2113/2019 y 1711/2021 (entre otros) y **esta tabla no incorpora esas modificaciones**. Contraste con la tabla del SGC por código DANE: 30 de 1.112 municipios difieren (7 cambian de zona); ver `scripts/ingesta/nsr10/apendice_a4_vs_sgc_diferencias.json`. Falta determinar cuáles diferencias se deben a decretos posteriores. Verificado con `ask()` real
   (Sa=1.2·Av·Fv·I/T, Aa=Av=0.10 para Barranquilla, los 6 tipos de perfil
   A-F, Grupo IV/I=1.50 para hospitales). Scripts:
   `_ingest_titulo_a_a2_verbatim.py` +
