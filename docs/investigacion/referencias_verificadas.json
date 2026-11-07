@@ -1,0 +1,717 @@
+[
+ {
+  "bloque": "umbrales",
+  "buscado": "The rainfall intensity-duration control of shallow landslides and debris flows",
+  "similitud": 0.99,
+  "titulo": "The Rainfall Intensity - Duration Control of Shallow Landslides and Debris Flows",
+  "anio": 1980,
+  "autores": [
+   "Nel Caine"
+  ],
+  "revista": "Geografiska Annaler Series A Physical Geography",
+  "doi": "https://doi.org/10.1080/04353676.1980.11879996",
+  "citas": 1798,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "umbrales",
+  "buscado": "The rainfall intensity-duration control of shallow landslides and debris flows: an update",
+  "similitud": 1.0,
+  "titulo": "The rainfall intensity–duration control of shallow landslides and debris flows: an update",
+  "anio": 2007,
+  "autores": [
+   "Fausto Guzzetti",
+   "Silvia Peruccacci",
+   "Mauro Rossi",
+   "C. P. Stark"
+  ],
+  "revista": "Landslides",
+  "doi": "https://doi.org/10.1007/s10346-007-0112-1",
+  "citas": 1629,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "umbrales",
+  "buscado": "A review of the recent literature on rainfall thresholds for landslide occurrence",
+  "similitud": 1.0,
+  "titulo": "A review of the recent literature on rainfall thresholds for landslide occurrence",
+  "anio": 2018,
+  "autores": [
+   "Samuele Segoni",
+   "Luca Piciullo",
+   "Stefano Luigi Gariano"
+  ],
+  "revista": "Landslides",
+  "doi": "https://doi.org/10.1007/s10346-018-0966-4",
+  "citas": 819,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "umbrales",
+  "buscado": "Rainfall thresholds for possible landslide occurrence in Italy",
+  "similitud": 1.0,
+  "titulo": "Rainfall thresholds for possible landslide occurrence in Italy",
+  "anio": 2017,
+  "autores": [
+   "Silvia Peruccacci",
+   "Maria Teresa Brunetti",
+   "Stefano Luigi Gariano",
+   "Massimo Melillo",
+   "Mauro Rossi",
+   "Fausto Guzzetti"
+  ],
+  "revista": "Geomorphology",
+  "doi": "https://doi.org/10.1016/j.geomorph.2017.03.031",
+  "citas": 413,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "umbrales",
+  "buscado": "Satellite-based assessment of rainfall-triggered landslide hazard for situational awareness",
+  "similitud": 1.0,
+  "titulo": "Satellite‐Based Assessment of Rainfall‐Triggered Landslide Hazard for Situational Awareness",
+  "anio": 2018,
+  "autores": [
+   "Dalia Bach Kirschbaum",
+   "Thomas A. Stanley"
+  ],
+  "revista": "Earth s Future",
+  "doi": "https://doi.org/10.1002/2017ef000715",
+  "citas": 334,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "umbrales",
+  "buscado": "A global landslide catalog for hazard applications: method, results, and limitations",
+  "similitud": 1.0,
+  "titulo": "A global landslide catalog for hazard applications: method, results, and limitations",
+  "anio": 2009,
+  "autores": [
+   "Dalia Bach Kirschbaum",
+   "Robert F. Adler",
+   "Yang E. Hong",
+   "Stephanie Hill",
+   "Arthur L. Lerner‐Lam"
+  ],
+  "revista": "Natural Hazards",
+  "doi": "https://doi.org/10.1007/s11069-009-9401-4",
+  "citas": 526,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "umbrales",
+  "buscado": "Satellite rainfall products outperform ground observations for landslide prediction in India",
+  "similitud": 1.0,
+  "titulo": "Satellite rainfall products outperform ground observations for landslide prediction in India",
+  "anio": 2021,
+  "autores": [
+   "Maria Teresa Brunetti",
+   "Massimo Melillo",
+   "Stefano Luigi Gariano",
+   "Luca Ciabatta",
+   "Luca Brocca",
+   "Giriraj Amarnath"
+  ],
+  "revista": "Hydrology and earth system sciences",
+  "doi": "https://doi.org/10.5194/hess-25-3267-2021",
+  "citas": 50,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "umbrales",
+  "buscado": "Global fatal landslide occurrence from 2004 to 2016",
+  "similitud": 1.0,
+  "titulo": "Global fatal landslide occurrence from 2004 to 2016",
+  "anio": 2018,
+  "autores": [
+   "Melanie J. Froude",
+   "David N. Petley"
+  ],
+  "revista": "Natural hazards and earth system sciences",
+  "doi": "https://doi.org/10.5194/nhess-18-2161-2018",
+  "citas": 2490,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "susceptibilidad",
+  "buscado": "A review of statistically-based landslide susceptibility models",
+  "similitud": 1.0,
+  "titulo": "A review of statistically-based landslide susceptibility models",
+  "anio": 2018,
+  "autores": [
+   "Paola Reichenbach",
+   "Mauro Rossi",
+   "Bruce D. Malamud",
+   "Monika Mihir",
+   "Fausto Guzzetti"
+  ],
+  "revista": "Earth-Science Reviews",
+  "doi": "https://doi.org/10.1016/j.earscirev.2018.03.001",
+  "citas": 2554,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "susceptibilidad",
+  "buscado": "Spatial prediction models for landslide hazards: review, comparison and evaluation",
+  "similitud": 1.0,
+  "titulo": "Spatial prediction models for landslide hazards: review, comparison and evaluation",
+  "anio": 2005,
+  "autores": [
+   "Alexander Brenning"
+  ],
+  "revista": "Natural hazards and earth system sciences",
+  "doi": "https://doi.org/10.5194/nhess-5-853-2005",
+  "citas": 698,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "susceptibilidad",
+  "buscado": "Statistical landslide hazard analysis",
+  "no_encontrada": true
+ },
+ {
+  "bloque": "susceptibilidad",
+  "buscado": "Weights of evidence modelling: a new approach to mapping mineral potential",
+  "similitud": 1.0,
+  "titulo": "Weights of evidence modelling: a new approach to mapping mineral potential",
+  "anio": 1990,
+  "autores": [
+   "Graeme Bonham-Carter",
+   "Frits P. Agterberg",
+   "D F Wright"
+  ],
+  "revista": null,
+  "doi": "https://doi.org/10.4095/128059",
+  "citas": 470,
+  "autor_coincide": false
+ },
+ {
+  "bloque": "susceptibilidad",
+  "buscado": "Assessing the quality of landslide susceptibility maps - case study Lower Austria",
+  "similitud": 1.0,
+  "titulo": "Assessing the quality of landslide susceptibility maps – case study Lower Austria",
+  "anio": 2014,
+  "autores": [
+   "Helene Petschko",
+   "Alexander Brenning",
+   "Rainer Bell",
+   "Jason N. Goetz",
+   "Thomas Glade"
+  ],
+  "revista": "Natural hazards and earth system sciences",
+  "doi": "https://doi.org/10.5194/nhess-14-95-2014",
+  "citas": 283,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "susceptibilidad",
+  "buscado": "Recommendations for the quantitative analysis of landslide risk",
+  "similitud": 1.0,
+  "titulo": "Recommendations for the quantitative analysis of landslide risk",
+  "anio": 2013,
+  "autores": [
+   "Jordi Corominas",
+   "C.J. van Westen",
+   "Paolo Frattini",
+   "Leonardo Cascini",
+   "Jean‐Philippe Malet",
+   "Stavroula D. Fotopoulou"
+  ],
+  "revista": "Bulletin of Engineering Geology and the Environment",
+  "doi": "https://doi.org/10.1007/s10064-013-0538-8",
+  "citas": 1337,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "susceptibilidad",
+  "buscado": "Selecting pseudo-absences for species distribution models: how, where and how many?",
+  "similitud": 1.0,
+  "titulo": "Selecting pseudo‐absences for species distribution models: how, where and how many?",
+  "anio": 2012,
+  "autores": [
+   "Morgane Barbet‐Massin",
+   "Frédéric Jiguet",
+   "Cécile Hélène Albert",
+   "Wilfried Thuiller"
+  ],
+  "revista": "Methods in Ecology and Evolution",
+  "doi": "https://doi.org/10.1111/j.2041-210x.2011.00172.x",
+  "citas": 3089,
+  "autor_coincide": false
+ },
+ {
+  "bloque": "susceptibilidad",
+  "buscado": "AUC: a misleading measure of the performance of predictive distribution models",
+  "similitud": 1.0,
+  "titulo": "AUC: a misleading measure of the performance of predictive distribution models",
+  "anio": 2007,
+  "autores": [
+   "Jorge Miguel Lobo",
+   "Alberto Jiménez‐Valverde",
+   "Raimundo Real"
+  ],
+  "revista": "Global Ecology and Biogeography",
+  "doi": "https://doi.org/10.1111/j.1466-8238.2007.00358.x",
+  "citas": 3608,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "susceptibilidad",
+  "buscado": "Assessing the accuracy of species distribution models: prevalence, kappa and the true skill statistic (TSS)",
+  "similitud": 1.0,
+  "titulo": "Assessing the accuracy of species distribution models: prevalence, kappa and the true skill statistic (TSS)",
+  "anio": 2006,
+  "autores": [
+   "Omri Allouche",
+   "Asaf Tsoar",
+   "Ronen Kadmon"
+  ],
+  "revista": "Journal of Applied Ecology",
+  "doi": "https://doi.org/10.1111/j.1365-2664.2006.01214.x",
+  "citas": 5900,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "susceptibilidad",
+  "buscado": "The new global lithological map database GLiM",
+  "no_encontrada": true
+ },
+ {
+  "bloque": "magnitud",
+  "buscado": "Landslide inventories and their statistical properties",
+  "similitud": 1.0,
+  "titulo": "Landslide inventories and their statistical properties",
+  "anio": 2004,
+  "autores": [
+   "Bruce D. Malamud",
+   "Donald L. Turcotte",
+   "Fausto Guzzetti",
+   "Paola Reichenbach"
+  ],
+  "revista": "Earth Surface Processes and Landforms",
+  "doi": "https://doi.org/10.1002/esp.1064",
+  "citas": 1355,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "magnitud",
+  "buscado": "Power-law distributions in empirical data",
+  "similitud": 1.0,
+  "titulo": "Power-Law Distributions in Empirical Data",
+  "anio": 2009,
+  "autores": [
+   "Aaron Clauset",
+   "Cosma Rohilla Shalizi",
+   "Mark E. J. Newman"
+  ],
+  "revista": "SIAM Review",
+  "doi": "https://doi.org/10.1137/070710111",
+  "citas": 8536,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "magnitud",
+  "buscado": "Probabilistic landslide hazard assessment at the basin scale",
+  "similitud": 1.0,
+  "titulo": "Probabilistic landslide hazard assessment at the basin scale",
+  "anio": 2005,
+  "autores": [
+   "Fausto Guzzetti",
+   "Paola Reichenbach",
+   "Mauro Cardinali",
+   "M. Galli",
+   "Francesca Ardizzone"
+  ],
+  "revista": "Geomorphology",
+  "doi": "https://doi.org/10.1016/j.geomorph.2005.06.002",
+  "citas": 1189,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "crecientes",
+  "buscado": "Guidelines for determining flood flow frequency Bulletin 17C",
+  "similitud": 0.99,
+  "titulo": "Guidelines for determining flood flow frequency — Bulletin 17C",
+  "anio": 2018,
+  "autores": [
+   "John F. England",
+   "Timothy A. Cohn",
+   "Beth A. Faber",
+   "Jery Russell Stedinger",
+   "Wilbert O. Thomas",
+   "Andrea G. Veilleux"
+  ],
+  "revista": "Techniques and methods",
+  "doi": "https://doi.org/10.3133/tm4b5",
+  "citas": 413,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "crecientes",
+  "buscado": "L-moments: analysis and estimation of distributions using linear combinations of order statistics",
+  "similitud": 1.0,
+  "titulo": "L-Moments: Analysis and Estimation of Distributions Using Linear Combinations of Order Statistics",
+  "anio": 1990,
+  "autores": [
+   "J. R. M. Hosking"
+  ],
+  "revista": "Journal of the Royal Statistical Society Series B (Statistical Methodology)",
+  "doi": "https://doi.org/10.1111/j.2517-6161.1990.tb01775.x",
+  "citas": 3218,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "crecientes",
+  "buscado": "Statistics of extremes in hydrology",
+  "similitud": 1.0,
+  "titulo": "Statistics of extremes in hydrology",
+  "anio": 2002,
+  "autores": [
+   "Richard W. Katz",
+   "Marc B. Parlange",
+   "Philippe Naveau"
+  ],
+  "revista": "Advances in Water Resources",
+  "doi": "https://doi.org/10.1016/s0309-1708(02)00056-8",
+  "citas": 1788,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "crecientes",
+  "buscado": "Stationarity is dead: whither water management?",
+  "similitud": 1.0,
+  "titulo": "Stationarity Is Dead: Whither Water Management?",
+  "anio": 2008,
+  "autores": [
+   "Paul C. D. Milly",
+   "Julio L. Betancourt",
+   "Malin Falkenmark",
+   "Robert M. Hirsch",
+   "Zbigniew W. Kundzewicz",
+   "Dennis P. Lettenmaier"
+  ],
+  "revista": "Science",
+  "doi": "https://doi.org/10.1126/science.1151915",
+  "citas": 4781,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "crecientes",
+  "buscado": "Regional frequency analysis: an approach based on L-moments",
+  "similitud": 1.0,
+  "titulo": "Regional Frequency Analysis: An Approach Based on L-Moments",
+  "anio": 1998,
+  "autores": [
+   "Gary D. Tasker",
+   "J. R. M. Hosking",
+   "James R. Wallis"
+  ],
+  "revista": "Journal of the American Statistical Association",
+  "doi": "https://doi.org/10.2307/2669866",
+  "citas": 781,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "crecientes",
+  "buscado": "An introduction to statistical modeling of extreme values",
+  "similitud": 1.0,
+  "titulo": "An Introduction to Statistical Modeling of Extreme Values",
+  "anio": 2001,
+  "autores": [
+   "Stuart Coles"
+  ],
+  "revista": "Springer series in statistics",
+  "doi": "https://doi.org/10.1007/978-1-4471-3675-0",
+  "citas": 7591,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "crecientes",
+  "buscado": "Hydrological regionalization flood frequency Colombia",
+  "no_encontrada": true
+ },
+ {
+  "bloque": "idf",
+  "buscado": "Generalized rainfall-duration-frequency relationships",
+  "similitud": 0.96,
+  "titulo": "Generalized Rainfall - Duration - Frequency Relationships",
+  "anio": 1969,
+  "autores": [
+   "Frederick C. Bell"
+  ],
+  "revista": "Journal of the Hydraulics Division",
+  "doi": "https://doi.org/10.1061/jyceaj.0001942",
+  "citas": 188,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "idf",
+  "buscado": "Intensity-duration-frequency curves sub-daily rainfall scaling from daily data",
+  "no_encontrada": true
+ },
+ {
+  "bloque": "clima",
+  "buscado": "Seasonality in ENSO-related precipitation, river discharges, soil moisture, and vegetation index in Colombia",
+  "similitud": 0.99,
+  "titulo": "Seasonally in ENSO‐related precipitation, river discharges, soil moisture, and vegetation index in Colombia",
+  "anio": 2001,
+  "autores": [
+   "Germán Poveda",
+   "Álvaro Jaramillo",
+   "Marta María Gíl",
+   "Natalia Quiceño",
+   "Ricardo I. Mantilla"
+  ],
+  "revista": "Water Resources Research",
+  "doi": "https://doi.org/10.1029/2000wr900395",
+  "citas": 273,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "clima",
+  "buscado": "Hydro-climatic variability over the Andes of Colombia associated with ENSO: a review of climatic processes and their impact",
+  "similitud": 0.81,
+  "titulo": "Hydro-climatic variability over the Andes of Colombia associated with ENSO: a review of climatic processes and their impact on one of the Earth’s most important biodiversity hotspots",
+  "anio": 2010,
+  "autores": [
+   "Germán Poveda",
+   "Diana Milena Álvarez",
+   "Oscar Rueda"
+  ],
+  "revista": "Climate Dynamics",
+  "doi": "https://doi.org/10.1007/s00382-010-0931-y",
+  "citas": 298,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "clima",
+  "buscado": "Feedbacks between hydrological processes in tropical South America and large-scale ocean-atmospheric phenomena",
+  "similitud": 1.0,
+  "titulo": "Feedbacks between Hydrological Processes in Tropical South America and Large-Scale Ocean–Atmospheric Phenomena",
+  "anio": 1997,
+  "autores": [
+   "Germán Poveda",
+   "Óscar J. Mesa"
+  ],
+  "revista": "Journal of Climate",
+  "doi": "https://doi.org/10.1175/1520-0442(1997)010<2690:fbhpit>2.0.co;2",
+  "citas": 241,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "clima",
+  "buscado": "The climate hazards infrared precipitation with stations - a new environmental record for monitoring extremes",
+  "similitud": 0.99,
+  "titulo": "The climate hazards infrared precipitation with stations—a new environmental record for monitoring extremes",
+  "anio": 2015,
+  "autores": [
+   "Chris C. Funk",
+   "Pete J. Peterson",
+   "M. F. Landsfeld",
+   "Diego H. Pedreros",
+   "J. P. Verdin",
+   "Shraddhanand Shukla"
+  ],
+  "revista": "Scientific Data",
+  "doi": "https://doi.org/10.1038/sdata.2015.66",
+  "citas": 6713,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "clima",
+  "buscado": "Global-scale evaluation of 22 precipitation datasets using gauge observations and hydrological modeling",
+  "similitud": 1.0,
+  "titulo": "Global-scale evaluation of 22 precipitation datasets using gauge observations and hydrological modeling",
+  "anio": 2017,
+  "autores": [
+   "Hylke E. Beck",
+   "Noemi Vergopolan",
+   "Ming Pan",
+   "Vincenzo Levizzani",
+   "Albert I. J. M. van Dijk",
+   "Graham P. Weedon"
+  ],
+  "revista": "Hydrology and earth system sciences",
+  "doi": "https://doi.org/10.5194/hess-21-6201-2017",
+  "citas": 955,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "clima",
+  "buscado": "Validation of the CHIRPS satellite rainfall estimates over eastern Africa",
+  "similitud": 1.0,
+  "titulo": "Validation of the CHIRPS satellite rainfall estimates over eastern Africa",
+  "anio": 2018,
+  "autores": [
+   "Tufa Dinku",
+   "Chris C. Funk",
+   "Pete J. Peterson",
+   "Ross Maidment",
+   "Tsegaye Tadesse",
+   "Hussein Gadain"
+  ],
+  "revista": "Quarterly Journal of the Royal Meteorological Society",
+  "doi": "https://doi.org/10.1002/qj.3244",
+  "citas": 913,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "clima",
+  "buscado": "Seasonality of rainfall in Colombia",
+  "similitud": 1.0,
+  "titulo": "Seasonality of Rainfall in Colombia",
+  "anio": 2019,
+  "autores": [
+   "Viviana Urrea",
+   "Andrés Ochoa",
+   "Óscar J. Mesa"
+  ],
+  "revista": "Water Resources Research",
+  "doi": "https://doi.org/10.1029/2018wr023316",
+  "citas": 165,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "hand",
+  "buscado": "Height Above the Nearest Drainage - a hydrologically relevant new terrain model",
+  "similitud": 1.0,
+  "titulo": "Height Above the Nearest Drainage – a hydrologically relevant new terrain model",
+  "anio": 2011,
+  "autores": [
+   "Antônio Donato Nobre",
+   "Luz Adriana Cuartas",
+   "Martin G. Hodnett",
+   "Camilo Daleles Rennó",
+   "G. Rodrigues",
+   "André Luiz Lopes da Silveira"
+  ],
+  "revista": "Journal of Hydrology",
+  "doi": "https://doi.org/10.1016/j.jhydrol.2011.03.051",
+  "citas": 835,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "hand",
+  "buscado": "HAND, a new terrain descriptor using SRTM-DEM: mapping terra-firme rainforest environments in Amazonia",
+  "similitud": 1.0,
+  "titulo": "HAND, a new terrain descriptor using SRTM-DEM: Mapping terra-firme rainforest environments in Amazonia",
+  "anio": 2008,
+  "autores": [
+   "Camilo Daleles Rennó",
+   "Antônio Donato Nobre",
+   "Luz Adriana Cuartas",
+   "João Vianei Soares",
+   "Martin G. Hodnett",
+   "Javier Tomasella"
+  ],
+  "revista": "Remote Sensing of Environment",
+  "doi": "https://doi.org/10.1016/j.rse.2008.03.018",
+  "citas": 697,
+  "autor_coincide": false
+ },
+ {
+  "bloque": "hand",
+  "buscado": "Terrain analysis enhancements to the Height Above Nearest Drainage flood inundation mapping method",
+  "similitud": 1.0,
+  "titulo": "Terrain Analysis Enhancements to the Height Above Nearest Drainage Flood Inundation Mapping Method",
+  "anio": 2019,
+  "autores": [
+   "Irene Garousi‐Nejad",
+   "David Gavin Tarboton",
+   "Mahyar Aboutalebi",
+   "Alfonso F. Torres‐Rua"
+  ],
+  "revista": "Water Resources Research",
+  "doi": "https://doi.org/10.1029/2019wr024837",
+  "citas": 91,
+  "autor_coincide": false
+ },
+ {
+  "bloque": "estadistica",
+  "buscado": "Ecological correlations and the behavior of individuals",
+  "similitud": 1.0,
+  "titulo": "Ecological Correlations and the Behavior of Individuals",
+  "anio": 1950,
+  "autores": [
+   "W. Stitt Robinson"
+  ],
+  "revista": "American Sociological Review",
+  "doi": "https://doi.org/10.2307/2087176",
+  "citas": 4631,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "estadistica",
+  "buscado": "The stippling shows statistically significant grid points: how research results are routinely overstated and overinterpreted",
+  "similitud": 0.91,
+  "titulo": "“The Stippling Shows Statistically Significant Grid Points”: How Research Results are Routinely Overstated and Overinterpreted, and What to Do about It",
+  "anio": 2016,
+  "autores": [
+   "Daniel S. Wilks"
+  ],
+  "revista": "Bulletin of the American Meteorological Society",
+  "doi": "https://doi.org/10.1175/bams-d-15-00267.1",
+  "citas": 988,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "estadistica",
+  "buscado": "Controlling the false discovery rate: a practical and powerful approach to multiple testing",
+  "similitud": 1.0,
+  "titulo": "Controlling the False Discovery Rate: A Practical and Powerful Approach to Multiple Testing",
+  "anio": 1995,
+  "autores": [
+   "Yoav Benjamini",
+   "Yosef Hochberg"
+  ],
+  "revista": "Journal of the Royal Statistical Society Series B (Statistical Methodology)",
+  "doi": "https://doi.org/10.1111/j.2517-6161.1995.tb02031.x",
+  "citas": 111804,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "estadistica",
+  "buscado": "The jackknife and the bootstrap for general stationary observations",
+  "similitud": 1.0,
+  "titulo": "The Jackknife and the Bootstrap for General Stationary Observations",
+  "anio": 1989,
+  "autores": [
+   "Hans Rudolf Künsch"
+  ],
+  "revista": "The Annals of Statistics",
+  "doi": "https://doi.org/10.1214/aos/1176347265",
+  "citas": 2609,
+  "autor_coincide": false
+ },
+ {
+  "bloque": "estadistica",
+  "buscado": "Modifying the t test for assessing the correlation between two spatial processes",
+  "similitud": 1.0,
+  "titulo": "Modifying the t Test for Assessing the Correlation Between Two Spatial Processes",
+  "anio": 1993,
+  "autores": [
+   "Pierre Dutilleul",
+   "Peter Clifford",
+   "Sylvia T. Richardson",
+   "Denis Hémon"
+  ],
+  "revista": "Biometrics",
+  "doi": "https://doi.org/10.2307/2532625",
+  "citas": 915,
+  "autor_coincide": true
+ },
+ {
+  "bloque": "estadistica",
+  "buscado": "Spatial cross-validation and bootstrap for the assessment of prediction rules in remote sensing: the R package sperrorest",
+  "similitud": 1.0,
+  "titulo": "Spatial cross-validation and bootstrap for the assessment of prediction rules in remote sensing: The R package sperrorest",
+  "anio": 2012,
+  "autores": [
+   "Alexander Brenning"
+  ],
+  "revista": "IEEE International Geoscience and Remote Sensing Symposium (IGARSS)",
+  "doi": "https://doi.org/10.1109/igarss.2012.6352393",
+  "citas": 303,
+  "autor_coincide": true
+ }
+]

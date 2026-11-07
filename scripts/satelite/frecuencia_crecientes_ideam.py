@@ -4,11 +4,13 @@ from __future__ import annotations
 import csv
 import glob
 import json
+import math
 import os
 import sys
 import unicodedata
 import warnings
 from collections import Counter
+from concurrent.futures import ProcessPoolExecutor
 
 import numpy as np
 from scipy import stats
@@ -34,8 +36,27 @@ def leer(f):
     return s
 
 
+def inicio_lmom(x):
+    """Valores iniciales GEV por L-momentos (Hosking 1990); solo aceleran la maxima verosimilitud, no la cambian."""
+    xs = np.sort(x); n = len(xs); j = np.arange(1, n + 1)
+    b0 = xs.mean(); b1 = ((j - 1) / (n - 1) * xs).mean(); b2 = ((j - 1) * (j - 2) / ((n - 1) * (n - 2)) * xs).mean()
+    l1, l2, l3 = b0, 2 * b1 - b0, 6 * b2 - 6 * b1 + b0
+    t3 = l3 / l2 if l2 > 0 else 0.0
+    z = 2 / (3 + t3) - np.log(2) / np.log(3)
+    k = 7.8590 * z + 2.9554 * z * z
+    if abs(k) < 1e-6:
+        return 0.0, l1 - 0.5772 * l2 / np.log(2), l2 / np.log(2)
+    g = math.gamma(1 + k)
+    esc = l2 * k / ((1 - 2 ** (-k)) * g)
+    return k, l1 - esc * (1 - g) / k, esc
+
+
 def ajustar_gev(x):
-    return stats.genextreme.fit(x)
+    try:
+        k, loc, sc = inicio_lmom(x)
+        return stats.genextreme.fit(x, k, loc=loc, scale=max(sc, 1e-9))
+    except Exception:
+        return stats.genextreme.fit(x)
 
 
 def q_gev(p, T):
@@ -109,6 +130,8 @@ def seleccionar(est):
 
 
 def procesar(f):
+    global RNG
+    RNG = np.random.default_rng(int(f["codigo"]) % (2 ** 31))
     x, n = f["x"], len(f["x"])
     k = int(round(0.7 * n))
     pg_all, pg_tr = ajustar_gev(x), ajustar_gev(x[:k])
@@ -123,6 +146,14 @@ def procesar(f):
             "llgum": float(stats.gumbel_r.logpdf(test, *gum_tr).sum()), "mk_p": float(tau.pvalue), "mk_tau": float(tau.statistic),
             "q_gev": dict(zip(map(str, T_RET), map(float, q_gev(pg_all, T_RET)))),
             "q_lp3": dict(zip(map(str, T_RET), map(float, q_lp3(pl_all, T_RET)))), "q50_ic": [float(lo), float(hi)]}
+
+
+def procesar_seguro(f):
+    try:
+        return procesar(f)
+    except Exception as e:
+        print("  falla", f["codigo"], str(e)[:60], flush=True)
+        return None
 
 
 def bloques(res, estad):
@@ -162,13 +193,12 @@ def resumen(R, etiqueta):
 def main() -> None:
     filas = seleccionar(cargar_estaciones())
     res = []
-    for i, f in enumerate(filas):
-        try:
-            res.append(procesar(f))
-        except Exception as e:
-            print("  falla", f["codigo"], str(e)[:60])
-        if i % 50 == 49:
-            print(f"  {i + 1}/{len(filas)}", flush=True)
+    with ProcessPoolExecutor(3) as ex:
+        for i, r in enumerate(ex.map(procesar_seguro, filas, chunksize=2)):
+            if r is not None:
+                res.append(r)
+            if i % 25 == 24:
+                print(f"  {i + 1}/{len(filas)}", flush=True)
     with open(os.path.join(AQUI, "frecuencia_crecientes_ideam.json"), "w", encoding="utf-8") as fh:
         json.dump(res, fh, ensure_ascii=False)
     resumen(res, "TODAS las estaciones incluidas")
