@@ -215,3 +215,128 @@ def test_precio_ambiguo_advierte_dispersion_y_muestra_alternativas():
 
 def test_normalizar_descripcion_precio():
     assert pc._normalizar_descripcion_precio("saco cemento gris 50 kg") == "bulto cemento gris 50kl"
+
+
+# ---- susceptibilidad a movimientos en masa e informe de sitio (datos sintéticos; no leen el artefacto real ni la red)
+import time as _time
+
+SUSC = {"min_fondo": 20, "auc_region": {"Caribe": 0.74, "Andina": 0.88}, "rho_sgc_region": {"Caribe": {"rho": 0.12, "n": 40}, "Andina": {"rho": 0.55, "n": 200}},
+        "municipios": {
+            "08001": {"municipio": "Barranquilla", "departamento": "Atlántico", "categoria_sgc": "B", "sgc_pct": {"baja": 97.0, "media": 3.0, "alta": 0.0, "muy_alta": 0.0}, "n_fondo": 25, "n_eventos": 0, "indice_pct": 10.0},
+            "05001": {"municipio": "Medellín", "departamento": "Antioquia", "categoria_sgc": "A", "sgc_pct": {"baja": 10.0, "media": 40.0, "alta": 45.0, "muy_alta": 5.0}, "n_fondo": 80, "n_eventos": 30, "indice_pct": 88.0},
+            "08999": {"municipio": "Pueblito", "departamento": "Atlántico", "categoria_sgc": "M", "sgc_pct": {"baja": 50.0, "media": 50.0, "alta": 0.0, "muy_alta": 0.0}, "n_fondo": 3, "n_eventos": 0, "indice_pct": None},
+        }}
+BQ = {"municipio": "Barranquilla", "departamento": "Atlántico", "latitud": 10.96, "longitud": -74.8}
+MED = {"municipio": "Medellín", "departamento": "Antioquia"}
+
+
+@pytest.fixture
+def susc_falso():
+    pc._cache_susc.clear(); pc._cache_susc.update(SUSC)
+    pc._cache_oni.update({"t": _time.time(), "v": {"temporada": "ASO 2026", "oni": 1.2, "fase": "El Niño"}})
+    yield
+    pc._cache_susc.clear()
+
+
+@pytest.mark.parametrize("q,esperado", [("¿Hay riesgo de deslizamientos en Medellín?", True), ("susceptibilidad a movimientos en masa", True), ("resistencia del concreto", False)])
+def test_activar_susceptibilidad(q, esperado):
+    assert pc.activar_susceptibilidad(q) is esperado
+
+
+@pytest.mark.parametrize("q,esperado", [("Necesito un informe de sitio para Barranquilla", True), ("ficha técnica del terreno en Medellín", True), ("¿qué debo saber del terreno en Cali para construir?", True),
+                                        ("¿qué es un informe de ensayo?", False), ("zona sísmica de Cali", False)])
+def test_activar_informe_sitio(q, esperado):
+    assert pc.activar_informe_sitio(q) is esperado
+
+
+def test_susceptibilidad_omite_el_indice_si_no_concuerda_con_el_mapa_del_sgc_en_la_region(susc_falso):
+    r = pc.ejecutar_susceptibilidad("¿Hay deslizamientos en Barranquilla?", lambda _q: BQ)      # en los datos sintéticos el Caribe tiene ρ = 0,12 < 0,30
+    assert "97.0 % del área en amenaza baja" in r.markdown and "categoría" not in r.markdown
+    assert "Índice de StructAI omitido" in r.markdown and "percentil" not in r.markdown and "ρ = 0.12" in r.markdown
+
+
+def test_susceptibilidad_region_confiable_no_lleva_la_advertencia_de_baja(susc_falso):
+    md = pc.ejecutar_susceptibilidad("deslizamientos en Medellín", lambda _q: MED).markdown
+    assert "percentil 88" in md and "región Andina" in md and "omitido" not in md and "Moderada" not in md
+
+
+def test_susceptibilidad_municipio_con_pocos_puntos_no_inventa_indice(susc_falso):
+    pc._cache_susc["rho_sgc_region"]["Caribe"]["rho"] = 0.63      # región con concordancia suficiente, para aislar el caso «pocos puntos»
+    md = pc.ejecutar_susceptibilidad("deslizamientos en Pueblito", lambda _q: {"municipio": "Pueblito", "departamento": "Atlántico"}).markdown
+    assert "No hay suficientes puntos" in md and "percentil" not in md
+
+
+def test_susceptibilidad_sin_municipio_o_desconocido_devuelve_none(susc_falso):
+    assert pc.ejecutar_susceptibilidad("deslizamientos", lambda _q: None) is None
+    assert pc.ejecutar_susceptibilidad("deslizamientos", lambda _q: {"municipio": "Inexistente", "departamento": "X"}) is None
+    assert pc.ejecutar_susceptibilidad("deslizamientos", None) is None
+
+
+def test_informe_de_sitio_tiene_todas_las_secciones_y_cabecera(susc_falso):
+    r = pc.ejecutar_informe_sitio("informe de sitio para Barranquilla", lambda _q: BQ, lambda reg: "Amenaza sísmica en Barranquilla: Aa 0,10.\n\nSuelos del IGAC: unidades de drenaje moderado.")
+    md = r.markdown
+    assert md.startswith("### Informe de sitio — Barranquilla (Atlántico)")
+    for s in ("Datos oficiales del sitio", "Amenaza sísmica en Barranquilla", "Suelos del IGAC", "Movimientos en masa", "Contexto climático (ENSO)", "Qué normas consultar antes de diseñar", "Título H"):
+        assert s in md
+    assert "no reemplaza el estudio de suelos" in md and r.nombre == "informe_sitio"
+
+
+def test_informe_de_sitio_sobrevive_si_el_bloque_de_datos_falla(susc_falso):
+    def bomba(_reg): raise RuntimeError("falla simulada")
+    md = pc.ejecutar_informe_sitio("informe de sitio para Barranquilla", lambda _q: BQ, bomba).markdown
+    assert "Datos oficiales del sitio" not in md and "Qué normas consultar" in md and "Movimientos en masa" in md
+
+
+def test_informe_de_sitio_sin_municipio_devuelve_none(susc_falso):
+    assert pc.ejecutar_informe_sitio("informe de sitio", lambda _q: None) is None
+
+
+def test_orquestacion_informe_no_repite_enso_ni_susceptibilidad(susc_falso):
+    out = pc.ejecutar_plugins("informe de sitio para Barranquilla: deslizamientos y El Niño", None, lambda _q: BQ, lambda reg: "Dato del sitio.")
+    assert [p.nombre for p in out] == ["informe_sitio"]
+
+
+def test_orquestacion_sin_informe_activa_susceptibilidad_y_enso_por_separado(susc_falso):
+    out = pc.ejecutar_plugins("deslizamientos y El Niño en Medellín", None, lambda _q: MED)
+    assert {p.nombre for p in out} == {"susceptibilidad_mm", "enso_region"}
+
+
+def test_respuesta_degradada_incluye_el_informe_de_sitio(susc_falso):
+    r = pc.respuesta_degradada("informe de sitio para Barranquilla", None, lambda _q: BQ, lambda reg: "Dato del sitio.")
+    assert r and r["degradado"] is True and r["plugins_usados"] == ["informe_sitio"] and "Dato del sitio." in r["respuesta"]
+
+
+def test_susceptibilidad_confiabilidad_moderada_si_concuerda_con_el_sgc_pero_el_auc_es_bajo(susc_falso):
+    pc._cache_susc["rho_sgc_region"]["Caribe"]["rho"] = 0.63      # como en el artefacto real: el Caribe concuerda con el SGC (ρ = 0,63) pero su AUC es 0,77
+    md = pc.ejecutar_susceptibilidad("deslizamientos en Barranquilla", lambda _q: BQ).markdown
+    assert "Moderada" in md and "omitido" not in md and "percentil 10" in md and "no es una probabilidad" in md
+
+
+# ---- regresión del enrutamiento a corpus extranjeros (2026-11-08) y del informe directo
+def test_un_municipio_colombiano_descarta_el_corpus_peruano_si_no_se_nombra_a_peru():
+    q = "Necesito un informe de sitio para un terreno en Quibdó"
+    assert pc.depurar_motores_extranjeros(q, ["peru_e030"], lambda _q: {"municipio": "Quibdó"}) == ["normativa_general"]
+    assert pc.depurar_motores_extranjeros(q, ["peru_e030", "geopot"], lambda _q: {"municipio": "Quibdó"}) == ["geopot"]
+    assert pc.depurar_motores_extranjeros(q, ["ecuador_nec_se_ds"], lambda _q: {"municipio": "Quibdó"}) == ["normativa_general"]
+
+
+def test_si_se_nombra_a_peru_o_ecuador_se_conserva_el_corpus_extranjero():
+    det = lambda _q: {"municipio": "Lima"}   # incluso si un municipio colombiano coincide con el texto
+    assert pc.depurar_motores_extranjeros("¿Qué dice la E.030 de Perú sobre el factor Z en Lima?", ["peru_e030"], det) == ["peru_e030"]
+    assert pc.depurar_motores_extranjeros("zonas sísmicas en Ecuador según la NEC-SE", ["ecuador_nec_se_ds"], det) == ["ecuador_nec_se_ds"]
+
+
+def test_sin_municipio_colombiano_no_se_toca_el_enrutamiento():
+    assert pc.depurar_motores_extranjeros("¿Qué dice la E.030?", ["peru_e030"], lambda _q: None) == ["peru_e030"]
+    assert pc.depurar_motores_extranjeros("pregunta", ["geopot"], lambda _q: {"municipio": "X"}) == ["geopot"]
+    assert pc.depurar_motores_extranjeros("pregunta", ["peru_e030"], None) == ["peru_e030"]
+
+
+def test_informe_directo_no_depende_del_modelo_y_marca_informe_directo(susc_falso):
+    r = pc.respuesta_informe_directa("Necesito un informe de sitio para Barranquilla", None, lambda _q: BQ, lambda reg: "Dato del sitio.")
+    assert r and r["informe_directo"] is True and pc.NOTA_INFORME in r["respuesta"] and "Informe de sitio — Barranquilla" in r["respuesta"] and r["plugins_usados"] == ["informe_sitio"]
+
+
+def test_informe_directo_none_si_la_pregunta_no_pide_informe_o_no_hay_municipio(susc_falso):
+    assert pc.respuesta_informe_directa("zona sísmica de Cali", None, lambda _q: BQ, None) is None
+    assert pc.respuesta_informe_directa("informe de sitio", None, lambda _q: None, None) is None

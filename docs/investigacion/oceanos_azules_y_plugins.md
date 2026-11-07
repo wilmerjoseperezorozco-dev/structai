@@ -121,3 +121,17 @@ El ciclo que ya usamos: verificar el dato en vivo → protocolo preregistrado �
 - ¿Se conectan primero los plugins rápidos (1, 5, 3, 4)?
 - ¿Se hace la verificación de datos del SGC para sismicidad y agua subterránea antes de comprometer esfuerzo?
 - Para el fracking, ¿se acepta el encuadre de línea base y monitoreo?
+
+## 7. Estado de conexión al chat (2026-11-08)
+
+| Plugin | Estado |
+|---|---|
+| 1. Fase de ENSO y qué implica en su región | **Conectado** |
+| 2. Informe de sitio | **Conectado** (reúne los bloques de datos oficiales del municipio, la susceptibilidad, el contexto de ENSO y los títulos de la NSR-10 a consultar; funciona aunque el modelo de lenguaje esté caído) |
+| 3. Revisión de precios | **Conectado** |
+| 4. Recomendador de insumos | **Conectado** (sugerencia por vecinos si se nombran insumos; si no, composición de la actividad INVIAS más parecida) |
+| 5. Vigencia de normas | **Conectado** |
+| 7. Susceptibilidad | **Conectado a escala de municipio**, con el mapa oficial del SGC y un índice relativo que se omite en las regiones donde no concuerda con ese mapa (ver `scripts/satelite/RESULTADOS_SUSCEPTIBILIDAD_MUNICIPAL.md`) |
+| 6. Costo en riesgo, 8. Estado regional de caudales | Pendientes |
+| 9. Costo paramétrico de pavimento | **No conectar**: corregido el error de unidades (#103), pero el rígido y la política de espesores siguen sin verificar (#106) |
+| 10, 11, 14-17 | Sin datos verificados o prioridad baja |

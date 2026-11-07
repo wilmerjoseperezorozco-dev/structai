@@ -40,7 +40,7 @@ def _con_plugins(resultado: dict, question: str) -> dict:
     actividad -- ver plugins_chat.py). Devuelve una copia; es idempotente (si ask() ya los aplicó, ask_delegado() no los repite) y NUNCA rompe el chat: ante cualquier
     fallo devuelve la respuesta original sin tocar."""
     try:
-        return plugins_chat.aplicar(resultado, question, sb=sb, detectar_municipio=sgc_amenaza_sismica.detectar_municipio_en_texto)
+        return plugins_chat.aplicar(resultado, question, sb=sb, detectar_municipio=sgc_amenaza_sismica.detectar_municipio_en_texto, bloque_sitio=_bloque_contexto_sgc)
     except Exception as e:  # noqa: BLE001
         log.warning("plugins_chat.aplicar falló, se devuelve la respuesta sin plugins: %s", e)
         return resultado
@@ -49,9 +49,18 @@ def _con_plugins(resultado: dict, question: str) -> dict:
 def _respuesta_degradada(question: str) -> Optional[dict]:
     """Ver plugins_chat.respuesta_degradada: respuesta solo con plugins cuando Groq y OpenAI no están disponibles; None si ningún plugin aplica."""
     try:
-        return plugins_chat.respuesta_degradada(question, sb=sb, detectar_municipio=sgc_amenaza_sismica.detectar_municipio_en_texto)
+        return plugins_chat.respuesta_degradada(question, sb=sb, detectar_municipio=sgc_amenaza_sismica.detectar_municipio_en_texto, bloque_sitio=_bloque_contexto_sgc)
     except Exception as e:  # noqa: BLE001
         log.warning("respuesta degradada falló: %s", e)
+        return None
+
+
+def _informe_sitio_directo(question: str) -> Optional[dict]:
+    """Ver plugins_chat.respuesta_informe_directa: el informe de sitio se entrega sin pasar por el modelo de lenguaje."""
+    try:
+        return plugins_chat.respuesta_informe_directa(question, sb=sb, detectar_municipio=sgc_amenaza_sismica.detectar_municipio_en_texto, bloque_sitio=_bloque_contexto_sgc)
+    except Exception as e:  # noqa: BLE001
+        log.warning("informe de sitio directo falló: %s", e)
         return None
 
 sb = create_client(os.environ["SUPABASE_URL"], os.environ["SUPABASE_SERVICE_KEY"])
@@ -2329,6 +2338,9 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = TOP_K_DEFA
     # contenido desactualizado sin que nadie se entere. norma_hint entra en
     # la clave (vía `ruta`) porque la MISMA pregunta con un hint distinto
     # puede recuperar contexto distinto.
+    directo = _informe_sitio_directo(question)
+    if directo is not None:
+        return directo
     usa_cache = not _quiere_actualidad(question)
     ruta_cache = f"ask|hint={norma_hint or ''}"
     if usa_cache:
@@ -2881,7 +2893,12 @@ def ask_delegado(question: str, top_k: int = TOP_K_DEFAULT_RAG) -> dict:
     del issue #35 ("se puede loggear/auditar qué ruta tomó cada consulta
     real, para poder medir después si el enrutamiento acierta").
     """
+    directo = _informe_sitio_directo(question)
+    if directo is not None:
+        directo.setdefault("metodo_enrutamiento", "informe_sitio")
+        return directo
     motores, metodo_enrutamiento, score_enrutamiento = _route_con_metodo(question)
+    motores = plugins_chat.depurar_motores_extranjeros(question, motores, sgc_amenaza_sismica.detectar_municipio_en_texto)
     try:
         resultado = _ask_delegado_interno(question, motores, top_k)
     except RespuestaIAIndisponibleError:

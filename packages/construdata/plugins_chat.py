@@ -350,12 +350,127 @@ def ejecutar_insumos(pregunta: str) -> Optional[ResultadoPlugin]:
     return ResultadoPlugin("insumos_actividad", "\n".join(lin), "Composición de actividades INVIAS 2026-1 (invias_actividad_insumos)", ", ".join(acts[i]["numeral"] for _, i in mejores))
 
 
+# ───────────────────────────── 5. Susceptibilidad a movimientos en masa ─────────────────────────────
+_RE_SUSC = re.compile(r"susceptib|deslizamient|movimientos? en masa|remocion en masa|derrumb|amenaza por (deslizamiento|movimiento)")
+_cache_susc: dict = {}
+
+
+def activar_susceptibilidad(pregunta: str) -> bool:
+    return bool(_RE_SUSC.search(_norm(pregunta)))
+
+
+def _datos_susc() -> dict:
+    if not _cache_susc:
+        _cache_susc.update(json.loads((AQUI / "data" / "susceptibilidad_municipal.json").read_text(encoding="utf-8")))
+    return _cache_susc
+
+
+def _buscar_municipio_susc(reg: dict, datos: dict) -> Optional[tuple[str, dict]]:
+    nom, dep = _norm(reg.get("municipio", "")), _norm(reg.get("departamento", ""))
+    cand = [(c, m) for c, m in datos["municipios"].items() if _norm(m["municipio"]) == nom]
+    if len(cand) > 1 and dep:
+        cand = [(c, m) for c, m in cand if _norm(m["departamento"]) == dep] or cand
+    return cand[0] if len(cand) == 1 else None
+
+
+def _region_de_departamento(dep: str) -> Optional[str]:
+    t = _norm(dep)
+    for k, v in _datos_enso()["departamentos"].items():
+        if _norm(k) == t:
+            return v
+    return None
+
+
+def ejecutar_susceptibilidad(pregunta: str, detectar_municipio=None) -> Optional[ResultadoPlugin]:
+    if not detectar_municipio:
+        return None
+    reg = detectar_municipio(pregunta)
+    if not reg:
+        return None
+    datos = _datos_susc(); hallado = _buscar_municipio_susc(reg, datos)
+    if not hallado:
+        return None
+    cod, m = hallado; s = m["sgc_pct"]; region = _region_de_departamento(m["departamento"]) or _region_de_departamento(reg.get("departamento", ""))
+    lin = [f"- **Mapa oficial del SGC** ({m['municipio']}, {m['departamento']}): {s['baja']} % del área en amenaza baja, {s['media']} % media, {s['alta']} % alta y {s['muy_alta']} % muy alta "
+           "del municipio."]
+    auc = datos["auc_region"].get(region) if region else None
+    rho = datos["rho_sgc_region"].get(region, {}).get("rho") if region else None
+    omitir = rho is not None and rho < 0.30     # regla: no se muestra un índice que se sabe que NO concuerda con el mapa oficial en esa región
+    if omitir:
+        lin.append(f"- **Índice de StructAI omitido:** en la región {region} no concuerda con el mapa del SGC (ρ = {rho:.2f}), así que se muestra solo el mapa oficial.")
+    elif m["indice_pct"] is not None:
+        validos = sum(v["indice_pct"] is not None for v in datos["municipios"].values())
+        lin.append(f"- **Índice relativo de StructAI:** percentil {m['indice_pct']:.0f} entre {validos} municipios (0 = de los menos susceptibles, 100 = de los más), calculado con {m['n_fondo']} puntos de muestreo; "
+                   f"el inventario SIMMA registra {m['n_eventos']} movimientos en la muestra. Ordena municipios entre sí; **no es una probabilidad**.")
+    else:
+        lin.append(f"- No hay suficientes puntos de muestreo en este municipio (menos de {datos['min_fondo']}) para calcular el índice de StructAI; use el mapa del SGC.")
+    if auc is not None:
+        txt = f"- **Confiabilidad del índice en la región {region}:** AUC fuera de muestra {auc:.2f}" + (f"; concordancia de rangos con el mapa del SGC ρ = {rho:.2f}" if rho is not None else "") + "."
+        if not omitir and auc < 0.80:
+            txt += " Moderada: el índice discrimina con dificultad los lugares con y sin movimientos; úselo solo como orientación."
+        lin.append(txt)
+    lin.append("- **Límite:** es una caracterización a escala de municipio. No sustituye el estudio geotécnico del lote (NSR-10 Título H) ni los mapas de amenaza del municipio; "
+               "el inventario de movimientos no tiene fecha y la cobertura del suelo es de 2021.")
+    return ResultadoPlugin("susceptibilidad_mm", "\n".join(lin), "SGC (amenaza por movimientos en masa) + índice relativo StructAI (research/protocolo-22, -24)", m["municipio"], "2026-11")
+
+
+# ───────────────────────────── 6. Informe de sitio ─────────────────────────────
+_RE_INFORME = re.compile(r"informe de sitio|ficha (tecnica )?del (sitio|terreno|municipio)|caracterizacion (del )?(sitio|terreno)|perfil de riesgo|estudio previo del sitio|"
+                         r"que (debo|tengo que|hay que) saber (del|de|sobre).*(terreno|sitio|lote|construir|obra)")
+_NORMAS_SITIO = ("- **NSR-10 Título A** (diseño sismo resistente): zona de amenaza sísmica y parámetros de diseño del municipio.\n"
+                 "- **Título H** (estudios geotécnicos y cimentaciones): el estudio de suelos del lote; incluye excavaciones, taludes y licuación.\n"
+                 "- **Título B** (cargas) y, según el sistema estructural, **C** (concreto), **D** (mampostería), **E** (casas de uno y dos pisos) o **F** (acero).\n"
+                 "- Si hay microzonificación sísmica local o una ladera cercana, los datos de arriba son **orientativos**: manda el estudio geotécnico del lote.")
+
+
+def activar_informe_sitio(pregunta: str) -> bool:
+    return bool(_RE_INFORME.search(_norm(pregunta)))
+
+
+def ejecutar_informe_sitio(pregunta: str, detectar_municipio=None, bloque_sitio: Optional[Callable[[dict], str]] = None, descargar=_descargar) -> Optional[ResultadoPlugin]:
+    """Informe determinístico del entorno de un municipio: reúne los bloques de datos oficiales ya integrados al chat (`bloque_sitio`, inyectado por rag_multi_norma),
+    la susceptibilidad a movimientos en masa, el contexto de ENSO de su región y la lista de títulos de la NSR-10 que corresponde revisar. No depende del modelo de lenguaje."""
+    if not detectar_municipio:
+        return None
+    reg = detectar_municipio(pregunta)
+    if not reg:
+        return None
+    muni, dep = reg.get("municipio", ""), reg.get("departamento", "")
+    secciones = []
+    if bloque_sitio:
+        try:
+            texto = bloque_sitio(reg) or ""
+        except Exception as e:  # noqa: BLE001
+            logger.warning("bloque_sitio falló: %s", e); texto = ""
+        parrafos = [p.strip() for p in texto.split("\n\n") if p.strip()]
+        if parrafos:
+            secciones.append("**Datos oficiales del sitio**\n" + "\n".join(f"- {p}" for p in parrafos))
+    fijo = lambda _q: reg  # noqa: E731 -- el municipio ya está resuelto
+    for titulo, f in (("Movimientos en masa", lambda: ejecutar_susceptibilidad(pregunta, fijo)), ("Contexto climático (ENSO)", lambda: ejecutar_enso(pregunta, fijo, descargar))):
+        try:
+            r = f()
+        except Exception as e:  # noqa: BLE001
+            logger.warning("sección %s del informe falló: %s", titulo, e); r = None
+        if r:
+            secciones.append(f"**{titulo}**\n{r.markdown}")
+    secciones.append("**Qué normas consultar antes de diseñar**\n" + _NORMAS_SITIO)
+    cab = f"### Informe de sitio — {muni}" + (f" ({dep})" if dep else "")
+    return ResultadoPlugin("informe_sitio", cab + "\n\n" + "\n\n".join(secciones) + "\n\n*Es una caracterización a escala de municipio con datos abiertos; no reemplaza el estudio de suelos ni la revisión de un ingeniero.*",
+                           "SGC, IGAC/UPRA, IDEAM, UNGRD, Sisbén IV, NOAA y análisis propio de StructAI", muni)
+
+
 # ───────────────────────────── Orquestación ─────────────────────────────
-def ejecutar_plugins(pregunta: str, sb=None, detectar_municipio=None) -> list[ResultadoPlugin]:
+def ejecutar_plugins(pregunta: str, sb=None, detectar_municipio=None, bloque_sitio=None) -> list[ResultadoPlugin]:
     """Ejecuta los plugins que se activan; cada uno aislado (un fallo no afecta a los demás ni al chat)."""
     pasos: list[tuple[str, Callable[[], Optional[ResultadoPlugin]]]] = []
-    if activar_enso(pregunta):
-        pasos.append(("enso", lambda: ejecutar_enso(pregunta, detectar_municipio)))
+    informe = activar_informe_sitio(pregunta)
+    if informe:   # el informe ya incluye la susceptibilidad y el contexto de ENSO de su municipio: no se repiten por separado
+        pasos.append(("informe_sitio", lambda: ejecutar_informe_sitio(pregunta, detectar_municipio, bloque_sitio)))
+    else:
+        if activar_enso(pregunta):
+            pasos.append(("enso", lambda: ejecutar_enso(pregunta, detectar_municipio)))
+        if activar_susceptibilidad(pregunta):
+            pasos.append(("susceptibilidad", lambda: ejecutar_susceptibilidad(pregunta, detectar_municipio)))
     if activar_vigencia(pregunta):
         pasos.append(("vigencia", lambda: ejecutar_vigencia(pregunta, sb)))
     if activar_precio(pregunta):
@@ -373,11 +488,11 @@ def ejecutar_plugins(pregunta: str, sb=None, detectar_municipio=None) -> list[Re
     return out
 
 
-def aplicar(resultado: dict, pregunta: str, sb=None, detectar_municipio=None) -> dict:
+def aplicar(resultado: dict, pregunta: str, sb=None, detectar_municipio=None, bloque_sitio=None) -> dict:
     """Devuelve una COPIA de `resultado` con la sección de plugins añadida a la respuesta y sus fuentes sumadas. Idempotente."""
     if "plugins_usados" in resultado:
         return resultado
-    plugins = ejecutar_plugins(pregunta, sb, detectar_municipio)
+    plugins = ejecutar_plugins(pregunta, sb, detectar_municipio, bloque_sitio)
     if not plugins:
         return resultado
     nuevo = dict(resultado)
@@ -389,13 +504,46 @@ def aplicar(resultado: dict, pregunta: str, sb=None, detectar_municipio=None) ->
     return nuevo
 
 
+_RE_PERU = re.compile(r"\bperu\b|\be 030\b|\blima\b|\bcusco\b|\barequipa\b")
+_RE_ECUADOR = re.compile(r"\becuador\b|\bnec se\b|\bquito\b|\bguayaquil\b")
+
+
+def depurar_motores_extranjeros(pregunta: str, motores: list[str], detectar_municipio=None) -> list[str]:
+    """Si la pregunta menciona un municipio colombiano y NO nombra a Perú ni a Ecuador, descarta los corpus peruano y ecuatoriano del enrutamiento. Caso real (2026-11-08):
+    el enrutador contrastivo, con confianza baja (0,40), mandó «informe de sitio para un terreno en Quibdó» al corpus de la E.030 de Perú y el modelo respondió con su zonificación."""
+    extranjeros = {"peru_e030": _RE_PERU, "ecuador_nec_se_ds": _RE_ECUADOR}
+    if not any(m in extranjeros for m in motores) or not detectar_municipio:
+        return motores
+    try:
+        if not detectar_municipio(pregunta):
+            return motores
+    except Exception:  # noqa: BLE001
+        return motores
+    t = _norm(pregunta)
+    conservar = [m for m in motores if m not in extranjeros or extranjeros[m].search(t)]
+    return conservar or ["normativa_general"]
+
+
+NOTA_INFORME = "Informe armado solo con datos oficiales y módulos determinísticos de StructAI, sin texto redactado por el modelo de lenguaje:"
+
+
+def respuesta_informe_directa(pregunta: str, sb=None, detectar_municipio=None, bloque_sitio=None) -> Optional[dict]:
+    """Si la pregunta pide un informe de sitio de un municipio, devuelve el informe como respuesta completa, SIN llamar al modelo de lenguaje: es más rápido, funciona aunque
+    el modelo esté caído y evita que un corpus equivocado produzca texto inventado. None si no aplica."""
+    if not activar_informe_sitio(pregunta):
+        return None
+    base = {"respuesta": NOTA_INFORME, "normas_citadas": [], "fuentes": [], "chunks_usados": 0, "informe_directo": True, "dominio": "normativa_general"}
+    res = aplicar(base, pregunta, sb, detectar_municipio, bloque_sitio)
+    return res if res is not base else None
+
+
 MENSAJE_DEGRADADO = ("No pude redactar una respuesta completa porque el servicio de IA está saturado en este momento. Esto es lo que StructAI sí pudo verificar "
                      "con sus módulos determinísticos, que no dependen del modelo de lenguaje:")
 
 
-def respuesta_degradada(pregunta: str, sb=None, detectar_municipio=None) -> Optional[dict]:
+def respuesta_degradada(pregunta: str, sb=None, detectar_municipio=None, bloque_sitio=None) -> Optional[dict]:
     """Respuesta de emergencia cuando el modelo de lenguaje no está disponible: si algún plugin sí tiene respuesta, se devuelve solo ella (marcada `degradado`);
     si ninguno aplica, None y el llamador debe propagar el error original. Evita que una pregunta de vigencia, ENSO o precio falle por completo aunque el dato exista."""
     base = {"respuesta": MENSAJE_DEGRADADO, "normas_citadas": [], "fuentes": [], "chunks_usados": 0, "degradado": True, "dominio": "normativa_general"}
-    res = aplicar(base, pregunta, sb, detectar_municipio)
+    res = aplicar(base, pregunta, sb, detectar_municipio, bloque_sitio)
     return res if res is not base else None
