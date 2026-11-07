@@ -1,2 +1,6 @@
 H3 listo
 contraste SGC listo
+H4/H5 listo
+chirps diario listo
+umbrales y H1/H2 listos
+CORRIDA_COMPLETA

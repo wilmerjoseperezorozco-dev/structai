@@ -1,0 +1,13 @@
+Municipios con eventos: 711; positivos 4442 (cal 3189, prueba 1253); negativos 1537467
+AUC calibracion por D: {1: np.float64(0.727), 2: np.float64(0.738), 3: np.float64(0.744), 5: np.float64(0.753), 7: np.float64(0.753), 10: np.float64(0.749), 15: np.float64(0.749), 30: np.float64(0.733)} -> D* = 5
+T1 AUC prueba (D*=5) = 0.775  IC95% bloques [0.752, 0.790]  -> cumple
+Curva global (% de la lluvia anual): E = 0.03 * D^1.66
+T2 regla E-D en prueba: TSS = +0.090 (sensibilidad 0.99, falsas alarmas 0.90) IC95% [+0.079, +0.104] -> cumple
+T3 regla de un solo D* = 5: TSS = +0.253 (sens 0.93, FA 0.68) -> la curva E-D NO mejora la regla simple
+
+Por region:
+  Caribe     eventos de calibracion 63 (< 100): no se ajusta
+  Andina     E = 0.03*D^1.68 | TSS +0.078 (sens 0.99, FA 0.91) IC [+0.069,+0.086] eventos cal 2350
+  Pacifica   E = 0.04*D^1.54 | TSS +0.089 (sens 0.98, FA 0.89) IC [+0.054,+0.105] eventos cal 665
+  Orinoquia  eventos de calibracion 69 (< 100): no se ajusta
+  Amazonia   eventos de calibracion 42 (< 100): no se ajusta

@@ -1,0 +1,2 @@
+Municipios con eventos: 711; positivos 4442 (cal 3189, prueba 1253); negativos 1537467
+AUC calibracion por D: {1: np.float64(0.727), 2: np.float64(0.738), 3: np.float64(0.744), 5: np.float64(0.753), 7: np.float64(0.753), 10: np.float64(0.749), 15: np.float64(0.749), 30: np.float64(0.733)} -> D* = 5

@@ -1,0 +1,15 @@
+== Estado de los insumos ==
+  H1/H2 (umbrales): disponible
+  H3 (susceptibilidad): disponible
+  H4/H5 (crecientes): disponible
+
+== Holm sobre la familia (α = 0,05) ==
+  H2 (umbral con covariables)          p = 0.0010  p ajustado (Holm) = 0.0050  -> significativo pero la candidata es PEOR: hipótesis NO confirmada
+  H3 (susceptibilidad en log)          p = 0.0010  p ajustado (Holm) = 0.0040  -> significativo y la candidata MEJORA: hipótesis confirmada
+  H4a (GEV con ONI, campo)             p = 0.0010  p ajustado (Holm) = 0.0030  -> significativo y la candidata MEJORA: hipótesis confirmada
+  H4b (GEV con ONI, predictiva)        p = 0.0020  p ajustado (Holm) = 0.0040  -> significativo pero la candidata es PEOR: hipótesis NO confirmada
+  H1 (umbral normalizado)              p = 0.5007  p ajustado (Holm) = 0.5007  -> NO significativo tras Holm
+
+== H5 (regla, sin p-valor) ==  mediana Δloglik = +nan; mediana razón de ancho = 0.57 -> NO mejora
+
+Nota: la corrección de Holm cubre solo estos cinco contrastes; los demás protocolos (§§15-22) se reportaron cada uno con su regla fija y deben leerse como una familia más amplia.

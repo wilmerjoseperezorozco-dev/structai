@@ -1,0 +1,14 @@
+Muestras 54723; AUC espacial global del modelo de índice: 0.903
+AUC por región (fuera de muestra): {'Amazonia': 0.889, 'Andina': 0.714, 'Caribe': 0.767, 'Orinoquia': 0.955, 'Pacifica': 0.865}
+Categorías SGC (media de % por clase):
+           SUM_BAJA  SUM_MEDIA  SUM_ALTA  SUM_MUY_AL
+CATEGORIA                                           
+CD             92.0        0.0       0.0         0.0
+D              44.3       35.7      15.4         0.4
+M              13.9       40.1      39.1         6.2
+SIN             0.0        6.7      36.9         5.7
+
+Validación contra el mapa oficial del SGC (% de área en amenaza alta o muy alta): ρ de Spearman = +0.54 sobre 381 municipios
+ρ por región: {'Amazonia': (0.59, 50), 'Andina': (0.1, 124), 'Caribe': (0.63, 90), 'Orinoquia': (0.81, 47), 'Pacifica': (-0.26, 70)}
+
+C:\Users\HP\Desktop\optimizacion para negocios en el atlantico\tubara\construdata\packages\construdata\data\susceptibilidad_municipal.json (237 KB); municipios con índice: 381 de 1122

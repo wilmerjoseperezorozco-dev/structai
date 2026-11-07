@@ -1,0 +1,29 @@
+Estaciones incluidas: 504; descartadas: {'registro corto o sin datos desde 2000': 460}; con >10% de valores repetidos: 160
+Estaciones con >= 30 años y ONI completo en las 4 ventanas: 503
+Pendiente regional s_r (ln x por °C de ONI), mediana entre estaciones de cada región, ventana W1: Amazonia: -0.007, Andina: -0.082, Caribe: -0.067, Orinoquia: +0.013, Pacifica: -0.111
+Estaciones evaluadas: 503 en 32 departamentos
+
+CONFIRMATORIA:
+   W1 estacion: gana 0.412 IC95% bloques [0.374, 0.450]; mediana Δ (finitos) = -0.036; n = 503 (ajuste fallido 0; Δ no finito 68); p = 0.001
+   W2 estacion: gana 0.388 IC95% bloques [0.361, 0.418]; mediana Δ (finitos) = -0.044; n = 503 (ajuste fallido 0; Δ no finito 71); p = 0.001
+   W1 regional: gana 0.523 IC95% bloques [0.475, 0.564]; mediana Δ (finitos) = +0.092; n = 503 (ajuste fallido 0; Δ no finito 55); p = 0.343
+   W2 regional: gana 0.529 IC95% bloques [0.484, 0.575]; mediana Δ (finitos) = +0.069; n = 503 (ajuste fallido 0; Δ no finito 59); p = 0.205
+EXPLORATORIA:
+   W3 estacion: gana 0.342 IC95% bloques [0.300, 0.378]; mediana Δ (finitos) = -0.101; n = 503 (ajuste fallido 0; Δ no finito 64); p = 0.001
+   W0 regional: gana 0.535 IC95% bloques [0.479, 0.588]; mediana Δ (finitos) = +0.178; n = 503 (ajuste fallido 0; Δ no finito 60); p = 0.230
+
+Holm (4 pruebas confirmatorias):
+        W1|estacion: p ajustado 0.004; límite inferior 0.374 -> no cumple
+        W2|estacion: p ajustado 0.004; límite inferior 0.361 -> no cumple
+        W2|regional: p ajustado 0.410; límite inferior 0.484 -> no cumple
+        W1|regional: p ajustado 0.410; límite inferior 0.475 -> no cumple
+
+Desglose por región (fracción que gana):
+        W1|estacion: Amazonia 0.35 (n=23); Andina 0.47 (n=235); Caribe 0.48 (n=79); Orinoquia 0.48 (n=29); Pacifica 0.46 (n=69)
+        W2|estacion: Amazonia 0.43 (n=23); Andina 0.44 (n=236); Caribe 0.54 (n=76); Orinoquia 0.37 (n=30); Pacifica 0.42 (n=67)
+        W1|regional: Amazonia 0.35 (n=26); Andina 0.60 (n=242); Caribe 0.65 (n=79); Orinoquia 0.45 (n=31); Pacifica 0.49 (n=70)
+        W2|regional: Amazonia 0.35 (n=26); Andina 0.61 (n=241); Caribe 0.62 (n=77); Orinoquia 0.50 (n=30); Pacifica 0.56 (n=70)
+        W3|estacion: Amazonia 0.35 (n=23); Andina 0.37 (n=241); Caribe 0.32 (n=78); Orinoquia 0.44 (n=27); Pacifica 0.46 (n=70)
+        W0|regional: Amazonia 0.31 (n=26); Andina 0.64 (n=239); Caribe 0.66 (n=79); Orinoquia 0.43 (n=30); Pacifica 0.48 (n=69)
+
+Diagnóstico de régimen (mediana de la desviación estándar del ONI, calibración vs prueba): W1: 0.71 vs 0.74; W2: 0.91 vs 0.97

@@ -1,1 +1,7 @@
 Estaciones incluidas: 504; descartadas: {'registro corto o sin datos desde 2000': 460}; con >10% de valores repetidos: 160
+Estaciones analizadas: 503
+H4a fracción con RV p<0,05 = 0.292 IC95% bloques [0.228, 0.363] (azar 0,05) -> cumple
+H4b candidata gana en predicción reservada en 0.431 IC95% [0.397, 0.468] -> NO cumple
+   mu1 mediano -10.89 m3/s por °C de ONI; mu1 < 0 en 72.8% de las estaciones
+   estaciones que sobreviven FDR (q=0,10): 104 de 503
+H5 (503 estaciones): mediana Δloglik pred. = +nan; mediana razón de ancho IC(Q50) = 0.57 -> NO mejora
