@@ -323,3 +323,27 @@ Mejora del límite de la sección 11: "la cercanía geográfica no garantiza con
   - **E2 (aporte del aprendizaje automático):** AUC(G1) − AUC(B1) > 0.
 - **Descriptivo:** AUC(G0) − AUC(B0) (el efecto del modelo con las mismas variables), AUC por región natural y la importancia por permutación de G1 en un departamento reservado.
 - **Limitaciones declaradas:** la cobertura es de **2021**, posterior a muchos de los movimientos del inventario (el inventario no tiene fecha), así que puede reflejar el **efecto** del movimiento (suelo desnudo) y no su causa → **posible fuga causal**, que haría E1 optimista; la cobertura se muestrea en un píxel de ~90 m del resumen del COG; la lluvia es municipal (ecológica); el gradiente boosting con 55.000 puntos y 6 variables puede sobreajustar al departamento de entrenamiento mayoritario (Antioquia, Boyacá); AUC espacial por departamento sigue sobreestimando por autocorrelación entre departamentos vecinos. **No es un mapa de amenaza normativo.**
+
+---
+
+## §25. H4′: ventanas de ONI y agrupación regional de la respuesta a ENSO (preregistrado 2026-11-07, antes de ejecutar)
+
+**Motivo.** H4 mostró respuesta a ENSO dentro de la muestra (RV p < 0,05 en el 29,2 % de las estaciones) pero no ganó en predicción reservada (43,1 %). Hay tres explicaciones que este protocolo separa: (a) la ventana del ONI no es la adecuada (los máximos anuales ocurren en distinta estación); (b) se estiman 4 parámetros con ~35 datos por estación (sobreajuste); (c) el 30 % final es un régimen distinto del de calibración.
+
+**Ventanas del ONI** (fijadas a priori por la respuesta física esperada; el ONI es mensual centrado):
+- W1: diciembre del año anterior a febrero (pico de ENSO que precede a la primera temporada lluviosa).
+- W2: septiembre a noviembre del año del máximo (segunda temporada lluviosa).
+- W3 (exploratoria): enero a diciembre del año anterior (la «sensibilidad» que el §23 dejó sin ejecutar).
+- W0 (exploratoria, referencia de H4): enero a diciembre del año del máximo.
+
+**Candidatos.**
+- *Por estación:* GEV con μ(t) = μ0 + μ1·ONI_W(t) (4 parámetros), como H4.
+- *Agrupado regional:* GEV con μ(t) = μ0·exp(s_r·ONI_W(t)) y pendiente s_r común a la región (Caribe, Andina, Pacífica, Orinoquía, Amazonía). s_r se estima por mínimos cuadrados de ln x − (media de ln x de su estación) sobre el ONI de la ventana, con todas las estaciones de la región y solo con años ≤ el último año de calibración de la estación evaluada (sin información futura). Quedan 3 parámetros libres por estación.
+
+**Validación.** Como H4b: 70 % cronológico para calibrar y 30 % final para evaluar; la estadística por estación es Δ = log-verosimilitud predictiva del candidato − la de la GEV estacionaria ajustada con la misma calibración. Se reporta la fracción de estaciones con Δ > 0 y la mediana de Δ; IC95 % por remuestreo de departamentos; p bilateral frente a 0,5 como en H4b.
+
+**Familia confirmatoria (Holm, 4 pruebas):** {W1, W2} × {por estación, agrupado regional}. Criterio de cada una: límite inferior del IC95 % de la fracción de estaciones que ganan > 0,5 (y p ajustado < 0,05). Exploratorias, sin ajuste y rotuladas: W3 por estación, W0 agrupado, y el desglose por región.
+
+**Diagnóstico del régimen (c):** desviación estándar del ONI de la ventana en el tramo de calibración y en el de prueba (mediana entre estaciones). Si en el tramo de prueba es menor que la mitad del de calibración, un fallo predictivo no es interpretable.
+
+**No se concluye:** una relación causal ni una predicción operativa. Un éxito significaría que la respuesta a ENSO es transferible en el tiempo; un fracaso, que con estos datos y esta forma no es predecible.
