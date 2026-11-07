@@ -147,3 +147,16 @@ El resultado nacional restringido a alcaldías es informativo (RM 1,00 [0,84; 1,
 - **Regla fija:** "ENSO afecta el precio de bolsa" solo si se cumplen el confirmatorio 2 **y** la mejora en el periodo reservado. Si el confirmatorio 1 falla, no se afirma el mecanismo hidrológico aunque haya correlación con el precio.
 - **Descriptivo adicional:** tabla por episodio de El Niño (ONI ≥ +0,5 durante ≥ 5 trimestres consecutivos): pico del precio real frente a la media de los 12 meses previos.
 - **Limitaciones declaradas:** ~320 meses pero **pocos episodios independientes de ENSO** (la inferencia efectiva es mucho menor que n); cambios regulatorios y de mercado (p. ej. cargo por confiabilidad, entrada de nuevas plantas, Hidroituango) alteran el nivel y no se modelan; el precio de bolsa depende del gas y de la demanda, no solo de la hidrología; el IPC total deflacta con un índice que mezcla componentes; las cifras recientes de XM y del DANE son provisionales.
+
+
+## 14. Hipótesis fluvial con verificación aguas arriba (red de drenaje), definida ANTES de correrla (2026-11-06)
+
+Mejora del límite de la sección 11: "la cercanía geográfica no garantiza conexión hidrológica".
+
+- **Conexión hidrológica:** para cada estación IDEAM con ≥ 48 meses de caudal (2019-2024) se ubica su celda en el DEM de ~90 m del departamento (el mismo de HAND), **ajustada a la celda de mayor área acumulada en un radio de 3 celdas** (≈ 270 m), y se sigue el flujo D8 río abajo. Una estación está **conectada** con un municipio si esa ruta pasa por el polígono municipal. La ruta termina en el mar/sin dato, en el borde de la cuadrícula del departamento o en un sumidero. Los pares cuya ruta sale de la cuadrícula **antes** de llegar al municipio son **indeterminados** y se reportan aparte, no se cuentan como "no conectados".
+- **Fiabilidad de la ubicación:** se registra el área acumulada de la celda ajustada; si es < 5 km² se marca "no está sobre un cauce resuelto".
+- **Estación asignada (principal):** para cada municipio, la estación **conectada más cercana** (distancia al polígono) a ≤ 100 km. Sin estación conectada → excluido del principal.
+- **Estadístico:** el mismo de la sección 11: correlación de Spearman entre la fracción con HAND < 10 m y (AUC del caudal − AUC de la lluvia en los mismos meses); IC95 % por remuestreo de departamentos; mismos criterios de elegibilidad (≥ 3 meses con inundación y ≥ 12 sin ella).
+- **Comparación pre-declarada:** contra el resultado de la sección 11 (estación más cercana sin verificar conexión: ρ = +0,41 [+0,06; +0,57] a 25 km).
+- **Regla fija:** "reforzada" si el IC del principal excluye 0 **y** el ρ es ≥ al de la sección 11; "debilitada" si el IC incluye 0 o el ρ es menor; "insuficiente" si hay < 30 municipios elegibles. También se reporta el estimado de los pares **no conectados** (si hay ≥ 15) como contraste.
+- **Limitaciones declaradas:** DEM de superficie a 90 m; ajuste de la estación a la red es una elección y puede caer en un cauce vecino; las cuadrículas son departamentales con margen de 0,15°, así que la conexión entre departamentos queda indeterminada si la ruta sale de la cuadrícula; solo ~68 estaciones utilizables; un caudal medido en un tramo no es el que inunda un municipio aguas abajo (atenuación, afluentes).

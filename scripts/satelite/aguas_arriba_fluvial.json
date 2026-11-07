@@ -1,0 +1,20 @@
+{
+ "n_conectados": 48,
+ "n_no_conectados": 70,
+ "n_indeterminados": 3,
+ "principal": {
+  "rho": 0.4284628745115068,
+  "ic": [
+   -0.05212645841174258,
+   0.5399288177065955
+  ]
+ },
+ "contraste": {
+  "rho": 0.4156700814632368,
+  "ic": [
+   0.14605118616815035,
+   0.5849800238271451
+  ]
+ },
+ "veredicto": "DEBILITADA: el IC incluye 0 o el rho es menor que el de la seccion 11 (+0,41)"
+}
