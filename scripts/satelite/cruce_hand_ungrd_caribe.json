@@ -1,0 +1,34 @@
+{
+ "n": 195,
+ "veredicto": "hay asociacion con el resultado principal pero NO es robusta entre variantes",
+ "principal2": {
+  "principal (conteo crudo)": {
+   "rho": 0.20982585887883162,
+   "ic_bloques": [
+    0.07188378852013974,
+    0.34016518303669785
+   ]
+  },
+  "duplicados colapsados": {
+   "rho": 0.13406580745250274,
+   "ic_bloques": [
+    -0.004787676566109613,
+    0.2793185880179747
+   ]
+  },
+  "sin 2022": {
+   "rho": 0.03270892606365634,
+   "ic_bloques": [
+    -0.10135876575664246,
+    0.21849163980666325
+   ]
+  }
+ },
+ "anterior": {
+  "rho": 0.003124263789679927,
+  "ic_bloques": [
+   -0.15416417853165643,
+   0.1680756343620817
+  ]
+ }
+}

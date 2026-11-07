@@ -67,3 +67,14 @@ La auditoría (`auditoria/auditoria_datos_caribe.md`) mostró problemas de dise�
 4. **Controles:** logaritmo de la población y del área; curva de especificaciones con y sin porcentaje en cabecera; la especificación con el total de reportes se muestra solo para ilustrar su sesgo.
 5. **Advertencia sobre el predictor principal:** la fracción < 10 m tiene mediana 0 (muchos empates) y un umbral absoluto de elevación no es físicamente apropiado para llanuras de inundación del interior (p. ej. Cesar, valle a más de 100 m). **No se cambia el predictor principal declarado**; se reporta con esta limitación y se deja como trabajo siguiente la altura sobre el cauce más cercano derivada del DEM.
 6. **Regla de veredicto fija:** "asociación" solo si el IC por bloques (departamentos) de la correlación parcial principal excluye 0; "robusta" solo si el signo y la exclusión de 0 se mantienen en todas las especificaciones de la curva (excepto la ilustrativa). En otro caso se informa como no robusta.
+
+
+## 9. Segundo predictor: altura sobre el cauce más cercano (HAND), definido ANTES de calcular asociaciones (2026-11-06)
+
+Motivo: la fracción < 10 m no es física para llanuras del interior (sección 8.5) y dio un nulo. HAND (altura sobre el drenaje más cercano) es la medida estándar de "dónde el terreno está al alcance del agua de un cauce".
+
+- **Cálculo:** DEM Copernicus GLO-30 agregado a ~90 m (3 arcsegundos) **por departamento** (con 0,15° de margen, para no cortar cuencas en la frontera); océano (elevación exactamente 0) como sin dato; relleno de depresiones y planos; dirección de flujo D8; acumulación; red de drenaje = celdas con área aguas arriba ≥ umbral.
+- **Predictor confirmatorio-2 (único):** fracción del municipio con HAND < 10 m, red de **5 km²**. Fijado aquí.
+- **Sensibilidad (no confirmatoria):** umbrales de red de 1 y 25 km²; cortes HAND < 5 y < 15 m; HAND mediana.
+- **Estatus honesto:** se propone **después** de ver un resultado nulo, así que es **exploratorio con respecto al análisis anterior** aunque la definición se fije antes de verlo. Se reporta con las mismas reglas (correlación parcial, IC por bloques, controles principales, regla de veredicto) y se compara contra el predictor anterior; no se presenta como "confirmación".
+- **Limitaciones:** resolución 90 m (el DEM es de superficie); el umbral de red es una elección; municipios en la costa y ciénagas tienen áreas sin dato.
