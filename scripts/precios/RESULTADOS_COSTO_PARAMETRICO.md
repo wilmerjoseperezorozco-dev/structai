@@ -1,5 +1,20 @@
 # Resultados: costo paramétrico de pavimentos y periodo de retorno de alcantarillas
 
+> **Actualización (2026-11-08): el error de unidades de `motor-vias` (issue #103) está corregido y el ítem 4 se recalculó.** La sección «Ítem 4» de abajo conserva el resultado original (con los espesores erróneos) como registro histórico; **los valores vigentes son los de esta nota.**
+>
+> | Resultado (provincia 0801, costo directo de referencia) | Antes (con el error) | Ahora (corregido) |
+> |---|---|---|
+> | Estructura flexible para ESAL 5 M y CBR 8 % | 5 / 15 / 15 cm | **5 / 15 / 40 cm** (rodadura / base / subbase) |
+> | Costo por m² en esa estructura | 73.266 | **94.764** |
+> | Rango en la malla ESAL × CBR | 73.266 en casi todo (constante) | **73.266 a 174.305**, creciente con el tránsito y con la subrasante pobre |
+> | Dispersión entre 140 provincias, ESAL 5 / CBR 8 (P90/P10) | 1,19 | **1,30** (IC95 % 1,25-1,33) |
+> | Parte de la dispersión explicada por base y subbase | 91 % | **95 %** |
+> | Sensibilidad (asfalto 4,5-6,5 %, rodadura ±20 %) | ±5,9 %, ±10,4 % | ±4,5 %, ±8,0 % |
+> | Diseños flexibles que el motor marca «no cumple» | 1 de 32 | **9 de 32** (tránsito alto con subrasante pobre: la subbase requerida supera el máximo) |
+> | ESAL desde el que el rígido cuesta menos que el flexible | Ninguno | **10 M con CBR 3 %**; en CBR ≥ 5 % sigue sin cruzarse |
+>
+> Sigue sin ser un costo de diseño validado: el motor mantiene la rodadura (5 cm) y la base (15 cm) en su mínimo y solo ajusta la subbase, y la conversión del pavimento rígido (SN/0,39) no está verificada. Ver el issue de seguimiento.
+
 Ejecutado el 2026-11-07 según [`PROTOCOLO_COSTO_PARAMETRICO.md`](PROTOCOLO_COSTO_PARAMETRICO.md) (commit `8dae609`, anterior a los resultados). Scripts: `costo_parametrico_pavimentos.py` y `periodo_retorno_alcantarilla.py`. Precios INVIAS 2026-1, costo directo de referencia. Señal de análisis, no diseño ni presupuesto.
 
 ## Ítem 4: pavimentos

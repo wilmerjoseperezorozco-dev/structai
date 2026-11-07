@@ -661,3 +661,49 @@ def test_wrapper_ntc4924_mamposteria_con_agregado_anidado():
     )
     r = verificar_ntc4924_mamposteria(req)
     assert r["cumple"] is True
+
+
+# ---- Regresión del issue #103 (2026-11-08): los coeficientes estructurales a_i de AASHTO-93 son POR PULGADA y el motor los multiplicaba por espesores en cm.
+# El test anterior comparaba el SN del módulo con su propia fórmula, así que no podía detectar el error de unidades; estos recalculan de forma independiente, en pulgadas.
+def _sn_independiente_en_pulgadas(r):
+    pulg = lambda cm: cm / 2.54
+    return 0.44 * pulg(r.espesor_rodadura) + 0.14 * pulg(r.espesor_base) * 1.10 + 0.11 * pulg(r.espesor_subbase) * 1.10
+
+
+@pytest.mark.parametrize("esal,cbr", [(0.5, 5), (1.0, 8), (2.0, 5), (5.0, 8)])
+def test_sn_real_coincide_con_calculo_independiente_en_pulgadas_y_cubre_el_requerido(esal, cbr):
+    d = _disenador_pavimentos()
+    r = d.disenar(ParametrosPavimento(tipo_pavimento=TipoPavimento.ASFALTICO, tipo_via=TipoViaP.SECUNDARIA, tpd=1000, esals_millones=esal, cbr_subrasante=float(cbr)))
+    requerido = d._calcular_sn(esal, cbr)
+    assert r.numero_estructural == pytest.approx(_sn_independiente_en_pulgadas(r), abs=1e-6)
+    assert r.numero_estructural >= requerido            # el redondeo de la subbase es hacia arriba: nunca queda por debajo
+    assert r.numero_estructural < requerido + 0.35      # y no se sobredimensiona de forma gratuita
+    assert r.cumple is True
+
+
+def test_la_subbase_crece_con_el_transito_ya_no_queda_en_5_15_15_para_todo():
+    d = _disenador_pavimentos()
+    sub = [d.disenar(ParametrosPavimento(tipo_pavimento=TipoPavimento.ASFALTICO, tipo_via=TipoViaP.SECUNDARIA, tpd=1000, esals_millones=e, cbr_subrasante=5.0)).espesor_subbase
+           for e in (0.5, 1.0, 2.0, 5.0)]
+    assert sub == sorted(sub) and sub[-1] > sub[0] + 15
+
+
+def test_transito_alto_con_subrasante_pobre_no_cumple_en_silencio():
+    d = _disenador_pavimentos()
+    r = d.disenar(ParametrosPavimento(tipo_pavimento=TipoPavimento.ASFALTICO, tipo_via=TipoViaP.PRIMARIA, tpd=8000, esals_millones=10.0, cbr_subrasante=3.0))
+    assert r.cumple is False           # la subbase requerida supera el máximo del manual: hay que engrosar rodadura y base, no declarar «cumple»
+
+
+def test_rodadura_y_base_fijadas_por_el_ingeniero_se_respetan_y_cubren_el_sn():
+    d = _disenador_pavimentos()
+    r = d.disenar(ParametrosPavimento(tipo_pavimento=TipoPavimento.ASFALTICO, tipo_via=TipoViaP.PRIMARIA, tpd=5000, esals_millones=5.0, cbr_subrasante=8.0,
+                                      espesor_rodadura=10.0, espesor_base=20.0))
+    assert r.espesor_rodadura == 10.0 and r.espesor_base == 20.0
+    assert r.numero_estructural >= d._calcular_sn(5.0, 8) and r.cumple is True
+
+
+def test_diseno_rigido_advierte_que_la_conversion_sn_a_losa_no_esta_verificada():
+    d = _disenador_pavimentos()
+    r = d.disenar(ParametrosPavimento(tipo_pavimento=TipoPavimento.CONCRETO, tipo_via=TipoViaP.PRIMARIA, tpd=8000, esals_millones=10.0, cbr_subrasante=8.0,
+                                      espesor_base=15.0, espesor_subbase=15.0))
+    assert any("no está verificada" in s for s in r.sugerencias)

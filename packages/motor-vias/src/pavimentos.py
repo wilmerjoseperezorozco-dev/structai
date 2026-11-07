@@ -4,9 +4,14 @@ mecánico-empírico). ESALs de diseño, Número Estructural (SN) y espesores de
 capas para pavimentos asfálticos (flexibles) y de concreto (rígidos).
 """
 
+import math
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Dict, List, Optional
+
+# Los coeficientes estructurales a_i de AASHTO-93 (0,44 / 0,14 / 0,11) están definidos POR PULGADA de espesor y las tablas de SN requerido también
+# vienen del método original en pulgadas. Los espesores de este módulo van en cm: hay que convertir (issue #103).
+CM_POR_PULGADA = 2.54
 
 
 # ============================================================================
@@ -58,6 +63,7 @@ class ParametrosPavimento:
     espesor_base: Optional[float] = None          # Espesor de base (cm)
     modulo_subbase: Optional[float] = None        # Módulo resiliente subbase (MPa)
     modulo_base: Optional[float] = None           # Módulo resiliente base (MPa)
+    espesor_rodadura: Optional[float] = None      # Espesor de la capa asfáltica (cm); si no se da, se usa el mínimo del manual
 
 
 @dataclass
@@ -92,11 +98,11 @@ class ManualPavimentos:
     def _cargar_tablas(self):
         """Tablas de diseño según método mecánico-empírico."""
 
-        # Coeficientes estructurales para capas (a_i)
+        # Coeficientes estructurales para capas (a_i), AASHTO-93, por PULGADA de espesor (no por cm; ver CM_POR_PULGADA)
         self.coeficientes_estructurales = {
             "rodadura_asfaltica": {
                 "tipo": "asfaltico",
-                "a": 0.44,           # Coeficiente estructural (1/cm)
+                "a": 0.44,           # Coeficiente estructural (1/pulgada)
                 "rango": (0.35, 0.50)
             },
             "base_granular": {
@@ -351,21 +357,21 @@ class DisenadorPavimentos:
         min_base = self.manual.espesores_minimos[TipoPavimento.ASFALTICO]["base"]
         min_subbase = self.manual.espesores_minimos[TipoPavimento.ASFALTICO]["subbase"]
 
-        # 1. Capa de rodadura (mínimo 5 cm)
-        d1 = max(min_rodadura, 5.0)
+        # 1. Capa de rodadura (mínimo 5 cm; el ingeniero puede fijar un espesor mayor con `espesor_rodadura`)
+        d1 = max(min_rodadura, 5.0, params.espesor_rodadura or 0.0)
 
         # 2. Capa base (mínimo 15 cm)
         d2 = max(min_base, params.espesor_base if params.espesor_base else 15.0)
 
-        # 3. Calcular SN aportado
-        sn1 = a1 * d1
-        sn2 = a2 * d2 * m2
+        # 3. Calcular SN aportado. Los a_i son por PULGADA: los espesores (cm) se convierten antes de multiplicar (issue #103).
+        sn1 = a1 * d1 / CM_POR_PULGADA
+        sn2 = a2 * (d2 / CM_POR_PULGADA) * m2
 
         # 4. Calcular SN restante para subbase
         sn_restante = sn_requerido - sn1 - sn2
 
         if sn_restante > 0:
-            d3 = sn_restante / (a3 * m3)
+            d3 = (sn_restante / (a3 * m3)) * CM_POR_PULGADA      # pulgadas -> cm
             d3 = max(min_subbase, d3)
         else:
             d3 = min_subbase
@@ -373,10 +379,10 @@ class DisenadorPavimentos:
             if sn1 + sn2 > sn_requerido:
                 sugerencias.append("El espesor de base puede reducirse para optimizar costos")
 
-        # Redondear a múltiplos de 2.5 cm (práctica común)
+        # Redondear a múltiplos de 2.5 cm (práctica común). La subbase se redondea HACIA ARRIBA: redondear al más cercano podía dejar el SN real por debajo del requerido.
         d1 = round(d1 / 2.5) * 2.5
         d2 = round(d2 / 2.5) * 2.5
-        d3 = round(d3 / 2.5) * 2.5
+        d3 = math.ceil(d3 / 2.5) * 2.5
 
         # Verificar espesores máximos
         max_rodadura = self.manual.espesores_maximos[TipoPavimento.ASFALTICO]["rodadura"]
@@ -390,8 +396,13 @@ class DisenadorPavimentos:
         if d3 > max_subbase:
             errores.append(f"Espesor de subbase {d3} cm excede el máximo recomendado {max_subbase} cm")
 
-        # Calcular SN real
-        sn_real = a1 * d1 + a2 * d2 * m2 + a3 * d3 * m3
+        # Calcular SN real (con espesores convertidos a pulgadas)
+        sn_real = (a1 * d1 + a2 * d2 * m2 + a3 * d3 * m3) / CM_POR_PULGADA
+
+        # Aviso honesto: este módulo solo ajusta la subbase; con tránsito medio o alto la rodadura y la base mínimas no son una estructura típica.
+        if params.esals_millones >= 1.0 and d1 <= min_rodadura and not params.espesor_rodadura:
+            sugerencias.append("Con tránsito de 1 millón de ESAL o más, la rodadura y la base mínimas no suelen ser la estructura óptima: este diseño solo ajusta la subbase. "
+                               "Fije `espesor_rodadura` y `espesor_base` según los mínimos por tránsito del Manual de Diseño de Pavimentos de INVIAS.")
 
         restricciones.append({
             "nombre": "Número Estructural Real (SN)",
@@ -422,6 +433,10 @@ class DisenadorPavimentos:
 
         # Factor de conversión SN -> espesor de concreto (aproximado)
         # D_concreto = SN / 0.39
+        # ADVERTENCIA (issue #103): esta conversión NO es de AASHTO-93 (el pavimento rígido se diseña con otra ecuación) y no se ha verificado contra el Manual INVIAS;
+        # su unidad y su origen no están documentados. No se modifica aquí para no sustituir un valor dudoso por otro sin fuente; se advierte al usuario.
+        sugerencias.append("ATENCIÓN: el espesor de losa se obtiene con una conversión aproximada (SN / 0,39) que no está verificada contra el Manual de Diseño de Pavimentos de Concreto de INVIAS. "
+                           "Úselo solo como orden de magnitud y confirme con el método oficial y un ingeniero de pavimentos.")
         d_concreto = sn_requerido / 0.39
         d_concreto = max(min_rodadura, d_concreto)
 
