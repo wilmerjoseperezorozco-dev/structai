@@ -27,7 +27,9 @@ CACHE = AQUI / "_cache"
 ANH = "https://geovisor.anh.gov.co/server/rest/services/GEOVISOR_v32/ANH_ENTIDADES_TERRIT/MapServer/1/query"
 DEPTOS = ["05", "08", "11", "13", "15", "17", "18", "19", "20", "23", "25", "27", "41", "44", "47", "50", "52", "54",
           "63", "66", "68", "70", "73", "76", "81", "85", "86", "91", "94", "95", "97", "99"]
-BASE = "/vsicurl/https://data.chc.ucsb.edu/products/CHIRPS/v3.0/monthly/global/tifs/chirps-v3.0.{a}.{m:02d}.tif"
+# COG (no los GeoTIFF por franjas): mismas cifras (verificado: diferencia maxima 0,0 mm en 77 municipios, 2014-12) y
+# lectura por bloques, sin los 429 del servidor.
+BASE = "/vsicurl/https://data.chc.ucsb.edu/products/CHIRPS/v3.0/monthly/global/cogs/chirps-v3.0.{a}.{m:02d}.cog"
 BBOX = (-79.2, -4.4, -66.7, 13.5)
 NODATA = -9999.0
 
@@ -77,7 +79,7 @@ def main() -> None:
     # El archivo mensual esta organizado en franjas de una fila (~29 KB) y GDAL pide por defecto trozos de 16 KB:
     # cada mes generaba cientos de solicitudes HTTP (causa probable de los 429). Con trozos de 16 MB bastan 1-2 por mes.
     with rasterio.Env(GDAL_HTTP_TIMEOUT=120, GDAL_HTTP_MAX_RETRY=3, GDAL_HTTP_RETRY_DELAY=5,
-                      GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR", CPL_VSIL_CURL_ALLOWED_EXTENSIONS=".tif",
+                      GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR", CPL_VSIL_CURL_ALLOWED_EXTENSIONS=".tif,.cog",
                       CPL_VSIL_CURL_CHUNK_SIZE="16777216", GDAL_HTTP_MERGE_CONSECUTIVE_RANGES="YES", VSI_CACHE="FALSE"):
         for k, (a, m) in enumerate(meses):
             cf = CACHE / "chirps_mes" / f"{a}-{m:02d}.json"

@@ -238,3 +238,18 @@ Mejora del límite de la sección 11: "la cercanía geográfica no garantiza con
 - **Confirmatorios:** **M1** la log-normal o la inversa gamma se ajusta con KS p > 0,05 (bootstrap paramétrico, 1.000 réplicas). **M2** la cola sigue una ley de potencia con α entre 1,5 y 3,5 y KS p > 0,05.
 - **Descriptivo:** mediana, percentiles 50/90/99 de área; ajuste por tipo con ≥ 30 polígonos.
 - **Limitaciones declaradas:** 209 polígonos son una **muestra no probabilística** (cartografía de detalle en zonas específicas, no un inventario completo del país); los inventarios subrepresentan los eventos pequeños, lo que sesga hacia la izquierda el máximo de la distribución; **no hay volumen medido**, y la conversión área→volumen exigiría relaciones empíricas ajenas a estos datos; sin fecha no hay frecuencia temporal, solo distribución de tamaños; **no sirve para dimensionar barreras ni obras de contención**, que requieren energía de impacto y trayectoria.
+
+
+## 21. Frecuencia de crecientes con los caudales máximos anuales del IDEAM, definida ANTES de correrla (2026-11-07)
+
+**Pregunta:** ¿se pueden ajustar distribuciones de valores extremos (GEV, Log-Pearson III, Gumbel) a los máximos anuales del IDEAM de modo que sus caudales de retorno estén calibrados en años no usados para ajustar, y qué tan inciertos son?
+
+- **Datos:** IDEAM, `Q_MX_A` (almacén abierto, un valor por año y estación). **Verificación hecha antes de correr** (2 estaciones): el valor anual coincide con el máximo de la serie horaria `CAUDAL_H` y de `Q_MX_D`; **es un máximo horario, no el pico instantáneo**, y subestima el pico en cuencas pequeñas. Se observan valores idénticos en años distintos en algunas series (p. ej. 2019 y 2022, o 2020 y 2021 en la 0011027030), posible señal de relleno o de saturación del sensor.
+- **Inclusión:** ≥ 30 años con valor > 0; último año ≥ 2000. **Filtro de calidad:** se marca (y se analiza aparte) toda estación en que > 10 % de los años repite exactamente un valor de otro año.
+- **Ajuste:** GEV por máxima verosimilitud; Log-Pearson III por momentos de log10; Gumbel por máxima verosimilitud. Retornos T = 2, 5, 10, 25, 50, 100 años. IC95 % por bootstrap paramétrico (300 réplicas) para el GEV. **T ≤ 50 es el rango principal; T = 100 es extrapolación** (con 30-60 años de registro) y se rotula así.
+- **Confirmatorios** (agregados con IC95 % de bootstrap de bloques por departamento, 2.000 réplicas):
+  - **C1 (calibración fuera de muestra):** ajustar con el primer 70 % de los años (cronológico) y contar, en el 30 % restante, la fracción de años que supera el Q10 estimado. Se declara «calibrado» si el IC de esa fracción agregada contiene 0,10. Ídem para Q2 (esperado 0,50).
+  - **C2 (bondad de ajuste del GEV):** prueba KS con p-valor por bootstrap paramétrico; se cumple si la fracción de estaciones rechazadas al 5 % es ≤ 15 %.
+  - **C3 (elección):** comparar, estación por estación, la log-verosimilitud predictiva fuera de muestra (misma partición 70/30) entre GEV y Log-Pearson III; se reporta cuál gana más a menudo, con IC.
+- **Descriptivo:** fracción de estaciones con tendencia significativa (Mann-Kendall, α = 0,05; se espera ~5 % por azar, y los vecinos no son independientes); mediana de la razón (ancho del IC de Q50 / Q50); fracción con forma ξ fuera de [−0,5; 0,5] (ajuste inestable).
+- **Limitaciones declaradas:** máximo horario ≠ pico instantáneo (subestimación del caudal de diseño real); series con posibles valores repetidos o rellenados; estacionariedad supuesta (el clima de 2010-2011 y 2022 no es independiente); estaciones de una misma cuenca no son independientes; **no sustituye** el estudio hidrológico de un proyecto con ingeniero responsable y no incluye áreas de drenaje ni transposición a sitios sin aforo.
