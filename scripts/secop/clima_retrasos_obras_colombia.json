@@ -1,0 +1,36 @@
+{
+ "n": 2522,
+ "prorrogas": 826,
+ "mde": 1.1261481122119712,
+ "veredicto": "NO hay evidencia de asociacion (IC incluye 1); con n=2522 solo se detectarian RM >= 1.13",
+ "resultados": {
+  "PRINCIPAL: anomalia estacional -> prorroga": {
+   "rm": 1.0007371751347878,
+   "ic": [
+    0.8395743237430698,
+    1.1691874489437615
+   ]
+  },
+  "anomalia estacional -> suspension": {
+   "rm": 1.1026620019127493,
+   "ic": [
+    0.951775546650146,
+    1.3154254997420072
+   ]
+  },
+  "sens.: z sin quitar estacionalidad -> prorroga": {
+   "rm": 0.9542690488141563,
+   "ic": [
+    0.8274581119502827,
+    1.0854807655235421
+   ]
+  },
+  "sens.: maximo mensual de la ventana -> prorroga": {
+   "rm": 0.994087157294063,
+   "ic": [
+    0.8409398462577348,
+    1.1659640017051496
+   ]
+  }
+ }
+}

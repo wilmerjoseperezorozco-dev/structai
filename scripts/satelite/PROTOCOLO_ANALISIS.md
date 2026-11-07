@@ -107,3 +107,26 @@ Hipótesis (propuesta para explicar el signo contrario de la sección 10): en mu
 - **Secundarias:** diferencia media de AUC en el tercil bajo y en el alto de HAND; AUC medio del caudal.
 - **Regla fija:** "hipótesis fluvial apoyada" solo si el IC de la correlación principal excluye 0 **y es positivo**. Si es negativo o incluye 0, no se apoya.
 - **Limitaciones declaradas:** la cercanía geográfica no garantiza conexión hidrológica (no se verifica que la estación esté aguas arriba del municipio); series mensuales (no captan crecientes de horas); cobertura de estaciones decreciente; la mayoría de estaciones está en cauces medianos y pequeños, no en el cauce principal.
+
+
+## 12. Hipótesis 1: clima y retrasos de obra (SECOP II + CHIRPS), definida ANTES de correrla (2026-11-06)
+
+**Pregunta:** ¿la lluvia anómala durante la ejecución de un contrato de obra se asocia con prórrogas y suspensiones?
+
+- **Unidad:** contrato de obra de una **alcaldía** de los 7 departamentos del Caribe, con la ciudad resuelta a un municipio de los 195 (vía DIVIPOLA), inicio entre 2020-01 y 2024-12 y ventana planeada dentro de 2024-12. Se excluyen estados no iniciados o sin resultado final ('En ejecución', 'Aprobado', 'En aprobación', 'enviado Proveedor'). Las alcaldías se eligen porque el sitio de obra coincide, con alta probabilidad, con la ciudad; en gobernaciones y entidades nacionales la "ciudad" es la de la entidad.
+- **Ventana de exposición:** desde la fecha de inicio hasta inicio + duración declarada (no se usa la fecha de fin, que puede ya incluir prórrogas; en el 49 % de los contratos fin − inicio ≈ duración).
+- **Exposición principal:** anomalía de precipitación mensual (CHIRPS) respecto de la media del **mismo mes calendario** del municipio (2019-2024), promediada sobre los meses de la ventana y estandarizada (1 DE = 1 unidad). Elimina la estacionalidad. **Sensibilidad:** z sin quitar la estacionalidad; máximo mensual de la ventana.
+- **Resultado principal:** prórroga = `dias_adicionados` > 0. **Secundario:** al menos una suspensión (tabla de adiciones).
+- **Modelo:** regresión logística con controles log(valor del contrato), log(duración en días), año de inicio y departamento. Efecto = razón de momios por +1 DE de exposición; **IC 95 % por remuestreo de municipios** (clústeres).
+- **Regla fija:** "asociación" solo si el IC excluye 1. Se informa n, eventos y la razón de momios mínima detectable (potencia 80 %, aproximación de Wald).
+- **Limitaciones declaradas:** muestra pequeña; las prórrogas tienen muchas causas (cambio de alcance, falta de recursos); datos autorreportados y fechas inconsistentes; la lluvia de CHIRPS es de ~5 km y mensual; una asociación no establece causalidad.
+
+
+### 12b. Enmienda por potencia insuficiente: extensión a todo el país (2026-11-06)
+
+El piloto del Caribe quedó **inconcluyente**, no nulo: 306 contratos en solo 20 municipios, RM 1,02 [0,73; 1,75] y razón de momios mínima detectable de 1,39. La extensión a Colombia continental (CHIRPS 1.120 municipios, 32 departamentos) se decide **por falta de potencia, no por la dirección del resultado**. Diseño idéntico a la sección 12; solo cambia el ámbito. El análisis principal pasa a ser el nacional; el del Caribe se conserva como piloto (`clima_retrasos_obras_caribe.json`). Se usa `scripts/secop/clima_retrasos_obras.py colombia`.
+
+
+### 12c. Mejora del límite "ciudad de la entidad ≠ sitio de obra" (2026-11-06)
+
+El resultado nacional restringido a alcaldías es informativo (RM 1,00 [0,84; 1,17], n = 2.522, MDE 1,13), pero descarta 39.884 contratos de otras entidades. Se usa la **ubicación de ejecución** de SECOP II (`gra4-pcp2`, solo `id_contrato` y `localizaci_n`; proveedor no descargado) para incluir todas las entidades. **Regla:** solo contratos con **exactamente un** municipio de ejecución; el resto del diseño (ventana, exposición, controles, regla de veredicto) es el de la sección 12. Se reporta junto al resultado de alcaldías; una conclusión que cambie entre ambos no es robusta. Se corre con `clima_retrasos_obras.py colombia ubicacion`.
