@@ -12,7 +12,7 @@ Declarado:
 - Pendiente por diferencias finitas con tamano de pixel en metros.
 - Municipios muy grandes se leen decimados (tope ~MAX_PIXELES) para acotar costo.
 
-Uso: python scripts/satelite/extraer_dem_poligonos.py [codigos_depto separados por coma]
+Uso: python scripts/satelite/extraer_dem_poligonos.py [codigos_depto separados por coma | nacional]
 Salida: scripts/satelite/dem_poligonos_caribe.json
 """
 from __future__ import annotations
@@ -37,6 +37,9 @@ CACHE = AQUI / "_cache"
 ANH = "https://geovisor.anh.gov.co/server/rest/services/GEOVISOR_v32/ANH_ENTIDADES_TERRIT/MapServer/1/query"
 STAC = "https://earth-search.aws.element84.com/v1/search"
 DEPTOS_CARIBE = ["08", "47", "13", "23", "70", "20", "44"]
+# Colombia continental (88 San Andres queda fuera: archipielago, otra ventana)
+DEPTOS_NACIONAL = ["05", "08", "11", "13", "15", "17", "18", "19", "20", "23", "25", "27", "41", "44", "47", "50", "52", "54",
+                   "63", "66", "68", "70", "73", "76", "81", "85", "86", "91", "94", "95", "97", "99"]
 M_POR_GRADO = 111_320.0
 MAX_PIXELES = 4_000_000
 GRADO_30M = 1 / 3600.0
@@ -99,7 +102,8 @@ def estadistica(geom_geojson: dict) -> dict | None:
 
 
 def main() -> None:
-    deptos = sys.argv[1].split(",") if len(sys.argv) > 1 else DEPTOS_CARIBE
+    nacional = len(sys.argv) > 1 and sys.argv[1] == "nacional"
+    deptos = DEPTOS_NACIONAL if nacional else (sys.argv[1].split(",") if len(sys.argv) > 1 else DEPTOS_CARIBE)
     out, fallas = [], 0
     for d in deptos:
         fs = poligonos(d)
@@ -127,10 +131,10 @@ def main() -> None:
                 print(f"  {pr['NOMBRE_ENT']:<24} elev {est['elev_media_m']:6.0f} m  pend {est['pend_media_pct']:5.1f}%  <10m {est['frac_bajo_10m']*100:5.1f}%")
     ok = sum(1 for o in out if "error" not in o)
     print(f"\n{ok}/{len(out)} municipios con estadistica valida ({fallas} fallas)")
-    (AQUI / "dem_poligonos_caribe.json").write_text(json.dumps({
+    (AQUI / ("dem_poligonos_colombia.json" if nacional else "dem_poligonos_caribe.json")).write_text(json.dumps({
         "fuente": "Copernicus DEM GLO-30 + poligonos IGAC (ANH, simplificados)", "max_pixeles": MAX_PIXELES, "municipios": out},
         ensure_ascii=False, indent=1), encoding="utf-8")
-    print("Guardado dem_poligonos_caribe.json")
+    print("Guardado", "dem_poligonos_colombia.json" if nacional else "dem_poligonos_caribe.json")
 
 
 if __name__ == "__main__":

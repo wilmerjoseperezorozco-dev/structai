@@ -190,3 +190,24 @@ Mejora del límite de la sección 11: "la cercanía geográfica no garantiza con
   - **C3:** el índice SGC aporta sobre la pendiente: ρ parcial(densidad SIMMA, índice SGC | pendiente p90) > 0 con IC que excluye 0.
 - **Descriptivo:** concordancia de terciles; municipios con mayor desacuerdo (rangos).
 - **Limitaciones declaradas:** el mapa SGC es un modelo (no observación) y posiblemente usa pendiente como insumo, por lo que C1 es parcialmente circular: se interpreta como **consistencia**, no como validación; SIMMA tiene sesgo de reporte/acceso; municipios planos del Caribe tienen poca variación (rango restringido); DEM a ~90 m frente a escala 1:100.000; el análisis es municipal (falacia ecológica).
+
+
+## 17. Extensión nacional del contraste con el SGC (§16), definida ANTES de correrla (2026-11-07)
+
+**Pregunta:** ¿lo observado en el Caribe (relieve y SIMMA concuerdan con el mapa de amenaza del SGC) se sostiene en los ~1.100 municipios de Colombia continental, y varía por región natural?
+
+- **Datos:** DEM Copernicus GLO-30 por polígono municipal IGAC (mismo método que el Caribe, `extraer_dem_poligonos.py nacional`), índice SGC (% alta + % muy alta), SIMMA por 100 km². San Andrés queda fuera. Se excluyen categorías SIN/CD del SGC. Regiones: las de la sección 15.
+- **Confirmatorios** (Spearman, IC95 % bootstrap de bloques por departamento, 2.000 réplicas): **N1** ρ(pendiente p90, SGC) > 0; **N2** ρ(densidad SIMMA, SGC) > 0; **N3** ρ parcial(SIMMA, SGC | pendiente p90) > 0. Todos con IC que excluye 0.
+- **Heterogeneidad (N4):** ρ de N1 y N3 por región. Se declara «heterogénea» si algún IC regional excluye el valor nacional puntual. Con regiones pequeñas (< 30 municipios) solo se reporta.
+- **Comparación con el Caribe:** se reporta si el ρ del Caribe (+0,52; +0,49; +0,31) cae dentro del IC nacional.
+- **Limitaciones:** las de la §16 más: municipios muy grandes se leen decimados (tope 4 M píxeles); SIMMA tiene cobertura desigual entre regiones (sesgo de reporte), y la comparación entre regiones mezcla riesgo con capacidad de inventario; la circularidad SGC–pendiente se mantiene.
+
+
+## 18. Validación del HAND con las huellas de inundación de La Niña 2010-2011 (IGAC), definida ANTES de correrla (2026-11-07)
+
+**Pregunta:** ¿el HAND (fracción del municipio con HAND < 10 m) predice qué parte del municipio resultó inundada en La Niña 2010-2011, y aporta algo sobre la sola cota baja?
+
+- **Datos:** IGAC, `Inundacion_Nina_100k_2011` (2.517 polígonos, escala 1:100.000, descargados tal cual, simplificados 0,0003°); HAND de los 195 municipios del Caribe (`hand_caribe.json`, `frac_hand_lt10_5`); cota baja del DEM (`frac_bajo_10m`). Variable respuesta: **fracción del área municipal cubierta por las huellas** (unión de polígonos ∩ municipio).
+- **Confirmatorios** (Spearman, IC95 % bootstrap de bloques por departamento, 2.000 réplicas): **F1** ρ(fracción inundada, fracción HAND<10 m) > 0 con IC que excluye 0. **F2** ρ parcial(fracción inundada, HAND<10 | fracción cota<10 m) > 0 con IC que excluye 0 (el HAND aporta más allá de la altitud).
+- **Descriptivo:** concordancia de terciles; municipios con mayor desacuerdo.
+- **Limitaciones declaradas:** las huellas son una cartografía de una sola emergencia (no una frecuencia); pueden incluir cuerpos de agua permanentes (ciénagas, ríos grandes) y por tanto inflar la fracción en municipios ribereños; escala 1:100.000 frente a un DEM de ~90 m; el HAND es de superficie y no resuelve llanuras; análisis municipal (falacia ecológica); sin control de escorrentía local ni defensas.
