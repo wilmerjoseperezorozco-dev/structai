@@ -50,7 +50,9 @@ Cada análisis se **preregistra antes de ejecutarse**, usa corrección por compa
 | Frecuencia de crecientes (IDEAM) | El ajuste estacionario por estación **no está calibrado** (excedencia observada del Q10: 0,135) y el 44 % de estaciones muestra tendencia; no se usa como base de diseño | `research/protocolo-21` |
 | Lluvia y ENSO | Mapa de sensibilidad de la lluvia a El Niño y La Niña 1981–2024 | `research/protocolo-15` |
 | Relieve y amenaza SGC | Contraste nacional con el mapa de amenaza por movimientos en masa | `research/protocolo-16` |
-| Anomalías de caudal | La regla de producción marca 15,5 % de los meses normales, no el 10 % previsto; un z robusto con persistencia detecta mejor saltos (AUC 0,854 → 0,901) pero no crecientes sostenidas | `research/anomalias-caudal` |
+| Anomalías de caudal | La regla de producción marca 15,5 % de los meses normales, no el 10 % previsto. Añadir la persistencia del mes anterior detecta mejor los saltos (AUC 0,854 → 0,901; se sostiene con bootstrap por departamento); el z estacional por sí solo no supera la regla actual | `research/anomalias-caudal` |
+| Coherencia espacio-temporal de anomalías | Las estaciones no son independientes (correlación mediana 0,46 a menos de 50 km). La Niña multiplica por 2-2,7 la fracción de estaciones en anomalía alta en las regiones Andina, Pacífica y Caribe; en la Amazonía el signo es el opuesto | `research/coherencia-anomalias` |
+| Respuesta de los máximos anuales a ENSO | Hay efecto dentro de la muestra, pero ni el modelo por estación (41 %) ni el agrupado por región (52 %) superan en predicción a la GEV estacionaria; solo en Andina y Caribe el agrupado gana 60-66 % (exploratorio) | `research/h4-prima` |
 | Precios atípicos y recomendador de insumos | Umbral conforme |z| > 2,82 con 5 % de marca; **no alcanza** el 0,90 de sensibilidad preregistrado ante un error ×10 (0,64) | `research/precios-p1-p3` |
 | Fórmulas candidatas con logaritmos | Estado preregistrado antes de ejecutar H1–H6 | `research/protocolo-23` |
 

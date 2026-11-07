@@ -18,6 +18,7 @@ Precios y costos de obra, métricas del RAG sin LLM y anomalías de caudal. En c
 - Costo paramétrico de pavimentos (espesores de `motor-vias` × precios INVIAS 2026-1) y ejercicio de periodo de retorno económico de alcantarillas, con protocolo preregistrado. Resultados en `scripts/precios/RESULTADOS_COSTO_PARAMETRICO.md`. Tag `research/costo-parametrico`.
 - Transmisión de TRM y petróleo al ICOCIV (DANE, 69 meses) y Monte Carlo del costo en riesgo de una obra vial, con protocolo preregistrado y validación fuera de muestra. Resultados en `scripts/precios/RESULTADOS_P3_P4.md`. Tag `research/icociv-p3-p4`.
 - Coherencia espacio-temporal de las anomalías de caudal IDEAM (sincronía, dependencia de ENSO y alcance espacial), con protocolo preregistrado. Tag `research/coherencia-anomalias`.
+- H4′: respuesta de los máximos anuales de caudal a ENSO con ventanas de ONI alternativas y pendiente agrupada por región, con validación cronológica; ninguna prueba confirmatoria cumple. Tag `research/h4-prima`.
 - Política de versiones, `CHANGELOG.md`, milestones por fase y portada nueva (`README.md`; el detalle completo pasa a `docs/DETALLE_TECNICO.md`).
 
 ### Limitaciones documentadas

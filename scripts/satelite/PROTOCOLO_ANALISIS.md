@@ -349,3 +349,18 @@ Mejora del límite de la sección 11: "la cercanía geográfica no garantiza con
 **No se concluye:** una relación causal ni una predicción operativa. Un éxito significaría que la respuesta a ENSO es transferible en el tiempo; un fracaso, que con estos datos y esta forma no es predecible.
 
 **Aclaración §25 (antes de la corrida completa, tras una prueba de humo con 24 estaciones).** Cuando el valor de prueba cae fuera del soporte de la GEV estacionaria (log-verosimilitud −∞), se aplica la convención de H4: el candidato gana si su verosimilitud es finita (Δ = +∞), y pierde si es −∞ o indefinida (nan). Se reporta aparte cuántas estaciones tienen Δ no finito. La mediana de Δ se calcula solo con valores finitos.
+
+### Resultados §25 (2026-11-07; `hipotesis_h4_prima.py`, 503 estaciones en 32 departamentos, bootstrap por departamento)
+
+| Candidato | Gana en predicción reservada | IC95 % | Mediana Δ (finitos) | p Holm |
+|---|---:|---|---:|---:|
+| W1 por estación | 41,2 % | [37,4; 45,0] | −0,036 | 0,004 (peor que el 50 %) |
+| W2 por estación | 38,8 % | [36,1; 41,8] | −0,044 | 0,004 (peor que el 50 %) |
+| W1 agrupado regional | 52,3 % | [47,5; 56,4] | +0,092 | 0,410 |
+| W2 agrupado regional | 52,9 % | [48,4; 57,5] | +0,069 | 0,410 |
+
+**Ninguna de las 4 pruebas confirmatorias cumple.** Exploratorias: W3 por estación 34,2 %; W0 agrupado 53,5 %.
+
+**Separación de causas.** (c) *Régimen:* la desviación estándar del ONI en la prueba (0,74 y 0,97) es igual a la de calibración (0,71 y 0,91), así que el fracaso no se explica por un periodo de prueba sin variación de ENSO. (a) *Ventana:* W1 y W2 dan lo mismo, así que la ventana no es el problema. (b) *Sobreajuste:* ajustar μ1 por estación es peor que no usar ENSO (39-41 %); agrupar la pendiente por región sube a 52-53 %, sin superar el azar. Es la explicación que los datos apoyan.
+
+**Exploratorio, sin ajuste (desglose por región del agrupado):** Andina 60-64 % y Caribe 62-66 % de estaciones ganan; Pacífica y Orinoquía ≈ 50 %; Amazonía 31-35 %. Coincide en Andina y Caribe con la dependencia de ENSO medida en la coherencia espacial, pero es un desglose posterior a ver los resultados y con los mismos datos: sirve para formular una hipótesis, no para afirmarla. Confirmarla exigiría un periodo de prueba independiente.
