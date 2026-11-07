@@ -20,6 +20,9 @@ Precios y costos de obra, métricas del RAG sin LLM y anomalías de caudal. En c
 - Coherencia espacio-temporal de las anomalías de caudal IDEAM (sincronía, dependencia de ENSO y alcance espacial), con protocolo preregistrado. Tag `research/coherencia-anomalias`.
 - H4′: respuesta de los máximos anuales de caudal a ENSO con ventanas de ONI alternativas y pendiente agrupada por región, con validación cronológica; ninguna prueba confirmatoria cumple. Tag `research/h4-prima`.
 - Registro de costos de datos y frontera costo-utilidad de subconjuntos (estaciones, anomalías, susceptibilidad), con no inferioridad preregistrada: un modelo de susceptibilidad conserva su AUC con el 25 % de las filas; las líneas base simples bastan y no se justifica el aprendizaje por refuerzo con esta evidencia. Tag `research/valor-informativo-p0-p1`.
+- Comparación con modelos no medidos antes (susceptibilidad, detectores de anomalía, intervalos de costo): el método más simple alcanza lo que alcanzan los complejos. Documento de estado del arte (`docs/ESTADO_DEL_ARTE.md`). Tag `research/comparativo-modelos`.
+- Relación no lineal con rezago entre ONI, TNA y el clima del Caribe (lluvia y temperatura), con protocolo preregistrado: no hay evidencia de que la no linealidad mejore la predicción; el modelo lineal estacional da una habilidad modesta no robusta tras corregir por comparaciones múltiples. Tag `research/rezagos-no-lineales`.
+- Primer lote de plugins del chat (ENSO por región, vigencia de normas, revisión de un precio, insumos de una actividad), con pruebas (`packages/construdata/plugins_chat.py`, issue #104), con modo degradado: si el modelo de lenguaje no está disponible y algún plugin respondió, se devuelve esa respuesta verificada en lugar de un error.
 - Política de versiones, `CHANGELOG.md`, milestones por fase y portada nueva (`README.md`; el detalle completo pasa a `docs/DETALLE_TECNICO.md`).
 
 ### Limitaciones documentadas
