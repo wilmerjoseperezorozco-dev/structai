@@ -57,3 +57,22 @@
 
 ## 4. Riesgos a tener presentes
 Sin historia propia no hay validación temporal de nada que toque precios de la base; la transmisión estimada con ICOCIV (≈ 70 meses) es corta y cubre un periodo atípico (2021-2022); los precios de referencia no son de mercado; un modelo de «proyección de costos» no sustituye el análisis de un presupuestador ni una cotización; los datos sintéticos pueden reproducir sesgos de los reales y nunca deben presentarse como precios.
+
+---
+# P1 y P2 — reglas fijadas ANTES de correr (2026-11-07)
+
+## P1 — Precios atípicos en `apu_precios_nacional_detalle` (catálogo IAD MIPYMES de Colombia Compra Eficiente)
+**Qué son los datos (verificado):** cotizaciones sin IVA de 78 proveedores mipyme a 1.754 ítems estandarizados (1.472 en «und»); casi todos los proveedores cotizan casi todos los ítems (mediana 1.754). Un valor extremo suele ser un error de digitación del proveedor, no un precio de mercado. **No se publican nombres de proveedores** (hay personas naturales): solo identificadores anónimos y conteos.
+- **Excluidas del análisis:** las 4.043 cotizaciones ya marcadas no válidas (nulas o ≤ 0). Ítems con < 20 cotizaciones válidas.
+- **Detector A (primario):** z robusto del logaritmo del precio dentro de cada ítem, z = (ln p − mediana)/(1,4826·MAD); atípica si |z| > 3,5. Si MAD = 0, se usa el rango intercuartílico.
+- **Detector B (secundario):** cercas extremas del logaritmo: fuera de [Q1 − 3·RIC, Q3 + 3·RIC].
+- **Error de unidad o de decimal (descriptivo):** una cotización atípica cuya razón con la mediana del ítem es cercana a una potencia de diez (|log10(razón) − k| < 0,05 con k ∈ {±1, ±2, ±3}).
+- **Efecto proveedor:** descomposición ln p = efecto ítem + efecto proveedor + residuo (mínimos cuadrados alternados); se reporta qué parte de la varianza explica el proveedor y cuántos proveedores muestran un sesgo sistemático (mediana de z con |mediana| > 1).
+- **Evaluación (no hay verdad de referencia):** (i) fracción marcada por A y por B; (ii) concordancia con la marca existente `precio_sospechoso` (precisión, sensibilidad, κ de Cohen); (iii) fracción de las marcadas cercana a potencias de diez; (iv) revisión descriptiva de una muestra aleatoria de 30 cotizaciones marcadas por A y no por la marca existente (ítem, unidad, precio, mediana), **sin presentarla como validación**.
+- **Límite:** un precio atípico en este catálogo no es necesariamente erróneo (presentaciones, marcas, ubicación); y la marca existente tampoco es una verdad de referencia.
+
+## P2 — Recomendador de APU y auditoría de rendimientos (`invias_actividad_insumos`, 2026-1)
+**Datos:** composición de las 526 actividades (insumos, cantidad o rendimiento, valor de la línea) para **una provincia de referencia** (la que tenga las 526 actividades; la composición es la misma entre provincias y varían los precios).
+- **P2a — Recomendar el insumo que falta:** para cada actividad con ≥ 4 insumos se oculta un insumo al azar (semilla fija, 5 repeticiones) y se pide el ranking de insumos a partir de los restantes. Modelos: (1) **popularidad** (insumos más frecuentes), (2) **co-ocurrencia** (PMI entre insumos), (3) **vecinos** (similitud coseno TF-IDF entre actividades y votación de los k = 10 más parecidos). Métricas: **acierto@5, acierto@10 y MRR**, con IC95 % por bootstrap de bloques por capítulo del numeral. **Criterio:** el modelo de vecinos supera a la popularidad en acierto@10 con IC de la diferencia que excluye 0.
+- **P2b — Auditoría de proporciones por inyección de errores:** detector = z robusto de la participación de cada línea en el costo frente a la participación del mismo insumo en las 10 actividades más parecidas. Evaluación **por inyección** (no hay errores reales etiquetados): se corrompe una línea de actividades elegidas al azar (cantidad ×10, ×0,1 o eliminación de la línea de mayor participación) y se mide la **sensibilidad con una tasa de falsos positivos fija de 5 %** sobre las líneas sin tocar. **Criterio:** sensibilidad ≥ 0,5 para ×10 y ×0,1 con IC que excluya 0,2.
+- **Límites:** las actividades de INVIAS son de obra vial y cubren solo una parte de la construcción; la composición es de referencia; la inyección de errores mide cuánto detecta el método errores *sintéticos*, no los reales; no hay presupuestos de proyectos, así que no se evalúa recomendación por co-ocurrencia en obras.
