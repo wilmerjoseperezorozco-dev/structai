@@ -306,3 +306,20 @@ Mejora del límite de la sección 11: "la cercanía geográfica no garantiza con
 - **Familia de Holm:** H1, H2, H3, H4a y H4b, con **p-valores bootstrap bilaterales** (bloques por departamento, 2.000 réplicas; p = 2·mín(P(Δ ≤ 0), P(Δ ≥ 0)) con corrección +1). **H5 se evalúa por su regla** (sin p-valor) y se reporta aparte.
 - **H3 ya se corrió una vez** antes de programar la corrida final (resultado previo a Holm: ΔAUC = +0,0153, IC95 % [+0,0055; +0,0288]). La candidata cambia dos cosas a la vez respecto de la línea base (usa logaritmos y omite la curvatura), así que **la atribución de la mejora es ambigua**; se añade un control exploratorio (lineal sin curvatura) que no entra a la familia.
 - **Corrida programada:** `corrida_final.sh` ejecuta cada análisis cuando su insumo esté listo y `consolidar_corrida.py` aplica Holm. Resultados en `resultados_corrida/`. Un insumo ausente se reporta como «no disponible», no como resultado nulo.
+
+
+## 24. Cobertura del suelo satelital (ESA WorldCover 2021) y aprendizaje automático en la susceptibilidad, definidos ANTES de correrlos (2026-11-07)
+
+**Pregunta:** ¿una variable satelital gratuita (cobertura del suelo, 10 m) y un modelo de gradiente boosting mejoran la discriminación de movimientos en masa frente a la regresión logística del §22, dejando un departamento fuera?
+
+- **Datos:** las mismas 9.130 presencias SIMMA y 45.593 puntos de fondo del §22. **Nueva variable satelital:** clase de cobertura de ESA WorldCover v200 (2021, 11 clases, 10 m, licencia CC BY 4.0, COG en AWS), leída por teselas en una malla de ~90 m (por la vista de resumen del COG, vecino más cercano). **Nueva variable climática:** lluvia anual media del municipio del punto (CHIRPS v3.0, 1981-2024, media de los 528 meses).
+- **Modelos** (validación dejando un departamento fuera; 23 departamentos con ≥ 20 presencias, como en el §22):
+  - **B0:** logística del §22 (pendiente, curvatura, log(1 + distancia a falla), edad).
+  - **B1:** B0 + cobertura (clases como variable categórica) + lluvia anual media.
+  - **G0:** gradiente boosting (`HistGradientBoostingClassifier`, hiperparámetros por defecto fijados: 200 iteraciones, profundidad máx. 4, tasa 0,05, sin ajuste con los datos de prueba) con las variables de B0.
+  - **G1:** gradiente boosting con las variables de B1.
+- **Confirmatorios** (diferencia pareada de AUC espacial; IC95 % por bootstrap de bloques por departamento, 2.000 réplicas; **Holm a α = 0,05 sobre estos dos**):
+  - **E1 (aporte de la variable satelital y la lluvia):** AUC(B1) − AUC(B0) > 0.
+  - **E2 (aporte del aprendizaje automático):** AUC(G1) − AUC(B1) > 0.
+- **Descriptivo:** AUC(G0) − AUC(B0) (el efecto del modelo con las mismas variables), AUC por región natural y la importancia por permutación de G1 en un departamento reservado.
+- **Limitaciones declaradas:** la cobertura es de **2021**, posterior a muchos de los movimientos del inventario (el inventario no tiene fecha), así que puede reflejar el **efecto** del movimiento (suelo desnudo) y no su causa → **posible fuga causal**, que haría E1 optimista; la cobertura se muestrea en un píxel de ~90 m del resumen del COG; la lluvia es municipal (ecológica); el gradiente boosting con 55.000 puntos y 6 variables puede sobreajustar al departamento de entrenamiento mayoritario (Antioquia, Boyacá); AUC espacial por departamento sigue sobreestimando por autocorrelación entre departamentos vecinos. **No es un mapa de amenaza normativo.**

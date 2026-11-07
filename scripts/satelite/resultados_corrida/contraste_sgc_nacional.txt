@@ -1,0 +1,23 @@
+Municipios nacionales con DEM, SGC y poligono: 1094; con SIMMA>0: 658; SGC alta>0: 932
+  NACIONAL   n=1094 | N1 +0.63 [+0.50,+0.73] | N2 +0.42 [+0.27,+0.56] | N3 +0.14 [+0.02,+0.25]
+
+VEREDICTO: N1 cumple, N2 cumple, N3 cumple
+Caribe dentro del IC nacional: N1 si, N2 si, N3 NO
+
+Por region (N4):
+  Caribe     n= 192 | N1 +0.52 [+0.18,+0.72] | N2 +0.49 [+0.23,+0.61] | N3 +0.31 [+0.09,+0.47]
+  Andina     n= 627 | N1 +0.52 [+0.40,+0.60] | N2 +0.24 [+0.12,+0.33] | N3 +0.11 [-0.03,+0.21]
+  Pacifica   n= 177 | N1 +0.06 [-0.24,+0.54] | N2 -0.10 [-0.42,+0.42] | N3 -0.15 [-0.37,+0.18]
+C:\Users\HP\Desktop\optimizacion para negocios en el atlantico\tubara\construdata\scripts\satelite\contraste_sgc_nacional.py:26: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  for k, f, v in [("N1", lambda i: spearmanr(pen[i], sg[i])[0], spearmanr(pen, sg)[0]),
+C:\Users\HP\Desktop\optimizacion para negocios en el atlantico\tubara\construdata\scripts\satelite\contraste_sgc_nacional.py:27: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  ("N2", lambda i: spearmanr(den[i], sg[i])[0], spearmanr(den, sg)[0]),
+C:\Users\HP\AppData\Local\Programs\Python\Python314\Lib\site-packages\numpy\lib\_function_base_impl.py:3036: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[:, None]
+  Orinoquia  n=  59 | N1 +0.79 [+0.71,+0.86] | N2 +0.60 [+0.47,+0.90] | N3 +0.25 [+0.03,+0.75]
+  Amazonia   n=  39 | N1 +0.76 [-0.72,+0.94] | N2 +0.74 [+0.53,+0.91] | N3 +0.47 [+0.17,+0.83]
+
+Regiones con IC que excluye el valor nacional (heterogeneidad): ['Andina', 'Pacifica', 'Orinoquia', 'Amazonia']
+  SGC = 0                  n= 162 pend p90  16.9% SIMMA 0.16/100km2
+  SGC bajo (>0..mediana)   n= 466 pend p90  49.9% SIMMA 2.17/100km2
+  SGC alto (> mediana)     n= 466 pend p90  65.9% SIMMA 4.59/100km2

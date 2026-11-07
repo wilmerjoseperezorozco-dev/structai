@@ -1,0 +1,7 @@
+H3: AUC espacial línea base (§22) 0.775; candidata log 0.790; ΔAUC = +0.0153 IC95% [+0.0055, +0.0288] -> MEJORA
+   [exploratorio, no entra a la familia] control lineal sin curvatura: AUC 0.774; candidata − control = +0.0168  (la candidata cambia DOS cosas respecto de la línea base: usa log y omite la curvatura; el control separa cuánto viene de cada una)
+   Caribe     base 0.569 | candidata 0.648
+   Andina     base 0.628 | candidata 0.637
+   Pacifica   base 0.694 | candidata 0.728
+   Orinoquia  base 0.942 | candidata 0.944
+   Amazonia   base 0.879 | candidata 0.890
