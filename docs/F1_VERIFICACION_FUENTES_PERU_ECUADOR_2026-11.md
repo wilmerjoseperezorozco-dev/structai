@@ -64,3 +64,8 @@ Ecuador queda con solo P1 y P7 (y quizá P10 cuando se verifique la vigencia) ha
 1. Que el usuario autorice descargar **un solo año** de SINPAD para inspeccionar la estructura; el tamaño se verifica al empezar y se informa antes de continuar.
 2. Abrir en el navegador la página de DesInventar (que devolvió 403) y la del INGEMMET (certificado) para completar lo que quedó en «solo búsqueda».
 3. En paralelo, el usuario podría iniciar la solicitud formal a la SNGR y al INAMHI de Ecuador.
+
+## Actualización del mismo día: intento de descarga (sin éxito)
+- **Corrección:** el conjunto «Emergencias históricas registradas por el INDECI» tiene archivos anuales solo de **2003 a 2018** (más una versión ArcGIS de 2007). La descripción dice «hasta el presente», pero **no hay recurso de 2019 en adelante**. Antes escribí «2003–hoy»: era incorrecto. Consecuencia: **no hay solapamiento con el periodo de la UNGRD (2019–2024) ni con el de las pruebas colombianas recientes**, y la réplica directa de P3/P4/P9 con SINPAD de este conjunto no es posible; solo sirve para análisis dentro de 2003–2018 (CHIRPS cubre ese periodo).
+- **Descarga:** se pidió `Emergencias2018.xls` (sitio oficial, 1 archivo). El servidor respondió **HTTP 418** con una página HTML de un cortafuegos web (cookie `HWWAFSESID`, cabecera `Block-Event-Id`), no con el archivo (3.195 bytes de HTML). Es una barrera contra clientes automáticos. **No se intentó eludirla.** No se obtuvo ningún dato.
+- **Pendiente:** el usuario puede bajar el archivo desde el navegador (enlace directo: `https://www.datosabiertos.gob.pe/sites/default/files/Emergencias2018.xls`) y dejarlo en una carpeta; entonces se inspecciona la estructura.
