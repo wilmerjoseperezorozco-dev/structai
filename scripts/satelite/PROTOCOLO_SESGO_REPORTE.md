@@ -1,0 +1,20 @@
+# Protocolo: sesgo de reporte de la UNGRD y su efecto sobre V1 (preregistrado 2026-11-08, antes de calcular ninguna asociación)
+
+**Pregunta.** La asociación entre exposición vial y viviendas dañadas se observó en el Caribe (ρ = +0,34) y no fuera de él (ρ = 0,00, `RESULTADOS_V1.md`). La explicación alternativa más fuerte es que la tabla de emergencias de la UNGRD mida la capacidad de reportar de cada municipio, y no solo el riesgo. ¿Cuánto del efecto del Caribe desaparece al controlar por esa capacidad?
+
+**Qué se sabe de la tabla antes de analizar (solo descriptivo, sin cruzarla con vías).** 41.893 eventos del 2019 al 2024 en 1.104 municipios, de dos cargas distintas (`UNGRD 2019-2022`: 25.857; `UNGRD 2023-2024`: 16.036). Eventos por año: 4.436, 3.811, 3.945, 13.665, 5.475, 10.561. Entre el 62 % y el 94 % de los eventos tienen cero en cada campo de efectos (personas, familias, viviendas, hectáreas): muchos reportes no cuantifican daños. Los picos de 2022 y 2024 pueden ser físicos (La Niña, El Niño) o cambios en la práctica de reporte; esta tabla no permite distinguirlo por sí sola.
+
+**Indicadores de capacidad de reporte (fijados ahora).**
+- **P_A (principal):** log(1 + eventos de INCENDIO ESTRUCTURAL y COLAPSO ESTRUCTURAL por 100 mil habitantes), todos los años. Son eventos cuya ocurrencia no depende del terreno bajo ni de la exposición de las vías; su frecuencia depende sobre todo del tamaño urbano y de que alguien los registre. Se excluyen los accidentes de tránsito porque dependen de la extensión de la red vial.
+- **P_B (sensibilidad):** log(1 + eventos por 100 mil habitantes de todos los tipos que no son hidrometeorológicos, ni de movimientos en masa ni incendios de cobertura vegetal), es decir, incendios estructurales, colapsos, accidentes, explosiones, derrames y casos fortuitos.
+- **P_C (sensibilidad):** fracción de los eventos del municipio sin ningún efecto cuantificado (personas, familias, viviendas y hectáreas en cero), solo para municipios con al menos 3 eventos. Un umbral de reporte bajo da fracciones altas.
+
+**Contrastes.**
+- **S1 (descriptivo).** Variación de P_A con la capacidad socioeconómica: regresión de P_A sobre NBI 2018, porcentaje en cabecera, log población, log área y efectos fijos de departamento; se reportan los coeficientes con IC por departamentos. Responde si la capacidad de reporte sigue la riqueza y la urbanización.
+- **S2 (asociación con las vías).** Correlación parcial de Spearman (controlando log población y log área) de P_A con la exposición vial y con los km de vía principal por 100 km², en el Caribe, en la confirmación y en la muestra conjunta. Si la capacidad de reporte se asocia con la red vial, las vías son un confusor; si no, no.
+- **S3 (prueba principal de atenuación).** En el Caribe, razón de tasas del modelo cuasi-Poisson de viviendas dañadas del protocolo V1 (con efectos fijos de departamento y los mismos controles), con y sin P_A como covariable. **Se declara «el sesgo de reporte explica al menos la mitad del efecto»** si 1 − ln(RR con P_A) / ln(RR sin P_A) ≥ 0,5. Se repite con P_B y P_C como sensibilidad. Se reporta también si el IC95 % del RR con P_A incluye 1.
+- **S4 (descriptivo temporal).** Para cada región natural y año: fracción de municipios con al menos un reporte y eventos por 100 mil habitantes. Muestra si los picos de 2022 y 2024 se concentran en regiones o municipios particulares.
+
+**Qué NO se concluye.** Ningún indicador separa del todo la capacidad de reporte del riesgo real: un municipio con más incendios estructurales reportados también puede ser más urbano y estar más cerca de una vía. Un descenso del efecto al controlar P_A es compatible con sesgo de reporte y con confusión por urbanización; un efecto que no desciende **no prueba** que el reporte sea insesgado.
+
+**Límites declarados.** No hay una medida directa de capacidad institucional (personal, presupuesto de gestión del riesgo). Los indicadores se calculan con el mismo periodo que el resultado. Los eventos se cuentan por municipio de reporte, no por sitio de ocurrencia. Los resultados dependen de que dos cargas distintas de la UNGRD usen la misma práctica de registro.
