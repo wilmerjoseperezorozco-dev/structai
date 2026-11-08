@@ -24,7 +24,7 @@ Criterio de puntuación (1–5 cada uno, total máx. 20): **A** relación direct
 
 ## Hallazgo ya confirmado que justifica la prioridad
 
-El texto de la Resolución 0330 indexado en el RAG (255 artículos) es anterior a las Resoluciones 799 y 908 de 2021 y difiere del texto consolidado (259 artículos) en numeración y en al menos un valor (SUDS 25 % vs. 30 %). Esto ya ocurrió dos veces antes en el proyecto con otras normas; por eso la verificación de vigencia va antes de ingestar.
+El texto de la Resolución 0330 indexado en el RAG (255 artículos) es anterior a las Resoluciones 799 y 908 de 2021 y difiere del texto consolidado (265 artículos) en numeración y en al menos un valor (SUDS 25 % vs. 30 %). Esto ya ocurrió dos veces antes en el proyecto con otras normas; por eso la verificación de vigencia va antes de ingestar.
 
 ## Pendiente de decisión del usuario
 

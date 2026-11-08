@@ -2,7 +2,7 @@
 AquaAI — Marco normativo centralizado
 Registro de las reglas de la Resolución 0330/2017 que el motor verifica, con fuente, artículo y vigencia.
 
-FUENTE DE LA NUMERACIÓN: texto consolidado del Gestor Normativo de la CRA (259 artículos, con las modificaciones y
+FUENTE DE LA NUMERACIÓN: texto consolidado del Gestor Normativo de la CRA (265 artículos, con las modificaciones y
 correcciones de las Resoluciones 799 y 908 de 2021 marcadas en el propio texto), copia en
 scripts/ingesta/ras_audit/res0330_2017.txt (descargada 2026-08-08).
 ATENCIÓN: el texto indexado para el RAG (packages/construdata/normativa_raw/res0330/res0330.txt, 255 artículos) es anterior a esas
