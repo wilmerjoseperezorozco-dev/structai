@@ -174,6 +174,14 @@ class HidrologiaRequest(BaseModel):
     )
 
 
+class VerificacionNormativa(BaseModel):
+    """Resultado de una regla de la Resolución 0330/2017. 'requiere_criterio' = la norma habilita una excepción que decide el diseñador."""
+    regla: str
+    fuente: str
+    estado: str = Field(description="cumple | no_cumple | requiere_criterio")
+    detalle: str
+
+
 class HidrologiaResponse(BaseModel):
     tiempo_concentracion_min: float = Field(description="Tiempo de concentración Tc (min)")
     intensidad_mm_h: float          = Field(description="Intensidad de diseño I (mm/h) para TR dado")
@@ -183,6 +191,8 @@ class HidrologiaResponse(BaseModel):
     parametros_idf: dict            = Field(description="Coeficientes a, b, n de la curva IDF regional usada")
     formula_racional: str
     notas_region: str
+    verificaciones_normativas: list[VerificacionNormativa] = Field(default_factory=list, description="Verificación frente a la Res. 0330/2017 (Art. 135)")
+    sensibilidad_tc: dict = Field(default_factory=dict, description="Caudal con Tc mínimo de 3 y de 10 min (Art. 135); el caudal principal no cambia")
 
 
 # ─── Bucle ↻ — registro de consulta ─────────────────────────────────────────

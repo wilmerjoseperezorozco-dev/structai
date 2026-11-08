@@ -22,6 +22,7 @@ Restricciones RAS D.3:
 
 import math
 from .schemas_hidraulica_avanzada import ManningRequest, ManningResponse, MaterialTuberia
+from .verificador_res0330 import verificar_velocidad
 
 # ─── Coeficientes de Manning (n) ─────────────────────────────────────────────
 MANNING_N = {
@@ -188,6 +189,7 @@ def calcular_manning(req: ManningRequest) -> ManningResponse:
         )
 
     D_int_mm, Qf, Vf, q_qf, d_D, V_real = resultado_elegido
+    D_nom_mm_final = diametro_elegido
     D_int_m = D_int_mm / 1000.0
     v_max   = V_MAX[req.material]
     S_min   = _pendiente_minima(D_int_m, n_mann)
@@ -226,8 +228,9 @@ def calcular_manning(req: ManningRequest) -> ManningResponse:
         pendiente_minima_m_m=round(S_min, 6),
         coeficiente_manning_n=n_mann,
         normas_aplicadas=[
-            "RAS 2000 Título D — Sistemas de recolección y evacuación de aguas residuales",
-            "Resolución 0330/2017 Título D — Alcantarillado",
+            "Resolución 0330/2017 — Alcantarillado (Art. 142, velocidad máxima)",
+            "RAS 2000 Título D (Res. 1096/2000, derogada por la Res. 0330/2017, Art. 255) — solo como referencia metodológica histórica",
         ],
         advertencias=advertencias,
+        verificaciones_normativas=[verificar_velocidad(V_real, req.pendiente_terreno_m_m, D_nom_mm_final, req.caudal_diseno_ls)],
     )

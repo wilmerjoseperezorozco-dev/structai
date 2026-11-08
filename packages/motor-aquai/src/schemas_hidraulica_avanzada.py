@@ -9,6 +9,8 @@ from enum import Enum
 from typing import Optional
 from pydantic import BaseModel, Field
 
+from .schemas import VerificacionNormativa
+
 
 # ─── Enumeraciones ────────────────────────────────────────────────────────────
 
@@ -48,6 +50,10 @@ class ManningRequest(BaseModel):
         default=0.75,
         description="Relación máxima d/D de lámina (RAS D.3.4: máx 0.75 para saneamiento)"
     )
+    pendiente_terreno_m_m: Optional[float] = Field(
+        None, ge=0,
+        description="Pendiente del terreno (m/m). Si supera 0.30, la Res. 0330/2017 Art. 142 permite velocidades > 5 m/s con disipación de energía."
+    )
 
 
 class ManningResponse(BaseModel):
@@ -59,12 +65,13 @@ class ManningResponse(BaseModel):
     relacion_tirante_d_D: float         = Field(description="d/D — relación de tirante real")
     velocidad_real_ms: float            = Field(description="Velocidad real en el tubo (m/s)")
     cumple_velocidad_min: bool          = Field(description="V ≥ 0.45 m/s (autolimpieza RAS D.3.5)")
-    cumple_velocidad_max: bool          = Field(description="V ≤ 3.0 m/s (PVC/HDPE) o 6.0 m/s (concreto)")
+    cumple_velocidad_max: bool          = Field(description="V ≤ 3.0 m/s (PVC/HDPE) o 5.0 m/s (concreto), límites del material del motor")
     cumple_tirante: bool                = Field(description="d/D ≤ relacion_tirante_max")
     pendiente_minima_m_m: float         = Field(description="Pendiente mínima para V=0.45 m/s con este diámetro")
     coeficiente_manning_n: float
     normas_aplicadas: list[str]
     advertencias: list[str]
+    verificaciones_normativas: list[VerificacionNormativa] = Field(default_factory=list, description="Verificación frente a la Res. 0330/2017 (Art. 142)")
 
 
 # ─── Golpe de ariete ──────────────────────────────────────────────────────────

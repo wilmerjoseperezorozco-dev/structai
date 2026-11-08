@@ -1,6 +1,7 @@
 """
 AquaAI — Módulo hidrología: caudal de diseño
-Referencia: RAS 2000 Título D / Resolución 0330-2017
+Referencia vigente: Resolución 0330/2017 (Art. 135). El RAS 2000 (Res. 1096/2000) fue derogado por la
+Res. 0330/2017 (Art. 255); aquí se conserva solo como referencia metodológica histórica.
 
 Implementa:
   1. Tiempo de concentración (Tc):
@@ -14,8 +15,10 @@ Implementa:
   3. Caudal de diseño — Método Racional:
        Q = C · I · A / 360   [m³/s]   (A en ha, I en mm/h)
 
-Importante: el Método Racional es válido para cuencas ≤ 1000 ha (aprox.).
-Para cuencas mayores usar SCS-CN o Santa Bárbara (fuera del alcance de Etapa 2).
+Importante: la Res. 0330/2017 (Art. 135) permite el Método Racional solo con áreas de drenaje < 80 ha para
+colectores y canales de aguas lluvias; el resultado trae esa verificación. La advertencia de precisión
+a partir de 1000 ha es un criterio previo del motor, sin cita normativa. Para cuencas mayores usar un
+modelo lluvia-escorrentía (SCS-CN, Santa Bárbara).
 """
 
 import math
@@ -24,6 +27,7 @@ from .schemas import (
     HidrologiaResponse,
     MetodoConcentracion,
 )
+from .verificador_res0330 import verificar_metodo_racional
 from .ras2000_tablas import (
     CURVAS_IDF,
     PERIODOS_RETORNO_DISPONIBLES,
@@ -127,6 +131,7 @@ def calcular_hidrologia(req: HidrologiaRequest) -> HidrologiaResponse:
     else:
         raise ValueError(f"Método de Tc no reconocido: {metodo_tc}")
 
+    Tc_calculado = Tc
     # Tc mínimo práctico: 5 min (evitar sobreestimación de I en cuencas muy pequeñas)
     Tc = max(Tc, 5.0)
 
@@ -142,6 +147,13 @@ def calcular_hidrologia(req: HidrologiaRequest) -> HidrologiaResponse:
         f"Q = C·I·A/360 = {C}·{I}·{A_ha}/360 = {Q_m3s:.4f} m³/s = {Q_ls:.2f} L/s"
     )
 
+    # Art. 135 Res. 0330/2017: simular con Tc mínimos de 3 y 10 min y evaluar la incidencia (el caudal principal no cambia)
+    sensibilidad = {}
+    for clave, tc_min in (("tc_3_min", 3.0), ("tc_10_min", 10.0)):
+        tc_s = max(Tc_calculado, tc_min)
+        i_s, _ = _intensidad_idf(region, TR, tc_s)
+        sensibilidad[clave] = {"tc_min": round(tc_s, 2), "intensidad_mm_h": i_s, "caudal_m3s": round((C * i_s * A_ha) / 360.0, 5)}
+
     nota_region = NOTAS_REGIONALES.get(region, "")
     if advertencia_cuenca:
         nota_region = advertencia_cuenca + " | " + nota_region
@@ -155,4 +167,6 @@ def calcular_hidrologia(req: HidrologiaRequest) -> HidrologiaResponse:
         parametros_idf=params_idf,
         formula_racional=formula_racional,
         notas_region=nota_region,
+        verificaciones_normativas=[verificar_metodo_racional(A_ha)],
+        sensibilidad_tc=sensibilidad,
     )

@@ -4,7 +4,7 @@ from .schemas import (
     CaudalesRequest, CaudalesResponse,
     HazenWilliamsRequest, HazenWilliamsResponse,
     HidrologiaRequest, HidrologiaResponse, MetodoConcentracion,
-    RegistroConsultaRequest, RegistroConsultaResponse,
+    RegistroConsultaRequest, RegistroConsultaResponse, VerificacionNormativa,
 )
 from .schemas_hidraulica_avanzada import (
     MaterialTuberia, TipoFluidoBombeo,
@@ -41,7 +41,7 @@ __all__ = [
     "CaudalesRequest", "CaudalesResponse",
     "HazenWilliamsRequest", "HazenWilliamsResponse",
     "HidrologiaRequest", "HidrologiaResponse", "MetodoConcentracion",
-    "RegistroConsultaRequest", "RegistroConsultaResponse",
+    "RegistroConsultaRequest", "RegistroConsultaResponse", "VerificacionNormativa",
     "MaterialTuberia", "TipoFluidoBombeo",
     "ManningRequest", "ManningResponse",
     "ArieteRequest", "ArieteResponse",
