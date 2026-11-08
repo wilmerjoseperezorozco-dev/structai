@@ -364,3 +364,20 @@ Mejora del límite de la sección 11: "la cercanía geográfica no garantiza con
 **Separación de causas.** (c) *Régimen:* la desviación estándar del ONI en la prueba (0,74 y 0,97) es igual a la de calibración (0,71 y 0,91), así que el fracaso no se explica por un periodo de prueba sin variación de ENSO. (a) *Ventana:* W1 y W2 dan lo mismo, así que la ventana no es el problema. (b) *Sobreajuste:* ajustar μ1 por estación es peor que no usar ENSO (39-41 %); agrupar la pendiente por región sube a 52-53 %, sin superar el azar. Es la explicación que los datos apoyan.
 
 **Exploratorio, sin ajuste (desglose por región del agrupado):** Andina 60-64 % y Caribe 62-66 % de estaciones ganan; Pacífica y Orinoquía ≈ 50 %; Amazonía 31-35 %. Coincide en Andina y Caribe con la dependencia de ENSO medida en la coherencia espacial, pero es un desglose posterior a ver los resultados y con los mismos datos: sirve para formular una hipótesis, no para afirmarla. Confirmarla exigiría un periodo de prueba independiente.
+
+
+## 26. ¿Predice el mapa de amenaza por movimientos en masa del SGC los eventos reportados por la UNGRD 2019-2024? Definido ANTES de correrlo (2026-11-08)
+
+**Pregunta:** el índice del SGC (% del área municipal en amenaza alta + muy alta, capa `Municipios_100K`) ¿ordena a los municipios según los eventos de «MOVIMIENTO EN MASA» que reporta la UNGRD en 2019-2024? Es la validación contra eventos que el §16-17 no hizo (allí se contrastó con relieve y con el inventario SIMMA, no con la UNGRD).
+
+- **Unidad:** municipio del panel `v1_panel.csv` (población, área, `n_mm`) con índice SGC (categoría `M`, se excluyen `SIN`/`CD`) y pendiente p90 del DEM nacional. Se reporta n.
+- **Resultados:** Y1 = hay al menos un evento (n_mm ≥ 1); Y2 = n_mm por 100 km².
+- **Confirmatorios (IC95 % bootstrap de bloques por departamento, 2.000 réplicas):**
+  - **K1:** AUC(índice SGC → Y1) con IC95 % que excluye 0,5.
+  - **K2:** ρ de Spearman(índice SGC, Y2) > 0 con IC que excluye 0.
+  - **K3:** ρ parcial(índice SGC, Y2 | log población, indicador de capacidad de reporte P_A) > 0 con IC que excluye 0. P_A = log(1 + incendios y colapsos estructurales por 100 mil hab.), el mismo del protocolo de sesgo de reporte.
+  - **K4 (valor añadido):** ρ parcial(índice SGC, Y2 | pendiente p90, P_A, log población) > 0 con IC que excluye 0.
+- **Criterio de «predice bien»** (fijado de antemano, arbitrario y declarado como tal): AUC puntual ≥ 0,65 **y** K2 y K3 cumplidos. Si K1 se cumple pero el AUC < 0,65: «ordena mejor que el azar, pero con poca capacidad». Si K3 falla: «lo que predice es el reporte, no el peligro».
+- **Descriptivo:** tasa de eventos por cuartil del índice; AUC por región natural (solo reporta si hay ≥ 30 municipios y ambos resultados en Y1); sensibilidad excluyendo 2022 (año con 3-4 veces los eventos normales); sensibilidad excluyendo municipios con población > 500 mil.
+- **Qué NO se concluirá:** que el mapa del SGC es «correcto» o «incorrecto»; solo si ordena los municipios como los eventos reportados.
+- **Limitaciones declaradas de antemano:** la UNGRD mide reportes, no eventos (sesgo hacia municipios grandes o con mayor capacidad); análisis municipal, no por punto (falacia ecológica; un municipio con 5 % del área en amenaza alta puede tener todos sus eventos ahí); el mapa del SGC es un modelo posiblemente alimentado con pendiente; seis años de eventos con el 2022 atípico; el panel cubre 21 departamentos, no todo el país; no se corrige por autocorrelación espacial más allá del bootstrap por departamento.
