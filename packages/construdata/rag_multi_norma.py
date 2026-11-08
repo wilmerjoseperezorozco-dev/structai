@@ -31,6 +31,7 @@ import precio_vigencia
 import noticias_colombia
 import pais_zonificacion
 import plugins_chat
+import referencia_internacional
 
 log = logging.getLogger(__name__)
 
@@ -1915,6 +1916,8 @@ def _format_chunk_context(c: ChunkResult) -> str:
         if c.derogada_por:
             aviso += f" — reemplazada por {c.derogada_por}"
         header = f"{header}\n{aviso}"
+    if referencia_internacional.es_referencia_internacional(c.norma):
+        header = f"{header}\n{referencia_internacional.AVISO_CONTEXTO}"
     return f"{header}\n{c.contenido}"
 
 def _generar_respuesta(contexto: str, question: str, system_prompt: Optional[str] = None) -> str:
@@ -1946,8 +1949,11 @@ def _generar_respuesta(contexto: str, question: str, system_prompt: Optional[str
     # mismo tono/jerga de "ingeniero civil general", sin la voz ni los
     # términos propios de cada especialidad (un hidráulico no habla igual
     # que un gerente de proyecto). Ver MOTOR_SYSTEM_PROMPT más abajo.
+    prompt = system_prompt or SYSTEM_PROMPT
+    if referencia_internacional.contexto_tiene_referencia_internacional(contexto):
+        prompt = prompt + referencia_internacional.REGLA_PROMPT
     messages = [
-        {"role": "system", "content": system_prompt or SYSTEM_PROMPT},
+        {"role": "system", "content": prompt},
         {"role": "user", "content": f"CONTEXTO NORMATIVO:\n{contexto}\n\nPREGUNTA: {question}"}
     ]
     return _llamar_llm_con_respaldo(messages, max_tokens_groq=700)

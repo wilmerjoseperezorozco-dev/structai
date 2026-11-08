@@ -42,6 +42,11 @@ Criterio de aceptación: sirven como **referencia comparada**, nunca como norma 
 4. **No ingestar texto de pago o con licencia dudosa.** Solo metadatos y cita.
 5. **Verificar vigencia** de la fuente extranjera con el mismo rigor que la colombiana.
 
+### Implementación de las reglas (2026-11-08)
+- `packages/construdata/referencia_internacional.py`: convención `norma_ref = INT/<PAIS>/<AÑO> — <nombre>`, validador y regla de prompt.
+- `rag_multi_norma.py`: el contexto marca los fragmentos con ese prefijo («🌐 REFERENCIA INTERNACIONAL») y, solo si hay alguno, el prompt agrega la regla de jerarquía (primero Colombia; decir si no hay valor; país, año y límite de aplicabilidad; no mezclar citas).
+- `apps/api/tests/test_referencia_internacional.py`: 8 pruebas, sin red. **No hay aún fragmentos extranjeros en la base**; las reglas no cambian ninguna respuesta actual. No se probó con un LLM real, porque no hay datos con los que probarlo.
+
 ## 4. Hipótesis que se desprenden (cada una con protocolo antes de calcular)
 
 - **H-B1:** si la norma colombiana no fija límites de vibración, ¿qué criterio debe usar un diseñador? Pregunta de evaluación para el RAG: la respuesta correcta es «la especificación no fija valores; criterios internacionales como USBM RI 8507 existen con estas limitaciones». Se puede medir con preguntas de abstención parcial.
@@ -55,6 +60,7 @@ El sistema puede dar respaldo trazable (qué norma, qué país, con qué límite
 
 ## 6. Pendiente
 
-- Obtener y leer el artículo 210-22 y la cadena de modificaciones de 2022 a 2025 (hoy sin texto accesible; las copias en línea probadas dieron bloqueo de bot o PDF sin capa de texto).
+- **Artículo 210-22 (intento 2, sin éxito):** se probaron el índice de la edición 2022 en Scribd (80 páginas, texto truncado), el texto de una resolución de 2022 en el SIDN de la Rama Judicial (solo parte resolutiva del Diario Oficial) y un apéndice técnico de concesión de la ANI (agregados; no trae el 210). Ninguno contiene el artículo. Vías que quedan: (a) descarga del documento completo en el sitio de INVÍAS o de MinTransporte (no se localizó una URL directa); (b) los apéndices técnicos de contratos de concesión de la ANI que reproducen el artículo; (c) un derecho de petición a INVÍAS, que presentaría el usuario; (d) una biblioteca universitaria con el volumen impreso.
+- Cadena de modificaciones de 2022 a 2025 del capítulo 2 sin verificar.
 - Verificar en fuente primaria las referencias extranjeras marcadas «sin verificar».
 - Decidir con el usuario el orden de ingesta.
