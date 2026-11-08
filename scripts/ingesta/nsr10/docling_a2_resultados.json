@@ -1,0 +1,87 @@
+{
+ "referencia_chars": 25781,
+ "filas_tabla_A_2_3_2_ref": 32,
+ "tiempo_carga_s": 0.3,
+ "tiempo_conversion_s": 258.9,
+ "rss_mb": 457,
+ "total": {
+  "pypdf": {
+   "fichas_numericas_ref": 59,
+   "recall_numerico": 0.8813559322033898,
+   "faltan_num": [
+    "0.1",
+    "0.2",
+    "0.3",
+    "0.48",
+    "0.62",
+    "1.87",
+    "3.9"
+   ],
+   "fichas_numeral_ref": 71,
+   "recall_numeral": 1.0,
+   "faltan_numeral": []
+  },
+  "docling": {
+   "fichas_numericas_ref": 59,
+   "recall_numerico": 0.9152542372881356,
+   "faltan_num": [
+    "0.48",
+    "0.6",
+    "0.62",
+    "1.87",
+    "3.9"
+   ],
+   "fichas_numeral_ref": 71,
+   "recall_numeral": 1.0,
+   "faltan_numeral": []
+  }
+ },
+ "por_grupo": {
+  "tablas_3_4": {
+   "pypdf": {
+    "recall_numerico": 0.1694915254237288,
+    "recall_numeral": 0.09859154929577464
+   },
+   "docling": {
+    "recall_numerico": 0.1694915254237288,
+    "recall_numeral": 0.09859154929577464
+   }
+  },
+  "tablas_10_12": {
+   "pypdf": {
+    "recall_numerico": 0.6101694915254238,
+    "recall_numeral": 0.2112676056338028
+   },
+   "docling": {
+    "recall_numerico": 0.5254237288135594,
+    "recall_numeral": 0.2112676056338028
+   }
+  },
+  "tabla_14": {
+   "pypdf": {
+    "recall_numerico": 0.15254237288135594,
+    "recall_numeral": 0.19718309859154928
+   },
+   "docling": {
+    "recall_numerico": 0.13559322033898305,
+    "recall_numeral": 0.19718309859154928
+   }
+  },
+  "espectro_15_17": {
+   "pypdf": {
+    "recall_numerico": 0.05084745762711865,
+    "recall_numeral": 0.36619718309859156
+   },
+   "docling": {
+    "recall_numerico": 0.0,
+    "recall_numeral": 0.36619718309859156
+   }
+  }
+ },
+ "tabla_A_2_3_2": {
+  "filas_docling_con_nombre_de_referencia": 31,
+  "filas_iguales_a_la_referencia": 31,
+  "filas_referencia": 32
+ },
+ "n_tablas_docling": 8
+}
