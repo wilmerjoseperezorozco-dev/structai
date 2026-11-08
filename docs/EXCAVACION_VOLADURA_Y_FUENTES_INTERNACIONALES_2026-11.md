@@ -1,6 +1,6 @@
 # Excavación y voladura en vías troncales: qué dice la norma colombiana y qué fuentes internacionales la complementan (issue #110)
 
-Fecha: 2026-11-08. Alcance: **normativo y de riesgo**; el repositorio no recibe procedimientos operativos de manejo de explosivos. Estado: borrador. Lo marcado «verificado» se leyó en el texto; lo marcado «sin verificar» salió de un resumen o de una búsqueda.
+Fecha: 2026-11-08. Alcance: **normativo y de riesgo**; el repositorio no recibe procedimientos operativos de manejo de explosivos. Estado: borrador. La verificación de fuentes extranjeras está en `VERIFICACION_REFERENCIAS_INTERNACIONALES_2026-11.md`. Lo marcado «verificado» se leyó en el texto; lo marcado «sin verificar» salió de un resumen o de una búsqueda.
 
 ## 1. Lo que dice la especificación colombiana (edición 2012)
 
@@ -27,8 +27,8 @@ Criterio de aceptación: sirven como **referencia comparada**, nunca como norma 
 | Fuente | Para qué sirve | Estado de verificación | Acceso |
 |---|---|---|---|
 | USBM RI 8507 (Siskind et al., 1980), vibración de voladuras y daño a estructuras | Criterios de velocidad pico de partícula según frecuencia (la búsqueda indica entre 0,5 pulg/s a baja frecuencia y 2,0 pulg/s a alta, según estructura). Dowding (1996) señala que el estudio casi no midió voladuras por debajo de 5 Hz | Rangos confirmados por búsqueda secundaria; texto no leído | Publicación de una agencia federal de EE. UU. (a confirmar la licencia del ejemplar) |
-| FHWA, Rock Slopes Reference Manual (FHWA-NHI-99-007) | Taludes en roca de carreteras, incluida la voladura controlada | **Sin verificar** (la búsqueda no lo devolvió) | Publicación federal de EE. UU., por confirmar |
-| Perú: DS 024-2016-EM (seguridad y salud ocupacional en minería) con DS 023-2017-EM y DS 034-2023-EM | Marco andino cercano para explosivos y labores subterráneas | Cadena parcial confirmada en búsqueda; texto consolidado sin verificar; hay un proyecto de nueva modificación | Publicación oficial peruana |
+| FHWA, Rock Slopes Reference Manual (FHWA HI-99-007) | Taludes en roca de carreteras, incluida la voladura controlada | **Sin verificar** (la búsqueda no lo devolvió) | Publicación federal de EE. UU., por confirmar |
+| Perú: DS 024-2016-EM (seguridad y salud ocupacional en minería) con DS 023-2017-EM y una modificación de 2023 (número sin confirmar: se cita como 034 y como 035) | Marco andino cercano para explosivos y labores subterráneas | Cadena parcial confirmada en búsqueda; texto consolidado sin verificar; hay un proyecto de nueva modificación | Publicación oficial peruana |
 | Chile: DS 132 (seguridad minera) y estándares de túneles de Vialidad 2023 | Referencia andina; los estándares de túneles de 2023 reemplazarían partes del Manual de Carreteras según un artículo de 2024 | **Sin verificar**; no se encontró el DS 132 | Por confirmar |
 | Normas de vibración europeas (DIN 4150-3, BS 7385-2) | Criterios alternativos a la USBM | **Sin verificar**, listadas de memoria | Normalmente de pago: no se ingesta el texto, solo se cita |
 | ISRM, métodos sugeridos; clasificaciones de macizo (RMR, Q, GSI) | Caracterización de roca | Literatura académica abierta en parte | Mixto |
