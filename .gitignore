@@ -71,3 +71,7 @@ scripts/clima/_cache/
 scripts/clima/*.log
 scripts/datos/*.log
 scripts/hidro/*.log
+
+# Cachés locales de análisis hidrológico (regenerables)
+scripts/hidro/_cache/
+scripts/hidro/_*.log
