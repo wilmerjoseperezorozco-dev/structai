@@ -1,0 +1,33 @@
+{
+ "municipios_mapa_M": 1095,
+ "escalas": {
+  "max": {
+   "1": 1430
+  },
+  "todas": {
+   "1": 3405
+  }
+ },
+ "max": {
+  "municipios_con_puntos": 884,
+  "en_el_mapa_M": 877,
+  "exacta": 0.38540478905359177,
+  "dif_le_1": 0.7924743443557583,
+  "rho": 0.6536152094279701,
+  "sesgo_medio_puntos_menos_mapa": -0.43443557582668185,
+  "mapa_mayor_que_puntos": 345,
+  "puntos_mayor_que_mapa": 194
+ },
+ "union": {
+  "municipios_con_puntos": 884,
+  "en_el_mapa_M": 877,
+  "exacta": 0.38540478905359177,
+  "dif_le_1": 0.7924743443557583,
+  "rho": 0.6536152094279701,
+  "sesgo_medio_puntos_menos_mapa": -0.43443557582668185,
+  "mapa_mayor_que_puntos": 345,
+  "puntos_mayor_que_mapa": 194
+ },
+ "mapa_M_sin_puntos_max": 218,
+ "mapa_M_sin_puntos_union": 218
+}
