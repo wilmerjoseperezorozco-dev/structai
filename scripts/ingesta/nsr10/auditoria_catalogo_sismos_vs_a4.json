@@ -1,0 +1,122 @@
+{
+ "eventos_catalogo": 16290,
+ "eventos_en_municipio_1993_2020": 5761,
+ "magnitud_completitud_max_curvatura": 3.5,
+ "M4.0": {
+  "n_municipios": 1113,
+  "eventos": 2256,
+  "municipios_con_evento": 365,
+  "C1_rho": [
+   0.21324256670818226,
+   0.10654827668808044,
+   0.34207841251775795
+  ],
+  "tasa_mediana_por_zona": {
+   "Baja": 0.0,
+   "Intermedia": 0.0,
+   "Alta": 0.0
+  },
+  "frac_con_evento_por_zona": {
+   "Baja": 0.22962962962962963,
+   "Intermedia": 0.2827586206896552,
+   "Alta": 0.3885819521178637
+  },
+  "C2_monotona": false,
+  "razon_media_Alta_Baja": [
+   23.226001776347097,
+   2.4800407887983638,
+   102.91253791909344
+  ],
+  "baja_con_tasa_decil_alto": [
+   {
+    "codigo": "08001",
+    "municipio": "Barranquilla",
+    "dep": "Atlántico",
+    "aa": 0.1,
+    "eventos": 1,
+    "tasa": 0.23
+   },
+   {
+    "codigo": "08141",
+    "municipio": "Candelaria",
+    "dep": "Atlántico",
+    "aa": 0.1,
+    "eventos": 1,
+    "tasa": 0.262
+   },
+   {
+    "codigo": "20443",
+    "municipio": "Manaure",
+    "dep": "Cesar",
+    "aa": 0.1,
+    "eventos": 1,
+    "tasa": 0.259
+   }
+  ],
+  "alta_sin_eventos": 332,
+  "n_alta": 543
+ },
+ "M3.5": {
+  "n_municipios": 1113,
+  "eventos": 5738,
+  "municipios_con_evento": 519,
+  "C1_rho": [
+   0.24435402315178187,
+   0.1202595790721255,
+   0.3705732186909344
+  ],
+  "tasa_mediana_por_zona": {
+   "Baja": 0.0,
+   "Intermedia": 0.0,
+   "Alta": 0.04894719454313219
+  },
+  "frac_con_evento_por_zona": {
+   "Baja": 0.362962962962963,
+   "Intermedia": 0.42298850574712643,
+   "Alta": 0.5267034990791897
+  },
+  "C2_monotona": false
+ },
+ "M4.5": {
+  "n_municipios": 1113,
+  "eventos": 774,
+  "municipios_con_evento": 210,
+  "C1_rho": [
+   0.24789961475582648,
+   0.15328554806786124,
+   0.3472924293778335
+  ],
+  "tasa_mediana_por_zona": {
+   "Baja": 0.0,
+   "Intermedia": 0.0,
+   "Alta": 0.0
+  },
+  "frac_con_evento_por_zona": {
+   "Baja": 0.07407407407407407,
+   "Intermedia": 0.1310344827586207,
+   "Alta": 0.26335174953959484
+  },
+  "C2_monotona": false
+ },
+ "M4.0_prof_le_70": {
+  "n_municipios": 1113,
+  "eventos": 663,
+  "municipios_con_evento": 249,
+  "C1_rho": [
+   0.13452330291626086,
+   0.0331837286892832,
+   0.24139096085651052
+  ],
+  "tasa_mediana_por_zona": {
+   "Baja": 0.0,
+   "Intermedia": 0.0,
+   "Alta": 0.0
+  },
+  "frac_con_evento_por_zona": {
+   "Baja": 0.2074074074074074,
+   "Intermedia": 0.20229885057471264,
+   "Alta": 0.24493554327808473
+  },
+  "C2_monotona": false
+ }
+}
