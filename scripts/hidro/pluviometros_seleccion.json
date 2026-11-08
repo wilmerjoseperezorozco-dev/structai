@@ -1,0 +1,472 @@
+{
+ "Caribe": [
+  {
+   "codigo": "0025020600",
+   "nombre": "HACIENDA SAJONIA - AUT [25020600]",
+   "categoria": "Pluviográfica",
+   "departamento": "Cordoba",
+   "municipio": "Pueblo Nuevo",
+   "latitud": "8.489722222",
+   "longitud": "-75.60138889",
+   "altitud": "100",
+   "dias_validos": 733
+  },
+  {
+   "codigo": "0025025330",
+   "nombre": "COLEGIO AGROPECUARIO PAILITAS  - AUT [25025330]",
+   "categoria": "Climatológica Principal",
+   "departamento": "Cesar",
+   "municipio": "Pailitas",
+   "latitud": "8.954222222",
+   "longitud": "-73.63008333",
+   "altitud": "50",
+   "dias_validos": 316
+  },
+  {
+   "codigo": "0025020470",
+   "nombre": "CHINU - AUT [25020470]",
+   "categoria": "Pluviográfica",
+   "departamento": "Cordoba",
+   "municipio": "Chinú",
+   "latitud": "9.117777778",
+   "longitud": "-75.39333333",
+   "altitud": "125",
+   "dias_validos": 322
+  },
+  {
+   "codigo": "0029045110",
+   "nombre": "JUAN DE ACOSTA - AUT [29045110]",
+   "categoria": "Climatológica Ordinaria",
+   "departamento": "Atlantico",
+   "municipio": "Juan De Acosta",
+   "latitud": "10.837897",
+   "longitud": "-75.042914",
+   "altitud": "20",
+   "dias_validos": 669
+  },
+  {
+   "codigo": "0015085030",
+   "nombre": "ESCUELA AGRICOLA CARRAIPIA  - AUT [15085030]",
+   "categoria": "Climatológica Ordinaria",
+   "departamento": "La Guajira",
+   "municipio": "Maicao",
+   "latitud": "11.21675",
+   "longitud": "-72.35994444",
+   "altitud": "118",
+   "dias_validos": 593
+  },
+  {
+   "codigo": "2901500072",
+   "nombre": "HOBO - AUT [2901500072]",
+   "categoria": "Climatológica Principal",
+   "departamento": "Bolivar",
+   "municipio": "El Carmén De Bolívar",
+   "latitud": "9.672506",
+   "longitud": "-75.236517",
+   "altitud": "341",
+   "dias_validos": 340
+  },
+  {
+   "codigo": "0028015070",
+   "nombre": "URUMITA AUT [28015070]",
+   "categoria": "Climatológica Ordinaria",
+   "departamento": "La Guajira",
+   "municipio": "Urumita",
+   "latitud": "10.559827778",
+   "longitud": "-73.008830556",
+   "altitud": "255",
+   "dias_validos": 491
+  },
+  {
+   "codigo": "0028035060",
+   "nombre": "FEDEARROZ - AUT [28035060]",
+   "categoria": "Climatológica Principal",
+   "departamento": "Cesar",
+   "municipio": "Valledupar",
+   "latitud": "10.46361111",
+   "longitud": "-73.24805556",
+   "altitud": "184",
+   "dias_validos": 301
+  },
+  {
+   "codigo": "0025025100",
+   "nombre": "AEROPUERTO BARACOA - AUT [2502",
+   "categoria": "Climatológica Principal",
+   "departamento": "Bolivar",
+   "municipio": "Magangué",
+   "latitud": "9.281944444",
+   "longitud": "-74.84527778",
+   "altitud": "18",
+   "dias_validos": 628
+  },
+  {
+   "codigo": "2901500072",
+   "nombre": "HOBO - AUT [2901500072]",
+   "categoria": "Climatológica Principal",
+   "departamento": "Bolivar",
+   "municipio": "El Carmén De Bolívar",
+   "latitud": "9.672506",
+   "longitud": "-75.236517",
+   "altitud": "341",
+   "dias_validos": 340
+  },
+  {
+   "codigo": "0025020440",
+   "nombre": "SAN PEDRO - AUT [25020440]",
+   "categoria": "Pluviográfica",
+   "departamento": "Sucre",
+   "municipio": "San Pedro",
+   "latitud": "9.401597",
+   "longitud": "-75.016434",
+   "altitud": "114",
+   "dias_validos": 669
+  },
+  {
+   "codigo": "0015015100",
+   "nombre": "PARQUE TAYRONA [15015100]",
+   "categoria": "Climatológica Ordinaria",
+   "departamento": "Magdalena",
+   "municipio": "Santa Marta",
+   "latitud": "11.301674",
+   "longitud": "-73.928809",
+   "altitud": "23",
+   "dias_validos": 818
+  }
+ ],
+ "Andina": [
+  {
+   "codigo": "0023065190",
+   "nombre": "QUEBRADA NEGRA [23065190]",
+   "categoria": "Climatológica Principal",
+   "departamento": "Cundinamarca",
+   "municipio": "Quebradanegra",
+   "latitud": "5.137207",
+   "longitud": "-74.480954",
+   "altitud": "1107",
+   "dias_validos": 342
+  },
+  {
+   "codigo": "0021165501",
+   "nombre": "DOLORES  - AUT  [21165501]",
+   "categoria": "Climatológica Principal",
+   "departamento": "Tolima",
+   "municipio": "Dolores",
+   "latitud": "3.537155556",
+   "longitud": "-74.82982778",
+   "altitud": "999",
+   "dias_validos": 423
+  },
+  {
+   "codigo": "0021065040",
+   "nombre": "ZULUAGA AUT [21065040]",
+   "categoria": "Climatológica Ordinaria",
+   "departamento": "Huila",
+   "municipio": "Garzón",
+   "latitud": "2.2525",
+   "longitud": "-75.52944444",
+   "altitud": "1270",
+   "dias_validos": 602
+  },
+  {
+   "codigo": "2401500040",
+   "nombre": "CUCUNUBA - AUT [2401500040]",
+   "categoria": "Climatológica Principal",
+   "departamento": "Cundinamarca",
+   "municipio": "Cucunubá",
+   "latitud": "5.21957",
+   "longitud": "-73.78229",
+   "altitud": "2818",
+   "dias_validos": 317
+  },
+  {
+   "codigo": "0026135503",
+   "nombre": "NARANJAL  - AUT  [26135503]",
+   "categoria": "Climatológica Principal",
+   "departamento": "Caldas",
+   "municipio": "Chinchina",
+   "latitud": "4.971947222",
+   "longitud": "-75.652261111",
+   "altitud": "1413",
+   "dias_validos": 385
+  },
+  {
+   "codigo": "0016025501",
+   "nombre": "CUCUTILLA  - AUT  [16025501]",
+   "categoria": "Climatológica Ordinaria",
+   "departamento": "Norte De Santander",
+   "municipio": "Cucutilla",
+   "latitud": "7.5195",
+   "longitud": "-72.797988889",
+   "altitud": "1663",
+   "dias_validos": 449
+  },
+  {
+   "codigo": "0035085080",
+   "nombre": "LA CAPILLA - AUT [35085080]",
+   "categoria": "Climatológica Principal",
+   "departamento": "Boyacá",
+   "municipio": "La Capilla",
+   "latitud": "5.099194444",
+   "longitud": "-73.436",
+   "altitud": "1917",
+   "dias_validos": 342
+  },
+  {
+   "codigo": "0021205670",
+   "nombre": "LA FLORIDA [21205670]",
+   "categoria": "Climatológica Principal",
+   "departamento": "Cundinamarca",
+   "municipio": "Anolaima",
+   "latitud": "4.767988",
+   "longitud": "-74.434235",
+   "altitud": "1915",
+   "dias_validos": 544
+  },
+  {
+   "codigo": "0021195120",
+   "nombre": "ITA VALSALICE [21195120]",
+   "categoria": "Climatológica Principal",
+   "departamento": "Cundinamarca",
+   "municipio": "Silvania",
+   "latitud": "4.39292",
+   "longitud": "-74.39272",
+   "altitud": "1421",
+   "dias_validos": 349
+  },
+  {
+   "codigo": "0024055501",
+   "nombre": "CHUCURI  - AUT  [24055501]",
+   "categoria": "Climatológica Ordinaria",
+   "departamento": "Santander",
+   "municipio": "San Vicente De Chucurí",
+   "latitud": "6.863625",
+   "longitud": "-73.384175",
+   "altitud": "1370",
+   "dias_validos": 313
+  },
+  {
+   "codigo": "0026125509",
+   "nombre": "ESPERANZA LA  - AUT  [26125509]",
+   "categoria": "Climatológica Principal",
+   "departamento": "Quindío",
+   "municipio": "Pijao",
+   "latitud": "4.299444444",
+   "longitud": "-75.72508056",
+   "altitud": "1667",
+   "dias_validos": 410
+  },
+  {
+   "codigo": "0026125509",
+   "nombre": "ESPERANZA LA  - AUT  [26125509]",
+   "categoria": "Climatológica Principal",
+   "departamento": "Quindío",
+   "municipio": "Pijao",
+   "latitud": "4.299444444",
+   "longitud": "-75.72508056",
+   "altitud": "1667",
+   "dias_validos": 410
+  }
+ ],
+ "Pacifica": [
+  {
+   "codigo": "0052055090",
+   "nombre": "SINDAGUA [52055090]",
+   "categoria": "Climatológica Principal",
+   "departamento": "Nariño",
+   "municipio": "Tangua",
+   "latitud": "1.107583333",
+   "longitud": "-77.38936111",
+   "altitud": "2800",
+   "dias_validos": 915
+  },
+  {
+   "codigo": "0052050080",
+   "nombre": "TANGUA [52050080]",
+   "categoria": "Climatológica Principal",
+   "departamento": "Nariño",
+   "municipio": "Tangua",
+   "latitud": "1.094166667",
+   "longitud": "-77.39197222",
+   "altitud": "2420",
+   "dias_validos": 923
+  },
+  {
+   "codigo": "0052055090",
+   "nombre": "SINDAGUA [52055090]",
+   "categoria": "Climatológica Principal",
+   "departamento": "Nariño",
+   "municipio": "Tangua",
+   "latitud": "1.107583333",
+   "longitud": "-77.38936111",
+   "altitud": "2800",
+   "dias_validos": 915
+  },
+  {
+   "codigo": "0051020011",
+   "nombre": "PIEDRANCHA - AUT [51020011]",
+   "categoria": "Pluviográfica",
+   "departamento": "Nariño",
+   "municipio": "Mallama (Piedrancha)",
+   "latitud": "1.141527778",
+   "longitud": "-77.92897222",
+   "altitud": "1830",
+   "dias_validos": 710
+  },
+  {
+   "codigo": "0052050060",
+   "nombre": "RIO BOBO [52050060]",
+   "categoria": "Climatológica Principal",
+   "departamento": "Nariño",
+   "municipio": "Pasto",
+   "latitud": "1.0995",
+   "longitud": "-77.29972222",
+   "altitud": "364",
+   "dias_validos": 957
+  },
+  {
+   "codigo": "0052015501",
+   "nombre": "BALBOA  - AUT  [52015501]",
+   "categoria": "Climatológica Principal",
+   "departamento": "Cauca",
+   "municipio": "Balboa",
+   "latitud": "2.125191667",
+   "longitud": "-77.19266667",
+   "altitud": "1695",
+   "dias_validos": 460
+  },
+  {
+   "codigo": "0026065501",
+   "nombre": "JAMUNDI  - AUT  [26065501]",
+   "categoria": "Climatológica Ordinaria",
+   "departamento": "Valle Del Cauca",
+   "municipio": "Jamundí",
+   "latitud": "3.212702778",
+   "longitud": "-76.677016667",
+   "altitud": "1252",
+   "dias_validos": 457
+  },
+  {
+   "codigo": "0052015501",
+   "nombre": "BALBOA  - AUT  [52015501]",
+   "categoria": "Climatológica Principal",
+   "departamento": "Cauca",
+   "municipio": "Balboa",
+   "latitud": "2.125191667",
+   "longitud": "-77.19266667",
+   "altitud": "1695",
+   "dias_validos": 460
+  },
+  {
+   "codigo": "0052050080",
+   "nombre": "TANGUA [52050080]",
+   "categoria": "Climatológica Principal",
+   "departamento": "Nariño",
+   "municipio": "Tangua",
+   "latitud": "1.094166667",
+   "longitud": "-77.39197222",
+   "altitud": "2420",
+   "dias_validos": 923
+  },
+  {
+   "codigo": "0052055501",
+   "nombre": "OSPINA PEREZ  - AUT  [52055501]",
+   "categoria": "Climatológica Ordinaria",
+   "departamento": "Nariño",
+   "municipio": "Consacá",
+   "latitud": "1.254641667",
+   "longitud": "-77.487725",
+   "altitud": "1632",
+   "dias_validos": 462
+  },
+  {
+   "codigo": "0026075501",
+   "nombre": "FLORIDA  - AUT  [26075501]",
+   "categoria": "Climatológica Ordinaria",
+   "departamento": "Valle Del Cauca",
+   "municipio": "Florida",
+   "latitud": "3.291591667",
+   "longitud": "-76.177444444",
+   "altitud": "1549",
+   "dias_validos": 425
+  },
+  {
+   "codigo": "0052055501",
+   "nombre": "OSPINA PEREZ  - AUT  [52055501]",
+   "categoria": "Climatológica Ordinaria",
+   "departamento": "Nariño",
+   "municipio": "Consacá",
+   "latitud": "1.254641667",
+   "longitud": "-77.487725",
+   "altitud": "1632",
+   "dias_validos": 462
+  }
+ ],
+ "Orinoquia": [
+  {
+   "codigo": "0035035100",
+   "nombre": "ICA VILLAVICENCIO  - AUT [35035100]",
+   "categoria": "Climatológica Principal",
+   "departamento": "Meta",
+   "municipio": "Villavicencio",
+   "latitud": "4.137225",
+   "longitud": "-73.624998",
+   "altitud": "432",
+   "dias_validos": 336
+  },
+  {
+   "codigo": "3206500058",
+   "nombre": "LEJANÍAS - AUT [3206500058]",
+   "categoria": "Climatológica Principal",
+   "departamento": "Meta",
+   "municipio": "Lejanías",
+   "latitud": "3.51827",
+   "longitud": "-74.00627",
+   "altitud": "649",
+   "dias_validos": 312
+  },
+  {
+   "codigo": "0035035100",
+   "nombre": "ICA VILLAVICENCIO  - AUT [35035100]",
+   "categoria": "Climatológica Principal",
+   "departamento": "Meta",
+   "municipio": "Villavicencio",
+   "latitud": "4.137225",
+   "longitud": "-73.624998",
+   "altitud": "432",
+   "dias_validos": 336
+  },
+  {
+   "codigo": "0032075501",
+   "nombre": "LEJANIAS  - AUT  [32075501]",
+   "categoria": "Climatológica Principal",
+   "departamento": "Meta",
+   "municipio": "Lejanías",
+   "latitud": "3.522263889",
+   "longitud": "-74.092777778",
+   "altitud": "1046",
+   "dias_validos": 431
+  },
+  {
+   "codigo": "0032075501",
+   "nombre": "LEJANIAS  - AUT  [32075501]",
+   "categoria": "Climatológica Principal",
+   "departamento": "Meta",
+   "municipio": "Lejanías",
+   "latitud": "3.522263889",
+   "longitud": "-74.092777778",
+   "altitud": "1046",
+   "dias_validos": 431
+  },
+  {
+   "codigo": "3206500058",
+   "nombre": "LEJANÍAS - AUT [3206500058]",
+   "categoria": "Climatológica Principal",
+   "departamento": "Meta",
+   "municipio": "Lejanías",
+   "latitud": "3.51827",
+   "longitud": "-74.00627",
+   "altitud": "649",
+   "dias_validos": 312
+  }
+ ]
+}
