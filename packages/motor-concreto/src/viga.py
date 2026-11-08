@@ -49,6 +49,7 @@ class Seccion:
     estribo_s: float          # mm
     ramas: int = 2
     recubrimiento: float = 40.0   # mm libres al estribo (C.7.7)
+    barras_sup_n: int = 0         # barras superiores del mismo diámetro (diseño sísmico: refuerzo simétrico); solo afecta cantidades/costo y separación
 
     @property
     def d(self) -> float:

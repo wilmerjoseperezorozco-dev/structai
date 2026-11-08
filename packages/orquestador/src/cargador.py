@@ -32,6 +32,24 @@ def motor_apu_cantidades() -> ModuleType:
     return importlib.import_module("motor_apu.cantidades")
 
 
+def modulo_a4() -> ModuleType:
+    """Apéndice A-4 (módulo autónomo de motor-geopot; no se importa el paquete completo para no exigir pydantic)."""
+    alias = "motor_geopot_a4"
+    if alias in sys.modules:
+        return sys.modules[alias]
+    ruta = PAQUETES / "motor-geopot" / "src" / "a4.py"
+    spec = importlib.util.spec_from_file_location(alias, ruta)
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[alias] = mod
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def motor_concreto_sismo() -> ModuleType:
+    cargar_motor("motor-concreto", "motor_concreto")
+    return importlib.import_module("motor_concreto.sismo_viga")
+
+
 def motor_concreto_viga() -> ModuleType:
     cargar_motor("motor-concreto", "motor_concreto")
     return importlib.import_module("motor_concreto.viga")

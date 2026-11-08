@@ -29,6 +29,30 @@ de cada verificación y su numeral. Paquetes: `packages/motor-concreto`, `packag
 - Costo = costo directo APU determinista del catálogo (Barranquilla 2026) por elemento; no incluye AIU ni Monte Carlo.
 - Herramienta de apoyo: requiere revisión y firma de un ingeniero (issue #18).
 
+## Cascada geoespacial → sísmica (2026-11-08)
+
+`ProyectoViga(municipio=...)` dispara: Apéndice A-4 (Aa, Av del municipio, `motor-geopot/src/a4.py`) → zona (A.2.3: Baja si Aa y
+Av ≤ 0,10; Alta si alguno > 0,20) → capacidad mínima de disipación (Baja DMI, Intermedia DMO, Alta DES) → requisitos de
+C.21.5 aplicados a la viga → costo APU. Mismas cargas, otra amenaza: Tubará (Baja, DMI) 250×550 3#7 $1.294.903; Pereira (Alta, DES)
+250×700 3#6 + 3#6 superiores, estribos c/150 $1.661.995 (+28 %).
+
+- Datos locales: `motor-geopot/data/nsr10_a4_municipios.json` (1.117 municipios, 29 con Decreto 092/2011), generado por
+  `scripts/ingesta/nsr10/generar_snapshot_a4.py`; idéntico a la tabla de Supabase (suma de control y conteo iguales). La zona
+  calculada con A.2.3 coincide con la columna `zona` de la tabla en los 1.117 municipios.
+- Verificado en el corpus: C.21.5.1.2, C.21.5.1.3, C.21.5.2.1, C.21.5.2.2, C.21.5.3.1/.2, C.21.5.4.1/.2, B.2.4-5 y -7, A.2.3.1-3.
+- No verificado: Mpr = 1,25·fy con φ = 1,0; φ de cortante; el mapeo zona→capacidad para concreto se tomó del esquema de F.3.2.1.1 (acero).
+- DMO se trata con los requisitos de DES (cota conservadora, C.21.3.4 no implementado). Refuerzo simétrico arriba/abajo, estribos de
+  confinamiento en toda la luz, sin empalmes, nudos ni efecto de sitio (Fa, Fv).
+- La demanda sísmica de flexión no se calcula aquí: entra como `momento_apoyo_kn_m` desde el análisis del pórtico (siguiente paso:
+  conectar `motor-estructural`). Sin ella solo se verifican detallado y cortante por capacidad.
+- `capacidad` solo puede subir la mínima de la zona; bajarla lanza error. Nombre de municipio ambiguo exige departamento o código DANE.
+
+### Hallazgo: tabla departamental de `sismica.py` incorrecta
+
+`packages/motor-geopot/src/sismica.py::DEPARTAMENTOS` (usada por `zona_sismica` y el endpoint de geopot) no coincide con el
+Apéndice A-4 en ninguna de las 27 capitales comparables (ej. Barranquilla 0,15/0,20 frente a 0,10/0,10; Bogotá la clasifica Alta
+cuando A-4 da Intermedia; Yopal 0,15/0,20 frente a 0,30/0,20, es decir, subestima). El orquestador ya no la usa. Corrección pendiente en tarea aparte.
+
 ## Fases siguientes (no construidas)
 
 1. Cascada sísmica/geoespacial: capas de amenaza → Aa/Av del Apéndice A-4 (por municipio, no la tabla departamental de `sismica.py`) → fuerzas → motores de mampostería/acero → cuantías finales.
