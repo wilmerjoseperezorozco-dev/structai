@@ -51,3 +51,24 @@ Cada fila es una hipótesis candidata, no un hallazgo. Se preregistra antes de a
 
 ## 5. Reglas de uso
 Para cada conjunto: registrar tamaño, periodo, campos, licencia y problemas de calidad **antes** de analizarlo; no publicar datos personales; no redistribuir sin revisar la licencia; documentar los fallos conocidos como en `RESULTADOS_*`.
+
+## 6. Servicios ArcGIS públicos del SGC y fuentes externas verificadas (2026-11-08)
+
+**Inventario del SGC** (`srvags.sgc.gov.co/arcgis/rest/services`; script `scripts/ingesta/sgc_amenaza_sismica/inventario_servicios_arcgis.py`, salida completa en `sgc_inventario_servicios.json`): 126 servicios MapServer/FeatureServer en unas 55 carpetas, 3.020 capas, una sola con error (`Mapa_Metalogenico_Colombia_2002`). Se omitieron las carpetas marcadas como privadas o de sistema. Muchos servicios repiten las mismas capas (por ejemplo, el drenaje de 445.717 elementos aparece en varios), así que el total de ~4 millones de registros **sobreestima** lo distinto. Solo lectura, sin geometrías.
+
+Capas que ya usamos: amenaza sísmica por municipio (`Municipios_Amenaza_NR10`) y mapa nacional de amenaza por movimientos en masa 1:100.000 (`Mapa_Nacional_Amenaza_Mov_Masa_100K`). Auditoría del A-4 contra la primera: `scripts/ingesta/nsr10/RESULTADOS_AUDITORIA_A4_VS_SGC.md`. Contraste de la segunda con eventos UNGRD: `scripts/satelite/RESULTADOS_SGC_VS_UNGRD.md`.
+
+Capas aún sin explorar, con conteo de registros del inventario (no verificadas en contenido ni licencia):
+| Capa | Registros | Posible uso |
+|---|---:|---|
+| `catalogo_sismos/catalogo_de_sismos_2` (CATS) | 16.290 | Catálogo sísmico para recurrencia y sismicidad local |
+| `sismicidad_historica_*` (efectos, intensidades) | 6.449 efectos; 3.405 intensidades | Efectos históricos por municipio |
+| `Mapa_Intensidad_Maxima_Observada_Colombia` | 1.123 municipios | Contraste con Aa/Av del A-4 |
+| `Zonificacion_Sismica_Intensidad_Esperada` | 1.122 municipios | Contraste con la amenaza sísmica del reglamento |
+| `SIMMA/ZonificacionAmenazaCache` | 5.501 (25K), 890 (100K) | Amenaza por movimientos en masa a mayor detalle |
+| `SIMMA/ZonificacionSusceptibilidadCache` | 1.205 (100K) | Susceptibilidad a movimientos en masa |
+| `Zonificacion_Amenazas_Mov_Masa` (zonificación tipo Cardique) | 23 capas, 15.261 | Zonificación local de detalle |
+| `Geomorfodinamica` | 713 puntos | Dinámica geomorfológica |
+| `Amenaza_Volcanica` | 40 volcanes, 47 capas | Amenaza volcánica |
+
+**ESA CCI humedad del suelo** (v09.2, CEDA): ver `scripts/satelite/RESULTADOS_ESA_CCI_COBERTURA.md`. Sin dato en los Andes altos, el Chocó y la Amazonía; útil en el Caribe. Descarga 2019-2024 en `scripts/satelite/_cache/esa_cci_sm/` (no versionada).
