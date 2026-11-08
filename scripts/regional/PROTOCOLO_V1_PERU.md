@@ -113,3 +113,11 @@ Cada confirmatoria se reporta **en Perú completo y por región natural** (costa
 4. Ejecutar la compuerta de datos (§4) y publicarla **antes** de cualquier asociación.
 5. Solo si la compuerta pasa, correr C-1 y C-2 con el código fijado en un commit anterior a los resultados; luego lo exploratorio.
 6. Informe de resultados con el mismo formato que `RESULTADOS_V1.md`, incluidos los resultados negativos y las verificaciones posteriores rotuladas como tales.
+
+## Enmienda 1 (2026-11-08; antes de descargar ningún insumo geográfico ni calcular nada)
+Localizadas las fuentes de §2, se fijan estas decisiones. Ninguna depende de resultado alguno.
+
+1. **Polígonos y área:** OCHA COD-AB «Peru - Subnational Administrative Boundaries» (HDX), fuente **IGN**, licencia **CC BY-IGO**; 25 departamentos, 196 provincias, **1.873 distritos** con códigos P-coded (se verificará que coincidan con UBIGEO). Límites creados en 2015, revisados en octubre de 2025. Archivo previsto: `per_admin_boundaries.shp.zip` (40,9 MB). **Limitación:** los distritos creados después de 2015 no están en los polígonos; el INEI proyecta 1.892 distritos. Los registros SINPAD en distritos sin polígono se excluyen y se cuentan (nº de distritos y de registros).
+2. **Población:** si no se consigue la tabla del Censo 2017 en formato manejable, se usa la **proyección distrital del INEI al 30 de junio de 2021** (año central de 2019–2024; tabla XLSX de 1.892 distritos, 2018–2026). Es una proyección, no un conteo, y la discrepancia de distritos con los polígonos se trata como en el punto 1. Las cifras de HDX (COD-PS) solo llegan al nivel departamento y **no sirven** para la tasa distrital.
+3. **NBI:** no se localizó una tabla distrital descargable (el Censo 2017 está en REDATAM, interactivo, y en el Mapa de Pobreza 2018 en PDF). Se aplica la regla de §2: **se omite NBI y su interacción**; no se calcula a mano desde REDATAM en esta versión.
+4. **Fecha de verificación de insumos:** los metadatos citados (1.873 distritos, CC BY-IGO, tamaños) se leyeron en las páginas oficiales de HDX el 2026-11-08; la tabla del INEI no se pudo abrir desde la app (la página de gob.pe devolvió un bloqueo de cortafuegos, 418, que no se intentó eludir).
