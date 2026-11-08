@@ -74,3 +74,38 @@ E sube con la elevación (Spearman +0,32) y baja con la pendiente (−0,35); Y2 
 
 ## Pendiente de las exploratorias
 R1 completo con efectos fijos de departamento; R3 (tipo de vía; requiere repetir el cálculo de exposición separando por tipo); R5 (controles negativos); R6 (focalización); R8 (sesgo de reporte); R9 b-d; R10. **No se pueden correr por falta de datos:** R2 (% urbano, NBI y lluvia no se obtuvieron) y R4 (no se extrajeron los lugares poblados de OSM).
+
+---
+
+# Exploratorias, bloque 2: R1 con efectos fijos de departamento (2026-11-08)
+
+Código: `peru_r1_efectos_fijos.py` (commit `eec36ec`, publicado antes de ejecutarlo). **Exploratorio.** Modelos cuasi-Poisson (GLM Poisson con errores robustos) con efectos fijos de departamento. Y1: viviendas dañadas con desfase log(población). Y2 (análogo, no previsto en R1): km de carretera dañada con desfase log(área). Covariables: E (por +0,10), T, elevación media, pendiente media (y log área en Y1). **No incluyen lluvia p95, % urbano ni NBI**, así que es un R1 parcial. IC 95 %: errores robustos agrupados por departamento (pocos grupos, poco confiables) y remuestreo de departamentos (2.000 réplicas). Sin corrección de Holm: son 12 intervalos y no se ajustaron.
+
+## Razón de tasas por +0,10 de E (IC por remuestreo de departamentos; entre paréntesis, el robusto agrupado)
+| Ámbito | n / deptos | Y1 viviendas | Y2 km de carretera |
+|---|---|---|---|
+| Perú | 1.483 / 25 | 1,07 [0,98; 1,20] ([0,97; 1,18]) | 1,02 [0,90; 1,16] ([0,89; 1,16]) |
+| Costa | 329 / 13 | 1,06 [0,95; 1,32] ([0,89; 1,26]) | **1,11 [1,02; 1,38]** ([0,96; 1,28]) |
+| Sierra | 936 / 19 | 1,00 [0,90; 1,16] ([0,87; 1,15]) | 0,88 [0,74; 1,01] ([0,76; 1,01]) |
+| Selva | 205 / 13 | 1,04 [0,93; 1,20] ([0,90; 1,20]) | **1,25 [1,02; 1,34]** ([1,12; 1,39]) |
+
+## R1b: Spearman parcial dentro de departamento (el análogo directo de C-2 con efectos fijos)
+| Ámbito | ρ dentro de departamento | IC 95 % | ρ de C-2 sin efectos fijos |
+|---|---:|---|---:|
+| Perú | −0,042 | [−0,106; +0,009] | −0,087 |
+| Costa | **+0,154** | [+0,082; +0,222] | +0,228 |
+| Sierra | **−0,089** | [−0,131; −0,034] | −0,223 |
+| Selva | +0,036 | [−0,118; +0,163] | +0,076 |
+
+## Lectura (exploratoria)
+1. **Viviendas dañadas (Y1): ninguna asociación en ningún ámbito.** Todos los intervalos incluyen 1. Con efectos fijos de departamento, la exposición vial a terreno bajo no predice daño a viviendas en Perú.
+2. **Sierra: la asociación negativa se reduce a la mitad o menos.** Pasa de ρ = −0,22 a −0,09, y en el modelo de conteo la razón de tasas es 0,88 con un intervalo que roza 1 (límite superior 1,01). Se confirma la sospecha del bloque 1: **la mayor parte del signo negativo era una diferencia entre departamentos**, no una relación dentro de ellos. Queda un efecto pequeño y de signo negativo que no se puede distinguir de cero en el modelo de conteo.
+3. **Costa: se mantiene positiva dentro de departamento** (ρ = +0,15; RR 1,11), pero recuérdese R9a: sin 2023 la asociación de la costa desaparece. Dos hallazgos que se leen juntos: dentro de cada departamento hay asociación, pero la sostiene un año.
+4. **Selva: los dos métodos discrepan.** El modelo de conteo da un RR de 1,25 para km de carretera (positivo) y el ρ de rangos es 0,04 (nulo). Con 205 distritos y 13 departamentos, y un Y2 de cola pesada, el modelo de conteo puede estar dominado por pocos distritos con muchos kilómetros dañados. No se interpreta; hace falta mirar influencia.
+5. **Perú completo: nulo en ambos resultados.** No hay patrón único.
+
+## Límites de este bloque
+- R1 incompleto: faltan lluvia p95, % urbano y NBI. Sin ellos, la vulnerabilidad social y la lluvia local no están controladas.
+- Pocos departamentos por ámbito (13 a 25): los IC agrupados son poco confiables, por eso se da también el de remuestreo; entre ambos hay diferencias (por ejemplo costa, Y2).
+- Sin corrección por multiplicidad entre los 12 intervalos. Si ninguna asociación fuera real, esperaríamos que alguno excluyera 1 por azar; los de la costa y la selva en Y2 tienen límites inferiores de 1,02, muy cerca de 1.
+- Y2 incluye toda la red vial y E solo la principal de OSM.
