@@ -1,0 +1,13 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "motor-analisis"
+version = "0.1.0"
+description = "Analisis matricial 2D por rigidez directa (porticos), casos de carga, combinaciones y envolventes"
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.26.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3.3"]

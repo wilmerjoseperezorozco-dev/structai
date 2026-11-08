@@ -53,6 +53,43 @@ C.21.5 aplicados a la viga → costo APU. Mismas cargas, otra amenaza: Tubará (
 Apéndice A-4 en ninguna de las 27 capitales comparables (ej. Barranquilla 0,15/0,20 frente a 0,10/0,10; Bogotá la clasifica Alta
 cuando A-4 da Intermedia; Yopal 0,15/0,20 frente a 0,30/0,20, es decir, subestima). El orquestador ya no la usa. Corrección pendiente en tarea aparte.
 
+## Motor de diseño restringido: análisis matricial + envolventes (2026-11-08)
+
+Se pasó de «evaluar fórmulas sobre una viga simple» a un motor que analiza el pórtico y diseña contra restricciones.
+
+- `packages/motor-analisis`: rigidez directa 2D (3 gdl por nodo, elementos viga-columna Euler-Bernoulli), casos D, L, E,
+  combinaciones NSR-10 (1.4D; 1.2D+1.6L; 1.2D+1.0L±E; 0.9D±E) y envolvente de M⁺, M⁻, V a lo largo de cada elemento, con la
+  combinación gobernante en cada punto. Verificado contra solución cerrada: viga simple (reacciones, M, flecha 5wL⁴/384EI),
+  biempotrada (−wL²/12, +wL²/24), continua de dos vanos (−wL²/8, 3wL/8, 10wL/8), voladizo (PL³/3EI), pórtico con viga rígida
+  (Ph/4) y equilibrio global; rechaza modelos inestables.
+- `packages/motor-concreto/src/diseno_viga.py`: dado el nivel DMI/DMO/DES y las demandas de la envolvente, diseña refuerzo
+  superior e inferior independientes y estribos en dos zonas (2h de confinamiento y centro). Restricciones duras:
+  DMO b ≥ 200 mm (C.21.3.4.1); DES b ≥ mín(0,3h; 250 mm) (C.21.5.1.3) y b ≤ c2 + 2·mín(c2; 0,75·c1) (C.21.5.1.4); ln ≥ 4d;
+  ρmín (C.10.5.1) y ρ ≤ 0,025; ≥ 2 barras continuas arriba y abajo; Mn⁺ ≥ ½ Mn⁻ (DES) o ⅓ (DMO) en la cara y ≥ ¼ (DES) o ⅕ (DMO)
+  del máximo en cualquier sección; confinamiento s ≤ mín(d/4; 8db; 24dest; 300); cortante por capacidad Ve = (Mpr⁻+Mpr⁺)/ln + wu·ln/2
+  (DES, Mpr con 1,25·fy) y con Mn en DMO; Vc = 0 en confinamiento cuando el cortante sísmico es ≥ la mitad de Ve (DES).
+- `packages/orquestador/src/diseno_portico.py`: municipio → A-4 → capacidad; por cada sección candidata se vuelve a analizar el
+  pórtico (la viga cambia la rigidez y por tanto el reparto sísmico), se toma la peor demanda y se elige la de menor costo APU.
+
+### Sobre el ancho de 250 mm
+
+El óptimo anterior daba b = 250 mm porque la rejilla empezaba ahí, no por una restricción olvidada. La norma verificada en el corpus
+dice «no menor que el más pequeño de 0,3h y 250 mm» (C.21.5.1.3): el mínimo es **mín**(0,3h; 250), no el mayor. Con h = 600 el piso
+normativo es 180 mm, y con h ≥ 833 mm es 250 mm. La rejilla ahora empieza en 200 mm y el ancho queda acotado por las columnas.
+
+### Huecos del corpus encontrados al verificar
+
+`C.21.3.3 (a)/(b)` (cortante de diseño DMO) y la lista de inercias agrietadas de `C.10.10.4.1` aparecen truncadas en `nsr10_chunks`
+(solo el encabezado). Se usaron los valores del ACI 318-08 (Mn para DMO; 0,35·Ig viga y 0,70·Ig columna) y se marcaron como no
+verificados. Pendiente: re-ingestar esos numerales desde el PDF fuente. También se corrigió una cifra propia: Ec = 4700·√f'c
+(C.8.5.1), no 3900.
+
+### Límites (además de los anteriores)
+
+Una sola sección para todas las vigas; columnas dadas y no diseñadas (sin columna fuerte-viga débil C.21.6.2 ni nudos C.21.7);
+las fuerzas sísmicas laterales llegan como dato (el cortante basal desde Sa, Fa, Fv, T, R todavía no está encadenado: requiere
+verificar las tablas A.2.4-3/-4 y A.4.2 en el corpus); refuerzo continuo en toda la luz, mismo diámetro arriba y abajo.
+
 ## Fases siguientes (no construidas)
 
 1. Cascada sísmica/geoespacial: capas de amenaza → Aa/Av del Apéndice A-4 (por municipio, no la tabla departamental de `sismica.py`) → fuerzas → motores de mampostería/acero → cuantías finales.
