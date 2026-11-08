@@ -1,5 +1,5 @@
 {
- "global": 0.5880270292142106,
+ "global": 0.6308671198510966,
  "paginas": [
   {
    "pdf": "43-54",
@@ -32,7 +32,7 @@
    "pdf": "43-54",
    "pagina_pdf": 4,
    "fragmentos": 757,
-   "cobertura": 0.814,
+   "cobertura": 0.815,
    "numerales_en_pagina": [
     "A.1",
     "A.1.2.5"
@@ -122,7 +122,7 @@
    "pdf": "56-81",
    "pagina_pdf": 1,
    "fragmentos": 650,
-   "cobertura": 0.74,
+   "cobertura": 0.742,
    "numerales_en_pagina": [
     "A.2",
     "A.2"
@@ -392,7 +392,7 @@
    "pdf": "81-94",
    "pagina_pdf": 4,
    "fragmentos": 755,
-   "cobertura": 0.809,
+   "cobertura": 0.821,
    "numerales_en_pagina": [
     "A.3",
     "A.3.1.7"
@@ -502,7 +502,7 @@
    "pdf": "95-105",
    "pagina_pdf": 1,
    "fragmentos": 556,
-   "cobertura": 0.169,
+   "cobertura": 0.318,
    "numerales_en_pagina": [
     "A.3",
     "A.3"
@@ -512,7 +512,7 @@
    "pdf": "95-105",
    "pagina_pdf": 2,
    "fragmentos": 721,
-   "cobertura": 0.162,
+   "cobertura": 0.358,
    "numerales_en_pagina": [
     "A.3",
     "A.3"
@@ -522,7 +522,7 @@
    "pdf": "95-105",
    "pagina_pdf": 3,
    "fragmentos": 583,
-   "cobertura": 0.182,
+   "cobertura": 0.376,
    "numerales_en_pagina": [
     "A.3",
     "A.3"
@@ -532,7 +532,7 @@
    "pdf": "95-105",
    "pagina_pdf": 4,
    "fragmentos": 828,
-   "cobertura": 0.124,
+   "cobertura": 0.345,
    "numerales_en_pagina": [
     "A.3",
     "A.3"
@@ -542,7 +542,7 @@
    "pdf": "95-105",
    "pagina_pdf": 5,
    "fragmentos": 710,
-   "cobertura": 0.185,
+   "cobertura": 0.342,
    "numerales_en_pagina": [
     "A.3",
     "A.3"
@@ -552,7 +552,7 @@
    "pdf": "95-105",
    "pagina_pdf": 6,
    "fragmentos": 735,
-   "cobertura": 0.249,
+   "cobertura": 0.445,
    "numerales_en_pagina": [
     "A.3",
     "A.3"
@@ -582,7 +582,7 @@
    "pdf": "95-105",
    "pagina_pdf": 9,
    "fragmentos": 627,
-   "cobertura": 0.78,
+   "cobertura": 0.794,
    "numerales_en_pagina": [
     "A.3",
     "A.3"
@@ -592,7 +592,7 @@
    "pdf": "95-105",
    "pagina_pdf": 10,
    "fragmentos": 112,
-   "cobertura": 0.018,
+   "cobertura": 0.214,
    "numerales_en_pagina": [
     "A.3",
     "A.3"
@@ -602,7 +602,7 @@
    "pdf": "95-105",
    "pagina_pdf": 11,
    "fragmentos": 181,
-   "cobertura": 0.006,
+   "cobertura": 0.547,
    "numerales_en_pagina": [
     "A.3",
     "A.3"
@@ -622,7 +622,7 @@
    "pdf": "106-115",
    "pagina_pdf": 2,
    "fragmentos": 447,
-   "cobertura": 0.622,
+   "cobertura": 0.629,
    "numerales_en_pagina": [
     "A.4",
     "A.4.2"
@@ -1288,7 +1288,7 @@
    "pdf": "168-181",
    "pagina_pdf": 13,
    "fragmentos": 791,
-   "cobertura": 0.724,
+   "cobertura": 0.726,
    "numerales_en_pagina": [
     "A.13",
     "A.6"
@@ -1308,7 +1308,7 @@
    "pdf": "183-190",
    "pagina_pdf": 1,
    "fragmentos": 543,
-   "cobertura": 0.28,
+   "cobertura": 0.777,
    "numerales_en_pagina": [
     "A.2.5.2",
     "A.3"
@@ -1318,7 +1318,7 @@
    "pdf": "183-190",
    "pagina_pdf": 2,
    "fragmentos": 462,
-   "cobertura": 0.069,
+   "cobertura": 0.621,
    "numerales_en_pagina": [
     "A.4",
     "A.5"
@@ -1385,7 +1385,7 @@
    "pdf": "191-218",
    "pagina_pdf": 1,
    "fragmentos": 675,
-   "cobertura": 0.01,
+   "cobertura": 0.797,
    "numerales_en_pagina": [
     "A.13",
     "A.13"
@@ -1395,7 +1395,7 @@
    "pdf": "191-218",
    "pagina_pdf": 2,
    "fragmentos": 554,
-   "cobertura": 0.193,
+   "cobertura": 0.771,
    "numerales_en_pagina": [
     "A.13",
     "A.13"
@@ -1405,7 +1405,7 @@
    "pdf": "191-218",
    "pagina_pdf": 3,
    "fragmentos": 782,
-   "cobertura": 0.045,
+   "cobertura": 0.785,
    "numerales_en_pagina": [
     "A.2.6",
     "A.3.3.9"
@@ -1415,7 +1415,7 @@
    "pdf": "191-218",
    "pagina_pdf": 4,
    "fragmentos": 648,
-   "cobertura": 0.006,
+   "cobertura": 0.761,
    "numerales_en_pagina": [
     "A.2.6"
    ]
@@ -1424,7 +1424,7 @@
    "pdf": "191-218",
    "pagina_pdf": 5,
    "fragmentos": 610,
-   "cobertura": 0.015,
+   "cobertura": 0.69,
    "numerales_en_pagina": [
     "A.2.6.1.1",
     "A.6.4.1"
@@ -1434,7 +1434,7 @@
    "pdf": "191-218",
    "pagina_pdf": 6,
    "fragmentos": 662,
-   "cobertura": 0.045,
+   "cobertura": 0.739,
    "numerales_en_pagina": [
     "A.3",
     "A.3"

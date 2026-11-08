@@ -296,7 +296,32 @@ completo")**:
   una pregunta sobre el documento AIS que complementa el apéndice, el chunk
   correcto se recupera primero pero el modelo citó «AIS 180-13» (de la
   Resolución 0330, otra fuente) en vez del AIS-180 de 2010 del apéndice.
-  **Pendiente:** revisión de las tablas A.3-1 a A.3-6.
+  **Tablas A.3-1 a A.3-7 y Figuras A.3-1/A.3-2 rehechas 2026-11-08** tras
+  compararlas fila por fila contra el PDF (`NSR-10-95-105.pdf`, A-52 a A-62).
+  Hallazgos en lo que estaba cargado: (1) un valor erróneo en la Tabla A.3-2
+  fila 2.a (muros DES + pórticos DES, R0 = 7.0: el chunk decía «no permitido en
+  zona alta, 72 m en intermedia»; el PDF dice 72 m en alta y sin límite en
+  intermedia y baja); (2) «20 m» para las cerchas no dúctiles de la A.3-3 (el
+  PDF dice 12 m; los 20 m son la nota 5 de la A.3-2); (3) frases añadidas que
+  no están en el PDF («el valor más alto de esta tabla», un «25 %» en la nota 1
+  de la A.3-2); (4) filas ausentes (A.3-2: 4 de diagonales excéntricas, placa
+  de acero y 6 de concéntricas; A.3-3: mixtos, cerchas dúctiles, lámina
+  doblada, celosías; A.3-4: varios muros y pórticos con alma llena) y las
+  notas 2-6; (5) A.3-5, A.3-6 y A.3-7 cargadas dos veces en fragmentos sueltos,
+  una copia con «pero superior» omitido en el tipo 5aA, y sin los criterios
+  geométricos de las figuras (1.4(Δ1+Δ2)/2 ≥ Δ1 > 1.2(Δ1+Δ2)/2, a > 1.30 b,
+  etc.). Ahora: A.3-1 a A.3-4 = 87 filas (una por chunk, con el nombre del
+  sistema en el encabezado) + notas; A.3-5 a A.3-7 y figuras = 37 chunks.
+  Scripts: `_ingest_titulo_a_tablas_a3_1_a_a3_4_verbatim.py` y
+  `_ingest_titulo_a_tablas_a3_5_a_a3_7_verbatim.py`. Verificado con 13
+  consultas reales a `ask()` (7 + 6): 12 correctas; 1 respondió con la fila
+  del sistema dual cuando la pregunta no nombraba el sistema (se corrigió
+  poniendo el sistema en el encabezado de cada fila y quedó correcta). Los
+  dibujos de las figuras no se transcriben. La cobertura de texto por página
+  de las tablas A.3-1 a A.3-4 sigue en 32-45 % porque la extracción del PDF
+  mezcla el orden de las celdas; la verificación fue contra el PDF y con
+  consultas, no con ese indicador. Cobertura global del Título A: **63,1 %**
+  (era 58,8 %).
 - **Título B — re-auditado con `rag-audit-kit` 2026-09-23, hueco real
   mucho más grande de lo que decía la nota de 2026-09-08** (esa nota
   hablaba de "7 secciones sin chunk"; el re-audit numeral por numeral
