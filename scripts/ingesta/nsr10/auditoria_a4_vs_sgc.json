@@ -1,0 +1,935 @@
+{
+ "n_a4": 1117,
+ "n_capa_registros": 1123,
+ "n_capa_codigos": 1122,
+ "con_diferencias": 73,
+ "a4_sin_sgc": [
+  "27086",
+  "25483"
+ ],
+ "sgc_sin_a4": [
+  "0None",
+  "13490",
+  "19300",
+  "23682",
+  "23815",
+  "52480",
+  "70221"
+ ],
+ "codigos_con_varios_registros_en_sgc": [
+  [
+   "19355",
+   2
+  ]
+ ],
+ "diferencias": [
+  {
+   "codigo": "91460",
+   "municipio": "Mirití-Paraná",
+   "departamento": "Amazonas",
+   "pagina_a4": 153,
+   "difs": {
+    "nombre": [
+     "Mirití-Paraná",
+     "MIRITÍ - PARANÁ"
+    ]
+   }
+  },
+  {
+   "codigo": "05044",
+   "municipio": "Anzá",
+   "departamento": "Antioquia",
+   "pagina_a4": 153,
+   "difs": {
+    "av": [
+     0.3,
+     0.25
+    ]
+   }
+  },
+  {
+   "codigo": "05129",
+   "municipio": "Caldas",
+   "departamento": "Antioquia",
+   "pagina_a4": 153,
+   "difs": {
+    "av": [
+     0.2,
+     0.25
+    ],
+    "zona": [
+     "Intermedia",
+     "Alta"
+    ]
+   }
+  },
+  {
+   "codigo": "05148",
+   "municipio": "Carmen De Viboral",
+   "departamento": "Antioquia",
+   "pagina_a4": 153,
+   "difs": {
+    "nombre": [
+     "Carmen De Viboral",
+     "EL CARMEN DE VIBORAL"
+    ]
+   }
+  },
+  {
+   "codigo": "05237",
+   "municipio": "Don Matías",
+   "departamento": "Antioquia",
+   "pagina_a4": 154,
+   "difs": {
+    "nombre": [
+     "Don Matías",
+     "DONMATÍAS"
+    ]
+   }
+  },
+  {
+   "codigo": "05647",
+   "municipio": "San Andrés",
+   "departamento": "Antioquia",
+   "pagina_a4": 154,
+   "difs": {
+    "nombre": [
+     "San Andrés",
+     "SAN ANDRÉS DE CUERQUÍA"
+    ]
+   }
+  },
+  {
+   "codigo": "05660",
+   "municipio": "San Luis",
+   "departamento": "Antioquia",
+   "pagina_a4": 155,
+   "difs": {
+    "av": [
+     0.25,
+     0.2
+    ],
+    "zona": [
+     "Alta",
+     "Intermedia"
+    ]
+   }
+  },
+  {
+   "codigo": "05664",
+   "municipio": "San Pedro",
+   "departamento": "Antioquia",
+   "pagina_a4": 155,
+   "difs": {
+    "nombre": [
+     "San Pedro",
+     "SAN PEDRO DE LOS MILAGROS"
+    ]
+   }
+  },
+  {
+   "codigo": "05674",
+   "municipio": "San Vicente",
+   "departamento": "Antioquia",
+   "pagina_a4": 155,
+   "difs": {
+    "nombre": [
+     "San Vicente",
+     "SAN VICENTE FERRER"
+    ]
+   }
+  },
+  {
+   "codigo": "05042",
+   "municipio": "Santafé de Antioquia",
+   "departamento": "Antioquia",
+   "pagina_a4": 155,
+   "difs": {
+    "av": [
+     0.2,
+     0.25
+    ],
+    "zona": [
+     "Intermedia",
+     "Alta"
+    ],
+    "nombre": [
+     "Santafé de Antioquia",
+     "SANTA FÉ DE ANTIOQUIA"
+    ]
+   }
+  },
+  {
+   "codigo": "05697",
+   "municipio": "Santuario",
+   "departamento": "Antioquia",
+   "pagina_a4": 155,
+   "difs": {
+    "nombre": [
+     "Santuario",
+     "EL SANTUARIO"
+    ]
+   }
+  },
+  {
+   "codigo": "05809",
+   "municipio": "Titiribí",
+   "departamento": "Antioquia",
+   "pagina_a4": 155,
+   "difs": {
+    "av": [
+     0.2,
+     0.25
+    ],
+    "zona": [
+     "Intermedia",
+     "Alta"
+    ]
+   }
+  },
+  {
+   "codigo": "88564",
+   "municipio": "Providencia y Santa Catalina",
+   "departamento": "San Andrés y Providencia",
+   "pagina_a4": 155,
+   "difs": {
+    "nombre": [
+     "Providencia y Santa Catalina",
+     "PROVIDENCIA"
+    ]
+   }
+  },
+  {
+   "codigo": "13001",
+   "municipio": "Cartagena",
+   "departamento": "Bolívar",
+   "pagina_a4": 156,
+   "difs": {
+    "nombre": [
+     "Cartagena",
+     "CARTAGENA DE INDIAS"
+    ]
+   }
+  },
+  {
+   "codigo": "15299",
+   "municipio": "Garagoa",
+   "departamento": "Boyacá",
+   "pagina_a4": 157,
+   "difs": {
+    "av": [
+     0.3,
+     0.25
+    ]
+   }
+  },
+  {
+   "codigo": "15332",
+   "municipio": "Guicán",
+   "departamento": "Boyacá",
+   "pagina_a4": 157,
+   "difs": {
+    "nombre": [
+     "Guicán",
+     "GÜICÁN DE LA SIERRA"
+    ]
+   }
+  },
+  {
+   "codigo": "15442",
+   "municipio": "Maripí",
+   "departamento": "Boyacá",
+   "pagina_a4": 158,
+   "difs": {
+    "aa": [
+     0.2,
+     0.15
+    ]
+   }
+  },
+  {
+   "codigo": "15455",
+   "municipio": "Miraflores",
+   "departamento": "Boyacá",
+   "pagina_a4": 158,
+   "difs": {
+    "aa": [
+     0.2,
+     0.25
+    ]
+   }
+  },
+  {
+   "codigo": "15500",
+   "municipio": "Oicatá",
+   "departamento": "Boyacá",
+   "pagina_a4": 158,
+   "difs": {
+    "av": [
+     0.25,
+     0.2
+    ],
+    "zona": [
+     "Alta",
+     "Intermedia"
+    ]
+   }
+  },
+  {
+   "codigo": "15511",
+   "municipio": "Pachavita",
+   "departamento": "Boyacá",
+   "pagina_a4": 158,
+   "difs": {
+    "aa": [
+     0.25,
+     0.2
+    ]
+   }
+  },
+  {
+   "codigo": "15514",
+   "municipio": "Páez",
+   "departamento": "Boyacá",
+   "pagina_a4": 158,
+   "difs": {
+    "av": [
+     0.25,
+     0.3
+    ]
+   }
+  },
+  {
+   "codigo": "15600",
+   "municipio": "Ráquira",
+   "departamento": "Boyacá",
+   "pagina_a4": 158,
+   "difs": {
+    "aa": [
+     0.2,
+     0.15
+    ]
+   }
+  },
+  {
+   "codigo": "15681",
+   "municipio": "San Pablo Borbur",
+   "departamento": "Boyacá",
+   "pagina_a4": 158,
+   "difs": {
+    "nombre": [
+     "San Pablo Borbur",
+     "SAN PABLO DE BORBUR"
+    ]
+   }
+  },
+  {
+   "codigo": "15693",
+   "municipio": "San Rosa Viterbo",
+   "departamento": "Boyacá",
+   "pagina_a4": 158,
+   "difs": {
+    "nombre": [
+     "San Rosa Viterbo",
+     "SANTA ROSA DE VITERBO"
+    ]
+   }
+  },
+  {
+   "codigo": "15740",
+   "municipio": "Siachoque",
+   "departamento": "Boyacá",
+   "pagina_a4": 158,
+   "difs": {
+    "aa": [
+     0.15,
+     0.2
+    ]
+   }
+  },
+  {
+   "codigo": "18150",
+   "municipio": "Cartagena del Chairá",
+   "departamento": "Caquetá",
+   "pagina_a4": 159,
+   "difs": {
+    "av": [
+     0.15,
+     0.05
+    ],
+    "zona": [
+     "Intermedia",
+     "Baja"
+    ]
+   }
+  },
+  {
+   "codigo": "18205",
+   "municipio": "Currillo",
+   "departamento": "Caquetá",
+   "pagina_a4": 159,
+   "difs": {
+    "nombre": [
+     "Currillo",
+     "CURILLO"
+    ]
+   }
+  },
+  {
+   "codigo": "18610",
+   "municipio": "San José de la Fragua",
+   "departamento": "Caquetá",
+   "pagina_a4": 160,
+   "difs": {
+    "nombre": [
+     "San José de la Fragua",
+     "SAN JOSÉ DEL FRAGUA"
+    ]
+   }
+  },
+  {
+   "codigo": "85225",
+   "municipio": "Nunchía",
+   "departamento": "Casanare",
+   "pagina_a4": 160,
+   "difs": {
+    "av": [
+     0.15,
+     0.2
+    ]
+   }
+  },
+  {
+   "codigo": "85263",
+   "municipio": "Pore",
+   "departamento": "Casanare",
+   "pagina_a4": 160,
+   "difs": {
+    "av": [
+     0.15,
+     0.2
+    ]
+   }
+  },
+  {
+   "codigo": "85315",
+   "municipio": "Sácama",
+   "departamento": "Casanare",
+   "pagina_a4": 160,
+   "difs": {
+    "av": [
+     0.2,
+     0.25
+    ]
+   }
+  },
+  {
+   "codigo": "85400",
+   "municipio": "Támara",
+   "departamento": "Casanare",
+   "pagina_a4": 160,
+   "difs": {
+    "av": [
+     0.15,
+     0.2
+    ]
+   }
+  },
+  {
+   "codigo": "19418",
+   "municipio": "López",
+   "departamento": "Cauca",
+   "pagina_a4": 160,
+   "difs": {
+    "nombre": [
+     "López",
+     "LÓPEZ DE MICAY"
+    ]
+   }
+  },
+  {
+   "codigo": "19533",
+   "municipio": "Piamonte",
+   "departamento": "Cauca",
+   "pagina_a4": 161,
+   "difs": {
+    "av": [
+     0.2,
+     0.25
+    ]
+   }
+  },
+  {
+   "codigo": "20443",
+   "municipio": "Manaure",
+   "departamento": "Cesar",
+   "pagina_a4": 161,
+   "difs": {
+    "nombre": [
+     "Manaure",
+     "MANAURE BALCÓN DEL CESAR"
+    ]
+   }
+  },
+  {
+   "codigo": "27135",
+   "municipio": "Cantón de San Pablo",
+   "departamento": "Chocó",
+   "pagina_a4": 162,
+   "difs": {
+    "nombre": [
+     "Cantón de San Pablo",
+     "EL CANTÓN DEL SAN PABLO"
+    ]
+   }
+  },
+  {
+   "codigo": "27361",
+   "municipio": "Itsmína",
+   "departamento": "Chocó",
+   "pagina_a4": 162,
+   "difs": {
+    "nombre": [
+     "Itsmína",
+     "ISTMINA"
+    ]
+   }
+  },
+  {
+   "codigo": "27413",
+   "municipio": "Lloró",
+   "departamento": "Chocó",
+   "pagina_a4": 162,
+   "difs": {
+    "aa": [
+     0.4,
+     0.25
+    ]
+   }
+  },
+  {
+   "codigo": "27600",
+   "municipio": "Río Quito",
+   "departamento": "Chocó",
+   "pagina_a4": 162,
+   "difs": {
+    "aa": [
+     0.35,
+     0.4
+    ]
+   }
+  },
+  {
+   "codigo": "23001",
+   "municipio": "Montería",
+   "departamento": "Córdoba",
+   "pagina_a4": 162,
+   "difs": {
+    "av": [
+     0.2,
+     0.15
+    ]
+   }
+  },
+  {
+   "codigo": "23586",
+   "municipio": "Purísima",
+   "departamento": "Córdoba",
+   "pagina_a4": 162,
+   "difs": {
+    "nombre": [
+     "Purísima",
+     "PURÍSIMA DE LA CONCEPCIÓN"
+    ]
+   }
+  },
+  {
+   "codigo": "11001",
+   "municipio": "Bogotá D. C.",
+   "departamento": "Bogotá D.C.",
+   "pagina_a4": 165,
+   "difs": {
+    "nombre": [
+     "Bogotá D. C.",
+     "BOGOTÁ, D.C."
+    ]
+   }
+  },
+  {
+   "codigo": "25317",
+   "municipio": "Guachetá",
+   "departamento": "Cundinamarca",
+   "pagina_a4": 163,
+   "difs": {
+    "av": [
+     0.15,
+     0.2
+    ]
+   }
+  },
+  {
+   "codigo": "25377",
+   "municipio": "La Calera",
+   "departamento": "Cundinamarca",
+   "pagina_a4": 163,
+   "difs": {
+    "av": [
+     0.2,
+     0.25
+    ],
+    "zona": [
+     "Intermedia",
+     "Alta"
+    ]
+   }
+  },
+  {
+   "codigo": "25518",
+   "municipio": "Paime",
+   "departamento": "Cundinamarca",
+   "pagina_a4": 164,
+   "difs": {
+    "av": [
+     0.2,
+     0.15
+    ]
+   }
+  },
+  {
+   "codigo": "25645",
+   "municipio": "San Antonio de Tequendama",
+   "departamento": "Cundinamarca",
+   "pagina_a4": 164,
+   "difs": {
+    "nombre": [
+     "San Antonio de Tequendama",
+     "SAN ANTONIO DEL TEQUENDAMA"
+    ]
+   }
+  },
+  {
+   "codigo": "25839",
+   "municipio": "Ubalá",
+   "departamento": "Cundinamarca",
+   "pagina_a4": 164,
+   "difs": {
+    "aa": [
+     0.35,
+     0.25
+    ]
+   }
+  },
+  {
+   "codigo": "25843",
+   "municipio": "Ubaté",
+   "departamento": "Cundinamarca",
+   "pagina_a4": 164,
+   "difs": {
+    "nombre": [
+     "Ubaté",
+     "VILLA DE SAN DIEGO DE UBATÉ"
+    ]
+   }
+  },
+  {
+   "codigo": "94001",
+   "municipio": "Puerto Inírida",
+   "departamento": "Guainía",
+   "pagina_a4": 165,
+   "difs": {
+    "nombre": [
+     "Puerto Inírida",
+     "INÍRIDA"
+    ]
+   }
+  },
+  {
+   "codigo": "94343",
+   "municipio": "Barranco Mina",
+   "departamento": "Guainía",
+   "pagina_a4": 165,
+   "difs": {
+    "nombre": [
+     "Barranco Mina",
+     "BARRANCO MINAS"
+    ]
+   }
+  },
+  {
+   "codigo": "47161",
+   "municipio": "Cerro San Antonio",
+   "departamento": "Magdalena",
+   "pagina_a4": 166,
+   "difs": {
+    "nombre": [
+     "Cerro San Antonio",
+     "CERRO DE SAN ANTONIO"
+    ]
+   }
+  },
+  {
+   "codigo": "50001",
+   "municipio": "Villavicencio",
+   "departamento": "Meta",
+   "pagina_a4": 167,
+   "difs": {
+    "aa": [
+     0.25,
+     0.35
+    ]
+   }
+  },
+  {
+   "codigo": "50370",
+   "municipio": "La Uribe",
+   "departamento": "Meta",
+   "pagina_a4": 167,
+   "difs": {
+    "nombre": [
+     "La Uribe",
+     "URIBE"
+    ]
+   }
+  },
+  {
+   "codigo": "50680",
+   "municipio": "San Carlos Guaroa",
+   "departamento": "Meta",
+   "pagina_a4": 167,
+   "difs": {
+    "nombre": [
+     "San Carlos Guaroa",
+     "SAN CARLOS DE GUAROA"
+    ]
+   }
+  },
+  {
+   "codigo": "50223",
+   "municipio": "San Luis de Cubarral",
+   "departamento": "Meta",
+   "pagina_a4": 167,
+   "difs": {
+    "nombre": [
+     "San Luis de Cubarral",
+     "CUBARRAL"
+    ]
+   }
+  },
+  {
+   "codigo": "50711",
+   "municipio": "Vista Hermosa",
+   "departamento": "Meta",
+   "pagina_a4": 167,
+   "difs": {
+    "nombre": [
+     "Vista Hermosa",
+     "VISTAHERMOSA"
+    ]
+   }
+  },
+  {
+   "codigo": "52258",
+   "municipio": "El Tablón",
+   "departamento": "Nariño",
+   "pagina_a4": 168,
+   "difs": {
+    "nombre": [
+     "El Tablón",
+     "EL TABLÓN DE GÓMEZ"
+    ]
+   }
+  },
+  {
+   "codigo": "52835",
+   "municipio": "Tumaco",
+   "departamento": "Nariño",
+   "pagina_a4": 168,
+   "difs": {
+    "nombre": [
+     "Tumaco",
+     "SAN ANDRÉS DE TUMACO"
+    ]
+   }
+  },
+  {
+   "codigo": "54001",
+   "municipio": "Cúcuta",
+   "departamento": "Norte de Santander",
+   "pagina_a4": 168,
+   "difs": {
+    "av": [
+     0.25,
+     0.3
+    ]
+   }
+  },
+  {
+   "codigo": "54003",
+   "municipio": "Abrego",
+   "departamento": "Norte de Santander",
+   "pagina_a4": 168,
+   "difs": {
+    "aa": [
+     0.3,
+     0.25
+    ]
+   }
+  },
+  {
+   "codigo": "66170",
+   "municipio": "Dos Quebradas",
+   "departamento": "Risaralda",
+   "pagina_a4": 170,
+   "difs": {
+    "nombre": [
+     "Dos Quebradas",
+     "DOSQUEBRADAS"
+    ]
+   }
+  },
+  {
+   "codigo": "68271",
+   "municipio": "El Florian",
+   "departamento": "Santander",
+   "pagina_a4": 171,
+   "difs": {
+    "nombre": [
+     "El Florian",
+     "FLORIÁN"
+    ]
+   }
+  },
+  {
+   "codigo": "68327",
+   "municipio": "Goepsa",
+   "departamento": "Santander",
+   "pagina_a4": 171,
+   "difs": {
+    "nombre": [
+     "Goepsa",
+     "GÜEPSA"
+    ]
+   }
+  },
+  {
+   "codigo": "68855",
+   "municipio": "Valle San José",
+   "departamento": "Santander",
+   "pagina_a4": 171,
+   "difs": {
+    "nombre": [
+     "Valle San José",
+     "VALLE DE SAN JOSÉ"
+    ]
+   }
+  },
+  {
+   "codigo": "70702",
+   "municipio": "San Juan Betulia",
+   "departamento": "Sucre",
+   "pagina_a4": 172,
+   "difs": {
+    "nombre": [
+     "San Juan Betulia",
+     "SAN JUAN DE BETULIA"
+    ]
+   }
+  },
+  {
+   "codigo": "70742",
+   "municipio": "Sincé",
+   "departamento": "Sucre",
+   "pagina_a4": 172,
+   "difs": {
+    "nombre": [
+     "Sincé",
+     "SAN LUIS DE SINCÉ"
+    ]
+   }
+  },
+  {
+   "codigo": "70820",
+   "municipio": "Tolú",
+   "departamento": "Sucre",
+   "pagina_a4": 172,
+   "difs": {
+    "nombre": [
+     "Tolú",
+     "SANTIAGO DE TOLÚ"
+    ]
+   }
+  },
+  {
+   "codigo": "70823",
+   "municipio": "Toluviejo",
+   "departamento": "Sucre",
+   "pagina_a4": 172,
+   "difs": {
+    "nombre": [
+     "Toluviejo",
+     "TOLÚ VIEJO"
+    ]
+   }
+  },
+  {
+   "codigo": "73055",
+   "municipio": "Armero",
+   "departamento": "Tolima",
+   "pagina_a4": 172,
+   "difs": {
+    "nombre": [
+     "Armero",
+     "ARMERO GUAYABAL"
+    ]
+   }
+  },
+  {
+   "codigo": "73148",
+   "municipio": "Carmen Apicalá",
+   "departamento": "Tolima",
+   "pagina_a4": 172,
+   "difs": {
+    "nombre": [
+     "Carmen Apicalá",
+     "CARMEN DE APICALÁ"
+    ]
+   }
+  },
+  {
+   "codigo": "73443",
+   "municipio": "Mariquita",
+   "departamento": "Tolima",
+   "pagina_a4": 173,
+   "difs": {
+    "nombre": [
+     "Mariquita",
+     "SAN SEBASTIÁN DE MARIQUITA"
+    ]
+   }
+  },
+  {
+   "codigo": "76111",
+   "municipio": "Buga",
+   "departamento": "Valle del Cauca",
+   "pagina_a4": 173,
+   "difs": {
+    "nombre": [
+     "Buga",
+     "GUADALAJARA DE BUGA"
+    ]
+   }
+  },
+  {
+   "codigo": "97777",
+   "municipio": "Papunahua",
+   "departamento": "Vaupés",
+   "pagina_a4": 174,
+   "difs": {
+    "nombre": [
+     "Papunahua",
+     "PAPUNAUA"
+    ]
+   }
+  }
+ ]
+}
