@@ -21,7 +21,7 @@ La conclusión cualitativa no cambia con el tamaño de tramo ni con ampliar el r
 ## Lo que esto sí y no dice
 - **Sí:** coherente con la hipótesis de que las caídas concentradas están en cuencas andinas; la diferencia Andina vs. Caribe es grande y sus ICs no se solapan en lo esencial. Parte de esa diferencia es mecánica (más pendiente y más caída), no un hallazgo independiente.
 - **El umbral de 100 kW es permisivo**: se alcanza con 1 m³/s y 10 m de caída. Que 68 % de las cuencas tengan un candidato dice poco de aprovechabilidad.
-- **Los candidatos de mayor potencia no son «pequeñas centrales»**: los 10 primeros (hasta ~300 MW brutos) están en estaciones con Q_p10 de 130 – 420 m³/s, y 5 de los 10 son tramos distintos del mismo río/estación (no son independientes). Los umbrales legales de pequeña central no se aplicaron porque no están verificados en texto.
+- **Los candidatos de mayor potencia no son «pequeñas centrales»**: los 10 primeros (hasta ~300 MW brutos) están en estaciones con Q_p10 de 130 – 420 m³/s, y 6 de los 10 son tramos distintos de la misma estación (no son independientes). Los umbrales legales de pequeña central no se aplicaron porque no están verificados en texto.
 - **Exploratorio, no preregistrado (post hoc):** restringiendo a caudal escalado entre 0,5 y 20 m³/s y caída ≥ 20 m por tramo de 2 km quedan 927 tramos en 133 cuencas (118 andinas, 13 caribes, 2 de Orinoquía-Amazonía); potencia bruta mediana 2,1 MW, p90 6,0 MW; 110 cuencas con al menos un tramo ≥ 1 MW. Se reporta como hipótesis a validar, no como resultado.
 
 ## Limitaciones
