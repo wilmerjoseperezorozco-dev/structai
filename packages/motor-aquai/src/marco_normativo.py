@@ -68,9 +68,19 @@ TABLA_16: dict[str, tuple[str, int]] = {
 # Tabla 20 (Art. 155): diámetro interno real de la tubería de entrada (hasta, mm) -> diámetro interno real mínimo de la tubería de la cámara (mm).
 TABLA_20: tuple[tuple[float, float], ...] = ((300.0, 170.0), (450.0, 280.0), (900.0, 360.0))
 
+# Cadena de vigencia verificada el 2026-11-08 en la página del Ministerio de Vivienda (Reglamento Técnico RAS).
+HISTORIAL = (
+    ("Res. 0330 de 2017 (8-jun-2017)", "adopta el RAS; deroga las Res. 1096/2000, 0424/2001, 0668/2003, 1459/2005 y 2320/2009"),
+    ("Res. 0650 de 2017 (2-oct-2017)", "adiciona un artículo transitorio a la 0330"),
+    ("Res. 0799 de 2021 (9-dic-2021)", "modifica la 0330; vigente desde el 21-dic-2021"),
+    ("Res. 0908 de 2021 (17-dic-2021)", "corrige errores formales de la 0799"),
+    ("Res. 0548 de 2022 (26-jul-2022)", "adiciona un artículo transitorio a la 0799"),
+)
+
 # Valores o referencias que el motor menciona pero que NO se verificaron en el texto.
 NO_VERIFICADO = (
-    "Modificaciones posteriores a 2021: el texto consolidado de la CRA es una copia del 2026-08-08; no se buscó si hay resoluciones más recientes que modifiquen estos artículos.",
+    "Modificaciones posteriores a julio de 2022: la página oficial del Ministerio de Vivienda (consultada 2026-11-08) no lista ningún instrumento posterior a la Res. 0548 de 2022; no se hizo una búsqueda exhaustiva en el Diario Oficial, así que la ausencia no está demostrada.",
+    "Régimen de transición: la Res. 0548 de 2022 (art. transitorio de la Res. 799 de 2021) permite reformular, sin las disposiciones modificatorias de la 799, proyectos en preinversión diseñados bajo la 0330 original; el verificador no distingue ese caso y aplica el texto modificado.",
     "Coeficientes a/b/n de las curvas IDF regionales de ras2000_tablas.py: de referencia, sin cita verificable.",
     "Límites de velocidad por material (3,0 m/s PVC/HDPE; 5,0 m/s concreto) en manning.py: los Arts. 142 y 150 remiten a los límites recomendados del material sin dar cifras.",
 )
@@ -83,5 +93,5 @@ def regla(id_: str) -> Regla:
 def vigencia_ras2000() -> dict:
     """Estado de vigencia del RAS 2000 (Res. 1096/2000), citado todavía como referencia metodológica en partes del motor."""
     return {"norma": "Resolución 1096 de 2000 (RAS 2000)", "estado": "derogada",
-            "derogada_por": f"Resolución 0330 de 2017, {DEROGATORIA.articulo}", "texto": DEROGATORIA.enunciado,
+            "derogada_por": f"Resolución 0330 de 2017, {DEROGATORIA.articulo}", "texto": DEROGATORIA.enunciado, "cadena_0330": [list(h) for h in HISTORIAL],
             "uso_permitido": "referencia metodológica histórica; no sustenta cumplimiento normativo"}

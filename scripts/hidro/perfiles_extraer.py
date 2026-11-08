@@ -97,7 +97,7 @@ def main():
     for d in deptos:
         destino = SALIDA / f"perfiles_{d}.pkl"
         sub = c[c["depto"] == d]
-        if sub.empty or destino.exists():
+        if sub.empty or (destino.exists() and destino.stat().st_size > 0):
             continue
         try:
             with open(destino, "wb") as fh:

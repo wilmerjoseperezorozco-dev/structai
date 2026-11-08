@@ -125,3 +125,8 @@ def test_verificar_res0330_solo_evalua_lo_informado_y_trae_vigencia():
     assert r["verificaciones_normativas"][1].estado == "no_cumple"
     assert r["vigencia"]["estado"] == "derogada" and r["no_verificado"]
     assert verificar_res0330()["verificaciones_normativas"] == []
+
+
+def test_vigencia_incluye_cadena_de_modificaciones_de_la_0330():
+    cadena = vigencia_ras2000()["cadena_0330"]
+    assert any("0799" in c[0] for c in cadena) and any("0548" in c[0] for c in cadena)
