@@ -33,5 +33,19 @@ La conclusión cualitativa no cambia con el tamaño de tramo ni con ampliar el r
 6. Faltan caudal ecológico, derechos de agua, geología, accesos, conexión eléctrica y licenciamiento.
 7. No hay validación externa (no existe en el proyecto un inventario verificado de proyectos de pequeñas centrales). Por el protocolo, los resultados se presentan como cribado.
 
+## Clasificación por potencia con umbrales legales (añadida 2026-11-08)
+Umbrales verificados en `UMBRALES_LEGALES_PCH.md` (definición legal: filo de agua y menos de 50 MW). Potencia instalable estimada P = 9,81 · 0,7 · Q_p30 escalado · H (caudal de diseño y rendimiento del protocolo), sobre tramos utilizables dentro del rango de escalamiento. Código: `f1_clasificacion_legal.py`; cifras: `f1_clasificacion_legal.json`. Descriptivo, sin intervalos.
+
+| Clase (tramos de 2 km) | Tramos | Cuencas con al menos uno |
+|---|---:|---:|
+| < 1 MW | 477 | 108 |
+| 1 a 10 MW | 924 | 127 |
+| 10 a 50 MW | 86 | 36 |
+| ≥ 50 MW (fuera de la definición) | 14 | 8 |
+
+- Cuencas con al menos un tramo entre 1 y 50 MW: **137 de 256** (141 con tramos de 1 km, 128 con 5 km); 119 andinas, 12 caribes, 6 de Orinoquía-Amazonía. Con el tope de 20 MW de práctica serían 134: el tope legal o de práctica casi no cambia el conteo.
+- Esta clasificación usa el caudal de diseño (p30) y rendimiento 0,7, así que es más realista que la potencia bruta con Q mínimo de arriba, pero sigue siendo teórica: aprovecha todo el caudal en un tramo de 2 km, sin caudal ecológico.
+- El inventario público para validar no existe en forma tabular (ver `UMBRALES_LEGALES_PCH.md`).
+
 ## Siguiente paso sugerido
-Verificar los umbrales legales de pequeña central (Ley 1715/2014 y normas de la UPME/CREG) antes de clasificar por potencia, y conseguir un inventario público de proyectos para validar.
+Con permiso, descargar la serie más reciente del registro de proyectos de la UPME (PDF de unos 4 MB cada uno), extraer coordenadas y potencia, y medir cuántos proyectos registrados caen cerca de tramos candidatos. Es plausibilidad, no validación.

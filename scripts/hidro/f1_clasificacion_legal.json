@@ -1,0 +1,71 @@
+{
+ "1.0": {
+  "tramos_utilizables_en_rango": 3063,
+  "tramos_por_clase": {
+   "<1 MW": 1495,
+   "1-10 MW": 1458,
+   "10-50 MW": 100,
+   ">=50 MW": 10
+  },
+  "cuencas_con_al_menos_un_tramo_en_clase": {
+   "<1 MW": 158,
+   "1-10 MW": 132,
+   "10-50 MW": 36,
+   ">=50 MW": 3
+  },
+  "cuencas_con_tramo_1_a_50MW": 141,
+  "cuencas_con_tramo_1_a_20MW_practica": 138,
+  "cuencas_total": 256,
+  "por_region_cuencas_con_tramo_1_a_50MW": {
+   "Andina": 117,
+   "Caribe": 18,
+   "Orinoquia_Amazonia": 6
+  }
+ },
+ "2.0": {
+  "tramos_utilizables_en_rango": 1501,
+  "tramos_por_clase": {
+   "<1 MW": 477,
+   "1-10 MW": 924,
+   "10-50 MW": 86,
+   ">=50 MW": 14
+  },
+  "cuencas_con_al_menos_un_tramo_en_clase": {
+   "<1 MW": 108,
+   "1-10 MW": 127,
+   "10-50 MW": 36,
+   ">=50 MW": 8
+  },
+  "cuencas_con_tramo_1_a_50MW": 137,
+  "cuencas_con_tramo_1_a_20MW_practica": 134,
+  "cuencas_total": 256,
+  "por_region_cuencas_con_tramo_1_a_50MW": {
+   "Andina": 119,
+   "Caribe": 12,
+   "Orinoquia_Amazonia": 6
+  }
+ },
+ "5.0": {
+  "tramos_utilizables_en_rango": 610,
+  "tramos_por_clase": {
+   "<1 MW": 97,
+   "1-10 MW": 369,
+   "10-50 MW": 133,
+   ">=50 MW": 11
+  },
+  "cuencas_con_al_menos_un_tramo_en_clase": {
+   "<1 MW": 51,
+   "1-10 MW": 108,
+   "10-50 MW": 51,
+   ">=50 MW": 5
+  },
+  "cuencas_con_tramo_1_a_50MW": 128,
+  "cuencas_con_tramo_1_a_20MW_practica": 125,
+  "cuencas_total": 254,
+  "por_region_cuencas_con_tramo_1_a_50MW": {
+   "Andina": 112,
+   "Caribe": 13,
+   "Orinoquia_Amazonia": 3
+  }
+ }
+}
