@@ -32,7 +32,7 @@ El análisis colombiano usó DEM Copernicus 30 m, lluvia CHIRPS, HAND, cobertura
 | Lluvia | CHIRPS | SENAMHI (no verificado) | DMC / DGA (no verificado) |
 | Cobertura | ESA WorldCover | — | — |
 | Inventario de movimientos en masa | — | **INGEMMET GEOCATMIN**: inventario de peligros geológicos y mapa de susceptibilidad; reportado como integrado a la plataforma nacional de datos abiertos | **SERNAGEOMIN**: Observatorio Nacional de Peligros Geológicos y Mineros; ~8.000 productos liberados. El dataset de remociones en masa no se confirmó |
-| Emergencias (equivalente a UNGRD) | — | INDECI / SINPAD (**no encontrado**) | SENAPRED (**no encontrado**) |
+| Emergencias (equivalente a UNGRD) | — | INDECI / SINPAD (**corregido 2026-11-08: sí existe** en datosabiertos.gob.pe, ODC-BY, 2003–hoy; ver `F1_VERIFICACION_FUENTES_PERU_ECUADOR_2026-11.md`) | SENAPRED (**no encontrado**) |
 | Caudales | — | ANA (no buscado) | DGA (aparece en un catálogo de la IRI hasta 2024) |
 | Riesgo y escenarios | — | CENEPRED/SIGRID (informes de evaluación de peligros) | — |
 
