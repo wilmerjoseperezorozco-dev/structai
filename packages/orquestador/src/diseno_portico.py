@@ -19,13 +19,18 @@ Supuestos y límites (también se devuelven en el informe):
 from __future__ import annotations
 
 import math
+import time
 from dataclasses import dataclass, field
 from typing import Optional
 
+import numpy as np
+
 import importlib
 
-from .cargador import cargar_motor, modulo_a4, motor_apu_cantidades, motor_concreto_viga
+from .cargador import cargar_motor, modulo_a4, modulo_cortante_basal, motor_apu_cantidades, motor_concreto_viga
 from .diseno_inverso import FC_MPA_POR_CALIDAD, ORDEN_CAPACIDAD
+from . import grilla_vectorizada as _gv
+from . import sismo_portico as _sp
 
 _cant = motor_apu_cantidades()
 _viga = motor_concreto_viga()
@@ -35,12 +40,14 @@ cargar_motor("motor-analisis", "motor_analisis")
 _pt = importlib.import_module("motor_analisis.portico")
 _cb = importlib.import_module("motor_analisis.combinaciones")
 _a4 = modulo_a4()
+_sp_cb = modulo_cortante_basal()
 
 FACTOR_I_VIGA = 0.35
 FACTOR_I_COLUMNA = 0.70
 PESO_UNIT_KN_M3 = 24.0
 BASES_MM = tuple(range(200, 551, 50))
 ALTURAS_MM = tuple(range(300, 901, 50))
+DERIVA_MAX = 0.010                              # Tabla A.6.4-1, concreto reforzado
 
 
 @dataclass(frozen=True)
@@ -58,6 +65,12 @@ class ProyectoPortico:
     departamento: Optional[str] = None
     codigo_dane: Optional[str] = None
     capacidad: Optional[str] = None             # solo puede subir la mínima de la zona; sin municipio es obligatoria
+    perfil_suelo: Optional[str] = None          # "A".."E": si se da, E se DERIVA del espectro (A.4.3) y se verifica la deriva (A.6.4)
+    grupo_uso: str = "I"                        # I, II, III, IV (Tabla A.2.5-1)
+    aa: Optional[float] = None                  # opcionales: reemplazan a los del Apéndice A-4
+    av: Optional[float] = None
+    factor_deriva_fisurada: float = 1.0         # 0,7 solo si se quiere usar el permiso de A.6.4.1.1 (por defecto conservador)
+    preseleccion: Optional[int] = None          # None = diseño exacto de todas; K = recorrer por proxy hasta reunir K diseños factibles
 
 
 @dataclass(frozen=True)
@@ -67,6 +80,7 @@ class CandidatoPortico:
     diseno: object
     costo_directo: float
     demanda: object
+    deriva: float = math.nan               # máx Δ/hp con Fs (I=1); NaN si no se calculó
 
 
 @dataclass(frozen=True)
@@ -79,13 +93,16 @@ class InformePortico:
     factibles: int
     envolvente_gobernante: Optional[dict]       # x, M_max, M_min, V_max, V_min y combinaciones, de la viga más exigida
     supuestos: tuple[str, ...] = field(default_factory=tuple)
+    basal: Optional[dict] = None                # cortante basal y parámetros espectrales de la sección óptima
+    diagnostico: dict = field(default_factory=dict)   # embudo, tiempos y paridad escalar-vectorizada
 
 
 SUPUESTOS = (
     "Una sola sección para todas las vigas, diseñada con la peor demanda de cualquier viga (conservador).",
     "Columnas dadas, no diseñadas; sin columna fuerte-viga débil (C.21.6.2) ni nudos (C.21.7).",
     "Inercias agrietadas viga 0,35·Ig y columna 0,70·Ig (C.10.10.4.1: lista no recuperada del corpus). Ec = 4700√f'c (C.8.5.1).",
-    "El cortante basal y la distribución de fuerzas sísmicas NO se calculan aquí: E llega como dato (ya reducida por R).",
+    "Con perfil_suelo, E se deriva del espectro NSR-10 (Fa/Fv, Sa, Ta, Vs=Sa·W, Cvx, R=R0 de la Tabla A.3-3 con φ=1): estructura regular y redundante, sin torsión, sin P-Delta, peso sísmico = muerta + peso propio (sin viva), T = Ta. Sin perfil_suelo, E llega como dato (ya reducida por R).",
+    "Deriva (A.6.4, 1,0 % hp) con las mismas inercias agrietadas, Fs sin dividir por R (I=1 permitido por A.6.2.1.2), en el centro de masa; sin torsión ni P-Delta. Solo se verifica si E se deriva del espectro.",
     "Refuerzo longitudinal continuo en toda la luz, una capa por cara, mismo diámetro arriba y abajo; sin empalmes ni anclajes.",
     "Cortante por capacidad: DES con Mpr = 1,25·fy y φ = 0,75; DMO con Mn (C.21.3.3 (a)/(b) no recuperado). Ninguno verificado en el corpus.",
     "Costo directo APU de las vigas (Barranquilla 2026); estribos modelados con separación equivalente por conteo.",
@@ -143,17 +160,18 @@ def _modelo(p: ProyectoPortico, b: float, h: float):
     return _pt.Portico(nodos, elementos, apoyos), vigas, w_pp, nid, nx, ny
 
 
-def _analizar(p: ProyectoPortico, b: float, h: float):
+def _analizar(p: ProyectoPortico, b: float, h: float, fuerzas=None):
     modelo, vigas, w_pp, nid, nx, ny = _modelo(p, b, h)
     casos = {
         "D": _pt.Caso("D", uniformes={k: p.carga_muerta_kn_m + w_pp for k in vigas}),
         "L": _pt.Caso("L", uniformes={k: p.carga_viva_kn_m for k in vigas}),
     }
-    if p.fuerzas_laterales_kn:
-        if len(p.fuerzas_laterales_kn) != len(p.alturas_piso_m):
+    laterales = fuerzas if fuerzas is not None else p.fuerzas_laterales_kn
+    if laterales:
+        if len(laterales) != len(p.alturas_piso_m):
             raise ValueError("fuerzas_laterales_kn debe tener un valor por nivel")
         nod = {}
-        for j, F in enumerate(p.fuerzas_laterales_kn, start=1):
+        for j, F in enumerate(laterales, start=1):
             for i in range(nx):
                 nod[nid(i, j)] = (F / nx, 0.0, 0.0)
         casos["E"] = _pt.Caso("E", nodales=nod)
@@ -207,35 +225,164 @@ def _costo_nivel(p: ProyectoPortico, d) -> float:
     return total
 
 
-def diseno_portico(p: ProyectoPortico, top: int = 5) -> InformePortico:
+def _ctx_sismico(p: ProyectoPortico, cap: str, info: Optional[dict]):
+    if p.perfil_suelo is None:
+        return None
+    if p.fuerzas_laterales_kn:
+        raise ValueError("Con perfil_suelo las fuerzas sísmicas se derivan del espectro: no entregue fuerzas_laterales_kn")
+    aa = p.aa if p.aa is not None else (info or {}).get("aa")
+    av = p.av if p.av is not None else (info or {}).get("av")
+    return _sp.contexto_desde(aa, av, p.perfil_suelo, p.grupo_uso, cap)
+
+
+def _basal_escalar(p: ProyectoPortico, ctx, b: float, h: float):
+    nx = len(p.luces_m) + 1
+    pesos = tuple(float(x) for x in _sp.pesos_nivel_kn(p.luces_m, p.alturas_piso_m, nx, p.carga_muerta_kn_m, p.columna_mm, b, h))
+    return _sp.fuerzas_escalar(ctx, pesos, _sp.alturas_nivel_m(p.alturas_piso_m)), pesos
+
+
+def _ux_niveles(res, nid, nx: int, ny: int) -> list[float]:
+    u = res["E"].u
+    return [sum(u[nid(i, j)][0] for i in range(nx)) / nx for j in range(1, ny)]
+
+
+def _deriva_escalar(p: ProyectoPortico, res, nid, nx: int, ny: int, cbz) -> float:
+    """máx Δ/hp con las fuerzas elásticas de deriva (I=1): δ(Fs) = R·(Sa_deriva/Sa)·δ(E)."""
+    ux = [0.0] + _ux_niveles(res, nid, nx, ny)
+    factor = cbz.r * cbz.sa_deriva / cbz.sa
+    return max(abs(ux[j] - ux[j - 1]) * factor / p.alturas_piso_m[j - 1] for j in range(1, ny))
+
+
+def _precios_relativos(p: ProyectoPortico) -> float:
+    """Costo relativo acero/concreto (por m² de sección) medido con el propio APU; solo ordena la preselección."""
+    L = max(p.luces_m)
+
+    def costo(b, h, n):
+        geo = _cant.GeometriaElementoConcreto(
+            tipo=_cant.TipoElementoConcreto.VIGA, base_m=b, altura_m=h, longitud_m=L, recubrimiento_m=p.recubrimiento_mm / 1000,
+            refuerzo_longitudinal=_cant.RefuerzoLongitudinal(n, "5"), estribos=_cant.Estribos("3", 0.15))
+        return _cant.calcular_apu_dinamico(geo, calidad_concreto=p.calidad_concreto, run_montecarlo=False).costo_directo
+
+    base = costo(0.30, 0.50, 4)
+    d_conc = (costo(0.30, 0.60, 4) - base) / (0.30 * 0.10)          # costo por m² de sección de concreto
+    d_acero = (costo(0.30, 0.50, 6) - base) / (2 * 199e-6)          # costo por m² de acero (2 barras #5)
+    return max(d_acero / max(d_conc, 1e-9), 1.0)
+
+
+def _derivar_basal(p: ProyectoPortico, ctx, o: "CandidatoPortico", res, nid, nx: int, ny: int, cbz, pesos) -> dict:
+    der = _deriva_escalar(p, res, nid, nx, ny, cbz)
+    t_ray = _sp.periodo_rayleigh(np.array(pesos), np.array(cbz.fuerzas_elasticas_kn), np.array(_ux_niveles(res, nid, nx, ny)) * cbz.r)
+    ok = t_ray == t_ray
+    t_uso = min(t_ray, cbz.cu_ta) if ok else cbz.T
+    sa_ray = _sp_cb.sa_espectro(t_uso, cbz.aa, cbz.av, cbz.fa, cbz.fv, cbz.I)
+    cambia = bool(abs(sa_ray - cbz.sa) > 1e-9 or abs(_sp_cb.exponente_k(t_uso) - cbz.k) > 1e-9)
+    return {"aa": cbz.aa, "av": cbz.av, "perfil": cbz.perfil, "grupo_uso": cbz.grupo_uso, "Fa": cbz.fa, "Fv": cbz.fv, "I": cbz.I,
+            "Ta_s": cbz.T, "Cu_Ta_s": cbz.cu_ta, "Tc_s": cbz.tc, "TL_s": cbz.tl, "Sa": cbz.sa, "k": cbz.k, "R": cbz.r,
+            "peso_sismico_kn": cbz.peso_total_kn, "Vs_elastico_kn": cbz.vs_kn, "Vs_diseno_kn": cbz.vs_kn / cbz.r,
+            "fuerzas_por_nivel_kn": list(cbz.fuerzas_elasticas_kn), "E_diseno_por_nivel_kn": list(cbz.fuerzas_diseno_kn),
+            "deriva_max_pct_hp": 100 * der, "limite_deriva_pct_hp": 100 * DERIVA_MAX, "periodo_rayleigh_s": t_ray,
+            "rayleigh_dentro_de_cu_ta": bool(t_ray <= cbz.cu_ta) if ok else None,
+            "rayleigh_vs_ta_dif_pct": 100 * (t_ray - cbz.T) / cbz.T if ok else None,
+            "rayleigh_cambia_las_fuerzas": cambia if ok else None}
+
+
+def diseno_portico(p: ProyectoPortico, top: int = 5, *, grilla: Optional[tuple] = None,
+                   verificar_escalar: bool = True) -> InformePortico:
+    """Embudo: (1) análisis vectorizado de TODAS las secciones → demandas y deriva; (2) máscara de deriva (A.6.4);
+    (3) diseño exacto por nivel de las sobrevivientes (o de una preselección); (4) costo APU; (5) el óptimo se reanaliza con la
+    ruta escalar de referencia y se compara con la vectorizada."""
+    t0 = time.perf_counter()
     if p.calidad_concreto not in FC_MPA_POR_CALIDAD:
         raise ValueError(f"calidad_concreto '{p.calidad_concreto}' no soportada: {sorted(FC_MPA_POR_CALIDAD)}")
     cap, info = _capacidad(p)
+    ctx = _ctx_sismico(p, cap, info)
     mat = _viga.Materiales(fc=FC_MPA_POR_CALIDAD[p.calidad_concreto], fy=p.fy_mpa, fyt=p.fy_mpa)
+    bases, alturas = grilla if grilla is not None else (BASES_MM, ALTURAS_MM)
+    bb, hh = np.meshgrid(np.asarray(bases, dtype=float), np.asarray(alturas, dtype=float), indexing="ij")
+    b_all, h_all = bb.ravel(), hh.ravel()
+    N, n_lev = b_all.size, len(p.alturas_piso_m)
+    if p.fuerzas_laterales_kn and len(p.fuerzas_laterales_kn) != n_lev:
+        raise ValueError("fuerzas_laterales_kn debe tener un valor por nivel")
+
+    # --- (1) análisis vectorizado ------------------------------------------------------
+    modelo0, vigas0, _, nid, nx, ny = _modelo(p, 300.0, 500.0)
+    tpl = _gv.construir_plantilla(modelo0, vigas0, nid, nx, ny, _pt)
+    Ec = 4700.0 * math.sqrt(FC_MPA_POR_CALIDAD[p.calidad_concreto]) * 1000.0
+    alt_niv = _sp.alturas_nivel_m(p.alturas_piso_m)
+    pesos = fuerzas = None
+    r_deriva = 1.0
+    if ctx is not None:
+        pesos = _sp.pesos_nivel_kn(p.luces_m, p.alturas_piso_m, nx, p.carga_muerta_kn_m, p.columna_mm, b_all, h_all)
+        par = _sp.parametros_espectro(ctx, alt_niv)
+        fuerzas = _sp.fuerzas_vectorizadas(par, pesos, alt_niv)
+        r_deriva = par["r"] * par["sa_deriva"] / par["sa"]
+    elif p.fuerzas_laterales_kn:
+        fuerzas = np.broadcast_to(np.asarray(p.fuerzas_laterales_kn, dtype=float), (N, n_lev)).copy()
+    lote = _gv.analizar_lote(tpl, b_mm=b_all, h_mm=h_all, Ec=Ec, factor_i_viga=FACTOR_I_VIGA, carga_muerta=p.carga_muerta_kn_m,
+                             carga_viva=p.carga_viva_kn_m, peso_unit=PESO_UNIT_KN_M3, c1_m=p.columna_mm[0] / 1000,
+                             fuerzas_e=fuerzas, alturas_piso_m=p.alturas_piso_m, combinaciones=_cb.COMBINACIONES_NSR10,
+                             r_deriva=r_deriva, nx=nx, pesos=pesos)
+    t1 = time.perf_counter()
+
+    # --- (2) máscara de deriva ---------------------------------------------------------
+    ok = np.ones(N, dtype=bool)
+    if ctx is not None:
+        ok &= lote.deriva_max * p.factor_deriva_fisurada <= DERIVA_MAX
+    n_deriva = int(ok.sum())
+    idx = np.flatnonzero(ok)
+
+    # --- (3) preselección opcional por proxy -------------------------------------------
+    if p.preseleccion is not None and idx.size > p.preseleccion:
+        k_rel = _precios_relativos(p)
+        d = h_all[idx] - p.recubrimiento_mm - 10.0 - 16.0
+        as_req = (lote.m_neg[idx] + lote.m_pos_vano[idx]) * 1e6 / (0.9 * p.fy_mpa * 0.9 * d)       # mm², aproximado
+        proxy = b_all[idx] * h_all[idx] / 1e6 + k_rel * as_req / 1e6
+        idx = idx[np.argsort(proxy)]                  # de menor a mayor proxy; se recorre hasta reunir K factibles
+
     candidatos: list[CandidatoPortico] = []
-    evaluadas = 0
-    gobernante = None
-    for b in BASES_MM:
-        for h in ALTURAS_MM:
-            evaluadas += 1
-            modelo, vigas, res, w_pp = _analizar(p, float(b), float(h))
-            dem, gob = _demanda(p, modelo, vigas, res, w_pp, float(h))
-            disenos = _dv.disenar(float(b), float(h), dem, cap, mat, recubrimiento=p.recubrimiento_mm,
-                                  columna_c1=p.columna_mm[0], columna_c2=p.columna_mm[1])
-            if not disenos:
-                continue
-            mejor = min(disenos, key=lambda x: _costo_nivel(p, x))
-            costo = _costo_nivel(p, mejor) * len(p.alturas_piso_m)
-            c = CandidatoPortico(float(b), float(h), mejor, costo, dem)
-            candidatos.append(c)
-            if gobernante is None or costo < gobernante[0]:
-                e = gob["env"]
-                gobernante = (costo, {"x": e.x.tolist(), "M_max": e.M_max.tolist(), "M_min": e.M_min.tolist(),
-                                      "V_max": e.V_max.tolist(), "V_min": e.V_min.tolist(),
-                                      "combo_M_max": e.combo_M_max, "combo_M_min": e.combo_M_min, "combo_V": e.combo_V})
+    n_exactas = 0
+    for q in idx:
+        if p.preseleccion is not None and len(candidatos) >= p.preseleccion:
+            break
+        n_exactas += 1
+        b, h = float(b_all[q]), float(h_all[q])
+        dem = _dv.DemandaViga(luz_libre_m=lote.ln_min, M_neg_apoyo=float(lote.m_neg[q]), M_pos_apoyo=float(lote.m_pos_apoyo[q]),
+                              M_pos_vano=float(lote.m_pos_vano[q]), V_max=float(lote.v_max[q]), V_gravedad=float(lote.v_grav[q]),
+                              w_grav=float(lote.w_grav[q]), V_centro=float(lote.v_centro[q]))
+        disenos = _dv.disenar(b, h, dem, cap, mat, recubrimiento=p.recubrimiento_mm,
+                              columna_c1=p.columna_mm[0], columna_c2=p.columna_mm[1])
+        if not disenos:
+            continue
+        c_min, mejor = min(((_costo_nivel(p, x), x) for x in disenos), key=lambda t: t[0])
+        candidatos.append(CandidatoPortico(b, h, mejor, c_min * n_lev, dem, float(lote.deriva_max[q])))
     candidatos.sort(key=lambda c: c.costo_directo)
-    return InformePortico(cap, info, candidatos[0] if candidatos else None, tuple(candidatos[:top]), evaluadas,
-                          len(candidatos), gobernante[1] if gobernante else None, SUPUESTOS)
+    t2 = time.perf_counter()
+
+    # --- (4) reanálisis escalar del óptimo y paridad ------------------------------------
+    gobernante = basal = paridad = None
+    if candidatos:
+        o = candidatos[0]
+        cbz = pesos_o = None
+        fuerzas_o = p.fuerzas_laterales_kn
+        if ctx is not None:
+            cbz, pesos_o = _basal_escalar(p, ctx, o.b, o.h)
+            fuerzas_o = cbz.fuerzas_diseno_kn
+        modelo, vigas, res, w_pp = _analizar(p, o.b, o.h, fuerzas_o)
+        dem_s, gob = _demanda(p, modelo, vigas, res, w_pp, o.h)
+        e = gob["env"]
+        gobernante = {"x": e.x.tolist(), "M_max": e.M_max.tolist(), "M_min": e.M_min.tolist(), "V_max": e.V_max.tolist(),
+                      "V_min": e.V_min.tolist(), "combo_M_max": e.combo_M_max, "combo_M_min": e.combo_M_min, "combo_V": e.combo_V}
+        paridad = max(abs(getattr(dem_s, k) - getattr(o.demanda, k)) / max(1.0, abs(getattr(dem_s, k)))
+                      for k in ("M_neg_apoyo", "M_pos_apoyo", "M_pos_vano", "V_max", "V_centro", "V_gravedad", "w_grav"))
+        if verificar_escalar and paridad > 1e-6:
+            raise RuntimeError(f"La ruta vectorizada difiere de la escalar de referencia ({paridad:.2e}); no se entrega el resultado")
+        if cbz is not None:
+            basal = _derivar_basal(p, ctx, o, res, nid, nx, ny, cbz, pesos_o)
+    diag = {"secciones_totales": N, "pasan_deriva": n_deriva, "diseno_exacto_sobre": n_exactas, "factibles": len(candidatos),
+            "t_vectorizado_s": round(t1 - t0, 4), "t_diseno_costo_s": round(t2 - t1, 4),
+            "paridad_escalar_max_dif_rel": paridad, "preseleccion": p.preseleccion}
+    return InformePortico(cap, info, candidatos[0] if candidatos else None, tuple(candidatos[:top]), N, len(candidatos),
+                          gobernante, SUPUESTOS, basal, diag)
 
 
 def resumen(i: InformePortico) -> str:

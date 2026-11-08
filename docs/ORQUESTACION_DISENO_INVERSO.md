@@ -87,12 +87,54 @@ verificados. Pendiente: re-ingestar esos numerales desde el PDF fuente. También
 ### Límites (además de los anteriores)
 
 Una sola sección para todas las vigas; columnas dadas y no diseñadas (sin columna fuerte-viga débil C.21.6.2 ni nudos C.21.7);
-las fuerzas sísmicas laterales llegan como dato (el cortante basal desde Sa, Fa, Fv, T, R todavía no está encadenado: requiere
-verificar las tablas A.2.4-3/-4 y A.4.2 en el corpus); refuerzo continuo en toda la luz, mismo diámetro arriba y abajo.
+las fuerzas sísmicas laterales pueden llegar como dato o derivarse del espectro (ver la sección siguiente); refuerzo continuo
+en toda la luz, mismo diámetro arriba y abajo.
+
+## Cortante basal desde el espectro y núcleo vectorizado (2026-11-08)
+
+**Cadena nueva** (`ProyectoPortico(perfil_suelo="D", grupo_uso="I")`; el usuario ya no entrega las fuerzas sísmicas):
+municipio → Aa, Av (A-4) + perfil de suelo → Fa, Fv (Tablas A.2.4-3/-4, interpolación lineal) → Ta = Ct·hⁿ^α (A.4.2-3) → Sa
+(A.2.6, meseta hasta Tc) → Vs = Sa·W (A.4.3-1) → Fx = Cvx·Vs (A.4.3-2/-3) → E = Fx/R con R = R0 de la Tabla A.3-3
+(DES 7,0 · DMO 5,0 · DMI 2,5, pórticos de concreto) → análisis → envolventes → diseño por nivel → costo APU.
+Módulo: `packages/motor-geopot/src/cortante_basal.py`. Todas las tablas y ecuaciones se verificaron en `nsr10_chunks`
+(ids citados en el docstring del módulo), incluido el límite de deriva de la Tabla A.6.4-1 (1,0 % de hp para concreto).
+
+**Deriva como restricción:** además de resistencia, cada sección candidata debe cumplir Δ/hp ≤ 1,0 % con las fuerzas elásticas
+(sin dividir por R, I = 1 permitido por A.6.2.1.2). En el ejemplo de Pereira (DES, perfil D) la deriva descarta 62 de las 104
+secciones de la rejilla y cambia el óptimo: 250×750 mm. El permiso de A.6.4.1.1 (multiplicar por 0,7 con secciones fisuradas)
+está disponible con `factor_deriva_fisurada=0.7` pero **no** se aplica por defecto.
+
+**Núcleo vectorizado** (`grilla_vectorizada.py`): la rigidez es lineal en (A, I) de las vigas, así que K(b,h) = K₀ + A·K_a + I·K_i
+se arma para N secciones por broadcasting; los casos D, L y E se resuelven juntos como columnas de una sola matriz de cargas
+(una factorización por sección) y las combinaciones de B.2.4 salen por superposición (einsum), no resolviendo cada una.
+Medido en esta máquina: 104 secciones en ~0,02 s (antes ~0,3 s en el análisis escalar); 50.000 secciones en ~4,5 s.
+Con `preseleccion=K` el diseño exacto + costo APU solo se hace sobre las secciones que un proxy (área + acero requerido,
+con la razón de precios medida en el propio APU) ordena primero, hasta reunir K diseños factibles. **Es una heurística, no una
+garantía de óptimo global**: en una rejilla de 1.239 secciones coincidió con el barrido exacto con K = 10, 25 y 60 (una sola
+rejilla, un solo proyecto); con `preseleccion=None` el barrido es exacto sobre toda la rejilla.
+
+**Paridad:** el óptimo se reanaliza siempre con la ruta escalar de referencia (la del motor anterior) y la ejecución se
+interrumpe si las demandas difieren más de 1e-6; en las pruebas la diferencia es ~1e-15.
+
+**Lo que se descartó, y por qué** (decidido con datos, no por omisión):
+- *Matrices dispersas:* el pórtico típico tiene 27–60 grados de libertad libres; una factorización dispersa es más lenta que la
+  densa por lotes a ese tamaño. Cambiaría con edificios de cientos de nudos.
+- *24 combinaciones como columnas de F:* la superposición necesita resolver solo 3 casos (D, L, E); resolver 24 columnas
+  habría sido más trabajo para el mismo resultado.
+- *JIT (Numba):* ya está instalado, pero el cuello de botella dejó de ser el análisis (4,5 s para 50.000 secciones, dominado por
+  el LAPACK de NumPy); no se justifica añadir una dependencia de compilación.
+- *MILP y teoría de grafos:* no se construyeron. Dónde sí aportarían: MILP cuando haya varias secciones por pórtico (asignar
+  una sección por piso con restricciones de constructibilidad y continuidad con columnas, minimizando costo); grafos al importar
+  topologías irregulares (BIM/IFC) para generar el modelo, en vez de la malla paramétrica actual. Hoy la malla es regular.
+
+**Supuestos y límites nuevos:** peso sísmico = carga muerta + peso propio (sin viva); estructura regular y redundante
+(φa = φp = φr = 1,0); sin torsión, P-Delta, cortante basal mínimo ni interacción suelo-estructura; el pórtico plano representa su
+ancho tributario; T = Ta (el período de Rayleigh se reporta y se indica si cambiaría las fuerzas; en el ejemplo supera Cu·Ta
+pero ambos están en la meseta del espectro, por lo que las fuerzas no cambian); perfil F rechazado (exige estudio geotécnico).
 
 ## Fases siguientes (no construidas)
 
-1. Cascada sísmica/geoespacial: capas de amenaza → Aa/Av del Apéndice A-4 (por municipio, no la tabla departamental de `sismica.py`) → fuerzas → motores de mampostería/acero → cuantías finales.
+1. Extender la cascada sísmica ya construida (concreto) a los motores de mampostería y acero → cuantías finales; irregularidades φa/φp, torsión y P-Delta.
 2. Vigas continuas, columnas, losas; Capítulo C.21.
 3. Aplicar el contrato de contexto compartido a los motores existentes.
 4. Recuperar φ y Tabla C.9.5(a) del PDF fuente y cerrar los dos puntos no verificados.

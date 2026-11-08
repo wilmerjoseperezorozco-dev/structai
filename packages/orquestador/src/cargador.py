@@ -53,3 +53,16 @@ def motor_concreto_sismo() -> ModuleType:
 def motor_concreto_viga() -> ModuleType:
     cargar_motor("motor-concreto", "motor_concreto")
     return importlib.import_module("motor_concreto.viga")
+
+
+def modulo_cortante_basal() -> ModuleType:
+    """Cortante basal desde el espectro NSR-10 (módulo autónomo de motor-geopot)."""
+    alias = "motor_geopot_cortante_basal"
+    if alias in sys.modules:
+        return sys.modules[alias]
+    ruta = PAQUETES / "motor-geopot" / "src" / "cortante_basal.py"
+    spec = importlib.util.spec_from_file_location(alias, ruta)
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[alias] = mod
+    spec.loader.exec_module(mod)
+    return mod
