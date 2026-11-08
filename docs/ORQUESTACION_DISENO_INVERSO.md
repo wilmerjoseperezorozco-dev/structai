@@ -132,6 +132,28 @@ interrumpe si las demandas difieren más de 1e-6; en las pruebas la diferencia e
 ancho tributario; T = Ta (el período de Rayleigh se reporta y se indica si cambiaría las fuerzas; en el ejemplo supera Cu·Ta
 pero ambos están en la meseta del espectro, por lo que las fuerzas no cambian); perfil F rechazado (exige estudio geotécnico).
 
+## Columnas, columna fuerte–viga débil y diseño integral (2026-11-08)
+
+`motor-concreto/src/columna.py` (diagrama de interacción por compatibilidad de deformaciones, φ 0,65→0,90, Pn,max, ρ 1–4 %,
+esbeltez con magnificación, Ve por Mpr, confinamiento DMI/DMO/DES) y `orquestador/src/diseno_integral.py` (rejilla lado de
+columna × sección de viga, costo total APU vigas + columnas).
+
+- **Conectado a la cascada**: municipio → A-4 → espectro → Vs → Fx → análisis vectorizado → deriva y Q → vigas → ΣMnb real de cada
+  viga diseñada → columna (flexo-compresión con TODAS las combinaciones y columnas, C.21.6.2.2 con la Pu más desfavorable de cada
+  nudo) → costo APU. Nada se reingresa.
+- **Algoritmos**: la rigidez es lineal en (A, I) → N secciones por broadcasting; las fuerzas de las columnas salen de `k·T·U` en el
+  mismo lote; el diagrama de interacción es una curva cacheada y toda la verificación es `np.interp` sobre el vector de demandas.
+- **Verificación**: paridad vectorizado/escalar de vigas y de columnas (5e-15) abortando sobre 1e-6; equilibrio vertical, cortante
+  basal y equilibrio de momentos del nudo; Po y punto balanceado en forma cerrada; la razón SCWB del óptimo se recalcula con
+  indexación independiente.
+- **Ejemplo** (Pereira, perfil D, DES, 3 vanos de 6 m × 3 pisos): óptimo columna 550 mm, viga 250×750 mm, costo total $31,9 M
+  (vigas $14,0 M + columnas $17,9 M), deriva 0,83 %, Q = 0,011, ΣMnc/1,2ΣMnb = 1,02. 1.040 combinaciones en 4,6 s.
+- **No verificado en el corpus** (marcado en cada verificación): Pn,max (corpus 0,75, ACI 0,80; se usa 0,75), Ash en DES
+  (C.21-7/-8), so en DMO (C.21.3.5.6), Mpr = 1,25 fy, k de Jackson–Moreland y magnificación (C.10.10.5–7). φ de cortante 0,75
+  (C.9.3.2.3) quedó verificado y se actualizó la marca.
+- **Límites**: una sección de columna y una de viga en todo el pórtico (óptimo sobre la rejilla); flexión uniaxial; esfuerzos en el
+  eje del nudo; ΣMnb sin aporte de losa; sin nudos (C.21.7), cimentación ni empalmes; Q > 1/3 se rechaza (sin segundo orden completo).
+
 ## Fases siguientes (no construidas)
 
 1. Extender la cascada sísmica ya construida (concreto) a los motores de mampostería y acero → cuantías finales; irregularidades φa/φp, torsión y P-Delta.

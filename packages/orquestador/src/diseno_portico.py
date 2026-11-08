@@ -104,7 +104,7 @@ SUPUESTOS = (
     "Con perfil_suelo, E se deriva del espectro NSR-10 (Fa/Fv, Sa, Ta, Vs=Sa·W, Cvx, R=R0 de la Tabla A.3-3 con φ=1): estructura regular y redundante, sin torsión, sin P-Delta, peso sísmico = muerta + peso propio (sin viva), T = Ta. Sin perfil_suelo, E llega como dato (ya reducida por R).",
     "Deriva (A.6.4, 1,0 % hp) con las mismas inercias agrietadas, Fs sin dividir por R (I=1 permitido por A.6.2.1.2), en el centro de masa; sin torsión ni P-Delta. Solo se verifica si E se deriva del espectro.",
     "Refuerzo longitudinal continuo en toda la luz, una capa por cara, mismo diámetro arriba y abajo; sin empalmes ni anclajes.",
-    "Cortante por capacidad: DES con Mpr = 1,25·fy y φ = 0,75; DMO con Mn (C.21.3.3 (a)/(b) no recuperado). Ninguno verificado en el corpus.",
+    "Cortante por capacidad: φ = 0,75 verificado (C.9.3.2.3); DES con Mpr = 1,25·fy y DMO con Mn (C.21.3.3 (a)/(b)) no recuperados del corpus.",
     "Costo directo APU de las vigas (Barranquilla 2026); estribos modelados con separación equivalente por conteo.",
     "Herramienta de apoyo: el diseño debe revisarlo y firmarlo un ingeniero (aviso de responsabilidad profesional, issue #18).",
 )
@@ -286,6 +286,29 @@ def _derivar_basal(p: ProyectoPortico, ctx, o: "CandidatoPortico", res, nid, nx:
             "rayleigh_cambia_las_fuerzas": cambia if ok else None}
 
 
+def _lote_vectorizado(p: ProyectoPortico, ctx, b_all: np.ndarray, h_all: np.ndarray, con_columnas: bool = False):
+    """Etapa vectorizada: plantilla + fuerzas sísmicas derivadas + análisis de todas las secciones (b_all, h_all)."""
+    N, n_lev = b_all.size, len(p.alturas_piso_m)
+    modelo0, vigas0, _, nid, nx, ny = _modelo(p, 300.0, 500.0)
+    tpl = _gv.construir_plantilla(modelo0, vigas0, nid, nx, ny, _pt)
+    Ec = 4700.0 * math.sqrt(FC_MPA_POR_CALIDAD[p.calidad_concreto]) * 1000.0
+    alt_niv = _sp.alturas_nivel_m(p.alturas_piso_m)
+    pesos = fuerzas = None
+    r_deriva = 1.0
+    if ctx is not None:
+        pesos = _sp.pesos_nivel_kn(p.luces_m, p.alturas_piso_m, nx, p.carga_muerta_kn_m, p.columna_mm, b_all, h_all)
+        par = _sp.parametros_espectro(ctx, alt_niv)
+        fuerzas = _sp.fuerzas_vectorizadas(par, pesos, alt_niv)
+        r_deriva = par["r"] * par["sa_deriva"] / par["sa"]
+    elif p.fuerzas_laterales_kn:
+        fuerzas = np.broadcast_to(np.asarray(p.fuerzas_laterales_kn, dtype=float), (N, n_lev)).copy()
+    lote = _gv.analizar_lote(tpl, b_mm=b_all, h_mm=h_all, Ec=Ec, factor_i_viga=FACTOR_I_VIGA, carga_muerta=p.carga_muerta_kn_m,
+                             carga_viva=p.carga_viva_kn_m, peso_unit=PESO_UNIT_KN_M3, c1_m=p.columna_mm[0] / 1000,
+                             fuerzas_e=fuerzas, alturas_piso_m=p.alturas_piso_m, combinaciones=_cb.COMBINACIONES_NSR10,
+                             r_deriva=r_deriva, nx=nx, pesos=pesos, con_columnas=con_columnas)
+    return lote, tpl, nid, nx, ny, pesos, fuerzas
+
+
 def diseno_portico(p: ProyectoPortico, top: int = 5, *, grilla: Optional[tuple] = None,
                    verificar_escalar: bool = True) -> InformePortico:
     """Embudo: (1) análisis vectorizado de TODAS las secciones → demandas y deriva; (2) máscara de deriva (A.6.4);
@@ -305,23 +328,7 @@ def diseno_portico(p: ProyectoPortico, top: int = 5, *, grilla: Optional[tuple] 
         raise ValueError("fuerzas_laterales_kn debe tener un valor por nivel")
 
     # --- (1) análisis vectorizado ------------------------------------------------------
-    modelo0, vigas0, _, nid, nx, ny = _modelo(p, 300.0, 500.0)
-    tpl = _gv.construir_plantilla(modelo0, vigas0, nid, nx, ny, _pt)
-    Ec = 4700.0 * math.sqrt(FC_MPA_POR_CALIDAD[p.calidad_concreto]) * 1000.0
-    alt_niv = _sp.alturas_nivel_m(p.alturas_piso_m)
-    pesos = fuerzas = None
-    r_deriva = 1.0
-    if ctx is not None:
-        pesos = _sp.pesos_nivel_kn(p.luces_m, p.alturas_piso_m, nx, p.carga_muerta_kn_m, p.columna_mm, b_all, h_all)
-        par = _sp.parametros_espectro(ctx, alt_niv)
-        fuerzas = _sp.fuerzas_vectorizadas(par, pesos, alt_niv)
-        r_deriva = par["r"] * par["sa_deriva"] / par["sa"]
-    elif p.fuerzas_laterales_kn:
-        fuerzas = np.broadcast_to(np.asarray(p.fuerzas_laterales_kn, dtype=float), (N, n_lev)).copy()
-    lote = _gv.analizar_lote(tpl, b_mm=b_all, h_mm=h_all, Ec=Ec, factor_i_viga=FACTOR_I_VIGA, carga_muerta=p.carga_muerta_kn_m,
-                             carga_viva=p.carga_viva_kn_m, peso_unit=PESO_UNIT_KN_M3, c1_m=p.columna_mm[0] / 1000,
-                             fuerzas_e=fuerzas, alturas_piso_m=p.alturas_piso_m, combinaciones=_cb.COMBINACIONES_NSR10,
-                             r_deriva=r_deriva, nx=nx, pesos=pesos)
+    lote, tpl, nid, nx, ny, pesos, fuerzas = _lote_vectorizado(p, ctx, b_all, h_all)
     t1 = time.perf_counter()
 
     # --- (2) máscara de deriva ---------------------------------------------------------

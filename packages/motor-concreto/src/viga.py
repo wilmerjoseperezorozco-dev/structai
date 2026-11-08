@@ -20,7 +20,7 @@ DIAMETRO_MM = {"3": 9.5, "4": 12.7, "5": 15.9, "6": 19.1, "7": 22.2, "8": 25.4}
 AREA_MM2 = {k: math.pi / 4 * d**2 for k, d in DIAMETRO_MM.items()}
 
 PHI_FLEXION = 0.90          # C.9.3.2.1, sección controlada por tensión
-PHI_CORTANTE = 0.75         # C.9.3.2.3 — NO verificado en el corpus
+PHI_CORTANTE = 0.75         # C.9.3.2.3 — verificado en el corpus (2026-11-08)
 EPS_CU = 0.003              # C.10.2.3
 EPS_T_MIN = 0.005           # sección controlada por tensión (C.10.3.4); el límite 0,004 de C.10.3.5 es menos exigente
 ALTURA_MIN_SIMPLE_L_SOBRE = 16.0   # Tabla C.9.5(a) — NO verificado en el corpus
@@ -151,7 +151,7 @@ def verificar(s: Seccion, m: Materiales, c: Cargas) -> Resultado:
     Vs = s.Av * m.fyt * s.d / s.estribo_s / 1000                  # C.11.4.7.2
     phiVn = PHI_CORTANTE * (Vc + Vs)
     v.append(Verificacion("Cortante φ(Vc+Vs) ≥ Vu", Vu, phiVn, "kN", phiVn >= Vu, "C.11.2.1.1 / C.11.4.7.2",
-                          "φ=0,75 no verificado en el corpus"))
+                          "φ=0,75 verificado (C.9.3.2.3)"))
     Vs_max = 0.66 * raiz * s.b * s.d / 1000                       # C.11.4.7.9
     v.append(Verificacion("Vs ≤ 0,66√f'c·b·d", Vs, Vs_max, "kN", Vs <= Vs_max, "C.11.4.7.9"))
     s_max = min(s.d / 2, 600.0) if Vs <= 0.33 * raiz * s.b * s.d / 1000 else min(s.d / 4, 300.0)   # C.11.4.5.1

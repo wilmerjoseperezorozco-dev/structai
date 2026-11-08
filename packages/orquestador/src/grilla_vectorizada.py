@@ -34,6 +34,8 @@ class Plantilla:
     vigas: tuple[tuple[int, int, float], ...]     # (nodo i, nodo j, L)
     niveles: tuple[tuple[int, ...], ...]          # nodos de cada nivel (1..n)
     nodo_nivel_lateral: tuple[tuple[int, ...], ...]
+    columnas: tuple = ()          # (entrepiso, eje, gdl, k_local·T) de cada columna
+    nx: int = 0
 
 
 def construir_plantilla(modelo, vigas_idx: list[int], nid, nx: int, ny: int, pt_modulo) -> Plantilla:
@@ -42,7 +44,7 @@ def construir_plantilla(modelo, vigas_idx: list[int], nid, nx: int, ny: int, pt_
     K0, Ka, Ki = np.zeros((ndof, ndof)), np.zeros((ndof, ndof)), np.zeros((ndof, ndof))
     F_unit = np.zeros(ndof)
     vigas_set = set(vigas_idx)
-    info = []
+    info, cols = [], []
     for idx, e in enumerate(modelo.elementos):
         L = modelo.longitud(e)
         T, g = modelo._T(e), modelo._gdl(e)
@@ -55,8 +57,9 @@ def construir_plantilla(modelo, vigas_idx: list[int], nid, nx: int, ny: int, pt_
             info.append((e.i, e.j, L))
         else:
             K0[np.ix_(g, g)] += T.T @ modelo._k_local(e, L) @ T
+            cols.append((idx // nx, idx % nx, np.array(g), modelo._k_local(e, L) @ T))
     niveles = tuple(tuple(nid(i, j) for i in range(nx)) for j in range(1, ny))
-    return Plantilla(ndof, modelo._libres, K0, Ka, Ki, F_unit, tuple(info), niveles, niveles)
+    return Plantilla(ndof, modelo._libres, K0, Ka, Ki, F_unit, tuple(info), niveles, niveles, tuple(cols), nx)
 
 
 @dataclass(frozen=True)
@@ -74,6 +77,8 @@ class ResultadoLote:
     deriva_max: np.ndarray        # máx Δ/hp de todos los pisos (con Fs, no reducidas), NaN si no hay sismo
     fuerzas_e: Optional[np.ndarray]     # (N, niveles) E de diseño usada
     periodo_rayleigh: Optional[np.ndarray]
+    col_f: Optional[np.ndarray] = None    # (N, columnas, 6, casos[D,L,E]) fuerzas de extremo locales (f0 = compresión en i)
+    ux_e: Optional[np.ndarray] = None     # (N, niveles) desplazamiento horizontal medio por E
 
 
 def _combos(combinaciones: dict, con_sismo: bool):
@@ -90,7 +95,7 @@ def analizar_lote(tpl: Plantilla, *, b_mm: np.ndarray, h_mm: np.ndarray, Ec: flo
                   carga_muerta: float, carga_viva: float, peso_unit: float, c1_m: float,
                   fuerzas_e: Optional[np.ndarray], alturas_piso_m: tuple[float, ...], combinaciones: dict,
                   r_deriva: float = 1.0, nx: int = 1, pesos: Optional[np.ndarray] = None,
-                  chunk: int = CHUNK) -> ResultadoLote:
+                  chunk: int = CHUNK, con_columnas: bool = False) -> ResultadoLote:
     """Analiza N secciones. fuerzas_e: (N, n_niveles) fuerzas laterales de diseño (ya divididas por R) o None.
 
     r_deriva: factor que convierte el desplazamiento por E en el de las fuerzas elásticas con I=1 (R·Sa_deriva/Sa).
@@ -106,6 +111,8 @@ def analizar_lote(tpl: Plantilla, *, b_mm: np.ndarray, h_mm: np.ndarray, Ec: flo
     ix = np.ix_(lib, lib)
     K0f, Kaf, Kif = tpl.K0[ix], tpl.Ka[ix], tpl.Ki[ix]
     ncasos = 3 if con_sismo else 2
+    col_f = np.zeros((N, len(tpl.columnas), 6, ncasos)) if con_columnas else None
+    ux_all = np.zeros((N, len(tpl.niveles))) if (con_columnas and con_sismo) else None
     nlev = len(tpl.niveles)
     for s in range(0, N, chunk):
         sl = slice(s, min(N, s + chunk))
@@ -162,12 +169,17 @@ def analizar_lote(tpl: Plantilla, *, b_mm: np.ndarray, h_mm: np.ndarray, Ec: flo
             m_pos_vano = np.maximum(m_pos_vano, np.where(interior, M_hi, -np.inf).max(axis=1))
             wg = 1.2 * wD + 1.0 * wL
             v_grav = np.maximum(v_grav, wg * L / 2)
+        if con_columnas:
+            for ic, (_, _, g, kT) in enumerate(tpl.columnas):
+                col_f[sl, ic] = np.einsum("ab,nbc->nac", kT, U[:, g, :])
         salidas["m_neg"][sl], salidas["m_pos_ap"][sl] = m_neg, m_pos_ap
         salidas["m_pos_vano"][sl] = np.maximum(m_pos_vano, 0.0)
         salidas["v_max"][sl], salidas["v_centro"][sl], salidas["v_grav"][sl] = v_max, v_centro, v_grav
         salidas["w_grav"][sl] = 1.2 * wD + 1.0 * wL
         if con_sismo:
             ux = np.stack([U[:, [3 * nd for nd in nodos], 2].mean(axis=1) for nodos in tpl.niveles], axis=1)   # (n, niveles)
+            if ux_all is not None:
+                ux_all[sl] = ux
             ux0 = np.concatenate([np.zeros((n, 1)), ux], axis=1)
             hp = np.asarray(alturas_piso_m, dtype=float)
             salidas["deriva"][sl] = (np.abs(np.diff(ux0, axis=1)) * r_deriva / hp).max(axis=1)
@@ -181,4 +193,4 @@ def analizar_lote(tpl: Plantilla, *, b_mm: np.ndarray, h_mm: np.ndarray, Ec: flo
     deriva = salidas["deriva"] if con_sismo else np.full(N, np.nan)
     return ResultadoLote(b_mm, h_mm, salidas["m_neg"], salidas["m_pos_ap"], salidas["m_pos_vano"], salidas["v_max"],
                          salidas["v_centro"], salidas["w_grav"], salidas["v_grav"], ln_min, deriva,
-                         fuerzas_e if con_sismo else None, ray)
+                         fuerzas_e if con_sismo else None, ray, col_f, ux_all)
