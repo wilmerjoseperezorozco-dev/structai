@@ -1,0 +1,13 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "motor-concreto"
+version = "0.1.0"
+description = "Verificacion determinista de vigas de concreto reforzado (NSR-10 Titulo C) para el diseno inverso"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3.3"]
