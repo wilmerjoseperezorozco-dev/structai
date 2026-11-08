@@ -84,3 +84,34 @@ La investigación usa PySheds (GPL-3.0, 915 ★, push 2026-10-26).
 3. **Verificación de la delineación de cuencas** con `pyflwdir` (§5).
 4. **Analítica sin contenido** con Umami o Matomo (§1), después de decidir dónde alojarla.
 5. **Langfuse** para trazar costos del LLM (§6).
+
+## 8. Segunda ronda: repositorios propuestos por el equipo (2026-11-08)
+Misma limitación: metadatos y lectura del README; **no ejecuté ni instalé nada**.
+
+| Repo | Licencia | ★ | Último push | Veredicto |
+|---|---|---:|---|---|
+| [vasudevan2604/geotechnical-report-extractor](https://github.com/vasudevan2604/geotechnical-report-extractor) | **sin licencia** | 0 | 2026-10-13 | **No usar. Ver aviso.** |
+| [runtosolve/StructuralDataDash](https://github.com/runtosolve/StructuralDataDash) | sin licencia | n/d | 2026-07-05 | Solo como idea |
+| [datadrivenconstruction/OpenConstructionERP](https://github.com/datadrivenconstruction/OpenConstructionERP) | **AGPL-3.0** | 1.313 | 2026-11-08 | Referencia de producto; no integrar |
+| [imcs-compsim/pinns_for_comp_mech](https://github.com/imcs-compsim/pinns_for_comp_mech) | MIT | 72 | 2026-11-06 | Investigación; no producción |
+| [hzlbbfrog/Generative-BIM](https://github.com/hzlbbfrog/Generative-BIM) | Apache-2.0 | 33 | 2025-07-27 | Investigación; bajo retorno |
+| [ugurfeyzullah/Structural-optimization-with-VP](https://github.com/ugurfeyzullah/Structural-optimization-with-VP) | Apache-2.0 | 5 | 2024-06-25 | Descartar (depende de Dynamo/Revit/RSA) |
+| [Nmg1994/Flood_Susceptibility_Model](https://github.com/Nmg1994/Flood_Susceptibility_Model) | sin licencia | 7 | 2026-06-08 | Solo como método a citar |
+| [climatechange-ai-tutorials/flood-mapping-optical-and-microwave](https://github.com/climatechange-ai-tutorials/flood-mapping-optical-and-microwave) | MIT | 3 | 2025-12-06 | **Útil** (ver abajo) |
+
+**Aviso sobre `geotechnical-report-extractor`.** El repositorio tiene 0 estrellas, creado el 2026-01-15 por una cuenta con 2 repositorios públicos, sin licencia, y su README manda a «descargar la aplicación» desde un `.zip` dentro del propio repositorio (`outler/…zip`, 0,6 MB y 1,4 MB). Ese patrón (README que empuja a descargar un ejecutable empaquetado) es típico de repositorios señuelo. El código en texto (`geotech.py`, Streamlit + PyMuPDF + pdfplumber + reportlab) leído sin ejecutar **no mostró** llamadas de red, `exec`, `eval` ni `subprocess`, y su pie de página atribuye la autoría a «AlexEngineered», de modo que parece una copia del trabajo de otra persona. **No descargué ni abrí los `.zip`.** Recomendación: no descargar esos archivos; si interesa la idea (extracción de parámetros de informes geotécnicos), buscar el original del autor atribuido y respetar su licencia. Además, está pensado para informes en inglés de EE. UU.; no se ajusta a un estudio de suelos colombiano (NSR-10, Título H) sin rehacer las expresiones regulares.
+
+**StructuralDataDash.** Extrae datos de ensayos de artículos con un LLM y un caché de PDF. Es la misma idea que ya usamos con la bibliografía, sin licencia (no se puede reutilizar el código) y orientado a la AISC.
+
+**OpenConstructionERP.** Presupuesto de obra (BOQ), cuantificación desde PDF/CAD/BIM, 4D/5D. Se solapa con nuestro motor de precios APU. Declara «120.000+ posiciones con precio» pero **no verifiqué** que los precios sean de Colombia ni su vigencia. AGPL: integrar su código obligaría a publicar el nuestro; sirve como comparación de producto.
+
+**PINNs, Generative-BIM, optimización con Dynamo.** Investigación académica. El proyecto ya eliminó la PINN por no ser un modelo real en producción; ninguno aporta algo desplegable hoy.
+
+**Modelo de susceptibilidad a inundación (Nmg1994).** Seis algoritmos de aprendizaje automático comparados; sin licencia, de modo que no se reutiliza código. Nuestra regionalización y la susceptibilidad municipal ya cubren ese terreno con validación a ciegas.
+
+**Cartografía de inundaciones con Sentinel-1/2 (Climate Change AI, MIT).** Es el que sí abre una línea nueva: validar el HAND < 10 m y la susceptibilidad del Caribe contra **extensiones de agua observadas por satélite** (SAR de Sentinel-1 atraviesa nubes), en vez de contra reportes de la UNGRD. Es la validación que a la hipótesis de vías en terreno bajo le faltó. Hipótesis candidata, sin preregistrar: «las celdas HAND < 10 m del Caribe se inundan con más frecuencia en el SAR que las de HAND ≥ 10 m». Datos gratuitos; hay que verificar el volumen de descarga antes.
+
+**Tema `structural-health-monitoring` (Python, por estrellas).** Los más votados son académicos y pequeños (máximo 62 estrellas, la mayoría con último cambio en 2018-2021). Ninguno es una librería lista para producción. Mencionable: `Ayberkrk/timoshenko` (Apache-2.0, análisis modal y flujos de sensores, 3 estrellas, activo) como ejemplo de bloques reutilizables, y `CSUCRYE/bridge-inspection-ai` (clasificador de fisuras); su exactitud declarada de 99,8 % es de su propia partición y no la verifiqué.
+
+## 9. Analítica con Umami: estado
+Código preparado, **inerte hasta configurar dos variables de entorno**: `NEXT_PUBLIC_UMAMI_SCRIPT_URL` y `NEXT_PUBLIC_UMAMI_WEBSITE_ID` (`apps/web/src/app/layout.tsx`, `apps/web/src/lib/analitica.ts`). El módulo solo acepta una lista cerrada de eventos y propiedades de tipo categoría, y descarta cualquier texto libre, así que ni una pregunta ni el nombre de un proyecto pueden salir hacia la analítica. Respeta «No rastrear». **Falta:** alojar una instancia de Umami (propia o en su nube; crear la cuenta o el servidor es decisión del equipo) y llamar a `registrarEvento` desde los puntos del producto (hoy no hay ninguna llamada).

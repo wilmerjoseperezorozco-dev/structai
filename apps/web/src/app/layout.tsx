@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
+import Script from "next/script";
 import { Inter, JetBrains_Mono, Fraunces } from "next/font/google";
 import "./globals.css";
 
@@ -117,6 +118,9 @@ const JSON_LD = {
   ],
 };
 
+const UMAMI_ID = process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID;
+const UMAMI_SRC = process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className={`h-full ${inter.variable} ${jetbrainsMono.variable} ${fraunces.variable}`}>
@@ -130,6 +134,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="h-full font-sans">
         {children}
         <Analytics />
+        {UMAMI_ID && UMAMI_SRC ? (
+          <Script src={UMAMI_SRC} data-website-id={UMAMI_ID} data-do-not-track="true" strategy="afterInteractive" />
+        ) : null}
       </body>
     </html>
   );
