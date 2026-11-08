@@ -69,3 +69,40 @@ Ecuador queda con solo P1 y P7 (y quizá P10 cuando se verifique la vigencia) ha
 - **Corrección:** el conjunto «Emergencias históricas registradas por el INDECI» tiene archivos anuales solo de **2003 a 2018** (más una versión ArcGIS de 2007). La descripción dice «hasta el presente», pero **no hay recurso de 2019 en adelante**. Antes escribí «2003–hoy»: era incorrecto. Consecuencia: **no hay solapamiento con el periodo de la UNGRD (2019–2024) ni con el de las pruebas colombianas recientes**, y la réplica directa de P3/P4/P9 con SINPAD de este conjunto no es posible; solo sirve para análisis dentro de 2003–2018 (CHIRPS cubre ese periodo).
 - **Descarga:** se pidió `Emergencias2018.xls` (sitio oficial, 1 archivo). El servidor respondió **HTTP 418** con una página HTML de un cortafuegos web (cookie `HWWAFSESID`, cabecera `Block-Event-Id`), no con el archivo (3.195 bytes de HTML). Es una barrera contra clientes automáticos. **No se intentó eludirla.** No se obtuvo ningún dato.
 - **Pendiente:** el usuario puede bajar el archivo desde el navegador (enlace directo: `https://www.datosabiertos.gob.pe/sites/default/files/Emergencias2018.xls`) y dejarlo en una carpeta; entonces se inspecciona la estructura.
+
+## Actualización 2: el usuario abrió la página oficial; SINPAD sí sirve (2026-11-08)
+**Error mío, corregido.** Concluí que el conjunto de INDECI terminaba en 2018 y que no servía para 2019-2024. Era el conjunto equivocado: el vigente es otro, «Emergencias y daños a nivel nacional por departamento» (INDECI, **ODC-BY**, modificado 2026-10-30, actualización semestral). Mi primera lectura lo descartó por su título («por departamento»), que **no describe su contenido**: son microdatos a nivel de **distrito** con código UBIGEO. El usuario tenía razón al insistir.
+
+**Archivos** (leídos desde el navegador de la app, que no tropieza con el cortafuegos; descarga autorizada para SINPAD):
+| Archivo | Tamaño | Contenido |
+|---|---:|---|
+| `BD_2003-2025_EMERGENCIAS.csv` | 27.040.446 bytes | 142.139 emergencias, 2003-2025 |
+| `BD_2026_Semestre_I.csv` | 1.742.009 bytes | 9.352 emergencias, primer semestre de 2026 |
+| `Diccionario de datos_9.xlsx` | 13.752 bytes | 55 filas de diccionario |
+Copias de trabajo fuera del repo (no se versionan); perfil reproducible con `scripts/regional/sinpad_perfil.py`.
+
+**Estructura:** 49 columnas; código de emergencia, fecha, año, mes, UBIGEO distrital (6 dígitos en el 100 % de las filas), departamento/provincia/distrito, peligro (22 tipos en 2019-2024), origen natural o inducido, región natural, y daños (fallecidos, desaparecidos, lesionados, damnificados, afectados, viviendas, centros educativos y de salud, cultivos, **puentes destruidos/afectados, carretera destruida/afectada en km, camino rural en km**, canales, animales, peso y costo de la ayuda humanitaria).
+
+**Perfil 2019-2024:** 50.807 emergencias en 1.871 distritos de 26 departamentos. Peligros más frecuentes: lluvia intensa 16.272, incendio urbano 8.208, vientos fuertes 7.752, bajas temperaturas 6.213, incendio forestal 3.228, deslizamiento 2.217, inundación 2.117, erosión 958, huayco 902, derrumbe de cerro 827. Movimientos en masa (deslizamiento, huayco, derrumbe de cerro, alud, erosión: **agrupación mía, sin validar**): 4.917 registros en 1.124 distritos.
+
+### Problemas de calidad encontrados (hay que tratarlos antes de cualquier análisis)
+1. **Fecha de 2025 en otro formato.** Los 16.401 registros de 2025 vienen como `MM/DD/AA` (mes primero, año de dos dígitos): en 9.579 el segundo campo supera 12 y en ninguno el primero. El resto (2003-2024) es `DD/MM/AAAA` y su año coincide siempre con la columna AÑO. Interpretar 2025 como día primero falsearía fechas y rezagos. El diccionario dice «DD/MM/AAAA o MM/DD/AA» pero no avisa de cuál se usa dónde.
+2. **Esquemas distintos entre archivos.** El de 2026 renombra columnas (`COD_UBIGEO`, `DEP`, `CODIGO EMERGENCIA INPAD`, `FECHA DE EMERGENCIA`, etc.; el de 2003-2025 tiene `COD. DISTRITO`, `DPTO.`...). Hay que armonizar antes de unirlos; y los canales de riego pasan de conteo a km en 2026 (los nombres terminan en «KM»): **la unidad cambió**.
+3. **Codificación latin-1** y separador `;`. Leer como UTF-8 falla.
+4. **Códigos repetidos:** 7 códigos de emergencia aparecen más de una vez, en fechas y distritos distintos (reutilización del identificador). No sirven como clave única.
+5. **Ceros y datos faltantes son indistinguibles:** las columnas de daños no tienen vacíos (100 % no nulos), por lo que un 0 puede ser «sin daño» o «no evaluado». Solo el 0,8 % de los registros tiene fallecidos, el 33 % viviendas destruidas, el 1,7 % puentes destruidos, el 6 % carretera destruida.
+6. **Salto de volumen en 2023-2025.** Registros por año: 4.492 (2019), 5.210, 7.799, 7.251, **12.388 (2023), 13.667 (2024), 16.401 (2025)**. Los distritos con al menos un evento no suben en proporción (1.063 en 2019; 1.666 en 2023; 1.573 en 2024; 1.671 en 2025), es decir, hay más registros por distrito. Puede ser más lluvia (Niño costero/Niña) o un cambio de práctica de registro; con estos datos no se puede separar. Es el mismo tipo de duda que el pico de 2022 de la UNGRD.
+7. **Tasa base alta.** 1.571 a 1.671 distritos con evento por año en 2023-2025. Si Perú tiene unos 1.890 distritos (cifra de memoria, **sin verificar**), la mayoría tiene algún evento al año y el AUC por «hubo al menos un evento» tendrá poca potencia, como en Colombia.
+8. **Fecha de evento o de reporte:** el diccionario dice «fecha en la que ocurrió el evento», sin garantía. Puede ser la de registro (misma limitación que la UNGRD).
+
+### Qué cambia en el plan de F1
+| Prueba | Antes | Ahora |
+|---|---|---|
+| P3 amenaza oficial frente a eventos | Condicionada | **Eventos disponibles, 2019-2024, distrital.** El obstáculo pasa a ser el mapa oficial (INGEMMET, descarga sin confirmar) |
+| P4 exposición vial (réplica de V1) | Condicionada | **Eventos disponibles.** Además trae **daño a vías y puentes**, que la UNGRD no tenía: permite una validación que en Colombia no pudimos hacer. Riesgo: confusión con tamaño de red y sesgo de reporte |
+| P9 umbrales lluvia-duración | Condicionada | **Fechas disponibles** (con el cuidado de 2025 y de reporte frente a ocurrencia). 2019-2024 coincide con la ventana de Colombia |
+| Sesgo de reporte | Bloqueado | **Posible:** hay incendios urbanos e industriales (8.208) como indicador de capacidad de reporte, análogo al de la UNGRD; tendrá las mismas limitaciones |
+| Ecuador | Bloqueado | Sin cambios |
+
+### Lo que no se ha hecho
+No se ha calculado ninguna relación. Falta: fijar el protocolo de cada prueba (no se puede mirar y luego decidir), unir con un catálogo de distritos (UBIGEO del INEI) que **aún no se ha obtenido**, y verificar en el diccionario completo el significado de las 49 columnas (solo se leyeron las primeras 25 filas).
