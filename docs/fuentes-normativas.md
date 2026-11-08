@@ -279,8 +279,13 @@ completo")**:
   en la base y en el chunk recuperado (el piso 0.7 V′s del cortante modificado y
   el rango 0.05-0.20 de β̄: mismo patrón ya documentado en H.8/H.10) y 1
   inconcluso por límite de cuota del LLM; los 12 valores clave se confirmaron
-  presentes en el texto de los chunks. **Pendiente:** Apéndice A-3 (push-over,
-  A-147 a A-153), Apéndice A-1 (A-139 a A-140) y revisión de las tablas A.3.
+  presentes en el texto de los chunks. Apéndice A-3 (push-over, A-147 a
+  A-152) **cerrado 2026-11-08**: 10 chunks-padre → 77 chunks, 0 sobre 128
+  tokens reales; ecuaciones A-3.2-1 a A-3.2-5 en notación lineal; la página
+  A-153 ya es el Apéndice A-4 y no se tocó. Verificado: 12 valores clave
+  presentes en el texto (60 %, 150 %, 125 %, Rd, C0, C1, 25 % de carga viva,
+  dos tercios, 70 %…) y 4 de 4 consultas reales a `ask()` correctas.
+  **Pendiente:** Apéndice A-1 (A-139 a A-140) y revisión de las tablas A.3.
 - **Título B — re-auditado con `rag-audit-kit` 2026-09-23, hueco real
   mucho más grande de lo que decía la nota de 2026-09-08** (esa nota
   hablaba de "7 secciones sin chunk"; el re-audit numeral por numeral
