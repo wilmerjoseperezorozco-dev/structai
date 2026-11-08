@@ -25,6 +25,27 @@ Criterio de puntuación (1–5, máx. 20), como en `scripts/hidro/NORMAS_CANDIDA
 5. **Explosivos:** el alcance es normativo y de riesgo (quién autoriza, qué se exige). El repositorio no recibirá procedimientos operativos de manejo.
 6. **Límite metodológico:** una sola búsqueda por tema no agota las normas. No se buscaron aún la Ley 1682/2013 (infraestructura de transporte), el Código de Minas (Ley 685/2001), normativa de licenciamiento ambiental de obras viales ni los criterios de vibración de voladuras.
 
+## 2b. Res. 0108/2015 (CCP-14): verificada (actualización del mismo día)
+
+Fuente: ficha SISJUR de la Alcaldía de Bogotá con el texto de los artículos. Expedida el 2015-01-26. Art. 1: adopta el anexo CCP-2014 para estudios, diseños, construcción y mantenimiento de puentes de la **Red Vial Nacional a cargo de INVÍAS** (el ámbito es ese, no otras redes). Art. 2: rige desde su publicación y deroga la Res. 3600 de 1996. La ficha no lista normas que la modifiquen o deroguen. Se actualizó `RES-108-2015` en el registro a `vigente` (cadena `parcial`, migración `20261108130000`). Residual: no se consultó el Diario Oficial ni el normograma de MinTransporte, y el proyecto de 2026 sobre barandas no se confirmó como expedido. Las dos copias en PDF probadas (ANI, Ámbito Jurídico) no se pudieron leer (imagen escaneada y error 403).
+
+## 2c. Datos (no normas) para hipótesis nuevas — búsqueda preliminar
+
+| Fuente | Qué se encontró | Límite |
+|---|---|---|
+| Puentes de la red nacional (SIPUCOL, INVÍAS) | El inventario existe (desde 1996; módulos de inspección y capacidad de carga), pero **no apareció como dato abierto**. Solo hay inventarios urbanos (IDU Bogotá, con shapefile) y estudios académicos con muestras (~900 puentes en 2012) | Para la red nacional haría falta una solicitud formal a INVÍAS; la hace el usuario |
+| Minería (ANM) | Capa de títulos vigentes en geovisor y catálogo de metadatos; una nota de UPME dice que no hay descarga directa de capas (fecha incierta). Boletín conjunto UPME–ANM «Minería en cifras» (abril 2025) | No se verificó si hoy hay descarga; habría que pedir permiso para bajar archivos |
+| Movimientos en masa (SGC) | Mapas de amenaza relativa 1:100.000 y 1:500.000, y SIMMA (el proyecto ya consulta SIMMA, issue #69) | Falta confirmar licencia y formato de las capas |
+| Geotecnia (SGC) | Hay laboratorio acreditado, pero **no se encontraron ensayos publicados como dato abierto** | Sin base de ensayos no se pueden validar los motores geotécnicos con datos nacionales |
+| Ferrocarril | ~3.533 km de infraestructura, 31 % operativa (1.734 km INVÍAS, 1.610 km ANI, 189 km Cerrejón); cifras distintas según fuente y año (3.316 km en 2017). UPIT publica un hub de mapas con la red férrea activa e inactiva | Las cifras no concuerdan entre fuentes; no se localizó un conjunto ANI georreferenciado descargable |
+
+### Hipótesis viables que salen de estos datos (sin ejecutar; cada una requeriría protocolo previo)
+- **R1 (ferrocarril, pendiente):** ¿qué fracción de los corredores férreos inactivos supera la pendiente máxima compatible con tracción convencional? Reutiliza la extracción de perfiles (DEM de 90 m, con su limitación de resolución). Depende de obtener la geometría de la red del hub UPIT y de una pendiente límite citada de fuente verificable.
+- **R2 (corredores y movimientos en masa):** exposición de tramos de la red vial primaria a amenaza alta del SGC. Depende de la geometría de la red vial y de la licencia de las capas.
+- **R3 (conflicto minería–infraestructura):** solapamiento de títulos mineros vigentes con corredores viales y férreos. Depende de poder obtener la capa de títulos.
+- **R4 (cifras ferroviarias):** reconciliar las cifras de kilómetros entre fuentes (3.316 vs. 3.533 km) para saber qué se puede afirmar públicamente.
+- **R5 (sobrecostos en cordillera):** ya planteada como H-D en el issue; usaría los 50.154 contratos de obra del SECOP ya cargados, sin identidad de proveedores.
+
 ## 3. Siguiente paso propuesto
 
 Verificación en fuente primaria, sin descargas de archivos nuevos hasta que se autoricen (se indicaría nombre, fuente y tamaño):
