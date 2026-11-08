@@ -72,3 +72,25 @@ Capas aún sin explorar, con conteo de registros del inventario (no verificadas 
 | `Amenaza_Volcanica` | 40 volcanes, 47 capas | Amenaza volcánica |
 
 **ESA CCI humedad del suelo** (v09.2, CEDA): ver `scripts/satelite/RESULTADOS_ESA_CCI_COBERTURA.md`. Sin dato en los Andes altos, el Chocó y la Amazonía; útil en el Caribe. Descarga 2019-2024 en `scripts/satelite/_cache/esa_cci_sm/` (no versionada).
+
+## 7. Revisión de IDEAM, IGAC, DANE y XM/UPME y nuevas hipótesis posibles (2026-11-08)
+
+Se verificó en vivo lo que dice la tabla de fuentes del informe previo. Lo que no pude confirmar queda marcado.
+
+| Fuente | Qué se verificó | Qué sigue sin confirmarse |
+|---|---|---|
+| **IDEAM series convencionales** | No hay API oficial. El conjunto `s54a-sgyg` de datos.gov.co es telemetría automática cruda, sin validar. Las series convencionales históricas (desde 1929) viven en [DHIME](https://ideam.gov.co/dhime), por descarga web. Existe un paquete de terceros, [`ideam-dhime`](https://github.com/David-R-De-Leon-P/ideam-dhime), que automatiza el navegador (máx. 25 años por solicitud). | Que el paquete de terceros funcione hoy; no lo probé. Su uso automatiza un portal, y su licencia y términos no se revisaron. |
+| **IGAC** | Datos abiertos reales en datos.gov.co, con licencia CC BY-SA 4.0: **registro de transacciones inmobiliarias** (`7y2j-43cv`, 30,9 millones de filas, con `valor`, municipio, año y naturaleza jurídica) e **información catastral R1/R2 del Valle del Cauca** (áreas de terreno y construcción, pisos, puntaje de construcción). | La cobertura de los demás departamentos del catastro; qué fracción de las transacciones trae `valor`. Los datos son por predio: **solo se usarían agregados municipales**. |
+| **DANE** | El índice de costos de edificaciones (**ICOCED**) reemplaza al indicador anterior desde febrero de 2022 y **excluye las obras civiles**; las obras civiles (vías, puentes, acueductos) tienen su propio índice, el **ICOCIV**, con boletín mensual y anexos en la página oficial. | El formato de los anexos y si hay serie histórica descargable en archivo; los resultados no mostraron un enlace directo. |
+| **XM** | API pública sin clave (`pydataxm`); el proyecto ya extrae precio de bolsa, aportes hídricos y volumen útil con **una consulta de 31 días por métrica y mes** (`scripts/macro/extraer_xm_energia.py`). El «tope de 30 días» de la tabla es 31 en nuestra práctica. | Que los identificadores de métrica sigan siendo los mismos; hay que revisarlos con `get_collections()`. |
+| **UPME** | No hay API propia. Datos abiertos relacionados en datos.gov.co: producción de electricidad por fuente (`tq63-itzr`), costos de racionamiento (`ptj2-kj7i`), metas FNCER (`vy9n-w6hc`). Capacidad por proyecto, solo en visores y PDF de SIMEC. | Si existe una serie descargable de proyectos de generación. |
+
+### Hipótesis candidatas (no ejecutadas; ninguna está preregistrada todavía)
+| # | Hipótesis | Datos | Viabilidad y riesgo |
+|---|---|---|---|
+| H-A | **¿Se descuenta el valor de los inmuebles en municipios de amenaza alta (sísmica o movimientos en masa)?** Valor mediano por transacción y tipo de predio frente al índice del SGC, con efectos fijos de departamento y año. | IGAC transacciones + SGC amenaza | Media. El `valor` no es por m² y mezcla tipos de predio; puede capturar riqueza y no amenaza. Se haría con agregados municipales. |
+| H-B | **¿Cambia el flujo de predios nuevos o de transacciones tras un evento grande?** Usar el terremoto del 10-ago-2026 como evento, con control de tendencia. | IGAC transacciones (`year_radica`, `predios_nuevos`) | Baja por ahora: el evento es reciente y los datos pueden no cubrirlo. Verificar la fecha de corte. |
+| H-C | **¿Se asocia el tamaño y la altura de la construcción catastral (Valle) con la zona de amenaza del A-4?** Pisos, área y puntaje constructivo por municipio frente a Aa. | IGAC catastro R1/R2 Valle + A-4 | Media-alta para una exploración local; solo cubre el Valle del Cauca. |
+| H-D | **ICOCIV frente al ENSO y a la lluvia** (¿suben los costos de obra civil en años de La Niña?), análogo a la hipótesis del precio de energía. | DANE ICOCIV + ONI + CHIRPS | Media; falta confirmar que la serie se pueda bajar en formato de datos. |
+| H-E | **Precio de bolsa y regímenes de aportes con la humedad del suelo del Caribe** (ya hay datos ESA CCI descargados) | XM + ESA CCI | Baja a media: el vínculo ya se evaluó con aportes hídricos y es indirecto. |
+| H-F | **Series convencionales largas del IDEAM (DHIME) para repetir la regionalización de crecientes y el sesgo de CHIRPS con más años.** | DHIME por lote | Alta si DHIME funciona, que resolvería el límite de «3 años» de los pluviómetros automáticos. Requiere probar la descarga. |
