@@ -109,3 +109,42 @@ Código: `peru_r1_efectos_fijos.py` (commit `eec36ec`, publicado antes de ejecut
 - Pocos departamentos por ámbito (13 a 25): los IC agrupados son poco confiables, por eso se da también el de remuestreo; entre ambos hay diferencias (por ejemplo costa, Y2).
 - Sin corrección por multiplicidad entre los 12 intervalos. Si ninguna asociación fuera real, esperaríamos que alguno excluyera 1 por azar; los de la costa y la selva en Y2 tienen límites inferiores de 1,02, muy cerca de 1.
 - Y2 incluye toda la red vial y E solo la principal de OSM.
+
+
+# Bloque 3 exploratorio: R5, controles negativos (2026-11-08)
+Mismo modelo que R1 (cuasi-Poisson con efectos fijos de departamento, desfase log población) y mismo Spearman parcial dentro de departamento, pero con otros resultados, todos en viviendas destruidas + afectadas por 100 mil habitantes. Código: `peru_r5_controles_negativos.py` (commit 06fe08e, publicado antes de correr). 1.000 réplicas de remuestreo de departamentos por modelo (no 2.000 como R1). Todo exploratorio.
+
+- (a) Movimientos en masa (deslizamiento, derrumbe de cerro, alud): control negativo, con la salvedad de que dependen del relieve.
+- (b) Incendio forestal: control negativo.
+- (c) Inundación + huayco (Y3 del protocolo): referencia, el peligro que la hipótesis sí vincula con terreno bajo.
+
+## Razón de tasas por +0,10 de E [IC 95 % por remuestreo de departamentos]
+| Ámbito | (a) mov. en masa | (b) incendio forestal | (c) inundación + huayco |
+|---|---|---|---|
+| Perú (n = 1.483) | 1,01 [0,83; 1,17] | 0,96 [0,75; 1,21] | 1,09 [0,99; 1,22] |
+| Costa (329) | 0,75 [0,38; 4,02] | 1,24 [0,95; 4,89] | 1,09 [0,94; 1,80] |
+| Sierra (936) | 0,98 [0,68; 1,30] | 0,97 [0,74; 1,25] | 1,21 [0,98; 1,38] |
+| Selva (205) | 1,12 [0,80; 1,37] | 1,04 [0,74; 1,22] | 1,08 [0,91; 1,33] |
+
+## Spearman parcial dentro de departamento
+| Ámbito | (a) mov. en masa | (b) incendio forestal | (c) inundación + huayco |
+|---|---|---|---|
+| Perú | −0,009 [−0,066; +0,041] | +0,035 [−0,022; +0,098] | +0,047 [−0,003; +0,117] |
+| Costa | −0,074 [−0,105; +0,039] | +0,136 [−0,012; +0,204] | **+0,196 [+0,064; +0,223]** |
+| Sierra | −0,014 [−0,096; +0,072] | +0,025 [−0,039; +0,107] | +0,066 [−0,014; +0,148] |
+| Selva | **−0,096 [−0,466; −0,006]** | +0,082 [−0,155; +0,190] | +0,188 [−0,027; +0,295] |
+
+Proporción de distritos con algún daño a viviendas: mov. en masa 27,6 %; incendio 21,2 %; inundación + huayco 40,5 %.
+
+## Lectura (exploratoria)
+1. **Los controles negativos se comportan como tales a nivel nacional.** Para movimientos en masa e incendio forestal, en Perú, la razón de tasas está en 1,01 y 0,96 y el ρ en −0,01 y +0,04, con intervalos que incluyen el valor nulo. La medida de exposición vial no parece estar captando un sesgo general de reporte o de tamaño del distrito.
+2. **El resultado de referencia (inundación + huayco) apunta en el sentido de la hipótesis, pero débil.** RR 1,09 en Perú con límite inferior 0,99, ρ = +0,05 con límite inferior −0,003. En la costa el ρ es +0,20 con intervalo que excluye 0; en la sierra el RR es 1,21 con límite inferior 0,98. Es un patrón compatible con la hipótesis, no una confirmación, y no cambia el veredicto de C-1 y C-2.
+3. **Por región los controles no son uniformemente limpios.** En la selva el ρ de movimientos en masa tiene un intervalo que excluye 0 (−0,10, límite superior −0,006) con solo 205 distritos y un intervalo de remuestreo muy ancho (hasta −0,47). Con 36 intervalos en este bloque, que uno excluya el valor nulo es lo esperable por azar (alrededor de 2 de 36 con 95 %); no se interpreta, pero queda reportado. En la costa el ρ del incendio forestal (+0,14) y los RR de costa con cola superior de 4 a 5 muestran la inestabilidad de ese ámbito (13 departamentos).
+4. **Coherencia con R9a.** La señal de la costa en el resultado de referencia es la misma región en la que R9a mostró que la asociación depende de 2023, por lo que tampoco debe leerse como robusta.
+
+## Límites de este bloque
+- Sin corrección por multiplicidad entre los 36 intervalos; los resultados con intervalo que excluye el valor nulo son pocos y cercanos al borde.
+- Los movimientos en masa dependen del relieve, que correlaciona con E en la sierra, así que no es un control limpio allí; el control más informativo es el incendio forestal.
+- Mismos faltantes que R1: lluvia p95, % urbano y NBI.
+- Y3 se mide con registros de viviendas, no de red vial; no es el mismo daño que Y2.
+- 1.000 réplicas por modelo; los extremos de los IC en la costa (RR hasta 4,9) son inestables.
