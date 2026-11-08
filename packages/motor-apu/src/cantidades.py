@@ -204,6 +204,7 @@ def calcular_apu_dinamico(
     geo: GeometriaElementoConcreto,
     calidad_concreto: str = "3000",
     aiu: Optional[AIU] = None,
+    run_montecarlo: bool = True,
 ) -> APUResult:
     """Calcula el APU completo (materiales + mano de obra + equipo +
     Monte Carlo) de una columna o viga de concreto reforzado a partir de
@@ -277,4 +278,5 @@ def calcular_apu_dinamico(
         aiu=aiu,
         capitulo="C — Concreto Estructural",
         norma_ref="NSR-10 C.21 (columnas) / C.11 (vigas) — cantidades calculadas, no de catálogo",
+        run_montecarlo=run_montecarlo,
     )
