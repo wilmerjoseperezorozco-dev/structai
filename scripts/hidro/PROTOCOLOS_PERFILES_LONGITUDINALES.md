@@ -93,3 +93,17 @@ Estado: **preregistrados el 2026-11-08, sin ejecutar.** Ninguna cifra de este do
 | F4 | DEM 30 m recomendado | Alto | Resolución del DEM |
 
 Recomendación: ejecutar F1 primero (sin descargas), y solo después pedir permiso para los datos de F2–F4.
+
+---
+
+## Enmienda 1 a F1 (2026-11-08, antes de calcular)
+
+Al inspeccionar los datos antes de ejecutar F1 se encontró que:
+1. `caudal_historico.pkl` contiene **caudales medios mensuales**, no diarios. No hay curva de duración diaria. Se corrige el diseño: Q_medio = media de la serie mensual; **Q_mín = percentil 10 de los caudales mensuales**; Q de diseño = percentil 50 (mediana) y percentil 30 de los mensuales. Los mensuales suavizan extremos, así que Q_mín queda **sobrestimado** frente a un Q95 diario; esto se declara como sesgo favorable a la hipótesis.
+2. Las estaciones deben tener **≥ 120 meses** de caudal; las demás se excluyen y se cuenta cuántas.
+3. Los perfiles no se habían guardado en E1 (solo resúmenes). Se vuelven a extraer con la misma ruta y DEM (`perfiles_extraer.py`), agregando el área acumulada por celda.
+4. **Tramo utilizable:** S_tramo = H/L > 0,0005 m/m y menos del 50 % de sus celdas con pendiente de celda en el piso.
+5. **Rango de extrapolación del caudal:** el escalamiento Q(x) = Q_est·(A(x)/A_est)^k solo se usa en tramos con A(x)/A_est ≥ 0,25 (**análisis primario**); la sensibilidad usa ≥ 0,05. A_est es el área acumulada en la última celda del perfil.
+6. Tramos de L ∈ {1, 2, 5} km se forman recorriendo el perfil desde la estación hacia aguas arriba, sin traslape; el último tramo incompleto se descarta.
+7. Para el IC bootstrap por bloques de 1° se usan las coordenadas de la estación.
+8. Los candidatos se definen sobre L = 2 km como tamaño principal; 1 y 5 km son sensibilidad.
