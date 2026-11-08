@@ -1,0 +1,235 @@
+{
+  "perfiles_total": 257,
+  "excluidos_sin_caudal": 0,
+  "excluidos_menos_de_120_meses": 1,
+  "cuencas_analizadas": 256,
+  "por_longitud": {
+    "1.0": {
+      "tramos": 20820,
+      "tramos_utilizables": 8644,
+      "frac_utilizables": 0.4151777137367915,
+      "cuencas_con_algun_tramo_utilizable_en_rango": 217,
+      "frac_cuencas_con_candidato": 0.75390625,
+      "ic95_frac_cuencas_con_candidato": [
+        0.6516274304231796,
+        0.8455746955746954
+      ],
+      "n_tramos_candidatos": 2673,
+      "n_tramos_candidatos_rango_amplio": 5005,
+      "mediana_Pmax_p10_por_cuenca_kW": 2079.197213778157,
+      "ic95_mediana_Pmax": [
+        1134.8120376163458,
+        2838.3676653416383
+      ],
+      "por_region": {
+        "Andina": {
+          "cuencas": 187,
+          "frac_con_candidato": 0.8609625668449198,
+          "mediana_Pmax_kW": 2339.5035003778376
+        },
+        "Caribe": {
+          "cuencas": 58,
+          "frac_con_candidato": 0.43103448275862066,
+          "mediana_Pmax_kW": 986.8357941878372
+        },
+        "Orinoquia_Amazonia": {
+          "cuencas": 11,
+          "frac_con_candidato": 0.6363636363636364,
+          "mediana_Pmax_kW": 4122.989189306783
+        }
+      }
+    },
+    "2.0": {
+      "tramos": 10347,
+      "tramos_utilizables": 4274,
+      "frac_utilizables": 0.4130665893495699,
+      "cuencas_con_algun_tramo_utilizable_en_rango": 199,
+      "frac_cuencas_con_candidato": 0.68359375,
+      "ic95_frac_cuencas_con_candidato": [
+        0.5622278588036356,
+        0.7908511586452762
+      ],
+      "n_tramos_candidatos": 1357,
+      "n_tramos_candidatos_rango_amplio": 2622,
+      "mediana_Pmax_p10_por_cuenca_kW": 2750.8496415151503,
+      "ic95_mediana_Pmax": [
+        1494.3518422193008,
+        3797.586876057848
+      ],
+      "por_region": {
+        "Andina": {
+          "cuencas": 187,
+          "frac_con_candidato": 0.8181818181818182,
+          "mediana_Pmax_kW": 3164.998934130948
+        },
+        "Caribe": {
+          "cuencas": 58,
+          "frac_con_candidato": 0.27586206896551724,
+          "mediana_Pmax_kW": 502.835920427504
+        },
+        "Orinoquia_Amazonia": {
+          "cuencas": 11,
+          "frac_con_candidato": 0.5454545454545454,
+          "mediana_Pmax_kW": 5090.902370191419
+        }
+      }
+    },
+    "5.0": {
+      "tramos": 4065,
+      "tramos_utilizables": 1661,
+      "frac_utilizables": 0.408610086100861,
+      "cuencas_con_algun_tramo_utilizable_en_rango": 172,
+      "frac_cuencas_con_candidato": 0.6220472440944882,
+      "ic95_frac_cuencas_con_candidato": [
+        0.5075950907447326,
+        0.7210342432167374
+      ],
+      "n_tramos_candidatos": 578,
+      "n_tramos_candidatos_rango_amplio": 1123,
+      "mediana_Pmax_p10_por_cuenca_kW": 4204.827796580777,
+      "ic95_mediana_Pmax": [
+        2427.1697472257392,
+        7238.913446573603
+      ],
+      "por_region": {
+        "Andina": {
+          "cuencas": 186,
+          "frac_con_candidato": 0.7419354838709677,
+          "mediana_Pmax_kW": 5065.040647452888
+        },
+        "Caribe": {
+          "cuencas": 57,
+          "frac_con_candidato": 0.2982456140350877,
+          "mediana_Pmax_kW": 1085.6990646695915
+        },
+        "Orinoquia_Amazonia": {
+          "cuencas": 11,
+          "frac_con_candidato": 0.2727272727272727,
+          "mediana_Pmax_kW": 8491.516116906188
+        }
+      }
+    }
+  },
+  "top10_2km": [
+    {
+      "codigo": "0023087210",
+      "depto": "05",
+      "H_m": 250.105,
+      "S": 0.1199,
+      "frac_piso": 0.0556,
+      "ratio_area": 0.4845,
+      "q_p10": 259.5953,
+      "q_medio": 404.9362,
+      "P_p10_k1.0": 308617.6399,
+      "P_medio_k1.0": 481404.9114
+    },
+    {
+      "codigo": "0021137010",
+      "depto": "73",
+      "H_m": 56.8748,
+      "S": 0.0286,
+      "frac_piso": 0.4211,
+      "ratio_area": 0.9169,
+      "q_p10": 418.83,
+      "q_medio": 756.8539,
+      "P_p10_k1.0": 214273.0955,
+      "P_medio_k1.0": 387205.8705
+    },
+    {
+      "codigo": "0023087210",
+      "depto": "05",
+      "H_m": 189.6044,
+      "S": 0.0989,
+      "frac_piso": 0.2353,
+      "ratio_area": 0.3526,
+      "q_p10": 259.5953,
+      "q_medio": 404.9362,
+      "P_p10_k1.0": 170236.3957,
+      "P_medio_k1.0": 265547.4814
+    },
+    {
+      "codigo": "0027037030",
+      "depto": "05",
+      "H_m": 139.5349,
+      "S": 0.0695,
+      "frac_piso": 0.4444,
+      "ratio_area": 0.3658,
+      "q_p10": 256.16,
+      "q_medio": 472.7212,
+      "P_p10_k1.0": 128251.8701,
+      "P_medio_k1.0": 236677.7563
+    },
+    {
+      "codigo": "0023087210",
+      "depto": "05",
+      "H_m": 132.0725,
+      "S": 0.0659,
+      "frac_piso": 0.1667,
+      "ratio_area": 0.327,
+      "q_p10": 259.5953,
+      "q_medio": 404.9362,
+      "P_p10_k1.0": 109987.8421,
+      "P_medio_k1.0": 171567.2747
+    },
+    {
+      "codigo": "0054077010",
+      "depto": "76",
+      "H_m": 249.512,
+      "S": 0.1274,
+      "frac_piso": 0.4706,
+      "ratio_area": 0.2767,
+      "q_p10": 131.1,
+      "q_medio": 210.0827,
+      "P_p10_k1.0": 88793.285,
+      "P_medio_k1.0": 142287.8453
+    },
+    {
+      "codigo": "0023087210",
+      "depto": "05",
+      "H_m": 115.3784,
+      "S": 0.0569,
+      "frac_piso": 0.3684,
+      "ratio_area": 0.2686,
+      "q_p10": 259.5953,
+      "q_medio": 404.9362,
+      "P_p10_k1.0": 78928.2478,
+      "P_medio_k1.0": 123118.193
+    },
+    {
+      "codigo": "0023087210",
+      "depto": "05",
+      "H_m": 71.8792,
+      "S": 0.0375,
+      "frac_piso": 0.2105,
+      "ratio_area": 0.4192,
+      "q_p10": 259.5953,
+      "q_medio": 404.9362,
+      "P_p10_k1.0": 76739.4507,
+      "P_medio_k1.0": 119703.9433
+    },
+    {
+      "codigo": "0021097070",
+      "depto": "41",
+      "H_m": 39.8259,
+      "S": 0.0206,
+      "frac_piso": 0.3889,
+      "ratio_area": 0.6114,
+      "q_p10": 281.47,
+      "q_medio": 495.0775,
+      "P_p10_k1.0": 67229.1891,
+      "P_medio_k1.0": 118249.3958
+    },
+    {
+      "codigo": "0023087210",
+      "depto": "05",
+      "H_m": 54.9848,
+      "S": 0.0262,
+      "frac_piso": 0.3158,
+      "ratio_area": 0.4788,
+      "q_p10": 259.5953,
+      "q_medio": 404.9362,
+      "P_p10_k1.0": 67044.3734,
+      "P_medio_k1.0": 104580.8356
+    }
+  ]
+}
