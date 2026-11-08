@@ -1,0 +1,617 @@
+{
+ "n": 29,
+ "con_aa": 10,
+ "con_av": 19,
+ "cambian_zona": 7,
+ "en_panel": 22,
+ "brecha_aa": {
+  "n": 10,
+  "min": 0.143,
+  "mediana": 0.333,
+  "max": 0.6
+ },
+ "brecha_av": {
+  "n": 19,
+  "min": 0.2,
+  "mediana": 0.25,
+  "max": 2.0
+ },
+ "poblacion_total_en_panel": 2144152.0,
+ "pob_sgc_mayor": 1522489.0,
+ "pob_a4_mayor": 621663.0,
+ "n_sgc_mayor": 16,
+ "n_a4_mayor": 13,
+ "pob_aa_sgc_mayor": 569824.0,
+ "pob_aa_a4_mayor": 57865.0,
+ "B1": {
+  "n_29": 22,
+  "n_resto": 976,
+  "mediana_29": 39.745000000000005,
+  "mediana_resto": 39.055,
+  "dif_medianas": 0.6900000000000048,
+  "IC95": [
+   -9.580750000000002,
+   9.463999999999979
+  ],
+  "p_MW": 0.7952200545888272,
+  "cumple": false
+ },
+ "top10": [
+  {
+   "municipio": "Villavicencio",
+   "depto": "Meta",
+   "poblacion": 554012.0,
+   "aa": {
+    "a4": 0.25,
+    "sgc": 0.35,
+    "brecha_rel": 0.4,
+    "sgc_mayor": true
+   },
+   "av": null,
+   "cambia_zona": false
+  },
+  {
+   "municipio": "Montería",
+   "depto": "Córdoba",
+   "poblacion": 517476.0,
+   "aa": null,
+   "av": {
+    "a4": 0.2,
+    "sgc": 0.15,
+    "brecha_rel": 0.333,
+    "sgc_mayor": false
+   },
+   "cambia_zona": false
+  },
+  {
+   "municipio": "Cúcuta",
+   "depto": "Norte de Santander",
+   "poblacion": 765533.0,
+   "aa": null,
+   "av": {
+    "a4": 0.25,
+    "sgc": 0.3,
+    "brecha_rel": 0.2,
+    "sgc_mayor": true
+   },
+   "cambia_zona": false
+  },
+  {
+   "municipio": "Caldas",
+   "depto": "Antioquia",
+   "poblacion": 84640.0,
+   "aa": null,
+   "av": {
+    "a4": 0.2,
+    "sgc": 0.25,
+    "brecha_rel": 0.25,
+    "sgc_mayor": true
+   },
+   "cambia_zona": true
+  },
+  {
+   "municipio": "La Calera",
+   "depto": "Cundinamarca",
+   "poblacion": 38181.0,
+   "aa": null,
+   "av": {
+    "a4": 0.2,
+    "sgc": 0.25,
+    "brecha_rel": 0.25,
+    "sgc_mayor": true
+   },
+   "cambia_zona": true
+  },
+  {
+   "municipio": "Abrego",
+   "depto": "Norte de Santander",
+   "poblacion": 33774.0,
+   "aa": {
+    "a4": 0.3,
+    "sgc": 0.25,
+    "brecha_rel": 0.2,
+    "sgc_mayor": false
+   },
+   "av": null,
+   "cambia_zona": false
+  },
+  {
+   "municipio": "Santafé de Antioquia",
+   "depto": "Antioquia",
+   "poblacion": 26905.0,
+   "aa": null,
+   "av": {
+    "a4": 0.2,
+    "sgc": 0.25,
+    "brecha_rel": 0.25,
+    "sgc_mayor": true
+   },
+   "cambia_zona": true
+  },
+  {
+   "municipio": "Guachetá",
+   "depto": "Cundinamarca",
+   "poblacion": 13847.0,
+   "aa": null,
+   "av": {
+    "a4": 0.15,
+    "sgc": 0.2,
+    "brecha_rel": 0.333,
+    "sgc_mayor": true
+   },
+   "cambia_zona": false
+  },
+  {
+   "municipio": "Garagoa",
+   "depto": "Boyacá",
+   "poblacion": 18534.0,
+   "aa": null,
+   "av": {
+    "a4": 0.3,
+    "sgc": 0.25,
+    "brecha_rel": 0.2,
+    "sgc_mayor": false
+   },
+   "cambia_zona": false
+  },
+  {
+   "municipio": "San Luis",
+   "depto": "Antioquia",
+   "poblacion": 13475.0,
+   "aa": null,
+   "av": {
+    "a4": 0.25,
+    "sgc": 0.2,
+    "brecha_rel": 0.25,
+    "sgc_mayor": false
+   },
+   "cambia_zona": true
+  }
+ ],
+ "sin_panel": [
+  "Cartagena del Chairá (Caquetá)",
+  "Nunchía (Casanare)",
+  "Pore (Casanare)",
+  "Sácama (Casanare)",
+  "Támara (Casanare)",
+  "Lloró (Chocó)",
+  "Río Quito (Chocó)"
+ ],
+ "tabla": [
+  {
+   "codigo": "05044",
+   "municipio": "Anzá",
+   "depto": "Antioquia",
+   "cambia_zona": false,
+   "av": {
+    "a4": 0.3,
+    "sgc": 0.25,
+    "brecha_rel": 0.2,
+    "sgc_mayor": false
+   },
+   "poblacion": 7340.0,
+   "pct_mat_vulnerable": 39.59,
+   "nbi": 16.332602568117757
+  },
+  {
+   "codigo": "05129",
+   "municipio": "Caldas",
+   "depto": "Antioquia",
+   "cambia_zona": true,
+   "av": {
+    "a4": 0.2,
+    "sgc": 0.25,
+    "brecha_rel": 0.25,
+    "sgc_mayor": true
+   },
+   "poblacion": 84640.0,
+   "pct_mat_vulnerable": 29.64,
+   "nbi": 5.473141066986087
+  },
+  {
+   "codigo": "05660",
+   "municipio": "San Luis",
+   "depto": "Antioquia",
+   "cambia_zona": true,
+   "av": {
+    "a4": 0.25,
+    "sgc": 0.2,
+    "brecha_rel": 0.25,
+    "sgc_mayor": false
+   },
+   "poblacion": 13475.0,
+   "pct_mat_vulnerable": 40.33,
+   "nbi": 12.992161455987025
+  },
+  {
+   "codigo": "05042",
+   "municipio": "Santafé de Antioquia",
+   "depto": "Antioquia",
+   "cambia_zona": true,
+   "av": {
+    "a4": 0.2,
+    "sgc": 0.25,
+    "brecha_rel": 0.25,
+    "sgc_mayor": true
+   },
+   "poblacion": 26905.0,
+   "pct_mat_vulnerable": 50.75,
+   "nbi": 14.129582861621527
+  },
+  {
+   "codigo": "05809",
+   "municipio": "Titiribí",
+   "depto": "Antioquia",
+   "cambia_zona": true,
+   "av": {
+    "a4": 0.2,
+    "sgc": 0.25,
+    "brecha_rel": 0.25,
+    "sgc_mayor": true
+   },
+   "poblacion": 11090.0,
+   "pct_mat_vulnerable": 46.69,
+   "nbi": 11.2238659982883
+  },
+  {
+   "codigo": "15299",
+   "municipio": "Garagoa",
+   "depto": "Boyacá",
+   "cambia_zona": false,
+   "av": {
+    "a4": 0.3,
+    "sgc": 0.25,
+    "brecha_rel": 0.2,
+    "sgc_mayor": false
+   },
+   "poblacion": 18534.0,
+   "pct_mat_vulnerable": 28.4,
+   "nbi": 7.312012592115619
+  },
+  {
+   "codigo": "15442",
+   "municipio": "Maripí",
+   "depto": "Boyacá",
+   "cambia_zona": false,
+   "aa": {
+    "a4": 0.2,
+    "sgc": 0.15,
+    "brecha_rel": 0.333,
+    "sgc_mayor": false
+   },
+   "poblacion": 5834.0,
+   "pct_mat_vulnerable": 65.49,
+   "nbi": 32.03212551363467
+  },
+  {
+   "codigo": "15455",
+   "municipio": "Miraflores",
+   "depto": "Boyacá",
+   "cambia_zona": false,
+   "aa": {
+    "a4": 0.2,
+    "sgc": 0.25,
+    "brecha_rel": 0.25,
+    "sgc_mayor": true
+   },
+   "poblacion": 8975.0,
+   "pct_mat_vulnerable": 37.12,
+   "nbi": 7.683863885839736
+  },
+  {
+   "codigo": "15500",
+   "municipio": "Oicatá",
+   "depto": "Boyacá",
+   "cambia_zona": true,
+   "av": {
+    "a4": 0.25,
+    "sgc": 0.2,
+    "brecha_rel": 0.25,
+    "sgc_mayor": false
+   },
+   "poblacion": 2869.0,
+   "pct_mat_vulnerable": 28.57,
+   "nbi": 6.614229531641044
+  },
+  {
+   "codigo": "15511",
+   "municipio": "Pachavita",
+   "depto": "Boyacá",
+   "cambia_zona": false,
+   "aa": {
+    "a4": 0.25,
+    "sgc": 0.2,
+    "brecha_rel": 0.25,
+    "sgc_mayor": false
+   },
+   "poblacion": 2436.0,
+   "pct_mat_vulnerable": 40.24,
+   "nbi": 8.624502432551969
+  },
+  {
+   "codigo": "15514",
+   "municipio": "Páez",
+   "depto": "Boyacá",
+   "cambia_zona": false,
+   "av": {
+    "a4": 0.25,
+    "sgc": 0.3,
+    "brecha_rel": 0.2,
+    "sgc_mayor": true
+   },
+   "poblacion": 3343.0,
+   "pct_mat_vulnerable": 39.9,
+   "nbi": 13.23076923076923
+  },
+  {
+   "codigo": "15600",
+   "municipio": "Ráquira",
+   "depto": "Boyacá",
+   "cambia_zona": false,
+   "aa": {
+    "a4": 0.2,
+    "sgc": 0.15,
+    "brecha_rel": 0.333,
+    "sgc_mayor": false
+   },
+   "poblacion": 7983.0,
+   "pct_mat_vulnerable": 21.88,
+   "nbi": 14.03725006847439
+  },
+  {
+   "codigo": "15740",
+   "municipio": "Siachoque",
+   "depto": "Boyacá",
+   "cambia_zona": false,
+   "aa": {
+    "a4": 0.15,
+    "sgc": 0.2,
+    "brecha_rel": 0.333,
+    "sgc_mayor": true
+   },
+   "poblacion": 6837.0,
+   "pct_mat_vulnerable": 29.03,
+   "nbi": 19.777410136862684
+  },
+  {
+   "codigo": "18150",
+   "municipio": "Cartagena del Chairá",
+   "depto": "Caquetá",
+   "cambia_zona": true,
+   "av": {
+    "a4": 0.15,
+    "sgc": 0.05,
+    "brecha_rel": 2.0,
+    "sgc_mayor": false
+   },
+   "poblacion": null,
+   "pct_mat_vulnerable": null,
+   "nbi": null
+  },
+  {
+   "codigo": "85225",
+   "municipio": "Nunchía",
+   "depto": "Casanare",
+   "cambia_zona": false,
+   "av": {
+    "a4": 0.15,
+    "sgc": 0.2,
+    "brecha_rel": 0.333,
+    "sgc_mayor": true
+   },
+   "poblacion": null,
+   "pct_mat_vulnerable": null,
+   "nbi": null
+  },
+  {
+   "codigo": "85263",
+   "municipio": "Pore",
+   "depto": "Casanare",
+   "cambia_zona": false,
+   "av": {
+    "a4": 0.15,
+    "sgc": 0.2,
+    "brecha_rel": 0.333,
+    "sgc_mayor": true
+   },
+   "poblacion": null,
+   "pct_mat_vulnerable": null,
+   "nbi": null
+  },
+  {
+   "codigo": "85315",
+   "municipio": "Sácama",
+   "depto": "Casanare",
+   "cambia_zona": false,
+   "av": {
+    "a4": 0.2,
+    "sgc": 0.25,
+    "brecha_rel": 0.25,
+    "sgc_mayor": true
+   },
+   "poblacion": null,
+   "pct_mat_vulnerable": null,
+   "nbi": null
+  },
+  {
+   "codigo": "85400",
+   "municipio": "Támara",
+   "depto": "Casanare",
+   "cambia_zona": false,
+   "av": {
+    "a4": 0.15,
+    "sgc": 0.2,
+    "brecha_rel": 0.333,
+    "sgc_mayor": true
+   },
+   "poblacion": null,
+   "pct_mat_vulnerable": null,
+   "nbi": null
+  },
+  {
+   "codigo": "19533",
+   "municipio": "Piamonte",
+   "depto": "Cauca",
+   "cambia_zona": false,
+   "av": {
+    "a4": 0.2,
+    "sgc": 0.25,
+    "brecha_rel": 0.25,
+    "sgc_mayor": true
+   },
+   "poblacion": 9126.0,
+   "pct_mat_vulnerable": 87.06,
+   "nbi": 21.67321729365525
+  },
+  {
+   "codigo": "27413",
+   "municipio": "Lloró",
+   "depto": "Chocó",
+   "cambia_zona": false,
+   "aa": {
+    "a4": 0.4,
+    "sgc": 0.25,
+    "brecha_rel": 0.6,
+    "sgc_mayor": false
+   },
+   "poblacion": null,
+   "pct_mat_vulnerable": null,
+   "nbi": null
+  },
+  {
+   "codigo": "27600",
+   "municipio": "Río Quito",
+   "depto": "Chocó",
+   "cambia_zona": false,
+   "aa": {
+    "a4": 0.35,
+    "sgc": 0.4,
+    "brecha_rel": 0.143,
+    "sgc_mayor": true
+   },
+   "poblacion": null,
+   "pct_mat_vulnerable": null,
+   "nbi": null
+  },
+  {
+   "codigo": "23001",
+   "municipio": "Montería",
+   "depto": "Córdoba",
+   "cambia_zona": false,
+   "av": {
+    "a4": 0.2,
+    "sgc": 0.15,
+    "brecha_rel": 0.333,
+    "sgc_mayor": false
+   },
+   "poblacion": 517476.0,
+   "pct_mat_vulnerable": 44.62,
+   "nbi": 18.79873585312524
+  },
+  {
+   "codigo": "25317",
+   "municipio": "Guachetá",
+   "depto": "Cundinamarca",
+   "cambia_zona": false,
+   "av": {
+    "a4": 0.15,
+    "sgc": 0.2,
+    "brecha_rel": 0.333,
+    "sgc_mayor": true
+   },
+   "poblacion": 13847.0,
+   "pct_mat_vulnerable": 19.57,
+   "nbi": 11.892284124808514
+  },
+  {
+   "codigo": "25377",
+   "municipio": "La Calera",
+   "depto": "Cundinamarca",
+   "cambia_zona": true,
+   "av": {
+    "a4": 0.2,
+    "sgc": 0.25,
+    "brecha_rel": 0.25,
+    "sgc_mayor": true
+   },
+   "poblacion": 38181.0,
+   "pct_mat_vulnerable": 18.26,
+   "nbi": 3.140292202077099
+  },
+  {
+   "codigo": "25518",
+   "municipio": "Paime",
+   "depto": "Cundinamarca",
+   "cambia_zona": false,
+   "av": {
+    "a4": 0.2,
+    "sgc": 0.15,
+    "brecha_rel": 0.333,
+    "sgc_mayor": false
+   },
+   "poblacion": 4104.0,
+   "pct_mat_vulnerable": 53.48,
+   "nbi": 35.469641930461854
+  },
+  {
+   "codigo": "25839",
+   "municipio": "Ubalá",
+   "depto": "Cundinamarca",
+   "cambia_zona": false,
+   "aa": {
+    "a4": 0.35,
+    "sgc": 0.25,
+    "brecha_rel": 0.4,
+    "sgc_mayor": false
+   },
+   "poblacion": 7838.0,
+   "pct_mat_vulnerable": 56.17,
+   "nbi": 21.133018605942794
+  },
+  {
+   "codigo": "50001",
+   "municipio": "Villavicencio",
+   "depto": "Meta",
+   "cambia_zona": false,
+   "aa": {
+    "a4": 0.25,
+    "sgc": 0.35,
+    "brecha_rel": 0.4,
+    "sgc_mayor": true
+   },
+   "poblacion": 554012.0,
+   "pct_mat_vulnerable": 11.02,
+   "nbi": 6.375731462342427
+  },
+  {
+   "codigo": "54001",
+   "municipio": "Cúcuta",
+   "depto": "Norte de Santander",
+   "cambia_zona": false,
+   "av": {
+    "a4": 0.25,
+    "sgc": 0.3,
+    "brecha_rel": 0.2,
+    "sgc_mayor": true
+   },
+   "poblacion": 765533.0,
+   "pct_mat_vulnerable": 28.98,
+   "nbi": 13.750122052922148
+  },
+  {
+   "codigo": "54003",
+   "municipio": "Abrego",
+   "depto": "Norte de Santander",
+   "cambia_zona": false,
+   "aa": {
+    "a4": 0.3,
+    "sgc": 0.25,
+    "brecha_rel": 0.2,
+    "sgc_mayor": false
+   },
+   "poblacion": 33774.0,
+   "pct_mat_vulnerable": 46.12,
+   "nbi": 27.89029816056843
+  }
+ ]
+}
