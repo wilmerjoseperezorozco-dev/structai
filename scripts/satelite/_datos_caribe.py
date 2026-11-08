@@ -43,11 +43,11 @@ def dem() -> list[dict]:
     return json.loads((AQUI / "dem_poligonos_caribe.json").read_text(encoding="utf-8"))["municipios"]
 
 
-def poligonos() -> dict[str, dict]:
+def poligonos(deptos=None) -> dict[str, dict]:
     """codigo -> {geom (shapely), centroide (lon, lat), area_km2 aprox}. El area usa
     una correccion por latitud, suficiente para densidades (no es area geodesica)."""
     out = {}
-    for d in DEPTOS:
+    for d in (deptos or DEPTOS):
         f = CACHE / f"poligonos_{d}.geojson"
         for ft in json.loads(f.read_text(encoding="utf-8"))["features"]:
             g = shape(ft["geometry"])
