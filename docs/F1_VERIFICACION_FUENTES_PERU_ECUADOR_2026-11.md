@@ -106,3 +106,20 @@ Copias de trabajo fuera del repo (no se versionan); perfil reproducible con `scr
 
 ### Lo que no se ha hecho
 No se ha calculado ninguna relación. Falta: fijar el protocolo de cada prueba (no se puede mirar y luego decidir), unir con un catálogo de distritos (UBIGEO del INEI) que **aún no se ha obtenido**, y verificar en el diccionario completo el significado de las 49 columnas (solo se leyeron las primeras 25 filas).
+
+## Actualización 3: insumos geográficos y de población para V1-Perú (2026-11-08)
+Descargas autorizadas por el usuario; archivos fuera del repo.
+| Archivo | Fuente | Tamaño | Notas |
+|---|---|---:|---|
+| `per_admin_boundaries.shp.zip` | OCHA COD-AB Perú (HDX), origen IGN, CC BY-IGO | 37.244.958 bytes (la página anunciaba 40,9 M) | Integridad del zip comprobada; niveles 0 a 3, líneas y puntos. El tamaño anunciado difiere del real; no se investigó por qué |
+| `per_admin_boundaries.xlsx` | idem | 415.223 bytes | Atributos: 1.873 distritos con `adm3_pcode`, área en km², coordenadas del centro |
+| Tabla INEI «población total proyectada al 30 de junio, 2018-2026» | INEI vía gob.pe (descargada por el usuario desde su navegador) | 212.580 bytes | 1.892 distritos con UBIGEO; «información de carácter referencial» (proyección, no censo) |
+
+**Auditoría de unión (`scripts/regional/peru_auditoria_union.py`), sin ninguna asociación:**
+- Los 1.871 distritos de SINPAD 2019-2024 existen todos en la tabla de población del INEI.
+- **1.853 (99,0 %) tienen polígono.** Los 18 sin polígono son distritos posteriores a 2015 (los límites son de 2015); concentran **437 de 50.807 registros (0,86 %)** y se excluyen y se informan, como fija la enmienda 1.
+- 1 polígono no tiene población INEI; 20 distritos del INEI no tienen polígono.
+- Área total de los polígonos: 1.286.519 km² (orden de magnitud del territorio peruano; no se comparó con una cifra oficial).
+- El código `adm3_pcode` es `PE` + UBIGEO de 6 dígitos y coincide con el de SINPAD.
+
+Con esto la unión de datos del protocolo V1-Perú es viable. **Faltan** la red vial (OSM), el DEM y el HAND, y la compuerta de §4 completa.
