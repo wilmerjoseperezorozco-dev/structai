@@ -23,9 +23,9 @@ de cada verificación y su numeral. Paquetes: `packages/motor-concreto`, `packag
 ## Límites declarados
 
 - Viga simplemente apoyada, carga gravitacional, sección rectangular, una capa de barras, estribos uniformes, λ = 1.
-- Sin Capítulo C.21 (detallado sísmico), sin torsión, deflexión solo por altura mínima l/16.
+- Modo gravitacional (sin municipio): sin Capítulo C.21. Modo sísmico: ver la sección siguiente. En ambos: sin torsión, deflexión solo por altura mínima l/16.
 - **No verificados contra el corpus**: φ de cortante 0,75 (C.9.3.2.3) y l/16 de la Tabla C.9.5(a). Revisar antes de uso real.
-- La sección óptima de 250 mm de base puede violar requisitos de detallado sísmico o constructivos; el óptimo es sobre la rejilla (b 250–500, h 300–800, paso 50; barras #4–#8, 2–8; estribos #3).
+- La sección óptima de 250 mm de base puede violar requisitos constructivos y, en modo gravitacional, de detallado sísmico; el óptimo es sobre la rejilla (b 250–500, h 300–800, paso 50; barras #4–#8, 2–8; estribos #3).
 - Costo = costo directo APU determinista del catálogo (Barranquilla 2026) por elemento; no incluye AIU ni Monte Carlo.
 - Herramienta de apoyo: requiere revisión y firma de un ingeniero (issue #18).
 
