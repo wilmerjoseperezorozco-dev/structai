@@ -48,8 +48,8 @@ Cada módulo es independiente, con entradas y salidas definidas y una validació
 ## 6. Estudios propuestos, en orden
 | # | Estudio | Datos nuevos | Estado |
 |---|---|---|---|
-| E1 | Pendiente del cauce para 257 cuencas y si mejora M2 | Ninguno: DEM90 ya en caché | **Protocolo publicado** (`scripts/hidro/PROTOCOLO_PENDIENTE_CAUCE.md`); sin ejecutar |
-| E2 | Auditoría de `motor-aquai` frente a la Resolución 0330 (puntos 1-4 de la sección 3) y su corrección con pruebas | Transcribir la Tabla 16 del PDF original | Propuesto; requiere decisión sobre qué cambiar en producción |
+| E1 | Pendiente del cauce para 257 cuencas y si mejora M2 | Ninguno: DEM90 ya en caché | **Ejecutado: criterio primario no se cumple** (`scripts/hidro/RESULTADOS_PENDIENTE_CAUCE.md`); el DEM de 90 m no resuelve la pendiente de cauce (44 % de tramos en el piso) |
+| E2 | Auditoría de `motor-aquai` frente a la Resolución 0330 (puntos 1-4 de la sección 3) y su corrección con pruebas | Transcribir la Tabla 16 del PDF original | **Hecho en parte** (commit `0e002d3`): `marco_normativo.py` y `verificador_res0330.py`, verificación del Art. 135 en hidrología y del Art. 142 en Manning, 63 pruebas pasan. Pendiente: Tabla 16, cámaras de caída y SUDS en los endpoints, curvas IDF |
 | E3 | Razones entre duraciones con pluviógrafos de 10 min | Re-descarga de series de 10 min (el caché guarda diarios) | Propuesto; descarga requiere tu permiso con tamaño |
 | E4 | Dispersión del Tc entre fórmulas por pendiente | Depende de E1 | Propuesto |
 | E5 | Datos de cuencas pequeñas para el dominio del método racional | Fuentes por verificar: la red de cuencas de cabecera de los Andes tropicales (Sci. Data, 10.1038/sdata.2018.80) y CAMELS-CL (10.5194/hess-22-5817-2018), ambas con texto abierto; **aún no leídas**, no sé si su clima y escala sirven para Colombia | Propuesto |
