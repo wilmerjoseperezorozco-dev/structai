@@ -285,7 +285,18 @@ completo")**:
   A-153 ya es el Apéndice A-4 y no se tocó. Verificado: 12 valores clave
   presentes en el texto (60 %, 150 %, 125 %, Rd, C0, C1, 25 % de carga viva,
   dos tercios, 70 %…) y 4 de 4 consultas reales a `ask()` correctas.
-  **Pendiente:** Apéndice A-1 (A-139 a A-140) y revisión de las tablas A.3.
+  Apéndice A-1 (estructuras especiales, A-139 y A-140) **cerrado
+  2026-11-08**: 28 chunks, 0 sobre 128 tokens reales. La Tabla A-1.3-1 (R0 de
+  11 tipos de estructura) se cargó **una fila por chunk**: la primera versión
+  como tabla única se partía al re-trocear y dejaba filas separadas de su valor
+  (el modelo respondía «valor no especificado»); y el encabezado largo repetido
+  en las 11 filas desplazaba del top-10 al chunk A-1.1, por lo que las filas
+  llevan un encabezado corto. Verificado con 3 de 3 consultas reales
+  correctas (torres de enfriamiento 3.5, avisos 3.5, tolvas 3.0). Límite: ante
+  una pregunta sobre el documento AIS que complementa el apéndice, el chunk
+  correcto se recupera primero pero el modelo citó «AIS 180-13» (de la
+  Resolución 0330, otra fuente) en vez del AIS-180 de 2010 del apéndice.
+  **Pendiente:** revisión de las tablas A.3-1 a A.3-6.
 - **Título B — re-auditado con `rag-audit-kit` 2026-09-23, hueco real
   mucho más grande de lo que decía la nota de 2026-09-08** (esa nota
   hablaba de "7 secciones sin chunk"; el re-audit numeral por numeral
