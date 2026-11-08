@@ -31,6 +31,7 @@ if not hasattr(np, "in1d"):
 DEPTOS = ["08", "13", "20", "23", "44", "47", "70", "63", "66", "17", "15", "25", "41", "73", "68", "54", "76", "19", "52", "50", "05"]
 RADIOS_SNAP_M = (1500.0, 500.0, 0.0)
 AREA_MIN_KM2 = 5.0
+MARGEN_BORDE_CELDAS = 3     # enmienda 1: se excluye la cuenca si su mascara llega a menos de 3 celdas del borde del DEM
 DESTINO = AQUI / "cuencas_estaciones.csv"
 LLUVIA = AQUI / "_cache" / "lluvia_media_anual_1991_2020.npz"
 
@@ -118,11 +119,13 @@ def procesar(depto: str, est: pd.DataFrame, lluvia) -> list[dict]:
                 filas.append(fila)
                 continue
             mascara = np.array(grid.catchment(cs, rs, fdir, xytype="index"), dtype=bool)
-            if mascara[0, :].any() or mascara[-1, :].any() or mascara[:, 0].any() or mascara[:, -1].any():
+            rr, cc = np.nonzero(mascara)
+            margen = int(min(rr.min(), cc.min(), mascara.shape[0] - 1 - rr.max(), mascara.shape[1] - 1 - cc.max()))
+            fila["margen_borde_celdas"] = margen
+            if margen < MARGEN_BORDE_CELDAS:     # la ultima fila/columna del DEM puede ser NODATA: la cuenca se detiene una celda antes
                 fila["motivo_exclusion"] = "toca_borde_dem"
                 filas.append(fila)
                 continue
-            rr, cc = np.nonzero(mascara)
             lon_c, lat_c = grid.affine * (cc + 0.5, rr + 0.5)
             fila.update({"area_km2": float(mascara.sum() * km2_celda), "pend_media_pct": float(np.nanmean(pend[rr, cc])),
                          "elev_media_m": float(np.nanmean(zz[rr, cc])),
