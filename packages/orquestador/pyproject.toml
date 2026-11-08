@@ -1,0 +1,10 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "orquestador"
+version = "0.1.0"
+description = "Orquestacion en cascada entre motores y diseno inverso (cumple NSR-10 al menor costo APU)"
+requires-python = ">=3.11"
+dependencies = []
