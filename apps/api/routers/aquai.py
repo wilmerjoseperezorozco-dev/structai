@@ -90,6 +90,13 @@ def endpoint_hidrologia(request: Request, req: motor_aquai.HidrologiaRequest, us
         raise HTTPException(status_code=422, detail=str(e))
 
 
+@router.post("/verificar/res0330", response_model=motor_aquai.VerificacionRes0330Response,
+             summary="Verificar requisitos de la Res. 0330/2017 (cámaras de caída, SUDS) con vigencia")
+@limiter.limit("30/minute")
+def endpoint_verificar_res0330(request: Request, req: motor_aquai.VerificacionRes0330Request, user: AuthenticatedUser = Depends(get_current_user)):
+    return motor_aquai.verificar_res0330(req.desnivel_caida_m, req.diametro_entrada_mm, req.reduccion_pico_suds_pct, req.suds_viable)
+
+
 @router.get(
     "/hidrologia/estaciones-ideam",
     summary="Estaciones IDEAM cercanas al proyecto (dato real de referencia)",

@@ -27,7 +27,7 @@ from .schemas import (
     HidrologiaResponse,
     MetodoConcentracion,
 )
-from .verificador_res0330 import verificar_metodo_racional
+from .verificador_res0330 import verificar_metodo_racional, verificar_periodo_retorno
 from .ras2000_tablas import (
     CURVAS_IDF,
     PERIODOS_RETORNO_DISPONIBLES,
@@ -154,6 +154,10 @@ def calcular_hidrologia(req: HidrologiaRequest) -> HidrologiaResponse:
         i_s, _ = _intensidad_idf(region, TR, tc_s)
         sensibilidad[clave] = {"tc_min": round(tc_s, 2), "intensidad_mm_h": i_s, "caudal_m3s": round((C * i_s * A_ha) / 360.0, 5)}
 
+    verificaciones = [verificar_metodo_racional(A_ha)]
+    if req.tipo_tramo is not None:
+        verificaciones.append(verificar_periodo_retorno(TR, req.tipo_tramo))
+
     nota_region = NOTAS_REGIONALES.get(region, "")
     if advertencia_cuenca:
         nota_region = advertencia_cuenca + " | " + nota_region
@@ -167,6 +171,6 @@ def calcular_hidrologia(req: HidrologiaRequest) -> HidrologiaResponse:
         parametros_idf=params_idf,
         formula_racional=formula_racional,
         notas_region=nota_region,
-        verificaciones_normativas=[verificar_metodo_racional(A_ha)],
+        verificaciones_normativas=verificaciones,
         sensibilidad_tc=sensibilidad,
     )

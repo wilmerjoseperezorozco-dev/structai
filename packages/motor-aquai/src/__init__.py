@@ -5,6 +5,7 @@ from .schemas import (
     HazenWilliamsRequest, HazenWilliamsResponse,
     HidrologiaRequest, HidrologiaResponse, MetodoConcentracion,
     RegistroConsultaRequest, RegistroConsultaResponse, VerificacionNormativa,
+    VerificacionRes0330Request, VerificacionRes0330Response,
 )
 from .schemas_hidraulica_avanzada import (
     MaterialTuberia, TipoFluidoBombeo,
@@ -28,6 +29,7 @@ from .caudales import calcular_caudales
 from .hidraulica import calcular_hazen_williams
 from .hidrologia import calcular_hidrologia
 from .manning import calcular_manning
+from .verificador_res0330 import verificar_res0330
 from .ariete import calcular_ariete
 from .bombeo import calcular_bombeo
 from .ptap import calcular_ptap
@@ -42,6 +44,7 @@ __all__ = [
     "HazenWilliamsRequest", "HazenWilliamsResponse",
     "HidrologiaRequest", "HidrologiaResponse", "MetodoConcentracion",
     "RegistroConsultaRequest", "RegistroConsultaResponse", "VerificacionNormativa",
+    "VerificacionRes0330Request", "VerificacionRes0330Response", "verificar_res0330",
     "MaterialTuberia", "TipoFluidoBombeo",
     "ManningRequest", "ManningResponse",
     "ArieteRequest", "ArieteResponse",

@@ -172,6 +172,24 @@ class HidrologiaRequest(BaseModel):
         default=MetodoConcentracion.KIRPICH,
         description="Método para calcular tiempo de concentración"
     )
+    tipo_tramo: Optional[str]   = Field(
+        default=None,
+        description="Opcional. Tipo de tramo de la Tabla 16 (Res. 0330/2017, Art. 135) para verificar el período de retorno mínimo."
+    )
+
+
+class VerificacionRes0330Request(BaseModel):
+    """Verificación independiente de requisitos de la Res. 0330/2017. Solo se evalúa lo que se informe."""
+    desnivel_caida_m: Optional[float] = Field(None, ge=0, description="Diferencia de cotas batea en una estructura de conexión (Art. 155).")
+    diametro_entrada_mm: Optional[float] = Field(None, gt=0, description="Diámetro interno real de la tubería de entrada (Tabla 20).")
+    reduccion_pico_suds_pct: Optional[float] = Field(None, ge=0, le=100, description="Reducción del caudal pico lograda con SUDS (Art. 153).")
+    suds_viable: Optional[bool] = Field(None, description="Resultado documentado de la evaluación de viabilidad de SUDS.")
+
+
+class VerificacionRes0330Response(BaseModel):
+    verificaciones_normativas: list["VerificacionNormativa"]
+    vigencia: dict
+    no_verificado: list[str]
 
 
 class VerificacionNormativa(BaseModel):
