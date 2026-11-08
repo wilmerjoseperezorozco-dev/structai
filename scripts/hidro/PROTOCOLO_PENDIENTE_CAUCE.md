@@ -38,3 +38,12 @@ Muestra de una sola red (IDEAM) con posible autocorrelación espacial remanente;
 
 ## Se publica pase lo que pase
 Tabla de variables de cauce por cuenca, coeficientes, errores de los tres modelos y todos los contrastes, incluido el caso en que no mejoren.
+
+## Enmienda 1 (2026-11-08, anterior a calcular ninguna longitud ni pendiente de cauce)
+Al revisar `regionalizacion_validacion.py` antes de usarlo, encontré dos diferencias entre el texto de este protocolo y la rutina que prometí reutilizar sin cambios:
+1. La rutina `dif_pareada` resume con la **mediana** de las diferencias pareadas de |ln(Q̂/Q)|, no con la media como escribí arriba. **El criterio primario usa la mediana**, igual que la Etapa A.
+2. La rutina devuelve IC95 % fijo. Para la corrección de Bonferroni (dos comparaciones) necesito IC al 97,5 %. Escribo una función propia con **el mismo algoritmo** (bootstrap de bloques de 1° sobre las diferencias pareadas, 3.000 réplicas, semilla de la Etapa A) y percentiles 1,25 y 98,75. La validación espacial (zona de 50 km, misma corriente) se reutiliza sin tocarla, sustituyendo solo la función que ajusta los modelos.
+Detalles de implementación fijados ahora:
+- Ruta de flujo más larga: celda de mayor distancia métrica al punto de aforo dentro de la cuenca (pasos ortogonales y diagonales con la longitud real de celda a la latitud del departamento), siguiendo la dirección de flujo D8 de la Etapa A; perfil de cotas sobre el DEM con depresiones rellenadas.
+- El piso de 0,0005 m/m se aplica **por tramo de celda** en Taylor-Schwarz, y se reporta la fracción de tramos con piso por cuenca.
+- La comprobación de coherencia contra la Etapa A usa el área de la máscara recalculada frente a `area_km2` del CSV (deben coincidir; se señala diferencia > 15 %) y L < 0,5 √A.
