@@ -21,6 +21,7 @@ Son coherentes con la física y con resultados anteriores del proyecto; sirven c
 Marcados como **posteriores al barrido** (las verificaciones adicionales de esta sección se hicieron después de ver el barrido y no están preregistradas).
 
 **V1. La exposición de la vía principal a terreno bajo se asocia con más reportes por habitante, más allá del HAND del municipio.**
+*(Corrección del 2026-11-08: «viviendas dañadas» y «personas afectadas» de este panel suman todos los tipos de evento de la UNGRD, no solo inundaciones. Solo «reportes de inundación» está filtrado por tipo. La asociación con daños específicamente por inundación queda por comprobar en `PROTOCOLO_V1_CONFIRMACION.md`.)*
 Controlando población, área y la fracción del municipio en HAND < 10 m: reportes de inundación ρ = +0,27 (IC por departamentos [+0,17; +0,34]), viviendas dañadas ρ = +0,34 [+0,19; +0,45], personas afectadas ρ = +0,26 [+0,08; +0,40], con n = 159.
 *Por qué importa:* en el análisis C1 la exposición vial apenas superó al territorio, pero aquí parece capturar algo que el territorio no: dónde está la población.
 *Explicaciones alternativas que hay que descartar:* que la población y los asentamientos se concentren a lo largo de la vía en terreno bajo; que los municipios con más vía reporten más (sesgo de reporte); que el OpenStreetMap esté mejor mapeado donde hay más actividad.
