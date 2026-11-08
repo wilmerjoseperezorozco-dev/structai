@@ -46,6 +46,7 @@ def extraer_chirps(estaciones: list[dict]) -> dict:
         with rasterio.Env(GDAL_HTTP_TIMEOUT=120, GDAL_HTTP_MAX_RETRY=3, GDAL_HTTP_RETRY_DELAY=5, GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR",
                           CPL_VSIL_CURL_ALLOWED_EXTENSIONS=".tif", CPL_VSIL_CURL_CHUNK_SIZE="16777216", GDAL_HTTP_MERGE_CONSECUTIVE_RANGES="YES", VSI_CACHE="FALSE"):
             for k, f in enumerate(falta):
+                time.sleep(0.5)   # amortiguar el limite de solicitudes del servidor (HTTP 429)
                 z, tr = cd.leer_dia(f)
                 fila = {}
                 for e in estaciones:

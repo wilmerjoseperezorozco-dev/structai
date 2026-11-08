@@ -1,5 +1,5 @@
 {
- "global": 0.5724791616088047,
+ "global": 0.5880270292142106,
  "paginas": [
   {
    "pdf": "43-54",
@@ -202,7 +202,7 @@
    "pdf": "56-81",
    "pagina_pdf": 11,
    "fragmentos": 642,
-   "cobertura": 0.737,
+   "cobertura": 0.74,
    "numerales_en_pagina": [
     "A.2",
     "A.2.4"
@@ -212,7 +212,7 @@
    "pdf": "56-81",
    "pagina_pdf": 12,
    "fragmentos": 221,
-   "cobertura": 0.43,
+   "cobertura": 0.434,
    "numerales_en_pagina": [
     "A.2",
     "A.2.4"
@@ -222,7 +222,7 @@
    "pdf": "56-81",
    "pagina_pdf": 13,
    "fragmentos": 387,
-   "cobertura": 0.625,
+   "cobertura": 0.628,
    "numerales_en_pagina": [
     "A.2",
     "A.2.4"
@@ -812,7 +812,7 @@
    "pdf": "124-128",
    "pagina_pdf": 4,
    "fragmentos": 599,
-   "cobertura": 0.723,
+   "cobertura": 0.725,
    "numerales_en_pagina": [
     "A.8",
     "A.8.2"
@@ -1142,7 +1142,7 @@
    "pdf": "160-166",
    "pagina_pdf": 5,
    "fragmentos": 392,
-   "cobertura": 0.671,
+   "cobertura": 0.673,
    "numerales_en_pagina": [
     "A.12",
     "A.12.3"
@@ -1308,7 +1308,7 @@
    "pdf": "183-190",
    "pagina_pdf": 1,
    "fragmentos": 543,
-   "cobertura": 0.278,
+   "cobertura": 0.28,
    "numerales_en_pagina": [
     "A.2.5.2",
     "A.3"
@@ -1318,7 +1318,7 @@
    "pdf": "183-190",
    "pagina_pdf": 2,
    "fragmentos": 462,
-   "cobertura": 0.045,
+   "cobertura": 0.069,
    "numerales_en_pagina": [
     "A.4",
     "A.5"
@@ -1328,7 +1328,7 @@
    "pdf": "183-190",
    "pagina_pdf": 3,
    "fragmentos": 608,
-   "cobertura": 0.113,
+   "cobertura": 0.686,
    "numerales_en_pagina": [
     "A.2.2",
     "A.5.4"
@@ -1338,7 +1338,7 @@
    "pdf": "183-190",
    "pagina_pdf": 4,
    "fragmentos": 682,
-   "cobertura": 0.16,
+   "cobertura": 0.73,
    "numerales_en_pagina": [
     "A.4.2",
     "A.4"
@@ -1348,7 +1348,7 @@
    "pdf": "183-190",
    "pagina_pdf": 5,
    "fragmentos": 452,
-   "cobertura": 0.049,
+   "cobertura": 0.6,
    "numerales_en_pagina": [
     "A.7",
     "A.4"
@@ -1358,14 +1358,14 @@
    "pdf": "183-190",
    "pagina_pdf": 6,
    "fragmentos": 381,
-   "cobertura": 0.026,
+   "cobertura": 0.612,
    "numerales_en_pagina": []
   },
   {
    "pdf": "183-190",
    "pagina_pdf": 7,
    "fragmentos": 326,
-   "cobertura": 0.04,
+   "cobertura": 0.485,
    "numerales_en_pagina": [
     "A.5",
     "A.5.4"
@@ -1375,7 +1375,7 @@
    "pdf": "183-190",
    "pagina_pdf": 8,
    "fragmentos": 264,
-   "cobertura": 0.064,
+   "cobertura": 0.689,
    "numerales_en_pagina": [
     "A.5",
     "A.5"

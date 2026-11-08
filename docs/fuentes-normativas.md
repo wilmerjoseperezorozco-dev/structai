@@ -259,6 +259,28 @@ completo")**:
   formato de rango (ver README del paquete) — cada capítulo cerrado se
   verificó honestamente con `ask()` real, no solo con el número del
   audit.
+  **Corrección 2026-11-08 (auditoría de texto por página,
+  `scripts/ingesta/nsr10/auditoria_titulo_a_paginas.py`):** la afirmación de que
+  el 54,4 % residual era «mayoría falso faltante» resultó solo en parte cierta.
+  Medido por fragmentos de 6 palabras contra los 14 PDFs fuente, la cobertura
+  de texto del Título A era **57,2 %**; los capítulos A.1-A.12 están entre
+  71 y 82 %, pero los **Apéndices A-1, A-2 y A-3 (A-139 a A-153, ~15 páginas)
+  nunca se habían ingestado** (cobertura de texto 11 % y 1,5 % de sus PDFs),
+  las tablas A.3-1 a A.3-6 estaban en 33 % (por revisar si es tabla cargada con
+  otro formato o faltante) y el Apéndice A-4 está cargado como filas
+  estructuradas (el audit de texto lo cuenta como 0 % sin que falte).
+  **Fase 4 (en curso):** Apéndice A-2 (interacción dinámica suelo-estructura,
+  A-141 a A-146) **cerrado 2026-11-08**: 11 chunks-padre → 52 chunks, 0 sobre
+  128 tokens reales, ecuaciones A-2-1 a A-2-15 y Tabla A-2.1-1 transcritas en
+  notación lineal; la Figura A-2.2-1 (curvas de βo) no se transcribe (gráfico
+  sin ecuación cerrada). Verificado con 6 consultas reales a `ask()`: 3
+  correctas con valor exacto (G/Go y vs/vso para Aa ≤ 0.15; ecuación A-2-11;
+  criterio h̄/Lo ≤ 0.5 para ra), 2 con **miss de síntesis** aunque el dato está
+  en la base y en el chunk recuperado (el piso 0.7 V′s del cortante modificado y
+  el rango 0.05-0.20 de β̄: mismo patrón ya documentado en H.8/H.10) y 1
+  inconcluso por límite de cuota del LLM; los 12 valores clave se confirmaron
+  presentes en el texto de los chunks. **Pendiente:** Apéndice A-3 (push-over,
+  A-147 a A-153), Apéndice A-1 (A-139 a A-140) y revisión de las tablas A.3.
 - **Título B — re-auditado con `rag-audit-kit` 2026-09-23, hueco real
   mucho más grande de lo que decía la nota de 2026-09-08** (esa nota
   hablaba de "7 secciones sin chunk"; el re-audit numeral por numeral
