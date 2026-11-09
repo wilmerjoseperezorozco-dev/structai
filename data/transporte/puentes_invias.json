@@ -1,0 +1,295 @@
+{
+ "n": 2830,
+ "admin": {
+  "INVIAS": 1455,
+  "ANI": 1327,
+  "Conc. Depart.": 48
+ },
+ "material": {
+  "Concreto reforzado": 1764,
+  "Concreto presforzado": 635,
+  "Acero y concreto": 155,
+  "Otro/sin dato": 128,
+  "Acero": 91,
+  "Concreto simple/ciclópeo": 42,
+  "Piedra/ladrillo": 15
+ },
+ "longitudinal": {
+  "Simplemente apoyado": 2390,
+  "Viga continua": 180,
+  "Cajón (box culvert)": 137,
+  "Otro/sin dato": 45,
+  "Pórtico": 27,
+  "Colgante": 23,
+  "Viga Gerber": 22,
+  "Atirantado": 6
+ },
+ "transversal": {
+  "Losa/viga": 2267,
+  "Losa": 201,
+  "Arco": 133,
+  "Armadura": 98,
+  "Cajón": 76,
+  "Otro/sin dato": 42,
+  "Provisional (Bailey/Callender)": 13
+ },
+ "epoca": {
+  "2015 en adelante": 29,
+  "1995-2014": 1309,
+  "antes de 1995": 1492
+ },
+ "epoca_INVIAS": {
+  "2015 en adelante": 7,
+  "antes de 1995": 772,
+  "1995-2014": 676
+ },
+ "epoca_ANI": {
+  "2015 en adelante": 22,
+  "1995-2014": 596,
+  "antes de 1995": 709
+ },
+ "inspeccion": {
+  "2012": 2363,
+  "None": 47,
+  "2007": 145,
+  "2006": 120,
+  "2013": 29,
+  "2009": 1,
+  "2002": 115,
+  "2015": 2,
+  "2005": 7,
+  "2001": 1
+ },
+ "provisionales": {
+  "n": 13,
+  "luz_media": 44.47769230769231,
+  "antes_de_1995_pct": 38.46153846153846
+ },
+ "luz_por_material": {
+  "Concreto reforzado": {
+   "n": 1630,
+   "p50": 14.5,
+   "p90": 26.3,
+   "p99": 48.95500000000002,
+   "max": 110.5
+  },
+  "Concreto presforzado": {
+   "n": 620,
+   "p50": 30.5,
+   "p90": 41.010000000000005,
+   "p99": 122.94799999999941,
+   "max": 170.0
+  },
+  "Acero y concreto": {
+   "n": 154,
+   "p50": 41.8,
+   "p90": 100.89000000000001,
+   "p99": 184.07599999999994,
+   "max": 218.9
+  },
+  "Otro/sin dato": {
+   "n": 127,
+   "p50": 16.0,
+   "p90": 38.500000000000014,
+   "p99": 82.94399999999985,
+   "max": 160.0
+  },
+  "Acero": {
+   "n": 90,
+   "p50": 50.0,
+   "p90": 93.19200000000002,
+   "p99": 132.64999999999998,
+   "max": 146.0
+  },
+  "Concreto simple/ciclópeo": {
+   "n": 36,
+   "p50": 13.0,
+   "p90": 29.575000000000003,
+   "p99": 92.53249999999989,
+   "max": 123.0
+  },
+  "Piedra/ladrillo": {
+   "n": 15,
+   "p50": 13.15,
+   "p90": 21.0,
+   "p99": 23.7546,
+   "max": 23.91
+  }
+ },
+ "departamentos": {
+  "CORDOBA": {
+   "n": 56,
+   "pct_antes_1995": 66.07142857142857,
+   "pct_provisional": 0.0
+  },
+  "BOLIVAR": {
+   "n": 87,
+   "pct_antes_1995": 56.32183908045977,
+   "pct_provisional": 0.0
+  },
+  "ATLANTICO": {
+   "n": 64,
+   "pct_antes_1995": 45.3125,
+   "pct_provisional": 0.0
+  },
+  "GUAJIRA": {
+   "n": 58,
+   "pct_antes_1995": 77.58620689655173,
+   "pct_provisional": 0.0
+  },
+  "MAGDALENA": {
+   "n": 120,
+   "pct_antes_1995": 77.5,
+   "pct_provisional": 0.0
+  },
+  "SUCRE": {
+   "n": 72,
+   "pct_antes_1995": 33.333333333333336,
+   "pct_provisional": 1.3888888888888888
+  },
+  "ANTIOQUIA": {
+   "n": 318,
+   "pct_antes_1995": 36.79245283018868,
+   "pct_provisional": 0.31446540880503143
+  },
+  "CESAR": {
+   "n": 162,
+   "pct_antes_1995": 69.75308641975309,
+   "pct_provisional": 1.2345679012345678
+  },
+  "GUAVIARE": {
+   "n": 20,
+   "pct_antes_1995": 60.0,
+   "pct_provisional": 0.0
+  },
+  "NORTE DE SANTANDER": {
+   "n": 118,
+   "pct_antes_1995": 66.94915254237289,
+   "pct_provisional": 0.847457627118644
+  },
+  "ARAUCA": {
+   "n": 77,
+   "pct_antes_1995": 41.55844155844156,
+   "pct_provisional": 0.0
+  },
+  "BOYACA": {
+   "n": 124,
+   "pct_antes_1995": 48.38709677419355,
+   "pct_provisional": 0.0
+  },
+  "SANTANDER": {
+   "n": 151,
+   "pct_antes_1995": 37.086092715231786,
+   "pct_provisional": 1.9867549668874172
+  },
+  "META": {
+   "n": 103,
+   "pct_antes_1995": 47.57281553398058,
+   "pct_provisional": 0.970873786407767
+  },
+  "CASANARE": {
+   "n": 134,
+   "pct_antes_1995": 73.88059701492537,
+   "pct_provisional": 0.746268656716418
+  },
+  "CUNDINAMARCA": {
+   "n": 130,
+   "pct_antes_1995": 16.153846153846153,
+   "pct_provisional": 0.0
+  },
+  "CAQUETA": {
+   "n": 117,
+   "pct_antes_1995": 34.18803418803419,
+   "pct_provisional": 0.8547008547008547
+  },
+  "CAUCA": {
+   "n": 172,
+   "pct_antes_1995": 47.674418604651166,
+   "pct_provisional": 0.5813953488372093
+  },
+  "PUTUMAYO": {
+   "n": 43,
+   "pct_antes_1995": 46.51162790697674,
+   "pct_provisional": 0.0
+  },
+  "CHOCO": {
+   "n": 62,
+   "pct_antes_1995": 66.12903225806451,
+   "pct_provisional": 1.6129032258064515
+  },
+  "BOGOTA, D.C.": {
+   "n": 2,
+   "pct_antes_1995": 0.0,
+   "pct_provisional": 0.0
+  },
+  "RISARALDA": {
+   "n": 62,
+   "pct_antes_1995": 48.38709677419355,
+   "pct_provisional": 0.0
+  },
+  "CALDAS": {
+   "n": 65,
+   "pct_antes_1995": 84.61538461538461,
+   "pct_provisional": 0.0
+  },
+  "TOLIMA": {
+   "n": 105,
+   "pct_antes_1995": 70.47619047619048,
+   "pct_provisional": 0.0
+  },
+  "VALLE": {
+   "n": 184,
+   "pct_antes_1995": 36.95652173913044,
+   "pct_provisional": 0.0
+  },
+  "HUILA": {
+   "n": 133,
+   "pct_antes_1995": 66.9172932330827,
+   "pct_provisional": 0.0
+  },
+  "QUINDIO": {
+   "n": 21,
+   "pct_antes_1995": 66.66666666666667,
+   "pct_provisional": 0.0
+  },
+  "VICHADA": {
+   "n": 1,
+   "pct_antes_1995": 100.0,
+   "pct_provisional": 0.0
+  },
+  "NARINO": {
+   "n": 68,
+   "pct_antes_1995": 92.6470588235294,
+   "pct_provisional": 0.0
+  },
+  "ARCHIPIELAGO DE SAN ANDRES, PROVIDENCIA Y SANTA CATALINA": {
+   "n": 1,
+   "pct_antes_1995": 0.0,
+   "pct_provisional": 0.0
+  }
+ },
+ "exploratoria": {
+  "INVIAS 2011": {
+   "n": 21,
+   "rho": 0.1883116883116883,
+   "ic95": [
+    -0.2670635517340367,
+    0.5788217442250176
+   ],
+   "p_perm": 0.4348
+  },
+  "ANI 2024": {
+   "n": 16,
+   "rho": -0.05294117647058824,
+   "ic95": [
+    -0.5137735031566784,
+    0.41369047619047616
+   ],
+   "p_perm": 0.8432
+  }
+ },
+ "p_holm": [
+  0.8696,
+  0.8696
+ ]
+}

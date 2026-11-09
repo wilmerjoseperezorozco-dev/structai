@@ -445,6 +445,31 @@ Script: `scripts/transporte/parque_automotor_runt.py`; resultados en `data/trans
 
 **Límites.** (1) Foto única, sin evolución temporal. (2) El municipio es el de matrícula. (3) El año de `fecha_de_registro` se leyó como año de registro o modelo: en camiones llega a 1950, coherente con modelo; en la maquinaria amarilla nadie pasa de 20 años, lo que sugiere que ahí el dato es el año de ingreso al registro de maquinaria (reciente) y no la edad real, así que la edad de la maquinaria no es comparable con la de los camiones. (4) Los 11 registros con 1900 y los años futuros se descartan (< 0,1 %). (5) Solo vehículos activos; las 41.191 unidades «inconsistentes» del RUNT quedan fuera. (6) No hay capacidad de carga ni número de ejes: la clase del RUNT no distingue 2S2 de 3S3.
 
+## 5p. Inventario de puentes de la red vial nacional (2026-11-09, issues #127 y #129)
+
+Script: `scripts/transporte/puentes_invias.py`; resultados en `data/transporte/puentes_invias.json`. Fuente: INVIAS, `nsdj-ep2p` (datos.gov.co), 2.830 puentes de la red nacional. Los códigos de material y de sección se decodificaron con el diccionario del propio conjunto; el año de construcción viene como texto con separador de miles («2.015») y se convirtió.
+
+**Dato que condiciona todo: el inventario es de 2012.** El 83,5 % de los puentes (2.363) tiene su última inspección en 2012, otro 13,7 % entre 2002 y 2007, 29 en 2013, 2 en 2015 y 47 dicen «verificar». El conjunto se publica con fecha de actualización de 2026, pero el contenido no refleja el estado actual ni la rehabilitación posterior a 2012. La construcción llega hasta 2015 (29 puentes).
+
+**Composición.** INVIAS 1.455 (51,4 %), ANI 1.327 (46,9 %), concesiones departamentales 48. Por material: concreto reforzado 62,3 %, presforzado 22,4 %, acero y concreto 5,5 %, acero 3,2 %, concreto simple o ciclópeo 1,5 %, piedra o ladrillo 0,5 %; el 4,5 % (128) lleva códigos que el diccionario no define (entre ellos 14, 92 y 13). Por tipología: el 84,5 % es simplemente apoyado y el 80,1 % de losa sobre vigas. Hay 13 puentes provisionales (Bailey o Callender-Hamilton), el 38 % de ellos construido antes de 1995.
+
+**Antigüedad frente a la norma de diseño.** Se agrupó por época del código colombiano de puentes: CCDSP-95 es la versión previa y CCP-14 (LRFD) la vigente ([Minciencias, comparación CCP-95/CCP-14](https://redcol.minciencias.gov.co/Record/ESCUELAIG2_9025ab96cf060fc5465ae8bec6484d89)). Antes de 1995: **52,7 %** (1.492 puentes); de 1995 a 2014: 46,3 %; desde 2015: 1,0 %. INVIAS y ANI son iguales (53,1 % y 53,4 %; mediana de año de construcción 1990 en ambas). En 2012 la mediana de edad era de 22 años y el 12,8 % tenía más de 50. No se verificaron las cargas de diseño (toneladas) de cada código, por lo que **no se compara aquí el PBV legal de 52 t con la carga de diseño**; esa comparación necesita el texto de los códigos y la memoria de cada puente. Lo que sí se puede decir es que más de la mitad del stock se diseñó antes del CCDSP-95 y que el conjunto no trae capacidad ni calificación.
+
+**Luces (para contrastar los motores).** Luz máxima por material, en metros:
+
+| Material | n | p50 | p90 | p99 | máx. |
+|---|---|---|---|---|---|
+| Concreto reforzado | 1.630 | 14,5 | 26,3 | 49,0 | 110,5 |
+| Concreto presforzado | 620 | 30,5 | 41,0 | 122,9 | 170,0 |
+| Acero y concreto | 154 | 41,8 | 100,9 | 184,1 | 218,9 |
+| Acero | 90 | 50,0 | 93,2 | 132,6 | 146,0 |
+
+(158 puentes, el 5,6 %, tienen luz máxima 0 y se excluyen.) Los motores de pórtico y viga de edificio se prueban con luces de 5 a 6 m; en el código no encontré un rango máximo declarado. La mediana de un puente de concreto reforzado (14,5 m) y la de uno presforzado (30,5 m) quedan fuera de ese régimen, de modo que **la serie de motores generativos no cubre puentes**: sería un motor nuevo (el esquema simplemente apoyado de losa sobre vigas, de concreto reforzado o presforzado, domina el stock con 84,5 % y 80,1 % por tipología), no una extensión de los existentes.
+
+**Prueba exploratoria fijada de antemano (2 pruebas, Holm): sin asociación.** El porcentaje de puentes anteriores a 1995 por departamento (≥ 10 puentes) frente al porcentaje de pesados de peajes: Spearman 0,19 con INVIAS 2011 (n = 21; IC 95 % −0,27 a 0,58; p de permutación 0,44) y −0,05 con ANI 2024 (n = 16; IC −0,51 a 0,41; p = 0,84); p ajustado por Holm 0,87. No hay evidencia de que los corredores con más tráfico pesado concentren puentes más antiguos, pero con n de 16 a 21 solo se descartan asociaciones fuertes.
+
+**Límites.** (1) Fotografía de 2012. (2) Sin estado, calificación ni carga de diseño. (3) El campo `tablero` (descrito como «superficie») tiene valores de 5 a 12 que parecen un ancho en metros; no se usó. (4) Solo red nacional. (5) Los códigos sin definición (4,5 % del material) quedan como «otro». (6) Ubicación departamental por punto en polígono.
+
 ## 6. Qué no hace este documento
 
 No prueba que un modelo aprendido supere a la enumeración exacta para vigas aisladas (la medición de la sección 2 sugiere que no); no valida las cantidades contra planos reales; no incluye traslapos ni ganchos suplementarios.
