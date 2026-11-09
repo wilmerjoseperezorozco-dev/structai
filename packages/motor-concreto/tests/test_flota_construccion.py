@@ -1,7 +1,7 @@
 """Flota de obra: viajes discretos, emisiones por km y contraste con fuentes."""
 import pytest
 
-from src.flota_construccion import (CATALOGO, FACTOR_TERRENO, co2_viajes, contraste_con_fuentes, emision_por_km, emision_por_ton_km,
+from src.flota_construccion import (CATALOGO, LONGITUD_MAX_M, PBV_KG, carga_util_coherente, limites_legales, FACTOR_TERRENO, co2_viajes, contraste_con_fuentes, emision_por_km, emision_por_ton_km,
                                     viajes, viajes_mixer)
 from src.transporte_acero import planificar
 
@@ -47,3 +47,13 @@ def test_a_vehiculo_alimenta_el_plan_de_acero():
     v = CATALOGO["C2_liviano"].a_vehiculo(largo_carga_m=4.0)
     p = planificar([1.85] * 30, "4", v, km_ida_vuelta=10)
     assert p.estrategia == "corte en tienda" and p.co2_transporte_kg > 0 and not v.fuente.startswith("ANDI")
+
+
+def test_limites_oficiales_2022():
+    assert PBV_KG["2"] == 17_000 and PBV_KG["3S3"] == 52_000 and PBV_KG["2S3"] == 40_500
+    assert LONGITUD_MAX_M["2"] == 10.80 and LONGITUD_MAX_M["3"] == 12.20 and LONGITUD_MAX_M["3S3"] == 18.50
+    assert limites_legales("minimula")["pbv_kg"] == 32_000
+
+
+def test_carga_util_del_catalogo_es_menor_que_el_pbv_legal():
+    assert all(carga_util_coherente(k) for k in CATALOGO)

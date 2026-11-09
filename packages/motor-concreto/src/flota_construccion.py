@@ -6,9 +6,13 @@ ESTADO DE LOS DATOS (verificado en esta sesión):
 - CO₂ de combustión del diésel: 10,2765 kg/gal (FECOC 2016, B10) o 10,180 (EPA).
 - Las filas del catálogo vienen de una tabla aportada por el usuario (origen sin citar): carga útil y rangos de km/gal por configuración. Cuando existe
   un dato con fuente para esa clase se contrasta (ver `contraste_con_fuentes`); C3/mixer y volqueta no tienen fuente de rendimiento: `verificado=False`.
-- NO obtenido: la tabla vigente de pesos brutos y dimensiones de la Resolución 4100 de 2004 (la copia consultada es escaneada; la Resolución 2501 de
-  2002, con otra tabla, está derogada), la clasificación 'NTC 4788' (no se pudo confirmar), la tabla de consumo del SICE-TAC y el parque de carga por
-  municipio del RUNT (se solicita por la concesión).
+- Límites oficiales (verificados): Resolución 20223040045295 de 2022 (Resolución Única Compilatoria de Tránsito), arts. 4.3.3.7 a 4.3.3.10, que
+  compilan la Res. 4100/2004 con sus modificaciones: PBV y longitud máxima por designación de eje (ver PBV_KG y LONGITUD_MAX_M). Ojo: para la
+  designación '2' la compilación dice 17.000 kg y una copia anterior de la 4100 (modificada por la 1782/2009) decía 16.000 kg; se usa la de 2022.
+- NO obtenido: reglas de carga sobresaliente con metros (solo hay referencias periodísticas: señalizar con trapo rojo de día y luz roja de noche; la carga
+  excesiva o sobredimensionada en moto es multa tipo C, sin distancia citada), la tabla de consumo del SICE-TAC y el parque de carga por municipio del
+  RUNT (se solicita por la concesión). La nomenclatura se define en la 4100 art. 3 (primer dígito: ejes del camión o tracto; S semirremolque; R remolque;
+  B remolque balanceado) y remite a la NTC 4788, cuyo texto no se obtuvo.
 La emisión por tonelada-kilómetro supone viaje cargado ida y retorno vacío con el mismo rendimiento (hipótesis conservadora, sin medir).
 """
 from __future__ import annotations
@@ -46,6 +50,12 @@ class ConfigCarga:
         return Vehiculo(self.nombre, largo_carga_m, self.carga_media_t() * 1000.0, self.km_gal_medio() * FACTOR_TERRENO[self.clase_terreno][terreno],
                         kg_co2_gal, "tabla aportada por el usuario" + ("" if self.verificado else " (sin verificar)"))
 
+
+FUENTE_LIMITES = "Res. 20223040045295/2022 arts. 4.3.3.7-4.3.3.8 (compila Res. 4100/2004 mod. 2888/2005 y 1782/2009)"
+PBV_KG = {"2": 17_000, "3": 28_000, "2S1": 27_000, "2S2": 32_000, "2S3": 40_500, "3S1": 29_000, "3S2": 48_000, "3S3": 52_000}
+LONGITUD_MAX_M = {"2": 10.80, "3": 12.20, "4": 12.20, "2S1": 18.50, "2S2": 18.50, "2S3": 18.50, "3S1": 18.50, "3S2": 18.50, "3S3": 18.50}
+ANCHO_MAX_M, ALTURA_MAX_M = 2.60, 4.40           # altura con el vehículo descargado
+CATALOGO_DESIGNACIONES = {"C2_liviano": ("2",), "C2_sencillo": ("2",), "C3": ("3",), "minimula": ("2S2", "2S3"), "tractomula": ("3S2", "3S3")}
 
 CATALOGO: dict[str, ConfigCarga] = {
     "C2_liviano": ConfigCarga("C2", "Camión liviano NHR/NPR", (2.5, 4.5), (14.0, 18.0), "acero figurado urbano, cemento en sacos, ferretería", "camion"),
@@ -94,3 +104,15 @@ def viajes_mixer(volumen_m3: float, capacidad_m3: float = 8.0, densidad_t_m3: fl
 def co2_viajes(n_viajes: int, km_ida_vuelta: float, cfg: ConfigCarga, kg_co2_gal: float = KG_CO2_GAL["diesel_fecoc"], terreno: str = "plano") -> float:
     km_gal = cfg.km_gal_medio() * FACTOR_TERRENO[cfg.clase_terreno][terreno]
     return n_viajes * km_ida_vuelta / km_gal * kg_co2_gal
+
+
+def limites_legales(clave: str) -> dict:
+    """PBV máximo (el menor de las designaciones posibles) y longitud máxima total del vehículo, de la compilación 2022. La longitud total
+    es una cota superior del largo de pieza SIN sobresalir; el largo útil de la carrocería es menor y lo declara quien llama."""
+    des = CATALOGO_DESIGNACIONES[clave]
+    return {"designaciones": des, "pbv_kg": min(PBV_KG[d] for d in des), "longitud_max_m": min(LONGITUD_MAX_M[d] for d in des), "fuente": FUENTE_LIMITES}
+
+
+def carga_util_coherente(clave: str) -> bool:
+    """La carga útil máxima del catálogo debe ser menor que el PBV legal (la diferencia es la tara del vehículo)."""
+    return CATALOGO[clave].carga_util_t[1] * 1000.0 < limites_legales(clave)["pbv_kg"]
