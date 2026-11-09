@@ -52,11 +52,11 @@ class RiesgoGeotecnico:
 
 
 def costo_riesgo_geotecnico(altura: float, angulo_deg: float, suelo: SueloExc, cov_c: float, cov_tan_phi: float, costo_consecuencia: float,
-                            **kw) -> RiesgoGeotecnico:
+                            bermas: tuple = (), **kw) -> RiesgoGeotecnico:
     """FOSM: varianza de FS por diferencias finitas en c y tan(phi) (independientes), FS ~ log-normal; Pf = Phi(-beta_LN). Los COV los aporta el usuario (ensayos del sitio)."""
     if cov_c < 0 or cov_tan_phi < 0 or costo_consecuencia < 0:
         raise ValueError("COV y costo >= 0")
-    p = perfil_talud(altura, angulo_deg)
+    p = perfil_talud(altura, angulo_deg, bermas)
     fs0 = factor_seguridad_talud(p, suelo, **kw).fs
     tphi = math.tan(math.radians(suelo.phi_deg))
     var = 0.0

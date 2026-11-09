@@ -14,11 +14,24 @@
     "cov_tan_phi": 0.1,
     "costo_consecuencia_cop": 400000000.0,
     "precio_excavacion_cop_m3": 25000.0,
+    "sobrecarga_kpa": 10.0,
+    "fs_pasivo": 1.5,
+    "h_max_voladizo_m": 6.0,
+    "empotramiento_min_m": 1.0,
+    "holgura_trabajo_m": 0.5,
+    "precio_pantalla_cop_m2": 600000.0,
+    "prob_falla_contencion": 0.005,
     "consumo_gal_h": 6.0,
     "rendimiento_m3_h": 40.0,
     "factor_kgco2e_gal": 10.0
   },
   "fs_requerido": 1.25,
+  "ranking_por_costo_total_entre_las_que_caben": [
+    "talud 54° con berma de 2 m a media altura",
+    "talud 45°",
+    "contención temporal en voladizo",
+    "talud al máximo seguro (FS construcción 1,25)"
+  ],
   "resultados": [
     {
       "alternativa": "talud al máximo seguro (FS construcción 1,25)",
@@ -69,8 +82,44 @@
       "costo_total_cop_por_m": 2163028
     },
     {
-      "alternativa": "contención temporal (entibado/pantalla)",
-      "nota": "sin dimensionar en esta fase; no entra al ranking"
+      "alternativa": "talud 54° con berma de 2 m a media altura",
+      "angulo_deg": 54.2,
+      "bermas": [
+        [
+          3.0,
+          2.0
+        ]
+      ],
+      "retiro_horizontal_m": 6.33,
+      "cabe_en_predio": true,
+      "ieg": 0.76,
+      "area_m2_por_m": 79.0,
+      "gal_acpm_por_m_long": 11.8,
+      "kgco2e_por_m_long": 118.0,
+      "costo_excavacion_cop_por_m": 1974550,
+      "fs_medio": 1.57,
+      "prob_falla": 0.0008,
+      "costo_riesgo_cop_por_m": 328853,
+      "costo_total_cop_por_m": 2303404
+    },
+    {
+      "alternativa": "contención temporal en voladizo",
+      "angulo_deg": 90.0,
+      "retiro_horizontal_m": 0.5,
+      "cabe_en_predio": true,
+      "ieg": 0.952,
+      "area_m2_por_m": 63.0,
+      "gal_acpm_por_m_long": 9.4,
+      "kgco2e_por_m_long": 94.0,
+      "empotramiento_m": 5.48,
+      "longitud_pantalla_m": 11.48,
+      "momento_max_knm_por_m": 281.4,
+      "costo_excavacion_cop_por_m": 1575000,
+      "costo_pantalla_cop_por_m": 6888230,
+      "prob_falla": 0.005,
+      "prob_falla_es_supuesto": true,
+      "costo_riesgo_cop_por_m": 2000000,
+      "costo_total_cop_por_m": 10463230
     }
   ]
 }

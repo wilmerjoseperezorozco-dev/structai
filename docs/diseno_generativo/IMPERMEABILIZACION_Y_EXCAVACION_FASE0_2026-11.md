@@ -58,3 +58,16 @@ El motor de taludes se contrastó con un cálculo independiente de momentos por 
 | Contención temporal | — | — | — | — | — | sin dimensionar |
 
 Lectura bajo esos supuestos: el ángulo que apenas cumple la Tabla H.2.4-1 es el más barato de excavar y el más caro una vez se pone precio al riesgo; entre las alternativas que caben en el predio, 45° minimiza el costo total. La conclusión depende de la consecuencia y de la variabilidad supuestas, no de datos de sitio. La probabilidad de falla es una estimación de confiabilidad de primer orden con FS log-normal, no una frecuencia observada.
+
+### 6.1 Bermas y contención en voladizo (mismas entradas sintéticas)
+
+Se conectaron las bermas al cálculo de riesgo (`costo_riesgo_geotecnico(..., bermas=...)`) y se agregó `excavacion_contencion.py`: pantalla en voladizo con empujes de Rankine, empuje pasivo reducido por un factor del usuario, sin agua, sin apoyos, sin verificación estructural. El empotramiento se contrastó con el cierre analítico del equilibrio de momentos en suelo granular (1 % de tolerancia). Sobrecarga sintética 10 kPa, FS pasivo 1,5, precio de pantalla sintético.
+
+| Alternativa (sintética) | Retiro (m) | IEG | FS medio | Pf | Costo total (millones COP/m) |
+|---|---|---|---|---|---|
+| Talud 54° con berma de 2 m a media altura | 6,33 | 0,76 | 1,57 | 0,08 % | 2,3 |
+| Talud 45° | 6,00 | 0,77 | 1,44 | 0,9 % | 5,7 |
+| Contención en voladizo (11,5 m de pantalla, M máx 281 kN·m/m) | 0,5 | 0,95 | — | 0,5 % (supuesto) | 10,5 |
+| Talud 54° sin berma | 4,33 | 0,82 | 1,25 | 8,4 % | 35,6 |
+
+La berma sube el FS de 1,25 a 1,57 con 2 m más de retiro y 6 m² más de corte por metro, y desplaza el óptimo. Dos advertencias: la probabilidad de falla de la contención es un supuesto, no un cálculo (el módulo no la estima), así que su posición en el ranking depende de ese supuesto; y un voladizo de 6 m con 5,5 m de empotramiento está en el límite de lo razonable, por lo que en una obra real se compararía con una pantalla apoyada. Con 35° fuera del predio, el ranking solo incluye alternativas que caben en el lindero.
