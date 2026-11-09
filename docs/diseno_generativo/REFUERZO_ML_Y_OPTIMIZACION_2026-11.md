@@ -421,6 +421,30 @@ Los modos salen de histogramas de 2 t, así que cada valor tiene una resolución
 
 **Qué se puede afirmar.** El PBV usado por el código es el de la fuente, los modos de peso de 3S2, 3S3 y 2S3 respaldan los valores de carga útil del catálogo de tractomula y minimula, y la sobrecarga agregada es pequeña y concentrada en pocas estaciones. No se puede afirmar que sea la sobrecarga de toda la flota ni la de obras de construcción en particular.
 
+## 5o. Parque automotor del RUNT: flota de carga y maquinaria de obra (2026-11-09, issues #127 y #129)
+
+Script: `scripts/transporte/parque_automotor_runt.py`; resultados en `data/transporte/parque_automotor_runt.json`. Fuente: RUNT 2.0, `u3vn-bdcy` (datos.gov.co), foto de noviembre de 2026 con 22,8 millones de vehículos activos; aquí se usan 656.759 de las clases de carga, remolques y maquinaria de obra. Cierra el pendiente de la «solicitud RUNT por municipio», que resultó estar publicado.
+
+**Flota de carga y maquinaria (activos, nov. 2026).**
+
+| Clase | n | % servicio público | Año de registro: mediana de edad (IQR) | > 20 años |
+|---|---|---|---|---|
+| Camión | 320.842 | 75,1 | 18 (10 a 34) | 40,4 % |
+| Semirremolque | 128.483 | 0,0 | 14 (7 a 21) | 26,6 % |
+| Tractocamión | 72.719 | 97,3 | 14 (5 a 20) | 19,0 % |
+| Volqueta | 59.128 | 68,1 | 19 (13 a 42) | 47,2 % |
+| Excavadora | 25.697 | 0,0 | 4 (2 a 9) | 0 % |
+| Retroexcavadora | 14.172 | 0,0 | 7 (4 a 10) | 0 % |
+| Autohormigonera | 492 | 0,0 | 5 (2 a 8) | 0 % |
+
+(Otras clases de maquinaria amarilla en el JSON.) El 97 % de los tractocamiones presta servicio público (transporte de terceros), el 75 % de los camiones y el 68 % de las volquetas; la mayor parte de la maquinaria es particular. **La volqueta es la clase más envejecida** (casi la mitad con más de 20 años); eso importa para el catálogo de flota: los consumos de combustible (km/gal) y las emisiones por t·km del catálogo deberían tratarse con un rango que incluya flota antigua en volquetas y camiones, no solo vehículos actuales.
+
+**Hipótesis fijada de antemano en el script (validez convergente): no se cumple.** El porcentaje de tractocamiones en la flota pesada del departamento (tractocamión sobre camión + tractocamión + volqueta) no se correlaciona con el porcentaje de pesados medido en peajes: Spearman 0,08 con INVIAS 2011 (n = 21; IC 95 % −0,38 a 0,50; p de permutación 0,73) y 0,01 con ANI 2024 (n = 16; IC −0,49 a 0,52; p = 0,96). La flota matriculada no valida la medida de tráfico a escala departamental.
+
+**Una explicación plausible, apoyada en los datos pero no probada:** la matrícula no es donde opera el vehículo. Cundinamarca (que incluye Bogotá) concentra el 45 % de los tractocamiones del país y cuatro departamentos (Cundinamarca, Antioquia, Santander, Boyacá) el 81 %; el porcentaje de tractocamión va de 0 % (Amazonas, Guainía) a 27 % (Boyacá). Un camión matriculado en Bogotá circula en todos los corredores, por lo que el departamento de matrícula casi no informa sobre el departamento donde se contó el peaje. Esto debilita cualquier lectura de la flota registrada como «demanda de carga» local, y también refuerza la sospecha de 5m de que la mezcla INVIAS 2011 de cada departamento no es una propiedad de su flota.
+
+**Límites.** (1) Foto única, sin evolución temporal. (2) El municipio es el de matrícula. (3) El año de `fecha_de_registro` se leyó como año de registro o modelo: en camiones llega a 1950, coherente con modelo; en la maquinaria amarilla nadie pasa de 20 años, lo que sugiere que ahí el dato es el año de ingreso al registro de maquinaria (reciente) y no la edad real, así que la edad de la maquinaria no es comparable con la de los camiones. (4) Los 11 registros con 1900 y los años futuros se descartan (< 0,1 %). (5) Solo vehículos activos; las 41.191 unidades «inconsistentes» del RUNT quedan fuera. (6) No hay capacidad de carga ni número de ejes: la clase del RUNT no distingue 2S2 de 3S3.
+
 ## 6. Qué no hace este documento
 
 No prueba que un modelo aprendido supere a la enumeración exacta para vigas aisladas (la medición de la sección 2 sugiere que no); no valida las cantidades contra planos reales; no incluye traslapos ni ganchos suplementarios.

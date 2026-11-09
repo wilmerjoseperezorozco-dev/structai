@@ -1,0 +1,513 @@
+{
+ "nacional": {
+  "CAMION": {
+   "n": 320842.0,
+   "pct_publico": 75.13480155341259
+  },
+  "SEMIREMOLQUE": {
+   "n": 128483.0,
+   "pct_publico": 0.0
+  },
+  "TRACTOCAMION": {
+   "n": 72719.0,
+   "pct_publico": 97.29781762675505
+  },
+  "VOLQUETA": {
+   "n": 59128.0,
+   "pct_publico": 68.05743471790015
+  },
+  "EXCAVADORA": {
+   "n": 25697.0,
+   "pct_publico": 0.0
+  },
+  "RETROEXCAVADORA": {
+   "n": 14172.0,
+   "pct_publico": 0.0
+  },
+  "MINICARGADOR": {
+   "n": 8524.0,
+   "pct_publico": 0.0
+  },
+  "CARGADOR": {
+   "n": 7636.0,
+   "pct_publico": 0.0
+  },
+  "BULDOZER": {
+   "n": 4523.0,
+   "pct_publico": 0.0
+  },
+  "VIBROCOMPACTADORA": {
+   "n": 3590.0,
+   "pct_publico": 0.0
+  },
+  "REMOLQUE": {
+   "n": 3287.0,
+   "pct_publico": 0.06084575600851841
+  },
+  "MOTONIVELADORA": {
+   "n": 3004.0,
+   "pct_publico": 0.0
+  },
+  "MINI EXCAVADORA": {
+   "n": 2030.0,
+   "pct_publico": 0.0
+  },
+  "RETROCARGADOR": {
+   "n": 1067.0,
+   "pct_publico": 0.0
+  },
+  "COMPACTADOR": {
+   "n": 1065.0,
+   "pct_publico": 0.0
+  },
+  "DUMPER (VOLQUETA ARTICULADA)": {
+   "n": 500.0,
+   "pct_publico": 0.0
+  },
+  "AUTOHORMIGONERA": {
+   "n": 492.0,
+   "pct_publico": 0.0
+  }
+ },
+ "edad": {
+  "CAMION": {
+   "n": 320528.0,
+   "mediana_anios": 18.0,
+   "p25": 10.0,
+   "p75": 34.0,
+   "pct_mas_20_anios": 40.422989567214096,
+   "descartados_sin_anio": 314.0
+  },
+  "SEMIREMOLQUE": {
+   "n": 128482.0,
+   "mediana_anios": 14.0,
+   "p25": 7.0,
+   "p75": 21.0,
+   "pct_mas_20_anios": 26.557805762674928,
+   "descartados_sin_anio": 1.0
+  },
+  "TRACTOCAMION": {
+   "n": 72714.0,
+   "mediana_anios": 14.0,
+   "p25": 5.0,
+   "p75": 20.0,
+   "pct_mas_20_anios": 19.037599361883544,
+   "descartados_sin_anio": 5.0
+  },
+  "VOLQUETA": {
+   "n": 59100.0,
+   "mediana_anios": 19.0,
+   "p25": 13.0,
+   "p75": 42.0,
+   "pct_mas_20_anios": 47.17258883248731,
+   "descartados_sin_anio": 28.0
+  },
+  "EXCAVADORA": {
+   "n": 25697.0,
+   "mediana_anios": 4.0,
+   "p25": 2.0,
+   "p75": 9.0,
+   "pct_mas_20_anios": 0.0,
+   "descartados_sin_anio": 0.0
+  },
+  "RETROEXCAVADORA": {
+   "n": 14172.0,
+   "mediana_anios": 7.0,
+   "p25": 4.0,
+   "p75": 10.0,
+   "pct_mas_20_anios": 0.0,
+   "descartados_sin_anio": 0.0
+  },
+  "MINICARGADOR": {
+   "n": 8524.0,
+   "mediana_anios": 6.0,
+   "p25": 2.0,
+   "p75": 9.0,
+   "pct_mas_20_anios": 0.0,
+   "descartados_sin_anio": 0.0
+  },
+  "CARGADOR": {
+   "n": 7636.0,
+   "mediana_anios": 7.0,
+   "p25": 3.0,
+   "p75": 9.0,
+   "pct_mas_20_anios": 0.0,
+   "descartados_sin_anio": 0.0
+  },
+  "BULDOZER": {
+   "n": 4523.0,
+   "mediana_anios": 8.0,
+   "p25": 4.0,
+   "p75": 10.0,
+   "pct_mas_20_anios": 0.0,
+   "descartados_sin_anio": 0.0
+  },
+  "VIBROCOMPACTADORA": {
+   "n": 3590.0,
+   "mediana_anios": 6.0,
+   "p25": 3.0,
+   "p75": 10.0,
+   "pct_mas_20_anios": 0.0,
+   "descartados_sin_anio": 0.0
+  },
+  "REMOLQUE": {
+   "n": 3287.0,
+   "mediana_anios": 7.0,
+   "p25": 3.0,
+   "p75": 12.0,
+   "pct_mas_20_anios": 8.06206267112869,
+   "descartados_sin_anio": 0.0
+  },
+  "MOTONIVELADORA": {
+   "n": 3004.0,
+   "mediana_anios": 7.0,
+   "p25": 3.0,
+   "p75": 10.0,
+   "pct_mas_20_anios": 0.0,
+   "descartados_sin_anio": 0.0
+  },
+  "MINI EXCAVADORA": {
+   "n": 2030.0,
+   "mediana_anios": 4.0,
+   "p25": 2.0,
+   "p75": 8.0,
+   "pct_mas_20_anios": 0.0,
+   "descartados_sin_anio": 0.0
+  },
+  "RETROCARGADOR": {
+   "n": 1067.0,
+   "mediana_anios": 5.0,
+   "p25": 2.0,
+   "p75": 8.0,
+   "pct_mas_20_anios": 0.0,
+   "descartados_sin_anio": 0.0
+  },
+  "COMPACTADOR": {
+   "n": 1065.0,
+   "mediana_anios": 7.0,
+   "p25": 2.0,
+   "p75": 10.0,
+   "pct_mas_20_anios": 0.0,
+   "descartados_sin_anio": 0.0
+  },
+  "DUMPER (VOLQUETA ARTICULADA)": {
+   "n": 500.0,
+   "mediana_anios": 9.0,
+   "p25": 4.0,
+   "p75": 10.0,
+   "pct_mas_20_anios": 0.0,
+   "descartados_sin_anio": 0.0
+  },
+  "AUTOHORMIGONERA": {
+   "n": 492.0,
+   "mediana_anios": 5.0,
+   "p25": 2.0,
+   "p75": 8.0,
+   "pct_mas_20_anios": 0.0,
+   "descartados_sin_anio": 0.0
+  }
+ },
+ "departamentos": {
+  "BOYACA": {
+   "camion": 14002.0,
+   "tractocamion": 6643.0,
+   "volqueta": 3566.0,
+   "semirremolque": 11006.0,
+   "maquinaria_amarilla": 858.0,
+   "autohormigonera": 2.0,
+   "pct_tractocamion": 27.437941431580686
+  },
+  "RISARALDA": {
+   "camion": 4787.0,
+   "tractocamion": 788.0,
+   "volqueta": 1212.0,
+   "semirremolque": 2463.0,
+   "maquinaria_amarilla": 1118.0,
+   "autohormigonera": 4.0,
+   "pct_tractocamion": 11.61043170767644
+  },
+  "MAGDALENA": {
+   "camion": 2983.0,
+   "tractocamion": 418.0,
+   "volqueta": 237.0,
+   "semirremolque": 2657.0,
+   "maquinaria_amarilla": 743.0,
+   "autohormigonera": 0,
+   "pct_tractocamion": 11.48982957669049
+  },
+  "VALLE": {
+   "camion": 25421.0,
+   "tractocamion": 3582.0,
+   "volqueta": 3634.0,
+   "semirremolque": 11164.0,
+   "maquinaria_amarilla": 5202.0,
+   "autohormigonera": 29.0,
+   "pct_tractocamion": 10.975273462634433
+  },
+  "PUTUMAYO": {
+   "camion": 348.0,
+   "tractocamion": 101.0,
+   "volqueta": 231.0,
+   "semirremolque": 7.0,
+   "maquinaria_amarilla": 61.0,
+   "autohormigonera": 0,
+   "pct_tractocamion": 14.852941176470589
+  },
+  "CAUCA": {
+   "camion": 3823.0,
+   "tractocamion": 475.0,
+   "volqueta": 1379.0,
+   "semirremolque": 682.0,
+   "maquinaria_amarilla": 994.0,
+   "autohormigonera": 1.0,
+   "pct_tractocamion": 8.367095296811696
+  },
+  "CAQUETA": {
+   "camion": 526.0,
+   "tractocamion": 73.0,
+   "volqueta": 217.0,
+   "semirremolque": 6.0,
+   "maquinaria_amarilla": 54.0,
+   "autohormigonera": 1.0,
+   "pct_tractocamion": 8.946078431372548
+  },
+  "CALDAS": {
+   "camion": 4944.0,
+   "tractocamion": 306.0,
+   "volqueta": 1138.0,
+   "semirremolque": 1011.0,
+   "maquinaria_amarilla": 453.0,
+   "autohormigonera": 1.0,
+   "pct_tractocamion": 4.7902316844082655
+  },
+  "CASANARE": {
+   "camion": 1249.0,
+   "tractocamion": 136.0,
+   "volqueta": 488.0,
+   "semirremolque": 17.0,
+   "maquinaria_amarilla": 869.0,
+   "autohormigonera": 22.0,
+   "pct_tractocamion": 7.261078483715964
+  },
+  "ATLANTICO": {
+   "camion": 14277.0,
+   "tractocamion": 1407.0,
+   "volqueta": 1648.0,
+   "semirremolque": 7723.0,
+   "maquinaria_amarilla": 4778.0,
+   "autohormigonera": 26.0,
+   "pct_tractocamion": 8.117932148626817
+  },
+  "META": {
+   "camion": 6538.0,
+   "tractocamion": 878.0,
+   "volqueta": 1698.0,
+   "semirremolque": 2599.0,
+   "maquinaria_amarilla": 2602.0,
+   "autohormigonera": 20.0,
+   "pct_tractocamion": 9.633530831687514
+  },
+  "NORTE DE SANTANDER": {
+   "camion": 5153.0,
+   "tractocamion": 232.0,
+   "volqueta": 2341.0,
+   "semirremolque": 979.0,
+   "maquinaria_amarilla": 1463.0,
+   "autohormigonera": 4.0,
+   "pct_tractocamion": 3.002847527828113
+  },
+  "ANTIOQUIA": {
+   "camion": 49887.0,
+   "tractocamion": 12061.0,
+   "volqueta": 10162.0,
+   "semirremolque": 12840.0,
+   "maquinaria_amarilla": 17500.0,
+   "autohormigonera": 160.0,
+   "pct_tractocamion": 16.725835529052837
+  },
+  "ARAUCA": {
+   "camion": 250.0,
+   "tractocamion": 10.0,
+   "volqueta": 174.0,
+   "semirremolque": 12.0,
+   "maquinaria_amarilla": 31.0,
+   "autohormigonera": 1.0,
+   "pct_tractocamion": 2.304147465437788
+  },
+  "CORDOBA": {
+   "camion": 2800.0,
+   "tractocamion": 250.0,
+   "volqueta": 963.0,
+   "semirremolque": 357.0,
+   "maquinaria_amarilla": 1007.0,
+   "autohormigonera": 2.0,
+   "pct_tractocamion": 6.22975330176925
+  },
+  "CUNDINAMARCA": {
+   "camion": 120508.0,
+   "tractocamion": 32700.0,
+   "volqueta": 18800.0,
+   "semirremolque": 47235.0,
+   "maquinaria_amarilla": 23627.0,
+   "autohormigonera": 132.0,
+   "pct_tractocamion": 19.01074368634017
+  },
+  "TOLIMA": {
+   "camion": 6666.0,
+   "tractocamion": 677.0,
+   "volqueta": 1158.0,
+   "semirremolque": 1341.0,
+   "maquinaria_amarilla": 444.0,
+   "autohormigonera": 9.0,
+   "pct_tractocamion": 7.963768968356664
+  },
+  "CESAR": {
+   "camion": 3391.0,
+   "tractocamion": 598.0,
+   "volqueta": 423.0,
+   "semirremolque": 1354.0,
+   "maquinaria_amarilla": 950.0,
+   "autohormigonera": 20.0,
+   "pct_tractocamion": 13.553943789664551
+  },
+  "NARINO": {
+   "camion": 10562.0,
+   "tractocamion": 1713.0,
+   "volqueta": 1673.0,
+   "semirremolque": 1629.0,
+   "maquinaria_amarilla": 830.0,
+   "autohormigonera": 11.0,
+   "pct_tractocamion": 12.281330656724979
+  },
+  "BOLIVAR": {
+   "camion": 5443.0,
+   "tractocamion": 599.0,
+   "volqueta": 958.0,
+   "semirremolque": 1843.0,
+   "maquinaria_amarilla": 1982.0,
+   "autohormigonera": 8.0,
+   "pct_tractocamion": 8.557142857142857
+  },
+  "CHOCO": {
+   "camion": 55.0,
+   "tractocamion": 3.0,
+   "volqueta": 56.0,
+   "semirremolque": 1.0,
+   "maquinaria_amarilla": 2.0,
+   "autohormigonera": 0,
+   "pct_tractocamion": 2.6315789473684212
+  },
+  "QUINDIO": {
+   "camion": 3920.0,
+   "tractocamion": 693.0,
+   "volqueta": 495.0,
+   "semirremolque": 1677.0,
+   "maquinaria_amarilla": 123.0,
+   "autohormigonera": 1.0,
+   "pct_tractocamion": 13.566953797963977
+  },
+  "GUAJIRA": {
+   "camion": 760.0,
+   "tractocamion": 126.0,
+   "volqueta": 60.0,
+   "semirremolque": 495.0,
+   "maquinaria_amarilla": 31.0,
+   "autohormigonera": 0,
+   "pct_tractocamion": 13.31923890063425
+  },
+  "SANTANDER": {
+   "camion": 24160.0,
+   "tractocamion": 7351.0,
+   "volqueta": 4496.0,
+   "semirremolque": 13432.0,
+   "maquinaria_amarilla": 5023.0,
+   "autohormigonera": 27.0,
+   "pct_tractocamion": 20.415474768794958
+  },
+  "HUILA": {
+   "camion": 6497.0,
+   "tractocamion": 752.0,
+   "volqueta": 1275.0,
+   "semirremolque": 5952.0,
+   "maquinaria_amarilla": 1029.0,
+   "autohormigonera": 11.0,
+   "pct_tractocamion": 8.822149225715627
+  },
+  "ARCHIPIELAGO DE SAN ANDRES, PROVIDENCIA": {
+   "camion": 236.0,
+   "tractocamion": 1.0,
+   "volqueta": 35.0,
+   "semirremolque": 1.0,
+   "maquinaria_amarilla": 0,
+   "autohormigonera": 0,
+   "pct_tractocamion": 0.36764705882352944
+  },
+  "VICHADA": {
+   "camion": 23.0,
+   "tractocamion": 3.0,
+   "volqueta": 14.0,
+   "semirremolque": 0,
+   "maquinaria_amarilla": 7.0,
+   "autohormigonera": 0,
+   "pct_tractocamion": 7.5
+  },
+  "SUCRE": {
+   "camion": 1569.0,
+   "tractocamion": 141.0,
+   "volqueta": 553.0,
+   "semirremolque": 0,
+   "maquinaria_amarilla": 0,
+   "autohormigonera": 0,
+   "pct_tractocamion": 6.230667255855059
+  },
+  "AMAZONAS": {
+   "camion": 24.0,
+   "tractocamion": 0,
+   "volqueta": 4.0,
+   "semirremolque": 0,
+   "maquinaria_amarilla": 0,
+   "autohormigonera": 0,
+   "pct_tractocamion": 0.0
+  },
+  "GUAVIARE": {
+   "camion": 38.0,
+   "tractocamion": 2.0,
+   "volqueta": 39.0,
+   "semirremolque": 0,
+   "maquinaria_amarilla": 26.0,
+   "autohormigonera": 0,
+   "pct_tractocamion": 2.5316455696202533
+  },
+  "GUAINIA": {
+   "camion": 2.0,
+   "tractocamion": 0,
+   "volqueta": 1.0,
+   "semirremolque": 0,
+   "maquinaria_amarilla": 1.0,
+   "autohormigonera": 0,
+   "pct_tractocamion": 0.0
+  }
+ },
+ "T_vs_pesados_INVIAS 2011": {
+  "n": 21,
+  "rho": 0.07532467532467534,
+  "ic95": [
+   -0.3822163474786442,
+   0.4980424011238253
+  ],
+  "p_perm": 0.7246
+ },
+ "T_vs_pesados_ANI 2024": {
+  "n": 16,
+  "rho": 0.014705882352941175,
+  "ic95": [
+   -0.48869063060291673,
+   0.515702233961955
+  ],
+  "p_perm": 0.9552
+ },
+ "p_holm": [
+  1.0,
+  1.0
+ ]
+}
