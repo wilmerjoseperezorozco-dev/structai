@@ -470,6 +470,34 @@ Script: `scripts/transporte/puentes_invias.py`; resultados en `data/transporte/p
 
 **Límites.** (1) Fotografía de 2012. (2) Sin estado, calificación ni carga de diseño. (3) El campo `tablero` (descrito como «superficie») tiene valores de 5 a 12 que parecen un ancho en metros; no se usó. (4) Solo red nacional. (5) Los códigos sin definición (4,5 % del material) quedan como «otro». (6) Ubicación departamental por punto en polígono.
 
+## 5q. Siniestralidad en sectores críticos, normalizada por red y población, e integrada a la tabla municipal (2026-11-09, issues #127 y #129)
+
+Script: `scripts/transporte/siniestralidad_municipal.py`; resultados en `data/transporte/siniestralidad_municipal.json`. Fuentes: ANSV, sectores críticos de siniestralidad vial (`rs3u-8r4q`); INVIAS, red vial (`ie7y-asdn`); MEN, población de 5 a 16 años por municipio (`nudc-7mev`, proyecciones DANE); límites municipales DANE MGN 2018 (GeoJSON, 2,8 MB, a la caché local). Siguió una recomendación externa de normalizar por red y población, con una dummy de cobertura; varios supuestos de esa recomendación se verificaron y se corrigen abajo.
+
+**Qué es y qué no es el conjunto (verificado).** 316 sectores críticos de máximo 10 km, con 3.580 fallecidos en total, en 133 municipios y 22 departamentos. Por entidad: ANI 141, INVIAS-OTROS 126, **DEPTO 48** y CIUDAD 1; es decir, **no es solo red nacional**. La fuente se actualizó en abril de 2021. **Solo trae `fallecidos`** (más una calificación espacial, gizscore y gipvalue): no hay lesionados ni daños materiales, por lo que **no se puede construir un índice ponderado por severidad**. Son los sectores seleccionados como críticos, no todos los siniestros: un municipio sin sector crítico no es un municipio seguro. La red `ie7y-asdn` (715 tramos) trae geometría pero **no municipio**, así que la longitud por municipio se calculó cortando las líneas con los polígonos DANE (sin vías en desuso).
+
+**Validación del cálculo de red.** La longitud recortada suma 22.608 km frente a 22.626 km de la suma de la fuente (−0,1 %). 662 de los 1.122 municipios tienen red nacional inventariada. De los 133 con sectores críticos, 127 tienen red y 6 no (225 de los 3.580 fallecidos, 6,3 %; plausiblemente vías departamentales). Los 10 municipios con más fallecidos reúnen el 24 %.
+
+**Por qué la tasa por 100 km hay que leerla con cuidado.** Entre los 127 municipios con red y con sectores, la mediana de la tasa es de 55 fallecidos por 100 km de red inventariada (p90 = 179), pero la tasa se correlaciona −0,65 (Spearman) con los kilómetros de red del municipio y los fallecidos absolutos solo 0,12: un municipio con pocos kilómetros que contiene un sector crítico de 10 km tiene una tasa alta por construcción. Por eso el modelo siempre incluye `log_km_red`.
+
+**(P) Robustez del resultado de 5m: se cumple.** Al añadir `tiene_red`, `log_km_red`, `log_pop` (5 a 16 años, **proxy de escala**, no población total) y la tasa de fallecidos al modelo primario, el OR de prórroga por +10 pp de pesados cercanos pasa de 1,038 (0,938 a 1,148) a 1,036 (0,949 a 1,131), con los mismos 24.725 contratos; el cambio en log OR es −0,001 (criterio fijado: < 0,05). La conclusión nula de 5m no depende de la seguridad vial ni de la cobertura de red.
+
+**(E) Exploratoria fijada de antemano (una prueba): hay una asociación, pero no se interpreta como efecto de la seguridad vial.** Entre los 33.905 contratos de municipios con red nacional (457 municipios), +1 en log10(1 + fallecidos por 100 km) se asocia con más prórrogas: OR 1,163 (IC 95 % 1,035 a 1,307; p = 0,011). Sensibilidades añadidas **después** de ver ese resultado (descriptivas):
+
+| Especificación | OR | IC 95 % | p | n |
+|---|---|---|---|---|
+| Tasa (la de arriba) | 1,163 | 1,035 a 1,307 | 0,011 | 33.905 |
+| Solo la tasa, sin otras covariables | 1,179 | 1,046 a 1,328 | 0,007 | 33.905 |
+| Tiene sector crítico (0/1) | 1,330 | 1,085 a 1,631 | 0,006 | 33.905 |
+| Fallecidos absolutos (log10(1 + f)) | 1,212 | 1,046 a 1,404 | 0,011 | 33.905 |
+| Tasa, sin Bogotá | 1,151 | 1,011 a 1,312 | 0,034 | 26.230 |
+| Tasa, sin efectos de departamento | 1,126 | 1,021 a 1,242 | 0,018 | 33.905 |
+| **Tasa, solo municipios con sectores críticos** | **1,017** | **0,769 a 1,346** | **0,90** | 12.134 |
+
+La asociación se mantiene en cinco especificaciones, pero **desaparece dentro de los municipios que sí tienen sectores críticos** (OR 1,017) y es mayor cuando la variable es la mera presencia de un sector (1,33). Es decir, el gradiente no sigue la intensidad de la mortalidad sino la diferencia entre tener o no un sector crítico en el municipio. Lo más compatible con eso es que la variable esté señalando corredores nacionales concurridos o municipios grandes y no seguridad vial (la población disponible es solo la de 5 a 16 años, un control débil de tamaño). Además, esta es una prueba nominal dentro de un documento que ya reportó decenas de análisis sin corrección global y varios hallazgos de 5i a 5k que no se replicaron. **No se afirma efecto**; queda como hipótesis para replicar con población total y con la siniestralidad completa de la ANSV.
+
+**Pendiente y límites.** (1) La estadística completa de la ANSV por municipio y tipo de vía (observatorio) es una página, no un conjunto abierto con API: no se descargó; incluiría red terciaria y cascos urbanos y permitiría lesionados. Para usarla hay que decidir cómo obtenerla. (2) Fuente de 2021 y sin período explícito. (3) La dummy `tiene_red` mide red nacional inventariada; no distingue vías departamentales ni urbanas. (4) El campo `superficie` de la red tiene 515 de 715 tramos «Por definir» y no se usó. (5) Población solo de 5 a 16 años.
+
 ## 6. Qué no hace este documento
 
 No prueba que un modelo aprendido supere a la enumeración exacta para vigas aisladas (la medición de la sección 2 sugiere que no); no valida las cantidades contra planos reales; no incluye traslapos ni ganchos suplementarios.

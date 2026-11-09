@@ -142,13 +142,15 @@ def cargar(muni, loc) -> tuple[list[dict], list[dict]]:
     return filas, pj
 
 
-def ajustar(filas: list[dict], resultado: str, variable: str, escala: float = 1.0, efectos_depto: bool = True) -> dict:
-    sub = [f for f in filas if not np.isnan(f[variable])]
+def ajustar(filas: list[dict], resultado: str, variable: str, escala: float = 1.0, efectos_depto: bool = True, extras: tuple[str, ...] = ()) -> dict:
+    """`extras`: nombres de campos numéricos de cada fila que se añaden como covariables municipales (por defecto ninguna: el modelo no cambia)."""
+    sub = [f for f in filas if not np.isnan(f[variable]) and not any(np.isnan(f[e]) for e in extras)]
     X0, nombres = logi.matriz(sub)
     cuerpo = X0[:, 2:]
     deps = sorted({f["dep_ejec"] for f in sub})
     dum = np.array([[float(f["dep_ejec"] == d) for d in deps] for f in sub])
-    M = np.hstack([np.column_stack([np.ones(len(sub)), np.array([f[variable] * escala for f in sub])]), cuerpo, dum[:, 1:] if efectos_depto else np.zeros((len(sub), 0))])
+    extra_m = np.array([[f[e] for e in extras] for f in sub], float).reshape(len(sub), len(extras))
+    M = np.hstack([np.column_stack([np.ones(len(sub)), np.array([f[variable] * escala for f in sub])]), cuerpo, extra_m, dum[:, 1:] if efectos_depto else np.zeros((len(sub), 0))])
     ok = M.std(0) > 0
     ok[0] = True
     y = np.array([f[resultado] for f in sub])
