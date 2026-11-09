@@ -1,0 +1,21 @@
+{
+  "n": 500,
+  "origen": {
+    "directo": 273,
+    "reparado": 223,
+    "exacto": 4
+  },
+  "diseños_inseguros_tras_reverificacion": 0,
+  "brecha_criterio_pct": {
+    "mediana": 1.33,
+    "p90": 8.51,
+    "p99": 15.96,
+    "max": 20.76,
+    "mejor_que_la_referencia_exacta": 62
+  },
+  "segundos_por_caso": {
+    "surrogate_directo": 0.262,
+    "todos": 0.304
+  },
+  "tiempo_total_s": 42.8
+}

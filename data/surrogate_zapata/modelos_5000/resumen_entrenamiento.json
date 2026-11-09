@@ -1,0 +1,27 @@
+{
+  "n_total": 5000,
+  "n_resueltos": 4488,
+  "n_entrenamiento": 3815,
+  "n_reservado": 673,
+  "metricas": {
+    "L": {
+      "MAE_mm": 81.6,
+      "dentro_de_50mm": 0.412
+    },
+    "h_c": {
+      "MAE_mm": 34.9,
+      "dentro_de_50mm": 0.765
+    },
+    "h_e": {
+      "MAE_mm": 0.1,
+      "dentro_de_50mm": 0.999
+    },
+    "c_ped": {
+      "MAE_mm": 20.9,
+      "dentro_de_50mm": 0.932
+    },
+    "x_ceniza_cod": {
+      "exactitud": 0.985
+    }
+  }
+}

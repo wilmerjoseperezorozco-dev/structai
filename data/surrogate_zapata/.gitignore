@@ -1,0 +1,3 @@
+# Modelos LightGBM: se regeneran con scripts/surrogate_zapata/entrenar_surrogate.py (semilla fija)
+modelos*/*.txt
+generacion.err
