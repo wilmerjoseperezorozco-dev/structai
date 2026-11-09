@@ -394,6 +394,33 @@ Script: `scripts/transporte/cruces_municipal.py`; resultados en `data/transporte
 
 **Límites.** La exposición usa solo concesiones ANI de siete categorías (64 peajes), no la red INVIAS ni los corredores sin peaje; el radio de 50 km es una aproximación al tramo que sirve a la obra; 9.890 filas de ubicación no traen municipio (~18 %) y no se sabe si su ausencia se relaciona con el resultado; el 11 % de los contratos ubicados (41.580 a 37.181) queda fuera por falta de controles (duración no interpretable, sin fecha de firma); Bogotá es un solo cluster con unos 7.700 contratos dentro del radio (la sensibilidad sin Bogotá no cambia nada); el efecto de prórroga es de asociación, no de causa. Líneas abiertas que no se tocaron: pesaje de carga (`atkg-vhpp`), supervivencia para la prórroga y ejecución con los campos de pago (issue #129).
 
+## 5n. Calibración de la flota con registros de pesaje (2026-11-09, issues #127 y #129)
+
+Script: `scripts/transporte/pesaje_carga.py`; resultados en `data/transporte/pesaje_carga_resumen.json`. Fuente: pesaje de carga de la Superintendencia de Transporte (`atkg-vhpp`, datos.gov.co), 10.925.770 registros de 126 estaciones. Todo se agrega en el servidor y no se usa la placa. Se compara con `PBV_KG` y `CATALOGO` de `flota_construccion.py`.
+
+**Calidad y cobertura.** 234 registros con peso cero y 2.028 con peso máximo cero (0,02 %). Por fecha, el 94 % de los registros es de 2024 y el 6 % de 2023; hay ~17.700 registros fechados en 1924 y ~800 con fechas posteriores a 2024 (errores de captura, 0,2 % en total). Es una fotografía de 2023-2024, no una serie larga.
+
+**El PBV del código coincide con el de la fuente.** El peso máximo más frecuente por configuración es el PBV de la Res. 20223040045295/2022 multiplicado por 1,025 en cinco de seis casos (C3 28.700, 2S2 32.800, 2S3 41.513, 3S2 49.200, 3S3 53.300); en C2 el modo es 17.500 (razón 1,029), y 17.425 = 17.000 × 1,025 es la quinta clase más frecuente. Los registros traen los PBV de `PBV_KG` más una tolerancia del 2,5 % (inferencia por la razón constante, no está documentada en el conjunto). Consecuencia: el «exceso» de abajo es peso registrado sobre ese máximo con tolerancia, y subestima el exceso frente al PBV legal.
+
+| Configuración | n | Peso medio (kg) | Máx. modal (kg) | Exceso | > 5 % sobre máx. | Modo vacío | Modo cargado | Carga útil modal | % bajo la mitad del máx. |
+|---|---|---|---|---|---|---|---|---|---|
+| C2 | 5.351.205 | 9.072 | 17.500 | 0,77 % | 0,34 % | 5 t | 9 t | 4 t | 47 |
+| C3 | 485.252 | 21.696 | 28.700 | 3,64 % | 0,59 % | 11 t | 29 t | 18 t | 27 |
+| 2S2 | 582.674 | 21.865 | 32.800 | 0,24 % | 0,03 % | 15 t | 19 t | 4 t | 16 |
+| 2S3 | 132.431 | 30.605 | 41.513 | 0,30 % | 0,03 % | 17 t | 37 t | 20 t | 15 |
+| 3S2 | 863.346 | 32.572 | 49.200 | 0,41 % | 0,02 % | 17 t | 47 t | 30 t | 34 |
+| 3S3 | 3.422.185 | 45.837 | 53.300 | 1,60 % | 0,02 % | 17 t | 51 t | 34 t | 11 |
+
+Los modos salen de histogramas de 2 t, así que cada valor tiene una resolución de ±2 t y la carga útil modal (cargado menos vacío) de ±3 a 4 t.
+
+**Contraste con el catálogo de la flota.** La tractomula (3S2/3S3) está bien calibrada: el catálogo supone 32 a 35 t de carga útil y el modo observado es 30 t (3S2) y 34 t (3S3). La minimula del catálogo (18 a 22 t) coincide con la 2S3 (20 t), pero no con la 2S2, cuyo modo de 4 t no es una carga útil creíble: lo más probable es que 2S2 mezcle remolques pequeños o transportes de baja densidad y que los dos modos queden a 2 t de distancia; no se usa para calibrar. El doble troque C3 del catálogo (15 a 17 t) queda algo por debajo del modo observado (18 t, dentro de la resolución). El C2 es heterogéneo: sus cinco clases de peso máximo (5,5; 10,5; 11,5; 13,5 y 17,5 t) tienen cargas útiles modales de 2 t las cuatro primeras y 10 t la de 17,5 t, frente a 7 a 8,5 t del volqueta sencilla en el catálogo; la volqueta sencilla (clase de 17,5 t) queda por encima del catálogo, aunque en el límite de la resolución. Ninguna de estas diferencias justifica por sí sola cambiar el catálogo, pero el rango de la volqueta sencilla y el del doble troque merecen revisarse con una medición propia.
+
+**Sobrecarga.** Las tasas de exceso son bajas en agregado (0,2 a 1,6 %, salvo C3 con 3,64 %) y casi todo el exceso es leve: solo 0,02 a 0,6 % supera el máximo en más de 5 %. Las diferencias entre estaciones son grandes: Mesa de los Santos tiene 33,5 % de registros con exceso y las siguientes nueve estaciones con más de 20.000 registros van de 1,3 a 5,6 % (Payandé, Siberia Cali Norte y Sur, El Chuscal, Tafetanes, Puerto Triunfo, Bosconia, Laureano Gómez, Curití). No hay ubicación de estaciones en el conjunto, así que no se asigna el exceso a corredores.
+
+**Límites.** (1) Las básculas son puntos de control, no una muestra aleatoria de la flota; los camiones cargados y los que se sospecha que exceden el límite pueden estar sobrerrepresentados o evadir la báscula, y esto sesga el exceso en direcciones opuestas que no se pueden separar con estos datos. (2) No hay tara ni carga declarada: la carga útil sale de la diferencia entre dos modos y no de la tara real. (3) Los porcentajes bajo la mitad del máximo (vacíos) dependen de que el vehículo pase por la báscula vacío. (4) La clasificación por configuración viene de la báscula y no se verificó contra el registro del vehículo. (5) Tolerancia del 2,5 % inferida, no documentada. (6) Solo 2023-2024.
+
+**Qué se puede afirmar.** El PBV usado por el código es el de la fuente, los modos de peso de 3S2, 3S3 y 2S3 respaldan los valores de carga útil del catálogo de tractomula y minimula, y la sobrecarga agregada es pequeña y concentrada en pocas estaciones. No se puede afirmar que sea la sobrecarga de toda la flota ni la de obras de construcción en particular.
+
 ## 6. Qué no hace este documento
 
 No prueba que un modelo aprendido supere a la enumeración exacta para vigas aisladas (la medición de la sección 2 sugiere que no); no valida las cantidades contra planos reales; no incluye traslapos ni ganchos suplementarios.

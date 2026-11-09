@@ -1,0 +1,225 @@
+{
+ "calidad": {
+  "n": 10925770,
+  "peso_cero": 234,
+  "maximo_cero": 2028,
+  "estaciones": 126,
+  "registros_por_anio": {
+   "1924": 17660,
+   "2023": 650254,
+   "2024": 10257015,
+   "2025": 369,
+   "2026": 367,
+   "2027": 74,
+   "2028": 1,
+   "2029": 1,
+   "2030": 1,
+   "2031": 1,
+   "2032": 1,
+   "2033": 1,
+   "2034": 1,
+   "2035": 1,
+   "2036": 1,
+   "2037": 1,
+   "2038": 1,
+   "2039": 1,
+   "2040": 1,
+   "2041": 1,
+   "2042": 1,
+   "2043": 1,
+   "fecha no interpretable": 15
+  }
+ },
+ "configuraciones": {
+  "C2": {
+   "n": 5351205,
+   "peso_medio_kg": 9072.281170315844,
+   "maximo_medio_kg": 13359.951698542665,
+   "exceso_pct": 0.7652855758656227,
+   "exceso_5pct_pct": 0.3408764941728078,
+   "mas_del_doble_pct": 0.04118698498749347,
+   "maximo_modal_kg": 17500.0,
+   "razon_maximo_modal_pbv": 1.0294117647058822,
+   "n_modal": 1719493,
+   "modo_vacio_kg": 5000.0,
+   "modo_cargado_kg": 9000.0,
+   "carga_util_modal_kg": 4000.0,
+   "pct_mitad_inferior": 47.33765791009924,
+   "pct_en_pico_cargado": 28.686813776999415
+  },
+  "C3": {
+   "n": 485252,
+   "peso_medio_kg": 21696.17495651744,
+   "maximo_medio_kg": 28594.834490120596,
+   "exceso_pct": 3.643467723986712,
+   "exceso_5pct_pct": 0.5900027202360835,
+   "mas_del_doble_pct": 0.000824313964702876,
+   "maximo_modal_kg": 28700.0,
+   "razon_maximo_modal_pbv": 1.025,
+   "n_modal": 448258,
+   "modo_vacio_kg": 11000.0,
+   "modo_cargado_kg": 29000.0,
+   "carga_util_modal_kg": 18000.0,
+   "pct_mitad_inferior": 26.9130266335842,
+   "pct_en_pico_cargado": 44.307493838253116
+  },
+  "2S2": {
+   "n": 582674,
+   "peso_medio_kg": 21864.760396036207,
+   "maximo_medio_kg": 32660.649158877863,
+   "exceso_pct": 0.23649587934247968,
+   "exceso_5pct_pct": 0.034667755897809065,
+   "mas_del_doble_pct": 0.0008581127697477492,
+   "maximo_modal_kg": 32800.0,
+   "razon_maximo_modal_pbv": 1.025,
+   "n_modal": 503496,
+   "modo_vacio_kg": 15000.0,
+   "modo_cargado_kg": 19000.0,
+   "carga_util_modal_kg": 4000.0,
+   "pct_mitad_inferior": 16.37725383318974,
+   "pct_en_pico_cargado": 36.775967350525335
+  },
+  "2S3": {
+   "n": 132431,
+   "peso_medio_kg": 30604.824776676156,
+   "maximo_medio_kg": 41354.094660615716,
+   "exceso_pct": 0.29675831187561824,
+   "exceso_5pct_pct": 0.029449298125061352,
+   "mas_del_doble_pct": 0.0007551102083349064,
+   "maximo_modal_kg": 41513.0,
+   "razon_maximo_modal_pbv": 1.0250123456790123,
+   "n_modal": 102172,
+   "modo_vacio_kg": 17000.0,
+   "modo_cargado_kg": 37000.0,
+   "carga_util_modal_kg": 20000.0,
+   "pct_mitad_inferior": 14.754098360655737,
+   "pct_en_pico_cargado": 38.94405388466447
+  },
+  "3S2": {
+   "n": 863346,
+   "peso_medio_kg": 32571.807830232607,
+   "maximo_medio_kg": 48987.667241175615,
+   "exceso_pct": 0.4081793394537069,
+   "exceso_5pct_pct": 0.020849114955070157,
+   "mas_del_doble_pct": 0.0038223377417628624,
+   "maximo_modal_kg": 49200.0,
+   "razon_maximo_modal_pbv": 1.025,
+   "n_modal": 762424,
+   "modo_vacio_kg": 17000.0,
+   "modo_cargado_kg": 47000.0,
+   "carga_util_modal_kg": 30000.0,
+   "pct_mitad_inferior": 33.87089301392489,
+   "pct_en_pico_cargado": 25.86263213126603
+  },
+  "3S3": {
+   "n": 3422185,
+   "peso_medio_kg": 45836.630761925495,
+   "maximo_medio_kg": 53141.12924491224,
+   "exceso_pct": 1.6006440329789302,
+   "exceso_5pct_pct": 0.023581425317450694,
+   "mas_del_doble_pct": 0.004090953586670504,
+   "maximo_modal_kg": 53300.0,
+   "razon_maximo_modal_pbv": 1.025,
+   "n_modal": 3183632,
+   "modo_vacio_kg": 17000.0,
+   "modo_cargado_kg": 51000.0,
+   "carga_util_modal_kg": 34000.0,
+   "pct_mitad_inferior": 11.391318704278115,
+   "pct_en_pico_cargado": 68.96886053793118
+  }
+ },
+ "c2_subclases": {
+  "5500": {
+   "n": 218802,
+   "modo_vacio_kg": 1000.0,
+   "modo_cargado_kg": 3000.0,
+   "carga_util_modal_kg": 2000.0,
+   "pct_mitad_inferior": 0.06307072147420956,
+   "pct_en_pico_cargado": 99.20521750258224
+  },
+  "10500": {
+   "n": 801684,
+   "modo_vacio_kg": 5000.0,
+   "modo_cargado_kg": 7000.0,
+   "carga_util_modal_kg": 2000.0,
+   "pct_mitad_inferior": 40.834543286382164,
+   "pct_en_pico_cargado": 49.41061565404823
+  },
+  "11500": {
+   "n": 453473,
+   "modo_vacio_kg": 5000.0,
+   "modo_cargado_kg": 7000.0,
+   "carga_util_modal_kg": 2000.0,
+   "pct_mitad_inferior": 33.018503858002575,
+   "pct_en_pico_cargado": 47.274038366121026
+  },
+  "13500": {
+   "n": 938833,
+   "modo_vacio_kg": 5000.0,
+   "modo_cargado_kg": 7000.0,
+   "carga_util_modal_kg": 2000.0,
+   "pct_mitad_inferior": 17.992869871425484,
+   "pct_en_pico_cargado": 45.27162977867203
+  },
+  "17500": {
+   "n": 1719477,
+   "modo_vacio_kg": 7000.0,
+   "modo_cargado_kg": 17000.0,
+   "carga_util_modal_kg": 10000.0,
+   "pct_mitad_inferior": 22.228561359064415,
+   "pct_en_pico_cargado": 42.72618941689828
+  }
+ },
+ "estaciones_mayor_exceso": [
+  {
+   "estacion": "Mesa de los Santos",
+   "n": 50912,
+   "exceso_pct": 33.5205845380264
+  },
+  {
+   "estacion": "Payande",
+   "n": 146822,
+   "exceso_pct": 5.64152511204043
+  },
+  {
+   "estacion": "SiberiaCalNorte",
+   "n": 229608,
+   "exceso_pct": 5.063847949548796
+  },
+  {
+   "estacion": "SiberiaCalSur",
+   "n": 207920,
+   "exceso_pct": 4.930742593305117
+  },
+  {
+   "estacion": "El Chuscal",
+   "n": 257740,
+   "exceso_pct": 4.859936369985256
+  },
+  {
+   "estacion": "Tafetanes",
+   "n": 38890,
+   "exceso_pct": 3.311905374132168
+  },
+  {
+   "estacion": "Puerto Triunfo",
+   "n": 20484,
+   "exceso_pct": 2.9681702792423357
+  },
+  {
+   "estacion": "Bosconia",
+   "n": 527396,
+   "exceso_pct": 2.831079492449696
+  },
+  {
+   "estacion": "Laureano Gomez",
+   "n": 111475,
+   "exceso_pct": 1.5590939672572326
+  },
+  {
+   "estacion": "Curiti",
+   "n": 194385,
+   "exceso_pct": 1.3262340201147207
+  }
+ ]
+}
