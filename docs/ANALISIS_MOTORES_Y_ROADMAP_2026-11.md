@@ -61,3 +61,23 @@ Cada etapa cierra con: consulta de retrieval real contra `match_<tabla>_chunks`,
 ## 6. Límites de este análisis
 
 No se leyó el código de `bim-intelligence` ni `ai-gateway` más allá de tamaño y existencia de tests. La lista de huecos normativos es hipótesis de cobertura, no auditoría contra fuente primaria. Los pesos Benedetti‑Petrini no se tienen verificados.
+
+## 7. NSR-10: corpus completo vs. motor existente (2026-11-08)
+
+Corpus según `docs/fuentes-normativas.md` (estado al 2026-09-24; no re-contado hoy). Motores según los módulos que existen hoy en `packages/`.
+
+| Título | Corpus verbatim | Motor hoy | Siguiente módulo programable sin huecos |
+|---|---|---|---|
+| A | Incompleto: A.1, A.7, A.8, A.11, A.12, A.13 sin chunks (auditoría 2026-09-07; la memoria dice 45.6 % tras cierres posteriores) | `motor-geopot` (espectro, cortante basal, A‑4) | Irregularidades φa/φp (A.3.3.4/5 ya verbatim) |
+| B | Parcial: B.4.3, B.4.6–B.4.8 sin chunks; B.3.4 resumido | `motor-analisis` (combinaciones) | Cargas vivas/muertas de B.3.4 tras ingesta verbatim |
+| C | Verbatim completo | `motor-concreto`: viga, columna rectangular, SCWB | Columna circular, losas (C.13), zapatas (C.15), muros (C.14), nudos (C.21.7) |
+| D | Verbatim completo | Ninguno | Muro de mampostería: resistencia a cortante y flexocompresión |
+| E | Verbatim completo | `motor-vulnerabilidad-vivienda` (checklist) | Verificación de casas de 1–2 pisos |
+| F | F.1–F.5.7.6 completo; F.5.7.7 en adelante pendiente | `motor-acero-frio` (ancho efectivo) | Miembros de acero laminado (F.2) |
+| G | Verbatim completo | Ninguno | Vigas y columnas de madera/guadua |
+| H | Verbatim completo | Ninguno | Capacidad portante y asentamientos (H.4) → zapatas |
+| I | Verbatim completo | n/a (procedimental) | Lista de verificación de supervisión |
+| J | Incompleto: casi todo resumido | Ninguno | Re-ingesta verbatim antes de programar |
+| K | Verbatim completo | Ninguno | Pocos cálculos; baja prioridad |
+
+Lectura: «sin huecos» hoy equivale a C, D, E, G, H, I, K y la parte de F ya ingestada. A, B y J se programan después de cerrar su ingesta; programar sobre ellos antes repetiría el error de usar texto resumido como si fuera la norma. Orden propuesto por valor: **H.4 + C.15 (zapatas)** → **C.13 (losas)** → **columna circular** → **D (muros)** → **G (madera)** → **F.2 (acero laminado)**.
