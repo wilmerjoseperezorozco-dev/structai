@@ -236,6 +236,53 @@ EXTRA3 = [
 ]
 SUB_VIEJOS_3 = ["NSR10-C-C_21_6_4_4-sub%"]
 
+# Lote 4 (2026-11-08): esbeltez de columnas, procedimiento de magnificación de momentos C.10.10.5–C.10.10.7 (transcrito de las páginas C-81 a C-83).
+EXTRA4 = [
+    {
+        "id": "NSR10-C-C_10_10_magnificacion_momentos_5_a_7", "seccion": "C.10.10.5",
+        "titulo": "Magnificación de momentos en columnas esbeltas (C.10.10.5 a C.10.10.7)",
+        "texto": (
+            "NSR-10 Título C C.10.10.4.2 — Para elementos sometidos a compresión, I debe dividirse por (1 + βds) cuando existen cargas laterales sostenidas. "
+            "βds es la relación entre la máxima fuerza de cortante sostenida mayorada dentro de un piso y la máxima fuerza de cortante mayorada asociada con la misma combinación de carga, pero no debe ser mayor de 1.0. "
+            "C.10.10.5 — Procedimiento de magnificación de momentos. Las columnas y pisos en una estructura deben designarse como parte de estructuras con desplazamiento lateral (no arriostradas) o sin desplazamiento lateral (arriostradas). "
+            "El diseño de columnas en estructuras sin desplazamiento lateral debe basarse en C.10.10.6; con desplazamiento lateral, en C.10.10.7. "
+            "C.10.10.5.1 — Se permite suponer como arriostrada (sin desplazamiento lateral) una columna dentro de una estructura, si el incremento en los momentos extremos de la columna debido a los efectos de segundo orden no excede de un 5 por ciento de los momentos extremos de primer orden. "
+            "C.10.10.5.2 — Se permite suponer como arriostrado a un piso si el índice de estabilidad Q = ΣPu Δo / (Vus ℓc) ≤ 0.05 (C.10-10), donde ΣPu y Vus son la carga vertical total y el cortante horizontal mayorados del piso, "
+            "y Δo es la deformación lateral relativa (deriva) de primer orden entre la parte superior e inferior del piso debida a Vus. "
+            "C.10.10.6 — Estructuras sin desplazamiento lateral. Los elementos a compresión se diseñan para la fuerza axial mayorada Pu y el momento amplificado Mc = δ M2 (C.10-11), "
+            "donde δ = Cm / (1 − Pu / (0.75 Pc)) ≥ 1.0 (C.10-12) y Pc = π² EI / (k ℓu)² (C.10-13). "
+            "C.10.10.6.1 — EI se toma como EI = (0.2 Ec Ig + Es Ise) / (1 + βdns) (C.10-14) o EI = 0.4 Ec Ig / (1 + βdns) (C.10-15); alternativamente EI con el valor I de la ecuación (C.10-8) dividido por (1 + βdns). "
+            "C.10.10.6.2 — βdns es la relación entre la máxima carga axial sostenida mayorada dentro de un piso y la máxima carga axial mayorada asociada con la misma combinación de carga, pero no mayor de 1.0. "
+            "C.10.10.6.3 — Se permite considerar el factor de longitud efectiva, k, como 1.0. "
+            "C.10.10.6.4 — Para elementos sin cargas transversales entre los apoyos, Cm = 0.6 + 0.4 M1/M2 (C.10-16), donde M1/M2 es positivo si la columna está flectada en curvatura simple y negativo si tiene curvatura doble. "
+            "Para elementos con cargas transversales entre los apoyos, Cm = 1.0. "
+            "C.10.10.6.5 — El momento mayorado M2 en la ecuación (C.10-11) no debe ser menor que M2,min = Pu (15 + 0.03 h) (C.10-17) en cada eje separadamente, con 15 y h en mm. "
+            "Para los elementos en que M2,min excede a M2, el valor de Cm debe ser 1.0 o estar basado en la relación de los momentos calculados en los extremos M1/M2. "
+            "C.10.10.7 — Estructuras con desplazamiento lateral. Los momentos extremos son M1 = M1ns + δs M1s (C.10-18) y M2 = M2ns + δs M2s (C.10-19), donde δs se calcula según C.10.10.7.3 ó C.10.10.7.4. "
+            "C.10.10.7.1 — Los elementos a flexión deben diseñarse para todos los momentos extremos magnificados de los elementos a compresión en el nudo. "
+            "C.10.10.7.2 — El factor de longitud efectiva k debe determinarse usando los valores Ec e I dados en C.10.10.4 y no debe ser menor de 1.0. "
+            "C.10.10.7.3 — El magnificador de momento δs = 1 / (1 − Q) ≥ 1 (C.10-20). Si el δs calculado excede de 1.5, debe calcularse usando el análisis elástico de segundo orden ó C.10.10.7.4. "
+            "C.10.10.7.4 — Alternativamente, δs = 1 / (1 − ΣPu / (0.75 ΣPc)) ≥ 1 (C.10-21), donde ΣPu es la sumatoria de todas las cargas verticales mayoradas en un piso y ΣPc la sumatoria de todas las columnas que resisten el desplazamiento lateral en un piso; "
+            "ΣPc se calcula con la ecuación (C.10-13) con el valor k determinado en C.10.10.7.2 y EI de C.10.10.6.1, donde βds debe sustituir a βdns."
+        ),
+    },
+    {
+        "id": "NSR10-C-C_10_12_transmision_cargas_columnas_losas", "seccion": "C.10.12",
+        "titulo": "Transmisión de cargas de las columnas a través de losas de entrepiso",
+        "texto": (
+            "NSR-10 Título C C.10.12 — Si el f'c de una columna es 1.4 veces mayor que el del sistema de entrepiso para columnas interiores o de borde, o mayor que 1.2 veces para columnas esquineras, "
+            "la transmisión de la carga a través de la losa de entrepiso debe hacerse de acuerdo con C.10.12.1 ó C.10.12.2. "
+            "C.10.12.1 — La resistencia de la columna en el nudo puede calcularse con una resistencia efectiva del concreto (f'c)e, en función de (f'c)c de la columna y (f'c)s de la losa: "
+            "(a) columnas interiores: (f'c)e = [0.25/(h/c2)] (f'c)c + [1.4 − 0.35/(h/c2)] (f'c)s ≤ (f'c)c (C.10-22), con h/c2 no menor de un tercio, h espesor total de la losa y c2 la menor dimensión de la columna; "
+            "(b) columnas de borde: (f'c)e = 1.4 (f'c)s ≤ (f'c)c (C.10-23); "
+            "(c) columnas esquineras: (f'c)e = 1.2 (f'c)s ≤ (f'c)c (C.10-24). Pueden utilizarse barras longitudinales adicionales y estribos o espirales, si así se requiere. "
+            "C.10.12.2 — Debe colocarse concreto de resistencia igual a la especificada para la columna en el entrepiso en la zona de la columna. La superficie superior del concreto de la columna debe extenderse 600 mm dentro de la losa a partir de la cara de la columna. "
+            "El concreto de la columna debe ser monolítico con el concreto del piso y colocarse de acuerdo con C.6.4.6 y C.6.4.7."
+        ),
+    },
+]
+SUB_VIEJOS_4 = ["NSR10-C-C_10_10_5%", "NSR10-C-C_10_10_6%", "NSR10-C-C_10_10_7%"]
+
 
 def construir(lote: int = 1) -> list[dict]:
     chunks = []
@@ -248,14 +295,14 @@ def construir(lote: int = 1) -> list[dict]:
             "titulo": texto[:60],
             "texto": f"NSR-10 Título C {texto}",
         })
-    chunks += [{"capitulo": CAPITULO, **e} for e in {1: EXTRA, 2: EXTRA2, 3: EXTRA3}[lote]]
+    chunks += [{"capitulo": CAPITULO, **e} for e in {1: EXTRA, 2: EXTRA2, 3: EXTRA3, 4: EXTRA4}[lote]]
     return chunks
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
-    ap.add_argument("--lote", type=int, default=1, choices=(1, 2, 3))
+    ap.add_argument("--lote", type=int, default=1, choices=(1, 2, 3, 4))
     args = ap.parse_args()
     chunks = construir(args.lote)
     for c in chunks:
@@ -278,6 +325,9 @@ def main() -> None:
                           "embedding": modelo.encode(p).tolist()})
     sb.table("nsr10_chunks").upsert(filas, on_conflict="id").execute()
     print(f"{len(filas)} filas upserted")
+    if args.lote == 4:  # los fragmentos viejos (ecuaciones desordenadas) quedan sustituidos por el chunk consolidado
+        for patron in SUB_VIEJOS_4:
+            sb.table("nsr10_chunks").delete().like("id", patron).execute()
     if args.lote == 3:
         for patron in SUB_VIEJOS_3:
             sb.table("nsr10_chunks").delete().like("id", patron).execute()

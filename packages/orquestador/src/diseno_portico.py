@@ -10,7 +10,7 @@ Cascada completa:
 Supuestos y límites (también se devuelven en el informe):
   - Una sola sección de viga para todo el pórtico, diseñada con la peor demanda de cualquier viga (conservador).
   - Columnas dadas por el usuario, NO diseñadas; sin verificación columna fuerte-viga débil (C.21.6.2) ni de nudos.
-  - Rigidez agrietada: viga 0,35·Ig, columna 0,70·Ig (valores del ACI/NSR-10 C.10.10.4.1; la lista no se recuperó del corpus).
+  - Rigidez agrietada: viga 0,35·Ig, columna 0,70·Ig (verificados en C.10.10.4.1).
   - Ec = 4700·√f'c MPa (C.8.5.1, concreto de densidad normal, verificado). Sin deformación por cortante ni segundo orden.
   - Las fuerzas sísmicas laterales (E, ya reducidas por R) las entrega el usuario o el motor sísmico: aquí NO se calcula
     el cortante basal. Sin ellas el análisis es solo gravitacional, aunque el nivel exija detallado.
@@ -100,7 +100,7 @@ class InformePortico:
 SUPUESTOS = (
     "Una sola sección para todas las vigas, diseñada con la peor demanda de cualquier viga (conservador).",
     "Columnas dadas, no diseñadas; sin columna fuerte-viga débil (C.21.6.2) ni nudos (C.21.7).",
-    "Inercias agrietadas viga 0,35·Ig y columna 0,70·Ig (C.10.10.4.1: lista no recuperada del corpus). Ec = 4700√f'c (C.8.5.1).",
+    "Inercias agrietadas viga 0,35·Ig y columna 0,70·Ig (C.10.10.4.1 verificado en el corpus). Ec = 4700√f'c (C.8.5.1).",
     "Con perfil_suelo, E se deriva del espectro NSR-10 (Fa/Fv, Sa, Ta, Vs=Sa·W, Cvx, R=R0 de la Tabla A.3-3 con φ=1): estructura regular y redundante, sin torsión, sin P-Delta, peso sísmico = muerta + peso propio (sin viva), T = Ta. Sin perfil_suelo, E llega como dato (ya reducida por R).",
     "Deriva (A.6.4, 1,0 % hp) con las mismas inercias agrietadas, Fs sin dividir por R (I=1 permitido por A.6.2.1.2), en el centro de masa; sin torsión ni P-Delta. Solo se verifica si E se deriva del espectro.",
     "Refuerzo longitudinal continuo en toda la luz, una capa por cara, mismo diámetro arriba y abajo; sin empalmes ni anclajes.",

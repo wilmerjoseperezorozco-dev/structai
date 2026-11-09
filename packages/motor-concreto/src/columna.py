@@ -17,8 +17,10 @@ NO verificado en el corpus (declarado en cada verificación):
   - (so y ℓo en DMO: VERIFICADOS en C.21.3.5.6: so ≤ mín(8db; 16·dest; c/3; 150), ℓo ≥ máx(ℓn/6; c; 500).)
   - (Mpr = 1,25·fy con φ = 1,0: VERIFICADO en la notación C.2 y C.21.7.2.1.) Vc = 0,17·√f'c·b·d sin beneficio de la compresión axial (conservador); espaciamiento en DMI
     mín(16db; 48·dest; c) del ACI (C.7.10.5.2 no recuperado).
-  - Esbeltez: factor k por Jackson–Moreland y magnificación de momentos (δns con 0,4·Ec·Ig/(1+βdns), δs = 1/(1−Q)) son del
-    ACI 318-08 (C.10.10.5–7 truncadas en el corpus); Cm = 1,0 (conservador); momento mínimo Pu(15+0,03h).
+  - Esbeltez: magnificación VERIFICADA en C.10.10.6/.7 (EI = 0,4·Ec·Ig/(1+βdns) C.10-15; Pc con 0,75 C.10-12/-13; δs = 1/(1−Q) C.10-20;
+    M2,mín = Pu(15+0,03h) C.10-17; Ec = 4700√f'c C.8.5.1). Cm = 1,0 es conservador (la norma permite 0,6+0,4·M1/M2, C.10-16).
+    El valor de k viene del llamador (Jackson–Moreland / nomogramas NO están en el corpus; la norma da k=1,0 sin desplazamiento, C.10.10.6.3,
+    y k ≥ 1,0 con desplazamiento, C.10.10.7.2).
 Supuestos: sección con refuerzo simétrico perimetral, recubrimiento libre al estribo, sin torsión, sin biaxial (pórtico plano).
 """
 from __future__ import annotations
@@ -171,7 +173,7 @@ class DemandaColumna:
     V: float                      # kN, cortante máximo de las combinaciones (ya con δs)
     V_sismo: float                # kN, cortante máximo producido solo por E (con δs)
     delta_s: float                # 1/(1−Q) máximo de los entrepisos (1,0 si Q ≤ 0,05)
-    k_lu_max_m: float             # máx k·ℓu (m), k de Jackson–Moreland
+    k_lu_max_m: float             # máx k·ℓu (m), k aportado por el llamador
     lu_min_m: float
     lu_max_m: float
     beta_dns: float               # 1,2D / (1,2D + 1,6L)
@@ -311,7 +313,7 @@ def disenar_columna(h: float, b: float, dem: DemandaColumna, nivel: str, m: Mate
                 verifs.append(Verificacion("Cuantía 1 % ≤ ρ ≤ 4 %", sec.rho, RHO_MAX, "-", True,
                                            "C.21.6.3.1" if nivel == "DES" else "C.21.3.5.2 / C.10.9.1"))
                 verifs.append(Verificacion("Esbeltez kℓu/r (magnificada si > 22)", esb, ESBELTEZ_MAX, "-", True, "C.10-6",
-                                           "k de Jackson–Moreland y magnificación del ACI 318-08, no verificados en el corpus"))
+                                           "magnificación C.10.10.6/.7 verificada; k lo aporta el llamador (nomograma no está en el corpus)"))
                 if nivel == "DES":
                     razon = _scwb(cv, dem, mnb_int, mnb_ext, cv_sup)
                     if math.isnan(razon) or razon < 1.0 - 1e-9:
