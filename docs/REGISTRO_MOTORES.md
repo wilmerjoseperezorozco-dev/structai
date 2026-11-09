@@ -11,10 +11,10 @@ Generado por `scripts/inventario/registro_motores.py`; no editar a mano. Criteri
 | Motor (router) | Paquete | 1 | 2 | 3 | 4 | Pruebas paquete / router | CI | Endpoints |
 |---|---|---|---|---|---|---|---|---|
 | `analisis` | `motor-analisis` | ? | ? | sí | ? | 18 / 3 | sí | POST /analisis/portico |
-| `concreto` | `motor-concreto` | ? | ? | sí | ? | 283 / 5 | no | POST /concreto/zapata, POST /concreto/talud |
+| `concreto` | `motor-concreto` | ? | ? | sí | ? | 283 / 5 | sí | POST /concreto/zapata, POST /concreto/talud |
 | `geotecnia` | `motor-geotecnia` | sí | sí | sí | ? | 88 / 5 | sí | POST /geotecnia/asentamiento, POST /geotecnia/portante |
 | `licuacion` | `motor-licuacion` | ? | ? | sí | ? | 53 / 7 | sí | POST /licuacion/spt |
-| `orquestador_api` | `orquestador` | ? | ? | sí | ? | 75 / 4 | no | POST /orquestador/portico-integral |
+| `orquestador_api` | `orquestador` | ? | ? | sí | ? | 75 / 4 | sí | POST /orquestador/portico-integral |
 | `redes` | `motor-redes` | sí | sí | sí | no | 105 / 11 | sí | POST /redes/permanente, POST /redes/periodo, POST /redes/ariete |
 
 El conteo de pruebas son funciones `test_*`; una prueba parametrizada cuenta una vez.

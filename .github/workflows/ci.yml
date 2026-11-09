@@ -161,7 +161,7 @@ jobs:
         # solo. Su test de validación real contra un PDF de NSR-10 se
         # auto-salta en CI (@pytest.mark.skipif) porque ese PDF es fuente
         # gitignored, no viaja con el checkout.
-        paquete: [motor-apu, motor-deformacion, motor-aquai, motor-geopot, motor-vulnerabilidad-vivienda, motor-vias, motor-gerencia, motor-estructural, motor-acero-frio, motor-topovia, motor-analisis, motor-geotecnia, motor-licuacion, motor-redes, contrato-motor, dag-proyecto, eval-stats, rag-audit-kit]
+        paquete: [motor-apu, motor-deformacion, motor-aquai, motor-geopot, motor-vulnerabilidad-vivienda, motor-vias, motor-gerencia, motor-estructural, motor-acero-frio, motor-topovia, motor-analisis, motor-geotecnia, motor-licuacion, motor-redes, motor-concreto, orquestador, contrato-motor, dag-proyecto, eval-stats, rag-audit-kit]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -184,6 +184,17 @@ jobs:
       - name: Correr pytest
         working-directory: packages/${{ matrix.paquete }}
         run: pytest tests/ -v
+
+  # Registro de motores (docs/REGISTRO_MOTORES.md): se genera del código; si un router cambia y el documento no, falla.
+  registro-motores:
+    name: 📋 Registro de motores al día
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '${{ env.PYTHON_VERSION }}' }
+      - name: Verificar que el registro coincide con el código
+        run: python scripts/inventario/registro_motores.py --verificar
 
   # ── 4b. Cobertura de ingesta — idea 6 del roadmap (2026-09-16) ─────
   # No re-extrae del PDF fuente (gitignored, no viaja con el checkout) --
