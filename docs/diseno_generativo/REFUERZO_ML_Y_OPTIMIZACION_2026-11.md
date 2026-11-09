@@ -158,6 +158,25 @@ Lectura: (1) con solo 6 m planificar no mejora al corte a conveniencia en este c
 
 **Sigue abierto:** consumo por terreno del SICE-TAC (ninguna fuente accesible trae la tabla; se usa el factor de terreno de ANDI 2018) y parque de carga por municipio (el RUNT solo publica totales nacionales; cifra de 2020 de UPME con datos RUNT: 378.592 vehículos de carga, 71 % camiones, edad media mayor de 22 años; sin desglose para el Atlántico).
 
+## 5g. Mezcla de camiones por territorial (INVIAS, 2006–2011) (2026-11-09, issue #127)
+
+Fuente: libro `1922-cuadros-trafico-promedio-diario.xlsx` descargado de INVIAS (tránsito promedio diario semanal, TPDS, por estación de conteo y territorial; el archivo original no se versiona). Se procesa con `scripts/transporte/composicion_camiones_invias.py` y deja `data/transporte/composicion_camiones_invias.csv` (3.837 filas, 868 estaciones, años 2006 a 2011). **Es un libro de Excel, no un PDF, y las series son de estaciones de conteo, no de peajes; termina en 2011.**
+
+Mezcla de camiones 2011 (% de los camiones contados, n estaciones; clases INVIAS C-2P, C-2G, C-3-4, C-5, >C-5):
+
+| Territorial | n | C-2P | C-2G | C-3-4 | C-5 | >C-5 |
+|---|---|---|---|---|---|---|
+| Atlántico | 15 | 27,7 | 24,5 | 12,9 | 9,3 | 25,6 |
+| Bolívar | 17 | 20,4 | 25,1 | 17,5 | 9,7 | 27,4 |
+| Magdalena | 18 | 18,1 | 22,8 | 10,8 | 9,6 | 38,8 |
+| Cesar | 23 | 16,9 | 26,9 | 9,3 | 7,9 | 39,0 |
+| Antioquia | 49 | 28,0 | 38,1 | 13,9 | 6,3 | 13,8 |
+| Cundinamarca | 46 | 31,3 | 33,4 | 11,8 | 8,4 | 15,0 |
+| Valle | 57 | 24,7 | 29,8 | 13,6 | 10,4 | 21,6 |
+| Total (22 territoriales) | 569 | 26,0 | 31,1 | 12,1 | 9,4 | 21,4 |
+
+Lectura: en la Costa Caribe (Atlántico, Bolívar, Magdalena, Cesar) la proporción de camiones de más de cinco ejes es de 26 a 39 %, frente a 14–15 % en Antioquia y Cundinamarca; en el interior pesan más los camiones de dos ejes. Es la mezcla que circula por la vía, no el parque registrado ni la oferta de alquiler; la suma entre estaciones cuenta varias veces el mismo camión. La equivalencia con el catálogo (C-2P ≈ liviano, C-2G ≈ sencillo, C-3-4 ≈ C3, C-5 ≈ minimula, >C-5 ≈ tractomula) es una inferencia no verificada: las definiciones de clase no están en el libro. Datos de hace 15 años: sirven como señal de tendencia territorial, no como flota actual.
+
 ## 6. Qué no hace este documento
 
 No prueba que un modelo aprendido supere a la enumeración exacta para vigas aisladas (la medición de la sección 2 sugiere que no); no valida las cantidades contra planos reales; no incluye traslapos ni ganchos suplementarios.
