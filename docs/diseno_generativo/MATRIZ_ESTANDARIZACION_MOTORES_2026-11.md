@@ -11,7 +11,7 @@ Fecha: 2026-11-09. Estado: inventario y plan; solo lo marcado «hecho» tiene c�
 | 3 | `exacto(caso)` | Optimizador de referencia (búsqueda local, rejilla, DE o NSGA-II) | `muro_optimizador.py`, `zapata*.py` |
 | 4 | `criterio` | Costo APU + λ·CO₂ con `Economia` | `economia_concreto.py` |
 | 5 | Escenario de precios | `muestrear(Economia, rng)` con sigma calibrado | `precios_distribucion.py` (hecho) |
-| 6 | Indexación | Llevar un precio a la fecha del proyecto con ICOCED | `scripts/precios/indices_dane.py` (hecho, falta integrar a `Economia`) |
+| 6 | Indexación | Llevar un precio a la fecha del proyecto con ICOCED | `Economia.indexar_a` + `indices_icoced.py` (hecho) |
 | 7 | Sustituto | LightGBM entrenado sobre etiquetas del `exacto`; clasificación para variables discretas | `scripts/surrogate_muro/` |
 | 8 | Guardia | Re-verificación independiente + intervalo conforme + detección fuera de distribución | Zapata y muro |
 | 9 | Exportación | JSON, memoria de cálculo, DXF | `muro_exportar.py`, `encofrado_dxf.py` |
@@ -27,7 +27,7 @@ Estado: **hecho** (código + pruebas), **parcial**, **plan**, **sin plan**. «Pr
 | Elemento | Estado | Norma en el corpus | Precio disponible | Dato público para validar | Pendiente principal |
 |---|---|---|---|---|---|
 | Viga | hecho | C.9–C.11, C.21 | concreto, acero, formaleta | — | Entrar al kit común |
-| Columna | hecho | C.10, C.21 | idem | UW-PEER (columnas) | Validar contra ensayos |
+| Columna | hecho; costo y CO₂ desde 2026-11-09 | C.10, C.21 | idem | UW-PEER (columnas) | Validar contra ensayos |
 | Zapata, pedestal | hecho | C.15, H | idem | — | Sustituto ya validado (0 inseguros) |
 | Muro de contención en voladizo / contrafuertes / anclaje | hecho | H.6, C.14 | idem + 623,1 | — | Contraste con ejemplo publicado; momento vertical con contrafuertes sin calibrar |
 | Pilote prefabricado / in situ | plan | H.4.4 (40 chunks) | 620,1 / 621,1 / 621,2 | SPT Atlántico: **no hay fuente pública verificada** | Perfiles SPT reales; motor de capacidad |
