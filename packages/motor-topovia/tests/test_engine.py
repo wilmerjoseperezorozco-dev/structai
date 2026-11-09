@@ -220,3 +220,38 @@ class TestUtilidades:
     def test_azimut_a_rumbo_sw(self):
         assert "S" in azimut_a_rumbo(225.0)
         assert "W" in azimut_a_rumbo(225.0)
+
+
+# ---------------------------------------------------------------------------
+# Auditoría 2026-11-09: ecuación AASHTO-93 resuelta con raíz exacta
+# ---------------------------------------------------------------------------
+def _log_w18_aashto(sn, mr, zr, so, po, pt):
+    return (zr * so + 9.36 * math.log10(sn + 1) - 0.20
+            + math.log10((po - pt) / (po - 1.5)) / (0.40 + 1094.0 / (sn + 1) ** 5.19)
+            + 2.32 * math.log10(mr) - 8.07)
+
+
+def test_sn_flexible_satisface_la_ecuacion_con_po_distinto_de_4_2():
+    from src.engine import calcular_sn_flexible
+    from statistics import NormalDist
+    zr = NormalDist().inv_cdf(1 - 0.95)
+    sn = calcular_sn_flexible(5e6, 8000, 0.95, 0.45, 4.5, 2.5)
+    assert abs(_log_w18_aashto(sn, 8000, zr, 0.45, 4.5, 2.5) - math.log10(5e6)) < 0.005
+
+
+def test_sn_flexible_confiabilidad_no_tabulada_no_se_redondea_a_0_85():
+    from src.engine import calcular_sn_flexible
+    assert calcular_sn_flexible(1e6, 5000, 0.80) < calcular_sn_flexible(1e6, 5000, 0.85)
+
+
+def test_sn_flexible_rechaza_confiabilidad_fuera_de_rango():
+    from src.engine import calcular_sn_flexible
+    for r in (0.5, 1.0, 1.2, -0.1):
+        with pytest.raises(ValueError):
+            calcular_sn_flexible(1e6, 5000, r)
+
+
+def test_sn_flexible_sin_solucion_lanza_error_en_vez_de_devolver_un_valor_sin_converger():
+    from src.engine import calcular_sn_flexible
+    with pytest.raises(ValueError):
+        calcular_sn_flexible(1e15, 3000)

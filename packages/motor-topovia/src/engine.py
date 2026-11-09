@@ -5,6 +5,7 @@ Poligonales, volúmenes, curvas, pavimentos — Colombia
 ══════════════════════════════════════════════════════════════
 """
 import math
+from statistics import NormalDist
 from typing import Optional
 from .models import (
     Punto, Vertice, LadoPoligonal, ResultadoPoligonal,
@@ -391,6 +392,10 @@ def cbr_a_mr(cbr: float) -> float:
     return 2555.0 * cbr**0.64
 
 
+SN_MIN = 0.5  # valor mínimo práctico de SN
+SN_MAX = 15.0  # tope de búsqueda; por encima no hay diseño razonable
+
+
 def calcular_sn_flexible(
     w18: float,
     mr_psi: float,
@@ -400,38 +405,34 @@ def calcular_sn_flexible(
     pt: float = 2.0,
 ) -> float:
     """
-    Calcula SN requerido con AASHTO 93 (pavimento flexible).
-    Resuelve iterativamente la ecuación fundamental.
+    SN requerido con la ecuación AASHTO 93 (pavimento flexible), resuelta por raíz exacta (Brent).
+
+    ZR se calcula como la inversa de la normal estándar para cualquier confiabilidad en (0,5; 1);
+    el término de serviciabilidad usa (po - 1,5) como en la ecuación original. Si el W18 pedido no
+    se alcanza con SN <= SN_MAX lanza ValueError (antes devolvía el último valor iterado sin avisar).
     """
-    zr_table = {
-        0.60: -0.253, 0.75: -0.674, 0.85: -1.037,
-        0.90: -1.282, 0.95: -1.645, 0.99: -2.327, 0.999: -3.090,
-    }
-    zr = zr_table.get(confiabilidad, -1.037)
-    delta_psi = po - pt
+    from scipy.optimize import brentq
+
+    if not 0.5 < confiabilidad < 1.0:
+        raise ValueError(f"confiabilidad debe estar en (0,5; 1), recibido {confiabilidad}")
+    if w18 <= 0 or mr_psi <= 0:
+        raise ValueError("w18 y mr_psi deben ser positivos")
+    if not pt < po or po <= 1.5:
+        raise ValueError("Se requiere 1,5 < po y pt < po")
+    zr = NormalDist().inv_cdf(1.0 - confiabilidad)
     log_w18 = math.log10(w18)
+    termino_psi = math.log10((po - pt) / (po - 1.5))
+    constante = zr * so - 0.20 + 2.32 * math.log10(mr_psi) - 8.07
 
-    sn = 1.0
-    for _ in range(200):
-        term1 = zr * so
-        term2 = 9.36 * math.log10(sn + 1) - 0.20
-        term3 = math.log10(delta_psi / (4.2 - 1.5)) / (
-            0.40 + 1094.0 / (sn + 1) ** 5.19
-        )
-        term4 = 2.32 * math.log10(mr_psi) - 8.07
-        w18_calc = term1 + term2 + term3 + term4
+    def residuo(sn: float) -> float:
+        return (constante + 9.36 * math.log10(sn + 1.0)
+                + termino_psi / (0.40 + 1094.0 / (sn + 1.0) ** 5.19)) - log_w18
 
-        if abs(w18_calc - log_w18) < 0.001:
-            break
-
-        if w18_calc < log_w18:
-            sn += 0.05
-        else:
-            sn -= 0.01
-            if sn < 0.5:
-                sn = 0.5
-
-    return round(sn, 2)
+    if residuo(SN_MIN) >= 0:
+        return round(SN_MIN, 2)
+    if residuo(SN_MAX) < 0:
+        raise ValueError(f"W18={w18:.3g} no se alcanza con SN <= {SN_MAX}: revisar tránsito o subrasante")
+    return round(brentq(residuo, SN_MIN, SN_MAX, xtol=1e-6), 2)
 
 
 def disenar_pavimento_flexible(
