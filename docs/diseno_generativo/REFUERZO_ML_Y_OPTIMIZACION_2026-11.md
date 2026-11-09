@@ -270,6 +270,71 @@ La estimación de prórroga **no se atenúa** al controlar por economía (1,17 s
 
 **Límites.** Mismos de 5i (ecológico, 21 grupos, mezcla de 2011); con k = 6 en M4 quedan 14 grados de libertad; el PIB es de 2016–2023 y los contratos de 2016–2026; no hay covariables de seguridad, pobreza ni capacidad institucional; las cinco especificaciones no son pruebas independientes ni se corrigieron entre sí. Es un chequeo de sensibilidad de una asociación ya detectada, no una nueva prueba.
 
+## 5k. Cierre de confusores, variables nuevas disponibles y huecos por cruce (2026-11-09, issue #127)
+
+### Cierre de covariables de seguridad y de capacidad institucional
+
+Script: `scripts/transporte/cruces_seguridad_institucional.py`; resultados en `data/transporte/cruces_seguridad_institucional.json`. Mismo modelo en dos etapas de 5j, añadiendo cada covariable sobre M1 (pesados + log PIB). Todas salen de datos.gov.co y cubren los 21 departamentos:
+
+- **Seguridad:** homicidios de la Policía Nacional (`m8fd-ahd9`), 2016–2025, por cada 100 mil personas de 5 a 16 años.
+- **Capacidad institucional:** índice de desempeño institucional MIPG/FURAG de las alcaldías (`gfs5-jqxi`), promedio por departamento.
+- **Amenazas hidrometeorológicas:** emergencias UNGRD por inundación, deslizamiento, avenida torrencial, creciente, vendaval o movimiento en masa (`wwkg-r6te`, solo 2019–2022), por 100 mil personas de 5 a 16 años.
+- **Inversión en transporte:** log del valor de proyectos SGR del sector Transporte (`mzgh-shtp`).
+
+| Prórroga: modelo | OR por +10 pp de pesados | IC 95 % | p (t) | gl |
+|---|---|---|---|---|
+| M1 pesados + log PIB | 1,166 | 1,005 a 1,352 | 0,043 | 18 |
+| + seguridad (homicidios) | 1,198 | 1,036 a 1,384 | 0,018 | 17 |
+| + institucional (MIPG) | 1,162 | 0,996 a 1,357 | 0,056 | 17 |
+| + amenazas hidro (UNGRD) | 1,205 | 1,042 a 1,394 | 0,015 | 17 |
+| + inversión SGR transporte | 1,222 | 1,049 a 1,424 | 0,013 | 17 |
+| conjunto: PIB + seguridad + institucional + hidro | 1,217 | 1,047 a 1,416 | 0,014 | 15 |
+
+**La asociación de la prórroga con los pesados no se explica por ninguna de las covariables:** el OR se mantiene en 1,16 a 1,22. Con el control institucional el p sube a 0,056, en el borde de 0,05; no se puede decir que sobreviva ni que no, y ese es el confusor más relevante. Las covariables casi no se relacionan con el efecto departamental de la prórroga (Spearman: homicidios 0,22; institucional −0,15; hidro 0,17; SGR −0,03; PIB 0,16) ni con los pesados (|ρ| ≤ 0,39).
+
+**Suspensión: no hay efecto con ninguna combinación** (p entre 0,07 y 0,22). Esto confirma que el p = 0,026 de 5j fue un artefacto de especificación y se descarta como hallazgo.
+
+Debilidades de estas covariables, medidas o inferidas: (i) la población departamental total no está cargada, así que las tasas usan la población de 5 a 16 años del MEN como proxy de escala, válido solo si esa población es aproximadamente proporcional a la total; (ii) el recurso de emergencias UNGRD ubica a Valle del Cauca entre los de menos emergencias (36 por 100 mil, frente a 435 en Cauca), lo que sugiere subregistro o diferencias de reporte y no menor amenaza; (iii) el índice MIPG se promedió sin ponderar entre municipios y años disponibles, sin verificar la cobertura temporal.
+
+### Variables nuevas disponibles (verificadas en el catálogo de datos.gov.co)
+
+| Recurso | Qué trae | Qué cierra | Estado |
+|---|---|---|---|
+| `8yi9-t44c` Tráfico Vehicular ANI | Tráfico mensual por peaje y categoría, 2014–2026; 132 peajes con datos en 2024 | Mezcla reciente con la **misma categoría que la tarifa**; elimina el mapeo clase INVIAS → categoría y el desfase de 2011 (solo concesiones ANI) | Estructura verificada; falta el cruce |
+| `7gj8-j6i3` Tarifas ANI | Tarifa por peaje y categoría con `ultimofechacambiopeaje` | Fecha de vigencia de la tarifa | Ya usado sin la fecha |
+| `qac6-9mkr` Recaudo Vehicular ANI | Recaudo por peaje y periodo | Costo real pagado frente al esperado | Estructura verificada |
+| `atkg-vhpp` Pesaje de carga | 10,9 millones de registros: configuración (C2, 3S3, 3S2, 2S2, C3…), peso registrado, peso máximo, estación (126) | Mezcla real de carga pesada y **sobrecarga**; las configuraciones coinciden con las designaciones de la Res. 2022 usadas en `flota_construccion.py` | Rango de fechas y ubicación de estaciones sin verificar |
+| `wwkg-r6te` / `rgre-6ak4` / `2343-nuqp` UNGRD | Emergencias con vías y puentes averiados | Extender 2019–2022 a 2023–2024 | Solo se usó el primero |
+| `mzgh-shtp` SGR | Ejecución física y financiera por proyecto | Retrasos de obra de otra fuente | Solo se usó el valor |
+| `cdw6-jexv` y hermanos SIEVCAC | Eventos del conflicto armado por municipio | Seguridad más específica que homicidios | No usado |
+| `ufg7-is7r`, `ie7y-asdn` Red vial | Postes de referencia y tramos con superficie | Geolocalizar estaciones de conteo y medir superficie | No usado |
+| `ubicaciones.jsonl` (caché SECOP) | Municipio de la obra frente al de la entidad | Subir n de 21 a cientos | Ya extraído, sin usar en los cruces |
+
+### Huecos por cruce
+
+| Cruce | Hueco | Efecto sobre la conclusión | Cómo cerrarlo |
+|---|---|---|---|
+| 1. Tarifas × mezcla | Clase INVIAS → categoría de peaje sin verificar. La búsqueda encuentra al menos dos esquemas: siete categorías (III y IV camiones de 2 ejes; V de 3 y 4; VI de 5; VII de 6) en una tabla INVIAS de 2021, y un esquema de cinco categorías (III = 3 y 4 ejes) en un proyecto de resolución de 2026. No leí los PDFs completos y no confirmé cuál rige. Eso no explica por sí solo los 29 peajes con III < II | Alto: invalida H0 en el 18 % de los peajes | Usar tráfico ANI por categoría con la tarifa de la misma categoría |
+| 1. | Mezcla 2011 con tarifas actuales | Alto | Tráfico ANI 2014–2026 |
+| 1. | Tarifas sin fecha en el análisis; coordenadas con ruido (Puerto Triunfo en Boyacá) | Medio | Usar `ultimofechacambiopeaje`; validar por nombre del tramo |
+| 1. | Solo concesiones ANI cubren el tráfico por categoría; faltan los peajes INVIAS | Medio | Pedir tráfico al INVIAS |
+| 2–5. | Departamento = ubicación de la entidad, no de la obra. n = 21 | **Alto**: limita todo el poder estadístico y fuerza el diseño ecológico | Usar `ubicaciones.jsonl` a nivel municipal; modelo multinivel |
+| 2–5. | Predictor de 2011, contratos de 2016–2026 | Alto | Mezcla ANI o pesaje 2024 |
+| 2–5. | `valor_vial` por expresión regular sin validar precisión | Medio | Muestra etiquetada a mano |
+| 3. | Prórroga binaria (`dias_adicionados > 0`) sin tiempo ni causa; contratos recientes con menos exposición | Medio: se mitigó con efectos fijos de año | Análisis de supervivencia con la fecha de la modificación; separar causas |
+| 3. | 10 % de contratos excluidos por duración no interpretable («Dia(s)» sin número) | Bajo a medio | Calcular duración con fecha de inicio y fin |
+| 4. | Avance real = esperado en el 86 % de los registros | Alto: la variable casi no mide | Usar `valor_pagado`, `valor_facturado` y `valor_pendiente_de_ejecucion` de los contratos |
+| Covariables | Población total ausente (proxy 5–16); subregistro UNGRD; MIPG sin ponderar ni verificar años | Medio | Proyecciones DANE; 2023–2024 de UNGRD; ponderar por municipio |
+| Transversal | Varias especificaciones y cruces explorados sin una corrección global; Holm cubre solo cada familia | Medio | Registrar hipótesis y modelo antes del siguiente cruce; reservar datos nuevos para confirmar |
+
+### Orden recomendado
+
+1. Tráfico ANI × tarifas (cierra el cruce 1 completo: mapeo, desfase y fecha; bajo costo).
+2. Ubicación municipal de obras y modelo multinivel (cierra el principal límite de potencia en los cruces 2 a 5).
+3. Ejecución con `valor_pagado/facturado/pendiente` y prórroga como tiempo hasta el evento.
+4. Pesaje de carga: sobrecarga y mezcla real por configuración, previa geolocalización de las estaciones.
+5. Población DANE, SIEVCAC y UNGRD 2023–2024 para completar covariables.
+
 ## 6. Qué no hace este documento
 
 No prueba que un modelo aprendido supere a la enumeración exacta para vigas aisladas (la medición de la sección 2 sugiere que no); no valida las cantidades contra planos reales; no incluye traslapos ni ganchos suplementarios.

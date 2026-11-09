@@ -1,0 +1,312 @@
+{
+ "rho_pesados": {
+  "homicidios_x100k": -0.3311688311688311,
+  "desempeno_inst": -0.03636363636363636,
+  "emergencias_hidro_x100k": -0.3922077922077922,
+  "log_sgr_transporte": 0.37272727272727274,
+  "log_pib": 0.2935064935064935
+ },
+ "prorroga": {
+  "rho_efecto_depto": {
+   "homicidios_x100k": 0.21818181818181817,
+   "desempeno_inst": -0.15064935064935067,
+   "emergencias_hidro_x100k": 0.16753246753246753,
+   "log_sgr_transporte": -0.02857142857142857,
+   "log_pib": 0.15844155844155844
+  },
+  "modelos": {
+   "M1 pesados + log PIB": {
+    "k": 3,
+    "gl": 18,
+    "OR_por_10pp": 1.1658034242585102,
+    "ic95": [
+     1.0050555275995325,
+     1.3522612300426098
+    ],
+    "p_t": 0.0434335994581566,
+    "R2": 0.22872599862634757
+   },
+   "+ seguridad (homicidios)": {
+    "k": 4,
+    "gl": 17,
+    "OR_por_10pp": 1.1975021844381266,
+    "ic95": [
+     1.0360408696186223,
+     1.3841263639164738
+    ],
+    "p_t": 0.017715648702952218,
+    "R2": 0.34615472887354837
+   },
+   "+ institucional (MIPG)": {
+    "k": 4,
+    "gl": 17,
+    "OR_por_10pp": 1.1621944459753315,
+    "ic95": [
+     0.995641229102831,
+     1.3566090784257852
+    ],
+    "p_t": 0.05608996021321043,
+    "R2": 0.2323667333698768
+   },
+   "+ amenazas hidro (UNGRD)": {
+    "k": 4,
+    "gl": 17,
+    "OR_por_10pp": 1.2052050469723528,
+    "ic95": [
+     1.0417303926736952,
+     1.394333135965832
+    ],
+    "p_t": 0.015125829626117564,
+    "R2": 0.3524763342725784
+   },
+   "+ inversión SGR transporte": {
+    "k": 4,
+    "gl": 17,
+    "OR_por_10pp": 1.2224093517597348,
+    "ic95": [
+     1.049454486775959,
+     1.423867963879276
+    ],
+    "p_t": 0.01290432549686182,
+    "R2": 0.3450838956037616
+   },
+   "conjunto: PIB + seguridad + institucional + hidro": {
+    "k": 6,
+    "gl": 15,
+    "OR_por_10pp": 1.2174656541816549,
+    "ic95": [
+     1.046555180956172,
+     1.4162871161344313
+    ],
+    "p_t": 0.01422332481118441,
+    "R2": 0.4210242007332071
+   }
+  }
+ },
+ "suspension": {
+  "rho_efecto_depto": {
+   "homicidios_x100k": -0.00909090909090909,
+   "desempeno_inst": -0.212987012987013,
+   "emergencias_hidro_x100k": 0.17662337662337665,
+   "log_sgr_transporte": 0.01038961038961039,
+   "log_pib": -0.23376623376623373
+  },
+  "modelos": {
+   "M1 pesados + log PIB": {
+    "k": 3,
+    "gl": 18,
+    "OR_por_10pp": 1.1868661908795632,
+    "ic95": [
+     0.9586159316415649,
+     1.4694637430453963
+    ],
+    "p_t": 0.10921221259453104,
+    "R2": 0.2012263303680275
+   },
+   "+ seguridad (homicidios)": {
+    "k": 4,
+    "gl": 17,
+    "OR_por_10pp": 1.1828543189919807,
+    "ic95": [
+     0.9432243315435623,
+     1.4833632818486757
+    ],
+    "p_t": 0.13599091037111527,
+    "R2": 0.20214934742068236
+   },
+   "+ institucional (MIPG)": {
+    "k": 4,
+    "gl": 17,
+    "OR_por_10pp": 1.180555956382425,
+    "ic95": [
+     0.9452368492690296,
+     1.4744583510765663
+    ],
+    "p_t": 0.13361142724377045,
+    "R2": 0.20683790450688022
+   },
+   "+ amenazas hidro (UNGRD)": {
+    "k": 4,
+    "gl": 17,
+    "OR_por_10pp": 1.2220987235029317,
+    "ic95": [
+     0.9798143163440293,
+     1.5242942107237931
+    ],
+    "p_t": 0.07245884623396975,
+    "R2": 0.2527007940752468
+   },
+   "+ inversión SGR transporte": {
+    "k": 4,
+    "gl": 17,
+    "OR_por_10pp": 1.152571366878497,
+    "ic95": [
+     0.9112285595877134,
+     1.4578348557788976
+    ],
+    "p_t": 0.2194392470571295,
+    "R2": 0.2234876785585489
+   },
+   "conjunto: PIB + seguridad + institucional + hidro": {
+    "k": 6,
+    "gl": 15,
+    "OR_por_10pp": 1.2016912762413294,
+    "ic95": [
+     0.9470990950734685,
+     1.5247210465157255
+    ],
+    "p_t": 0.1207867378471065,
+    "R2": 0.28050175894413765
+   }
+  }
+ },
+ "covariables_por_departamento": {
+  "ANTIOQUIA": {
+   "homicidios_x100k": 167.4660592766473,
+   "desempeno_inst": 60.17526456412223,
+   "emergencias_hidro_x100k": 161.96287734895157,
+   "log_sgr_transporte": 11.883341026760235,
+   "log_pib": 5.115719832797716
+  },
+  "ATLANTICO": {
+   "homicidios_x100k": 123.19326738837574,
+   "desempeno_inst": 61.90102962962964,
+   "emergencias_hidro_x100k": 52.410676427808525,
+   "log_sgr_transporte": 11.323048365531045,
+   "log_pib": 4.595179575736423
+  },
+  "BOLIVAR": {
+   "homicidios_x100k": 108.76206361720907,
+   "desempeno_inst": 54.316958801498124,
+   "emergencias_hidro_x100k": 76.13769803472985,
+   "log_sgr_transporte": 11.780386396554642,
+   "log_pib": 4.503478855931966
+  },
+  "BOYACA": {
+   "homicidios_x100k": 36.17158213596552,
+   "desempeno_inst": 65.10782181571815,
+   "emergencias_hidro_x100k": 109.4879728330795,
+   "log_sgr_transporte": 11.576900080926988,
+   "log_pib": 4.3654986081281475
+  },
+  "CALDAS": {
+   "homicidios_x100k": 96.79801302275625,
+   "desempeno_inst": 63.64535308641975,
+   "emergencias_hidro_x100k": 253.7423642344096,
+   "log_sgr_transporte": 10.990736437122068,
+   "log_pib": 4.144376940194943
+  },
+  "CAQUETA": {
+   "homicidios_x100k": 135.88159699348805,
+   "desempeno_inst": 55.24799375,
+   "emergencias_hidro_x100k": 100.16306871564488,
+   "log_sgr_transporte": 11.037846721406567,
+   "log_pib": 3.553936400339423
+  },
+  "CASANARE": {
+   "homicidios_x100k": 81.12595334213242,
+   "desempeno_inst": 65.52638245614035,
+   "emergencias_hidro_x100k": 246.9521677170386,
+   "log_sgr_transporte": 11.66076675996106,
+   "log_pib": 4.109669226358453
+  },
+  "CAUCA": {
+   "homicidios_x100k": 251.10388156672593,
+   "desempeno_inst": 58.68436865079366,
+   "emergencias_hidro_x100k": 434.7888216213127,
+   "log_sgr_transporte": 11.314047445703785,
+   "log_pib": 4.195272723417253
+  },
+  "CESAR": {
+   "homicidios_x100k": 96.099482842101,
+   "desempeno_inst": 61.647243333333336,
+   "emergencias_hidro_x100k": 81.78679390817106,
+   "log_sgr_transporte": 12.096790260625568,
+   "log_pib": 4.194786523138434
+  },
+  "CHOCO": {
+   "homicidios_x100k": 163.54494995917045,
+   "desempeno_inst": 61.76492,
+   "emergencias_hidro_x100k": 252.66969896604638,
+   "log_sgr_transporte": 11.581818976241548,
+   "log_pib": 3.548426426800053
+  },
+  "CUNDINAMARCA": {
+   "homicidios_x100k": 83.5101696600286,
+   "desempeno_inst": 65.14491379310344,
+   "emergencias_hidro_x100k": 116.54991677343331,
+   "log_sgr_transporte": 11.886399728057967,
+   "log_pib": 5.454246706688469
+  },
+  "GUAJIRA": {
+   "homicidios_x100k": 79.00363785492273,
+   "desempeno_inst": 63.18040689655172,
+   "emergencias_hidro_x100k": 53.19056806074005,
+   "log_sgr_transporte": 11.849947277316259,
+   "log_pib": 3.940877292497042
+  },
+  "HUILA": {
+   "homicidios_x100k": 116.67079119001812,
+   "desempeno_inst": 63.97677342342343,
+   "emergencias_hidro_x100k": 320.1162317290268,
+   "log_sgr_transporte": 11.346620838181035,
+   "log_pib": 4.145294204623143
+  },
+  "MAGDALENA": {
+   "homicidios_x100k": 113.51787512069491,
+   "desempeno_inst": 55.10048587570621,
+   "emergencias_hidro_x100k": 66.5766997329481,
+   "log_sgr_transporte": 12.095930132426721,
+   "log_pib": 4.067341182545032
+  },
+  "META": {
+   "homicidios_x100k": 127.90518028691801,
+   "desempeno_inst": 62.730214942528725,
+   "emergencias_hidro_x100k": 253.71131016598795,
+   "log_sgr_transporte": 12.000176753995307,
+   "log_pib": 4.464523023631037
+  },
+  "NARINO": {
+   "homicidios_x100k": 148.68566052083804,
+   "desempeno_inst": 59.704616797900265,
+   "emergencias_hidro_x100k": 239.99020448144975,
+   "log_sgr_transporte": 11.680983338062603,
+   "log_pib": 4.123491280148024
+  },
+  "NORTE DE SANTANDER": {
+   "homicidios_x100k": 174.23947590322373,
+   "desempeno_inst": 61.11212291666667,
+   "emergencias_hidro_x100k": 335.1729331978408,
+   "log_sgr_transporte": 11.38116963280593,
+   "log_pib": 4.140131564679956
+  },
+  "QUINDIO": {
+   "homicidios_x100k": 212.33210691963296,
+   "desempeno_inst": 65.1331275362319,
+   "emergencias_hidro_x100k": 241.58872290438407,
+   "log_sgr_transporte": 10.81783327177046,
+   "log_pib": 3.850444890881152
+  },
+  "SANTANDER": {
+   "homicidios_x100k": 85.0687622096129,
+   "desempeno_inst": 63.00775287356322,
+   "emergencias_hidro_x100k": 154.22111452294726,
+   "log_sgr_transporte": 11.774150160086648,
+   "log_pib": 4.749910404167261
+  },
+  "TOLIMA": {
+   "homicidios_x100k": 118.57054015108085,
+   "desempeno_inst": 59.95529008180377,
+   "emergencias_hidro_x100k": 211.8006458839084,
+   "log_sgr_transporte": 11.505110625636277,
+   "log_pib": 4.266122903589284
+  },
+  "VALLE": {
+   "homicidios_x100k": 270.3972109285317,
+   "desempeno_inst": 65.29812489959838,
+   "emergencias_hidro_x100k": 36.29727753745397,
+   "log_sgr_transporte": 11.44464865747369,
+   "log_pib": 4.941539078275339
+  }
+ }
+}
