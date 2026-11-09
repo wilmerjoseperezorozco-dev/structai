@@ -43,3 +43,18 @@ El aprendizaje supervisado necesita etiquetas observadas (qué sistema funcionó
 - ¿Hay acceso a datos reales de fallas de impermeabilización (interventorías, aseguradoras, fabricantes) o a estudios de tiempos de maquinaria de obras propias?
 - Si no, ¿se acepta que el primer producto sea un motor de decisión con incertidumbre explícita, no un modelo entrenado?
 - Orden de ejecución: 1a, 1b y 1c, o empezar por el frente con mejor respaldo normativo (1a).
+
+## 6. Fase 1a: ejecución con datos sintéticos (2026-11-09)
+
+Código: `packages/motor-concreto/src/excavacion_estabilidad.py` y `excavacion_metricas.py`; ejercicio: `scripts/excavacion/comparar_alternativas_sintetico.py` (salida `data/excavacion/comparacion_sintetica.json`). **Todas las entradas del ejercicio son inventadas** (suelo c' = 10 kPa, φ' = 27°, H = 6 m, lindero a 8 m, COV de c' 0,30 y de tan φ' 0,10, consecuencia de falla 400 millones COP por metro, precio de excavación, consumo y factor de emisión). Sirve para validar la tubería, no para decidir una obra.
+
+El motor de taludes se contrastó con un cálculo independiente de momentos por intersección de polígonos (corte vertical φ = 0: número de estabilidad 4,25 en ambos). Una primera versión de la búsqueda del círculo crítico sobrestimaba el FS de taludes inclinados hasta 5 %; se corrigió y el desvío residual es menor a 1 %.
+
+| Alternativa (sintética) | Retiro (m) | ¿Cabe a 8 m? | IEG | FS medio | Pf | Costo total (millones COP/m) |
+|---|---|---|---|---|---|---|
+| Talud al máximo seguro (54,2°, FS 1,25) | 4,33 | sí | 0,82 | 1,25 | 8,4 % | 35,6 |
+| Talud 45° | 6,00 | sí | 0,77 | 1,44 | 0,9 % | 5,7 |
+| Talud 35° | 8,57 | no | 0,70 | 1,74 | 0,01 % | 2,2 |
+| Contención temporal | — | — | — | — | — | sin dimensionar |
+
+Lectura bajo esos supuestos: el ángulo que apenas cumple la Tabla H.2.4-1 es el más barato de excavar y el más caro una vez se pone precio al riesgo; entre las alternativas que caben en el predio, 45° minimiza el costo total. La conclusión depende de la consecuencia y de la variabilidad supuestas, no de datos de sitio. La probabilidad de falla es una estimación de confiabilidad de primer orden con FS log-normal, no una frecuencia observada.

@@ -1,0 +1,76 @@
+{
+  "sintetico": true,
+  "aviso": "Entradas inventadas para validar la tubería; no usar para decisiones de obra.",
+  "entradas": {
+    "altura_m": 6.0,
+    "ancho_fondo_m": 10.0,
+    "distancia_lindero_m": 8.0,
+    "suelo": {
+      "gamma": 18.0,
+      "c_kpa": 10.0,
+      "phi_deg": 27.0
+    },
+    "cov_c": 0.3,
+    "cov_tan_phi": 0.1,
+    "costo_consecuencia_cop": 400000000.0,
+    "precio_excavacion_cop_m3": 25000.0,
+    "consumo_gal_h": 6.0,
+    "rendimiento_m3_h": 40.0,
+    "factor_kgco2e_gal": 10.0
+  },
+  "fs_requerido": 1.25,
+  "resultados": [
+    {
+      "alternativa": "talud al máximo seguro (FS construcción 1,25)",
+      "angulo_deg": 54.2,
+      "bermas": [],
+      "retiro_horizontal_m": 4.33,
+      "cabe_en_predio": true,
+      "ieg": 0.822,
+      "area_m2_por_m": 73.0,
+      "gal_acpm_por_m_long": 10.9,
+      "kgco2e_por_m_long": 109.0,
+      "costo_excavacion_cop_por_m": 1824550,
+      "fs_medio": 1.25,
+      "prob_falla": 0.0844,
+      "costo_riesgo_cop_por_m": 33757877,
+      "costo_total_cop_por_m": 35582427
+    },
+    {
+      "alternativa": "talud 45°",
+      "angulo_deg": 45.0,
+      "bermas": [],
+      "retiro_horizontal_m": 6.0,
+      "cabe_en_predio": true,
+      "ieg": 0.769,
+      "area_m2_por_m": 78.0,
+      "gal_acpm_por_m_long": 11.7,
+      "kgco2e_por_m_long": 117.0,
+      "costo_excavacion_cop_por_m": 1950000,
+      "fs_medio": 1.44,
+      "prob_falla": 0.0094,
+      "costo_riesgo_cop_por_m": 3746614,
+      "costo_total_cop_por_m": 5696614
+    },
+    {
+      "alternativa": "talud 35°",
+      "angulo_deg": 35.0,
+      "bermas": [],
+      "retiro_horizontal_m": 8.57,
+      "cabe_en_predio": false,
+      "ieg": 0.7,
+      "area_m2_por_m": 85.7,
+      "gal_acpm_por_m_long": 12.9,
+      "kgco2e_por_m_long": 129.0,
+      "costo_excavacion_cop_por_m": 2142667,
+      "fs_medio": 1.74,
+      "prob_falla": 0.0001,
+      "costo_riesgo_cop_por_m": 20361,
+      "costo_total_cop_por_m": 2163028
+    },
+    {
+      "alternativa": "contención temporal (entibado/pantalla)",
+      "nota": "sin dimensionar en esta fase; no entra al ranking"
+    }
+  ]
+}
