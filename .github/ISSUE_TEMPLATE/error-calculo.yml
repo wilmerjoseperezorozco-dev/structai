@@ -1,0 +1,20 @@
+name: Resultado de cálculo que no coincide
+description: Un motor devuelve un valor distinto de una referencia (manual, software, norma).
+labels: [motor]
+body:
+  - type: input
+    id: endpoint
+    attributes: { label: Endpoint o motor, placeholder: "POST /redes/permanente" }
+    validations: { required: true }
+  - type: textarea
+    id: entrada
+    attributes: { label: Entrada exacta (JSON), render: json }
+    validations: { required: true }
+  - type: textarea
+    id: esperado
+    attributes: { label: Valor esperado y su referencia, description: "Fuente, software o cálculo a mano que lo respalda." }
+    validations: { required: true }
+  - type: textarea
+    id: obtenido
+    attributes: { label: Valor obtenido }
+    validations: { required: true }

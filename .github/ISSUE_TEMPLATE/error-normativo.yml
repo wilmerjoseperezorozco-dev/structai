@@ -1,0 +1,17 @@
+name: Cita o contenido normativo incorrecto
+description: Una respuesta cita mal una norma, un numeral, o el texto cargado no coincide con la fuente.
+labels: [normativa]
+body:
+  - type: input
+    id: norma
+    attributes: { label: Norma y numeral, placeholder: "NSR-10 C.11.5.6.1" }
+    validations: { required: true }
+  - type: textarea
+    id: que
+    attributes: { label: Qué dice StructAI y qué dice la fuente, description: "Pegue ambos textos y la fuente (documento, página)." }
+    validations: { required: true }
+  - type: dropdown
+    id: vigencia
+    attributes:
+      label: ¿Es un problema de vigencia (decreto o resolución modificatoria)?
+      options: ["No sé", "Sí", "No"]

@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Vulnerabilidad de seguridad
+    url: https://github.com/wilmerjoseperezorozco-dev/structai/security/policy
+    about: No abra un issue público; vea SECURITY.md.
+  - name: Preguntas y alianzas
+    url: https://github.com/wilmerjoseperezorozco-dev/structai/discussions
+    about: Preguntas de uso, colaboración institucional y revisión técnica independiente.

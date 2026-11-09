@@ -141,6 +141,6 @@ Arquitectura, estructura del monorepo, despliegue y secrets: [`docs/DETALLE_TECN
 
 ## Colaboración, cita y licencia
 
-Se buscan alianzas con universidades, gremios y cámaras de comercio, sobre todo para la revisión técnica independiente: [`docs/contacto-institucional.md`](docs/contacto-institucional.md). Acceso educativo gratuito para programas de ingeniería civil. Para citar, usa el DOI de arriba o [`CITATION.cff`](CITATION.cff).
+Seguridad: [`SECURITY.md`](SECURITY.md). Se buscan alianzas con universidades, gremios y cámaras de comercio, sobre todo para la revisión técnica independiente: [`docs/contacto-institucional.md`](docs/contacto-institucional.md). Acceso educativo gratuito para programas de ingeniería civil. Para citar, usa el DOI de arriba o [`CITATION.cff`](CITATION.cff).
 
 Propiedad de Wilmer José Pérez Orozco, ver [`LICENSE`](LICENSE). Repositorio público con fines de demostración técnica, portafolio y colaboración académica; no es software de código abierto.

@@ -26,6 +26,17 @@ Generado por `scripts/inventario/matriz_madurez.py`; no editar a mano. No existe
 
 **Motor de geotecnia (asentamiento, capacidad portante).** REGLAS_MOTORES_DE_CALCULO.md declara que cumple las condiciones 1–3 en su primer corte (atestación heredada, no re-verificada aquí). **Límite:** Sin desplegar en producción; imagen de Cloud Run anterior a este motor.
 
+## Por qué hoy no se declara TRL 8–9
+
+- **Despliegue manual.** El despliegue a Cloud Run es manual; `infra/gcp/desplegar.sh` verifica la revisión antes de mover el tráfico, pero no hay despliegue continuo.
+- **Cobertura normativa incompleta.** Títulos A y B de la NSR-10 con cierre verbatim parcial (45,6 % y 41,9 % de los numerales auditados).
+- **Validación externa independiente limitada.** No hay revisión técnica independiente de la extracción normativa por un ingeniero estructural externo; el trabajo de grado aprobado (4,7/5,0) es una evaluación académica, no una validación profesional.
+- **Motores sin despliegue verificado.** Ningún motor cumple las cuatro condiciones de «medido a producción»; la condición 4 (llamada real en producción) no está verificada en ninguno. Desde el 9-nov-2026 `motor-concreto` y `orquestador` ya corren en la matriz de CI.
+- **Vulnerabilidades de dependencias pendientes.** El 9-nov-2026 había 15 alertas abiertas de Dependabot (6 altas, 7 medias, 2 bajas). El estado vigente es el de la pestaña Security del repositorio.
+- **Licencia no reutilizable.** El repositorio es de propiedad del autor y no es de código abierto; además, `ultralytics` (AGPL-3.0) exige revisión antes de ofrecer el motor de visión como servicio.
+- **Módulos BIM y de aprendizaje automático experimentales.** InfraCortex (YOLO) y los sustitutos de aprendizaje están desactivados por defecto o sin gobernanza completa.
+- **Investigación no equivale a validación profesional.** Los resultados del programa de investigación son señales estadísticas preregistradas; no sustituyen el criterio de un ingeniero responsable.
+
 ## Qué no se publica, y por qué
 
 - **Un único badge de madurez o de TRL**: comprime evidencias de naturaleza distinta y no se puede verificar en vivo.

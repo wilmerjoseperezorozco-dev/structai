@@ -57,5 +57,39 @@
     "concreto",
     "analisis",
     "orquestador_api"
+  ],
+  "limites_trl_8_9": [
+    {
+      "titulo": "Despliegue manual",
+      "hecho": "El despliegue a Cloud Run es manual; `infra/gcp/desplegar.sh` verifica la revisión antes de mover el tráfico, pero no hay despliegue continuo."
+    },
+    {
+      "titulo": "Cobertura normativa incompleta",
+      "hecho": "Títulos A y B de la NSR-10 con cierre verbatim parcial (45,6 % y 41,9 % de los numerales auditados)."
+    },
+    {
+      "titulo": "Validación externa independiente limitada",
+      "hecho": "No hay revisión técnica independiente de la extracción normativa por un ingeniero estructural externo; el trabajo de grado aprobado (4,7/5,0) es una evaluación académica, no una validación profesional."
+    },
+    {
+      "titulo": "Motores sin despliegue verificado",
+      "hecho": "Ningún motor cumple las cuatro condiciones de «medido a producción»; la condición 4 (llamada real en producción) no está verificada en ninguno. Desde el 9-nov-2026 `motor-concreto` y `orquestador` ya corren en la matriz de CI."
+    },
+    {
+      "titulo": "Vulnerabilidades de dependencias pendientes",
+      "hecho": "El 9-nov-2026 había 15 alertas abiertas de Dependabot (6 altas, 7 medias, 2 bajas). El estado vigente es el de la pestaña Security del repositorio."
+    },
+    {
+      "titulo": "Licencia no reutilizable",
+      "hecho": "El repositorio es de propiedad del autor y no es de código abierto; además, `ultralytics` (AGPL-3.0) exige revisión antes de ofrecer el motor de visión como servicio."
+    },
+    {
+      "titulo": "Módulos BIM y de aprendizaje automático experimentales",
+      "hecho": "InfraCortex (YOLO) y los sustitutos de aprendizaje están desactivados por defecto o sin gobernanza completa."
+    },
+    {
+      "titulo": "Investigación no equivale a validación profesional",
+      "hecho": "Los resultados del programa de investigación son señales estadísticas preregistradas; no sustituyen el criterio de un ingeniero responsable."
+    }
   ]
 }
