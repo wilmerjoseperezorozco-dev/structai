@@ -3,20 +3,21 @@
 Generado por `scripts/inventario/matriz_madurez.py`; no editar a mano. No existe una nota única de «madurez»: cada columna sale de una fuente distinta y se lee por separado.
 
 - **TRL**: escala de niveles de madurez tecnológica. Es **autoevaluado**, sin revisión externa; cada valor lleva su evidencia y el límite que impide subir. «?» = sin atestar (no significa que cumpla).
-- **Calidad**: se calcula del repositorio: funciones de prueba, presencia en la matriz de CI y, en motores, contrato `ResultadoMotor`, fallo explícito 422 y límite de tasa. **No se publica porcentaje de cobertura porque no se mide hoy.**
+- **Calidad**: se calcula del repositorio: funciones de prueba, presencia en la matriz de CI y, en motores, contrato `ResultadoMotor`, fallo explícito 422 y límite de tasa.
+- **Cobertura de líneas**: medida con `pytest-cov` el 2026-11-09 ([cobertura_medida.json](cobertura_medida.json), `scripts/inventario/cobertura.py`; CI la mide y la muestra en el resumen de cada corrida, sin umbral). Dice qué líneas ejecutan las pruebas, **no** si el cálculo es correcto: la corrección sale de la referencia independiente (condición 1 del registro).
 - **Operación**: «en producción verificado» exige revisión de Cloud Run y llamada real registradas (ver [REGISTRO_MOTORES.md](REGISTRO_MOTORES.md)).
 - **Licencias**: la peor clasificación entre las dependencias directas del subsistema ([LICENCIAS_DEPENDENCIAS.md](LICENCIAS_DEPENDENCIAS.md)).
 
-| Subsistema | TRL (autoevaluado) | Calidad de software | Operación | Licencias (dependencias directas) |
-|---|---|---|---|---|
-| Corpus normativo y consulta con citas (NSR-10, NTC, SG-SST, RAS) | TRL 6 | 31 pruebas · CI sí · job test-api de integración (RAG, límites de tasa, salud) | en producción | permisiva |
-| Motor de redes hidráulicas (permanente, periodo extendido, golpe de ariete) | TRL 4 | 105 pruebas · CI sí · contrato/422/límite sí | no desplegado | sin dependencias directas declaradas |
-| Motor de geotecnia (asentamiento, capacidad portante) | TRL 4 | 88 pruebas · CI sí · contrato/422/límite sí | no desplegado | sin dependencias directas declaradas |
-| Motor estructural / BIM por visión (InfraCortex, YOLO) | ? | 18 pruebas · CI sí | desactivado por defecto en producción | copyleft fuerte (red): revisar (ultralytics) |
-| Motor `licuacion` | ? | 53 pruebas · CI sí · contrato/422/límite sí | ? | sin dependencias directas declaradas |
-| Motor `concreto` | ? | 283 pruebas · CI sí · contrato/422/límite sí | ? | permisiva |
-| Motor `analisis` | ? | 18 pruebas · CI sí · contrato/422/límite sí | ? | sin dependencias directas declaradas |
-| Motor `orquestador_api` | ? | 75 pruebas · CI sí · contrato/422/límite sí | ? | sin dependencias directas declaradas |
+| Subsistema | TRL (autoevaluado) | Calidad de software | Cobertura de líneas | Operación | Licencias (dependencias directas) |
+|---|---|---|---|---|---|
+| Corpus normativo y consulta con citas (NSR-10, NTC, SG-SST, RAS) | TRL 6 | 31 pruebas · CI sí · job test-api de integración (RAG, límites de tasa, salud) | 95,1 % (solo rag-audit-kit y eval-stats; el pipeline RAG y apps/api no se miden) | en producción | permisiva |
+| Motor de redes hidráulicas (permanente, periodo extendido, golpe de ariete) | TRL 4 | 105 pruebas · CI sí · contrato/422/límite sí | 95,0 % | no desplegado | sin dependencias directas declaradas |
+| Motor de geotecnia (asentamiento, capacidad portante) | TRL 4 | 88 pruebas · CI sí · contrato/422/límite sí | 98,6 % | no desplegado | sin dependencias directas declaradas |
+| Motor estructural / BIM por visión (InfraCortex, YOLO) | ? | 18 pruebas · CI sí | 90,5 % | desactivado por defecto en producción | copyleft fuerte (red): revisar (ultralytics) |
+| Motor `licuacion` | ? | 53 pruebas · CI sí · contrato/422/límite sí | 100,0 % | ? | sin dependencias directas declaradas |
+| Motor `concreto` | ? | 283 pruebas · CI sí · contrato/422/límite sí | 96,3 % | ? | permisiva |
+| Motor `analisis` | ? | 18 pruebas · CI sí · contrato/422/límite sí | 98,4 % | ? | sin dependencias directas declaradas |
+| Motor `orquestador_api` | ? | 75 pruebas · CI sí · contrato/422/límite sí | 97,4 % | ? | sin dependencias directas declaradas |
 
 ## Evidencia y límites de los TRL atestados
 
@@ -40,6 +41,6 @@ Generado por `scripts/inventario/matriz_madurez.py`; no editar a mano. No existe
 ## Qué no se publica, y por qué
 
 - **Un único badge de madurez o de TRL**: comprime evidencias de naturaleza distinta y no se puede verificar en vivo.
-- **Porcentaje de cobertura de pruebas**: no hay medición; un número sin medir sería una afirmación sin sustento.
+- **Un badge de cobertura**: la cobertura de líneas no mide corrección y no cubre el pipeline RAG ni la API; un badge sugeriría más de lo que prueba.
 - **«Seguridad» o «calidad» como sello**: lo comprobable es el estado de alertas de dependencias, la auditoría de CI y las revisiones adversarias documentadas, no un sello.
 - **TRL 7 o superior**: exige operación por terceros medida y revisión técnica independiente; hoy no existen.

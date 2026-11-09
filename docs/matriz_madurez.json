@@ -18,7 +18,8 @@
         "estado": "en producción",
         "evidencia": "Cloud Run structai-api (us-east1), despliegue manual con verificación previa al tráfico (infra/gcp/desplegar.sh), /health y /data-status públicos, límites de tasa."
       },
-      "ci_extra": "job test-api de integración (RAG, límites de tasa, salud)"
+      "ci_extra": "job test-api de integración (RAG, límites de tasa, salud)",
+      "cobertura_alcance": "solo rag-audit-kit y eval-stats; el pipeline RAG y apps/api no se miden"
     },
     {
       "id": "redes",

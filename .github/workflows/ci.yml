@@ -169,7 +169,7 @@ jobs:
       - name: Instalar dependencias
         working-directory: packages/${{ matrix.paquete }}
         run: |
-          pip install pytest
+          pip install pytest pytest-cov
           if [ -f requirements.txt ]; then
             pip install -r requirements.txt
           elif [ -f pyproject.toml ]; then
@@ -181,9 +181,16 @@ jobs:
             python -c "import tomllib; d = tomllib.load(open('pyproject.toml','rb')); print('\n'.join(d['project'].get('dependencies', [])))" > /tmp/deps.txt
             [ -s /tmp/deps.txt ] && pip install -r /tmp/deps.txt
           fi
-      - name: Correr pytest
+      - name: Correr pytest con cobertura (solo medición, sin umbral)
         working-directory: packages/${{ matrix.paquete }}
-        run: pytest tests/ -v
+        run: |
+          if [ -d src ]; then T=src; else T=$(ls -d */ | grep -v '^tests/' | grep -v __pycache__ | head -1 | tr -d /); fi
+          pytest tests/ -v --cov="$T" --cov-config="$GITHUB_WORKSPACE/.coveragerc" --cov-report=term --cov-report=json:cobertura.json
+      - name: Resumen de cobertura
+        if: always()
+        working-directory: packages/${{ matrix.paquete }}
+        run: |
+          [ -f cobertura.json ] && python -c "import json;t=json.load(open('cobertura.json'))['totals'];print('| ${{ matrix.paquete }} | %.1f %% | %d de %d líneas |' % (t['percent_covered'],t['covered_lines'],t['num_statements']))" >> "$GITHUB_STEP_SUMMARY" || echo "| ${{ matrix.paquete }} | sin medición | |" >> "$GITHUB_STEP_SUMMARY"
 
   # Registro de motores (docs/REGISTRO_MOTORES.md): se genera del código; si un router cambia y el documento no, falla.
   registro-motores:

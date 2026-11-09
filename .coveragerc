@@ -1,0 +1,13 @@
+# Medición de cobertura de pruebas por paquete (ver .github/workflows/ci.yml, job test-motores).
+# Se mide el código del paquete, no sus pruebas. Sin umbral: hoy es solo medición.
+[run]
+omit =
+    */tests/*
+    */test_*.py
+    */conftest.py
+    */__pycache__/*
+[report]
+exclude_lines =
+    pragma: no cover
+    if __name__ == .__main__.:
+    raise NotImplementedError

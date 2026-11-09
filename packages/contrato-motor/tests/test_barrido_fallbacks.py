@@ -11,6 +11,8 @@ PATRON = re.compile(r"\.get\([^()]*,\s*-?[0-9]+(\.[0-9]+)?\)")
 
 PERMITIDOS = {
     ("motor-analisis/src/portico.py", 'q_local.get(idx, 0.0)'): "un elemento sin carga distribuida tiene carga 0",
+    ("motor-redes/src/gradiente.py", 'n.get("demanda_m3s", 0.0)'): "un nudo sin demanda declarada no consume caudal (uniones, embalses); la entrada pública siempre trae el campo",
+    ("motor-redes/src/periodo.py", 'n.get("demanda_m3s", 0.0)'): "ídem: sin demanda declarada el nudo no consume caudal; el patrón solo multiplica una demanda existente",
     ("motor-concreto/src/excavacion_estabilidad.py", 'kw.get("kh", 0.0)'): "sin kh explícito el cálculo es estático; el selector exige kh coherente con el sismo",
 }
 PREFIJO_PERMITIDO = {

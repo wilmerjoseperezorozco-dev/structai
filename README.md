@@ -35,12 +35,12 @@ No hay una nota única de «madurez»: cada columna sale de una fuente distinta.
 | Subsistema | TRL (autoevaluado) | Calidad de software | Operación |
 |---|---|---|---|
 | Corpus normativo y consulta con citas | 6 | CI de paquetes + job de integración; métricas RAGAS publicadas | En producción |
-| Motor de redes hidráulicas | 4 | 105 pruebas, CI, contrato, 422 y límite de tasa | No desplegado |
-| Motor de geotecnia | 4 | 88 pruebas, CI, contrato, 422 y límite de tasa | No desplegado |
+| Motor de redes hidráulicas | 4 | 105 pruebas, 95,0 % de líneas, CI, contrato, 422 y límite de tasa | No desplegado |
+| Motor de geotecnia | 4 | 88 pruebas, 98,6 % de líneas, CI, contrato, 422 y límite de tasa | No desplegado |
 | Demás motores con contrato (licuación, concreto, análisis, orquestador) | ? | Pruebas y CI; contrato, 422 y límite de tasa | ? |
 | Motor estructural / BIM por visión | ? | 18 pruebas, CI | Desactivado por defecto en producción |
 
-Lo que **no** se publica: un badge único de madurez, un porcentaje de cobertura (hoy no se mide) ni TRL 7 o superior (exige uso por terceros medido y revisión técnica independiente). El criterio de «motor medido a producción» tiene cuatro condiciones y hoy **ningún motor las cumple todas**: [`REGLAS_MOTORES_DE_CALCULO.md`](docs/REGLAS_MOTORES_DE_CALCULO.md).
+Lo que **no** se publica: un badge único de madurez, un badge de cobertura (la cobertura de líneas, medida el 9-nov-2026 con `pytest-cov`, dice qué ejecutan las pruebas, no si el cálculo es correcto) ni TRL 7 o superior (exige uso por terceros medido y revisión técnica independiente). El criterio de «motor medido a producción» tiene cuatro condiciones y hoy **ningún motor las cumple todas**: [`REGLAS_MOTORES_DE_CALCULO.md`](docs/REGLAS_MOTORES_DE_CALCULO.md).
 
 ## Tecnologías y librerías
 

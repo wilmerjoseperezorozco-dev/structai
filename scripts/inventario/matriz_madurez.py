@@ -24,6 +24,7 @@ import registro_motores as reg  # noqa: E402
 
 RAIZ = reg.RAIZ
 ENTRADA = RAIZ / "docs" / "matriz_madurez.json"
+COBERTURA = RAIZ / "docs" / "cobertura_medida.json"
 SALIDA = RAIZ / "docs" / "MATRIZ_MADUREZ.md"
 _ORDEN = ["copyleft fuerte (red): revisar", "copyleft fuerte: revisar", "copyleft débil: revisar", "revisar a mano", "sin verificar", "permisiva"]
 
@@ -38,7 +39,16 @@ def _peor_licencia(origenes: List[str], deps: List[Dict[str, str]]) -> str:
     return peor if not marcadas else f"{peor} ({', '.join(marcadas[:3])})"
 
 
-def filas(motores: List[dict], atest_reg: Dict[str, dict], datos: dict, deps: List[Dict[str, str]]) -> List[Dict[str, str]]:
+def _cobertura(paquetes: List[str], medida: dict, alcance: str = "") -> str:
+    datos = [medida["paquetes"].get(p) for p in paquetes]
+    if not paquetes or any(d is None or "porcentaje" not in d for d in datos):
+        return "sin medir"
+    cub, tot = sum(d["lineas_cubiertas"] for d in datos), sum(d["lineas_totales"] for d in datos)
+    texto = f"{100 * cub / tot:.1f} %".replace(".", ",")
+    return texto + (f" ({alcance})" if alcance else "")
+
+
+def filas(motores: List[dict], atest_reg: Dict[str, dict], datos: dict, deps: List[Dict[str, str]], medida: dict) -> List[Dict[str, str]]:
     por_id = {m["id"]: m for m in motores}
     resultado = []
     ids_atestados = set()
@@ -59,7 +69,7 @@ def filas(motores: List[dict], atest_reg: Dict[str, dict], datos: dict, deps: Li
             calidad = f"{pruebas} pruebas · CI {'sí' if en_ci else 'no'}" + (f" · {s['ci_extra']}" if s.get("ci_extra") else "")
         resultado.append({
             "nombre": s["nombre"], "trl": f"TRL {trl['valor']}" if trl else "?",
-            "calidad": calidad, "operacion": operacion,
+            "calidad": calidad, "cobertura": _cobertura(paquetes, medida, s.get("cobertura_alcance", "")), "operacion": operacion,
             "licencias": _peor_licencia([f"packages/{p}" for p in paquetes] + (["apps/api"] if s["id"] == "corpus-rag" else []), deps),
             "evidencia": (trl["evidencia"] + " **Límite:** " + trl["limite"]) if trl else "Sin atestar.",
         })
@@ -71,7 +81,7 @@ def filas(motores: List[dict], atest_reg: Dict[str, dict], datos: dict, deps: Li
         resultado.append({
             "nombre": f"Motor `{mid}`", "trl": "?",
             "calidad": f"{pruebas} pruebas · CI {'sí' if m['paquete'] in EN_MATRIZ else 'no'} · contrato/422/límite {'sí' if m['condicion_3'] else 'no'}",
-            "operacion": "?", "licencias": _peor_licencia([f"packages/{m['paquete']}"], deps), "evidencia": "Sin atestar.",
+            "cobertura": _cobertura([m["paquete"]], medida), "operacion": "?", "licencias": _peor_licencia([f"packages/{m['paquete']}"], deps), "evidencia": "Sin atestar.",
         })
     return resultado
 
@@ -82,10 +92,11 @@ EN_MATRIZ = reg.paquetes_en_matriz()
 def renderizar() -> str:
     datos = json.loads(ENTRADA.read_text(encoding="utf-8"))
     motores, atest_reg, deps = reg.descubrir(), reg.cargar_atestaciones(), lic.recolectar()
-    tabla = ["| Subsistema | TRL (autoevaluado) | Calidad de software | Operación | Licencias (dependencias directas) |", "|---|---|---|---|---|"]
+    medida = json.loads(COBERTURA.read_text(encoding="utf-8"))
+    tabla = ["| Subsistema | TRL (autoevaluado) | Calidad de software | Cobertura de líneas | Operación | Licencias (dependencias directas) |", "|---|---|---|---|---|---|"]
     detalle = []
-    for f in filas(motores, atest_reg, datos, deps):
-        tabla.append(f"| {f['nombre']} | {f['trl']} | {f['calidad']} | {f['operacion']} | {f['licencias']} |")
+    for f in filas(motores, atest_reg, datos, deps, medida):
+        tabla.append(f"| {f['nombre']} | {f['trl']} | {f['calidad']} | {f['cobertura']} | {f['operacion']} | {f['licencias']} |")
         if f["evidencia"] != "Sin atestar.":
             detalle.append(f"**{f['nombre']}.** {f['evidencia']}")
     return "\n".join([
@@ -97,7 +108,10 @@ def renderizar() -> str:
         "- **TRL**: escala de niveles de madurez tecnológica. Es **autoevaluado**, sin revisión externa; cada valor lleva su evidencia y el límite "
         "que impide subir. «?» = sin atestar (no significa que cumpla).",
         "- **Calidad**: se calcula del repositorio: funciones de prueba, presencia en la matriz de CI y, en motores, contrato `ResultadoMotor`, "
-        "fallo explícito 422 y límite de tasa. **No se publica porcentaje de cobertura porque no se mide hoy.**",
+        "fallo explícito 422 y límite de tasa.",
+        f"- **Cobertura de líneas**: medida con `pytest-cov` el {medida['medido_el']} ([cobertura_medida.json](cobertura_medida.json), "
+        "`scripts/inventario/cobertura.py`; CI la mide y la muestra en el resumen de cada corrida, sin umbral). Dice qué líneas ejecutan las "
+        "pruebas, **no** si el cálculo es correcto: la corrección sale de la referencia independiente (condición 1 del registro).",
         "- **Operación**: «en producción verificado» exige revisión de Cloud Run y llamada real registradas (ver [REGISTRO_MOTORES.md](REGISTRO_MOTORES.md)).",
         "- **Licencias**: la peor clasificación entre las dependencias directas del subsistema ([LICENCIAS_DEPENDENCIAS.md](LICENCIAS_DEPENDENCIAS.md)).",
         "",
@@ -114,7 +128,7 @@ def renderizar() -> str:
         "## Qué no se publica, y por qué",
         "",
         "- **Un único badge de madurez o de TRL**: comprime evidencias de naturaleza distinta y no se puede verificar en vivo.",
-        "- **Porcentaje de cobertura de pruebas**: no hay medición; un número sin medir sería una afirmación sin sustento.",
+        "- **Un badge de cobertura**: la cobertura de líneas no mide corrección y no cubre el pipeline RAG ni la API; un badge sugeriría más de lo que prueba.",
         "- **«Seguridad» o «calidad» como sello**: lo comprobable es el estado de alertas de dependencias, la auditoría de CI y las revisiones adversarias documentadas, no un sello.",
         "- **TRL 7 o superior**: exige operación por terceros medida y revisión técnica independiente; hoy no existen.",
         "",

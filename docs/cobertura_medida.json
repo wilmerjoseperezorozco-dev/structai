@@ -1,0 +1,126 @@
+{
+  "_nota": "Cobertura de líneas medida con scripts/inventario/cobertura.py. Mide qué líneas ejecutan las pruebas, no si el cálculo es correcto.",
+  "medido_el": "2026-11-09",
+  "paquetes": {
+    "contrato-motor": {
+      "porcentaje": 100.0,
+      "lineas_cubiertas": 59,
+      "lineas_totales": 59,
+      "pruebas_pasan": true
+    },
+    "dag-proyecto": {
+      "porcentaje": 98.4,
+      "lineas_cubiertas": 242,
+      "lineas_totales": 246,
+      "pruebas_pasan": true
+    },
+    "eval-stats": {
+      "porcentaje": 92.6,
+      "lineas_cubiertas": 138,
+      "lineas_totales": 149,
+      "pruebas_pasan": true
+    },
+    "motor-acero-frio": {
+      "porcentaje": 88.5,
+      "lineas_cubiertas": 23,
+      "lineas_totales": 26,
+      "pruebas_pasan": true
+    },
+    "motor-analisis": {
+      "porcentaje": 98.4,
+      "lineas_cubiertas": 182,
+      "lineas_totales": 185,
+      "pruebas_pasan": true
+    },
+    "motor-apu": {
+      "porcentaje": 84.6,
+      "lineas_cubiertas": 427,
+      "lineas_totales": 505,
+      "pruebas_pasan": true
+    },
+    "motor-aquai": {
+      "porcentaje": 73.6,
+      "lineas_cubiertas": 1056,
+      "lineas_totales": 1434,
+      "pruebas_pasan": true
+    },
+    "motor-concreto": {
+      "porcentaje": 96.3,
+      "lineas_cubiertas": 3284,
+      "lineas_totales": 3409,
+      "pruebas_pasan": true
+    },
+    "motor-deformacion": {
+      "porcentaje": 93.3,
+      "lineas_cubiertas": 692,
+      "lineas_totales": 742,
+      "pruebas_pasan": true
+    },
+    "motor-estructural": {
+      "porcentaje": 90.5,
+      "lineas_cubiertas": 190,
+      "lineas_totales": 210,
+      "pruebas_pasan": true
+    },
+    "motor-geopot": {
+      "porcentaje": 90.4,
+      "lineas_cubiertas": 680,
+      "lineas_totales": 752,
+      "pruebas_pasan": true
+    },
+    "motor-geotecnia": {
+      "porcentaje": 98.6,
+      "lineas_cubiertas": 343,
+      "lineas_totales": 348,
+      "pruebas_pasan": true
+    },
+    "motor-gerencia": {
+      "porcentaje": 96.4,
+      "lineas_cubiertas": 318,
+      "lineas_totales": 330,
+      "pruebas_pasan": true
+    },
+    "motor-licuacion": {
+      "porcentaje": 100.0,
+      "lineas_cubiertas": 197,
+      "lineas_totales": 197,
+      "pruebas_pasan": true
+    },
+    "motor-redes": {
+      "porcentaje": 95.0,
+      "lineas_cubiertas": 631,
+      "lineas_totales": 664,
+      "pruebas_pasan": true
+    },
+    "motor-topovia": {
+      "porcentaje": 69.1,
+      "lineas_cubiertas": 268,
+      "lineas_totales": 388,
+      "pruebas_pasan": true
+    },
+    "motor-vias": {
+      "porcentaje": 91.4,
+      "lineas_cubiertas": 1600,
+      "lineas_totales": 1750,
+      "pruebas_pasan": true
+    },
+    "motor-vulnerabilidad-vivienda": {
+      "porcentaje": 98.9,
+      "lineas_cubiertas": 90,
+      "lineas_totales": 91,
+      "pruebas_pasan": true
+    },
+    "orquestador": {
+      "porcentaje": 97.4,
+      "lineas_cubiertas": 1340,
+      "lineas_totales": 1376,
+      "pruebas_pasan": true
+    },
+    "rag-audit-kit": {
+      "porcentaje": 98.3,
+      "lineas_cubiertas": 115,
+      "lineas_totales": 117,
+      "pruebas_pasan": true
+    }
+  }
+}

@@ -101,7 +101,7 @@ def simular_periodo(nodos: List[dict], tramos: List[dict], *, tanques: List[dict
             q_prev = previo.get(tid)
             patron_estable = k >= 2 and patron[k % len(patron)] == patron[(k - 1) % len(patron)] == patron[(k - 2) % len(patron)]
             if q_prev is not None and abs(q_prev) > 1e-12 and patron_estable and q_in / q_prev < _RAZON_OSCILACION:
-                racha[tid] = racha.get(tid, 0) + 1
+                racha[tid] = racha.setdefault(tid, 0) + 1
                 if racha[tid] >= 2:
                     raise ValueError(f"oscilación numérica en el tanque {tid} en el paso {k}: el caudal cambia de signo en pasos "
                                      "consecutivos, señal de que el paso de tiempo es demasiado grande para Euler explícito; reduzca paso_s")
