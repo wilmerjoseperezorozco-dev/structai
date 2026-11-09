@@ -58,3 +58,25 @@ class Economia:
     p_perforacion_m: float = 490_100.0  # COP por metro de tirante perforado, inyectado y tensado, sin el cordón
     p_cabeza_anclaje: float = 114_571.0  # COP por cabezal de tensionamiento de 12 torones (INVIAS B0033264)
     factor_precio_cordon: float = 2.6   # torón 10.790 COP/kg (INVIAS B0015150) / p_acero 4.151 = 2,6
+    fecha_precios: str | None = None    # AAAA-MM a la que están expresados los precios; None = no declarada (no se puede indexar)
+
+    def indexar_a(self, fecha: str, dominio: str = "Barranquilla AM", ruta=None) -> "Economia":
+        """Copia con los precios llevados de `fecha_precios` a `fecha` (AAAA-MM) con el ICOCED del DANE por grupo de insumos.
+
+        acero -> Acero corrugado; concreto (mult_concreto) -> Concreto común; encofrado -> Formaleta y accesorios;
+        perforación -> Servicios de preliminares y cimentación; cabeza de anclaje -> Elementos metálicos. La ceniza no tiene serie y no cambia.
+        El cordón sigue a p_acero por factor_precio_cordon. La base INVIAS 2026-1 está en julio de 2025 (encabezado FR-APU-1).
+        """
+        from dataclasses import replace
+
+        from .indices_icoced import factor
+        if self.fecha_precios is None:
+            raise ValueError("Economia.fecha_precios no está declarada: no se sabe desde qué fecha indexar")
+        d = self.fecha_precios
+
+        def f(insumo: str) -> float:
+            return factor(insumo, d, fecha, dominio, ruta)
+        return replace(self, p_acero=self.p_acero * f("Acero corrugado"), mult_concreto=self.mult_concreto * f("Concreto común"),
+                       p_encofrado=self.p_encofrado * f("Formaleta y accesorios"),
+                       p_perforacion_m=self.p_perforacion_m * f("Servicios de preliminares y cimentación"),
+                       p_cabeza_anclaje=self.p_cabeza_anclaje * f("Elementos metálicos"), fecha_precios=fecha)
