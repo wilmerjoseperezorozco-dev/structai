@@ -21,32 +21,8 @@ from src import zapata_troncopiramidal as t  # noqa: E402
 from src.viga import Materiales  # noqa: E402
 
 CARGAS = (300.0, 600.0, 1000.0, 1500.0, 2500.0); QADM = (120.0, 200.0, 300.0); FCS = (21.0, 28.0, 35.0); FA_X = (0.0, 0.1, 0.2, 0.25, 0.3)
-PRECIO_ANCLA = {21.0: 688_796.0, 28.0: 822_510.0, 35.0: 822_510.0 + (822_510.0 - 688_796.0)}  # 35 extrapolado linealmente (SUPUESTO)
-PRECIO_CEMENTO = 223.5; PRECIO_ACERO = 4_151.0; PRECIO_ENC = 23_500.0   # COP/kg, COP/kg, COP/m2 (encofrado solo material, punto medio 20-27 mil)
-PRECIO_CENIZA = {"ceniza_150": 150.0, "ceniza_300": 300.0}                # COP/kg SUPUESTOS (sin dato)
-FE = {"grueso": 0.0020, "fino": 0.0080, "agua": 0.0013, "ceniza": 0.015, "aditivo": 0.511, "acero": 1.322}
-FE_CEM = {"0.892": 0.892, "1.010": 1.010}
-AGUA, ADITIVO_FRAC = 190.0, 0.008
-
-
-def mezcla(fc: float, x: float) -> dict:
-    wc = math.log(90.0 / (fc + 8.5)) / math.log(9.0)
-    b = AGUA / (wc * (1 - 0.6 * x))
-    cem, ash = (1 - x) * b, x * b
-    vol_agg = 1000.0 - cem / 3.15 - ash / 2.2 - AGUA - 20.0
-    agg = vol_agg * 2.65
-    return {"cem": cem, "ash": ash, "gru": 0.55 * agg, "fin": 0.45 * agg, "ref_cem": AGUA / wc, "wc": wc}
-
-
-def costo_m3(fc, x, p_ash):
-    m = mezcla(fc, x)
-    return PRECIO_ANCLA[fc] + (m["cem"] - m["ref_cem"]) * PRECIO_CEMENTO + m["ash"] * p_ash
-
-
-def co2_m3(fc, x, fe_cem):
-    m = mezcla(fc, x)
-    return m["cem"] * fe_cem + m["ash"] * FE["ceniza"] + m["gru"] * FE["grueso"] + m["fin"] * FE["fino"] + AGUA * FE["agua"] + (m["cem"] + m["ash"]) * ADITIVO_FRAC * FE["aditivo"]
-
+from src.economia_concreto import (AGUA, ADITIVO_FRAC, FE, FE_CEM, PRECIO_ACERO, PRECIO_ANCLA, PRECIO_CEMENTO, PRECIO_CENIZA, PRECIO_ENC,  # noqa: E402
+                                       co2_m3, costo_m3, mezcla)
 
 def candidatos(args):
     p, q, fc = args
