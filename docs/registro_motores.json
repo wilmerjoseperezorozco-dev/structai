@@ -1,0 +1,29 @@
+{
+  "_nota": "Atestaciones de las condiciones 1, 2 y 4 de docs/REGLAS_MOTORES_DE_CALCULO.md. Un «valor: true» exige evidencia; la condición 4 además exige revision (de Cloud Run) y fecha de la llamada real. Lo que no figura aquí se muestra como «?» (sin atestar).",
+  "motores": {
+    "redes": {
+      "condicion_1": {
+        "valor": true,
+        "evidencia": "docs/VALIDACION_REDES_EPANET_2026-11.md y packages/motor-redes/tests/test_validacion_epanet.py: Hardy-Cross, soluciones cerradas, scipy y casos EPANET (Net1, todinitest); golpe de ariete contra Joukowsky y onda cuadrada. Es validación frente a otro solver y a casos analíticos, no contra datos medidos."
+      },
+      "condicion_2": {
+        "valor": true,
+        "evidencia": "Dos revisiones adversarias (solver permanente; bombas, válvulas y periodo extendido) corregidas en el commit 3160c9a; pruebas en packages/motor-redes/tests/test_revision2.py."
+      },
+      "condicion_4": {
+        "valor": false,
+        "evidencia": "Sin desplegar: la imagen de Cloud Run es anterior a geotecnia, licuación y redes."
+      }
+    },
+    "geotecnia": {
+      "condicion_1": {
+        "valor": true,
+        "evidencia": "docs/REGLAS_MOTORES_DE_CALCULO.md declara que motor-geotecnia cumple 1–3 en su primer corte. Atestación heredada de ese documento; no re-verificada en esta revisión."
+      },
+      "condicion_2": {
+        "valor": true,
+        "evidencia": "Mismo documento (cumple 1–3). Atestación heredada; no re-verificada en esta revisión."
+      }
+    }
+  }
+}
