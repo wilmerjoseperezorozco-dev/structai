@@ -121,6 +121,29 @@ Cautelas: (a) el proyecto es sintético, no hay planos reales; (b) el primer aju
 
 Lectura: (1) con solo 6 m planificar no mejora al corte a conveniencia en este caso: el ahorro viene de la longitud comprada (12 m), no del algoritmo; (2) el escenario E es una **cota superior**: supone que la fábrica entrega cada pieza a medida, figurada y al mismo precio por kg, lo que no está verificado; (3) los estribos cortos (~1,55 m) pierden mucho en 6 m y se recuperan en 12 m; (4) el proyecto es sintético y sin planos reales, solo vigas.
 
+## 5e. Transporte del acero: vehículo, combustible y CO₂ (2026-11-09, issue #127)
+
+**Problema.** La ferretería vende varillas de 6 m, el plano pide piezas (p. ej. 185 cm) y el comprador tiene un vehículo con largo de carga limitado. Para cada pieza hay tres caminos: (a) cortarla en la tienda si cabe; (b) llevarla en un vehículo más largo; (c) empalmar con traslapo NSR-10 para que cada tramo quepa, lo que gasta más acero y lo debe aprobar el diseñador. `packages/motor-concreto/src/transporte_acero.py` (`planificar`) compara estos caminos con combustible, CO₂ de transporte y CO₂ del acero extra por empalmes.
+
+**Datos con fuente.**
+- Rendimiento diésel (ANDI 2018, recogido por UPME 2020, Tabla 6.1), km/galón en terreno plano / ondulado / montañoso: camión de 2 ejes 12,70 / 10,01 / 7,81; tractocamión de 2 ejes 8,76 / 6,76 / 5,07; de 3 ejes 6,64 / 4,92 / 3,34. Carga liviana < 10 t en rutas urbanas de tres empresas (MinTransporte 2019): 19,3 / 23,1 / 26,4 km/galón.
+- CO₂ de combustión: diésel 10,2765 kg/galón (FECOC, edición 2016, mezcla B10, tomado de un anexo de la EAB); EPA 8,887 kg/galón de gasolina y 10,180 de diésel. La gasolina colombiana es E10, así que el valor real es algo menor (sin ajustar).
+
+**Sin fuente (los aporta quien llama; no se inventaron):** rendimiento de moto, camioneta y NHR; largo y capacidad de carga de cada vehículo; reglas legales de carga sobresaliente; precio del combustible; tarifa de flete.
+
+**Casos medidos** (traslapo clase B con f'c 21 MPa y fy 420; #4 = 1/2"):
+
+| Caso | Resultado |
+|---|---|
+| 10 varillas de 1/2" → 30 piezas de 185 cm, moto con 2 m de carga | corte en tienda, 3 piezas por varilla (7,5 % de desperdicio), 55 kg; 10 km ida y vuelta: 0,12–0,25 gal y 1,1–2,2 kg CO₂ según rinda la moto entre 160 y 80 km/gal (valores de sensibilidad, no medidos) |
+| 8 barras de 5,6 m (viga), moto de 2 m, sin permitir empalmes | inviable: hay que usar un vehículo más largo o entrega a domicilio |
+| Las mismas 8 barras, empalmando para que quepan en la moto | 32 empalmes de 1,08 m, 78,9 kg de acero en vez de 44,5 (+34,4 kg, +77 %) y +45,5 kg CO₂e del acero extra |
+| Las mismas 8 barras, camión de 2 ejes (12,70 km/gal), 10 km | 1 viaje, 0,79 gal, 8,1 kg CO₂; a 30 km, 24,3 kg CO₂ |
+
+**Lectura.** Cuando la pieza cabe en el vehículo, cortar en la tienda es lo mejor (3 piezas de 185 cm por varilla de 6 m dejan 45 cm de sobrante). Cuando no cabe, empalmar para que la barra entre en una moto cuesta 45 kg CO₂e de acero extra frente a 8 kg CO₂ de un viaje en camión a 10 km (en esta medición, y solo si el empalme fuera aceptable en esa barra, que no se evaluó estructuralmente). El empalme no se recomienda para ahorrar transporte salvo que lo apruebe el ingeniero diseñador. Los viajes de la moto salen de una capacidad de carga ilustrativa de 40 kg, no medida.
+
+**Parque automotor por ciudad.** No hay en datos abiertos un cuadro de camiones por tipología y municipio: los boletines del RUNT solo traen totales nacionales y matrículas por clase, y el desglose detallado se pide por solicitud formal a la concesión RUNT. El estudio de UPME 2020 caracteriza el parque de carga (camión, tractocamión, volqueta) pero no por municipio. Siguiente paso: solicitar el RUNT por municipio y clase (Barranquilla, Soledad, Bogotá, Medellín, Cali) y ligar cada ciudad a la tipología de vehículo disponible para alquiler.
+
 ## 6. Qué no hace este documento
 
 No prueba que un modelo aprendido supere a la enumeración exacta para vigas aisladas (la medición de la sección 2 sugiere que no); no valida las cantidades contra planos reales; no incluye traslapos ni ganchos suplementarios.
