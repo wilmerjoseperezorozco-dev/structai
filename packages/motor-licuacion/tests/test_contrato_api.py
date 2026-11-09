@@ -27,18 +27,18 @@ def _sol(**kw):
     return SolicitudLicuacionSPT(**base)
 
 
-def test_perfil_de_referencia_coincide_con_el_calculo_a_mano():
+def test_primera_subcapa_coincide_con_el_calculo_a_mano():
+    # subcapa 2–3 m (centro 2,5 m): σv = 18·2 + 20·0,5 = 46 · σ'v = 46 − 9,81·0,5 · rd = 1 − 0,00765·2,5
     r = licuacion_spt_contrato(_sol())
     e = r.valor["estratos"][0]
-    assert e["z_evaluacion_m"] == pytest.approx(6.0)
-    assert e["sigma_v_kpa"] == pytest.approx(116.0)
-    assert e["sigma_v_efectivo_kpa"] == pytest.approx(76.76)
-    assert e["csr"] == pytest.approx(0.28115870245, rel=1e-8)
-    assert e["crr"] == pytest.approx(0.16005761445, rel=1e-8)
-    assert e["fs"] == pytest.approx(0.56907299259, rel=1e-8)
-    assert r.valor["lpi"] == pytest.approx(24.1319124, rel=1e-6)
-    assert r.valor["clasificacion_lpi"] == "muy alto"
-    assert r.valor["fs_minimo"] == pytest.approx(e["fs"])
+    c = e["subcapas"][0]
+    sv, sve, rd = 46.0, 46.0 - 9.81 * 0.5, 1.0 - 0.00765 * 2.5
+    csr = 0.65 * 0.3 * sv / sve * rd
+    crr = 1 / 19 + 15 / 135 + 50 / 195 ** 2 - 1 / 200
+    assert c["z_evaluacion_m"] == pytest.approx(2.5) and c["sigma_v_kpa"] == pytest.approx(sv)
+    assert c["sigma_v_efectivo_kpa"] == pytest.approx(sve) and c["csr"] == pytest.approx(csr, rel=1e-12)
+    assert c["crr"] == pytest.approx(crr, rel=1e-12) and c["fs"] == pytest.approx(crr * (10 ** 2.24 / 7.5 ** 2.56) / csr, rel=1e-12)
+    assert r.valor["fs_minimo"] == pytest.approx(min(s["fs"] for s in e["subcapas"])) and r.valor["clasificacion_lpi"] == "muy alto"
 
 
 def test_contrato_completo():
@@ -87,7 +87,7 @@ def test_fs_monotono_en_amax_y_en_n():
 
 
 def test_borde_cuando_el_fs_minimo_esta_cerca_de_uno_o_hay_finos_altos_o_prof_grande():
-    base = licuacion_spt_contrato(_sol())
+    base = licuacion_spt_contrato(_sol(estratos=[_estrato(z_base_m=6.0)]))
     assert base.en_borde_dominio is False
     assert licuacion_spt_contrato(_sol(estratos=[_estrato(finos_pct=50.0)])).en_borde_dominio is True
     assert licuacion_spt_contrato(_sol(estratos=[_estrato(z_base_m=40.0)])).en_borde_dominio is True

@@ -52,7 +52,7 @@ def msf_idriss(mw: float) -> float:
 
 
 def corregir_finos(*, n1_60: float, finos_pct: float) -> tuple[float, bool]:
-    """(N1)60 → (N1)60cs equivalente en arena limpia (Idriss y Boulanger); devuelve (valor, en_borde por finos > 35 %)."""
+    """(N1)60 → (N1)60cs equivalente en arena limpia (Idriss y Seed, en NCEER); devuelve (valor, en_borde por finos > 35 %)."""
     _finito("(N1)60", n1_60)
     _finito("El contenido de finos", finos_pct)
     _requerir(n1_60 >= 0, "(N1)60 no puede ser negativo")
