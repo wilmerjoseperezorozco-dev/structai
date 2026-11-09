@@ -569,6 +569,14 @@ except Exception as e:
     log.warning(f"✗ motor-geotecnia no disponible: {e}")
 
 try:
+    from routers.licuacion import router as licuacion_router
+    LICUACION_AVAILABLE = True
+    log.info("✓ motor-licuacion cargado")
+except Exception as e:
+    LICUACION_AVAILABLE = False
+    log.warning(f"✗ motor-licuacion no disponible: {e}")
+
+try:
     from routers.proyecto import router as proyecto_router
     PROYECTO_AVAILABLE = True
     log.info("✓ dag-proyecto cargado")
@@ -810,6 +818,9 @@ if ANALISIS_AVAILABLE:
 if GEOTECNIA_AVAILABLE:
     app.include_router(geotecnia_router)
     app.include_router(geotecnia_router, prefix="/v1")
+if LICUACION_AVAILABLE:
+    app.include_router(licuacion_router)
+    app.include_router(licuacion_router, prefix="/v1")
 if PROYECTO_AVAILABLE:
     app.include_router(proyecto_router)
     app.include_router(proyecto_router, prefix="/v1")
