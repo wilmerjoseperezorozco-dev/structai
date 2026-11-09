@@ -56,6 +56,21 @@ Mediana 13 %. Dos advertencias: (a) los resultados de DMO y DES coincidieron par
 - Realidad: planos de despiece de obras (cuando haya autorización) para medir el sesgo de las cantidades simplificadas; sin ellos el costo del refuerzo es comparativo, no absoluto.
 - Métricas: sobrecosto frente al óptimo exacto, fracción de diseños inseguros (debe ser 0 por la guardia), desperdicio de corte y número de referencias de acero por proyecto.
 
+## 5b. Métricas de detallado (2026-11-09) y huecos medidos
+
+`packages/motor-concreto/src/metricas_refuerzo.py`: η_acero = As_prov/As_req (As_req despejado de φMn = Mu), separación libre exigida max(db, 25 mm, 4/3·TMN), holgura de confinamiento frente a C.21.5.3.2, desperdicio de corte 1D (primer ajuste decreciente, cota superior) y costo de mano de obra con tarifa suministrada (no se fija un valor por defecto). Hipótesis: el 4/3·TMN es la lectura de C.3.3.2 (el numeral llega truncado en el corpus; C.7.6.1 sí está completo).
+
+Medición sobre las secciones de la sección 2 (demanda de prueba de los tests, f'c 28 MPa, 41 detallados factibles por nivel):
+
+| Métrica | Resultado |
+|---|---|
+| η superior | mediana 1,24 (mín 1,00; máx 1,52) |
+| η inferior | mediana 1,83 (máx 2,77); lo fijan la relación M⁺/M⁻ en la cara y el redondeo entero de barras, no la demanda de flexión |
+| Detallados que dejan de cumplir al exigir 4/3·TMN | 0 con TMN 19 mm; 3 de 41 con TMN 25 mm |
+| Confinamiento (DMO y DES) | s_conf / límite normativo, mediana 0,94 |
+
+Lectura: el motor actual no incumple con TMN de 19 mm, pero sí con 25 mm en 3 de 41 casos, por lo que conviene pasar el TMN como dato. Los números 1,02–1,06 de la propuesta pegada son metas no verificadas; con una demanda de prueba no se puede afirmar qué η alcanzaría un optimizador con diámetros mixtos.
+
 ## 6. Qué no hace este documento
 
 No prueba que un modelo aprendido supere a la enumeración exacta para vigas aisladas (la medición de la sección 2 sugiere que no); no valida las cantidades contra planos reales; no incluye traslapos ni ganchos suplementarios.
