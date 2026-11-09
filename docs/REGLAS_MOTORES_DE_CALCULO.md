@@ -24,6 +24,17 @@ Vigente desde el 9 de noviembre de 2026. Aplica a los 12 motores existentes y a 
 
 El contrato vive en `packages/contrato-motor`. La adopción completa en las funciones públicas de los 12 motores es la Fase 3 y no está hecha.
 
+## Criterio de motor «medido a producción» (9 de noviembre de 2026)
+
+Un motor nuevo entra al registro (y solo entonces se conecta al DAG de `packages/dag-proyecto`) cuando cumple las cuatro condiciones:
+
+1. Pruebas rojo→verde contra una referencia independiente (solución analítica, valor publicado o cálculo a mano con fuente), no contra el propio código.
+2. Revisión adversaria hecha (regla 7) y sus hallazgos corregidos.
+3. Salida con `ResultadoMotor`, endpoint con fallo explícito (ValueError→422) y límites de tasa.
+4. Desplegado en Cloud Run y verificado con una llamada real contra la revisión en producción.
+
+El DAG se conecta cuando haya acumulados diez motores que cumplan las cuatro. Estado: ninguno cumple aún la condición 4 de forma verificada; `motor-geotecnia` cumple 1–3 en su primer corte.
+
 ## Hoja de ruta en issues (9 de noviembre de 2026)
 
 Transversales: [#130](https://github.com/wilmerjoseperezorozco-dev/structai/issues/130) Fase 3 (contrato y API) · [#131](https://github.com/wilmerjoseperezorozco-dev/structai/issues/131) gobernanza de sustitutos de aprendizaje · [#132](https://github.com/wilmerjoseperezorozco-dev/structai/issues/132) kit de verificación independiente · [#133](https://github.com/wilmerjoseperezorozco-dev/structai/issues/133) fail-fast residual · [#147](https://github.com/wilmerjoseperezorozco-dev/structai/issues/147) pruebas de plataforma y paquete geoespacial · [#148](https://github.com/wilmerjoseperezorozco-dev/structai/issues/148) resiliencia de datos externos.
