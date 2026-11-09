@@ -553,6 +553,22 @@ except Exception as e:
     log.warning(f"✗ motor-concreto no disponible: {e}")
 
 try:
+    from routers.analisis import router as analisis_router
+    ANALISIS_AVAILABLE = True
+    log.info("✓ motor-analisis cargado")
+except Exception as e:
+    ANALISIS_AVAILABLE = False
+    log.warning(f"✗ motor-analisis no disponible: {e}")
+
+try:
+    from routers.orquestador_api import router as orquestador_router
+    ORQUESTADOR_AVAILABLE = True
+    log.info("✓ orquestador cargado")
+except Exception as e:
+    ORQUESTADOR_AVAILABLE = False
+    log.warning(f"✗ orquestador no disponible: {e}")
+
+try:
     from routers.gerencia import router as gerencia_router
     GERENCIA_AVAILABLE = True
     log.info("✓ motor-gerencia cargado")
@@ -772,6 +788,12 @@ if VIAS_AVAILABLE:
 if CONCRETO_AVAILABLE:
     app.include_router(concreto_router)
     app.include_router(concreto_router, prefix="/v1")
+if ANALISIS_AVAILABLE:
+    app.include_router(analisis_router)
+    app.include_router(analisis_router, prefix="/v1")
+if ORQUESTADOR_AVAILABLE:
+    app.include_router(orquestador_router)
+    app.include_router(orquestador_router, prefix="/v1")
 if GERENCIA_AVAILABLE:
     app.include_router(gerencia_router)
     app.include_router(gerencia_router, prefix="/v1")
