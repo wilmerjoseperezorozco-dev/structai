@@ -44,30 +44,41 @@ El aprendizaje supervisado necesita etiquetas observadas (qué sistema funcionó
 - Si no, ¿se acepta que el primer producto sea un motor de decisión con incertidumbre explícita, no un modelo entrenado?
 - Orden de ejecución: 1a, 1b y 1c, o empezar por el frente con mejor respaldo normativo (1a).
 
-## 6. Fase 1a: ejecución con datos sintéticos (2026-11-09)
+## 6. Fase 1a: ejecución con datos sintéticos y revisión (2026-11-09)
 
-Código: `packages/motor-concreto/src/excavacion_estabilidad.py` y `excavacion_metricas.py`; ejercicio: `scripts/excavacion/comparar_alternativas_sintetico.py` (salida `data/excavacion/comparacion_sintetica.json`). **Todas las entradas del ejercicio son inventadas** (suelo c' = 10 kPa, φ' = 27°, H = 6 m, lindero a 8 m, COV de c' 0,30 y de tan φ' 0,10, consecuencia de falla 400 millones COP por metro, precio de excavación, consumo y factor de emisión). Sirve para validar la tubería, no para decidir una obra.
+Código: `packages/motor-concreto/src/excavacion_estabilidad.py`, `excavacion_metricas.py`, `excavacion_contencion.py`; ejercicio: `scripts/excavacion/comparar_alternativas_sintetico.py` (salida `data/excavacion/comparacion_sintetica.json`). **Las entradas del ejercicio son inventadas** (suelo c' = 10 kPa, φ' = 27°, H = 6 m, lindero a 8 m, sobrecarga 10 kPa, COV de c' 0,30 y de tan φ' 0,10, consecuencia de falla 400 millones COP por metro de frente, precios de excavación y pantalla, consumo y rendimiento de la máquina); el factor de emisión del diésel es el de FECOC (10,2765 kg/gal), con fuente. Sirve para validar la tubería, no para decidir una obra.
 
-El motor de taludes se contrastó con un cálculo independiente de momentos por intersección de polígonos (corte vertical φ = 0: número de estabilidad 4,25 en ambos). Una primera versión de la búsqueda del círculo crítico sobrestimaba el FS de taludes inclinados hasta 5 %; se corrigió y el desvío residual es menor a 1 %.
+### 6.1 Validación y errores hallados en la revisión independiente
 
-| Alternativa (sintética) | Retiro (m) | ¿Cabe a 8 m? | IEG | FS medio | Pf | Costo total (millones COP/m) |
-|---|---|---|---|---|---|---|
-| Talud al máximo seguro (54,2°, FS 1,25) | 4,33 | sí | 0,82 | 1,25 | 8,4 % | 35,6 |
-| Talud 45° | 6,00 | sí | 0,77 | 1,44 | 0,9 % | 5,7 |
-| Talud 35° | 8,57 | no | 0,70 | 1,74 | 0,01 % | 2,2 |
-| Contención temporal | — | — | — | — | — | sin dimensionar |
+El número de estabilidad del corte vertical con φ = 0 (4,25) coincide en tres cálculos independientes (módulo, intersección de polígonos, integrador del revisor). Una revisión de código posterior halló errores que las pruebas originales no detectaban; todos se corrigieron y cada uno tiene prueba de regresión:
 
-Lectura bajo esos supuestos: el ángulo que apenas cumple la Tabla H.2.4-1 es el más barato de excavar y el más caro una vez se pone precio al riesgo; entre las alternativas que caben en el predio, 45° minimiza el costo total. La conclusión depende de la consecuencia y de la variabilidad supuestas, no de datos de sitio. La probabilidad de falla es una estimación de confiabilidad de primer orden con FS log-normal, no una frecuencia observada.
+| Hallazgo | Efecto antes de corregir | Corrección |
+|---|---|---|
+| Presión de poros sin limitar a la superficie del terreno | FS = 0,0013 en un caso con freática a 3 m (físicamente absurdo); distorsionaba el ángulo máximo seguro | Carga piezométrica limitada al terreno |
+| Refinamiento Nelder-Mead sin cotas | Con φ = 0 y sismo, círculos de radio 10⁴³ y FS ≈ 10⁻⁴²; el selector elegía contención para cualquier arcilla con sismo | Dominio acotado (R ≤ 15·max(H, retiro), profundidad ≤ 1,2 H) |
+| `sismo=True` sin kh | Análisis estático contra FS 1,00: talud de 67,3° en vez de 61,9° | El selector exige kh coherente con `sismo` |
+| Alternativas comparadas con hipótesis distintas | Taludes sin sobrecarga ni grieta frente a una contención con sobrecarga; el talud "máximo seguro" de 54,2° no cumplía 1,25 con grieta y sobrecarga (50,6° sí) | Misma sobrecarga y grieta en todas |
+| Voladizo con φ ≈ 0 | Excepción cruda de `brentq` | Devuelve `requiere_apoyos` |
+| Empotramiento del voladizo sin factor | Resultante horizontal sin equilibrar (empotramiento corto) | `factor_longitud` obligatorio, del usuario |
+| Costo de consecuencia sin base de longitud | Se sumaba un evento a costos por metro | Declarado por metro de frente |
+| Bishop sin convergencia y FS infinito | Aceptados en silencio | El círculo se descarta; sin superficie válida lanza error |
 
-### 6.1 Bermas y contención en voladizo (mismas entradas sintéticas)
+Quedan como limitaciones documentadas: la grieta se modela seca (no conservador con freática alta), el agua se trata sin red de flujo, y la bisección del ángulo máximo supone FS decreciente con el ángulo (no vale con franja de sobrecarga en coordenadas absolutas).
 
-Se conectaron las bermas al cálculo de riesgo (`costo_riesgo_geotecnico(..., bermas=...)`) y se agregó `excavacion_contencion.py`: pantalla en voladizo con empujes de Rankine, empuje pasivo reducido por un factor del usuario, sin agua, sin apoyos, sin verificación estructural. El empotramiento se contrastó con el cierre analítico del equilibrio de momentos en suelo granular (1 % de tolerancia). Sobrecarga sintética 10 kPa, FS pasivo 1,5, precio de pantalla sintético.
+### 6.2 Resultados (mismas hipótesis para todas las alternativas)
 
 | Alternativa (sintética) | Retiro (m) | IEG | FS medio | Pf | Costo total (millones COP/m) |
 |---|---|---|---|---|---|
-| Talud 54° con berma de 2 m a media altura | 6,33 | 0,76 | 1,57 | 0,08 % | 2,3 |
-| Talud 45° | 6,00 | 0,77 | 1,44 | 0,9 % | 5,7 |
-| Contención en voladizo (11,5 m de pantalla, M máx 281 kN·m/m) | 0,5 | 0,95 | — | 0,5 % (supuesto) | 10,5 |
-| Talud 54° sin berma | 4,33 | 0,82 | 1,25 | 8,4 % | 35,6 |
+| Talud 51° con berma de 2 m a media altura | 6,93 | 0,74 | 1,59 | 0,08 % | 2,3 |
+| Contención en voladizo (13,1 m de pantalla con factor 1,3; M máx 281 kN·m/m) | 0,5 | 0,95 | — | 0,5 % (supuesto) | 11,4 |
+| Talud 45° | 6,00 | 0,77 | 1,38 | 2,5 % | 12,1 |
+| Talud 50,6° (máximo con FS 1,25) | 4,93 | 0,80 | 1,25 | 7,3 % | 31,0 |
+| Talud 35° | 8,57 | 0,70 | 1,69 | 0,2 % | 3,0 (no cabe en el predio) |
 
-La berma sube el FS de 1,25 a 1,57 con 2 m más de retiro y 6 m² más de corte por metro, y desplaza el óptimo. Dos advertencias: la probabilidad de falla de la contención es un supuesto, no un cálculo (el módulo no la estima), así que su posición en el ranking depende de ese supuesto; y un voladizo de 6 m con 5,5 m de empotramiento está en el límite de lo razonable, por lo que en una obra real se compararía con una pantalla apoyada. Con 35° fuera del predio, el ranking solo incluye alternativas que caben en el lindero.
+### 6.3 Discusión
+
+1. **El ángulo que apenas cumple la Tabla H.2.4-1 es el más caro cuando se valora el riesgo.** Con FS 1,25 la probabilidad de falla estimada es 7,3 %; a 45° baja a 2,5 % y con una berma de 2 m a 0,08 %. La norma fija un factor mínimo, no un riesgo aceptable, y la distancia entre ambos es de un orden de magnitud en probabilidad.
+2. **La berma es la intervención de mayor rendimiento en este caso:** sube el FS de 1,25 a 1,59 con 2 m más de retiro y 6 m² más de corte por metro (IEG de 0,80 a 0,74). Su costo extra de excavación es marginal frente al riesgo evitado.
+3. **La contención en voladizo no gana ni con probabilidad de falla cero:** su costo sin riesgo (9,4 millones COP/m) ya supera el costo total de la mejor alternativa de talud. Por tanto, el resultado no depende del supuesto de Pf = 0,5 % que se le asignó. Solo cambia si el lindero queda a menos de ~6,9 m (retiro de la berma): entonces la mejor alternativa de talud que cabe cuesta más (12,1 millones a 45° y 31,0 a 50,6°) y la contención pasa a ser la más barata.
+4. **Eficiencia geométrica y riesgo se oponen:** la contención tiene el mayor IEG (0,95) pero un voladizo de 6 m con 7,1 m de empotramiento está en el límite de lo razonable; en obra se compararía con pantallas apoyadas, no dimensionadas aquí.
+5. **Alcance de las conclusiones:** dependen de la consecuencia (400 millones por metro), de la variabilidad supuesta y de los precios inventados. La probabilidad de falla es una estimación de confiabilidad de primer orden con FS log-normal y variables independientes, no una frecuencia observada. Sin datos de sitio ni de obra, la conclusión transferible es la estructura de la decisión (talud mínimo normativo frente a talud con riesgo valorado frente a contención), no las cifras.

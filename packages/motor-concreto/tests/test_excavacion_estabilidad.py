@@ -126,3 +126,30 @@ def test_selector_talud_si_cabe_y_contencion_si_no():
     assert d.retiro_horizontal_m == pytest.approx(6.0 / math.tan(math.radians(d.angulo_deg)))
     assert decidir_talud_o_contencion(6.0, suelo, distancia_lindero=1.0).alternativa == "contencion"
     assert d.fs_requerido == 1.25
+
+
+def test_agua_no_produce_fs_absurdo_y_la_caida_es_moderada():
+    # regresión: la presión de poros no debe exceder la columna de agua bajo el terreno (antes: FS = 0,0013 en este caso)
+    suelo = SueloExc(gamma=18.0, c_kpa=5.0, phi_deg=30.0, gamma_sat=19.5)
+    p = perfil_talud(altura=8.0, angulo_deg=60.0)
+    seco = factor_seguridad_talud(p, suelo, grieta_traccion=False).fs
+    medio = factor_seguridad_talud(p, suelo, prof_freatico=4.0, grieta_traccion=False).fs
+    alto = factor_seguridad_talud(p, suelo, prof_freatico=3.0, grieta_traccion=False).fs
+    assert medio < seco and 0.2 < alto <= medio + 1e-9 and medio > 0.3 * seco
+
+
+def test_phi_cero_con_sismo_da_fs_finito_y_acotado():
+    # regresión: antes Nelder-Mead divergía a círculos gigantes (FS ~ 1e-42)
+    r = factor_seguridad_talud(perfil_talud(6.0, 45.0), SueloExc(gamma=18.0, c_kpa=200.0, phi_deg=0.0), kh=0.3)
+    assert 0.5 < r.fs < 100.0
+
+
+def test_selector_exige_kh_coherente_con_sismo():
+    from src.excavacion_estabilidad import decidir_talud_o_contencion, kh_construccion
+    s = SueloExc(gamma=18.0, c_kpa=10.0, phi_deg=27.0)
+    with pytest.raises(ValueError):
+        decidir_talud_o_contencion(6.0, s, 20.0, sismo=True)
+    with pytest.raises(ValueError):
+        decidir_talud_o_contencion(6.0, s, 20.0, sismo=False, kh=0.1)
+    d = decidir_talud_o_contencion(6.0, s, 20.0, sismo=True, kh=kh_construccion(0.15), grieta_traccion=False)
+    assert d.fs_requerido == 1.0 and d.angulo_deg is not None

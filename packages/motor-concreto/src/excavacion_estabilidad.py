@@ -12,7 +12,7 @@ Norma (leída del PDF fuente el 2026-11-09):
   en cohesivos saturados y no fisurados, y no para taludes permanentes, materiales no saturados o fisurados, ni análisis seudoestáticos.
 
 HIPÓTESIS DE INVESTIGACIÓN (no están en la norma): (1) Bishop simplificado con búsqueda de círculos (rejilla y refinamiento); (2) suelo homogéneo; (3) freática
-horizontal, con presión de poros hidrostática: si queda sobre el fondo de la excavación hay flujo y se marca `requiere_abatimiento`; (4) grieta de tracción seca de
+horizontal, con presión de poros hidrostática limitada a la superficie del terreno (sin red de flujo): si queda sobre el fondo de la excavación hay flujo y se marca `requiere_abatimiento`; (4) grieta de tracción SECA (sin empuje hidrostático: no conservador con agua alta) de
 profundidad 2c/(γ√Ka) (conservadora respecto de una grieta inexistente); (5) sobrecarga en franja uniforme sin dispersión; (6) sismo como fuerza horizontal kh·W en el
 centroide de cada dovela. No cubre falla de fondo, flujo, suelos estratificados ni superficies no circulares. No es un estudio geotécnico (H.1): los parámetros son del sitio.
 """
@@ -35,6 +35,7 @@ FRACCION_SISMO_CONSTRUCCION = 0.50   # nota (*) de la Tabla H.2.4-1
 N_MALLA, N_DOVELAS, FS_INVALIDO = 400, 60, 1.0e3
 PROF_BASE = (-0.05, 0.0, 0.1, 0.25, 0.5, 0.8, 1.2)        # profundidad del punto más bajo bajo el pie, fracción de la altura
 N_PULIDOS = 6
+FACTOR_RADIO_MAX = 15.0      # R máximo = 15 x max(H, retiro de la corona)
 
 
 @dataclass(frozen=True)
@@ -144,7 +145,7 @@ def _fs_circulo(xc, yc, radio, perfil: Perfil, suelo: SueloExc, y_agua, q, q_x, 
     yb = yc - np.sqrt(np.maximum(radio**2 - (xm - xc) ** 2, 1e-12))
     yt = perfil.terreno(xm)
     if z_grieta > 0.0:
-        quedan = yb <= perfil.terreno(x_der) - z_grieta        # la grieta seca vertical separa la parte posterior: esa masa no pertenece al deslizamiento
+        quedan = ~((yb > perfil.terreno(x_der) - z_grieta) & (xm > xc))        # la grieta seca vertical separa la parte posterior (a la derecha del punto más bajo): esa masa no desliza
         if quedan.sum() < 5:
             return FS_INVALIDO
         xm, yb, yt = xm[quedan], yb[quedan], yt[quedan]
@@ -158,7 +159,7 @@ def _fs_circulo(xc, yc, radio, perfil: Perfil, suelo: SueloExc, y_agua, q, q_x, 
         arriba = np.maximum(yt - np.maximum(yb, y_agua), 0.0)
         abajo = np.maximum(np.minimum(yt, y_agua) - yb, 0.0)
         w = (suelo.gamma * arriba + suelo.gamma_saturado * abajo) * b
-        u = GAMMA_AGUA_KN_M3 * np.maximum(y_agua - yb, 0.0)
+        u = GAMMA_AGUA_KN_M3 * np.maximum(np.minimum(y_agua, yt) - yb, 0.0)        # carga piezométrica limitada a la superficie del terreno
     if q > 0.0:
         w = w + q * b * ((xm >= q_x[0]) & (xm <= q_x[1]))
     tan_phi = math.tan(math.radians(suelo.phi_deg))
@@ -175,6 +176,8 @@ def _fs_circulo(xc, yc, radio, perfil: Perfil, suelo: SueloExc, y_agua, q, q_x, 
             fs = nuevo
             break
         fs = nuevo
+    else:
+        return FS_INVALIDO             # Bishop no convergió en 60 iteraciones: se descarta el círculo (no se acepta un FS sin converger)
     return fs if fs > 0 else FS_INVALIDO
 
 
@@ -192,6 +195,12 @@ def factor_seguridad_talud(perfil: Perfil, suelo: SueloExc, prof_freatico: float
         z_grieta = min(2.0 * suelo.c_kpa / (suelo.gamma * math.sqrt(ka)), 0.9 * perfil.altura)
     args = (perfil, suelo, y_agua, sobrecarga_kpa, sobrecarga_x or (0.0, 0.0), kh, z_grieta)
     s = max(perfil.altura, perfil.x_cresta)
+    r_max, y_min = FACTOR_RADIO_MAX * s, PROF_BASE[-1] * perfil.altura        # dominio de búsqueda: sin círculos gigantes ni más profundos que 1,2 H bajo el pie
+
+    def fs_acotado(xc, yc, r):
+        if r <= 0.0 or r > r_max or yc - r < -y_min:
+            return FS_INVALIDO
+        return _fs_circulo(xc, yc, r, *args)
     cx, cy, ff = np.linspace(-0.6 * perfil.altura, perfil.x_cresta + 1.5 * s, 12), np.linspace(0.3 * perfil.altura, 4.0 * s, 11), np.linspace(0.5, 2.5, 11)
     candidatos = []
     for x in cx:
@@ -199,17 +208,15 @@ def factor_seguridad_talud(perfil: Perfil, suelo: SueloExc, prof_freatico: float
             d = math.hypot(x, y)
             radios = [f * d for f in ff] + [y + pr * perfil.altura for pr in PROF_BASE]        # familia 2: parametrizada por el punto más bajo del círculo
             for r_c in radios:
-                if r_c <= 0.0:
-                    continue
-                v = _fs_circulo(x, y, r_c, *args)
+                v = fs_acotado(x, y, r_c)
                 if v < FS_INVALIDO:
                     candidatos.append((v, x, y, r_c))
     if not candidatos:
-        return ResultadoTalud(float("inf"), 0.0, 0.0, 0.0, z_grieta, bool(y_agua is not None and y_agua > 0))
+        raise ValueError("no se halló ninguna superficie de falla circular válida para este perfil y suelo (FS indeterminado)")
     candidatos.sort()
     mejor = candidatos[0]
     for v0, x0, y0, r0 in candidatos[:N_PULIDOS]:
-        r = minimize(lambda p: _fs_circulo(p[0], p[1], p[2], *args), [x0, y0, r0], method="Nelder-Mead", options={"xatol": 1e-3, "fatol": 1e-6, "maxiter": 250})
+        r = minimize(lambda p: fs_acotado(p[0], p[1], p[2]), [x0, y0, r0], method="Nelder-Mead", options={"xatol": 1e-3, "fatol": 1e-6, "maxiter": 250})
         if r.fun < mejor[0]:
             mejor = (float(r.fun), *map(float, r.x))
     return ResultadoTalud(mejor[0], mejor[1], mejor[2], mejor[3], z_grieta, bool(y_agua is not None and y_agua > 0))
@@ -230,7 +237,7 @@ def altura_critica_bishop(suelo: SueloExc, angulo_deg: float = 90.0, h_max: floa
 
 
 def angulo_maximo_seguro(altura: float, suelo: SueloExc, fs_requerido: float, angulo_min_deg: float = 10.0, resolucion_deg: float = 0.1, **kw) -> float | None:
-    """Mayor ángulo de talud (grados desde la horizontal, 90 = vertical) con FS >= fs_requerido; None si ni el ángulo mínimo cumple. El FS decrece con el ángulo (bisección)."""
+    """Mayor ángulo de talud (grados desde la horizontal, 90 = vertical) con FS >= fs_requerido; None si ni el ángulo mínimo cumple. El FS decrece con el ángulo (bisección); esto deja de valer si `sobrecarga_x` se da en coordenadas absolutas (la corona se desplaza al cambiar el ángulo): use el valor por defecto, que sigue a la corona."""
     if factor_seguridad_talud(perfil_talud(altura, 90.0), suelo, **kw).fs >= fs_requerido:
         return 90.0
     if factor_seguridad_talud(perfil_talud(altura, angulo_min_deg), suelo, **kw).fs < fs_requerido:
@@ -259,6 +266,11 @@ def decidir_talud_o_contencion(altura: float, suelo: SueloExc, distancia_lindero
                                analisis: str = "efectivo", ancho_fondo: float = 0.0, **kw) -> DecisionExcavacion:
     """Compara el talud más empinado que cumple la Tabla H.2.4-1 con el espacio disponible hasta el lindero. No dimensiona la contención ni calcula costos."""
     req = factor_seguridad_requerido(estado, sismo, analisis)
+    kh = kw.get("kh", 0.0)
+    if sismo and kh <= 0.0:
+        raise ValueError("sismo=True exige kh > 0 (use kh_construccion(kh_diseno) para la condición de construcción): el FS requerido seudoestático no es comparable con un análisis estático")
+    if kh > 0.0 and not sismo:
+        raise ValueError("kh > 0 exige sismo=True para aplicar el FS requerido seudoestático de la Tabla H.2.4-1")
     ang = angulo_maximo_seguro(altura, suelo, req, **kw)
     if ang is None:
         return DecisionExcavacion("contencion", None, None, None, req)

@@ -5,7 +5,8 @@ esponjamiento, variabilidad del suelo, costo de la consecuencia) son argumentos 
 2. Intensidad = consumo_gal_h / rendimiento_m3_h            [gal ACPM/m³ banco]
                 kg CO2e/m³ = gal/m³ x factor_kgco2e_por_gal  (factor del usuario; citar su fuente, p. ej. factores de emisión UPME)
 3. Reutilización = min(V_aprovechable, V_demanda_relleno) / V_excavado x 100        [% en banco]
-4. Costo de riesgo geotécnico = Pf x costo_consecuencia           [moneda]; Pf por FOSM + log-normal sobre FS (Bishop)
+4. Costo de riesgo geotécnico = Pf x costo_consecuencia           [moneda]; Pf por FOSM + log-normal sobre FS (Bishop).
+   `costo_consecuencia` debe estar en la MISMA base que los demás costos que se sumen (p. ej. por metro de frente afectado): el módulo no convierte unidades.
 """
 from __future__ import annotations
 

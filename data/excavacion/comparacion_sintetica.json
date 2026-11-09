@@ -12,42 +12,44 @@
     },
     "cov_c": 0.3,
     "cov_tan_phi": 0.1,
-    "costo_consecuencia_cop": 400000000.0,
+    "costo_consecuencia_cop_por_m": 400000000.0,
     "precio_excavacion_cop_m3": 25000.0,
     "sobrecarga_kpa": 10.0,
     "fs_pasivo": 1.5,
     "h_max_voladizo_m": 6.0,
     "empotramiento_min_m": 1.0,
+    "factor_longitud_pantalla": 1.3,
     "holgura_trabajo_m": 0.5,
     "precio_pantalla_cop_m2": 600000.0,
     "prob_falla_contencion": 0.005,
     "consumo_gal_h": 6.0,
     "rendimiento_m3_h": 40.0,
-    "factor_kgco2e_gal": 10.0
+    "factor_kgco2e_gal": 10.2765
   },
   "fs_requerido": 1.25,
   "ranking_por_costo_total_entre_las_que_caben": [
-    "talud 54° con berma de 2 m a media altura",
-    "talud 45°",
+    "talud 51° con berma de 2 m a media altura",
     "contención temporal en voladizo",
+    "talud 45°",
     "talud al máximo seguro (FS construcción 1,25)"
   ],
+  "pf_contencion_que_empata_con_el_mejor_talud": null,
   "resultados": [
     {
       "alternativa": "talud al máximo seguro (FS construcción 1,25)",
-      "angulo_deg": 54.2,
+      "angulo_deg": 50.6,
       "bermas": [],
-      "retiro_horizontal_m": 4.33,
+      "retiro_horizontal_m": 4.93,
       "cabe_en_predio": true,
-      "ieg": 0.822,
-      "area_m2_por_m": 73.0,
-      "gal_acpm_por_m_long": 10.9,
-      "kgco2e_por_m_long": 109.0,
-      "costo_excavacion_cop_por_m": 1824550,
+      "ieg": 0.802,
+      "area_m2_por_m": 74.8,
+      "gal_acpm_por_m_long": 11.2,
+      "kgco2e_por_m_long": 115.0,
+      "costo_excavacion_cop_por_m": 1869634,
       "fs_medio": 1.25,
-      "prob_falla": 0.0844,
-      "costo_riesgo_cop_por_m": 33757877,
-      "costo_total_cop_por_m": 35582427
+      "prob_falla": 0.0728,
+      "costo_riesgo_cop_por_m": 29103233,
+      "costo_total_cop_por_m": 30972867
     },
     {
       "alternativa": "talud 45°",
@@ -58,12 +60,12 @@
       "ieg": 0.769,
       "area_m2_por_m": 78.0,
       "gal_acpm_por_m_long": 11.7,
-      "kgco2e_por_m_long": 117.0,
+      "kgco2e_por_m_long": 120.0,
       "costo_excavacion_cop_por_m": 1950000,
-      "fs_medio": 1.44,
-      "prob_falla": 0.0094,
-      "costo_riesgo_cop_por_m": 3746614,
-      "costo_total_cop_por_m": 5696614
+      "fs_medio": 1.38,
+      "prob_falla": 0.0253,
+      "costo_riesgo_cop_por_m": 10102433,
+      "costo_total_cop_por_m": 12052433
     },
     {
       "alternativa": "talud 35°",
@@ -74,33 +76,33 @@
       "ieg": 0.7,
       "area_m2_por_m": 85.7,
       "gal_acpm_por_m_long": 12.9,
-      "kgco2e_por_m_long": 129.0,
+      "kgco2e_por_m_long": 132.0,
       "costo_excavacion_cop_por_m": 2142667,
-      "fs_medio": 1.74,
-      "prob_falla": 0.0001,
-      "costo_riesgo_cop_por_m": 20361,
-      "costo_total_cop_por_m": 2163028
+      "fs_medio": 1.69,
+      "prob_falla": 0.0021,
+      "costo_riesgo_cop_por_m": 826549,
+      "costo_total_cop_por_m": 2969216
     },
     {
-      "alternativa": "talud 54° con berma de 2 m a media altura",
-      "angulo_deg": 54.2,
+      "alternativa": "talud 51° con berma de 2 m a media altura",
+      "angulo_deg": 50.6,
       "bermas": [
         [
           3.0,
           2.0
         ]
       ],
-      "retiro_horizontal_m": 6.33,
+      "retiro_horizontal_m": 6.93,
       "cabe_en_predio": true,
-      "ieg": 0.76,
-      "area_m2_por_m": 79.0,
-      "gal_acpm_por_m_long": 11.8,
-      "kgco2e_por_m_long": 118.0,
-      "costo_excavacion_cop_por_m": 1974550,
-      "fs_medio": 1.57,
+      "ieg": 0.743,
+      "area_m2_por_m": 80.8,
+      "gal_acpm_por_m_long": 12.1,
+      "kgco2e_por_m_long": 125.0,
+      "costo_excavacion_cop_por_m": 2019634,
+      "fs_medio": 1.59,
       "prob_falla": 0.0008,
-      "costo_riesgo_cop_por_m": 328853,
-      "costo_total_cop_por_m": 2303404
+      "costo_riesgo_cop_por_m": 316877,
+      "costo_total_cop_por_m": 2336511
     },
     {
       "alternativa": "contención temporal en voladizo",
@@ -110,16 +112,16 @@
       "ieg": 0.952,
       "area_m2_por_m": 63.0,
       "gal_acpm_por_m_long": 9.4,
-      "kgco2e_por_m_long": 94.0,
-      "empotramiento_m": 5.48,
-      "longitud_pantalla_m": 11.48,
+      "kgco2e_por_m_long": 97.0,
+      "empotramiento_m": 7.12,
+      "longitud_pantalla_m": 13.12,
       "momento_max_knm_por_m": 281.4,
       "costo_excavacion_cop_por_m": 1575000,
-      "costo_pantalla_cop_por_m": 6888230,
+      "costo_pantalla_cop_por_m": 7874699,
       "prob_falla": 0.005,
       "prob_falla_es_supuesto": true,
       "costo_riesgo_cop_por_m": 2000000,
-      "costo_total_cop_por_m": 10463230
+      "costo_total_cop_por_m": 11449699
     }
   ]
 }

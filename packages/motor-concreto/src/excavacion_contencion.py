@@ -41,15 +41,20 @@ def _momento_neto_base(suelo: SueloExc, h: float, d: float, q: float, fs_pasivo:
     return float(np.trapezoid((pas - act) * brazo, z))
 
 
-def dimensionar_voladizo(suelo: SueloExc, altura: float, sobrecarga_kpa: float, fs_pasivo: float, h_max_voladizo: float, empotramiento_min_m: float, factor_longitud: float = 1.0) -> Pantalla:
+def dimensionar_voladizo(suelo: SueloExc, altura: float, sobrecarga_kpa: float, fs_pasivo: float, h_max_voladizo: float, empotramiento_min_m: float, *, factor_longitud: float) -> Pantalla:
     """`empotramiento_min_m`: piso práctico (lo da el usuario); rige cuando la cohesión anula el empuje activo y el equilibrio no pide empotramiento.
-    `factor_longitud`: multiplicador del empotramiento calculado (práctica de proyecto, dado por el usuario; 1.0 = sin incremento)."""
+    `factor_longitud`: multiplicador OBLIGATORIO del empotramiento calculado. El equilibrio de momentos con pasivo completo hasta la punta deja la resultante horizontal sin equilibrar (empotramiento corto); la práctica de proyecto lo incrementa y el valor lo fija el usuario con su fuente. 1.0 = sin incremento."""
     if altura <= 0 or sobrecarga_kpa < 0 or fs_pasivo < 1.0 or h_max_voladizo <= 0 or factor_longitud < 1.0 or empotramiento_min_m < 0:
         raise ValueError("altura > 0, sobrecarga >= 0, fs_pasivo >= 1, h_max > 0, factor_longitud >= 1")
     if altura > h_max_voladizo:
         return Pantalla(None, None, None, True)
-    f = lambda x: _momento_neto_base(suelo, altura, x, sobrecarga_kpa, fs_pasivo)        # noqa: E731
-    d = brentq(f, 1e-3, 20.0 * altura) if f(1e-3) < 0 else 0.0
+    def f(x): return _momento_neto_base(suelo, altura, x, sobrecarga_kpa, fs_pasivo)
+    if f(1e-3) < 0:
+        if f(20.0 * altura) <= 0:
+            return Pantalla(None, None, None, True)        # suelo sin resistencia pasiva suficiente (p. ej. phi ~ 0): el voladizo no tiene solución
+        d = brentq(f, 1e-3, 20.0 * altura)
+    else:
+        d = 0.0
     d = max(d, empotramiento_min_m)
     z, act, pas = _presiones(suelo, altura, d, sobrecarga_kpa, fs_pasivo)
     corte = np.concatenate([[0.0], np.cumsum(0.5 * ((act - pas)[1:] + (act - pas)[:-1]) * np.diff(z))])        # cortante (act - pas) acumulado desde la cabeza
