@@ -1,0 +1,21 @@
+{
+  "fecha_verificacion": "2026-11-08",
+  "unidad": "kg CO2e por kg de material (cuna a puerta, A1-A3), salvo indicación",
+  "factores": [
+    {"material": "cemento_portland_tipo_I_II", "valor": 1.010, "unidad_original": "1010 kg CO2 eq / t", "nivel": "PRIMARIA_VERIFICADA",
+     "fuente": "EPD 857, Cementos Argos, planta Cartagena (Colombia), ASTM International, ISO 14025/21930, GWP-100 AR5, A1-A3, emitida 2025-01-14, vigencia 5 años",
+     "url": "https://pcr-epd.s3.us-east-2.amazonaws.com/1362.2025_EDP_Argos_Cartagena_plant_Type_I_II_cement.pdf", "nota": "Calcinación = 493 kg CO2 eq/t. Específica de una planta."},
+    {"material": "cemento_promedio_colombia", "valor": 0.892, "nivel": "SECUNDARIA_ARBITRADA",
+     "fuente": "Pardo, López, Rico (2022) Rev. Logos Ciencia & Tecnología 14(1):76-85, Tabla 2; promedio informes Argos 2019 y Cemex 2019 + Salazar (2012)",
+     "url": "https://doi.org/10.22335/rlct.v14i1.1510", "nota": "13% menor que la EPD 857; versión de GWP y planta distintas. Usar como escenario bajo."},
+    {"material": "ceniza_volante", "valor": 0.015, "nivel": "SECUNDARIA_ARBITRADA", "fuente": "Idem, promedio Nazari y Sanjayan (2017) y Tam et al. (2016)"},
+    {"material": "agregado_grueso", "valor": 0.0020, "nivel": "SECUNDARIA_ARBITRADA", "fuente": "Idem, de Salazar Jaramillo (2012) actualizado a matriz eléctrica 2019"},
+    {"material": "agregado_fino", "valor": 0.0080, "nivel": "SECUNDARIA_ARBITRADA", "fuente": "Idem"},
+    {"material": "agua", "valor": 0.0013, "nivel": "SECUNDARIA_ARBITRADA", "fuente": "Idem"},
+    {"material": "aditivo_superplastificante", "valor": 0.511, "nivel": "SECUNDARIA_ARBITRADA", "fuente": "Idem"},
+    {"material": "acero_largo_colombia", "valor": 1.322, "nivel": "SECUNDARIA_ARBITRADA", "fuente": "Idem, Salazar (2012) ajustado por coproductos ANDI 2019 e importaciones 2020"},
+    {"material": "barra_corrugada_paz_del_rio", "valor": 0.850, "nivel": "NO_VERIFICADA", "fuente": "Cita secundaria de EPD-IES-0007375:001; catálogo Paz del Río no se pudo descargar (ECONNREFUSED). Verificar contra el PDF."}
+  ],
+  "pendientes": ["escoria (GGBS)", "arcilla calcinada", "humo de sílice", "ceniza de cascarilla de arroz", "transporte", "EPD de concreto premezclado por resistencia", "EPD acero Gerdau Diaco / Paz del Río (primaria)"],
+  "bloqueos": "colombia.argos.co devuelve HTML a clientes automáticos; EPD de cementos adicionados (892 kg/t citado en buscador) no leída en origen."
+}
