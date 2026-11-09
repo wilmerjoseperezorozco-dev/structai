@@ -113,5 +113,5 @@ Candidatos a hueco por capítulo (verificar a mano antes de ingestar; el patrón
 - Concentración: K.4 (52), E.8 (24), E.7 (24), F.5 (14), K.3 (9), E.6 (6), E.3 (5), E.2 (5).
 - **Capítulos que alimentan los motores (A.3, B.3–B.5, C.*, D, F.2, G, H.4) no tienen ningún numeral sin mencionar.** Casos como B.5 o B.4.8 figuran «sin sección» solo porque los chunks se guardaron agrupados (`B.5.1 a B.5.4`), y se confirmó leyéndolos. Los bloqueos para programar son de fidelidad (resúmenes, numerales truncados), no de capítulos ausentes.
 - **Hallazgo:** E.7/E.8 (casas de bahareque/guadua) están condensados: el PDF tiene 24 numerales de E.8 que no figuran (p. ej. E.8.4.2.1–.4, E.8.5.1–E.8.5.5) y la base guarda 5 chunks de ~1,4 k caracteres para todo E.8. `docs/fuentes-normativas.md` da E como «verbatim completo»; esa fila debe corregirse.
-- K.4.2.8 y K.4.3.9 (listas de normas técnicas referenciadas) concentran 59 de los 160; baja prioridad para motores.
+- K.4 concentra 52 de los 160, casi todos bajo K.4.2.8 y K.4.3.9; baja prioridad para motores (no verifiqué qué contienen esos numerales).
 - Límites del método: solo detecta numerales con encabezado «N — texto»; no detecta tablas, figuras ni contenido faltante dentro de un numeral presente (el caso de los resúmenes de B.3.4 o J). El listado completo está en el `.json` hermano.
