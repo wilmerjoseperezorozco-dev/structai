@@ -1,0 +1,123 @@
+{
+ "cruce3": {
+  "prorroga": {
+   "n": 40278,
+   "G": 21,
+   "tasa": 0.2932370028303292,
+   "OR_por_10pp": 1.1442993005309303,
+   "ic95": [
+    1.03896167440391,
+    1.2603168350236196
+   ],
+   "p_t": 0.008628171807848674,
+   "p_normal_ref": 0.003596178145219605
+  },
+  "suspension": {
+   "n": 40278,
+   "G": 21,
+   "tasa": 0.19807338993991758,
+   "OR_por_10pp": 1.2953335847998722,
+   "ic95": [
+    1.0114786358028858,
+    1.6588477863189093
+   ],
+   "p_t": 0.041192614599254836,
+   "p_normal_ref": 0.02909386792852627
+  },
+  "adicion_valor": {
+   "n": 40278,
+   "G": 21,
+   "tasa": 0.08739262128208948,
+   "OR_por_10pp": 0.9997794124141839,
+   "ic95": [
+    0.8692047396317296,
+    1.1499694236719766
+   ],
+   "p_t": 0.9974090617393924,
+   "p_normal_ref": 0.997376485135157
+  }
+ },
+ "cruce4": {
+  "departamentos": [
+   "ANTIOQUIA",
+   "ATLANTICO",
+   "BOYACA",
+   "CALDAS",
+   "CAQUETA",
+   "CAUCA",
+   "CESAR",
+   "CUNDINAMARCA",
+   "HUILA",
+   "META",
+   "NORTE DE SANTANDER",
+   "QUINDIO",
+   "SANTANDER",
+   "TOLIMA",
+   "VALLE"
+  ],
+  "n_registros": 7624,
+  "prop_real_igual_esperado": 0.8614900314795383,
+  "prop_atraso_nacional": 0.08512591815320042,
+  "T_ejecucion_parcial": {
+   "n": 15,
+   "rho_parcial": 0.5602820000136873,
+   "ic95": [
+    0.01805272658662254,
+    0.8724993493800058
+   ],
+   "p_perm": 0.0396
+  }
+ },
+ "cruce5": {
+  "T_peajes_vs_valor_vial_parcial": {
+   "n": 21,
+   "rho_parcial": 0.847049970428801,
+   "ic95": [
+    0.6113775681069087,
+    0.9543332317239227
+   ],
+   "p_perm": 0.0002
+  },
+  "T_peajes_vs_pesados_parcial": {
+   "n": 21,
+   "rho_parcial": 0.46734091467772676,
+   "ic95": [
+    0.007090785847834037,
+    0.7740752902270603
+   ],
+   "p_perm": 0.0368
+  },
+  "peajes_por_depto": {
+   "ANTIOQUIA": 18,
+   "ATLANTICO": 6,
+   "BOLIVAR": 9,
+   "BOYACA": 6,
+   "CALDAS": 10,
+   "CAQUETA": 0,
+   "CASANARE": 1,
+   "CAUCA": 2,
+   "CESAR": 8,
+   "CHOCO": 0,
+   "CUNDINAMARCA": 31,
+   "GUAJIRA": 4,
+   "HUILA": 4,
+   "MAGDALENA": 6,
+   "META": 8,
+   "NARINO": 3,
+   "NORTE DE SANTANDER": 2,
+   "QUINDIO": 1,
+   "SANTANDER": 10,
+   "TOLIMA": 7,
+   "VALLE": 13
+  }
+ },
+ "p_holm": {
+  "T5a_peajes_valor_vial": 0.0012000000000000001,
+  "T3_prorroga": 0.04314085903924337,
+  "T5b_peajes_pesados": 0.1472,
+  "T4_ejecucion": 0.1472,
+  "T3_suspension": 0.1472,
+  "T3_adicion_valor": 0.9974090617393924
+ },
+ "semilla": 20261109
+}

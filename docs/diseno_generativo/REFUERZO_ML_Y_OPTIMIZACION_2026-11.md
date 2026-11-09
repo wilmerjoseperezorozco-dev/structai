@@ -226,6 +226,28 @@ La asociación T3 existe, pero **no es específica de las obras viales**: con el
 
 Falacia ecológica (la correlación entre departamentos no dice nada sobre contratos o camiones individuales); n de 19 a 21; desfase temporal entre 2011 y 2016–2026; estaciones de conteo no aleatorias; clase de camión INVIAS ↔ categoría de peaje sin verificar y evidentemente inválida para el 18 % de peajes; tarifas sin fecha; coordenadas de peajes con ruido; el control por número de estaciones solo corrige parcialmente el tamaño del departamento (el valor total contratado se correlaciona ρ = 0,39 con el número de estaciones). Para convertir esto en resultado habría que tener la definición oficial de categorías de peaje por resolución, tarifas con fecha y mezcla de camiones reciente (pendiente de solicitud al INVIAS).
 
+## 5i. Cruces 3 a 5: retrasos, ejecución y densidad de peajes frente a la mezcla de camiones (2026-11-09, issue #127)
+
+Script: `scripts/transporte/cruces_secop_logistica.py` (reutiliza `cruces_peajes_secop.py`; resultados en `data/transporte/cruces_secop_logistica.json`). El predictor es siempre la proporción de camiones pesados (C-5 y >C-5) de 2011 del departamento, de modo que **todo efecto es ecológico**: describe departamentos, no contratos individuales, y no establece causa.
+
+**Cruce 3. Contrato: prórroga, suspensión y adición de valor.** Logit sobre 40.278 contratos de obra de 21 departamentos (de 50.154: se pierden los de duración no interpretable, 4.871 con «Dia(s)» sin número o «No definido», los sin fecha de firma y los de departamentos sin mezcla). Controles: log del valor, log de la duración, obra vial, modalidad, pyme y **año de firma** (los contratos recientes no han tenido tiempo de acumular prórrogas). Errores agrupados por departamento con inferencia t de 20 grados de libertad (21 grupos son pocos; la normal habría dado p más pequeños).
+
+| Resultado | Tasa | OR por +10 pp de pesados | IC 95 % | p (t, 20 gl) | p Holm (6 pruebas) |
+|---|---|---|---|---|---|
+| Prórroga (días adicionados > 0) | 29,3 % | 1,144 | 1,039 a 1,260 | 0,009 | 0,043 |
+| Suspensión | 19,8 % | 1,295 | 1,011 a 1,659 | 0,041 | 0,147 |
+| Adición de valor | 8,7 % | 1,000 | 0,869 a 1,150 | 0,997 | 0,997 |
+
+La prórroga es robusta: al quitar cada departamento por turno el OR queda entre 1,12 (sin Magdalena) y 1,17 (sin Cesar) y los 21 casos tienen p < 0,05. No es un efecto Caribe: la tasa de prórroga es 30,1 % en el Caribe y 27,5 % en el resto, y la correlación entre departamentos (ρ = 0,45, p = 0,04) es de magnitud parecida a la del modelo de contrato. La suspensión no es robusta (14 de 21 casos leave-one-out con p < 0,05; sin Cundinamarca p = 0,19) y no sobrevive a Holm. Las adiciones de valor no se asocian. Lectura prudente: los departamentos con más tráfico pesado tienden a tener más contratos de obra con plazos ampliados, el odds de prórroga es ~14 % mayor por cada 10 puntos porcentuales adicionales de pesados. Mecanismos plausibles (logística de materiales, estado de las vías, clima) no se pudieron separar de confusores de región (seguridad, capacidad institucional) con los datos locales.
+
+**Cruce 4. Ejecución: avance real frente a esperado.** En el 86 % de los 7.624 registros «Confirmado» con ambos valores, el avance real es idéntico al esperado, lo que sugiere autollenado: la brecha mediana es 0 en todos los departamentos y no sirve. Se usó la proporción de registros con atraso (real < esperado), 8,5 % en el país y de 0 a 16,2 % por departamento (15 departamentos con ≥ 30 registros). Spearman parcial con pesados, controlando estaciones: ρ = 0,56 (IC 0,02 a 0,87), p = 0,040, **Holm 0,147**. Sugerente y coherente con el cruce 3, pero débil y dependiente de la calidad del reporte.
+
+**Cruce 5. Densidad de peajes.** Los peajes por departamento se asocian fuertemente con el valor contratado en obra vial (ρ parcial = 0,85, IC 0,61 a 0,95, p < 0,001, Holm 0,001) pero eso es **escala**: los peajes siguen el volumen total de contratación (ρ = 0,85) y, al controlar por el valor total en vez de por estaciones, el efecto específico vial cae a ρ = 0,46 con IC de −0,23 a 0,82 (cruza cero). Con pesados: ρ parcial = 0,47 (IC 0,01 a 0,77), p = 0,037, Holm 0,147.
+
+**Qué se sostiene y qué no.** Se sostiene la asociación de pesados con prórroga (robusta, Holm 0,043). Son exploratorios la suspensión, la proporción de atraso y los peajes con pesados (Holm 0,147). Son efecto de escala, no de causa vial, los peajes con obra vial (como ya ocurría con SECOP en 5h). No hay efecto sobre adiciones de valor.
+
+**Límites.** Falacia ecológica; 21 grupos; mezcla de 2011 frente a contratos 2016–2026; la proporción de pesados puede ser un indicador de la estructura económica del departamento (minería, agroindustria, comercio exterior) más que del tráfico en sí; la duración «Dia(s)» sin número excluye ~10 % de los contratos; el campo de avance parece autollenado; sin covariables departamentales (pobreza, capacidad fiscal, seguridad) cargadas localmente. Siguiente paso útil: incorporar covariables del DNP o DANE y repetir el logit con efectos aleatorios.
+
 ## 6. Qué no hace este documento
 
 No prueba que un modelo aprendido supere a la enumeración exacta para vigas aisladas (la medición de la sección 2 sugiere que no); no valida las cantidades contra planos reales; no incluye traslapos ni ganchos suplementarios.
