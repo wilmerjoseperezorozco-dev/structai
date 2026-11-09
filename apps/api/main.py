@@ -577,6 +577,14 @@ except Exception as e:
     log.warning(f"✗ motor-licuacion no disponible: {e}")
 
 try:
+    from routers.redes import router as redes_router
+    REDES_AVAILABLE = True
+    log.info("✓ motor-redes cargado")
+except Exception as e:
+    REDES_AVAILABLE = False
+    log.warning(f"✗ motor-redes no disponible: {e}")
+
+try:
     from routers.proyecto import router as proyecto_router
     PROYECTO_AVAILABLE = True
     log.info("✓ dag-proyecto cargado")
@@ -768,6 +776,9 @@ async def security_headers_middleware(request: Request, call_next):
 # sería un import circular contra un módulo a medio inicializar.
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+from fastapi.exceptions import RequestValidationError as _RequestValidationError  # noqa: E402
+from validacion_handler import manejar_validacion  # noqa: E402
+app.add_exception_handler(_RequestValidationError, manejar_validacion)   # NaN/Infinity en el cuerpo: 422, no 500
 
 
 # ── Manejador global de excepciones ────────────────────────────────────────
@@ -821,6 +832,9 @@ if GEOTECNIA_AVAILABLE:
 if LICUACION_AVAILABLE:
     app.include_router(licuacion_router)
     app.include_router(licuacion_router, prefix="/v1")
+if REDES_AVAILABLE:
+    app.include_router(redes_router)
+    app.include_router(redes_router, prefix="/v1")
 if PROYECTO_AVAILABLE:
     app.include_router(proyecto_router)
     app.include_router(proyecto_router, prefix="/v1")
