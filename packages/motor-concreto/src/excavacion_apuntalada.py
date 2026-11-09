@@ -11,6 +11,7 @@ from dataclasses import dataclass
 import numpy as np
 from scipy.optimize import brentq
 
+from .numerico import trapezoid
 from .excavacion_contencion import _presiones
 from .excavacion_estabilidad import SueloExc
 
@@ -26,7 +27,7 @@ class PantallaApoyada:
 
 def _momento_neto_apoyo(suelo: SueloExc, h: float, d: float, a: float, q: float, fs_pasivo: float) -> float:
     z, act, pas = _presiones(suelo, h, d, q, fs_pasivo)
-    return float(np.trapezoid((act - pas) * (z - a), z))           # >0: el activo vence al pasivo (la pantalla gira hacia la excavación)
+    return float(trapezoid((act - pas) * (z - a), z))           # >0: el activo vence al pasivo (la pantalla gira hacia la excavación)
 
 
 def dimensionar_apuntalada(suelo: SueloExc, altura: float, prof_apoyo: float, sobrecarga_kpa: float, fs_pasivo: float, *, factor_longitud: float) -> PantallaApoyada:

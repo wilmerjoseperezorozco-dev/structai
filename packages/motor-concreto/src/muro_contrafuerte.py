@@ -20,6 +20,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
+from .numerico import trapezoid
 from .muro_contencion import GAMMA_CONCRETO_KN_M3, GeometriaMuro, Relleno, coeficiente_activo_rankine
 from .muro_pantalla import FACTOR_E_SERVICIO, FACTOR_H, N_SECCIONES, _dinamico, _sigma, acciones_pantalla
 from .muro_refuerzo import Franja, franja, phi_vc_kn, recubrimiento
@@ -146,7 +147,7 @@ def disenar_contrafuerte(g: GeometriaMuro, r: Relleno, m: Materiales, kh: float 
     xs = np.linspace(0.0, bt, 9)
     a_vert = w_talon_kpa * L * 1000.0 / (PHI_FLEXION * m.fy)                                  # mm² por m de longitud en x
     largo_v = h * (1.0 - xs / bt) + ANCLAJE_ESTRIBO_M
-    kg_v = a_vert * 1e-6 * float(np.trapezoid(largo_v, xs)) * DENSIDAD_ACERO_KG_M3
+    kg_v = a_vert * 1e-6 * float(trapezoid(largo_v, xs)) * DENSIDAD_ACERO_KG_M3
     kg += (kg_principal + kg_estribos * DENSIDAD_ACERO_KG_M3 + kg_v) / L
     return DisenoContrafuerte(not motivos, tuple(dict.fromkeys(motivos)), base_h, vert, as_h_prom, luz, mu_max, vu_max, d_base, as_req, dia_cf, n_cf, as_prov_cf,
                               at_max, kg)

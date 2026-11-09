@@ -16,6 +16,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
+from .numerico import trapezoid
 from .economia_concreto import Economia, co2_m3, costo_m3
 from .muro_anclaje import DisenoAnclaje, costo_co2_anclaje, disenar_anclaje
 from .muro_contrafuerte import DisenoContrafuerte, disenar_contrafuerte
@@ -127,7 +128,7 @@ def _integral(f, a: float, b: float) -> float:
     if b <= a:
         return 0.0
     x = np.linspace(a, b, N_INTEG)
-    return float(np.trapezoid(f(x), x))
+    return float(trapezoid(f(x), x))
 
 
 def _combinaciones(g: GeometriaMuro, r: Relleno, gamma_c: float, kh: float | None):

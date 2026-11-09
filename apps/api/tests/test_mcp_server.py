@@ -68,7 +68,7 @@ def test_enable_mcp_oauth_false_no_rompe_el_montaje_bearer(monkeypatch) -> None:
     monkeypatch.setenv("ENABLE_MCP", "true")
     monkeypatch.setenv("ENABLE_MCP_OAUTH", "false")
     main = _reimportar_main()
-    assert any(r.path == "/mcp" for r in main.app.routes)
+    assert any(getattr(r, "path", None) == "/mcp" for r in main.app.routes)
 
 
 def test_enable_mcp_oauth_true_no_lanza_al_construir_authconfig(monkeypatch) -> None:
@@ -80,7 +80,7 @@ def test_enable_mcp_oauth_true_no_lanza_al_construir_authconfig(monkeypatch) -> 
     monkeypatch.setenv("ENABLE_MCP", "true")
     monkeypatch.setenv("ENABLE_MCP_OAUTH", "true")
     main = _reimportar_main()
-    assert any(r.path == "/mcp" for r in main.app.routes)
+    assert any(getattr(r, "path", None) == "/mcp" for r in main.app.routes)
 
     from mcp_server import _auth_config_oauth
     cfg = _auth_config_oauth()

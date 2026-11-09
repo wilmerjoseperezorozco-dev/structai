@@ -12,6 +12,7 @@ from dataclasses import dataclass
 import numpy as np
 from scipy.optimize import brentq
 
+from .numerico import trapezoid
 from .excavacion_estabilidad import SueloExc
 
 N_PUNTOS = 4000
@@ -38,7 +39,7 @@ def _presiones(suelo: SueloExc, h: float, d: float, q: float, fs_pasivo: float):
 def _momento_neto_base(suelo: SueloExc, h: float, d: float, q: float, fs_pasivo: float) -> float:
     z, act, pas = _presiones(suelo, h, d, q, fs_pasivo)
     brazo = (h + d) - z
-    return float(np.trapezoid((pas - act) * brazo, z))
+    return float(trapezoid((pas - act) * brazo, z))
 
 
 def dimensionar_voladizo(suelo: SueloExc, altura: float, sobrecarga_kpa: float, fs_pasivo: float, h_max_voladizo: float, empotramiento_min_m: float, *, factor_longitud: float) -> Pantalla:

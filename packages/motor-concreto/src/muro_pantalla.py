@@ -15,6 +15,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
+from .numerico import trapezoid
 from .muro_contencion import (GAMMA_CONCRETO_KN_M3, GeometriaMuro, Relleno, SueloApoyo, coeficiente_activo_mononobe_okabe,
                               coeficiente_activo_rankine)
 from .muro_refuerzo import Franja, franja, phi_mn_knm, phi_vc_kn, recubrimiento, suelo, as_min_flexion
@@ -64,8 +65,8 @@ def _mv(sigma_fn, z_k: float, cortes: tuple[float, ...] = ()) -> tuple[float, fl
     for a, b in zip(puntos[:-1], puntos[1:]):
         z = np.linspace(a, b, N_INTEG)
         s = sigma_fn(np.clip(z, a + eps, b - eps))
-        v += float(np.trapezoid(s, z))
-        m += float(np.trapezoid(s * (z_k - z), z))
+        v += float(trapezoid(s, z))
+        m += float(trapezoid(s * (z_k - z), z))
     return v, m
 
 
@@ -91,7 +92,7 @@ def _inercia(g: GeometriaMuro, kh: float, y_k: float, gamma_c: float) -> tuple[f
         return 0.0, 0.0
     y = np.linspace(y_k, g.h_pantalla, N_INTEG)
     dw = kh * gamma_c * g.espesor_pantalla(y)
-    return float(np.trapezoid(dw, y)), float(np.trapezoid(dw * (y - y_k), y))
+    return float(trapezoid(dw, y)), float(trapezoid(dw * (y - y_k), y))
 
 
 def _contramomento(g: GeometriaMuro, r: Relleno, y_k: float, gamma_c: float) -> float:

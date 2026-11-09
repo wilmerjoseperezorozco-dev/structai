@@ -22,6 +22,7 @@ from typing import Optional
 
 import numpy as np
 
+from .numerico import trapezoid
 from .viga import AREA_MM2, DIAMETRO_MM, PHI_CORTANTE, PHI_FLEXION, Materiales, beta1
 
 PHI_APLASTAMIENTO = 0.65
@@ -139,7 +140,7 @@ def _momento_cara(p_prom_kpa: float, pendiente_kpa_m: float, L: float, B: float,
     for signo in (1, -1):
         x_rel = c / 2 + s                                    # distancia al eje de la columna
         p = np.maximum(p_prom_kpa + signo * pendiente_kpa_m * x_rel, 0.0)
-        mejor = max(mejor, float(np.trapezoid(p * B * s, s)))
+        mejor = max(mejor, float(trapezoid(p * B * s, s)))
     return mejor
 
 
