@@ -4,4 +4,4 @@
 
 | Id | Línea | Motores | Estado | Issue |
 |---|---|---|---|---|
-| L1 | [Optimización estructural multiobjetivo: costo, seguridad normativa y carbono](investigacion/L1_OPTIMIZACION_ESTRUCTURAL_COSTO_SEGURIDAD_CARBONO.md) | motor-analisis, motor-concreto, motor-apu, orquestador | Fase 0 (protocolo) | ver issue |
+| L1 | [Optimización estructural multiobjetivo: costo, seguridad normativa y carbono](investigacion/L1_OPTIMIZACION_ESTRUCTURAL_COSTO_SEGURIDAD_CARBONO.md) | motor-analisis, motor-concreto, motor-apu, orquestador | Fase 0 (protocolo) | [#167](https://github.com/wilmerjoseperezorozco-dev/structai/issues/167) |
