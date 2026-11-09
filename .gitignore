@@ -80,3 +80,5 @@ data/precios_elementos/_cache/
 # regenerable con scripts/precios/indices_dane.py (6 MB)
 data/precios_elementos/indices_icoced.csv
 data/laboratorio_concreto/_cache/
+
+data/transporte/_cache/

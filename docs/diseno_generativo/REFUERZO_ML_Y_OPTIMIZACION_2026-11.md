@@ -177,6 +177,55 @@ Mezcla de camiones 2011 (% de los camiones contados, n estaciones; clases INVIAS
 
 Lectura: en la Costa Caribe (Atlántico, Bolívar, Magdalena, Cesar) la proporción de camiones de más de cinco ejes es de 26 a 39 %, frente a 14–15 % en Antioquia y Cundinamarca; en el interior pesan más los camiones de dos ejes. Es la mezcla que circula por la vía, no el parque registrado ni la oferta de alquiler; la suma entre estaciones cuenta varias veces el mismo camión. La equivalencia con el catálogo (C-2P ≈ liviano, C-2G ≈ sencillo, C-3-4 ≈ C3, C-5 ≈ minimula, >C-5 ≈ tractomula) es una inferencia no verificada: las definiciones de clase no están en el libro. Datos de hace 15 años: sirven como señal de tendencia territorial, no como flota actual.
 
+## 5h. Cruces estadísticos: peajes y contratación de obra frente a la mezcla de camiones (2026-11-09, issue #127)
+
+Script: `scripts/transporte/cruces_peajes_secop.py` (semilla 20261109, 5.000 remuestreos bootstrap, 9.999 permutaciones). Resultados completos en `data/transporte/cruces_resultados.json`.
+
+**Datos.** Mezcla de camiones 2011 por estación (sección 5g); tarifas por categoría I–VII de 179 peajes del recurso `68qj-5xux` de datos.gov.co (165 utilizables: se excluyen 13 sin categoría III y el peaje La Parada, con tarifa plana de $2.700 en las siete categorías); departamento del peaje por punto en polígono (DANE MGN 2018; un peaje cae fuera del polígono y se asigna al más cercano; Puerto Triunfo queda en Boyacá aunque su nombre y su vía apuntan a Antioquia, señal de ruido en las coordenadas de origen); 50.154 contratos de obra de SECOP II con valor entre 0 y $10¹² (2 descartados por valor absurdo). El campo `territorial` del recurso de peajes es un código numérico sin diccionario verificado, por eso no se usó.
+
+**Hipótesis de trabajo (no verificadas).** Clase INVIAS → categoría de peaje por número de ejes (H0: C-2P→III, C-2G→IV, C-3-4→V, C-5→VI, >C-5→VII), con dos variantes de sensibilidad (H1, H2). Las tarifas cumplen III ≤ IV ≤ V en todos los peajes usados, pero **29 de 165 peajes (18 %) tienen la categoría III por debajo de la II**, lo que indica otra definición de categorías en esos peajes y debilita H0 justo ahí. Las tarifas no traen fecha de vigencia. Cuando una categoría pesada vale 0 se arrastra la última no nula.
+
+### Cruce 1: tarifas de peajes y mezcla de camiones (19 departamentos con ambos datos)
+
+| Resultado | Estimación | IC 95 % | p |
+|---|---|---|---|
+| T1. Tarifa de la categoría V entre departamentos (Kruskal–Wallis, 17 grupos con ≥2 peajes, n = 147) | H = 20,6; ε² = 0,035 | — | 0,19 (Holm 0,58) |
+| T2. Proporción de pesados (C-5 y >C-5) frente a la forma de la tarifa R = V/III (Spearman, n = 19) | ρ = 0,11 | −0,34 a 0,51 | 0,66 (Holm 0,95) |
+
+No hay evidencia de que los departamentos con más camiones pesados tengan un cuadro tarifario distinto, ni de que la tarifa pesada difiera más entre departamentos de lo esperable por el azar de los peajes incluidos. Con n = 19 el intervalo de T2 es ancho: no se descarta una asociación moderada de cualquier signo.
+
+El costo esperado de peaje por paso de camión (suma de la proporción de cada clase por la tarifa de su categoría, bootstrap conjunto sobre estaciones y peajes) va de unos $31.600 a $44.900 según el departamento (H0). **Crece por construcción con la proporción de pesados** porque los pesados pagan más, así que no se contrasta contra ella: la correlación descriptiva (ρ = 0,25 con H0; 0,18 con H1; 0,39 con H2) es circular y no es un hallazgo. Casanare y Quindío tienen un solo peaje, así que su intervalo solo recoge la variación de estaciones.
+
+**Atlántico.** Con los seis peajes el costo esperado es $44.925 (IC 36.404–58.906) y R = 4,06, el mayor del país. Cuatro de esos seis (Galapa 02, Juan Mina, Puerto Colombia y Papiros) tienen el cuadro atípico (III < II, V ≈ 5 × III). Con solo los dos peajes de cuadro regular (Sabanagrande, Galapa) el costo baja a $39.813 (IC 37.232–41.681; H1 $38.658; H2 $37.746), dentro del rango de otros departamentos. La "prima" del Atlántico no es robusta: depende de cómo se interpreten las categorías de cuatro peajes.
+
+**Efecto del cambio de mezcla 2006 → 2011 con tarifas fijas (estaciones comunes, bootstrap pareado).**
+
+| Ámbito | Estaciones comunes | Δ proporción de pesados | Δ costo por paso (H0) |
+|---|---|---|---|
+| Atlántico | 13 | +12,9 pp (IC 5,3 a 19,3) | +$7.261 (IC 4.588 a 9.755) |
+| Bolívar | 17 | +1,3 pp (−2,3 a 4,6) | +$928 (102 a 1.855) |
+| Antioquia | 48 | −1,2 pp (−3,2 a 0,9) | −$277 (−1.060 a 536) |
+| Cundinamarca | 45 | +0,7 pp (−2,6 a 3,8) | −$10 (−1.359 a 1.335) |
+| Total nacional | 530 | +1,6 pp (0,1 a 3,0) | +$501 (91 a 894) |
+
+El aumento de pesados en Atlántico (de 12,4 % a 26,0 % en la comparación anterior, sección 5g) se sostiene con intervalo que excluye cero y es la única variación grande entre territoriales con muestra amplia. Con 13 estaciones y estaciones de conteo no aleatorias, es evidencia fuerte de cambio en esos puntos, no una estimación del departamento entero. El costo en pesos usa tarifas actuales sobre una mezcla de 2006 y 2011: mide el efecto de la mezcla, no el gasto histórico real.
+
+### Cruce 2: contratación de obra (SECOP II) y mezcla de camiones (21 departamentos)
+
+Se excluye la territorial Ocaña porque no se verificó su equivalencia con un departamento. Bogotá se suma a Cundinamarca. Los contratos son de 2016–2026 y la mezcla de 2011: el desfase es de 5 a 15 años.
+
+| Resultado | Estimación | IC 95 % | p (permutación) |
+|---|---|---|---|
+| T3. Valor contratado en obras viales frente a proporción de pesados, controlando el número de estaciones (Spearman parcial, n = 21) | ρ = 0,56 | 0,19 a 0,83 | 0,012 (Holm 0,047) |
+| Mismo cálculo sin controlar | ρ = 0,49 | — | — |
+| T4. Cuota vial del valor total frente a pesados (Spearman, n = 21) | ρ = 0,16 | −0,38 a 0,62 | 0,48 (Holm 0,95) |
+
+La asociación T3 existe, pero **no es específica de las obras viales**: con el valor total contratado sale ρ parcial = 0,50 (IC 0,10 a 0,78), con intervalos que se solapan con el vial, y la cuota vial no se asocia (T4). La lectura sensata es que los departamentos con mayor volumen de contratación de obra tienden a tener más camiones pesados circulando (Cesar, Magdalena y Tolima combinan 45–48 % de pesados con contratación alta), probablemente por una causa común de escala económica y carga de materiales o minerales, no porque la obra vial genere camiones. El número de contratos, a diferencia del valor, no se asocia (ρ parcial = 0,14). Es estable al quitar un departamento a la vez (ρ parcial entre 0,49 sin Caquetá y 0,66 sin Antioquia). Pero con cuatro pruebas corregidas por Holm el p ajustado de T3 es 0,047, apenas bajo 0,05: debe leerse como exploratorio.
+
+### Límites
+
+Falacia ecológica (la correlación entre departamentos no dice nada sobre contratos o camiones individuales); n de 19 a 21; desfase temporal entre 2011 y 2016–2026; estaciones de conteo no aleatorias; clase de camión INVIAS ↔ categoría de peaje sin verificar y evidentemente inválida para el 18 % de peajes; tarifas sin fecha; coordenadas de peajes con ruido; el control por número de estaciones solo corrige parcialmente el tamaño del departamento (el valor total contratado se correlaciona ρ = 0,39 con el número de estaciones). Para convertir esto en resultado habría que tener la definición oficial de categorías de peaje por resolución, tarifas con fecha y mezcla de camiones reciente (pendiente de solicitud al INVIAS).
+
 ## 6. Qué no hace este documento
 
 No prueba que un modelo aprendido supere a la enumeración exacta para vigas aisladas (la medición de la sección 2 sugiere que no); no valida las cantidades contra planos reales; no incluye traslapos ni ganchos suplementarios.
