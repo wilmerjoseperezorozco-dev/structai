@@ -71,6 +71,20 @@ Medición sobre las secciones de la sección 2 (demanda de prueba de los tests, 
 
 Lectura: el motor actual no incumple con TMN de 19 mm, pero sí con 25 mm en 3 de 41 casos, por lo que conviene pasar el TMN como dato. Los números 1,02–1,06 de la propuesta pegada son metas no verificadas; con una demanda de prueba no se puede afirmar qué η alcanzaría un optimizador con diámetros mixtos.
 
+## 5c. Despiece 1D a nivel de proyecto (2026-11-09, issue #127)
+
+`packages/motor-concreto/src/despiece_proyecto.py`: reúne las barras longitudinales de todos los elementos por diámetro, parte las que exceden la barra comercial máxima con traslapo (40·db, hipótesis) y resuelve el corte con programación entera sobre patrones maximales (`scipy.optimize.milp`), con óptimo probado en los casos medidos.
+
+Medición sobre un proyecto **sintético** (60 vigas de luces 3,2–7,8 m generadas con `disenar`, DMO, f'c 28 MPa, mejor diseño por acero; 363 barras; longitudes comerciales 6, 9 y 12 m como supuesto):
+
+| Diámetro | Longitud útil | Compra, primer ajuste decreciente | Compra, ILP | Desperdicio FFD → ILP |
+|---|---|---|---|---|
+| #5 | 1.440,6 m | 1.836 m | 1.476 m | 21,5 % → 2,4 % (≈ 561 kg menos) |
+| #7 | 279,2 m | 315 m | 315 m | 11,4 % → 11,4 % |
+| #8 | 656,2 m | 840 m | 840 m | 21,9 % → 21,9 % |
+
+Cautelas: (a) el proyecto es sintético, no hay planos reales; (b) el primer ajuste compra la barra más corta que aloja cada pieza nueva, una línea base débil: la comparación honesta frente a obra es contra "todo de 12 m"; (c) donde las piezas son largas (#7, #8: 7–8 m) ninguna longitud comercial 6/9/12 permite mejorar y el desperdicio es estructural; ahí el ahorro viene de ajustar la luz o los empalmes, no del corte; (d) no hay ganchos de despiece ni mermas.
+
 ## 6. Qué no hace este documento
 
 No prueba que un modelo aprendido supere a la enumeración exacta para vigas aisladas (la medición de la sección 2 sugiere que no); no valida las cantidades contra planos reales; no incluye traslapos ni ganchos suplementarios.
