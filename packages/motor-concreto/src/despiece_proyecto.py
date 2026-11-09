@@ -107,13 +107,20 @@ def resolver_ilp(piezas_m: Iterable[float], comerciales_m: Sequence[float]) -> t
     return {round(k, 2): v for k, v in sorted(barras.items())}, res.status == 0
 
 
+def _traslapo_m(dia: str, traslapo_diametros: float, traslapo_m: dict[str, float] | None) -> float:
+    return traslapo_m[dia] if traslapo_m and dia in traslapo_m else traslapo_diametros * DIAMETRO_MM[dia] / 1000.0
+
+
 def despiece_por_diametro(barras: Iterable[tuple[str, float]], comerciales_m: Sequence[float],
-                          traslapo_diametros: float = 40.0) -> list[ResultadoDiametro]:
-    """`barras` = (diámetro "4".."8", longitud continua en m) de todos los elementos del proyecto."""
+                          traslapo_diametros: float = 40.0, traslapo_m: dict[str, float] | None = None) -> list[ResultadoDiametro]:
+    """`barras` = (diámetro "4".."8", longitud continua en m) de todos los elementos del proyecto.
+
+    `traslapo_m` (m por diámetro, p. ej. de `figuras_acero.traslapo_traccion_mm`) reemplaza a la hipótesis de 40·db.
+    """
     por_dia: dict[str, list[float]] = {}
     maxb = max(comerciales_m)
     for dia, largo in barras:
-        piezas = dividir_con_traslapo(largo, maxb, traslapo_diametros * DIAMETRO_MM[dia] / 1000.0)
+        piezas = dividir_con_traslapo(largo, maxb, _traslapo_m(dia, traslapo_diametros, traslapo_m))
         por_dia.setdefault(dia, []).extend(piezas)
     salida = []
     for dia in sorted(por_dia):
@@ -123,3 +130,43 @@ def despiece_por_diametro(barras: Iterable[tuple[str, float]], comerciales_m: Se
         comprada = sum(l * n for l, n in barras_ilp.items())
         salida.append(ResultadoDiametro(dia, sum(p), ffd.longitud_comprada_m, comprada, barras_ilp, ok))
     return salida
+
+
+@dataclass(frozen=True)
+class EscenarioCompra:
+    nombre: str
+    comprada_m: float
+    util_m: float
+    kg_comprados: float
+    cop: float
+
+    @property
+    def desperdicio(self) -> float:
+        return 1.0 - self.util_m / self.comprada_m
+
+
+def _kg_m(dia: str) -> float:
+    return AREA_MM2[dia] * 1e-6 * DENSIDAD_ACERO_KG_M3
+
+
+def comparar_escenarios(barras: Sequence[tuple[str, float]], p_acero_cop_kg: float, traslapo_m: dict[str, float] | None = None,
+                        largo_maximo_pedido_m: float | None = None) -> list[EscenarioCompra]:
+    """Cinco formas de comprar el mismo acero:
+    A) ferretería 6 m, corte a conveniencia (primer ajuste); B) 6 m planificado (ILP); C) 6 y 12 m planificado; D) 12 m planificado;
+    E) pedido a medida hasta `largo_maximo_pedido_m` (solo si se declara; sin desperdicio de corte, empalma lo que exceda ese largo).
+    El precio por kg es igual en todos los escenarios: NO modela el sobreprecio de figurado ni de longitudes especiales (dato que falta)."""
+    out: list[EscenarioCompra] = []
+    for nombre, com, attr in (("A. 6 m a conveniencia", [6.0], "comprada_ffd_m"), ("B. 6 m planificado", [6.0], "comprada_ilp_m"),
+                              ("C. 6 y 12 m planificado", [6.0, 12.0], "comprada_ilp_m"), ("D. 12 m planificado", [12.0], "comprada_ilp_m")):
+        res = despiece_por_diametro(barras, com, traslapo_m=traslapo_m)
+        comp = sum(getattr(r, attr) for r in res)
+        kg = sum(getattr(r, attr) * _kg_m(r.dia) for r in res)
+        out.append(EscenarioCompra(nombre, comp, sum(r.longitud_util_m for r in res), kg, kg * p_acero_cop_kg))
+    if largo_maximo_pedido_m:
+        comp = kg = 0.0
+        for dia, largo in barras:
+            piezas = dividir_con_traslapo(largo, largo_maximo_pedido_m, _traslapo_m(dia, 40.0, traslapo_m))
+            comp += sum(piezas)
+            kg += sum(piezas) * _kg_m(dia)
+        out.append(EscenarioCompra(f"E. a medida (hasta {largo_maximo_pedido_m:g} m)", comp, comp, kg, kg * p_acero_cop_kg))
+    return out

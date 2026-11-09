@@ -85,6 +85,42 @@ Medición sobre un proyecto **sintético** (60 vigas de luces 3,2–7,8 m genera
 
 Cautelas: (a) el proyecto es sintético, no hay planos reales; (b) el primer ajuste compra la barra más corta que aloja cada pieza nueva, una línea base débil: la comparación honesta frente a obra es contra "todo de 12 m"; (c) donde las piezas son largas (#7, #8: 7–8 m) ninguna longitud comercial 6/9/12 permite mejorar y el desperdicio es estructural; ahí el ahorro viene de ajustar la luz o los empalmes, no del corte; (d) no hay ganchos de despiece ni mermas.
 
+## 5d. Línea base de 6 m, figuras y verificación NSR-10 (2026-11-09, issue #127)
+
+**Longitudes comerciales (verificado en catálogos, no en el mercado local).** Aceros Arequipa Colombia publica barras de 6, 9 y 12 m; Ternium Colombia, 6 y 12 m (9 m en algunos diámetros); Aceros Crea, 12 m. Diaco y Gerdau no aparecieron en la búsqueda. Ferretería suele vender 6 m. Los precios por longitud y el sobreprecio de figurado o de largos especiales **no se encontraron**: la comparación usa el mismo COP/kg en todos los escenarios.
+
+**Qué dice la NSR-10 (verificado en `nsr10_chunks`) y está implementado en `figuras_acero.py`:**
+
+| Tema | Numeral | Regla |
+|---|---|---|
+| Gancho 180° | C.7.1.1 | + 4db, no menor que 65 mm |
+| Gancho 90° | C.7.1.2 | + 12db |
+| Gancho de estribo, #8 y menores | C.7.1.3 | 135° + 6db (se usa ≥ 75 mm en estribos sísmicos) |
+| Diámetro de doblado | C.7.2.2, Tabla C.7.2 | estribos #5 y menores 4db; #3 a #8 6db (barras > #8: fila no recuperada, no soportadas) |
+| Longitud de desarrollo en tracción | C.12.2.1/.2 | fy/(2,1·√f'c)·db (≤ #6) o /1,7 (≥ #7) en buenas condiciones; /1,4 y /1,1 en los demás casos; ≥ 300 mm |
+| Traslapo en tracción | C.12.15.1 | clase A 1,0·ld; clase B 1,3·ld; ≥ 300 mm |
+| Traslapo en compresión | C.12.16.1 | 0,071·fy·db (fy ≤ 420), ≥ 300 mm; +1/3 si f'c < 21 MPa |
+| Gancho de desarrollo | C.12.5.1/.2 | 0,24·fy/√f'c·db, ≥ max(8db; 150 mm) |
+| Sin traslapo | C.12.14.2.1 | barras mayores que No. 36 (#11) |
+| Dovelas | C.15.8.2 | área ≥ 0,005·Ag; ≤ No. 36 |
+| Estribo de dos piezas | C.21.5.3.6 | estribo con gancho sísmico + gancho suplementario con 90° alternados |
+
+**Figuras:** recta, L, C, S (desfase), estribo cerrado, gancho suplementario y dovela, con longitud de corte descontando cada doblez. Hipótesis no recuperadas del corpus: extensión del gancho de 90° del suplementario (6db) y pendiente máxima de la S (1:6 del ACI 318, se advierte).
+
+**Recomendación cuando el usuario no cumple.** `verificar_traslapo`, `verificar_gancho` y `verificar_diametro_doblado` devuelven el numeral, el mínimo y un valor recomendado que **nunca baja del mínimo** (se redondea hacia arriba). Optimizar desperdicio solo se hace entre alternativas que cumplen; si algo no cumple, la recomendación es subir al mínimo o evitar el empalme con una barra más larga, no ahorrar acero.
+
+**Medición** (proyecto sintético: 60 vigas 300×600 DMO, luces 3,2–7,8 m, longitudinales + estribos, 2.308 piezas, traslapos clase B "otros casos" con f'c 28 y fy 420; COP/kg 4.151 igual en todos):
+
+| Escenario | Compra | Desperdicio | Acero comprado | Frente a A |
+|---|---|---|---|---|
+| A. 6 m, corte a conveniencia | 6.912 m | 15,8 % | 9.742 kg | — |
+| B. 6 m planificado (ILP) | 6.912 m | 15,8 % | 9.742 kg | 0,0 % |
+| C. 6 y 12 m planificado | 6.144 m | 12,2 % | 8.886 kg | −8,8 % |
+| D. 12 m planificado | 6.144 m | 12,2 % | 8.886 kg | −8,8 % |
+| E. a medida hasta 18 m (supuesto) | 5.393 m | 0 % | 7.383 kg | −24,2 % |
+
+Lectura: (1) con solo 6 m planificar no mejora al corte a conveniencia en este caso: el ahorro viene de la longitud comprada (12 m), no del algoritmo; (2) el escenario E es una **cota superior**: supone que la fábrica entrega cada pieza a medida, figurada y al mismo precio por kg, lo que no está verificado; (3) los estribos cortos (~1,55 m) pierden mucho en 6 m y se recuperan en 12 m; (4) el proyecto es sintético y sin planos reales, solo vigas.
+
 ## 6. Qué no hace este documento
 
 No prueba que un modelo aprendido supere a la enumeración exacta para vigas aisladas (la medición de la sección 2 sugiere que no); no valida las cantidades contra planos reales; no incluye traslapos ni ganchos suplementarios.
