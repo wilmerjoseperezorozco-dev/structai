@@ -368,6 +368,32 @@ La mezcla de 2011 conserva una relación moderada con la de 2024, pero con inter
 
 **Pendiente para decidir.** Una réplica con más poder exige la ubicación municipal de las obras (n de 16 a cientos), peajes INVIAS con categoría por esquema, y el pesaje de carga (`atkg-vhpp`) como medida independiente de la mezcla reciente.
 
+## 5m. Réplica a escala municipal con hipótesis fijada de antemano (2026-11-09, issue #127)
+
+Script: `scripts/transporte/cruces_municipal.py`; resultados en `data/transporte/cruces_municipal.json`. Es la réplica con mayor poder de la asociación entre pesados y prórrogas: la unidad pasa de 14 a 21 departamentos a 325 municipios y la ubicación pasa de la entidad contratante al **municipio de ejecución de la obra** (SECOP II `gra4-pcp2`, campo `localizaci_n`). Las coordenadas de los 1.122 municipios salen de DIVIPOLA (`gdxc-w37w`) y la exposición a tráfico pesado, de los 64 peajes ANI de esquema de siete categorías (sección 5l), con la mezcla de 2024.
+
+**Hipótesis primaria, escrita en el script antes de ver resultados** (las secciones 5h a 5l exploraron muchas especificaciones sin corrección global, y esta es una prueba única): entre contratos ejecutados a 50 km o menos de algún peaje de siete categorías, un mayor porcentaje de camiones pesados cercanos (VI y VII sobre III a VII, ponderado por el tráfico de camiones) se asocia con mayor odds de prórroga, con efectos fijos de departamento de ejecución y de año, controles de contrato y errores agrupados por municipio (inferencia t con G − 1 gl). Con efectos fijos de departamento el contraste usa solo la variación dentro del departamento, lo que elimina los confusores departamentales de 5i a 5k.
+
+**Resultado de la prueba primaria: no hay asociación.** OR por +10 pp de pesados cercanos = **1,038 (IC 95 % 0,938 a 1,148; p = 0,47)**, con 24.725 contratos en 325 municipios y 18 departamentos (tasa de prórroga 31,4 %).
+
+| Análisis | n | OR | IC 95 % | p | p Holm |
+|---|---|---|---|---|---|
+| **Primaria:** prórroga, % pesados a ≤ 50 km (+10 pp) | 24.725 | 1,038 | 0,938 a 1,148 | 0,47 | — |
+| Secundaria: volumen de pesados a ≤ 50 km (log10, por cada ×10) | 24.725 | 1,072 | 0,961 a 1,196 | 0,21 | 0,64 |
+| Secundaria: distancia al peaje más cercano (por +50 km, todos los contratos) | 37.181 | 1,089 | 0,977 a 1,213 | 0,12 | 0,50 |
+| Secundaria: suspensión, % pesados (+10 pp) | 24.725 | 1,024 | 0,926 a 1,132 | 0,64 | 1,00 |
+| Secundaria: adición de valor, % pesados (+10 pp) | 24.725 | 1,043 | 0,891 a 1,221 | 0,60 | 1,00 |
+| Sensibilidad: radio de 30 km | 21.658 | 1,030 | 0,940 a 1,128 | 0,53 | — |
+| Sensibilidad: radio de 100 km | 29.393 | 0,941 | 0,836 a 1,060 | 0,32 | — |
+| Sensibilidad: sin Bogotá | 17.050 | 1,062 | 0,963 a 1,172 | 0,23 | — |
+| Sensibilidad: sin efectos fijos de departamento | 24.725 | 1,049 | 0,969 a 1,135 | 0,23 | — |
+
+**Una corrección de emparejamiento, hecha después de la primera corrida y declarada.** La primera corrida dejó 15.371 filas de ubicación sin coincidencia con DIVIPOLA; no eran aleatorias sino las ciudades más grandes por diferencias de nombre (Bogotá 12.022 filas, Cali, Cúcuta, Cartagena, entre otras). Se añadieron 11 alias de nombre y la regla de Bogotá, sin mirar los resultados, y las filas sin coincidencia bajaron a 117. La primera corrida (sin esas ciudades, n = 15.794, 319 municipios) daba OR 1,068 (0,968 a 1,178; p = 0,19) y se conserva como sensibilidad; la conclusión es la misma. La hipótesis y la especificación no cambiaron.
+
+**Qué se puede afirmar.** Con esta medida de exposición no hay evidencia de que las obras cerca de corredores con más tráfico pesado tengan más prórrogas. El límite superior del IC (1,148 por +10 pp) queda por debajo del 1,17 estimado con INVIAS 2011 y departamentos (5i), y las 9 estimaciones restantes de este análisis (4 secundarias y 5 de sensibilidad) tienen OR entre 0,94 y 1,09. El intervalo de la primaria excluye efectos mayores de 1,15 por +10 pp; uno menor no se puede descartar. La asociación departamental de 5i a 5k queda como **un artefacto probable de la fuente y la unidad de análisis** (la mezcla INVIAS 2011 y el nivel departamental), no como una propiedad del tráfico pesado.
+
+**Límites.** La exposición usa solo concesiones ANI de siete categorías (64 peajes), no la red INVIAS ni los corredores sin peaje; el radio de 50 km es una aproximación al tramo que sirve a la obra; 9.890 filas de ubicación no traen municipio (~18 %) y no se sabe si su ausencia se relaciona con el resultado; el 11 % de los contratos ubicados (41.580 a 37.181) queda fuera por falta de controles (duración no interpretable, sin fecha de firma); Bogotá es un solo cluster con unos 7.700 contratos dentro del radio (la sensibilidad sin Bogotá no cambia nada); el efecto de prórroga es de asociación, no de causa. Líneas abiertas que no se tocaron: pesaje de carga (`atkg-vhpp`), supervivencia para la prórroga y ejecución con los campos de pago (issue #129).
+
 ## 6. Qué no hace este documento
 
 No prueba que un modelo aprendido supere a la enumeración exacta para vigas aisladas (la medición de la sección 2 sugiere que no); no valida las cantidades contra planos reales; no incluye traslapos ni ganchos suplementarios.
