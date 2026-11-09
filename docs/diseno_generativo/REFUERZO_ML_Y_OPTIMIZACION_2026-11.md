@@ -144,6 +144,19 @@ Lectura: (1) con solo 6 m planificar no mejora al corte a conveniencia en este c
 
 **Parque automotor por ciudad.** No hay en datos abiertos un cuadro de camiones por tipología y municipio: los boletines del RUNT solo traen totales nacionales y matrículas por clase, y el desglose detallado se pide por solicitud formal a la concesión RUNT. El estudio de UPME 2020 caracteriza el parque de carga (camión, tractocamión, volqueta) pero no por municipio. Siguiente paso: solicitar el RUNT por municipio y clase (Barranquilla, Soledad, Bogotá, Medellín, Cali) y ligar cada ciudad a la tipología de vehículo disponible para alquiler.
 
+## 5f. Flota de obra por configuración y viajes discretos (2026-11-09, issue #127)
+
+`packages/motor-concreto/src/flota_construccion.py`: catálogo de cinco configuraciones (camión liviano, volqueta sencilla, C3/mixer, minimula, tractomula) tomado de una tabla aportada por el usuario, con la función escalón de viajes (`viajes`, `viajes_mixer`), emisión por km y por tonelada-km, factor de terreno y conexión con `transporte_acero.planificar`.
+
+**Contraste con fuentes.** Los rangos de km/galón de la volqueta sencilla (9–11), la minimula (5,5–7) y la tractomula (4,5–6) quedan dentro de los rangos de ANDI 2018 para camión de 2 ejes y tractocamión de 2 y 3 ejes (plano a montañoso). El camión liviano (14–18) queda por debajo del 19,3–26,4 medido en rutas urbanas de tres empresas (MinTransporte 2019): es conservador. C3/mixer no tiene fuente de rendimiento. Las emisiones por km y por ton-km de la tabla reproducen la división del factor de CO₂ (10,2765 kg/gal) entre el rendimiento y la carga media, con viaje cargado y **sin retorno vacío**.
+
+**Un error de la tabla pegada.** El ejemplo de la zapata de 16,2 t dice que caben en un mixer de 8 m³ y que "basta 1 viaje (7,5 m³)": 16,2 t con 2,4 t/m³ son 6,75 m³; 7,5 m³ son 18 t. La conclusión (1 viaje, y 2 viajes para 21 t = 8,75 m³) se mantiene y está en las pruebas.
+
+**Lo que no se pudo obtener y sigue abierto:**
+- Tabla vigente de pesos brutos y dimensiones de la Resolución 4100 de 2004 y sus modificaciones: la copia consultada es escaneada y la Resolución 2501 de 2002 (otra tabla) está derogada. La referencia "NTC 4788" no se pudo confirmar.
+- Consumo por terreno del SICE-TAC (ninguna fuente accesible trae la tabla); se usa el factor de terreno de ANDI 2018.
+- Parque de carga por municipio: el RUNT solo publica totales nacionales; el desglose se pide por solicitud formal. Cifra nacional de 2020 (UPME con datos RUNT): 378.592 vehículos de carga, 71 % camiones, edad media mayor de 22 años; sin desglose para el Atlántico.
+
 ## 6. Qué no hace este documento
 
 No prueba que un modelo aprendido supere a la enumeración exacta para vigas aisladas (la medición de la sección 2 sugiere que no); no valida las cantidades contra planos reales; no incluye traslapos ni ganchos suplementarios.
