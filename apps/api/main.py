@@ -561,6 +561,14 @@ except Exception as e:
     log.warning(f"✗ motor-analisis no disponible: {e}")
 
 try:
+    from routers.proyecto import router as proyecto_router
+    PROYECTO_AVAILABLE = True
+    log.info("✓ dag-proyecto cargado")
+except Exception as e:
+    PROYECTO_AVAILABLE = False
+    log.warning(f"✗ dag-proyecto no disponible: {e}")
+
+try:
     from routers.orquestador_api import router as orquestador_router
     ORQUESTADOR_AVAILABLE = True
     log.info("✓ orquestador cargado")
@@ -791,6 +799,9 @@ if CONCRETO_AVAILABLE:
 if ANALISIS_AVAILABLE:
     app.include_router(analisis_router)
     app.include_router(analisis_router, prefix="/v1")
+if PROYECTO_AVAILABLE:
+    app.include_router(proyecto_router)
+    app.include_router(proyecto_router, prefix="/v1")
 if ORQUESTADOR_AVAILABLE:
     app.include_router(orquestador_router)
     app.include_router(orquestador_router, prefix="/v1")

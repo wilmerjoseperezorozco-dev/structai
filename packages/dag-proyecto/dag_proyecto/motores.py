@@ -10,7 +10,9 @@ import importlib.util
 import sys
 from pathlib import Path
 from types import ModuleType
-from typing import Any, Mapping
+from typing import Any, Mapping, Optional
+
+from pydantic import BaseModel, ConfigDict, Field
 
 from . import Artefacto, Nodo
 
@@ -29,6 +31,33 @@ _CAMPOS_ZAPATA = ("q_adm_kpa", "profundidad_desplante_m", "peso_unitario_relleno
                   "ks_kn_m3", "fc_mpa", "fy_mpa")
 PARAMETROS_REQUERIDOS = tuple(dict.fromkeys(_CAMPOS_ORQUESTADOR + _CAMPOS_ANALISIS + _CAMPOS_ZAPATA))
 _FACTOR_CM, _FACTOR_CV = 1.2, 1.6      # NSR-10 B.2.4.2, combinación 1,2D + 1,6L
+
+
+class SolicitudProyectoEstructural(BaseModel):
+    """Proyecto de entrada del DAG estructural. Sin valores por defecto físicos; rejilla acotada como en el orquestador."""
+    model_config = ConfigDict(extra="forbid")
+    luces_m: list[float] = Field(..., min_length=1, max_length=6)
+    alturas_piso_m: list[float] = Field(..., min_length=1, max_length=8)
+    carga_muerta_kn_m: float = Field(..., ge=0)
+    carga_viva_kn_m: float = Field(..., ge=0)
+    calidad_concreto: str
+    fy_mpa: float = Field(..., gt=0)
+    recubrimiento_mm: float = Field(..., gt=0)
+    municipio: Optional[str] = None
+    departamento: Optional[str] = None
+    perfil_suelo: str
+    grupo_uso: str
+    capacidad: Optional[str] = None
+    columnas_mm: list[float] = Field(..., min_length=1, max_length=8)
+    b_mm: list[float] = Field(..., min_length=1, max_length=8)
+    h_mm: list[float] = Field(..., min_length=1, max_length=12)
+    E_mpa: float = Field(..., gt=0)
+    q_adm_kpa: float = Field(..., gt=0)
+    profundidad_desplante_m: float = Field(..., gt=0)
+    peso_unitario_relleno_kn_m3: float = Field(..., gt=0)
+    asentamiento_max_mm: float = Field(..., gt=0)
+    ks_kn_m3: Optional[float] = Field(...)
+    fc_mpa: float = Field(..., gt=0)
 
 
 def _cargar(carpeta: str, alias: str) -> ModuleType:
