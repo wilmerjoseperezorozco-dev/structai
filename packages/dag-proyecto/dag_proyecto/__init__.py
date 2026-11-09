@@ -13,13 +13,17 @@ from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any, Callable, Mapping
 
-__all__ = ["Nodo", "Artefacto", "Almacen", "AlmacenJSON", "Orquestador", "hash_canonico"]
+__all__ = ["Nodo", "Artefacto", "Almacen", "AlmacenJSON", "Orquestador", "hash_canonico", "texto_canonico"]
+
+
+def texto_canonico(obj: Any) -> str:
+    """Serialización JSON canónica (claves ordenadas, sin espacios, sin NaN)."""
+    return json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False)
 
 
 def hash_canonico(obj: Any) -> str:
-    """SHA-256 de la serialización JSON canónica (claves ordenadas, sin espacios)."""
-    texto = json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False)
-    return hashlib.sha256(texto.encode("utf-8")).hexdigest()
+    """SHA-256 de la serialización JSON canónica."""
+    return hashlib.sha256(texto_canonico(obj).encode("utf-8")).hexdigest()
 
 
 @dataclass(frozen=True)

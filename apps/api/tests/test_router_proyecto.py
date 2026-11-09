@@ -12,6 +12,7 @@ os.environ.setdefault("SUPABASE_URL", "http://localhost:54321")  # valores de pr
 os.environ.setdefault("SUPABASE_JWT_SECRET", "secreto-de-prueba-local")
 
 from auth import AuthenticatedUser, get_current_user  # noqa: E402
+from rate_limit import limiter  # noqa: E402
 from routers.proyecto import router  # noqa: E402
 
 SOL = dict(
@@ -25,6 +26,7 @@ SOL = dict(
 
 @pytest.fixture()
 def cliente():
+    limiter.reset()  # el límite de 5/min es por proceso: cada prueba parte de cero
     app = FastAPI()
     app.include_router(router)
     app.dependency_overrides[get_current_user] = lambda: AuthenticatedUser(id="u-prueba", email=None)
@@ -61,3 +63,38 @@ def test_dato_faltante_es_422(cliente):
 def test_sin_solucion_es_422_citando_la_norma(cliente):
     r = cliente.post("/proyecto/estructural", json={**SOL, "carga_muerta_kn_m": 5000.0, "columnas_mm": [300.0], "b_mm": [200.0], "h_mm": [300.0]})
     assert r.status_code == 422 and "NSR-10" in r.text
+
+
+# ── persistencia en Supabase (cliente simulado) ───────────────────────────────
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "packages" / "dag-proyecto" / "tests"))
+from test_almacen_supabase import FakeSB  # noqa: E402
+
+
+def test_persiste_artefactos_del_usuario_y_reutiliza_en_la_segunda_corrida(cliente, monkeypatch):
+    import routers.proyecto as rp
+    sb = FakeSB()
+    monkeypatch.setattr(rp, "_cliente_supabase", lambda: sb)
+    j1 = cliente.post("/proyecto/estructural", json=SOL).json()
+    assert j1["persistido"] is True
+    assert {f["user_id"] for f in sb.filas} == {"u-prueba"} and len(sb.filas) == 3
+    n = len(sb.filas)
+    j2 = cliente.post("/proyecto/estructural", json=SOL).json()
+    assert len(sb.filas) == n and {k: v["id"] for k, v in j1["artefactos"].items()} == {k: v["id"] for k, v in j2["artefactos"].items()}
+
+
+def test_sin_cliente_supabase_responde_sin_persistir(cliente, monkeypatch):
+    import routers.proyecto as rp
+    monkeypatch.setattr(rp, "_cliente_supabase", lambda: None)
+    j = cliente.post("/proyecto/estructural", json=SOL).json()
+    assert j["persistido"] is False and set(j["artefactos"]) == {"orquestador", "analisis", "zapata"}
+
+
+def test_si_supabase_falla_se_calcula_igual_y_se_declara(cliente, monkeypatch):
+    import routers.proyecto as rp
+
+    class Roto:
+        def table(self, *_):
+            raise RuntimeError("sin conexión")
+    monkeypatch.setattr(rp, "_cliente_supabase", lambda: Roto())
+    j = cliente.post("/proyecto/estructural", json=SOL).json()
+    assert j["persistido"] is False and j["artefactos"]["zapata"]["resultado"]["valor"]["cumple"] is True
