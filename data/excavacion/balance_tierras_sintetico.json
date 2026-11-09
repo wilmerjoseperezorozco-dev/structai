@@ -1,0 +1,162 @@
+{
+  "sintetico": true,
+  "entradas": {
+    "sintetico": true,
+    "cortes_m3": [
+      4000.0,
+      2500.0,
+      1500.0
+    ],
+    "aprovechable_base": [
+      0.7,
+      0.4,
+      0.1
+    ],
+    "demandas_m3": [
+      3000.0,
+      1200.0
+    ],
+    "d_corte_relleno_km": [
+      [
+        0.5,
+        1.5
+      ],
+      [
+        1.2,
+        0.8
+      ],
+      [
+        2.0,
+        1.0
+      ]
+    ],
+    "d_corte_botadero_km": [
+      [
+        12.0
+      ],
+      [
+        10.0
+      ],
+      [
+        11.0
+      ]
+    ],
+    "tarifa_botadero_cop_m3": [
+      6000.0
+    ],
+    "d_prestamo_relleno_km": [
+      [
+        8.0,
+        9.0
+      ]
+    ],
+    "precio_prestamo_cop_m3": [
+      28000.0
+    ],
+    "costo_cop_m3_km": 1500.0,
+    "capacidad_suelta_m3": 6.0,
+    "esponjamiento": 0.25
+  },
+  "escenarios": {
+    "base": {
+      "costo": {
+        "costo_millones_cop": 104.28,
+        "reutilizacion_pct": 49.4,
+        "m3_km": 48650,
+        "gal_acpm": 2027,
+        "kgco2e": 20831,
+        "prestamo_m3": 250,
+        "botadero_m3": 4050
+      },
+      "reutilizacion": {
+        "costo_millones_cop": 104.28,
+        "reutilizacion_pct": 49.4,
+        "m3_km": 48650,
+        "gal_acpm": 2027,
+        "kgco2e": 20831,
+        "prestamo_m3": 250,
+        "botadero_m3": 4050
+      }
+    },
+    "suelo_malo (aprovechable/2)": {
+      "costo": {
+        "costo_millones_cop": 228.16,
+        "reutilizacion_pct": 24.7,
+        "m3_km": 86475,
+        "gal_acpm": 3603,
+        "kgco2e": 37028,
+        "prestamo_m3": 2225,
+        "botadero_m3": 6025
+      },
+      "reutilizacion": {
+        "costo_millones_cop": 228.16,
+        "reutilizacion_pct": 24.7,
+        "m3_km": 86475,
+        "gal_acpm": 3603,
+        "kgco2e": 37028,
+        "prestamo_m3": 2225,
+        "botadero_m3": 6025
+      }
+    },
+    "prestamo_barato (8.000)": {
+      "costo": {
+        "costo_millones_cop": 99.28,
+        "reutilizacion_pct": 49.4,
+        "m3_km": 48650,
+        "gal_acpm": 2027,
+        "kgco2e": 20831,
+        "prestamo_m3": 250,
+        "botadero_m3": 4050
+      },
+      "reutilizacion": {
+        "costo_millones_cop": 99.28,
+        "reutilizacion_pct": 49.4,
+        "m3_km": 48650,
+        "gal_acpm": 2027,
+        "kgco2e": 20831,
+        "prestamo_m3": 250,
+        "botadero_m3": 4050
+      }
+    },
+    "prestamo_caro (60.000)": {
+      "costo": {
+        "costo_millones_cop": 112.28,
+        "reutilizacion_pct": 49.4,
+        "m3_km": 48650,
+        "gal_acpm": 2027,
+        "kgco2e": 20831,
+        "prestamo_m3": 250,
+        "botadero_m3": 4050
+      },
+      "reutilizacion": {
+        "costo_millones_cop": 112.28,
+        "reutilizacion_pct": 49.4,
+        "m3_km": 48650,
+        "gal_acpm": 2027,
+        "kgco2e": 20831,
+        "prestamo_m3": 250,
+        "botadero_m3": 4050
+      }
+    },
+    "relleno_2_lejano_y_prestamo_cercano": {
+      "costo": {
+        "costo_millones_cop": 128.26,
+        "reutilizacion_pct": 37.5,
+        "m3_km": 59110,
+        "gal_acpm": 2463,
+        "kgco2e": 25310,
+        "prestamo_m3": 1200,
+        "botadero_m3": 5000
+      },
+      "reutilizacion": {
+        "costo_millones_cop": 131.88,
+        "reutilizacion_pct": 49.4,
+        "m3_km": 70390,
+        "gal_acpm": 2933,
+        "kgco2e": 30140,
+        "prestamo_m3": 250,
+        "botadero_m3": 4050
+      }
+    }
+  }
+}
