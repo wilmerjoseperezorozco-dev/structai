@@ -20,7 +20,7 @@ from src import zapata as z  # noqa: E402
 from src import zapata_troncopiramidal as t  # noqa: E402
 from src.viga import Materiales  # noqa: E402
 
-CARGAS = (300.0, 600.0, 1000.0, 1500.0, 2500.0); QADM = (120.0, 200.0, 300.0); FCS = (21.0, 28.0, 35.0); FA_X = (0.0, 0.1, 0.2, 0.3)
+CARGAS = (300.0, 600.0, 1000.0, 1500.0, 2500.0); QADM = (120.0, 200.0, 300.0); FCS = (21.0, 28.0, 35.0); FA_X = (0.0, 0.1, 0.2, 0.25, 0.3)
 PRECIO_ANCLA = {21.0: 688_796.0, 28.0: 822_510.0, 35.0: 822_510.0 + (822_510.0 - 688_796.0)}  # 35 extrapolado linealmente (SUPUESTO)
 PRECIO_CEMENTO = 223.5; PRECIO_ACERO = 4_151.0; PRECIO_ENC = 23_500.0   # COP/kg, COP/kg, COP/m2 (encofrado solo material, punto medio 20-27 mil)
 PRECIO_CENIZA = {"ceniza_150": 150.0, "ceniza_300": 300.0}                # COP/kg SUPUESTOS (sin dato)
@@ -75,11 +75,25 @@ def evaluar(cand, fc, x, p_ash, fe_cem):
     return cop, co2
 
 
-def analizar(bloques, p, q, p_ash, fe_cem):
+# Escenarios de durabilidad NSR-10 C.4 (Tablas C.4.2.1 y C.4.3.1, verificadas en las imágenes de C-35/C-36). a/mc = agua / TOTAL de materiales cementantes (C.4.1.1).
+# NSR-10 no fija un tope de ceniza fuera de la clase F3 (25 %, Tabla C.4.4.2, congelamiento: no aplica en Colombia). x_max 0.25 es un tope de diseño
+# conservador POR ANALOGÍA. En S1 (agua marina) solo se permiten cementos tipo II/IP(MS)/MS: con ceniza añadida en obra se exige ensayo C.4.5.1 -> x_max 0 si no se ensaya.
+ESCENARIOS = {
+    "interior_C1_S0": {"fc_min": 17.0, "amc_max": 0.50, "x_max": 0.25},
+    "costa_C2_S1_sin_ensayo": {"fc_min": 35.0, "amc_max": 0.40, "x_max": 0.0},
+    "costa_C2_S1_con_ensayo": {"fc_min": 35.0, "amc_max": 0.40, "x_max": 0.25},
+    "sin_durabilidad_C4_ni_tope": {"fc_min": 0.0, "amc_max": 9.9, "x_max": 0.30},  # reproduce la corrida previa
+}
+
+
+def analizar(bloques, p, q, p_ash, fe_cem, esc):
     pts = []   # (cop, co2, tipo, fc, x)
-    for b in (b for b in bloques if b["P"] == p and b["q"] == q):
+    for b in (b for b in bloques if b["P"] == p and b["q"] == q and b["fc"] >= esc["fc_min"]):
         for cand in b["cand"]:
             for x in FA_X:
+                m = mezcla(b["fc"], x)
+                if x > esc["x_max"] + 1e-9 or AGUA / (m["cem"] + m["ash"]) > esc["amc_max"] + 1e-9:
+                    continue
                 cop, co2 = evaluar(cand, b["fc"], x, p_ash, fe_cem)
                 pts.append((cop, co2, cand[0], b["fc"], x))
     base = min((pt for pt in pts if pt[2] == "prisma" and pt[4] == 0.0), key=lambda a: a[0])
@@ -99,13 +113,14 @@ if __name__ == "__main__":
     with Pool() as pool:
         bloques = pool.map(candidatos, list(product(CARGAS, QADM, FCS)))
     res = {}
-    for (np_, pa), fe in product(PRECIO_CENIZA.items(), FE_CEM.items()):
-        filas = [analizar(bloques, p, q, pa, fe[1]) for p, q in product(CARGAS, QADM)]
-        clave = f"{np_}__cemento_{fe[0]}"
+    for esc_n, esc in ESCENARIOS.items():
+        pa, fe = 150.0, ("1.010", 1.010)
+        filas = [analizar(bloques, p, q, pa, fe[1], esc) for p, q in product(CARGAS, QADM)]
+        clave = f"{esc_n}"
         res[clave] = {"casos": filas, "mediana": {k: round(st.median(f[k] for f in filas), 1) for k in
                       ("geometria_sola_min_cop_pct", "mezcla_sola_min_co2_pct", "mezcla_sola_costo_pct", "ambos_min_co2_pct", "ambos_costo_pct", "a_igual_costo_co2_pct")}}
-    (RAIZ / "docs/experimentos/reoptimizacion_zapata_costo_co2_2026-11.json").write_text(json.dumps(res, ensure_ascii=False, indent=1), encoding="utf-8")
+    (RAIZ / "docs/experimentos/reoptimizacion_zapata_durabilidad_2026-11.json").write_text(json.dumps(res, ensure_ascii=False, indent=1), encoding="utf-8")
     print(json.dumps({k: v["mediana"] for k, v in res.items()}, indent=1))
-    ej = res["ceniza_150__cemento_1.010"]["casos"]
+    ej = res["costa_C2_S1_con_ensayo"]["casos"]
     print(json.dumps([e for e in ej if e["q"] == 200.0], ensure_ascii=False, indent=0))
     print({fc: {x: (round(mezcla(fc, x)["cem"]), round(co2_m3(fc, x, 1.01))) for x in FA_X} for fc in FCS})

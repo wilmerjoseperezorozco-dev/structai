@@ -708,3 +708,5 @@ rag-audit-kit) — el resto se agrega progresivamente, no retroactivamente
 de una sola vez. El archivo baseline solo guarda etiquetas de numeral
 ("I.3.3.2"), nunca el texto normativo — no hay problema de derechos de
 autor en commitearlo.
+
+**2026-11-08 — Capítulo C.4 (durabilidad):** tablas C.4.2.1, C.4.3.1, C.4.4.1, C.4.4.2 y C.4.5.1 ingestadas (transcritas de la imagen de C-35 a C-38, `_ingest_titulo_c4_tablas_durabilidad.py`); antes el corpus solo citaba sus nombres.
