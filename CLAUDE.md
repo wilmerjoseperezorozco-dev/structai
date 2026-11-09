@@ -104,6 +104,8 @@ producción. El deploy a Cloud Run es **manual** (`gcloud builds submit` +
 afirmar en cualquier doc público que el deploy es automático, verificar
 que siga siendo cierto.
 
+Desde 2026-11-09 el deploy manual está scripteado en `infra/gcp/` (`auditoria_costos.sh` de solo lectura, `limpiar_versiones.sh`, `desplegar.sh`: construye, despliega la revisión sin tráfico, verifica 5 rutas y solo entonces mueve el tráfico; imprime el comando de reversión). Estado verificado ese día: un único servicio Cloud Run (`structai-api`, min 1 / max 3 instancias, 2 CPU, 4 GiB), sin VMs, discos, IPs, SQL, GKE, Functions ni Scheduler. Ver `infra/gcp/README.md`.
+
 ## Dónde está cada cosa
 
 - `apps/api/main.py` — FastAPI, endpoints públicos (`/ask`, `/data-status`,
