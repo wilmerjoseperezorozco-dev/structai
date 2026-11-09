@@ -1,0 +1,1430 @@
+{
+ "ceniza_150__cemento_0.892": {
+  "casos": [
+   {
+    "P": 300.0,
+    "q": 120.0,
+    "base_cop": 871668,
+    "base_co2": 388.9,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 0.0,
+    "mezcla_sola_min_co2_pct": 12.4,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 12.4,
+    "ambos_costo_pct": -1.0,
+    "ambos_sel": [
+     "prisma",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 0.0,
+    "a_igual_costo_sel": [
+     "prisma",
+     21.0,
+     0.0
+    ]
+   },
+   {
+    "P": 300.0,
+    "q": 200.0,
+    "base_cop": 474110,
+    "base_co2": 207.0,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 0.0,
+    "mezcla_sola_min_co2_pct": 12.4,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 12.4,
+    "ambos_costo_pct": -1.0,
+    "ambos_sel": [
+     "prisma",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 0.0,
+    "a_igual_costo_sel": [
+     "prisma",
+     21.0,
+     0.0
+    ]
+   },
+   {
+    "P": 300.0,
+    "q": 300.0,
+    "base_cop": 294580,
+    "base_co2": 125.6,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 0.0,
+    "mezcla_sola_min_co2_pct": 12.4,
+    "mezcla_sola_costo_pct": -0.9,
+    "ambos_min_co2_pct": 12.4,
+    "ambos_costo_pct": -0.9,
+    "ambos_sel": [
+     "prisma",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 0.0,
+    "a_igual_costo_sel": [
+     "prisma",
+     21.0,
+     0.0
+    ]
+   },
+   {
+    "P": 600.0,
+    "q": 120.0,
+    "base_cop": 2263658,
+    "base_co2": 1026.8,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 14.3,
+    "mezcla_sola_min_co2_pct": 12.4,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 24.9,
+    "ambos_costo_pct": 13.5,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 24.9,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 600.0,
+    "q": 200.0,
+    "base_cop": 1224577,
+    "base_co2": 547.2,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 15.3,
+    "mezcla_sola_min_co2_pct": 12.4,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 25.3,
+    "ambos_costo_pct": 14.4,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 25.3,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 600.0,
+    "q": 300.0,
+    "base_cop": 776622,
+    "base_co2": 341.5,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 15.2,
+    "mezcla_sola_min_co2_pct": 12.4,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 25.1,
+    "ambos_costo_pct": 14.4,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 25.1,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 1000.0,
+    "q": 120.0,
+    "base_cop": 4656488,
+    "base_co2": 2132.1,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 24.6,
+    "mezcla_sola_min_co2_pct": 12.4,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 34.1,
+    "ambos_costo_pct": 23.9,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 34.1,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 1000.0,
+    "q": 200.0,
+    "base_cop": 2524182,
+    "base_co2": 1141.2,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 23.6,
+    "mezcla_sola_min_co2_pct": 12.4,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 32.6,
+    "ambos_costo_pct": 22.8,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 32.6,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 1000.0,
+    "q": 300.0,
+    "base_cop": 1450860,
+    "base_co2": 649.0,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 15.3,
+    "mezcla_sola_min_co2_pct": 12.4,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 25.0,
+    "ambos_costo_pct": 14.4,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 25.0,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 1500.0,
+    "q": 120.0,
+    "base_cop": 8363267,
+    "base_co2": 3846.8,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 28.2,
+    "mezcla_sola_min_co2_pct": 12.3,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 37.0,
+    "ambos_costo_pct": 27.5,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 37.0,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 1500.0,
+    "q": 200.0,
+    "base_cop": 4500440,
+    "base_co2": 2052.4,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 26.6,
+    "mezcla_sola_min_co2_pct": 12.4,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 35.3,
+    "ambos_costo_pct": 25.9,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 35.3,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 1500.0,
+    "q": 300.0,
+    "base_cop": 2905917,
+    "base_co2": 1313.1,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 27.1,
+    "mezcla_sola_min_co2_pct": 12.4,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 35.3,
+    "ambos_costo_pct": 26.4,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 35.3,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 2500.0,
+    "q": 120.0,
+    "base_cop": 17447797,
+    "base_co2": 8063.2,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 33.2,
+    "mezcla_sola_min_co2_pct": 12.3,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 41.7,
+    "ambos_costo_pct": 32.5,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 41.7,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 2500.0,
+    "q": 200.0,
+    "base_cop": 9211607,
+    "base_co2": 4232.7,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 32.0,
+    "mezcla_sola_min_co2_pct": 12.4,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 40.3,
+    "ambos_costo_pct": 31.4,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 40.3,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 2500.0,
+    "q": 300.0,
+    "base_cop": 5455244,
+    "base_co2": 2485.0,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 26.4,
+    "mezcla_sola_min_co2_pct": 12.3,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 34.6,
+    "ambos_costo_pct": 25.6,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 34.6,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   }
+  ],
+  "mediana": {
+   "geometria_sola_min_cop_pct": 23.6,
+   "mezcla_sola_min_co2_pct": 12.4,
+   "mezcla_sola_costo_pct": -1.0,
+   "ambos_min_co2_pct": 32.6,
+   "ambos_costo_pct": 22.8,
+   "a_igual_costo_co2_pct": 32.6
+  }
+ },
+ "ceniza_150__cemento_1.010": {
+  "casos": [
+   {
+    "P": 300.0,
+    "q": 120.0,
+    "base_cop": 871668,
+    "base_co2": 434.3,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 0.0,
+    "mezcla_sola_min_co2_pct": 12.6,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 12.6,
+    "ambos_costo_pct": -1.0,
+    "ambos_sel": [
+     "prisma",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 0.0,
+    "a_igual_costo_sel": [
+     "prisma",
+     21.0,
+     0.0
+    ]
+   },
+   {
+    "P": 300.0,
+    "q": 200.0,
+    "base_cop": 474110,
+    "base_co2": 231.2,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 0.0,
+    "mezcla_sola_min_co2_pct": 12.7,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 12.7,
+    "ambos_costo_pct": -1.0,
+    "ambos_sel": [
+     "prisma",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 0.0,
+    "a_igual_costo_sel": [
+     "prisma",
+     21.0,
+     0.0
+    ]
+   },
+   {
+    "P": 300.0,
+    "q": 300.0,
+    "base_cop": 294580,
+    "base_co2": 140.2,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 0.0,
+    "mezcla_sola_min_co2_pct": 12.6,
+    "mezcla_sola_costo_pct": -0.9,
+    "ambos_min_co2_pct": 12.6,
+    "ambos_costo_pct": -0.9,
+    "ambos_sel": [
+     "prisma",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 0.0,
+    "a_igual_costo_sel": [
+     "prisma",
+     21.0,
+     0.0
+    ]
+   },
+   {
+    "P": 600.0,
+    "q": 120.0,
+    "base_cop": 2263658,
+    "base_co2": 1146.2,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 14.3,
+    "mezcla_sola_min_co2_pct": 12.6,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 25.2,
+    "ambos_costo_pct": 13.5,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 25.2,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 600.0,
+    "q": 200.0,
+    "base_cop": 1224577,
+    "base_co2": 611.0,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 15.3,
+    "mezcla_sola_min_co2_pct": 12.6,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 25.6,
+    "ambos_costo_pct": 14.4,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 25.6,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 600.0,
+    "q": 300.0,
+    "base_cop": 776622,
+    "base_co2": 381.3,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 15.2,
+    "mezcla_sola_min_co2_pct": 12.6,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 25.3,
+    "ambos_costo_pct": 14.4,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 25.3,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 1000.0,
+    "q": 120.0,
+    "base_cop": 4656488,
+    "base_co2": 2380.0,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 24.6,
+    "mezcla_sola_min_co2_pct": 12.6,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 34.4,
+    "ambos_costo_pct": 23.9,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 34.4,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 1000.0,
+    "q": 200.0,
+    "base_cop": 2524182,
+    "base_co2": 1273.8,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 23.6,
+    "mezcla_sola_min_co2_pct": 12.6,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 32.9,
+    "ambos_costo_pct": 22.8,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 32.9,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 1000.0,
+    "q": 300.0,
+    "base_cop": 1450860,
+    "base_co2": 724.6,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 15.3,
+    "mezcla_sola_min_co2_pct": 12.6,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 25.2,
+    "ambos_costo_pct": 14.4,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 25.2,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 1500.0,
+    "q": 120.0,
+    "base_cop": 8363267,
+    "base_co2": 4292.3,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 28.2,
+    "mezcla_sola_min_co2_pct": 12.6,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 37.4,
+    "ambos_costo_pct": 27.5,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 37.4,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 1500.0,
+    "q": 200.0,
+    "base_cop": 4500440,
+    "base_co2": 2290.9,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 26.6,
+    "mezcla_sola_min_co2_pct": 12.6,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 35.6,
+    "ambos_costo_pct": 25.9,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 35.6,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 1500.0,
+    "q": 300.0,
+    "base_cop": 2905917,
+    "base_co2": 1465.7,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 27.1,
+    "mezcla_sola_min_co2_pct": 12.6,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 35.6,
+    "ambos_costo_pct": 26.4,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 35.6,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 2500.0,
+    "q": 120.0,
+    "base_cop": 17447797,
+    "base_co2": 8993.7,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 33.2,
+    "mezcla_sola_min_co2_pct": 12.5,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 42.1,
+    "ambos_costo_pct": 32.5,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 42.1,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 2500.0,
+    "q": 200.0,
+    "base_cop": 9211607,
+    "base_co2": 4723.6,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 32.0,
+    "mezcla_sola_min_co2_pct": 12.6,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 40.7,
+    "ambos_costo_pct": 31.4,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 40.7,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 2500.0,
+    "q": 300.0,
+    "base_cop": 5455244,
+    "base_co2": 2772.6,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 26.4,
+    "mezcla_sola_min_co2_pct": 12.6,
+    "mezcla_sola_costo_pct": -1.0,
+    "ambos_min_co2_pct": 34.8,
+    "ambos_costo_pct": 25.6,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 34.8,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   }
+  ],
+  "mediana": {
+   "geometria_sola_min_cop_pct": 23.6,
+   "mezcla_sola_min_co2_pct": 12.6,
+   "mezcla_sola_costo_pct": -1.0,
+   "ambos_min_co2_pct": 32.9,
+   "ambos_costo_pct": 22.8,
+   "a_igual_costo_co2_pct": 32.9
+  }
+ },
+ "ceniza_300__cemento_0.892": {
+  "casos": [
+   {
+    "P": 300.0,
+    "q": 120.0,
+    "base_cop": 871668,
+    "base_co2": 388.9,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 0.0,
+    "mezcla_sola_min_co2_pct": 12.4,
+    "mezcla_sola_costo_pct": -3.4,
+    "ambos_min_co2_pct": 12.4,
+    "ambos_costo_pct": -3.4,
+    "ambos_sel": [
+     "prisma",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 0.0,
+    "a_igual_costo_sel": [
+     "prisma",
+     21.0,
+     0.0
+    ]
+   },
+   {
+    "P": 300.0,
+    "q": 200.0,
+    "base_cop": 474110,
+    "base_co2": 207.0,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 0.0,
+    "mezcla_sola_min_co2_pct": 12.4,
+    "mezcla_sola_costo_pct": -3.3,
+    "ambos_min_co2_pct": 12.4,
+    "ambos_costo_pct": -3.3,
+    "ambos_sel": [
+     "prisma",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 0.0,
+    "a_igual_costo_sel": [
+     "prisma",
+     21.0,
+     0.0
+    ]
+   },
+   {
+    "P": 300.0,
+    "q": 300.0,
+    "base_cop": 294580,
+    "base_co2": 125.6,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 0.0,
+    "mezcla_sola_min_co2_pct": 12.4,
+    "mezcla_sola_costo_pct": -3.2,
+    "ambos_min_co2_pct": 12.4,
+    "ambos_costo_pct": -3.2,
+    "ambos_sel": [
+     "prisma",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 0.0,
+    "a_igual_costo_sel": [
+     "prisma",
+     21.0,
+     0.0
+    ]
+   },
+   {
+    "P": 600.0,
+    "q": 120.0,
+    "base_cop": 2263658,
+    "base_co2": 1026.8,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 14.3,
+    "mezcla_sola_min_co2_pct": 12.4,
+    "mezcla_sola_costo_pct": -3.4,
+    "ambos_min_co2_pct": 24.9,
+    "ambos_costo_pct": 11.4,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 24.9,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 600.0,
+    "q": 200.0,
+    "base_cop": 1224577,
+    "base_co2": 547.2,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 15.3,
+    "mezcla_sola_min_co2_pct": 12.4,
+    "mezcla_sola_costo_pct": -3.4,
+    "ambos_min_co2_pct": 25.3,
+    "ambos_costo_pct": 12.4,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 25.3,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 600.0,
+    "q": 300.0,
+    "base_cop": 776622,
+    "base_co2": 341.5,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 15.2,
+    "mezcla_sola_min_co2_pct": 12.4,
+    "mezcla_sola_costo_pct": -3.3,
+    "ambos_min_co2_pct": 25.1,
+    "ambos_costo_pct": 12.3,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 25.1,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 1000.0,
+    "q": 120.0,
+    "base_cop": 4656488,
+    "base_co2": 2132.1,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 24.6,
+    "mezcla_sola_min_co2_pct": 12.4,
+    "mezcla_sola_costo_pct": -3.5,
+    "ambos_min_co2_pct": 34.1,
+    "ambos_costo_pct": 22.1,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 34.1,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 1000.0,
+    "q": 200.0,
+    "base_cop": 2524182,
+    "base_co2": 1141.2,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 23.6,
+    "mezcla_sola_min_co2_pct": 12.4,
+    "mezcla_sola_costo_pct": -3.4,
+    "ambos_min_co2_pct": 32.6,
+    "ambos_costo_pct": 21.0,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 32.6,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 1000.0,
+    "q": 300.0,
+    "base_cop": 1450860,
+    "base_co2": 649.0,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 15.3,
+    "mezcla_sola_min_co2_pct": 12.4,
+    "mezcla_sola_costo_pct": -3.4,
+    "ambos_min_co2_pct": 25.0,
+    "ambos_costo_pct": 12.4,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 25.0,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 1500.0,
+    "q": 120.0,
+    "base_cop": 8363267,
+    "base_co2": 3846.8,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 28.2,
+    "mezcla_sola_min_co2_pct": 12.3,
+    "mezcla_sola_costo_pct": -3.5,
+    "ambos_min_co2_pct": 37.0,
+    "ambos_costo_pct": 25.8,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 37.0,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 1500.0,
+    "q": 200.0,
+    "base_cop": 4500440,
+    "base_co2": 2052.4,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 26.6,
+    "mezcla_sola_min_co2_pct": 12.4,
+    "mezcla_sola_costo_pct": -3.5,
+    "ambos_min_co2_pct": 35.3,
+    "ambos_costo_pct": 24.1,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 35.3,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 1500.0,
+    "q": 300.0,
+    "base_cop": 2905917,
+    "base_co2": 1313.1,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 27.1,
+    "mezcla_sola_min_co2_pct": 12.4,
+    "mezcla_sola_costo_pct": -3.4,
+    "ambos_min_co2_pct": 35.3,
+    "ambos_costo_pct": 24.6,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 35.3,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 2500.0,
+    "q": 120.0,
+    "base_cop": 17447797,
+    "base_co2": 8063.2,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 33.2,
+    "mezcla_sola_min_co2_pct": 12.3,
+    "mezcla_sola_costo_pct": -3.5,
+    "ambos_min_co2_pct": 41.7,
+    "ambos_costo_pct": 31.0,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 41.7,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 2500.0,
+    "q": 200.0,
+    "base_cop": 9211607,
+    "base_co2": 4232.7,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 32.0,
+    "mezcla_sola_min_co2_pct": 12.4,
+    "mezcla_sola_costo_pct": -3.5,
+    "ambos_min_co2_pct": 40.3,
+    "ambos_costo_pct": 29.7,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 40.3,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 2500.0,
+    "q": 300.0,
+    "base_cop": 5455244,
+    "base_co2": 2485.0,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 26.4,
+    "mezcla_sola_min_co2_pct": 12.3,
+    "mezcla_sola_costo_pct": -3.4,
+    "ambos_min_co2_pct": 34.6,
+    "ambos_costo_pct": 23.8,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 34.6,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   }
+  ],
+  "mediana": {
+   "geometria_sola_min_cop_pct": 23.6,
+   "mezcla_sola_min_co2_pct": 12.4,
+   "mezcla_sola_costo_pct": -3.4,
+   "ambos_min_co2_pct": 32.6,
+   "ambos_costo_pct": 21.0,
+   "a_igual_costo_co2_pct": 32.6
+  }
+ },
+ "ceniza_300__cemento_1.010": {
+  "casos": [
+   {
+    "P": 300.0,
+    "q": 120.0,
+    "base_cop": 871668,
+    "base_co2": 434.3,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 0.0,
+    "mezcla_sola_min_co2_pct": 12.6,
+    "mezcla_sola_costo_pct": -3.4,
+    "ambos_min_co2_pct": 12.6,
+    "ambos_costo_pct": -3.4,
+    "ambos_sel": [
+     "prisma",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 0.0,
+    "a_igual_costo_sel": [
+     "prisma",
+     21.0,
+     0.0
+    ]
+   },
+   {
+    "P": 300.0,
+    "q": 200.0,
+    "base_cop": 474110,
+    "base_co2": 231.2,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 0.0,
+    "mezcla_sola_min_co2_pct": 12.7,
+    "mezcla_sola_costo_pct": -3.3,
+    "ambos_min_co2_pct": 12.7,
+    "ambos_costo_pct": -3.3,
+    "ambos_sel": [
+     "prisma",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 0.0,
+    "a_igual_costo_sel": [
+     "prisma",
+     21.0,
+     0.0
+    ]
+   },
+   {
+    "P": 300.0,
+    "q": 300.0,
+    "base_cop": 294580,
+    "base_co2": 140.2,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 0.0,
+    "mezcla_sola_min_co2_pct": 12.6,
+    "mezcla_sola_costo_pct": -3.2,
+    "ambos_min_co2_pct": 12.6,
+    "ambos_costo_pct": -3.2,
+    "ambos_sel": [
+     "prisma",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 0.0,
+    "a_igual_costo_sel": [
+     "prisma",
+     21.0,
+     0.0
+    ]
+   },
+   {
+    "P": 600.0,
+    "q": 120.0,
+    "base_cop": 2263658,
+    "base_co2": 1146.2,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 14.3,
+    "mezcla_sola_min_co2_pct": 12.6,
+    "mezcla_sola_costo_pct": -3.4,
+    "ambos_min_co2_pct": 25.2,
+    "ambos_costo_pct": 11.4,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 25.2,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 600.0,
+    "q": 200.0,
+    "base_cop": 1224577,
+    "base_co2": 611.0,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 15.3,
+    "mezcla_sola_min_co2_pct": 12.6,
+    "mezcla_sola_costo_pct": -3.4,
+    "ambos_min_co2_pct": 25.6,
+    "ambos_costo_pct": 12.4,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 25.6,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 600.0,
+    "q": 300.0,
+    "base_cop": 776622,
+    "base_co2": 381.3,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 15.2,
+    "mezcla_sola_min_co2_pct": 12.6,
+    "mezcla_sola_costo_pct": -3.3,
+    "ambos_min_co2_pct": 25.3,
+    "ambos_costo_pct": 12.3,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 25.3,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 1000.0,
+    "q": 120.0,
+    "base_cop": 4656488,
+    "base_co2": 2380.0,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 24.6,
+    "mezcla_sola_min_co2_pct": 12.6,
+    "mezcla_sola_costo_pct": -3.5,
+    "ambos_min_co2_pct": 34.4,
+    "ambos_costo_pct": 22.1,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 34.4,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 1000.0,
+    "q": 200.0,
+    "base_cop": 2524182,
+    "base_co2": 1273.8,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 23.6,
+    "mezcla_sola_min_co2_pct": 12.6,
+    "mezcla_sola_costo_pct": -3.4,
+    "ambos_min_co2_pct": 32.9,
+    "ambos_costo_pct": 21.0,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 32.9,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 1000.0,
+    "q": 300.0,
+    "base_cop": 1450860,
+    "base_co2": 724.6,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 15.3,
+    "mezcla_sola_min_co2_pct": 12.6,
+    "mezcla_sola_costo_pct": -3.4,
+    "ambos_min_co2_pct": 25.2,
+    "ambos_costo_pct": 12.4,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 25.2,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 1500.0,
+    "q": 120.0,
+    "base_cop": 8363267,
+    "base_co2": 4292.3,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 28.2,
+    "mezcla_sola_min_co2_pct": 12.6,
+    "mezcla_sola_costo_pct": -3.5,
+    "ambos_min_co2_pct": 37.4,
+    "ambos_costo_pct": 25.8,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 37.4,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 1500.0,
+    "q": 200.0,
+    "base_cop": 4500440,
+    "base_co2": 2290.9,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 26.6,
+    "mezcla_sola_min_co2_pct": 12.6,
+    "mezcla_sola_costo_pct": -3.5,
+    "ambos_min_co2_pct": 35.6,
+    "ambos_costo_pct": 24.1,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 35.6,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 1500.0,
+    "q": 300.0,
+    "base_cop": 2905917,
+    "base_co2": 1465.7,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 27.1,
+    "mezcla_sola_min_co2_pct": 12.6,
+    "mezcla_sola_costo_pct": -3.4,
+    "ambos_min_co2_pct": 35.6,
+    "ambos_costo_pct": 24.6,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 35.6,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 2500.0,
+    "q": 120.0,
+    "base_cop": 17447797,
+    "base_co2": 8993.7,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 33.2,
+    "mezcla_sola_min_co2_pct": 12.5,
+    "mezcla_sola_costo_pct": -3.5,
+    "ambos_min_co2_pct": 42.1,
+    "ambos_costo_pct": 31.0,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 42.1,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 2500.0,
+    "q": 200.0,
+    "base_cop": 9211607,
+    "base_co2": 4723.6,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 32.0,
+    "mezcla_sola_min_co2_pct": 12.6,
+    "mezcla_sola_costo_pct": -3.5,
+    "ambos_min_co2_pct": 40.7,
+    "ambos_costo_pct": 29.7,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 40.7,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   },
+   {
+    "P": 2500.0,
+    "q": 300.0,
+    "base_cop": 5455244,
+    "base_co2": 2772.6,
+    "base_fc": 21.0,
+    "geometria_sola_min_cop_pct": 26.4,
+    "mezcla_sola_min_co2_pct": 12.6,
+    "mezcla_sola_costo_pct": -3.4,
+    "ambos_min_co2_pct": 34.8,
+    "ambos_costo_pct": 23.8,
+    "ambos_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ],
+    "a_igual_costo_co2_pct": 34.8,
+    "a_igual_costo_sel": [
+     "tronco",
+     21.0,
+     0.3
+    ]
+   }
+  ],
+  "mediana": {
+   "geometria_sola_min_cop_pct": 23.6,
+   "mezcla_sola_min_co2_pct": 12.6,
+   "mezcla_sola_costo_pct": -3.4,
+   "ambos_min_co2_pct": 32.9,
+   "ambos_costo_pct": 21.0,
+   "a_igual_costo_co2_pct": 32.9
+  }
+ }
+}
