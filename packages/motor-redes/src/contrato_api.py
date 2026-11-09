@@ -49,11 +49,21 @@ class BombaRed(BaseModel):
     a_s2m5: float = Field(..., gt=0, le=1e9, allow_inf_nan=False, description="Coeficiente de la curva, en s²/m⁵")
 
 
+class ValvulaRed(BaseModel):
+    model_config = ConfigDict(strict=True)
+    id: str = Field(..., min_length=1, max_length=40)
+    desde: str = Field(..., min_length=1, max_length=40)
+    hasta: str = Field(..., min_length=1, max_length=40)
+    diametro_m: float = Field(..., gt=0, le=5, allow_inf_nan=False)
+    k: float = Field(..., gt=0, le=1e6, allow_inf_nan=False, description="Coeficiente de pérdida local, h = K·v²/2g")
+
+
 class SolicitudRed(BaseModel):
     model_config = ConfigDict(strict=True)
     nodos: list[NudoRed] = Field(..., min_length=2, max_length=2000)
     tramos: list[TramoRed] = Field(..., min_length=1, max_length=4000)
     bombas: list[BombaRed] = Field(default_factory=list, max_length=200)
+    valvulas: list[ValvulaRed] = Field(default_factory=list, max_length=500)
     presion_min_m: Optional[float] = Field(default=None, ge=0, le=500, allow_inf_nan=False,
                                            description="Presión mínima de servicio exigida (m.c.a.); null = no se verifica")
     presion_max_m: Optional[float] = Field(default=None, gt=0, le=500, allow_inf_nan=False)
@@ -87,7 +97,8 @@ def _verificar_limites(res: dict, s: SolicitudRed):
 
 def red_permanente_contrato(s: SolicitudRed) -> ResultadoMotor:
     res = resolver_red([n.model_dump() for n in s.nodos], [t.model_dump() for t in s.tramos],
-                       bombas=[b.model_dump() for b in s.bombas])
+                       bombas=[b.model_dump() for b in s.bombas],
+                       valvulas=[v.model_dump() for v in s.valvulas])
     incumple, borde = _verificar_limites(res, s)
     fuera_c = [t.id for t in s.tramos if not (_C_HW_RANGO[0] <= t.c_hw <= _C_HW_RANGO[1])]
     presiones_neg = [nid for nid, v in res["nodos"].items() if v["presion_m"] < 0]
@@ -99,7 +110,7 @@ def red_permanente_contrato(s: SolicitudRed) -> ResultadoMotor:
     borde = borde or bool(lejos) or bool(fuera_c) or bool(presiones_neg) or bool(finos) or bool(lentos)
     hay_limites = not (s.presion_min_m is None and s.presion_max_m is None and s.velocidad_max_ms is None)
     supuestos = [
-        "Estado permanente con demandas constantes en los nudos; sin válvulas, tanques de nivel variable ni periodo extendido.",
+        "Estado permanente con demandas constantes en los nudos; sin tanques de nivel variable ni periodo extendido.",
         "Pérdidas por fricción de Hazen-Williams en SI (h = 10,67·L·Q^1,852/(C^1,852·D^4,871)); sin pérdidas menores (accesorios).",
         "Hazen-Williams es válido para agua a temperatura ambiente en flujo turbulento y diámetros ≥ 50 mm; a velocidades muy bajas subestima la pérdida.",
         "Los nudos con carga fija son embalses o tanques de nivel constante: el caudal que entregan sale de la solución, no es dato.",
@@ -108,6 +119,8 @@ def red_permanente_contrato(s: SolicitudRed) -> ResultadoMotor:
         "Límites de presión y velocidad: los fija quien consulta; el motor no asume valores de norma (verificar en RAS 2000 Título B).",
         "Las bombas se modelan con la curva parabólica H = h0 − a·Q² (Q ≥ 0), sin curva de eficiencia, NPSH, velocidad variable ni válvula "
         "de retención: la curva real del fabricante puede diferir lejos del punto de ajuste.",
+        "Las válvulas son de pérdida local (h = K·v²/2g, K constante): no se modelan reductoras de presión, de retención ni de control "
+        "por consigna, y K no varía con la apertura ni con el número de Reynolds.",
         "Resolución numérica: caudales cuya pérdida de carga queda bajo ~1e-12 m (redondeo de una carga de decenas de metros) no se distinguen de cero.",
         "Método del gradiente (Todini y Pilati, 1988) con Newton-Raphson y reducción de paso; si no converge falla con error.",
     ]

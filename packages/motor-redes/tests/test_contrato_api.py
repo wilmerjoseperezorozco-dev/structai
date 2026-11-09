@@ -114,3 +114,15 @@ def test_bomba_lejos_del_punto_de_diseno_de_la_curva_activa_borde():
 def test_bomba_que_no_vence_la_carga_estatica_es_valueerror():
     with pytest.raises(ValueError, match="no vence"):
         red_permanente_contrato(_con_bomba(h0=5.0, demanda=0.0))
+
+
+def test_valvula_en_el_contrato_reporta_perdida_y_baja_la_presion_aguas_abajo():
+    nodos = [dict(id="R", cota_m=0.0, carga_fija_m=50.0), dict(id="V1", cota_m=0.0), dict(id="V2", cota_m=0.0),
+             dict(id="N", cota_m=0.0, demanda_m3s=0.05)]
+    tramos = [_tramo(id="a", desde="R", hasta="V1", longitud_m=300.0, diametro_m=0.25),
+              _tramo(id="b", desde="V2", hasta="N", longitud_m=300.0, diametro_m=0.25)]
+    sin = red_permanente_contrato(_s(nodos=[n for n in nodos if n["id"] != "V2"], tramos=[_tramo(id="a", desde="R", hasta="V1", longitud_m=300.0, diametro_m=0.25),
+                                                          _tramo(id="b", desde="V1", hasta="N", longitud_m=300.0, diametro_m=0.25)]))
+    con = red_permanente_contrato(_s(nodos=nodos, tramos=tramos, valvulas=[dict(id="v", desde="V1", hasta="V2", diametro_m=0.25, k=50.0)]))
+    assert con.valor["valvulas"]["v"]["perdida_m"] > 0
+    assert con.valor["nodos"]["N"]["presion_m"] < sin.valor["nodos"]["N"]["presion_m"]

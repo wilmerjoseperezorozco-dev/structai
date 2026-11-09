@@ -123,18 +123,43 @@ def _validar_bombas(nodos: List[dict], tramos: List[dict], bombas: List[dict]) -
             raise ValueError(f"la bomba {b['id']} conecta un nudo consigo mismo")
 
 
+_CLAVES_VALVULA = ("id", "desde", "hasta", "diametro_m", "k")
+_G = 9.80665
+
+
+def _validar_valvulas(nodos: List[dict], previos: List[dict], valvulas: List[dict]) -> None:
+    conocidos = {n["id"] for n in nodos}
+    usados = {e["id"] for e in previos}
+    for v in valvulas:
+        _exigir(v, _CLAVES_VALVULA, "válvula")
+        if v["id"] in usados:
+            raise ValueError(f"identificador duplicado entre elementos: {v['id']}")
+        usados.add(v["id"])
+        for campo in ("diametro_m", "k"):
+            if _finito(v[campo], f"{campo} de la válvula {v['id']}") <= 0:
+                raise ValueError(f"{campo} de la válvula {v['id']} debe ser positivo")
+        if v["desde"] not in conocidos or v["hasta"] not in conocidos:
+            raise ValueError(f"la válvula {v['id']} referencia un nudo que no existe")
+        if v["desde"] == v["hasta"]:
+            raise ValueError(f"la válvula {v['id']} conecta un nudo consigo mismo")
+
+
 def resolver_red(nodos: List[dict], tramos: List[dict], *, bombas: Optional[List[dict]] = None,
-                 max_iteraciones: int = 100) -> Dict[str, Any]:
+                 valvulas: Optional[List[dict]] = None, max_iteraciones: int = 100) -> Dict[str, Any]:
     """Resuelve cargas y caudales de la red. Nudo: id, cota_m, demanda_m3s, carga_fija_m (None si es libre).
     Tramo: id, desde, hasta, longitud_m, diametro_m, c_hw. Caudal positivo de «desde» hacia «hasta».
     Bomba (opcional): id, desde, hasta, h0_m, a_s2m5, con curva H = h0 − a·Q² (Q ≥ 0 de «desde» a «hasta»); sin válvula de
-    retención modelada: si el sistema la haría trabajar con caudal ≤ 0 se lanza ValueError."""
+    retención modelada: si el sistema la haría trabajar con caudal ≤ 0 se lanza ValueError.
+    Válvula de pérdida local (opcional): id, desde, hasta, diametro_m, k; h = K·Q·|Q|/(2g·A²). No se modelan válvulas
+    reductoras de presión, de retención ni de control por consigna (no lineales por tramos)."""
     if isinstance(max_iteraciones, bool) or not isinstance(max_iteraciones, int) or max_iteraciones < 1:
         raise ValueError("max_iteraciones debe ser un entero positivo")
     bombas = list(bombas or [])
+    valvulas = list(valvulas or [])
     _validar(nodos, tramos)
     _validar_bombas(nodos, tramos, bombas)
-    elementos = list(tramos) + bombas
+    _validar_valvulas(nodos, tramos + bombas, valvulas)
+    elementos = list(tramos) + bombas + valvulas
     _verificar_conectividad(nodos, elementos)
     n_pipe = len(tramos)
 
@@ -157,15 +182,19 @@ def resolver_red(nodos: List[dict], tramos: List[dict], *, bombas: Optional[List
     h0 = np.array([n["carga_fija_m"] for n in fijos], dtype=float)
     a10_h0 = a10 @ h0
     demanda = np.array([n.get("demanda_m3s", 0.0) for n in libres], dtype=float)
-    r = np.array([_COEF_HW * t["longitud_m"] / (t["c_hw"] ** N_HW * t["diametro_m"] ** 4.871) for t in tramos] + [0.0] * len(bombas))
-    area = np.array([math.pi * t["diametro_m"] ** 2 / 4.0 for t in tramos] + [_Q_ARRANQUE_BOMBA] * len(bombas))
-    es_b = np.array([False] * n_pipe + [True] * len(bombas))
-    a_b = np.array([0.0] * n_pipe + [b["a_s2m5"] for b in bombas])
-    h0_b = np.array([0.0] * n_pipe + [b["h0_m"] for b in bombas])
+    n_b, n_v = len(bombas), len(valvulas)
+    area_v = [math.pi * v["diametro_m"] ** 2 / 4.0 for v in valvulas]
+    # Cada elemento: pérdida = r·q·|q|^(n−1) + desfase. Tubería n = 1,852; bomba y válvula n = 2; el desfase de la bomba es −h0.
+    r = np.array([_COEF_HW * t["longitud_m"] / (t["c_hw"] ** N_HW * t["diametro_m"] ** 4.871) for t in tramos]
+                 + [b["a_s2m5"] for b in bombas]
+                 + [v["k"] / (2.0 * _G * a * a) for v, a in zip(valvulas, area_v)])
+    expo = np.array([N_HW] * n_pipe + [2.0] * (n_b + n_v))
+    desfase = np.array([0.0] * n_pipe + [-b["h0_m"] for b in bombas] + [0.0] * n_v)
+    area = np.array([math.pi * t["diametro_m"] ** 2 / 4.0 for t in tramos] + [_Q_ARRANQUE_BOMBA] * n_b + area_v)
 
     def perdida_fn(qv):
-        """Pérdida (H_desde − H_hasta) por elemento: tubería r·q|q|^0.852; bomba a·q|q| − h0."""
-        return np.where(es_b, a_b * qv * np.abs(qv) - h0_b, r * qv * np.abs(qv) ** (N_HW - 1.0))
+        """Pérdida (H_desde − H_hasta) por elemento."""
+        return r * qv * np.abs(qv) ** (expo - 1.0) + desfase
 
     q = area * 1.0                                   # arranque: 1 m/s en tuberías, 0,01 m³/s en bombas
     h_libre = np.zeros(n_l)
@@ -183,7 +212,7 @@ def resolver_red(nodos: List[dict], tramos: List[dict], *, bombas: Optional[List
     convergio = False
     for _ in range(max_iteraciones + 1):
         q_abs = np.maximum(np.abs(q), _Q_MIN)
-        d_diag = np.where(es_b, 2.0 * a_b * q_abs, N_HW * r * q_abs ** (N_HW - 1.0))
+        d_diag = expo * r * q_abs ** (expo - 1.0)
         dinv = sparse.diags(1.0 / d_diag)
         matriz = (a12.T @ dinv @ a12).tocsc()
         rhs = f2 - a12.T @ (dinv @ f1)
@@ -237,6 +266,8 @@ def resolver_red(nodos: List[dict], tramos: List[dict], *, bombas: Optional[List
                              "velocidad_ms": float(abs(q[k]) / area[k])} for k, t in enumerate(tramos)},
         "bombas": {b["id"]: {"caudal_m3s": float(q[n_pipe + k]), "carga_m": float(-perdida[n_pipe + k])}
                    for k, b in enumerate(bombas)},
+        "valvulas": {v["id"]: {"caudal_m3s": float(q[n_pipe + n_b + k]), "perdida_m": float(perdida[n_pipe + n_b + k]),
+                               "velocidad_ms": float(abs(q[n_pipe + n_b + k]) / area_v[k])} for k, v in enumerate(valvulas)},
         "iteraciones": pasos,
         "residuo_continuidad_m3s": float(np.max(np.abs(f2), initial=0.0)),
         "residuo_energia_m": float(np.max(np.abs(f1))),
