@@ -15,7 +15,7 @@ Cobertura del corpus `nsr10_chunks` (conteo real por prefijo de `id`):
 | C.11.8 ménsulas / C.11.9 vigas pared | 17 / 19 | idem |
 | C.21.7 y C.21.5-6 (nudos, vigas, columnas sísmicas) | 25 / 33 | idem |
 | C.9.5, C.13 (deflexiones, losas) | 46 / 212 | disponible |
-| **Apéndice C-A (puntales y tensores)** | **0** | **BLOQUEANTE: ingestar antes de nudos y ménsulas** |
+| Apéndice C-A (puntales y tensores) | 40 (18 numerales; ingestado 2026-11-08) | Verbatim del Reglamento, sin Comentario; ver `docs/fuentes-normativas.md` |
 | H (geotecnia: contención, pilotes H.4.4) | 552 (40 de pilotes) | disponible, auditar |
 | F (acero estructural) | 2.728 | disponible |
 
@@ -73,8 +73,8 @@ Orden por valor y por riesgo: primero lo que ya tiene corpus y mecánica cerrada
 - **Verificaciones**: flexión/cortante del pliegue, deflexión (C.9.5), vibración de piso, cargas vivas de Título B, límites de huella y contrahuella de la normativa de accesibilidad vigente (verificar vigencia antes de fijarlos).
 - **Límite**: la losa plegada requiere modelo de placa plegada o elementos finitos para ser fiable; un modelo de viga equivalente subestima. Se calibra contra un modelo de elementos finitos de referencia antes de generar datos. El "30 % menos peso" se mide.
 
-### 3.6 Nudos viga-columna y ménsulas (prioridad 6, bloqueada)
-- **Bloqueante**: ingestar y auditar el Apéndice C-A (puntales y tensores). Hoy hay 0 chunks.
+### 3.6 Nudos viga-columna y ménsulas (prioridad 6)
+- **Desbloqueado el 2026-11-08**: el Apéndice C-A (puntales y tensores) ya está en el corpus (18 numerales verbatim). Falta el Comentario (figuras de nodos y puntales), que la ingesta no incluye.
 - **Variables**: ángulo del puntal θ, ancho de nodos CCC/CCT/CTT, chaflán o ménsula trapezoidal.
 - **Verificaciones**: resistencia de puntales, tensores, zonas nodales y anclaje (C-A), más C.11.8 y C.21.7 en el corpus.
 - **Objetivo**: geometría mínima de ensanche que reduce congestión de acero. La congestión se mide con proxy (separación libre entre barras, cuantía local); constructibilidad real requiere criterio de obra.
@@ -107,6 +107,6 @@ Transversales: **acciones y combinaciones de Título B** como módulo único reu
 
 1. Terminar zapata + pedestal (dataset, sustituto, benchmark) y extraer el kit común.
 2. Muros de contención (motor, tests, dataset, sustituto).
-3. Ingesta y auditoría del Apéndice C-A en paralelo con (2) porque solo usa red/disco.
+3. Apéndice C-A: ingestado el 2026-11-08. Quedan sin ingestar los apéndices C-B y C-D.
 4. Pilotes, luego muros de corte sin aberturas, luego cerchas, escaleras y nudos/ménsulas.
 5. Por elemento: motor exacto con tests → dataset LHS → sustituto → benchmark → documento con supuestos.

@@ -21,17 +21,15 @@ ENTRADAS = ["Pu", "ey_x", "ex_y", "q_adm", "ks", "fc", "Df", "c_col", "mult_conc
             "lam_co2", "exp_cod"]
 # objetivos continuos (regresión) y de clase (clasificación)
 OBJ_REG = ["L", "h_c", "h_e", "c_ped"]
-OBJ_CLS = ["x_ceniza_cod", "fc_cod"]
+OBJ_CLS = ["x_ceniza_cod"]   # f'c no se predice: es dato del caso (f'c efectivo = max(f'c, mínimo de la exposición))
 EXP_COD = {"interior_C1_S0": 0, "costa_C2_S1_sin_ensayo": 1, "costa_C2_S1_con_ensayo": 2}
 X_VALORES = [0.0, 0.1, 0.2, 0.25]
-FC_VALORES = [21.0, 28.0, 35.0]
 
 
 def preparar(df: pd.DataFrame) -> pd.DataFrame:
     df = df[df["ok"] == 1].copy()
     df["exp_cod"] = df["exposicion_in"].map(EXP_COD)
     df["x_ceniza_cod"] = df["x_ceniza"].map(lambda v: X_VALORES.index(round(float(v), 2)))
-    df["fc_cod"] = df["fc_eff"].map(lambda v: FC_VALORES.index(float(v)))
     return df
 
 
@@ -40,6 +38,7 @@ def main() -> None:
     ap.add_argument("--dataset", default=str(RAIZ / "data" / "surrogate_zapata" / "dataset.csv"))
     ap.add_argument("--salida", default=str(RAIZ / "data" / "surrogate_zapata" / "modelos"))
     ap.add_argument("--seed", type=int, default=7)
+    ap.add_argument("--hilos", type=int, default=4, help="hilos de LightGBM; usar 1 mientras corra la generación del dataset")
     args = ap.parse_args()
     out = Path(args.salida)
     out.mkdir(parents=True, exist_ok=True)
@@ -56,7 +55,7 @@ def main() -> None:
     resumen: dict = {"n_total": len(crudo), "n_resueltos": len(df), "n_entrenamiento": len(tr), "n_reservado": len(te), "metricas": {}}
     for obj in OBJ_REG:
         m = lgb.LGBMRegressor(n_estimators=600, learning_rate=0.05, num_leaves=63, subsample=0.8, subsample_freq=1, colsample_bytree=0.9,
-                              random_state=args.seed, verbose=-1)
+                              random_state=args.seed, verbose=-1, n_jobs=args.hilos)
         m.fit(tr[ENTRADAS], tr[obj])
         p = m.predict(te[ENTRADAS])
         mae = float(np.mean(np.abs(p - te[obj])))
@@ -65,7 +64,7 @@ def main() -> None:
         m.booster_.save_model(str(out / f"{obj}.txt"))
         print(f"{obj}: MAE {mae:.1f} mm, ±50 mm {100 * within:.1f} %")
     for obj in OBJ_CLS:
-        m = lgb.LGBMClassifier(n_estimators=300, learning_rate=0.05, num_leaves=31, random_state=args.seed, verbose=-1)
+        m = lgb.LGBMClassifier(n_estimators=300, learning_rate=0.05, num_leaves=31, random_state=args.seed, verbose=-1, n_jobs=args.hilos)
         m.fit(tr[ENTRADAS], tr[obj])
         acc = float(np.mean(m.predict(te[ENTRADAS]) == te[obj]))
         resumen["metricas"][obj] = {"exactitud": round(acc, 3)}

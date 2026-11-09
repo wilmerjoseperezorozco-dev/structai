@@ -110,7 +110,7 @@ def _cargar(dir_modelos: str) -> dict:
     import lightgbm as lgb
     if dir_modelos not in _MODELOS:
         d = Path(dir_modelos)
-        _MODELOS[dir_modelos] = {n: lgb.Booster(model_file=str(d / f"{n}.txt")) for n in ("L", "h_c", "h_e", "c_ped", "x_ceniza_cod", "fc_cod")}
+        _MODELOS[dir_modelos] = {n: lgb.Booster(model_file=str(d / f"{n}.txt")) for n in ("L", "h_c", "h_e", "c_ped", "x_ceniza_cod")}
     return _MODELOS[dir_modelos]
 
 
@@ -119,21 +119,22 @@ def _snap(v: float, lo: float, hi: float) -> float:
 
 
 def predecir(c: Caso, dir_modelos: str) -> dict:
-    from entrenar_surrogate import ENTRADAS, EXP_COD, FC_VALORES, X_VALORES
+    from entrenar_surrogate import ENTRADAS, EXP_COD, X_VALORES
+    from src.diseno_zapata_pedestal import EXPOSICIONES
     m = _cargar(dir_modelos)
     fila = pd.DataFrame([{**c.__dict__, "exp_cod": EXP_COD[c.exposicion]}])[ENTRADAS]
     df_mm = c.Df * 1000
-    h_c = _snap(float(m["h_c"].predict(fila)[0]), 300.0, min(1000.0, df_mm))
-    h_e = _snap(float(m["h_e"].predict(fila)[0]), 300.0, h_c)
-    return {"L": _snap(float(m["L"].predict(fila)[0]), c.c_col + 200.0, 6000.0), "h_c": h_c, "h_e": h_e,
-            "c_ped": _snap(float(m["c_ped"].predict(fila)[0]), c.c_col, 900.0),
-            "fc": FC_VALORES[int(np.argmax(m["fc_cod"].predict(fila)[0]))], "x": X_VALORES[int(np.argmax(m["x_ceniza_cod"].predict(fila)[0]))]}
+    h_c = _snap(float(m["h_c"].predict(fila, num_threads=1)[0]), 300.0, min(1000.0, df_mm))
+    h_e = _snap(float(m["h_e"].predict(fila, num_threads=1)[0]), 300.0, h_c)
+    return {"L": _snap(float(m["L"].predict(fila, num_threads=1)[0]), c.c_col + 200.0, 6000.0), "h_c": h_c, "h_e": h_e,
+            "c_ped": _snap(float(m["c_ped"].predict(fila, num_threads=1)[0]), c.c_col, 900.0),
+            "fc": max(c.fc, EXPOSICIONES[c.exposicion]["fc_min"]), "x": X_VALORES[int(np.argmax(m["x_ceniza_cod"].predict(fila, num_threads=1)[0]))]}
 
 
 def _reparar(c: Caso, p: dict) -> Optional[dict]:
     """Vecindario acotado alrededor de la propuesta: crece L, h_e, h_c y el lado del pedestal; mejor criterio entre los que cumplen."""
     mejor = None
-    fc = max(p["fc"], 35.0 if c.exposicion != "interior_C1_S0" else p["fc"])
+    fc = p["fc"]
     for dc in np.arange(0.0, REPARACION_C_MAX + 1, PASO):
         for dL in np.arange(0.0, REPARACION_L_MAX + 1, PASO):
             for dhc in (0.0, 50.0, -50.0, 100.0):
@@ -204,7 +205,7 @@ def main() -> None:
         "n": n, "origen": {k: int(v) for k, v in df["origen"].value_counts().items()},
         "diseños_inseguros_tras_reverificacion": int((~ok["reverificado"]).sum()),
         "brecha_criterio_pct": {"mediana": round(float(gap.median()), 2), "p90": round(float(gap.quantile(0.9)), 2), "p99": round(float(gap.quantile(0.99)), 2),
-                                "max": round(float(gap.max()), 2), "negativas_solo_por_rejilla": int((gap < -1e-6).sum())},
+                                "max": round(float(gap.max()), 2), "mejor_que_la_referencia_exacta": int((gap < -1e-6).sum())},
         "segundos_por_caso": {"surrogate_directo": round(float(df[df.origen == "directo"]["segundos"].mean()), 3) if (df.origen == "directo").any() else None,
                               "todos": round(float(df["segundos"].mean()), 3)},
         "tiempo_total_s": round(time.time() - t0, 1),
