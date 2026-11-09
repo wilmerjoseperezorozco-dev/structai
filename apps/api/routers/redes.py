@@ -23,6 +23,7 @@ sys.modules["motor_redes"] = motor_redes
 _spec.loader.exec_module(motor_redes)
 
 from motor_redes.contrato_api import SolicitudRed, red_permanente_contrato  # noqa: E402
+from motor_redes.contrato_ariete import SolicitudAriete, ariete_contrato  # noqa: E402
 from motor_redes.contrato_periodo import SolicitudPeriodo, periodo_extendido_contrato  # noqa: E402
 
 router = APIRouter(prefix="/redes", tags=["Redes hidráulicas"])
@@ -47,5 +48,14 @@ def endpoint_permanente(request: Request, req: SolicitudRed, user: Authenticated
 def endpoint_periodo(request: Request, req: SolicitudPeriodo, user: AuthenticatedUser = Depends(get_current_user)):
     try:
         return periodo_extendido_contrato(req)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+
+
+@router.post("/ariete", summary="Golpe de ariete por el método de las características (tubería simple, cierre de válvula)")
+@limiter.limit("10/minute")
+def endpoint_ariete(request: Request, req: SolicitudAriete, user: AuthenticatedUser = Depends(get_current_user)):
+    try:
+        return ariete_contrato(req)
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e))

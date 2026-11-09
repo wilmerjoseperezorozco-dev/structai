@@ -94,3 +94,24 @@ def test_periodo_con_tanque_sobre_nudo_con_demanda_responde_422(cliente):
     cuerpo = dict(PERIODO, nodos=[dict(id="T", cota_m=40.0, demanda_m3s=0.01), dict(id="N", cota_m=30.0, demanda_m3s=0.01)])
     r = cliente.post("/redes/periodo", json=cuerpo)
     assert r.status_code == 422 and "tanque" in str(r.json())
+
+
+ARIETE = dict(longitud_m=1000.0, diametro_m=0.5, celeridad_ms=1000.0, f_darcy=0.0, caudal_m3s=0.3, carga_embalse_m=400.0,
+              t_cierre_s=0.0, t_fin_s=8.0)
+
+
+def test_ariete_por_el_endpoint_da_joukowsky(cliente):
+    r = cliente.post("/redes/ariete", json=ARIETE)
+    assert r.status_code == 200
+    j = r.json()["valor"]
+    assert abs(j["valvula"]["h_max_m"] - (400.0 + j["joukowsky_m"])) < 1e-6
+
+
+def test_ariete_con_carga_insuficiente_responde_422(cliente):
+    r = cliente.post("/redes/ariete", json=dict(ARIETE, f_darcy=0.05, carga_embalse_m=1.0))
+    assert r.status_code == 422 and "carga" in str(r.json())
+
+
+def test_ariete_sin_celeridad_ni_material_responde_422(cliente):
+    cuerpo = {k: v for k, v in ARIETE.items() if k != "celeridad_ms"}
+    assert cliente.post("/redes/ariete", json=cuerpo).status_code == 422
