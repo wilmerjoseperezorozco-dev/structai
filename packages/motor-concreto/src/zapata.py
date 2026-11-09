@@ -10,7 +10,7 @@ Qué verifica (cada numeral se leyó en `nsr10_chunks` el 2026-11-08):
 - Aplastamiento: φ 0,85 f'c A1 √(A2/A1), tope 2 (C.10.14.1), φ = 0,65 (C.9.3.2.4); dovelas ≥ 0,005 Ag (C.15.8.2.1).
 - Columna circular → cuadrado de igual área (C.15.3).
 
-NO verificado / fuera del alcance (se devuelve en `supuestos`): longitud de desarrollo (C.15.6 → C.12), recubrimiento contra el suelo (C.7.7.1),
+NO verificado / fuera del alcance (se devuelve en `supuestos`): longitud de desarrollo (C.15.6 → C.12), recubrimiento contra el suelo (75 mm, C.7.7.1(a), ya verificado en el corpus),
 separación libre entre barras (C.7.6), transferencia de momento no balanceado en el punzonamiento (C.11.11.7), zapatas combinadas/medianeras/sobre pilotes,
 asentamientos (los calcula el geotecnista; aquí solo se comparan con los límites de H.4.9).
 """
@@ -36,7 +36,7 @@ FS_CARGA_MUERTA_VIVA = 3.0                                                  # Ta
 SUPUESTOS = (
     "q_adm proviene del estudio geotécnico (H.4.2.3); el Título H no da fórmula de capacidad portante.",
     "Longitud de desarrollo (C.15.6/C.12) NO verificada: se informa solo el largo disponible desde la cara de la columna.",
-    "Recubrimiento contra el suelo (C.7.7.1) y separación libre de barras (C.7.6) NO verificados en el corpus; se usan los valores de entrada.",
+    "Recubrimiento contra el suelo: 75 mm verificado en C.7.7.1(a) (valor por defecto); separación libre de barras (C.7.6) NO verificada en el corpus.",
     "Punzonamiento con momento no balanceado (C.11.11.7) NO modelado: con momento se usa la presión mínima de la zapata (conservador, no normativo).",
     "Zapata concéntrica sobre columna de concreto; sin pedestal; sin cabezal de pilotes.",
     "Requiere revisión y firma de un ingeniero estructural (issue #18).",

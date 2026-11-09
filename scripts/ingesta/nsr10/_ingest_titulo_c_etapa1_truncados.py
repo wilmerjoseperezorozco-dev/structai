@@ -37,6 +37,20 @@ OBJETIVOS = {
     "C.21.3.5.6": "NSR-10-477-501.pdf",
 }
 
+# Lote 2 (2026-11-08): numerales truncados que alimentan los motores de concreto (recubrimiento, deflexiones,
+# cortante, losas, zapatas, muros). Los de id con sufijo «-subN» se reemplazan borrando las filas viejas DESPUÉS del upsert.
+OBJETIVOS_LOTE2 = {
+    "C.7.7.2": "NSR-10-353-362.pdf", "C.7.7.3": "NSR-10-353-362.pdf",
+    "C.9.5.2.5": "NSR-10-369-375.pdf", "C.9.5.2.6": "NSR-10-369-375.pdf",
+    "C.9.5.3.1": "NSR-10-369-375.pdf", "C.9.5.3.3": "NSR-10-369-375.pdf", "C.9.5.3.4": "NSR-10-369-375.pdf",
+    "C.10.10.2": "NSR-10-377-387.pdf",
+    "C.11.3.3.1": "NSR-10-389-407.pdf", "C.11.3.4": "NSR-10-389-407.pdf", "C.11.4.6.1": "NSR-10-389-407.pdf",
+    "C.11.5.1": "NSR-10-389-407.pdf", "C.11.8.6": "NSR-10-389-407.pdf", "C.11.11.7.2": "NSR-10-389-407.pdf",
+    "C.12.16.2": "NSR-10-409-419.pdf", "C.13.6.4.2": "NSR-10-421-434.pdf",
+    "C.15.11.4": "NSR-10-443-448.pdf", "C.21.8.4": "NSR-10-477-501.pdf",
+}
+SUB_VIEJOS = {"C.7.7.2": "NSR10-C-C_7_7_2-sub%", "C.9.5.3.1": "NSR10-C-C_9_5_3_1-sub%"}
+
 HEADING = re.compile(r"^\s*([A-K]\.\d{1,3}(?:\.\d{1,3}){0,6})\s*[—–\-]\s*\S")
 PIE = re.compile(r"^\s*(NSR-10\s*[–—-].*|[A-K]-\d{1,4})\s*$")
 ECUACION = re.compile(r"\(C\.\d+-\d+\)")
@@ -57,6 +71,8 @@ def extraer(numeral: str, pdf: str) -> str:
             continue
         limpias.append(re.sub(r"\.{4,}", " — ", l.strip()))
     texto = re.sub(r"\s+", " ", " ".join(limpias)).strip()
+    if numeral.startswith("C.7.7."):  # verificado contra la imagen de la página: «db» (diámetro) sale como «bd», «10» como «.10»
+        texto = texto.replace("— bd pero", "— db pero").replace("— .10", "— 10")
     if ECUACION.search(texto):
         texto += " [Nota de fidelidad: las ecuaciones de este numeral no se transcriben (la extracción de texto las desordena); consultar la fuente.]"
     return texto
@@ -65,6 +81,60 @@ def extraer(numeral: str, pdf: str) -> str:
 # Texto transcrito leyendo la página del PDF (imagen), porque la extracción desordena las ecuaciones.
 # Las ecuaciones se escriben en notación lineal; «I» es el momento de inercia (la fuente imprime una «l»).
 MANUAL = {
+    "C.9.5.2.5": (
+        "C.9.5.2.5 — A menos que los valores se obtengan mediante un análisis más completo, la deflexión adicional a largo plazo, "
+        "resultante del flujo plástico y retracción de elementos en flexión (concreto normal o liviano), debe determinarse multiplicando "
+        "la deflexión inmediata causada por la carga permanente por el factor λΔ = ξ / (1 + 50 ρ') (C.9-11), donde ρ' es el valor en la mitad de la luz "
+        "para tramos simples y continuos y en el punto de apoyo para voladizos. Puede tomarse ξ, el factor dependiente del tiempo para cargas sostenidas, igual a: "
+        "5 años o más 2.0; 12 meses 1.4; 6 meses 1.2; 3 meses 1.0."
+    ),
+    "C.9.5.3.3": (
+        "C.9.5.3.3 — El espesor mínimo h para losas con vigas que se extienden entre los apoyos en todos los lados debe ser: "
+        "(a) Para αfm igual o menor que 0.2, se aplican las disposiciones de C.9.5.3.2. "
+        "(b) Para αfm mayor que 0.2 pero no mayor que 2.0, h no debe ser menor que h = ℓn (0.8 + fy/1400) / (36 + 5 β (αfm − 0.2)) (C.9-12), pero no menor que 125 mm. "
+        "(c) Para αfm mayor que 2.0, h no debe ser menor que h = ℓn (0.8 + fy/1400) / (36 + 9 β) (C.9-13), y no menor que 90 mm. "
+        "(d) En bordes discontinuos debe disponerse una viga de borde que tenga una relación de rigidez αf no menor de 0.80, o bien aumentar el espesor mínimo requerido "
+        "por las ecuaciones (C.9-12) ó (C.9-13), por lo menos un 10 por ciento en el panel que tenga un borde discontinuo. "
+        "TABLA C.9.5(c) — Espesores mínimos de losas sin vigas interiores (ℓn = luz libre en la dirección larga, medida entre caras de los apoyos). "
+        "Sin ábacos: panel exterior sin viga de borde / panel exterior con viga de borde / panel interior; con ábacos: panel exterior sin viga de borde / con viga de borde / panel interior. "
+        "fy = 280 MPa: ℓn/33, ℓn/36, ℓn/36; ℓn/36, ℓn/40, ℓn/40. "
+        "fy = 420 MPa: ℓn/30, ℓn/33, ℓn/33; ℓn/33, ℓn/36, ℓn/36. "
+        "fy = 520 MPa: ℓn/28, ℓn/31, ℓn/31; ℓn/31, ℓn/34, ℓn/34. "
+        "Notas: para fy entre los valores dados, el espesor mínimo se obtiene por interpolación lineal. Ábaco, como se define en C.13.2.5. "
+        "Losas con vigas entre las columnas a lo largo de los bordes exteriores: αf de la viga de borde no menor que 0.8. "
+        "ℓn en (b) y (c) es la luz libre en la dirección larga medida cara a cara de las vigas; β es la relación de la luz libre en la dirección larga a la luz libre en la dirección corta de la losa."
+    ),
+    "C.11.3.3.1": (
+        "C.11.3.3.1 — Vci se debe calcular por medio de: Vci = 0.05 λ √f'c bw dp + Vd + Vi Mcre / Mmax (C.11-10), donde dp no debe tomarse menor que 0.80h y "
+        "Mcre = (I/yt) (0.5 λ √f'c + fpe − fd) (C.11-11), y los valores de Mmax y Vi se deben calcular con la combinación de carga que causa el máximo momento mayorado en la sección. "
+        "No hay necesidad de tomar Vci menor que 0.14 λ √f'c bw d."
+    ),
+    "C.11.5.1": (
+        "C.11.5.1 — Umbral de Torsión. Se permite despreciar los efectos de la torsión si el momento torsional mayorado Tu es menor que: "
+        "(a) en elementos no preesforzados: φ 0.083 λ √f'c (Acp² / pcp); "
+        "(b) en elementos preesforzados: φ 0.083 λ √f'c (Acp² / pcp) √(1 + fpc / (0.33 λ √f'c)); "
+        "(c) para elementos no preesforzados sometidos a tracción axial o fuerzas de compresión: φ 0.083 λ √f'c (Acp² / pcp) √(1 + Nu / (0.33 Ag λ √f'c)). "
+        "En elementos construidos monolíticamente con una losa, el ancho sobresaliente del ala usado para calcular Acp y pcp debe cumplir con C.13.2.4. "
+        "Para una sección hueca, se debe usar Ag en lugar de Acp en C.11.5.1 y en los límites externos de la sección deben cumplir con C.13.2.4."
+    ),
+    "C.11.11.7.2": (
+        "C.11.11.7.2 — El esfuerzo cortante que resulta de la transferencia de momento por excentricidad de cortante debe suponerse que varía linealmente alrededor del centroide "
+        "de las secciones críticas definidas en C.11.11.1.2. El máximo esfuerzo cortante debido a Vu y Mu no debe exceder φvn: "
+        "(a) Para elementos sin refuerzo para cortante: φvn = φ Vc / (bo d) (C.11-38), donde Vc se define en C.11.11.2.1 ó C.11.11.2.2. "
+        "(b) Para elementos con refuerzo para cortante distinto a cabezas de cortante: φvn = φ (Vc + Vs) / (bo d) (C.11-39), donde Vc y Vs se definen en C.11.11.3.1. "
+        "El diseño debe tomar en cuenta la variación del esfuerzo cortante alrededor de la columna. El esfuerzo cortante debido a la fuerza cortante y momento mayorados "
+        "no deben exceder de 0.17 φ λ √f'c en la sección crítica ubicada a d/2 fuera de la línea exterior de las ramas del estribo que rodean la columna. "
+        "(C.11.11.7.1: γv = 1 − γf (C.11-37); γf Mu se transmite por flexión según C.13.5.3 y γv Mu por excentricidad de cortante.)"
+    ),
+    "C.13.6.4.2": (
+        "C.13.6.4.2 — Las franjas de columnas deben ser diseñadas para resistir las siguientes fracciones, en porcentaje, del momento negativo exterior mayorado. "
+        "ℓ2/ℓ1 = 0.5 / 1.0 / 2.0. Con (αf1 ℓ2/ℓ1) = 0: βt = 0: 100 / 100 / 100; βt ≥ 2.5: 75 / 75 / 75. "
+        "Con (αf1 ℓ2/ℓ1) ≥ 1.0: βt = 0: 100 / 100 / 100; βt ≥ 2.5: 90 / 75 / 45. "
+        "Deben hacerse interpolaciones lineales entre los valores dados, donde βt = Ecb C / (2 Ecs Is) (C.13-5) y C = Σ (1 − 0.63 x/y) x³y/3 (C.13-6). "
+        "La constante C para secciones en forma de T o L puede evaluarse dividiendo la sección en sectores rectangulares, como se define en C.13.2.4, y sumando los valores de C de cada porción. "
+        "(C.13.6.4.1, momento negativo interior: ℓ2/ℓ1 = 0.5/1.0/2.0; (αf1 ℓ2/ℓ1) = 0: 75/75/75; (αf1 ℓ2/ℓ1) ≥ 1.0: 90/75/45. "
+        "C.13.6.4.4, momentos positivos: (αf1 ℓ2/ℓ1) = 0: 60/60/60; ≥ 1.0: 90/75/45; interpolar linealmente.)"
+    ),
     "C.10.10.4.1": (
         "C.10.10.4.1 — Se permite usar las siguientes propiedades para los elementos en la estructura: "
         "(a) Módulo de elasticidad: Ec de C.8.5.1. "
@@ -101,10 +171,31 @@ EXTRA = [
     },
 ]
 
+EXTRA2 = [
+    {
+        "id": "NSR10-C-C_9_5_tabla_b_deflexion_maxima_admisible",
+        "seccion": "Tabla C.9.5(b)",
+        "titulo": "Deflexión máxima admisible calculada",
+        "texto": (
+            "NSR-10 Título C, Capítulo C.9 — TABLA C.9.5(b) — Deflexión máxima admisible calculada (ℓ = luz). "
+            "Cubiertas planas que no soporten ni estén ligadas a elementos no estructurales susceptibles de sufrir daños debido a deflexiones grandes: "
+            "deflexión inmediata debida a la carga viva, L: límite ℓ/180 (este límite no es un resguardo contra el empozamiento de aguas, que se verifica aparte). "
+            "Entrepisos que no soporten ni estén ligados a elementos no estructurales susceptibles de sufrir daños debido a deflexiones grandes: "
+            "deflexión inmediata debida a la carga viva, L: límite ℓ/360. "
+            "Sistema de entrepiso o cubierta que soporte o esté ligado a elementos no estructurales susceptibles de sufrir daños debido a deflexiones grandes: "
+            "la parte de la deflexión total que ocurre después de la unión de los elementos no estructurales (la suma de la deflexión a largo plazo debida a todas las cargas permanentes, "
+            "y la deflexión inmediata debida a cualquier carga viva adicional): límite ℓ/480 (se puede exceder si se toman medidas para prevenir daños en elementos apoyados o unidos). "
+            "Sistema de entrepiso o cubierta que soporte o esté ligado a elementos no estructurales no susceptibles de sufrir daños: misma deflexión: límite ℓ/240 "
+            "(pero no mayor que la tolerancia de los elementos no estructurales; se puede exceder con contraflecha). "
+            "Las deflexiones a largo plazo se determinan según C.9.5.2.5 ó C.9.5.4.3 y pueden reducirse en la deflexión que ocurra antes de unir los elementos no estructurales."
+        ),
+    },
+]
 
-def construir() -> list[dict]:
+
+def construir(lote: int = 1) -> list[dict]:
     chunks = []
-    for numeral, pdf in OBJETIVOS.items():
+    for numeral, pdf in (OBJETIVOS if lote == 1 else OBJETIVOS_LOTE2).items():
         texto = MANUAL.get(numeral) or extraer(numeral, pdf)
         chunks.append({
             "id": f"NSR10-C-{numeral.replace('.', '_')}",
@@ -113,15 +204,16 @@ def construir() -> list[dict]:
             "titulo": texto[:60],
             "texto": f"NSR-10 Título C {texto}",
         })
-    chunks += [{"capitulo": CAPITULO, **e} for e in EXTRA]
+    chunks += [{"capitulo": CAPITULO, **e} for e in (EXTRA if lote == 1 else EXTRA2)]
     return chunks
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--lote", type=int, default=1, choices=(1, 2))
     args = ap.parse_args()
-    chunks = construir()
+    chunks = construir(args.lote)
     for c in chunks:
         print(f"--- {c['id']} ({len(c['texto'])} car.)\n{c['texto']}\n")
     if args.dry_run:
@@ -142,6 +234,9 @@ def main() -> None:
                           "embedding": modelo.encode(p).tolist()})
     sb.table("nsr10_chunks").upsert(filas, on_conflict="id").execute()
     print(f"{len(filas)} filas upserted")
+    if args.lote == 2:  # borrar los trozos viejos «-subN» solo tras el upsert exitoso
+        for patron in SUB_VIEJOS.values():
+            sb.table("nsr10_chunks").delete().like("id", patron).execute()
 
 
 if __name__ == "__main__":

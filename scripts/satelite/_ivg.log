@@ -1,0 +1,53 @@
+Departamento 13
+C:\Users\HP\Desktop\optimizacion para negocios en el atlantico\tubara\construdata\scripts\satelite\indice_vial_extraer.py:85: RuntimeWarning: divide by zero encountered in log
+  twi = np.log((acc * math.sqrt(dx * dy)) / np.maximum(tan_b, TAN_MIN))
+  terreno listo (71s)
+  OSM: 24759 tramos; base 2026-11-08T15:34:51Z (170s)
+  5937 tramos con datos, 8229 km (200s)
+Departamento 20
+C:\Users\HP\Desktop\optimizacion para negocios en el atlantico\tubara\construdata\scripts\satelite\indice_vial_extraer.py:85: RuntimeWarning: divide by zero encountered in log
+  twi = np.log((acc * math.sqrt(dx * dy)) / np.maximum(tan_b, TAN_MIN))
+  terreno listo (43s)
+  OSM: 14435 tramos; base 2026-11-08T15:37:55Z (143s)
+  5905 tramos con datos, 10522 km (190s)
+Departamento 23
+C:\Users\HP\Desktop\optimizacion para negocios en el atlantico\tubara\construdata\scripts\satelite\indice_vial_extraer.py:85: RuntimeWarning: divide by zero encountered in log
+  twi = np.log((acc * math.sqrt(dx * dy)) / np.maximum(tan_b, TAN_MIN))
+  terreno listo (37s)
+  OSM: 15686 tramos; base 2026-11-08T15:41:01Z (109s)
+  9501 tramos con datos, 13526 km (122s)
+Departamento 44
+C:\Users\HP\Desktop\optimizacion para negocios en el atlantico\tubara\construdata\scripts\satelite\indice_vial_extraer.py:85: RuntimeWarning: divide by zero encountered in log
+  twi = np.log((acc * math.sqrt(dx * dy)) / np.maximum(tan_b, TAN_MIN))
+  terreno listo (24s)
+  Overpass intento 1: HTTPError
+  Overpass intento 2: HTTPError
+  OSM: 10747 tramos; base 2026-11-08T15:45:06Z (215s)
+  7125 tramos con datos, 7896 km (238s)
+Departamento 47
+C:\Users\HP\Desktop\optimizacion para negocios en el atlantico\tubara\construdata\scripts\satelite\indice_vial_extraer.py:85: RuntimeWarning: divide by zero encountered in log
+  twi = np.log((acc * math.sqrt(dx * dy)) / np.maximum(tan_b, TAN_MIN))
+  terreno listo (34s)
+  OSM: 11497 tramos; base 2026-11-08T15:47:06Z (110s)
+  4745 tramos con datos, 8281 km (140s)
+Departamento 70
+C:\Users\HP\Desktop\optimizacion para negocios en el atlantico\tubara\construdata\scripts\satelite\indice_vial_extraer.py:85: RuntimeWarning: divide by zero encountered in log
+  twi = np.log((acc * math.sqrt(dx * dy)) / np.maximum(tan_b, TAN_MIN))
+  terreno listo (22s)
+  OSM: 9199 tramos; base 2026-11-08T15:49:13Z (93s)
+  4069 tramos con datos, 5389 km (111s)
+Departamento 25
+  terreno listo (44s)
+  OSM: 51391 tramos; base 2026-11-08T15:51:21Z (161s)
+  23940 tramos con datos, 23654 km (194s)
+Departamento 68
+  terreno listo (35s)
+  OSM: 39032 tramos; base 2026-11-08T15:54:20Z (192s)
+  18120 tramos con datos, 22623 km (259s)
+Departamento 05
+C:\Users\HP\Desktop\optimizacion para negocios en el atlantico\tubara\construdata\scripts\satelite\indice_vial_extraer.py:85: RuntimeWarning: divide by zero encountered in log
+  twi = np.log((acc * math.sqrt(dx * dy)) / np.maximum(tan_b, TAN_MIN))
+  terreno listo (140s)
+  Overpass intento 1: HTTPError
+  OSM: 52404 tramos; base 2026-11-08T16:01:34Z (304s)
+  34302 tramos con datos, 31811 km (356s)
