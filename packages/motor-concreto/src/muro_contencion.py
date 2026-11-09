@@ -43,6 +43,11 @@ class GeometriaMuro:
     bandeja_y: float = 0.0         # cota de la cara inferior de la bandeja sobre la cara superior de la zapata (m); 0 = sin bandeja
     bandeja_vuelo: float = 0.0     # vuelo de la bandeja hacia el relleno desde la cara posterior de la pantalla (m)
     bandeja_esp: float = 0.25      # espesor de la bandeja (m)
+    contrafuerte_sep: float = 0.0  # separación entre ejes de contrafuertes (m); 0 = muro en voladizo. Con contrafuertes la pantalla es de espesor uniforme t_base
+    contrafuerte_esp: float = 0.30  # espesor de cada contrafuerte (m); su longitud en planta llega hasta el extremo del talón
+    anc_fuerza_kn_m: float = 0.0   # fuerza axial de servicio de los tirantes por metro de muro (kN/m); 0 = sin anclajes
+    anc_y: float = 0.0             # cota del anclaje en la cara posterior de la pantalla sobre la cara superior de la zapata (m)
+    anc_incl_deg: float = 15.0     # inclinación del tirante bajo la horizontal, hacia el relleno (grados)
 
     @property
     def ancho_base(self) -> float:
@@ -56,10 +61,19 @@ class GeometriaMuro:
     def tiene_bandeja(self) -> bool:
         return self.bandeja_y > 0.0 and self.bandeja_vuelo > 0.0
 
+    @property
+    def tiene_contrafuerte(self) -> bool:
+        return self.contrafuerte_sep > 0.0
+
+    @property
+    def tiene_anclaje(self) -> bool:
+        return self.anc_fuerza_kn_m > 0.0
+
     def espesor_pantalla(self, y):
         """Espesor de la pantalla a la altura y sobre su base (m)."""
         n = 1.0 if self.perfil == "lineal" else 2.0
-        return self.t_corona + (self.t_base - self.t_corona) * (1.0 - np.asarray(y) / self.h_pantalla) ** n
+        t_c = self.t_base if self.tiene_contrafuerte else self.t_corona      # con contrafuertes el espesor es uniforme
+        return t_c + (self.t_base - t_c) * (1.0 - np.asarray(y) / self.h_pantalla) ** n
 
     def validar(self) -> None:
         for nombre in ("h_pantalla", "h_zapata", "t_corona", "t_base", "b_puntera", "b_talon"):
@@ -75,6 +89,15 @@ class GeometriaMuro:
             raise ValueError("la bandeja debe quedar dentro de la altura de la pantalla")
         if self.tiene_dentellon and self.dentellon_x_efectivo + self.dentellon_ancho > self.ancho_base:
             raise ValueError("el dentellón se sale de la base")
+        if self.tiene_contrafuerte:
+            if self.contrafuerte_esp <= 0 or self.contrafuerte_sep <= self.contrafuerte_esp:
+                raise ValueError("contrafuerte: el espesor debe ser > 0 y menor que la separación")
+            if abs(self.t_corona - self.t_base) > 1e-9:
+                raise ValueError("con contrafuertes la pantalla es de espesor uniforme: t_corona debe igualar t_base")
+            if self.tiene_bandeja:
+                raise ValueError("la bandeja de alivio no se combina con contrafuertes")
+        if self.anc_fuerza_kn_m < 0 or (self.tiene_anclaje and not (0.0 < self.anc_y < self.h_pantalla and 0.0 < self.anc_incl_deg <= 60.0)):
+            raise ValueError("anclaje: fuerza ≥ 0, cota dentro de la pantalla e inclinación en (0°, 60°]")
 
     @property
     def dentellon_x_efectivo(self) -> float:
@@ -166,12 +189,27 @@ def _piezas(g: GeometriaMuro, r: Relleno, gamma_c: float) -> list[tuple[str, flo
     if g.tiene_dentellon:
         xd = g.dentellon_x_efectivo
         pesos.append(("dentellon", g.dentellon_prof * g.dentellon_ancho * gamma_c, xd + g.dentellon_ancho / 2, -g.dentellon_prof / 2))
+    if g.tiene_contrafuerte:
+        # Triángulo de lado h_pantalla × b_talon con espesor contrafuerte_esp cada contrafuerte_sep; el hormigón reemplaza al relleno del talón (peso neto γc − γ)
+        a_cf = 0.5 * g.h_pantalla * g.b_talon * g.contrafuerte_esp / g.contrafuerte_sep
+        x_cf = g.b_puntera + g.t_base + g.b_talon / 3.0
+        pesos.append(("contrafuerte", a_cf * (gamma_c - r.gamma), x_cf, hz + g.h_pantalla / 3.0))
     if g.tiene_bandeja:
         xr = g.b_puntera + float(g.espesor_pantalla(g.bandeja_y))
         yb = hz + g.bandeja_y
         a = g.bandeja_vuelo * g.bandeja_esp
         pesos.append(("bandeja", a * (gamma_c - r.gamma), xr + g.bandeja_vuelo / 2, yb + g.bandeja_esp / 2))
     return pesos
+
+
+def fuerza_anclaje(g: GeometriaMuro) -> tuple[float, float, float, float]:
+    """(componente horizontal Th, vertical Tv, x, y) de la fuerza que el tirante ejerce sobre la cara posterior de la pantalla, por metro de muro.
+    Th se opone al empuje (hacia el relleno) y Tv carga hacia abajo porque el tirante se interna en el suelo en sentido descendente. (0,0,0,0) sin anclaje."""
+    if not g.tiene_anclaje:
+        return 0.0, 0.0, 0.0, 0.0
+    ang = math.radians(g.anc_incl_deg)
+    return (g.anc_fuerza_kn_m * math.cos(ang), g.anc_fuerza_kn_m * math.sin(ang),
+            g.b_puntera + float(g.espesor_pantalla(g.anc_y)), g.h_zapata + g.anc_y)
 
 
 def _cargas_verticales(g: GeometriaMuro, r: Relleno, gamma_c: float) -> list[tuple[str, float, float]]:
@@ -217,6 +255,10 @@ def _encofrado_y_volumen(g: GeometriaMuro, pesos, gamma_c: float) -> tuple[float
     if g.tiene_bandeja:
         vol += g.bandeja_vuelo * g.bandeja_esp
     enc = g.h_pantalla + largo_trasero + 2.0 * g.h_zapata + g.t_corona
+    if g.tiene_contrafuerte:
+        a_cf = 0.5 * g.h_pantalla * g.b_talon
+        vol += a_cf * g.contrafuerte_esp / g.contrafuerte_sep
+        enc += (2.0 * a_cf + g.contrafuerte_esp * math.hypot(g.h_pantalla, g.b_talon)) / g.contrafuerte_sep
     if g.tiene_bandeja:
         enc += 2.0 * g.bandeja_vuelo + g.bandeja_esp
     return vol, enc
@@ -237,8 +279,11 @@ def _resolver(g, r, s, gamma_c, pesos, fuerzas_h, pv, kh, con_sobrecarga, lim) -
     x_top = g.b_puntera + g.t_corona
     q_tal = r.sobrecarga_kpa * (B - x_top) if con_sobrecarga else 0.0
     inercia = [(kh * f, y) for _, f, _, y in pesos] if kh > 0 else []
-    v_est = sum(f for _, f, _, _ in pesos) + pv
-    m_est = sum(f * x for _, f, x, _ in pesos) + pv * B
+    th, tv, x_a, y_a = fuerza_anclaje(g)
+    if th > 0.0:
+        fuerzas_h = list(fuerzas_h) + [(-th, y_a)]
+    v_est = sum(f for _, f, _, _ in pesos) + pv + tv
+    m_est = sum(f * x for _, f, x, _ in pesos) + pv * B + tv * x_a
     ph = sum(f for f, _ in fuerzas_h) + sum(f for f, _ in inercia)
     m_vuelco = sum(f * a for f, a in fuerzas_h) + sum(f * a for f, a in inercia)
     v_b, m_b = v_est + q_tal, m_est + q_tal * (x_top + (B - x_top) / 2.0)
@@ -249,7 +294,7 @@ def _resolver(g, r, s, gamma_c, pesos, fuerzas_h, pv, kh, con_sobrecarga, lim) -
     d_punta, r_pasivo = resistencia_dentellon(g, r, s, q_punta)
     resistencia = v_est * s.mu + s.c_kpa * B + d_punta + r_pasivo
     mu = (resistencia - s.c_kpa * B) / v_est
-    fs_v = m_est / m_vuelco
+    fs_v = m_est / m_vuelco if m_vuelco > 0 else math.inf
     fs_d = resistencia / ph if ph > 0 else math.inf
     motivos = []
     if fs_v < lim["vol"]:

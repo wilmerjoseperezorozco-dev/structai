@@ -53,3 +53,6 @@ class Economia:
     fe_cemento: float = 1.010           # EPD 857 Argos Cartagena
     fe_acero: float = FE["acero"]       # Pardo 2022
     lam_co2: float = 0.0                # COP por kg CO2e (precio sombra) para el objetivo mixto
+    p_perforacion_m: float = 180_000.0  # COP por metro de tirante perforado, inyectado y tensado SUPUESTO (sin dato en el APU consultado)
+    p_cabeza_anclaje: float = 450_000.0  # COP por cabeza de anclaje (placa, cuña, protección) SUPUESTO
+    factor_precio_cordon: float = 2.5   # precio del cordón de preesfuerzo = factor × p_acero SUPUESTO

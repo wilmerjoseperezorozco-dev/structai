@@ -15,12 +15,18 @@ from .muro_contencion_estructural import DisenoMuro, disenar_estructura
 from .viga import Materiales
 
 TIPOLOGIAS = ("estandar", "dentellon", "bandeja")
+TIPOLOGIAS_EXTENDIDAS = TIPOLOGIAS + ("contrafuerte", "anclaje")      # las dos últimas se consultan aparte: el sustituto y el dataset v2 solo conocen las tres primeras
+ANC_Y_FRACCION = 0.80          # CONSTANTE de diseño: cota del tirante = 0,80 h sobre la zapata (no es variable de búsqueda)
+ANC_INCL_DEG = 15.0
+ANC_FUERZA_INICIAL = 30.0
+PASOS = {"bandeja_y": 0.1, "bandeja_vuelo": 0.1, "contrafuerte_sep": 0.5, "contrafuerte_esp": 0.05, "anc_fuerza_kn_m": 10.0}
 PASO = 0.05
 T_CORONA = 0.25      # CONSTANTE de diseño (no es variable de búsqueda): ancho mínimo constructivo para vaciar y vibrar el concreto en la corona
 # (mín., máx.) de las variables de búsqueda. Los mínimos son PISOS CONSTRUCTIVOS declarados (formaleta, recubrimientos 75 mm de C.7.7.1, ganchos); un óptimo
 # sobre un piso es una regla de práctica, no un hallazgo del optimizador, por eso se reporta aparte en `Solucion.en_piso_constructivo`.
 LIMITES = {"h_zapata": (0.30, 1.20), "t_base": (0.30, 1.20), "b_puntera": (0.10, 2.00), "b_talon": (0.30, 7.00),
-           "dentellon_prof": (0.10, 1.00), "bandeja_y": (0.50, 6.00), "bandeja_vuelo": (0.40, 2.50)}
+           "dentellon_prof": (0.10, 1.00), "bandeja_y": (0.50, 6.00), "bandeja_vuelo": (0.40, 2.50),
+           "contrafuerte_sep": (2.00, 6.00), "contrafuerte_esp": (0.25, 0.60), "anc_fuerza_kn_m": (10.0, 150.0)}
 MAX_INFLADO = 80
 MAX_BARRIDOS = 12
 
@@ -59,6 +65,10 @@ def _inicial(caso: CasoMuro, tip: str, perfil: str) -> GeometriaMuro:
                          b_puntera=_redondear(max(0.3, 0.12 * h)), b_talon=_redondear(max(0.8, 0.45 * h)), perfil=perfil)
     if tip == "dentellon":
         return replace(base, dentellon_prof=0.40, dentellon_ancho=0.40)
+    if tip == "contrafuerte":
+        return replace(base, t_corona=base.t_base, contrafuerte_sep=_redondear(min(max(0.5 * h, 2.5), 5.0), 0.5), contrafuerte_esp=0.30)
+    if tip == "anclaje":
+        return replace(base, anc_fuerza_kn_m=ANC_FUERZA_INICIAL, anc_y=_redondear(ANC_Y_FRACCION * h, 0.1), anc_incl_deg=ANC_INCL_DEG)
     if tip == "bandeja":
         return replace(base, bandeja_y=_redondear(0.5 * h, 0.1), bandeja_vuelo=_redondear(0.35 * h, 0.1), bandeja_esp=0.25)
     return base
@@ -82,9 +92,17 @@ def _corregir(g: GeometriaMuro, d: DisenoMuro | None) -> GeometriaMuro:
     txt = " ".join(d.motivos)
     out = g
     if any(k in txt for k in ("volcamiento", "deslizamiento", "excentricidad", "presión", "equilibrio", "resultante")):
-        out = replace(out, b_talon=out.b_talon + 0.2)
+        if out.tiene_anclaje:
+            out = replace(out, b_talon=out.b_talon + 0.1, anc_fuerza_kn_m=out.anc_fuerza_kn_m + 20.0)
+        else:
+            out = replace(out, b_talon=out.b_talon + 0.2)
     if "pantalla" in txt or "Mononobe" in txt:
-        out = replace(out, t_base=out.t_base + PASO)
+        if out.tiene_contrafuerte and out.contrafuerte_sep - 0.5 >= LIMITES["contrafuerte_sep"][0] - 1e-9:
+            out = replace(out, contrafuerte_sep=out.contrafuerte_sep - 0.5)
+        else:
+            out = replace(out, t_base=out.t_base + PASO, t_corona=out.t_base + PASO if out.tiene_contrafuerte else out.t_corona)
+    if "contrafuerte" in txt:
+        out = replace(out, contrafuerte_esp=out.contrafuerte_esp + PASO)
     if "puntera" in txt or "talon" in txt:
         out = replace(out, h_zapata=out.h_zapata + PASO)
     if "bandeja" in txt:
@@ -97,7 +115,7 @@ def _corregir(g: GeometriaMuro, d: DisenoMuro | None) -> GeometriaMuro:
 def _acotar(g: GeometriaMuro) -> GeometriaMuro:
     """Fuerza t_corona ≤ t_base y respeta límites inferiores."""
     tb = max(g.t_base, g.t_corona)
-    return replace(g, t_base=_redondear(tb), t_corona=_redondear(g.t_corona))
+    return replace(g, t_base=_redondear(tb), t_corona=_redondear(tb if g.tiene_contrafuerte else g.t_corona))
 
 
 def _hacer_factible(g: GeometriaMuro, caso: CasoMuro) -> tuple[GeometriaMuro, DisenoMuro, int] | None:
@@ -108,7 +126,8 @@ def _hacer_factible(g: GeometriaMuro, caso: CasoMuro) -> tuple[GeometriaMuro, Di
         n += 1
         if d is not None and d.cumple:
             return g, d, n
-        if g.b_talon > LIMITES["b_talon"][1] or g.h_zapata > LIMITES["h_zapata"][1] or g.t_base > LIMITES["t_base"][1]:
+        if (g.b_talon > LIMITES["b_talon"][1] or g.h_zapata > LIMITES["h_zapata"][1] or g.t_base > LIMITES["t_base"][1]
+                or g.anc_fuerza_kn_m > LIMITES["anc_fuerza_kn_m"][1] or g.contrafuerte_esp > LIMITES["contrafuerte_esp"][1]):
             return None
         g = _corregir(g, d)
     return None
@@ -116,14 +135,19 @@ def _hacer_factible(g: GeometriaMuro, caso: CasoMuro) -> tuple[GeometriaMuro, Di
 
 def _variables(tip: str) -> list[str]:
     base = ["h_zapata", "t_base", "b_puntera", "b_talon"]
-    return base + {"dentellon": ["dentellon_prof"], "bandeja": ["bandeja_y", "bandeja_vuelo"], "estandar": []}[tip]
+    return base + {"dentellon": ["dentellon_prof"], "bandeja": ["bandeja_y", "bandeja_vuelo"], "estandar": [],
+                   "contrafuerte": ["contrafuerte_sep", "contrafuerte_esp"], "anclaje": ["anc_fuerza_kn_m"]}[tip]
 
 
 def _mover(g: GeometriaMuro, nombre: str, signo: int) -> GeometriaMuro | None:
-    paso = 0.1 if nombre.startswith("bandeja_") else PASO
+    paso = PASOS.get(nombre, PASO)
     v = _redondear(getattr(g, nombre) + signo * paso, paso)
     lo, hi = LIMITES[nombre]
-    return replace(g, **{nombre: v}) if lo - 1e-9 <= v <= hi + 1e-9 else None
+    if not lo - 1e-9 <= v <= hi + 1e-9:
+        return None
+    if nombre == "t_base" and g.tiene_contrafuerte:
+        return replace(g, t_base=v, t_corona=v)
+    return replace(g, **{nombre: v})
 
 
 def optimizar(caso: CasoMuro, tipologia: str, perfil: str = "lineal", inicio: GeometriaMuro | None = None) -> Solucion | None:
@@ -153,11 +177,11 @@ def optimizar(caso: CasoMuro, tipologia: str, perfil: str = "lineal", inicio: Ge
     return Solucion(tipologia, perfil, g, d, mejor, n, techo, piso)
 
 
-def optimizar_todas(caso: CasoMuro, perfiles=("lineal", "parabolico")) -> dict[str, Solucion | None]:
-    """Mejor solución por tipología (mejor perfil por tipología) más la clave 'tradicional' = estándar de perfil lineal."""
+def optimizar_todas(caso: CasoMuro, perfiles=("lineal", "parabolico"), tipologias=TIPOLOGIAS) -> dict[str, Solucion | None]:
+    """Mejor solución por tipología (mejor perfil por tipología) más la clave 'tradicional' = estándar de perfil lineal. El contrafuerte tiene pantalla de espesor uniforme."""
     out: dict[str, Solucion | None] = {"tradicional": optimizar(caso, "estandar", "lineal")}
-    for tip in TIPOLOGIAS:
-        sols = [s for s in (optimizar(caso, tip, p) for p in perfiles) if s is not None]
+    for tip in tipologias:
+        sols = [s for s in (optimizar(caso, tip, p) for p in (("lineal",) if tip == "contrafuerte" else perfiles)) if s is not None]
         out[tip] = min(sols, key=lambda s: s.objetivo) if sols else None
     return out
 

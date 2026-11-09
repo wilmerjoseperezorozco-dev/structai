@@ -7,7 +7,7 @@ Combinaciones de la puntera y el talón: A = B.2.4-2 (1,2 D + 1,6 H + 1,6 L, sob
 B = 0,9 D + 1,6 H sin W ni E es una verificación ADICIONAL conservadora que B.2.4 no trae literalmente.
 
 NO verificado (se devuelve en `SUPUESTOS`): longitud de desarrollo y empalmes (C.12), corte de barras, cortante por fricción pantalla-zapata, fisuración, drenaje, estabilidad
-general, asentamientos, contrafuertes (no implementados), peso propio excéntrico de la pantalla, efecto axial del peso sobre la flexión de la pantalla.
+general, asentamientos, peso propio excéntrico de la pantalla, efecto axial del peso sobre la flexión de la pantalla.
 """
 from __future__ import annotations
 
@@ -17,8 +17,10 @@ from dataclasses import dataclass
 import numpy as np
 
 from .economia_concreto import Economia, co2_m3, costo_m3
+from .muro_anclaje import DisenoAnclaje, costo_co2_anclaje, disenar_anclaje
+from .muro_contrafuerte import DisenoContrafuerte, disenar_contrafuerte
 from .muro_contencion import (GAMMA_CONCRETO_KN_M3, GeometriaMuro, Relleno, ResultadoEstabilidad, SueloApoyo, _empuje_estatico, _piezas,
-                              coeficiente_activo_mononobe_okabe, verificar_estabilidad, verificar_estabilidad_sismica)
+                              coeficiente_activo_mononobe_okabe, fuerza_anclaje, verificar_estabilidad, verificar_estabilidad_sismica)
 from .muro_pantalla import SeccionPantalla, disenar_bandeja, disenar_dentellon, disenar_pantalla
 from .muro_refuerzo import COBERTURA_SUELO_MM, Franja, franja, recubrimiento, suelo
 from .viga import AREA_MM2, DIAMETRO_MM, Materiales
@@ -40,7 +42,11 @@ SUPUESTOS = (
     "El relleno sobre la puntera, el peso del dentellón y el de la bandeja no se descuentan en la flexión de la zapata.",
     "Bandeja: modelo de sombreado del empuje y contramomento con 0,9D son HIPÓTESIS; no se verifica el anclaje de la bandeja en la pantalla.",
     "Dentellón: fuerza de diseño = déficit de la fricción simple tan(2φ/3) para el FS exigido; la fricción plena tan φ con dentellón ≥ 0,30 m es HIPÓTESIS.",
-    "Contrafuertes NO implementados. Sin fisuración, juntas, drenaje, estabilidad general ni asentamientos.",
+    "Sin fisuración, juntas, drenaje, estabilidad general ni asentamientos.",
+    "Contrafuertes: losas continuas con M = wL'²/12 (cota superior), momento vertical de la pantalla = mitad del horizontal sin calibrar con placa, contrafuerte rectangular de ancho "
+    "esp con barra inclinada, sin corte de barras ni torsión (ver muro_contrafuerte).",
+    "Anclajes: preesfuerzo, adherencia τ supuesta, longitud libre hasta la superficie de falla de Rankine + 1,5 m; la pantalla se diseña SIN el alivio del tirante y NO se verifica "
+    "el punzonamiento ni la flexión local en la cabeza del anclaje; precios de perforación y cabeza SUPUESTOS (ver muro_anclaje).",
 )
 
 
@@ -63,6 +69,8 @@ class DisenoMuro:
     bandeja: Franja | None = None
     dentellon: Franja | None = None
     secciones_pantalla: tuple[SeccionPantalla, ...] = ()
+    contrafuerte: DisenoContrafuerte | None = None
+    anclaje: DisenoAnclaje | None = None
     supuestos: tuple[str, ...] = SUPUESTOS
 
 
@@ -81,7 +89,7 @@ def _equilibrio(g: GeometriaMuro, v: float, m_est: float, m_vol: float):
     return (lambda x: np.clip(q_max * (1 - np.asarray(x) / (3.0 * x_r)), 0.0, None)), q_max, 0.0, v
 
 
-def _presion(g: GeometriaMuro, r: Relleno, gamma_c: float, f_d: float, f_q: float):
+def _presion(g: GeometriaMuro, r: Relleno, gamma_c: float, f_d: float, f_q: float, f_anc: float = 0.0):
     """Combinación estática mayorada: f_d·D + 1,6 H + f_q·Q."""
     ka, h, pa_s, pa_q, br_s, br_q = _empuje_estatico(g, r)
     sb, cb = math.sin(math.radians(r.beta_deg)), math.cos(math.radians(r.beta_deg))
@@ -90,13 +98,14 @@ def _presion(g: GeometriaMuro, r: Relleno, gamma_c: float, f_d: float, f_q: floa
     pesos = _piezas(g, r, gamma_c)
     q_tal = f_q * r.sobrecarga_kpa * (B - x_top)
     x_q = x_top + (B - x_top) / 2.0
-    v = f_d * sum(f for _, f, _, _ in pesos) + FACTOR_H * pa_s * sb + f_q * pa_q * sb + q_tal
-    m_est = f_d * sum(f * x for _, f, x, _ in pesos) + (FACTOR_H * pa_s + f_q * pa_q) * sb * B + q_tal * x_q
-    m_vol = FACTOR_H * pa_s * cb * br_s + f_q * pa_q * cb * br_q
+    th, tv, x_a, y_a = fuerza_anclaje(g)
+    v = f_d * sum(f for _, f, _, _ in pesos) + FACTOR_H * pa_s * sb + f_q * pa_q * sb + q_tal + f_anc * tv
+    m_est = f_d * sum(f * x for _, f, x, _ in pesos) + (FACTOR_H * pa_s + f_q * pa_q) * sb * B + q_tal * x_q + f_anc * tv * x_a
+    m_vol = FACTOR_H * pa_s * cb * br_s + f_q * pa_q * cb * br_q - f_anc * th * y_a
     return _equilibrio(g, v, m_est, m_vol)
 
 
-def _presion_sismica(g: GeometriaMuro, r: Relleno, gamma_c: float, kh: float):
+def _presion_sismica(g: GeometriaMuro, r: Relleno, gamma_c: float, kh: float, f_anc: float = 0.0):
     """Combinación S: 0,9 D + 1,6 H(estático) + 1,4 E (incremento dinámico M-O a 0,6 h + inercia kh·W)."""
     ka, h, pa_s, _, br_s, _ = _empuje_estatico(g, r)
     kae = coeficiente_activo_mononobe_okabe(r.phi_deg, r.beta_deg, kh)
@@ -107,9 +116,10 @@ def _presion_sismica(g: GeometriaMuro, r: Relleno, gamma_c: float, kh: float):
     d_pae = max(0.5 * kae * r.gamma * h * h - pa_s, 0.0)
     pesos = _piezas(g, r, gamma_c)
     pv = (FACTOR_H * pa_s + FACTOR_E * d_pae) * sb
-    v = FACTOR_D_B * sum(f for _, f, _, _ in pesos) + pv
-    m_est = FACTOR_D_B * sum(f * x for _, f, x, _ in pesos) + pv * B
-    m_vol = (FACTOR_H * pa_s * br_s + FACTOR_E * d_pae * 0.6 * h) * cb + FACTOR_E * kh * sum(f * y for _, f, _, y in pesos)
+    th, tv, x_a, y_a = fuerza_anclaje(g)
+    v = FACTOR_D_B * sum(f for _, f, _, _ in pesos) + pv + f_anc * tv
+    m_est = FACTOR_D_B * sum(f * x for _, f, x, _ in pesos) + pv * B + f_anc * tv * x_a
+    m_vol = (FACTOR_H * pa_s * br_s + FACTOR_E * d_pae * 0.6 * h) * cb + FACTOR_E * kh * sum(f * y for _, f, _, y in pesos) - f_anc * th * y_a
     return _equilibrio(g, v, m_est, m_vol)
 
 
@@ -122,9 +132,11 @@ def _integral(f, a: float, b: float) -> float:
 
 def _combinaciones(g: GeometriaMuro, r: Relleno, gamma_c: float, kh: float | None):
     """(factor_D, presión) de cada combinación; la presión es None si no hay equilibrio."""
-    out = [(FACTOR_D_A, _presion(g, r, gamma_c, FACTOR_D_A, FACTOR_Q)), (FACTOR_D_B, _presion(g, r, gamma_c, FACTOR_D_B, 0.0))]
-    if kh is not None:
-        out.append((FACTOR_D_B, _presion_sismica(g, r, gamma_c, kh)))
+    out = []
+    for f_anc in ((1.0,) if g.tiene_anclaje else (0.0,)):      # el tirante preesforzado es una acción permanente: se incluye con factor 1,0
+        out += [(FACTOR_D_A, _presion(g, r, gamma_c, FACTOR_D_A, FACTOR_Q, f_anc)), (FACTOR_D_B, _presion(g, r, gamma_c, FACTOR_D_B, 0.0, f_anc))]
+        if kh is not None:
+            out.append((FACTOR_D_B, _presion_sismica(g, r, gamma_c, kh, f_anc)))
     return out
 
 
@@ -134,7 +146,8 @@ def _momentos_zapata(g: GeometriaMuro, r: Relleno, gamma_c: float, d_punt: float
     B, bp = g.ancho_base, g.b_puntera
     x_top = g.b_puntera + g.t_corona
     tan_b = math.tan(math.radians(r.beta_deg))
-    sal = {"mu_p": 0.0, "vu_p": 0.0, "mu_t": 0.0, "vu_t": 0.0, "mu_t_inf": 0.0}
+    sal = {"mu_p": 0.0, "vu_p": 0.0, "mu_t": 0.0, "vu_t": 0.0, "mu_t_inf": 0.0, "w_t": 0.0}
+    luz = g.contrafuerte_sep - g.contrafuerte_esp
     for f_d, p in _combinaciones(g, r, gamma_c, kh):
         if p is None:
             return {**sal, "sin_equilibrio": 1.0}
@@ -145,6 +158,14 @@ def _momentos_zapata(g: GeometriaMuro, r: Relleno, gamma_c: float, d_punt: float
         sal["mu_p"] = max(sal["mu_p"], _integral(lambda x: (q(x) - propio) * (bp - x), 0.0, bp))
         sal["vu_p"] = max(sal["vu_p"], _integral(lambda x: q(x) - propio, 0.0, max(bp - d_punt, 0.0)))
         neto = lambda x: w(x) - q(x)
+        if g.tiene_contrafuerte:        # losa continua entre contrafuertes con la carga neta máxima (HIPÓTESIS, ver muro_contrafuerte)
+            nx = neto(np.linspace(x_h, B, 41))
+            n_dn, n_up = max(float(nx.max()), 0.0), max(-float(nx.min()), 0.0)
+            sal["mu_t"] = max(sal["mu_t"], n_dn * luz**2 / 12.0)
+            sal["mu_t_inf"] = max(sal["mu_t_inf"], n_up * luz**2 / 12.0)
+            sal["vu_t"] = max(sal["vu_t"], max(n_dn, n_up) * luz / 2.0)
+            sal["w_t"] = max(sal["w_t"], n_dn, n_up)
+            continue
         mt = _integral(lambda x: neto(x) * (x - x_h), x_h, B)
         sal["mu_t"] = max(sal["mu_t"], mt)
         sal["mu_t_inf"] = max(sal["mu_t_inf"], -mt)
@@ -173,9 +194,13 @@ def _acero_pantalla_secundario(g: GeometriaMuro, m: Materiales) -> tuple[str, st
     return texto(a_h, cap), texto(a_v * cap, cap), a_h, a_v * cap
 
 
-def _kg_acero(g: GeometriaMuro, pant: Franja, punt: Franja, tal: Franja, a_h: float, a_v_front: float, band: Franja | None, dent: Franja | None) -> float:
+def _kg_acero(g: GeometriaMuro, pant: Franja, punt: Franja, tal: Franja, a_h: float, a_v_front: float, band: Franja | None, dent: Franja | None,
+              cf: DisenoContrafuerte | None = None) -> float:
     B = g.ancho_base
-    v = pant.as_prov_mm2_m * 1e-6 * (g.h_pantalla + g.h_zapata) + a_v_front * 1e-6 * g.h_pantalla + a_h * 1e-6 * g.h_pantalla
+    if cf is not None:      # pantalla y contrafuertes ya cuantificados en muro_contrafuerte (kg por metro de muro)
+        v = cf.kg_m / DENSIDAD_ACERO_KG_M3
+    else:
+        v = pant.as_prov_mm2_m * 1e-6 * (g.h_pantalla + g.h_zapata) + a_v_front * 1e-6 * g.h_pantalla + a_h * 1e-6 * g.h_pantalla
     as_inf = max(punt.as_prov_mm2_m, RHO_ZAPATA_MIN * g.h_zapata * 1e6)
     as_sup = max(tal.as_prov_mm2_m, RHO_ZAPATA_MIN * g.h_zapata * 1e6)
     v += (as_inf + as_sup) * 1e-6 * B + RHO_ZAPATA_MIN * B * g.h_zapata
@@ -186,9 +211,9 @@ def _kg_acero(g: GeometriaMuro, pant: Franja, punt: Franja, tal: Franja, a_h: fl
     return v * DENSIDAD_ACERO_KG_M3
 
 
-def _invalido(motivos, est, sis, pant, punt, tal, txt_h, txt_v, secs, band=None, dent=None):
+def _invalido(motivos, est, sis, pant, punt, tal, txt_h, txt_v, secs, band=None, dent=None, cf=None, anc=None):
     return DisenoMuro(False, tuple(motivos), est, pant, punt, tal, txt_h, txt_v, math.inf, est.volumen_concreto_m3_m, est.area_encofrado_m2_m, math.inf,
-                      math.inf, sis, band, dent, tuple(secs))
+                      math.inf, sis, band, dent, tuple(secs), cf, anc)
 
 
 def disenar_estructura(g: GeometriaMuro, r: Relleno, s: SueloApoyo, m: Materiales, eco: Economia | None = None, *, a_max_g: float | None = None,
@@ -199,6 +224,9 @@ def disenar_estructura(g: GeometriaMuro, r: Relleno, s: SueloApoyo, m: Materiale
     sis = verificar_estabilidad_sismica(g, r, s, a_max_g, ratio_kst=ratio_kst, gamma_concreto=gamma_concreto) if a_max_g is not None else None
     kh = None if a_max_g is None else ratio_kst * a_max_g
     motivos = list(est.motivos) + ([f"sismo: {x}" for x in sis.motivos] if sis else [])
+    anc = disenar_anclaje(g, r)
+    if anc is not None:
+        motivos.extend(anc.motivos)
     pant, secs = disenar_pantalla(g, r, m, kh)
     h_zap = g.h_zapata * 1000.0
     d_ref = h_zap - COBERTURA_SUELO_MM - DIAMETRO_MM["6"] / 2.0
@@ -206,7 +234,11 @@ def disenar_estructura(g: GeometriaMuro, r: Relleno, s: SueloApoyo, m: Materiale
     txt_h, txt_v, a_h, a_vf = _acero_pantalla_secundario(g, m)
     if z.get("sin_equilibrio"):
         motivos.append("combinación mayorada: la resultante cae fuera de la base (volcamiento)")
-        return _invalido(motivos, est, sis, pant, None, None, txt_h, txt_v, secs)
+        return _invalido(motivos, est, sis, pant, None, None, txt_h, txt_v, secs, anc=anc)
+    cf = disenar_contrafuerte(g, r, m, kh, z["w_t"], gamma_concreto) if g.tiene_contrafuerte else None
+    if cf is not None:
+        motivos.extend(cf.motivos)
+        pant = cf.pantalla
     ph_s = sis.ph_total_kn_m if sis else None
     v_s = sis.sum_v_kn_m if sis else None
     band = disenar_bandeja(g, r, m, gamma_concreto)
@@ -214,13 +246,17 @@ def disenar_estructura(g: GeometriaMuro, r: Relleno, s: SueloApoyo, m: Materiale
     punt = franja("puntera", z["mu_p"], z["vu_p"], h_zap, suelo, m, RHO_ZAPATA_MIN * h_zap * 1000.0)
     cob_tal = recubrimiento if z["mu_t"] >= z["mu_t_inf"] else suelo
     tal = franja("talon", max(z["mu_t"], z["mu_t_inf"]), z["vu_t"], h_zap, cob_tal, m, RHO_ZAPATA_MIN * h_zap * 1000.0)
-    for f in (pant, punt, tal, band, dent):
+    for f in (punt, tal, band, dent) + (() if cf is not None else (pant,)):
         if f is not None:
             motivos.extend(f.motivos)
-    if not all(f.cumple for f in (pant, punt, tal, band, dent) if f is not None):
-        return _invalido(motivos, est, sis, pant, punt, tal, txt_h, txt_v, secs, band, dent)
-    kg = _kg_acero(g, pant, punt, tal, a_h, a_vf, band, dent)
+    ok = all(f.cumple for f in (pant, punt, tal, band, dent) if f is not None and not (cf is not None and f is pant)) and (cf is None or cf.cumple)         and (anc is None or anc.cumple)
+    if not ok:
+        return _invalido(motivos, est, sis, pant, punt, tal, txt_h, txt_v, secs, band, dent, cf, anc)
+    kg = _kg_acero(g, pant, punt, tal, a_h, a_vf, band, dent, cf)
     vol, enc = est.volumen_concreto_m3_m, est.area_encofrado_m2_m
     costo = vol * costo_m3(m.fc, x_ceniza, eco.p_ceniza, eco.mult_concreto) + kg * eco.p_acero + enc * eco.p_encofrado
     co2 = vol * co2_m3(m.fc, x_ceniza, eco.fe_cemento) + kg * eco.fe_acero
-    return DisenoMuro(not motivos, tuple(motivos), est, pant, punt, tal, txt_h, txt_v, kg, vol, enc, costo, co2, sis, band, dent, tuple(secs))
+    if anc is not None:
+        c_a, co2_a = costo_co2_anclaje(anc, eco)
+        costo, co2, kg = costo + c_a, co2 + co2_a, kg + anc.kg_cordon_m
+    return DisenoMuro(not motivos, tuple(motivos), est, pant, punt, tal, txt_h, txt_v, kg, vol, enc, costo, co2, sis, band, dent, tuple(secs), cf, anc)

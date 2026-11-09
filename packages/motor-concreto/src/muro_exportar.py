@@ -59,12 +59,28 @@ def memoria(caso: CasoMuro, g: GeometriaMuro, d: DisenoMuro) -> dict:
                    L("FS volcamiento (seudoestático)", round(float(sis.fs_volcamiento), 3), "Tabla H.6.9-1 (≥ 2,00)", "NSR-10 (leído)"),
                    L("kh = K_ST", round(sis.kh, 3), "H.5.2.5: K_ST/a_max ≥ 0,80 en suelos", "NSR-10 (leído)"),
                    L("Empuje sísmico", "Mononobe-Okabe, incremento a 0,6 h", "H.6.8: «métodos de reconocida aceptación técnica»", "HIPÓTESIS")]
+    if d.contrafuerte is not None:
+        lineas.append(L("Contrafuertes", f"separación {g.contrafuerte_sep:g} m, espesor {g.contrafuerte_esp:g} m; losas continuas M = wL'²/12; barra principal {d.contrafuerte.n_barras_cf}#{d.contrafuerte.dia_cf}",
+                        "método de losas y voladizo de la literatura; el corpus NSR-10 no lo trae", "HIPÓTESIS"))
+    if d.anclaje is not None:
+        lineas.append(L("Tirantes preesforzados", f"{d.anclaje.fuerza_kn_m:g} kN/m ({d.anclaje.fuerza_ancla_kn:g} kN por tirante, {d.anclaje.n_cordones} cordones, "
+                        f"L libre {d.anclaje.l_libre_m:.1f} m + fija {d.anclaje.l_fija_m:.1f} m)", "H.6.7 solo los menciona; adherencia τ supuesta", "HIPÓTESIS"))
+    ref_extra = {}
+    if d.contrafuerte is not None:
+        c = d.contrafuerte
+        ref_extra["contrafuerte"] = {"mu_knm": round(c.mu_cf_knm, 1), "vu_kn": round(c.vu_cf_kn, 1), "d_mm": round(c.d_cf_mm), "as_req_mm2": round(c.as_req_cf_mm2),
+                                     "barras": f"{c.n_barras_cf}#{c.dia_cf}", "as_prov_mm2": round(c.as_prov_cf_mm2), "estribos_mm2_por_m": round(c.estribos_mm2_m),
+                                     "vertical_pantalla": _franja(c.vertical)}
+    if d.anclaje is not None:
+        a = d.anclaje
+        ref_extra["anclaje"] = {"fuerza_kn_m": a.fuerza_kn_m, "fuerza_por_tirante_kn": a.fuerza_ancla_kn, "cordones": a.n_cordones, "l_libre_m": round(a.l_libre_m, 2),
+                                "l_fija_m": round(a.l_fija_m, 2), "cumple": a.cumple}
     return {"aviso": AVISO, "entradas": {"H_m": caso.altura, "gamma_kn_m3": caso.relleno.gamma, "phi_deg": caso.relleno.phi_deg, "beta_deg": caso.relleno.beta_deg,
                                          "q_s_kpa": caso.relleno.sobrecarga_kpa, "q_adm_kpa": caso.apoyo.q_adm_kpa, "a_max_g": caso.a_max_g,
                                          "fc_mpa": caso.materiales.fc, "fy_mpa": caso.materiales.fy},
             "geometria": {k: v for k, v in asdict(g).items() if v is not None}, "verificaciones": lineas,
             "refuerzo": {"pantalla": _franja(d.pantalla), "puntera": _franja(d.puntera), "talon": _franja(d.talon), "bandeja": _franja(d.bandeja),
-                         "dentellon": _franja(d.dentellon), "horizontal_pantalla": d.acero_horizontal_pantalla, "vertical_frontal_pantalla": d.acero_vertical_frontal_pantalla},
+                         "dentellon": _franja(d.dentellon), "horizontal_pantalla": d.acero_horizontal_pantalla, "vertical_frontal_pantalla": d.acero_vertical_frontal_pantalla, **ref_extra},
             "no_verificado": list(SUPUESTOS), "cumple": d.cumple}
 
 
