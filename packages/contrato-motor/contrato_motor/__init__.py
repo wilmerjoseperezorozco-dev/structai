@@ -36,10 +36,28 @@ class ResultadoMotor(BaseModel):
 
     @field_validator("valor")
     @classmethod
-    def _finito(cls, v: Any) -> Any:
-        if isinstance(v, float) and not math.isfinite(v):
-            raise ValueError("el valor debe ser finito")
+    def _nativo_y_finito(cls, v: Any) -> Any:
+        return _normalizar(v)
+
+    @field_validator("supuestos")
+    @classmethod
+    def _con_supuestos(cls, v: list[str]) -> list[str]:
+        if not v:
+            raise ValueError("debe declarar al menos un supuesto")
         return v
+
+
+def _normalizar(v: Any) -> Any:
+    """Convierte tipos numpy a nativos (serialización JSON) y exige finitud en toda la estructura."""
+    if hasattr(v, "item") and not isinstance(v, (dict, list, tuple)):
+        v = v.item()
+    if isinstance(v, dict):
+        return {k: _normalizar(x) for k, x in v.items()}
+    if isinstance(v, (list, tuple)):
+        return [_normalizar(x) for x in v]
+    if isinstance(v, float) and not math.isfinite(v):
+        raise ValueError("el valor debe ser finito")
+    return v
 
 
 def exigir(clave: Any, tabla: Mapping[Any, Any], norma: str, que: str) -> Any:

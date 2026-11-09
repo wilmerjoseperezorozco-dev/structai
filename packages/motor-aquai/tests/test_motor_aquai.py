@@ -474,3 +474,18 @@ def test_hidrologia_reconociendo_idf_ilustrativa_calcula_y_marca_borde():
 def test_hidrologia_tr_mayor_al_maximo_tabulado_lanza_valueerror():
     with pytest.raises(ValueError, match="RAS 2000"):
         calcular_hidrologia(HidrologiaRequest(periodo_retorno=500, acepta_idf_referencial=True, **_BASE_HIDRO))
+
+
+# Regla 7 (#132): propiedades físicas de Hazen-Williams
+def test_hazen_perdida_monotona_y_homogenea():
+    import sys as _s
+    from pathlib import Path as _P
+    _s.path.insert(0, str(_P(__file__).resolve().parents[2] / "contrato-motor"))
+    from contrato_motor.propiedades import verificar_homogeneidad, verificar_monotonia
+    base = dict(Q_m3s=0.02, C=140, D_m=0.2, L_m=300.0)
+    verificar_monotonia(lambda q: _hazen_perdida_total(q, 140, 0.2, 300.0), [0.005, 0.01, 0.02, 0.04], estricta=True)
+    verificar_monotonia(lambda d: _hazen_perdida_total(0.02, 140, d, 300.0), [0.1, 0.15, 0.2, 0.3], creciente=False, estricta=True)
+    verificar_homogeneidad(_hazen_perdida_total, base, "Q_m3s", 1.852)
+    verificar_homogeneidad(_hazen_perdida_total, base, "D_m", -4.87)
+    verificar_homogeneidad(_hazen_perdida_total, base, "L_m", 1.0)
+    verificar_homogeneidad(_hazen_perdida_total, base, "C", -1.852)

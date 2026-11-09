@@ -545,6 +545,14 @@ except Exception as e:
     log.warning(f"✗ motor-vias no disponible: {e}")
 
 try:
+    from routers.concreto import router as concreto_router
+    CONCRETO_AVAILABLE = True
+    log.info("✓ motor-concreto cargado")
+except Exception as e:
+    CONCRETO_AVAILABLE = False
+    log.warning(f"✗ motor-concreto no disponible: {e}")
+
+try:
     from routers.gerencia import router as gerencia_router
     GERENCIA_AVAILABLE = True
     log.info("✓ motor-gerencia cargado")
@@ -761,6 +769,9 @@ if VULNERABILIDAD_VIVIENDA_AVAILABLE:
 if VIAS_AVAILABLE:
     app.include_router(vias_router)
     app.include_router(vias_router, prefix="/v1")
+if CONCRETO_AVAILABLE:
+    app.include_router(concreto_router)
+    app.include_router(concreto_router, prefix="/v1")
 if GERENCIA_AVAILABLE:
     app.include_router(gerencia_router)
     app.include_router(gerencia_router, prefix="/v1")

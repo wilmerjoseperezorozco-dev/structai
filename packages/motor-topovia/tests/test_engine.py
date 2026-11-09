@@ -281,3 +281,15 @@ def test_radio_minimo_velocidad_fuera_de_tabla_lanza_valueerror_con_norma():
     for v in (10, 130):
         with pytest.raises(ValueError, match="INVIAS"):
             radio_minimo_invias(v)
+
+
+# Regla 7 (#132): monotonicidad del SN requerido
+def test_sn_flexible_crece_con_el_transito_y_decrece_con_la_rigidez_de_la_subrasante():
+    import sys as _s
+    from pathlib import Path as _P
+    _s.path.insert(0, str(_P(__file__).resolve().parents[2] / "contrato-motor"))
+    from contrato_motor.propiedades import verificar_monotonia
+    from src.engine import calcular_sn_flexible
+    verificar_monotonia(lambda w: calcular_sn_flexible(w, 5000), [1e5, 5e5, 1e6, 5e6, 1e7], estricta=True)
+    verificar_monotonia(lambda mr: calcular_sn_flexible(1e6, mr), [3000, 5000, 8000, 12000], creciente=False, estricta=True)
+    verificar_monotonia(lambda r: calcular_sn_flexible(1e6, 5000, r), [0.6, 0.75, 0.85, 0.95, 0.99], estricta=True)

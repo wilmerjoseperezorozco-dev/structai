@@ -50,3 +50,22 @@ def test_exigir_devuelve_el_valor_tabulado():
 def test_exigir_lanza_valueerror_con_la_norma():
     with pytest.raises(ValueError, match="RAS 2000 Título B"):
         exigir("TITANIO", {"PVC": 150}, "RAS 2000 Título B", "material")
+
+
+def test_valor_con_tipos_numpy_se_convierte_a_nativos_y_serializa():
+    import numpy as np
+    r = _ok(valor={"cumple": np.bool_(True), "x": np.float64(1.5), "n": np.int64(3), "lista": [np.float64(2.0)]})
+    assert r.valor == {"cumple": True, "x": 1.5, "n": 3, "lista": [2.0]}
+    assert type(r.valor["cumple"]) is bool
+    assert '"cumple":true' in r.model_dump_json().replace(" ", "")
+
+
+@pytest.mark.parametrize("malo", [{"a": float("nan")}, [1.0, float("inf")], {"a": {"b": [float("-inf")]}}])
+def test_valor_rechaza_no_finitos_anidados(malo):
+    with pytest.raises(ValidationError):
+        _ok(valor=malo)
+
+
+def test_supuestos_no_puede_estar_vacio():
+    with pytest.raises(ValidationError):
+        _ok(supuestos=[])
