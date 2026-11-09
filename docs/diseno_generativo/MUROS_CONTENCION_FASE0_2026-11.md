@@ -65,3 +65,9 @@ Cada fase termina con una puerta; no se pasa a la siguiente si no se cumple. Cad
 - No se verifica estabilidad general del talud (H.6.2.1), asentamientos ni efectos de socavación.
 - Sin contraste con ensayos ni con instrumentación de muros reales.
 - Ningún resultado sustituye la revisión de un ingeniero que firme memorias de cálculo.
+
+## 6. Estado de la Fase 2 (2026-11-08)
+
+Implementado en `packages/motor-concreto/src/muro_contencion_estructural.py` con 12 pruebas de cálculo a mano (`tests/test_muro_contencion_estructural.py`): Mu y Vu de la pantalla (1,6 H), puntera y talón con presiones mayoradas de dos combinaciones (A: 1,2D+1,6H+1,6Q; B: 0,9D+1,6H), elección de barras con As mín C.10.5.1, εt ≥ 0,005, separación máxima, recubrimientos C.7.7.1, acero horizontal y vertical mínimo C.14.3, costo APU y CO₂ por metro.
+
+**Puerta pendiente**: el contraste con un ejemplo publicado verificable NO se ha hecho (no se cita de memoria). Hasta entonces los resultados son verificaciones internas de coherencia, no validación externa. Tampoco se leyó B.2: las combinaciones A y B son HIPÓTESIS. Lo no verificado está en `SUPUESTOS` del módulo (desarrollo y empalmes, corte de barras, cortante por fricción en la unión, fisuración, drenaje).
