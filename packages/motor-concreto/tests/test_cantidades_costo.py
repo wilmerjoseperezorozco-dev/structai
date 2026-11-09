@@ -1,5 +1,9 @@
 """Cantidades, costo y CO₂ de vigas y columnas: esperados calculados a mano y coherencia con la mezcla del resto de motores."""
 import math
+import os
+import sys
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 import pytest
 
