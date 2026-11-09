@@ -2,7 +2,7 @@
 
 Verificado contra el corpus: C.21.5.1.2, C.21.5.1.3, C.21.5.2.1, C.21.5.2.2, C.21.5.3.1, C.21.5.3.2, C.21.5.4.1, C.21.5.4.2.
 NO verificado / aproximado (declarado):
-  - Mpr con 1,25·fy y φ = 1,0 (definición de resistencia probable; el texto recuperado de C.21.5.4.1 está truncado).
+  - (Mpr = 1,25·fy con φ = 1,0: VERIFICADO en la notación C.2; C.21.5.4.1/.2 recuperados en la etapa 1.)
   - DMO tiene sus propios requisitos (C.21.3.4); aquí se exige lo de DES, que es más estricto, como cota conservadora.
   - Refuerzo simétrico (igual superior e inferior): cumple C.21.5.2.2 y simplifica; puede sobredimensionar.
   - Estribos uniformes en toda la luz con el espaciamiento de confinamiento (conservador: el código lo exige solo en 2h).
@@ -71,7 +71,7 @@ def verificar_sismico(s: Seccion, m: Materiales, c: Cargas, dem: DemandaSismica)
     vs = s.Av * m.fyt * s.d / s.estribo_s / 1000
     phi_vn = PHI_CORTANTE * (vc + vs)
     v.append(Verificacion("Cortante por capacidad φ(Vc+Vs) ≥ Ve", ve, phi_vn, "kN", phi_vn >= ve,
-                          "C.21.5.4.1 / C.21.5.4.2", "φ=0,75 y Mpr=1,25fy no verificados en el corpus"))
+                          "C.21.5.4.1 / C.21.5.4.2", "Mpr=1,25fy con φ=1,0 verificado (notación C.2); φ cortante 0,75 C.9.3.2.3"))
 
     if dem.momento_apoyo_kn_m is not None:
         phi_mn, _, _ = momento_nominal(s, m)

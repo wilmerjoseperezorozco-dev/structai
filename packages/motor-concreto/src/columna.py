@@ -12,10 +12,10 @@ Verificado en el corpus nsr10_chunks (2026-11-08):
   C.21.3.5.1/.2/.7/.9/.10/.11 y C-21-2/-3 (DMO: ≥ 250 mm, 1–4 %, Ash, so/2, 2·so fuera de ℓo).
 NO verificado en el corpus (declarado en cada verificación):
   - (Pn,max = 0,75·φ·Po para estribos: VERIFICADO en C.10.3.6.2 / C.10-2; el ACI 318-08 da 0,80.)
-  - Ecuaciones C.21-7/-8 (Ash en DES): no se extrajeron; se usan 0,3·(Ag/Ach − 1) y 0,09 del ACI 318-08 (= 3/2 de las
+  - (Ecuaciones C.21-7/-8 de Ash en DES: VERIFICADAS en C.21.6.4.4, coinciden con 0,3·(Ag/Ach − 1) y 0,09; ya eran = 3/2 de las
     C.21-2/-3 de DMO, que sí se verificaron: 0,2 y 0,06).
   - (so y ℓo en DMO: VERIFICADOS en C.21.3.5.6: so ≤ mín(8db; 16·dest; c/3; 150), ℓo ≥ máx(ℓn/6; c; 500).)
-  - Mpr = 1,25·fy con φ = 1,0; Vc = 0,17·√f'c·b·d sin beneficio de la compresión axial (conservador); espaciamiento en DMI
+  - (Mpr = 1,25·fy con φ = 1,0: VERIFICADO en la notación C.2 y C.21.7.2.1.) Vc = 0,17·√f'c·b·d sin beneficio de la compresión axial (conservador); espaciamiento en DMI
     mín(16db; 48·dest; c) del ACI (C.7.10.5.2 no recuperado).
   - Esbeltez: factor k por Jackson–Moreland y magnificación de momentos (δns con 0,4·Ec·Ig/(1+βdns), δs = 1/(1−Q)) son del
     ACI 318-08 (C.10.10.5–7 truncadas en el corpus); Cm = 1,0 (conservador); momento mínimo Pu(15+0,03h).
@@ -207,7 +207,7 @@ def _redondeo(s: float) -> float:
 
 
 def ash_requerido(sec: SeccionColumna, s: float, m: Materiales, nivel: str) -> float:
-    """Área total de estribos por dirección (mm²). DES: ACI 318-08 (C.21-7/-8 no extraídas); DMO: C.21-2/-3 (verificadas)."""
+    """Área total de estribos por dirección (mm²). DES: C.21-7/-8 (verificadas en C.21.6.4.4); DMO: C.21-2/-3 (verificadas)."""
     cov = sec.recubrimiento
     bc = max(sec.h, sec.b) - 2 * (cov + DIAMETRO_MM[sec.estribo] / 2)
     ag, ach = sec.h * sec.b, (sec.h - 2 * cov) * (sec.b - 2 * cov)
@@ -355,7 +355,7 @@ def disenar_columna(h: float, b: float, dem: DemandaColumna, nivel: str, m: Mate
                             continue
                         s_norma = min(min(h, b) / 4, 6 * DIAMETRO_MM[dia], so_des(hx))
                         s_fuera_norma = min(6 * DIAMETRO_MM[dia], 150.0)
-                        ref_c, nota_c = "C.21.6.5.1/.2", "Mpr=1,25fy no verificado"
+                        ref_c, nota_c = "C.21.6.5.1/.2", "Mpr=1,25fy y φ=1,0 verificados (notación C.2)"
                     else:
                         # C.21.3.5.6 (verbatim en el corpus): so ≤ mín(8db; 16·dest; menor dimensión/3; 150) y
                         # ℓo ≥ máx(luz libre/6; mayor dimensión; 500)
@@ -370,7 +370,7 @@ def disenar_columna(h: float, b: float, dem: DemandaColumna, nivel: str, m: Mate
                                                "C.21.6.4.3 / C-21-5" if nivel == "DES" else "C.21.3.5.6"))
                     verifs.append(Verificacion("Ash,prov ≥ Ash,req", av, ash_requerido(sec, s_conf, m, nivel), "mm²",
                                                av + 1e-9 >= ash_requerido(sec, s_conf, m, nivel),
-                                               "C.21-7/-8 (ACI 318-08)" if nivel == "DES" else "C.21-2/-3"))
+                                               "C.21-7/-8" if nivel == "DES" else "C.21-2/-3"))
                     verifs.append(Verificacion("s fuera de ℓo", s_fuera, s_fuera_norma, "mm", s_fuera <= s_fuera_norma + 1e-9,
                                                "C.21.6.4.5" if nivel == "DES" else "C.21.3.5.11"))
                 if s_conf < S_MIN or s_fuera < S_MIN:

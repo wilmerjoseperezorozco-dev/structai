@@ -104,7 +104,7 @@ SUPUESTOS = (
     "Con perfil_suelo, E se deriva del espectro NSR-10 (Fa/Fv, Sa, Ta, Vs=Sa·W, Cvx, R=R0 de la Tabla A.3-3 con φ=1): estructura regular y redundante, sin torsión, sin P-Delta, peso sísmico = muerta + peso propio (sin viva), T = Ta. Sin perfil_suelo, E llega como dato (ya reducida por R).",
     "Deriva (A.6.4, 1,0 % hp) con las mismas inercias agrietadas, Fs sin dividir por R (I=1 permitido por A.6.2.1.2), en el centro de masa; sin torsión ni P-Delta. Solo se verifica si E se deriva del espectro.",
     "Refuerzo longitudinal continuo en toda la luz, una capa por cara, mismo diámetro arriba y abajo; sin empalmes ni anclajes.",
-    "Cortante por capacidad: φ = 0,75 verificado (C.9.3.2.3); DES con Mpr = 1,25·fy y DMO con Mn (C.21.3.3 (a)/(b)) no recuperados del corpus.",
+    "Cortante por capacidad: φ = 0,75 verificado (C.9.3.2.3); DES con Mpr = 1,25·fy (notación C.2) y DMO con Mn (C.21.3.3 (a)/(b)) verificados en el corpus.",
     "Costo directo APU de las vigas (Barranquilla 2026); estribos modelados con separación equivalente por conteo.",
     "Herramienta de apoyo: el diseño debe revisarlo y firmarlo un ingeniero (aviso de responsabilidad profesional, issue #18).",
 )

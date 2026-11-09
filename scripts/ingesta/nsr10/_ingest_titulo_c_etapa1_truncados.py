@@ -192,10 +192,54 @@ EXTRA2 = [
     },
 ]
 
+# Lote 3 (2026-11-08): ecuaciones Ash (C.21-7/-8) que faltaban en el corpus y definición de Mpr, transcritas de la imagen de la página.
+EXTRA3 = [
+    {
+        "id": "NSR10-C-C_21_6_4_4", "seccion": "C.21.6.4.4",
+        "titulo": "Refuerzo transversal de columnas DES: ρs y Ash (C.21-6, C.21-7, C.21-8)",
+        "texto": (
+            "NSR-10 Título C C.21.6.4.4 — Debe proporcionarse refuerzo transversal en las cantidades que se especifican de (a) o (b), a menos que en C.21.6.5 se exija mayor cantidad. "
+            "(a) La cuantía volumétrica de refuerzo en espiral o de estribos cerrados de confinamiento circulares, ρs, no debe ser menor que la requerida por la ecuación "
+            "ρs = 0.12 f'c / fyt (C.21-6) y no debe ser menor que la requerida por la ecuación (C.10-5). "
+            "(b) El área total de la sección transversal del refuerzo de estribos cerrados de confinamiento rectangulares, Ash, no debe ser menor que la requerida por las ecuaciones "
+            "Ash = 0.3 (s bc f'c / fyt) [ (Ag / Ach) − 1 ] (C.21-7) y Ash = 0.09 s bc f'c / fyt (C.21-8). "
+            "(s = separación del refuerzo transversal; bc = dimensión de la sección del núcleo medida centro a centro del refuerzo de confinamiento; Ach = área del núcleo medida al borde exterior del refuerzo transversal.) "
+            "Complemento verificado: C.21.6.4.3 — la separación del refuerzo transversal no debe exceder la menor de (a) un cuarto de la dimensión mínima del elemento, (b) seis veces el diámetro de la barra longitudinal menor, "
+            "(c) so = 100 + (350 − hx)/3 (C.21-5), con so no mayor a 150 mm y no menor a 100 mm. "
+            "C.21.6.4.1 — ℓo no menor que la mayor de: altura del elemento en la cara del nudo, un sexto de la luz libre, y 450 mm. "
+            "C.21.6.4.2 — hx (separación entre ramas o ganchos suplementarios) no debe exceder 350 mm centro a centro. "
+            "C.21.6.4.5 — más allá de ℓo, estribos con separación no mayor que seis veces el diámetro de las barras longitudinales de la columna o 150 mm."
+        ),
+    },
+    {
+        "id": "NSR10-C-C_21_5_4_1", "seccion": "C.21.5.4.1",
+        "titulo": "Cortante de diseño de vigas DES con Mpr y refuerzo transversal",
+        "texto": (
+            "NSR-10 Título C C.21.5.4 — Requisitos de resistencia a cortante. C.21.5.4.1 — Fuerzas de diseño. La fuerza cortante de diseño, Ve, se debe determinar a partir de las fuerzas estáticas "
+            "en la parte del elemento comprendida entre las caras del nudo. Se debe suponer que en las caras de los nudos localizados en los extremos del elemento actúan momentos de signo opuesto "
+            "correspondientes a la resistencia probable, Mpr, y que el elemento está además cargado con cargas aferentes gravitacionales mayoradas a lo largo de la luz. "
+            "C.21.5.4.2 — Refuerzo transversal. El refuerzo transversal en los lugares identificados en C.21.5.3.1 debe diseñarse para resistir cortante suponiendo Vc = 0 cuando se produzcan simultáneamente "
+            "(a) la fuerza cortante inducida por el sismo calculada de acuerdo con C.21.5.4.1 representa la mitad o más de la resistencia máxima a cortante requerida en esas zonas; y "
+            "(b) la fuerza axial de compresión mayorada, Pu, incluyendo los efectos sísmicos es menor que Ag f'c / 20."
+        ),
+    },
+    {
+        "id": "NSR10-C-C_2_2_Mpr_definicion", "seccion": "C.2.2",
+        "titulo": "Notación Mpr: resistencia probable a la flexión",
+        "texto": (
+            "NSR-10 Título C, Capítulo C.2 (Notación) — Mpr = resistencia probable a la flexión de los elementos, con o sin carga axial, determinada usando las propiedades de los elementos "
+            "en las caras de los nudos suponiendo un esfuerzo en tracción para las barras longitudinales de al menos 1.25 fy y un factor de reducción de la resistencia φ de 1.0, N·mm (Capítulo C.21). "
+            "Ve = fuerza cortante de diseño correspondiente al desarrollo de la resistencia probable a momento del elemento, N (véanse C.21.5.4.1 y C.21.6.5.1). "
+            "C.21.7.2.1 — las fuerzas en el refuerzo longitudinal de vigas en la cara del nudo se determinan suponiendo que el esfuerzo en el refuerzo de tracción por flexión es 1.25 fy."
+        ),
+    },
+]
+SUB_VIEJOS_3 = ["NSR10-C-C_21_6_4_4-sub%"]
+
 
 def construir(lote: int = 1) -> list[dict]:
     chunks = []
-    for numeral, pdf in (OBJETIVOS if lote == 1 else OBJETIVOS_LOTE2).items():
+    for numeral, pdf in (OBJETIVOS if lote == 1 else OBJETIVOS_LOTE2 if lote == 2 else {}).items():
         texto = MANUAL.get(numeral) or extraer(numeral, pdf)
         chunks.append({
             "id": f"NSR10-C-{numeral.replace('.', '_')}",
@@ -204,14 +248,14 @@ def construir(lote: int = 1) -> list[dict]:
             "titulo": texto[:60],
             "texto": f"NSR-10 Título C {texto}",
         })
-    chunks += [{"capitulo": CAPITULO, **e} for e in (EXTRA if lote == 1 else EXTRA2)]
+    chunks += [{"capitulo": CAPITULO, **e} for e in {1: EXTRA, 2: EXTRA2, 3: EXTRA3}[lote]]
     return chunks
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
-    ap.add_argument("--lote", type=int, default=1, choices=(1, 2))
+    ap.add_argument("--lote", type=int, default=1, choices=(1, 2, 3))
     args = ap.parse_args()
     chunks = construir(args.lote)
     for c in chunks:
@@ -234,6 +278,9 @@ def main() -> None:
                           "embedding": modelo.encode(p).tolist()})
     sb.table("nsr10_chunks").upsert(filas, on_conflict="id").execute()
     print(f"{len(filas)} filas upserted")
+    if args.lote == 3:
+        for patron in SUB_VIEJOS_3:
+            sb.table("nsr10_chunks").delete().like("id", patron).execute()
     if args.lote == 2:  # borrar los trozos viejos «-subN» solo tras el upsert exitoso
         for patron in SUB_VIEJOS.values():
             sb.table("nsr10_chunks").delete().like("id", patron).execute()
