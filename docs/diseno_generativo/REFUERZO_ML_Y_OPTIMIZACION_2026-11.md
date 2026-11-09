@@ -335,6 +335,39 @@ Debilidades de estas covariables, medidas o inferidas: (i) la población departa
 4. Pesaje de carga: sobrecarga y mezcla real por configuración, previa geolocalización de las estaciones.
 5. Población DANE, SIEVCAC y UNGRD 2023–2024 para completar covariables.
 
+## 5l. Tráfico ANI por categoría: persistencia, cruce 1 corregido y réplica de la prórroga (2026-11-09, issue #127)
+
+Script: `scripts/transporte/cruces_trafico_ani.py`; resultados en `data/transporte/cruces_trafico_ani.json`. Fuentes: tráfico vehicular mensual ANI por peaje y categoría con la tarifa aplicada (`8yi9-t44c`) y coordenadas de peajes (`68qj-5xux`, unión por nombre normalizado: 107 de 132 peajes ANI se ubican en un departamento; 25 sin coincidencia se excluyen). Tráfico y tarifa comparten categoría, así que no se necesita mapear clases INVIAS.
+
+**Hallazgo metodológico que condiciona todo: las concesiones no usan el mismo esquema de categorías.** De 131 peajes con camiones en 2024, 78 registran tráfico en las categorías VI y VII (esquema de siete categorías: V = 3 y 4 ejes, VI = 5 ejes, VII = 6 o más). Los otros 53 (40 %) no registran tráfico en VI ni VII, y su categoría V concentra del 43 al 53 % de los camiones: ahí V agrupa tres o más ejes (esquema de cinco categorías). Mezclarlos asigna casi cero pesados a Cesar, Boyacá, Nariño y Atlántico, lo que contradice INVIAS 2011 (47, 28, 21 y 35 %) y la lógica del carbón en Cesar. Se mantienen solo los 78 con esquema de siete categorías (64 ubicados en 16 departamentos tras la unión por nombre). Esto también refuerza la advertencia del cruce 1 de 5h: la tarifa por categoría no es comparable entre peajes si no se conoce el esquema de cada uno.
+
+**Persistencia de la mezcla (Spearman entre departamentos, pesados = (VI+VII)/(III a VII) frente a (C-5 + >C-5) de INVIAS).**
+
+| Comparación | n | ρ | IC 95 % | p (perm.) |
+|---|---|---|---|---|
+| INVIAS 2011 frente a ANI 2016 | 13 | 0,16 | −0,48 a 0,70 | 0,59 |
+| INVIAS 2011 frente a ANI 2024 | 14 | 0,55 | −0,01 a 0,86 | 0,043 |
+| ANI 2016 frente a ANI 2024 | 14 | 0,47 | −0,25 a 0,98 | 0,095 |
+
+La mezcla de 2011 conserva una relación moderada con la de 2024, pero con intervalos muy anchos y sin una relación visible con 2016; con 45 peajes en 2016 la muestra por departamento es mínima. Es compatible con persistencia parcial y no permite afirmar ni descartar que 2011 sea un buen proxy. (Con todos los peajes sin filtrar por esquema el ρ de 2011 frente a 2024 era −0,18: un artefacto del esquema, no una conclusión.)
+
+**Cruce 1 corregido (pesados ANI 2024 frente a forma de tarifa R = V/III, n = 16): ρ = −0,52, IC −0,86 a 0,00, p = 0,040.** Con todos los peajes y sin filtrar el esquema el mismo cálculo daba +0,55 (p = 0,013). Un cambio de signo por una decisión de limpieza de datos indica que **no es un hallazgo**: la forma de la tarifa depende del contrato de cada concesión y las 16 observaciones no la separan de eso. El resultado nulo de 5h (INVIAS 2011, ρ = 0,11) tampoco se sostiene como evidencia de ausencia de relación.
+
+**Réplica de la prórroga con un predictor reciente e independiente (14 departamentos con SECOP, mezcla 2011 y ANI 2024; 33.398 contratos).**
+
+| Predictor | Modelo | OR por +10 pp | IC 95 % | p (t) | gl |
+|---|---|---|---|---|---|
+| INVIAS 2011 | solo pesados | 1,182 | 0,976 a 1,432 | 0,082 | 12 |
+| INVIAS 2011 | + log PIB | 1,174 | 0,961 a 1,434 | 0,106 | 11 |
+| ANI 2024 | solo pesados | 1,014 | 0,867 a 1,185 | 0,853 | 12 |
+| ANI 2024 | + log PIB | 1,017 | 0,866 a 1,195 | 0,820 | 11 |
+
+**La asociación entre pesados y prórrogas no se replica con la mezcla de 2024.** Con el predictor INVIAS 2011 el OR se mantiene en 1,17 a 1,18 (ya no significativo por tener solo 14 departamentos), pero con ANI 2024 es 1,01 (IC 0,87 a 1,19). Como el IC de ANI incluye el 1,17 de 5i, no se refuta con rigor: hay poco poder y ANI cubre solo concesiones. Pero tampoco hay apoyo: lo que 5i, 5j y 5k llamaron "se sostiene" debe leerse como **no replicado**. Que el resultado dependa de qué fuente y qué año mide los pesados es compatible con que lo capturado por la mezcla INVIAS 2011 sea algo más específico (qué estaciones se contaron, estructura regional de entonces) que el flujo de carga pesada actual.
+
+**Qué cambia en las conclusiones anteriores.** La prórroga como asociación departamental robusta a covariables (5i a 5k) queda como un hallazgo de una sola fuente, no replicado. La suspensión sigue sin efecto. Los resultados de escala (peajes y contratación de obra) no dependen del predictor de pesados y siguen en pie.
+
+**Pendiente para decidir.** Una réplica con más poder exige la ubicación municipal de las obras (n de 16 a cientos), peajes INVIAS con categoría por esquema, y el pesaje de carga (`atkg-vhpp`) como medida independiente de la mezcla reciente.
+
 ## 6. Qué no hace este documento
 
 No prueba que un modelo aprendido supere a la enumeración exacta para vigas aisladas (la medición de la sección 2 sugiere que no); no valida las cantidades contra planos reales; no incluye traslapos ni ganchos suplementarios.
