@@ -160,6 +160,10 @@ class HidrologiaRequest(BaseModel):
     longitud_cauce_m: float     = Field(..., gt=0, description="Longitud del cauce principal (m)")
     pendiente_media: float      = Field(..., gt=0, le=1.0, description="Pendiente media del cauce (m/m)")
     periodo_retorno: int        = Field(default=25, description="Período de retorno en años (TR)")
+    acepta_idf_referencial: bool = Field(
+        default=False,
+        description="Las curvas IDF embebidas son de referencia/ilustrativas (sin cita IDEAM verificable). Debe ponerse en True para reconocerlo; si no, el cálculo se rechaza.",
+    )
     coeficiente_escorrentia: float = Field(
         ..., ge=0.05, le=1.0,
         description="Coeficiente C de escorrentía. Ver tabla RAS D.3 según uso del suelo."

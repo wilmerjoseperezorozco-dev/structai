@@ -91,8 +91,8 @@ def test_periodo_de_retorno_tipo_de_tramo_desconocido_falla_claro():
 
 def test_hidrologia_agrega_verificacion_y_sensibilidad_sin_cambiar_el_caudal():
     base = dict(longitud_cauce_m=800, pendiente_media=0.02, periodo_retorno=25, coeficiente_escorrentia=0.6, region_idf="caribe")
-    peq = calcular_hidrologia(HidrologiaRequest(area_cuenca_ha=50, **base))
-    grande = calcular_hidrologia(HidrologiaRequest(area_cuenca_ha=300, **base))
+    peq = calcular_hidrologia(HidrologiaRequest(area_cuenca_ha=50, acepta_idf_referencial=True, **base))
+    grande = calcular_hidrologia(HidrologiaRequest(area_cuenca_ha=300, acepta_idf_referencial=True, **base))
     assert peq.verificaciones_normativas[0].estado == "cumple"
     assert grande.verificaciones_normativas[0].estado == "no_cumple"
     assert set(peq.sensibilidad_tc) == {"tc_3_min", "tc_10_min"}
@@ -102,8 +102,8 @@ def test_hidrologia_agrega_verificacion_y_sensibilidad_sin_cambiar_el_caudal():
 
 def test_hidrologia_con_tipo_de_tramo_verifica_periodo_de_retorno():
     base = dict(area_cuenca_ha=50, longitud_cauce_m=800, pendiente_media=0.02, coeficiente_escorrentia=0.6, region_idf="caribe")
-    bajo = calcular_hidrologia(HidrologiaRequest(periodo_retorno=10, tipo_tramo="canal_menor_1000ha", **base))
-    ok = calcular_hidrologia(HidrologiaRequest(periodo_retorno=50, tipo_tramo="canal_menor_1000ha", **base))
+    bajo = calcular_hidrologia(HidrologiaRequest(periodo_retorno=10, acepta_idf_referencial=True, tipo_tramo="canal_menor_1000ha", **base))
+    ok = calcular_hidrologia(HidrologiaRequest(periodo_retorno=50, acepta_idf_referencial=True, tipo_tramo="canal_menor_1000ha", **base))
     assert [v.regla for v in bajo.verificaciones_normativas] == ["racional_area_max", "periodo_retorno_minimo"]
     assert bajo.verificaciones_normativas[1].estado == "no_cumple"
     assert ok.verificaciones_normativas[1].estado == "cumple"

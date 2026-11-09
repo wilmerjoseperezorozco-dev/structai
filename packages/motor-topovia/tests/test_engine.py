@@ -255,3 +255,16 @@ def test_sn_flexible_sin_solucion_lanza_error_en_vez_de_devolver_un_valor_sin_co
     from src.engine import calcular_sn_flexible
     with pytest.raises(ValueError):
         calcular_sn_flexible(1e15, 3000)
+
+
+def test_sn_flexible_contrato_uniforme():
+    from src.contrato_adapter import sn_flexible_con_contrato
+    r = sn_flexible_con_contrato(1e6, 5000, 0.85)
+    assert r.valor == pytest.approx(3.68)
+    assert r.unidad_si and r.ecuacion and "AASHTO" in r.referencia_normativa
+    assert r.en_borde_dominio is False and r.aviso_responsabilidad_profesional
+
+
+def test_sn_flexible_contrato_marca_borde_cuando_el_sn_es_extremo():
+    from src.contrato_adapter import sn_flexible_con_contrato
+    assert sn_flexible_con_contrato(1e10, 3000).en_borde_dominio is True

@@ -8,6 +8,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional
 
+from .lab_concreto import FC_MIN_NSR10
+
 
 # ─── Límites granulométricos NTC 174 ─────────────────────────────────────────
 GRADACIONES_AGREGADO_GRUESO = {
@@ -59,11 +61,17 @@ class AgregadoGrueso:
         Verifica cumplimiento de requisitos NTC 174 según uso.
         uso: "CONCRETO", "ASFALTO", "BASE_GRANULAR"
         """
-        limites = {
+        tabla_limites = {
             "CONCRETO":       {"abs_max": 3.0, "la_max": 40.0, "dens_min": 2.4},
             "ASFALTO":        {"abs_max": 2.0, "la_max": 35.0, "dens_min": 2.5},
             "BASE_GRANULAR":  {"abs_max": 4.0, "la_max": 50.0, "dens_min": 2.3},
-        }.get(uso, {"abs_max": 3.0, "la_max": 40.0, "dens_min": 2.4})
+        }
+        if uso not in tabla_limites:
+            raise ValueError(
+                f"Uso de agregado '{uso}' no reconocido (NTC 174): "
+                f"no se asumen límites por defecto. Usos válidos: {', '.join(tabla_limites)}."
+            )
+        limites = tabla_limites[uso]
 
         fallas = []
         if self.absorcion_pct > limites["abs_max"]:
@@ -188,7 +196,13 @@ class DisenoMezclaACI:
         """
         # FC_MIN_NSR10 referenciado inline
 
-        fc_min = {"BAJA": 17.5, "INTERMEDIA": 21.0, "ALTA": 21.0}.get(self.zona_sismica.upper(), 21.0)
+        zona = self.zona_sismica.upper()
+        if zona not in FC_MIN_NSR10:
+            raise ValueError(
+                f"Zona sísmica '{self.zona_sismica}' no reconocida: NSR-10 Título A (A.2.3) define amenaza "
+                f"{', '.join(FC_MIN_NSR10)}; sin zona no hay f'c mínimo (NSR-10 C.1.1.1 / C.21.1.4.2) que aplicar."
+            )
+        fc_min = FC_MIN_NSR10[zona]
         fc_real = max(self.fc, fc_min)
         if fc_real > self.fc:
             nota_fc = f"⚠️ fc aumentado de {self.fc} a {fc_real} MPa por mínimo NSR-10 zona {self.zona_sismica}"

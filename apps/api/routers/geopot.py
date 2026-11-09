@@ -76,7 +76,10 @@ def endpoint_sismica_resumen(request: Request):
 @router.post("/laboratorio/concreto", summary="Informe completo de ensayo de concreto (NTC 673/396, conformidad ACI 318/NSR-10)")
 @limiter.limit("30/minute")
 def endpoint_concreto(request: Request, req: motor_geopot.ConcretoRequest, user: AuthenticatedUser = Depends(get_current_user)):
-    return motor_geopot.analizar_concreto(req)
+    try:
+        return motor_geopot.analizar_concreto(req)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
 
 
 # ── Laboratorio: suelos ───────────────────────────────────────────────────────
@@ -131,4 +134,7 @@ def endpoint_agregado_fino(request: Request, req: motor_geopot.AgregadoFinoReque
 @router.post("/laboratorio/mezcla", summary="Diseño de mezcla de concreto (ACI 211.1, referencial)")
 @limiter.limit("30/minute")
 def endpoint_mezcla(request: Request, req: motor_geopot.MezclaACIRequest, user: AuthenticatedUser = Depends(get_current_user)):
-    return motor_geopot.disenar_mezcla_aci(req)
+    try:
+        return motor_geopot.disenar_mezcla_aci(req)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))

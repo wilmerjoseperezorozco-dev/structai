@@ -43,17 +43,17 @@ def _velocidad(Q_m3s: float, D_m: float) -> float:
 
 def calcular_hazen_williams(req: HazenWilliamsRequest) -> HazenWilliamsResponse:
     material = req.material.upper()
-    C = COEF_HAZEN_WILLIAMS.get(material, 130)
+    if material not in COEF_HAZEN_WILLIAMS:
+        raise ValueError(
+            f"Material de tubería '{req.material}' no reconocido: no existe coeficiente C de Hazen-Williams "
+            f"para él en las tablas de RAS 2000 Título B (redes de distribución). "
+            f"Materiales válidos: {', '.join(sorted(COEF_HAZEN_WILLIAMS))}."
+        )
+    C = COEF_HAZEN_WILLIAMS[material]
     Q_ls  = req.caudal_ls
     Q_m3s = Q_ls / 1000.0
     L     = req.longitud_m
     advertencias: list[str] = []
-
-    if material not in COEF_HAZEN_WILLIAMS:
-        advertencias.append(
-            f"Material '{req.material}' no reconocido — se usó C=130 (acero moderado). "
-            "Especifique: PVC, HDPE, ACERO, AC, CONCRETO, HIERRO o GRP."
-        )
 
     # ── Si se especifica diámetro, solo verificar ──────────────────────────
     if req.diametro_mm is not None:

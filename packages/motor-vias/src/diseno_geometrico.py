@@ -398,7 +398,12 @@ class MotorValidacion:
 
     def _validar_ancho_carril(self, params: ParametrosDiseno, restricciones: List[Dict[str, Any]]):
         """Valida el ancho mínimo de carril según tipo de vía."""
-        ancho_min = self.manual.ancho_carril_minimo.get(params.tipo_via, 3.0)
+        if params.tipo_via not in self.manual.ancho_carril_minimo:
+            raise ValueError(
+                f"Tipo de vía {params.tipo_via} sin ancho mínimo de carril en el Manual de Diseño Geométrico "
+                f"INVIAS (Capítulo 5): no se asume un valor por defecto."
+            )
+        ancho_min = self.manual.ancho_carril_minimo[params.tipo_via]
         cumple = params.ancho_carril >= ancho_min
 
         if not cumple:

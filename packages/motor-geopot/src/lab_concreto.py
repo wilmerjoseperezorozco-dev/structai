@@ -116,6 +116,11 @@ class AnalisisConcreto:
     ):
         self.fc_diseno = fc_diseno_MPa
         self.zona_sismica = zona_sismica.upper()
+        if self.zona_sismica not in FC_MIN_NSR10:
+            raise ValueError(
+                f"Zona sísmica '{zona_sismica}' no reconocida: NSR-10 Título A (A.2.3) define amenaza "
+                f"{', '.join(FC_MIN_NSR10)}; sin zona no hay f'c mínimo (NSR-10 C.1.1.1 / C.21.1.4.2) que aplicar."
+            )
         self.proyecto = proyecto
         self.elemento = elemento
         self.cilindros: list[CilindroConcreto] = []
@@ -182,7 +187,7 @@ class AnalisisConcreto:
           2) Ningún cilindro individual < (fc_diseño - 3.5 MPa)
         """
         cils_28 = self._cilindros_edad(28)
-        fc_min_nsr = FC_MIN_NSR10.get(self.zona_sismica, 21.0)
+        fc_min_nsr = FC_MIN_NSR10[self.zona_sismica]
 
         resultado = {
             "fc_diseno_MPa": self.fc_diseno,

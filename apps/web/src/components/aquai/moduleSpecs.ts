@@ -214,6 +214,14 @@ export const AQUAI_MODULES: ModuleSpec[] = [
       { key: "coeficiente_escorrentia", label: "Coeficiente de escorrentía C", type: "number", step: 0.01, default: 0.55 },
       { key: "region_idf", label: "Región IDF", type: "select", options: REGION_IDF, default: "caribe" },
       { key: "metodo_tc", label: "Método tiempo de concentración", type: "select", options: METODO_TC, default: "kirpich" },
+      {
+        key: "acepta_idf_referencial", label: "Curvas IDF ilustrativas", type: "select", default: "false",
+        options: [
+          { value: "false", label: "No: exijo la curva oficial del IDEAM" },
+          { value: "true", label: "Sí: reconozco que son ilustrativas y no dimensionables" },
+        ],
+        help: "Las curvas IDF embebidas no tienen cita verificable a un estudio IDEAM. Sin este reconocimiento el cálculo se rechaza (RAS 2000 Título D).",
+      },
     ],
   },
   {

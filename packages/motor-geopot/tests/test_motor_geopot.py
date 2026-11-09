@@ -395,3 +395,25 @@ def test_wrapper_disenar_mezcla_aci():
     req = MezclaACIRequest(fc_MPa=21.0, zona_sismica="ALTA")
     r = disenar_mezcla_aci(req)
     assert r["fc_diseno_MPa"] == 21.0
+
+
+# Auditoría 2026-11-09 (Fase 1): zona sísmica desconocida no recibe un mínimo por defecto
+def test_zona_sismica_desconocida_lanza_valueerror_con_norma():
+    with pytest.raises(ValueError, match="NSR-10"):
+        AnalisisConcreto(fc_diseno_MPa=21.0, zona_sismica="MARTE")
+
+
+def test_fc_minimo_por_zona_es_el_de_la_tabla():
+    assert AnalisisConcreto(fc_diseno_MPa=21.0, zona_sismica="baja").verificar_conformidad()["fc_min_nsr10_MPa"] == 17.5
+
+
+def test_diseno_mezcla_zona_desconocida_lanza_valueerror_con_norma():
+    with pytest.raises(ValueError, match="NSR-10"):
+        DisenoMezclaACI(fc_MPa=21.0, zona_sismica="MARTE").calcular()
+
+
+def test_agregado_grueso_uso_desconocido_lanza_valueerror_con_norma():
+    ag = AgregadoGrueso(id_muestra="AG-01", origen="Triturado", masa_sss_g=2000.0, masa_seca_g=1958.0,
+                        masa_sumergida_g=1222.0, perdida_LA_pct=28.5)
+    with pytest.raises(ValueError, match="NTC 174"):
+        ag.verificar_ntc174("PLATINO")

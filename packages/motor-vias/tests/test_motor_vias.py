@@ -707,3 +707,14 @@ def test_diseno_rigido_advierte_que_la_conversion_sn_a_losa_no_esta_verificada()
     r = d.disenar(ParametrosPavimento(tipo_pavimento=TipoPavimento.CONCRETO, tipo_via=TipoViaP.PRIMARIA, tpd=8000, esals_millones=10.0, cbr_subrasante=8.0,
                                       espesor_base=15.0, espesor_subbase=15.0))
     assert any("no está verificada" in s for s in r.sugerencias)
+
+
+def test_ancho_carril_tipo_sin_minimo_en_el_manual_lanza_valueerror_con_norma():
+    manual = ManualINVIAS2008()
+    manual.ancho_carril_minimo.pop(TipoViaG.TERCIARIA)
+    params = ParametrosDiseno(
+        tipo_via=TipoViaG.TERCIARIA, velocidad_diseno=40, topografia=TopografiaG.PLANO,
+        volumen_transito=300, ancho_carril=2.5,
+    )
+    with pytest.raises(ValueError, match="INVIAS"):
+        MotorValidacion(manual).validar(params)

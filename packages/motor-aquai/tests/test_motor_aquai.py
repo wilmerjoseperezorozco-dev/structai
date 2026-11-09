@@ -167,13 +167,6 @@ def test_hazen_williams_helpers_formula_directa():
     assert hf == pytest.approx(10.67 * L_m * Q_m3s ** 1.852 / (C ** 1.852 * D_m ** 4.87))
 
 
-def test_hazen_williams_material_desconocido_advierte_y_usa_c130():
-    req = HazenWilliamsRequest(caudal_ls=15, longitud_m=300, diametro_mm=160, material="TITANIO")
-    resp = calcular_hazen_williams(req)
-    assert resp.coeficiente_C == 130
-    assert any("no reconocido" in a for a in resp.advertencias)
-
-
 def test_hazen_williams_autoseleccion_cumple_velocidad():
     req = HazenWilliamsRequest(caudal_ls=10, longitud_m=200, cota_inicio_m=50.0, material="PVC")
     resp = calcular_hazen_williams(req)
@@ -191,7 +184,7 @@ def test_hidrologia_tc_kirpich_formula():
 def test_hidrologia_curva_idf_caribe_tr25_valores_de_tabla():
     req = HidrologiaRequest(
         area_cuenca_ha=50, longitud_cauce_m=800, pendiente_media=0.02,
-        periodo_retorno=25, coeficiente_escorrentia=0.6, region_idf="caribe",
+        periodo_retorno=25, coeficiente_escorrentia=0.6, region_idf="caribe", acepta_idf_referencial=True,
         metodo_tc=MetodoConcentracion.KIRPICH,
     )
     resp = calcular_hidrologia(req)
@@ -208,7 +201,7 @@ def test_hidrologia_curva_idf_caribe_tr25_valores_de_tabla():
 def test_hidrologia_region_no_reconocida():
     req = HidrologiaRequest(
         area_cuenca_ha=50, longitud_cauce_m=800, pendiente_media=0.02,
-        coeficiente_escorrentia=0.5, region_idf="marte",
+        coeficiente_escorrentia=0.5, region_idf="marte", acepta_idf_referencial=True,
     )
     with pytest.raises(ValueError):
         calcular_hidrologia(req)
@@ -217,7 +210,7 @@ def test_hidrologia_region_no_reconocida():
 def test_hidrologia_cuenca_grande_advierte():
     req = HidrologiaRequest(
         area_cuenca_ha=1_500, longitud_cauce_m=5_000, pendiente_media=0.01,
-        coeficiente_escorrentia=0.5, region_idf="andina_norte",
+        coeficiente_escorrentia=0.5, region_idf="andina_norte", acepta_idf_referencial=True,
     )
     resp = calcular_hidrologia(req)
     assert "⚠" in resp.notas_region
@@ -453,3 +446,31 @@ def test_sui_irca_alto_genera_alerta_de_reporte():
     resp = generar_reporte_sui(req)
     assert resp.irca_categoria == "Riesgo alto"
     assert any("IRCA" in a for a in resp.alertas_regulatorias)
+
+
+# Auditoría 2026-11-09 (Fase 1): sin valores por defecto silenciosos
+def test_hazen_material_desconocido_lanza_valueerror_con_norma():
+    req = HazenWilliamsRequest(caudal_ls=15, longitud_m=300, diametro_mm=160, material="TITANIO")
+    with pytest.raises(ValueError, match="RAS 2000"):
+        calcular_hazen_williams(req)
+
+
+# Auditoría 2026-11-09 (Fase 1): IDF no verificadas exigen reconocimiento explícito
+_BASE_HIDRO = dict(area_cuenca_ha=50, longitud_cauce_m=800, pendiente_media=0.02,
+                   coeficiente_escorrentia=0.6, region_idf="caribe")
+
+
+def test_hidrologia_sin_reconocer_idf_ilustrativa_lanza_valueerror():
+    with pytest.raises(ValueError, match="RAS 2000"):
+        calcular_hidrologia(HidrologiaRequest(**_BASE_HIDRO))
+
+
+def test_hidrologia_reconociendo_idf_ilustrativa_calcula_y_marca_borde():
+    resp = calcular_hidrologia(HidrologiaRequest(acepta_idf_referencial=True, **_BASE_HIDRO))
+    assert resp.caudal_diseno_m3s > 0
+    assert "ilustrativos" in resp.notas_region and "NO sustituyen" in resp.notas_region
+
+
+def test_hidrologia_tr_mayor_al_maximo_tabulado_lanza_valueerror():
+    with pytest.raises(ValueError, match="RAS 2000"):
+        calcular_hidrologia(HidrologiaRequest(periodo_retorno=500, acepta_idf_referencial=True, **_BASE_HIDRO))

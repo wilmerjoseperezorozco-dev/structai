@@ -73,7 +73,7 @@ def _tc_bransby(A_km2: float, L_km: float, S_mm: float) -> float:
 def _intensidad_idf(region: str, TR: int, Tc_min: float) -> tuple[float, dict]:
     """
     Calcula intensidad I (mm/h) de la curva IDF regional para el TR y Tc dados.
-    Interpola entre TR disponibles si TR no está exactamente en la tabla.
+    Si TR no está en la tabla se usa el TR tabulado inmediato superior (conservador; queda en TR_usado).
     """
     idf_region = CURVAS_IDF.get(region)
     if idf_region is None:
@@ -104,6 +104,19 @@ def calcular_hidrologia(req: HidrologiaRequest) -> HidrologiaResponse:
     TR    = req.periodo_retorno
     C     = req.coeficiente_escorrentia
     region = req.region_idf.lower().replace(" ", "_")
+
+    if not req.acepta_idf_referencial:
+        raise ValueError(
+            "Las curvas IDF embebidas son de referencia/ilustrativas, sin cita verificable a un estudio "
+            "IDEAM/UNGRD: RAS 2000 Título D (drenaje pluvial) exige curvas IDF de la estación representativa. "
+            "Use la curva oficial o ponga acepta_idf_referencial=True para reconocer que el resultado "
+            "NO es dimensionable."
+        )
+    if req.periodo_retorno > max(PERIODOS_RETORNO_DISPONIBLES):
+        raise ValueError(
+            f"Período de retorno {req.periodo_retorno} años excede el máximo tabulado "
+            f"({max(PERIODOS_RETORNO_DISPONIBLES)} años): RAS 2000 Título D no permite extrapolarlo en silencio."
+        )
 
     # Advertencia cuenca grande
     advertencia_cuenca = ""

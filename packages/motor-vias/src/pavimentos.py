@@ -274,12 +274,12 @@ class DisenadorPavimentos:
 
         return ResultadoDisenoPavimento(
             tipo_pavimento=params.tipo_pavimento.value,
-            espesor_total=resultado.get("espesor_total", 0),
-            espesor_rodadura=resultado.get("espesor_rodadura", 0),
-            espesor_base=resultado.get("espesor_base", 0),
-            espesor_subbase=resultado.get("espesor_subbase", 0),
-            numero_estructural=resultado.get("numero_estructural", sn_requerido),
-            espesor_equivalente_concreto=resultado.get("espesor_concreto", 0),
+            espesor_total=resultado["espesor_total"],
+            espesor_rodadura=resultado["espesor_rodadura"],
+            espesor_base=resultado["espesor_base"],
+            espesor_subbase=resultado["espesor_subbase"],
+            numero_estructural=resultado["numero_estructural"],
+            espesor_equivalente_concreto=resultado["espesor_concreto"],
             cumple=cumple,
             mensaje=mensaje,
             restricciones=restricciones,
@@ -495,12 +495,12 @@ class DisenadorPavimentos:
     def _generar_sugerencias_optimizacion(self, resultado: Dict, params: ParametrosPavimento, sugerencias: List):
         """Genera sugerencias de optimización del diseño."""
         if params.tipo_pavimento == TipoPavimento.ASFALTICO:
-            if resultado.get("espesor_rodadura", 0) > 15:
+            if resultado["espesor_rodadura"] > 15:
                 sugerencias.append("Considere reducir el espesor de rodadura si el tránsito no lo requiere")
-            if resultado.get("espesor_base", 0) > 30:
+            if resultado["espesor_base"] > 30:
                 sugerencias.append("Para espesores de base > 30 cm, considere usar dos capas de base con diferentes materiales")
         else:
-            if resultado.get("espesor_concreto", 0) > 30:
+            if resultado["espesor_concreto"] > 30:
                 sugerencias.append("Para losas > 30 cm, evalúe el uso de concreto reforzado o losas postensadas")
 
         # Sugerencia sobre subrasante
