@@ -81,3 +81,39 @@ Corpus según `docs/fuentes-normativas.md` (estado al 2026-09-24; no re-contado 
 | K | Verbatim completo | Ninguno | Pocos cálculos; baja prioridad |
 
 Lectura: «sin huecos» hoy equivale a C, D, E, G, H, I, K y la parte de F ya ingestada. A, B y J se programan después de cerrar su ingesta; programar sobre ellos antes repetiría el error de usar texto resumido como si fuera la norma. Orden propuesto por valor: **H.4 + C.15 (zapatas)** → **C.13 (losas)** → **columna circular** → **D (muros)** → **G (madera)** → **F.2 (acero laminado)**.
+
+## 8. Zapata aislada y mapa de elementos estructurales (2026-11-08)
+
+**Hecho:** `packages/motor-concreto/src/zapata.py` (zapata aislada rectangular, 14 tests). Verifica presión de contacto, d ≥ 150 mm (C.15.7), flexión en la cara con refuerzo mínimo 0,0018 y separación máxima (C.15.4.2, C.10.5.4), cortante como viga y punzonamiento (C.11.11.2.1), aplastamiento y dovelas (C.10.14.1, C.15.8). Los numerales se leyeron en `nsr10_chunks` el mismo día. Ejemplo: P servicio 800 kN, P última 1150 kN, columna 400×400, q_adm 200 kPa, f'c 21 MPa → 2,2×2,2×0,45 m, 9#5 c/250 mm en cada sentido (gobierna el refuerzo mínimo).
+
+**No cubierto, declarado en `SUPUESTOS` del módulo:** longitud de desarrollo (C.12), recubrimiento contra el suelo (C.7.7.1), transferencia de momento en punzonamiento (C.11.11.7), zapatas combinadas/medianeras y cabezales. **Hallazgo:** el Título H no entrega fórmula de capacidad portante; `q_adm` es dato del estudio geotécnico. Solo la fila «carga muerta + viva normal, FS = 3,0» de la Tabla H.4.7-1 se leyó completa.
+
+### Elementos estructurales y su estado
+
+| Elemento | Referencia NSR-10 | Corpus | Motor |
+|---|---|---|---|
+| Viga de concreto | C.9, C.10, C.11, C.21.5 | Completo | Hecho (`viga`, `diseno_viga`, `sismo_viga`) |
+| Columna rectangular | C.10, C.21.6 | Completo con 6 numerales sin verificar | Hecho (`columna`) |
+| Columna circular / zunchada | C.10.9.3, C.21.6.4 | Completo | **Falta** |
+| Nudo viga-columna | C.21.7 | Numerales C.21‑7/‑8 truncados | Falta, primero re-ingesta |
+| Zapata aislada | C.15.1–C.15.8 | Completo | **Hecho** (`zapata`) |
+| Zapata combinada / de lindero | C.15.10 | Completo | Falta |
+| Cabezal de pilotes | C.15.5.3, C.15.11 | Completo (concreto); pilotes (capacidad) sin norma | Parcial pendiente |
+| Viga de amarre | C.15.13 | Completo | Falta (reglas simples) |
+| Losa en una dirección | C.9.5, C.13 | Completo; Tabla C.9.5(a) sin verificar | Falta |
+| Losa en dos direcciones / placa | C.13 | Completo | Falta |
+| Losa de cimentación | C.15.10 | Completo | Falta |
+| Muro de concreto (estructural) | C.14, C.21.9 | Completo | Falta |
+| Muro de contención | C.15.12, H.6 | Completo | Falta (H.6.9: FS deslizamiento 1,60 estático) |
+| Escaleras y rampas | C.9, C.13 | Completo (se calculan como losa) | Falta |
+| Ménsulas | C.11.8 | Completo | Falta |
+| Muro de mampostería | Título D | Completo | Falta |
+| Madera / guadua | Título G | Completo | Falta |
+| Acero laminado | Título F.2 | Completo | Falta |
+| Acero formado en frío | F.4 | Completo | Parcial (`motor-acero-frio`: ancho efectivo) |
+| Aluminio | F.5 | Completo hasta F.5.7.6 | Falta |
+| Cargas y combinaciones | Título B | Parcial (B.4.3, B.4.6–B.4.8 sin chunks) | Parcial (`combinaciones`) |
+| Efectos sísmicos | Título A | Parcial | Parcial (`motor-geopot`) |
+| Elementos no estructurales | A.9 | Resumen no verbatim | Falta, primero re-ingesta |
+
+Elementos de arquitectura y modelado plano (planos, ejes, cuadros de columnas, despiece) no son parte de la NSR-10; quedan en la etapa 8 del roadmap (sección 4).
