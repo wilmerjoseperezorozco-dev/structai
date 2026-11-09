@@ -5,11 +5,15 @@ caudal neto del tanque al inicio del paso se actualiza su nivel por Euler explí
 Si en un paso el tanque cruzaría su nivel mínimo o máximo, la simulación se detiene y se informa el evento; no se
 simula el cierre de tuberías ni la inversión de flujo que ocurriría después."""
 import math
+import time
 from typing import Any, Dict, List, Optional
 
-from .gradiente import _exigir, _finito, resolver_red
+from .gradiente import BombaNoVence, _exigir, _finito, resolver_red
 
 _MAX_PASOS = 2000
+_MAX_TRABAJO = 200_000       # pasos × (nudos + tramos + bombas + válvulas): acota CPU y memoria (se guarda el estado de cada paso)
+_PLAZO_S = 25.0              # tiempo de cómputo máximo de una simulación
+_RAZON_OSCILACION = -0.3     # cociente de caudales de tanque entre pasos consecutivos; dos seguidos por debajo = oscilación numérica
 _CLAVES_TANQUE = ("id", "cota_fondo_m", "area_m2", "nivel_inicial_m", "nivel_min_m", "nivel_max_m")
 
 
@@ -57,6 +61,13 @@ def simular_periodo(nodos: List[dict], tramos: List[dict], *, tanques: List[dict
     """Devuelve estados en t = 0, Δt, …, n_pasos·Δt (o hasta el evento que detenga la simulación)."""
     patron = _validar_tiempo(paso_s, n_pasos, patron_demanda)
     _validar_tanques(nodos, tanques)
+    trabajo = n_pasos * (len(nodos) + len(tramos) + len(bombas or []) + len(valvulas or []))
+    if trabajo > _MAX_TRABAJO:
+        raise ValueError(f"la simulación pide un trabajo de {trabajo} (pasos × elementos), sobre el máximo de {_MAX_TRABAJO}: "
+                         "reduzca n_pasos o el tamaño de la red")
+    inicio = time.monotonic()
+    previo: Dict[str, float] = {}
+    racha: Dict[str, int] = {}
     niveles = {t["id"]: float(t["nivel_inicial_m"]) for t in tanques}
     por_tanque = {t["id"]: t for t in tanques}
     pasos: List[Dict[str, Any]] = []
@@ -72,12 +83,33 @@ def simular_periodo(nodos: List[dict], tramos: List[dict], *, tanques: List[dict
             else:
                 copia["demanda_m3s"] = n.get("demanda_m3s", 0.0) * factor
             nodos_k.append(copia)
+        if time.monotonic() - inicio > _PLAZO_S:
+            raise ValueError(f"la simulación superó el plazo de cómputo de {_PLAZO_S:g} s en el paso {k}: reduzca la red o n_pasos")
         try:
             res = resolver_red(nodos_k, tramos, bombas=bombas, valvulas=valvulas)
+        except BombaNoVence as e:
+            if k == 0:
+                raise
+            eventos.append(f"{e}; en el paso {k} (t = {k * paso_s:g} s) el sistema empujaría agua en sentido inverso por la bomba, "
+                           "lo que exigiría una válvula de retención, que no se modela")
+            completo = False
+            break
         except ValueError as e:
             raise ValueError(f"paso {k} (t = {k * paso_s:g} s): {e}") from e
         entrada = {tid: -res["nodos"][tid]["caudal_neto_m3s"] for tid in niveles}
+        for tid, q_in in entrada.items():
+            q_prev = previo.get(tid)
+            patron_estable = k >= 2 and patron[k % len(patron)] == patron[(k - 1) % len(patron)] == patron[(k - 2) % len(patron)]
+            if q_prev is not None and abs(q_prev) > 1e-12 and patron_estable and q_in / q_prev < _RAZON_OSCILACION:
+                racha[tid] = racha.get(tid, 0) + 1
+                if racha[tid] >= 2:
+                    raise ValueError(f"oscilación numérica en el tanque {tid} en el paso {k}: el caudal cambia de signo en pasos "
+                                     "consecutivos, señal de que el paso de tiempo es demasiado grande para Euler explícito; reduzca paso_s")
+            else:
+                racha[tid] = 0
+            previo[tid] = q_in
         pasos.append({"t_s": k * paso_s, "factor_demanda": factor, "nodos": res["nodos"], "tramos": res["tramos"],
+                      "bombas": res.get("bombas", {}), "valvulas": res.get("valvulas", {}),
                       "tanques": {tid: {"nivel_m": niveles[tid], "caudal_entrada_m3s": entrada[tid]} for tid in niveles}})
         if k == n_pasos:
             break

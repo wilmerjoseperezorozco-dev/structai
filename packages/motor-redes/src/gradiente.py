@@ -101,6 +101,20 @@ def _verificar_conectividad(nodos: List[dict], tramos: List[dict]) -> None:
         raise ValueError(f"nudos no conectados a ningún nudo de carga fija: {huerfanos}")
 
 
+class BombaNoVence(ValueError):
+    """La bomba, sin válvula de retención modelada, trabajaría con caudal ≤ 0."""
+
+
+def _resistencias_tuberias(tramos: List[dict]):
+    try:
+        r = [_COEF_HW * t["longitud_m"] / (t["c_hw"] ** N_HW * t["diametro_m"] ** 4.871) for t in tramos]
+    except (ZeroDivisionError, OverflowError) as e:
+        raise ValueError("longitud, diámetro o coeficiente C fuera del rango numérico representable") from e
+    if not all(math.isfinite(x) and x > 1e-20 for x in r):     # resistencia ínfima: la matriz queda mal condicionada
+        raise ValueError("longitud, diámetro o coeficiente C fuera del rango numérico representable")
+    return r
+
+
 _CLAVES_BOMBA = ("id", "desde", "hasta", "h0_m", "a_s2m5")
 _Q_BOMBA_NULO = 1e-9         # m³/s: por debajo, la bomba no entrega caudal (carga de cierre insuficiente)
 _Q_ARRANQUE_BOMBA = 0.01     # m³/s
@@ -185,9 +199,13 @@ def resolver_red(nodos: List[dict], tramos: List[dict], *, bombas: Optional[List
     n_b, n_v = len(bombas), len(valvulas)
     area_v = [math.pi * v["diametro_m"] ** 2 / 4.0 for v in valvulas]
     # Cada elemento: pérdida = r·q·|q|^(n−1) + desfase. Tubería n = 1,852; bomba y válvula n = 2; el desfase de la bomba es −h0.
-    r = np.array([_COEF_HW * t["longitud_m"] / (t["c_hw"] ** N_HW * t["diametro_m"] ** 4.871) for t in tramos]
-                 + [b["a_s2m5"] for b in bombas]
-                 + [v["k"] / (2.0 * _G * a * a) for v, a in zip(valvulas, area_v)])
+    try:
+        r_valv = [v["k"] / (2.0 * _G * a * a) for v, a in zip(valvulas, area_v)]
+    except (ZeroDivisionError, OverflowError) as e:
+        raise ValueError("diámetro de válvula fuera del rango numérico representable") from e
+    r = np.array(_resistencias_tuberias(tramos) + [b["a_s2m5"] for b in bombas] + r_valv)
+    if not np.all(np.isfinite(r)):
+        raise ValueError("coeficientes de la red fuera del rango numérico representable")
     expo = np.array([N_HW] * n_pipe + [2.0] * (n_b + n_v))
     desfase = np.array([0.0] * n_pipe + [-b["h0_m"] for b in bombas] + [0.0] * n_v)
     area = np.array([math.pi * t["diametro_m"] ** 2 / 4.0 for t in tramos] + [_Q_ARRANQUE_BOMBA] * n_b + area_v)
@@ -243,7 +261,7 @@ def resolver_red(nodos: List[dict], tramos: List[dict], *, bombas: Optional[List
         cota = np.array([n["cota_m"] for n in libres], dtype=float)
         p_min = float(np.min(h_libre - cota)) if n_l else 0.0
         pista = (f"; la presión mínima de la última iteración es {p_min:.0f} m: red inviable, la demanda excede la "
-                 "capacidad de las tuberías") if p_min < -10.0 else ""
+                 "capacidad de los elementos de la red") if p_min < -10.0 else ""
         raise ValueError(
             f"el solver de la red no converge en {max_iteraciones} iteraciones "
             f"(residuo de energía {float(np.max(np.abs(f1))):.3e} m){pista}")
@@ -257,7 +275,7 @@ def resolver_red(nodos: List[dict], tramos: List[dict], *, bombas: Optional[List
     perdida = perdida_fn(q)
     for k, b in enumerate(bombas):
         if q[n_pipe + k] <= _Q_BOMBA_NULO:
-            raise ValueError(f"la bomba {b['id']} no vence la carga estática del sistema (caudal {q[n_pipe + k]:.3g} m³/s ≤ 0): "
+            raise BombaNoVence(f"la bomba {b['id']} no vence la carga estática del sistema (caudal {q[n_pipe + k]:.3g} m³/s ≤ 0): "
                              "su carga de cierre es insuficiente o el sistema la empujaría en sentido inverso")
     return {
         "nodos": {n["id"]: {"carga_m": carga[n["id"]], "presion_m": carga[n["id"]] - float(n["cota_m"]),

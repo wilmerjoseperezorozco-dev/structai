@@ -39,7 +39,7 @@ def salud():
 def endpoint_permanente(request: Request, req: SolicitudRed, user: AuthenticatedUser = Depends(get_current_user)):
     try:
         return red_permanente_contrato(req)
-    except ValueError as e:
+    except (ValueError, ArithmeticError) as e:
         raise HTTPException(status_code=422, detail=str(e))
 
 
@@ -48,7 +48,7 @@ def endpoint_permanente(request: Request, req: SolicitudRed, user: Authenticated
 def endpoint_periodo(request: Request, req: SolicitudPeriodo, user: AuthenticatedUser = Depends(get_current_user)):
     try:
         return periodo_extendido_contrato(req)
-    except ValueError as e:
+    except (ValueError, ArithmeticError) as e:
         raise HTTPException(status_code=422, detail=str(e))
 
 
@@ -57,5 +57,5 @@ def endpoint_periodo(request: Request, req: SolicitudPeriodo, user: Authenticate
 def endpoint_ariete(request: Request, req: SolicitudAriete, user: AuthenticatedUser = Depends(get_current_user)):
     try:
         return ariete_contrato(req)
-    except ValueError as e:
+    except (ValueError, ArithmeticError) as e:
         raise HTTPException(status_code=422, detail=str(e))

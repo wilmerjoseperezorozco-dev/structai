@@ -35,9 +35,9 @@ class TramoRed(BaseModel):
     id: str = Field(..., min_length=1, max_length=40)
     desde: str = Field(..., min_length=1, max_length=40)
     hasta: str = Field(..., min_length=1, max_length=40)
-    longitud_m: float = Field(..., gt=0, le=200000, allow_inf_nan=False)
-    diametro_m: float = Field(..., gt=0, le=5, allow_inf_nan=False)
-    c_hw: float = Field(..., gt=0, le=200, allow_inf_nan=False, description="Coeficiente de Hazen-Williams")
+    longitud_m: float = Field(..., ge=1e-2, le=200000, allow_inf_nan=False)
+    diametro_m: float = Field(..., ge=1e-3, le=5, allow_inf_nan=False)
+    c_hw: float = Field(..., ge=10, le=200, allow_inf_nan=False, description="Coeficiente de Hazen-Williams")
 
 
 class BombaRed(BaseModel):
@@ -54,8 +54,8 @@ class ValvulaRed(BaseModel):
     id: str = Field(..., min_length=1, max_length=40)
     desde: str = Field(..., min_length=1, max_length=40)
     hasta: str = Field(..., min_length=1, max_length=40)
-    diametro_m: float = Field(..., gt=0, le=5, allow_inf_nan=False)
-    k: float = Field(..., gt=0, le=1e6, allow_inf_nan=False, description="Coeficiente de pérdida local, h = K·v²/2g")
+    diametro_m: float = Field(..., ge=1e-3, le=5, allow_inf_nan=False)
+    k: float = Field(..., ge=1e-3, le=1e6, allow_inf_nan=False, description="Coeficiente de pérdida local, h = K·v²/2g")
 
 
 class SolicitudRed(BaseModel):
@@ -70,29 +70,72 @@ class SolicitudRed(BaseModel):
     velocidad_max_ms: Optional[float] = Field(default=None, gt=0, le=20, allow_inf_nan=False)
 
 
-def _verificar_limites(res: dict, s: SolicitudRed):
-    incumple, borde = [], False
+def limites_detalle(res: dict, s: SolicitudRed):
+    """Incumplimientos como (clave, exceso relativo, mensaje) y marca de cercanía a un límite. Verifica presión en nudos libres
+    y velocidad en tuberías y válvulas."""
+    items, borde = [], False
     libres = [n.id for n in s.nodos if n.carga_fija_m is None]
     for nid in libres:
         p = res["nodos"][nid]["presion_m"]
         if s.presion_min_m is not None:
             if p < s.presion_min_m:
-                incumple.append(f"nudo {nid}: presión {p:.2f} m < mínima {s.presion_min_m:g} m")
+                items.append((f"nudo {nid} min", (s.presion_min_m - p) / max(s.presion_min_m, 1e-9),
+                              f"nudo {nid}: presión {p:.2f} m < mínima {s.presion_min_m:g} m"))
             elif p < s.presion_min_m * (1 + _MARGEN_BORDE):
                 borde = True
         if s.presion_max_m is not None:
             if p > s.presion_max_m:
-                incumple.append(f"nudo {nid}: presión {p:.2f} m > máxima {s.presion_max_m:g} m")
+                items.append((f"nudo {nid} max", (p - s.presion_max_m) / s.presion_max_m,
+                              f"nudo {nid}: presión {p:.2f} m > máxima {s.presion_max_m:g} m"))
             elif p > s.presion_max_m * (1 - _MARGEN_BORDE):
                 borde = True
     if s.velocidad_max_ms is not None:
-        for tid, v in res["tramos"].items():
-            vel = v["velocidad_ms"]
-            if vel > s.velocidad_max_ms:
-                incumple.append(f"tramo {tid}: velocidad {vel:.2f} m/s > máxima {s.velocidad_max_ms:g} m/s")
-            elif vel > s.velocidad_max_ms * (1 - _MARGEN_BORDE):
-                borde = True
-    return incumple, borde
+        for etiqueta, grupo in (("tramo", res["tramos"]), ("válvula", res.get("valvulas", {}))):
+            for eid, v in grupo.items():
+                vel = v["velocidad_ms"]
+                if vel > s.velocidad_max_ms:
+                    items.append((f"{etiqueta} {eid} vel", (vel - s.velocidad_max_ms) / s.velocidad_max_ms,
+                                  f"{etiqueta} {eid}: velocidad {vel:.2f} m/s > máxima {s.velocidad_max_ms:g} m/s"))
+                elif vel > s.velocidad_max_ms * (1 - _MARGEN_BORDE):
+                    borde = True
+    return items, borde
+
+
+def _verificar_limites(res: dict, s: SolicitudRed):
+    items, borde = limites_detalle(res, s)
+    return [m for _, _, m in items], borde
+
+
+def banderas(s: SolicitudRed, res: dict, excluir_nudos=()) -> dict:
+    """Condiciones de validez/cercanía comunes al estado permanente y al periodo extendido."""
+    return {
+        "fuera_c": [t.id for t in s.tramos if not (_C_HW_RANGO[0] <= t.c_hw <= _C_HW_RANGO[1])],
+        "presiones_neg": [nid for nid, v in res["nodos"].items() if v["presion_m"] < 0 and nid not in excluir_nudos],
+        "finos": [t.id for t in s.tramos if t.diametro_m < _D_MIN_HW_M],
+        "lentos": [tid for tid, v in res["tramos"].items() if v["velocidad_ms"] < _V_MIN_HW_MS],
+        "lejos": [b.id for b in s.bombas if res["bombas"][b.id]["caudal_m3s"] > _FRAC_CURVA_BOMBA * math.sqrt(b.h0_m / b.a_s2m5)],
+    }
+
+
+def unir_banderas(lista: list) -> dict:
+    claves = ("fuera_c", "presiones_neg", "finos", "lentos", "lejos")
+    return {k: sorted({x for b in lista for x in b[k]}) for k in claves}
+
+
+def notas_banderas(b: dict):
+    """(hay_borde, supuestos) a partir de las banderas."""
+    notas = []
+    if b["fuera_c"]:
+        notas.append(f"Coeficiente C fuera de {_C_HW_RANGO[0]:g}–{_C_HW_RANGO[1]:g} en los tramos {b['fuera_c']}: revisar material y edad de la tubería.")
+    if b["presiones_neg"]:
+        notas.append(f"Presión negativa en {b['presiones_neg']}: no es alcanzable sin cavitación o entrada de aire.")
+    if b["lejos"]:
+        notas.append(f"Bombas {b['lejos']} operan sobre el {_FRAC_CURVA_BOMBA * 100:g} % del caudal de carga nula de su parábola: ajuste poco fiable.")
+    if b["finos"]:
+        notas.append(f"Diámetro < {_D_MIN_HW_M * 1000:g} mm en los tramos {b['finos']}: fuera del dominio de validez de Hazen-Williams.")
+    if b["lentos"]:
+        notas.append(f"Velocidad < {_V_MIN_HW_MS:g} m/s en los tramos {b['lentos']}: Hazen-Williams subestima la pérdida a velocidades muy bajas.")
+    return bool(notas), notas
 
 
 def red_permanente_contrato(s: SolicitudRed) -> ResultadoMotor:
@@ -100,14 +143,11 @@ def red_permanente_contrato(s: SolicitudRed) -> ResultadoMotor:
                        bombas=[b.model_dump() for b in s.bombas],
                        valvulas=[v.model_dump() for v in s.valvulas])
     incumple, borde = _verificar_limites(res, s)
-    fuera_c = [t.id for t in s.tramos if not (_C_HW_RANGO[0] <= t.c_hw <= _C_HW_RANGO[1])]
-    presiones_neg = [nid for nid, v in res["nodos"].items() if v["presion_m"] < 0]
+    bd = banderas(s, res)
     incumple.extend(f"nudo {nid}: presión negativa ({res['nodos'][nid]['presion_m']:.2f} m), inalcanzable sin cavitación o entrada de aire"
-                    for nid in presiones_neg)
-    finos = [t.id for t in s.tramos if t.diametro_m < _D_MIN_HW_M]
-    lentos = [tid for tid, v in res["tramos"].items() if v["velocidad_ms"] < _V_MIN_HW_MS]
-    lejos = [b.id for b in s.bombas if res["bombas"][b.id]["caudal_m3s"] > _FRAC_CURVA_BOMBA * math.sqrt(b.h0_m / b.a_s2m5)]
-    borde = borde or bool(lejos) or bool(fuera_c) or bool(presiones_neg) or bool(finos) or bool(lentos)
+                    for nid in bd["presiones_neg"])
+    hay_borde, notas = notas_banderas(bd)
+    borde = borde or hay_borde
     hay_limites = not (s.presion_min_m is None and s.presion_max_m is None and s.velocidad_max_ms is None)
     supuestos = [
         "Estado permanente con demandas constantes en los nudos; sin tanques de nivel variable ni periodo extendido.",
@@ -126,16 +166,7 @@ def red_permanente_contrato(s: SolicitudRed) -> ResultadoMotor:
     ]
     if not hay_limites:
         supuestos.append("No se declaró ningún límite de servicio: no se verificó cumplimiento.")
-    if fuera_c:
-        supuestos.append(f"Coeficiente C fuera de {_C_HW_RANGO[0]:g}–{_C_HW_RANGO[1]:g} en los tramos {fuera_c}: revisar material y edad de la tubería.")
-    if presiones_neg:
-        supuestos.append(f"Presión negativa en {presiones_neg}: no es alcanzable sin cavitación o entrada de aire.")
-    if lejos:
-        supuestos.append(f"Bombas {lejos} operan sobre el {_FRAC_CURVA_BOMBA * 100:g} % del caudal de carga nula de su parábola: ajuste poco fiable.")
-    if finos:
-        supuestos.append(f"Diámetro < {_D_MIN_HW_M * 1000:g} mm en los tramos {finos}: fuera del dominio de validez de Hazen-Williams.")
-    if lentos:
-        supuestos.append(f"Velocidad < {_V_MIN_HW_MS:g} m/s en los tramos {lentos}: Hazen-Williams subestima la pérdida a velocidades muy bajas.")
+    supuestos.extend(notas)
     return ResultadoMotor(
         valor={**res, "incumplimientos": incumple, "limites_verificados": hay_limites,
                "cumple": (not incumple) if (hay_limites or incumple) else None},

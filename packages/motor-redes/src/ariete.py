@@ -21,18 +21,40 @@ _P_VAPOR_PA = 2339.0                                  # agua a 20 °C
 H_VAPOR_M = -(_P_ATM_PA - _P_VAPOR_PA) / (_RHO_AGUA * _G)     # carga manométrica de vapor al nivel del mar, ≈ −10,09 m
 _MAX_TRAMOS = 2000
 _MAX_PASOS_TIEMPO = 200_000
-_MAX_OPERACIONES = 60_000_000
+_MAX_OPERACIONES = 20_000_000
 _MAX_PUNTOS_SERIE = 2000
 
 
+def coeficiente_anclaje(poisson: float, anclaje: str) -> float:
+    """c1 de la fórmula de celeridad (Wylie y Streeter): «todo» anclada en todo su largo, 1 − ν²; «aguas_arriba» anclada solo
+    en el extremo aguas arriba, 1 − ν/2; «dilatacion» con juntas de dilatación en todo su largo, 1."""
+    if not (0.0 < _finito(poisson, "poisson") < 0.5):
+        raise ValueError("la relación de Poisson debe estar entre 0 y 0,5")
+    if anclaje == "todo":
+        return 1.0 - poisson ** 2
+    if anclaje == "aguas_arriba":
+        return 1.0 - poisson / 2.0
+    if anclaje == "dilatacion":
+        return 1.0
+    raise ValueError("anclaje debe ser «todo», «aguas_arriba» o «dilatacion»")
+
+
 def celeridad_korteweg(diametro_m: float, espesor_m: float, e_tuberia_pa: float, k_fluido_pa: float = _K_AGUA_PA,
-                       rho: float = _RHO_AGUA) -> float:
-    """a = √(K/ρ)/√(1 + K·D/(E·e)): tubería de pared delgada, anclada, sin aire disuelto."""
+                       rho: float = _RHO_AGUA, c1: float = 1.0) -> float:
+    """a = √(K/ρ)/√(1 + c1·K·D/(E·e)), sin aire disuelto; c1 = 1 es tubería de pared delgada con juntas de dilatación."""
     for nombre, v in (("diametro_m", diametro_m), ("espesor_m", espesor_m), ("e_tuberia_pa", e_tuberia_pa),
-                      ("k_fluido_pa", k_fluido_pa), ("rho", rho)):
+                      ("k_fluido_pa", k_fluido_pa), ("rho", rho), ("c1", c1)):
         if _finito(v, nombre) <= 0:
             raise ValueError(f"{nombre} debe ser positivo")
-    return math.sqrt(k_fluido_pa / rho) / math.sqrt(1.0 + k_fluido_pa * diametro_m / (e_tuberia_pa * espesor_m))
+    return math.sqrt(k_fluido_pa / rho) / math.sqrt(1.0 + c1 * k_fluido_pa * diametro_m / (e_tuberia_pa * espesor_m))
+
+
+def h_vapor_por_altitud(altitud_m: float, p_vapor_pa: float = _P_VAPOR_PA) -> float:
+    """Carga manométrica de vapor a una altitud, con la atmósfera estándar: P = 101325·(1 − 2,25577e-5·h)^5,25588."""
+    if not (-500.0 <= _finito(altitud_m, "altitud_m") <= 6000.0):
+        raise ValueError("altitud_m debe estar entre −500 y 6000 m")
+    p_atm = _P_ATM_PA * (1.0 - 2.25577e-5 * altitud_m) ** 5.25588
+    return -(p_atm - p_vapor_pa) / (_RHO_AGUA * _G)
 
 
 def simular_ariete(*, longitud_m: float, diametro_m: float, celeridad_ms: float, f_darcy: float, caudal_m3s: float,
@@ -52,6 +74,8 @@ def simular_ariete(*, longitud_m: float, diametro_m: float, celeridad_ms: float,
     if isinstance(n_tramos, bool) or not isinstance(n_tramos, int) or not (2 <= n_tramos <= _MAX_TRAMOS):
         raise ValueError(f"n_tramos debe ser un entero entre 2 y {_MAX_TRAMOS}")
 
+    longitud_m, diametro_m, celeridad_ms = float(longitud_m), float(diametro_m), float(celeridad_ms)
+    caudal_m3s, carga_embalse_m, t_cierre_s, t_fin_s, f_darcy = float(caudal_m3s), float(carga_embalse_m), float(t_cierre_s), float(t_fin_s), float(f_darcy)
     n = n_tramos
     dx = longitud_m / n
     dt = dx / celeridad_ms
@@ -71,7 +95,7 @@ def simular_ariete(*, longitud_m: float, diametro_m: float, celeridad_ms: float,
     cv = caudal_m3s ** 2 / h0_valvula          # Q² = Cv·H a apertura total
 
     h = carga_embalse_m - r * caudal_m3s ** 2 * np.arange(n + 1)
-    q = np.full(n + 1, caudal_m3s)
+    q = np.full(n + 1, caudal_m3s, dtype=float)
     h_max, h_min = h.copy(), h.copy()
     paso_salida = max(1, int(math.ceil(pasos / _MAX_PUNTOS_SERIE)))
     tiempos, serie_h, serie_q = [0.0], [float(h[-1])], [float(q[-1])]

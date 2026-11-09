@@ -26,7 +26,7 @@ def test_contrato_basico_joukowsky_y_supuestos():
 
 
 def test_celeridad_por_korteweg_cuando_se_dan_espesor_y_modulo():
-    r = ariete_contrato(_s(celeridad_ms=None, espesor_m=0.01, e_tuberia_pa=210e9))
+    r = ariete_contrato(_s(celeridad_ms=None, espesor_m=0.01, e_tuberia_pa=210e9, poisson=0.3, anclaje="dilatacion"))
     esperado = math.sqrt(2.07e9 / 1000.0) / math.sqrt(1 + 2.07e9 * 0.5 / (210e9 * 0.01))
     assert r.valor["celeridad_ms"] == pytest.approx(esperado, rel=1e-12)
     assert any("Korteweg" in x for x in r.supuestos)
