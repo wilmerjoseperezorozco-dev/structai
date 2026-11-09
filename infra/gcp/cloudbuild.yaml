@@ -1,0 +1,13 @@
+# Construye la imagen de la API desde la RAÍZ del monorepo (el Dockerfile copia packages/).
+# Uso: gcloud builds submit --config infra/gcp/cloudbuild.yaml --substitutions=_IMAGEN=<repo>/structai-api:<tag> .
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args: ["build", "-f", "apps/api/Dockerfile",
+           "--build-arg", "INSTALL_VISION=${_INSTALL_VISION}",
+           "--build-arg", "INSTALL_ESTRUCTURAL=${_INSTALL_ESTRUCTURAL}",
+           "-t", "${_IMAGEN}", "."]
+images: ["${_IMAGEN}"]
+timeout: 2400s
+substitutions:
+  _INSTALL_VISION: "false"
+  _INSTALL_ESTRUCTURAL: "false"
