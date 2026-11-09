@@ -23,6 +23,7 @@ sys.modules["motor_redes"] = motor_redes
 _spec.loader.exec_module(motor_redes)
 
 from motor_redes.contrato_api import SolicitudRed, red_permanente_contrato  # noqa: E402
+from motor_redes.contrato_periodo import SolicitudPeriodo, periodo_extendido_contrato  # noqa: E402
 
 router = APIRouter(prefix="/redes", tags=["Redes hidráulicas"])
 
@@ -37,5 +38,14 @@ def salud():
 def endpoint_permanente(request: Request, req: SolicitudRed, user: AuthenticatedUser = Depends(get_current_user)):
     try:
         return red_permanente_contrato(req)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+
+
+@router.post("/periodo", summary="Periodo extendido con tanques de nivel variable y patrón de demanda")
+@limiter.limit("10/minute")
+def endpoint_periodo(request: Request, req: SolicitudPeriodo, user: AuthenticatedUser = Depends(get_current_user)):
+    try:
+        return periodo_extendido_contrato(req)
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e))

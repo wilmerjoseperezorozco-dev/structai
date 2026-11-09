@@ -75,3 +75,22 @@ def test_bomba_por_el_endpoint_y_422_si_no_vence(cliente):
     cuerpo["nodos"][2]["demanda_m3s"] = 0.0
     r = cliente.post("/redes/permanente", json=cuerpo)
     assert r.status_code == 422 and "no vence" in str(r.json())
+
+
+PERIODO = dict(
+    nodos=[dict(id="T", cota_m=40.0), dict(id="N", cota_m=30.0, demanda_m3s=0.01)],
+    tramos=[dict(id="p", desde="T", hasta="N", longitud_m=500.0, diametro_m=0.2, c_hw=130.0)],
+    tanques=[dict(id="T", cota_fondo_m=40.0, area_m2=100.0, nivel_inicial_m=5.0, nivel_min_m=0.5, nivel_max_m=10.0)],
+    paso_s=600.0, n_pasos=6)
+
+
+def test_periodo_extendido_por_el_endpoint(cliente):
+    r = cliente.post("/redes/periodo", json=PERIODO)
+    assert r.status_code == 200
+    assert abs(r.json()["valor"]["niveles_tanque_m"]["T"][-1] - (5.0 - 0.01 * 3600 / 100.0)) < 1e-9
+
+
+def test_periodo_con_tanque_sobre_nudo_con_demanda_responde_422(cliente):
+    cuerpo = dict(PERIODO, nodos=[dict(id="T", cota_m=40.0, demanda_m3s=0.01), dict(id="N", cota_m=30.0, demanda_m3s=0.01)])
+    r = cliente.post("/redes/periodo", json=cuerpo)
+    assert r.status_code == 422 and "tanque" in str(r.json())
