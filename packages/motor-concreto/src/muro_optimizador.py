@@ -16,8 +16,11 @@ from .viga import Materiales
 
 TIPOLOGIAS = ("estandar", "dentellon", "bandeja")
 PASO = 0.05
-LIMITES = {"h_zapata": (0.30, 1.20), "t_corona": (0.20, 0.50), "t_base": (0.25, 1.20), "b_puntera": (0.10, 2.00), "b_talon": (0.30, 7.00),
-           "dentellon_prof": (0.30, 1.00), "bandeja_y": (0.50, 6.00), "bandeja_vuelo": (0.40, 2.50)}
+T_CORONA = 0.25      # CONSTANTE de diseño (no es variable de búsqueda): ancho mínimo constructivo para vaciar y vibrar el concreto en la corona
+# (mín., máx.) de las variables de búsqueda. Los mínimos son PISOS CONSTRUCTIVOS declarados (formaleta, recubrimientos 75 mm de C.7.7.1, ganchos); un óptimo
+# sobre un piso es una regla de práctica, no un hallazgo del optimizador, por eso se reporta aparte en `Solucion.en_piso_constructivo`.
+LIMITES = {"h_zapata": (0.30, 1.20), "t_base": (0.30, 1.20), "b_puntera": (0.10, 2.00), "b_talon": (0.30, 7.00),
+           "dentellon_prof": (0.10, 1.00), "bandeja_y": (0.50, 6.00), "bandeja_vuelo": (0.40, 2.50)}
 MAX_INFLADO = 80
 MAX_BARRIDOS = 12
 
@@ -42,7 +45,8 @@ class Solucion:
     diseno: DisenoMuro
     objetivo: float
     evaluaciones: int
-    variables_en_limite: tuple[str, ...]
+    variables_en_limite: tuple[str, ...]        # pegadas al TECHO de búsqueda (señal de límite artificial)
+    en_piso_constructivo: tuple[str, ...] = ()  # pegadas al piso constructivo declarado (regla de práctica, no hallazgo)
 
 
 def _redondear(x: float, paso: float = PASO) -> float:
@@ -51,7 +55,7 @@ def _redondear(x: float, paso: float = PASO) -> float:
 
 def _inicial(caso: CasoMuro, tip: str, perfil: str) -> GeometriaMuro:
     h = caso.altura
-    base = GeometriaMuro(h_pantalla=h, h_zapata=_redondear(max(0.4, h / 12.0)), t_corona=0.25, t_base=_redondear(max(0.30, h / 10.0)),
+    base = GeometriaMuro(h_pantalla=h, h_zapata=_redondear(max(0.4, h / 12.0)), t_corona=T_CORONA, t_base=_redondear(max(0.30, h / 10.0)),
                          b_puntera=_redondear(max(0.3, 0.12 * h)), b_talon=_redondear(max(0.8, 0.45 * h)), perfil=perfil)
     if tip == "dentellon":
         return replace(base, dentellon_prof=0.40, dentellon_ancho=0.40)
@@ -111,7 +115,7 @@ def _hacer_factible(g: GeometriaMuro, caso: CasoMuro) -> tuple[GeometriaMuro, Di
 
 
 def _variables(tip: str) -> list[str]:
-    base = ["h_zapata", "t_corona", "t_base", "b_puntera", "b_talon"]
+    base = ["h_zapata", "t_base", "b_puntera", "b_talon"]
     return base + {"dentellon": ["dentellon_prof"], "bandeja": ["bandeja_y", "bandeja_vuelo"], "estandar": []}[tip]
 
 
@@ -144,8 +148,9 @@ def optimizar(caso: CasoMuro, tipologia: str, perfil: str = "lineal", inicio: Ge
                     g, d, mejor, mejora = cand, dc, _objetivo(dc, caso), True
         if not mejora:
             break
-    pegadas = tuple(v for v in _variables(tipologia) if abs(getattr(g, v) - LIMITES[v][0]) < 1e-6 or abs(getattr(g, v) - LIMITES[v][1]) < 1e-6)
-    return Solucion(tipologia, perfil, g, d, mejor, n, pegadas)
+    techo = tuple(v for v in _variables(tipologia) if abs(getattr(g, v) - LIMITES[v][1]) < 1e-6)
+    piso = tuple(v for v in _variables(tipologia) if abs(getattr(g, v) - LIMITES[v][0]) < 1e-6)
+    return Solucion(tipologia, perfil, g, d, mejor, n, techo, piso)
 
 
 def optimizar_todas(caso: CasoMuro, perfiles=("lineal", "parabolico")) -> dict[str, Solucion | None]:

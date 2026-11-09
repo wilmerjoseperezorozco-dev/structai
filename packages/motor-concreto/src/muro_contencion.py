@@ -24,7 +24,6 @@ FS_DESLIZAMIENTO_MIN = 1.60
 FS_VOLCAMIENTO_MIN = 3.00
 EXCENTRICIDAD_MAX_B = 1.0 / 6.0
 DESPLANTE_MIN_M = 1.0                 # H.6.7(a)
-DENTELLON_EFECTIVO_M = 0.30          # HIPÓTESIS: profundidad mínima para que el dentellón lleve la falla al suelo
 GAMMA_CONCRETO_KN_M3 = 24.0           # supuesto de peso unitario del concreto reforzado
 
 
@@ -96,6 +95,7 @@ class SueloApoyo:
     q_adm_kpa: float
     c_kpa: float = 0.0
     mu_base: float | None = None   # si None: tan(2/3 φ) (HIPÓTESIS)
+    eta_pasivo_dentellon: float = 0.0   # fracción del empuje pasivo neto (Kp − Ka) que el dentellón moviliza; 0 = lectura estricta de H.6.7(b)
 
     @property
     def mu(self) -> float:
@@ -178,11 +178,25 @@ def _cargas_verticales(g: GeometriaMuro, r: Relleno, gamma_c: float) -> list[tup
     return [(n, f, x) for n, f, x, _ in _piezas(g, r, gamma_c)]
 
 
-def mu_efectivo(g: GeometriaMuro, s: SueloApoyo) -> float:
-    """Coeficiente de fricción en la base. HIPÓTESIS: con dentellón de profundidad >= DENTELLON_EFECTIVO_M la superficie de falla pasa por suelo (tan φ)."""
-    if g.tiene_dentellon and g.dentellon_prof >= DENTELLON_EFECTIVO_M and s.mu_base is None:
-        return math.tan(math.radians(s.phi_deg))
-    return s.mu
+def resistencia_dentellon(g: GeometriaMuro, r: Relleno, s: SueloApoyo, q_punta_kpa: float) -> tuple[float, float]:
+    """(ΔR_punta, R_pasivo) en kN/m que aporta el dentellón a la resistencia al deslizamiento. Superficie de falla que lo rodea (sin empuje pasivo, H.6.7(b)):
+    - ΔR_punta: sobre el ancho w de la punta la falla pasa por suelo (tan φ) en lugar de concreto-suelo (tan 2φ/3): (tan φ − μ)·q_punta·w·min(d_k/w, 1).
+      Continua en d_k, nula sin dentellón. No aplica si el usuario fija `mu_base`.
+    - R_pasivo: reacción neta mobilizada en las caras verticales = η·½(Kp − Ka)γ[(D + d_k)² − D²]; en reposo la cara frontal y la posterior se anulan
+      (K0 simétrico), así que solo la parte desplazada cuenta, y esa es la que H.6.7(b) excluye: η = 0 por defecto (HIPÓTESIS η > 0 solo como sensibilidad)."""
+    if not g.tiene_dentellon:
+        return 0.0, 0.0
+    punta = 0.0
+    if s.mu_base is None:
+        confinamiento = min(g.dentellon_prof / g.dentellon_ancho, 1.0)   # HIPÓTESIS: la falla solo se desvía por el suelo si la punta es al menos tan honda como ancha
+        punta = max(math.tan(math.radians(s.phi_deg)) - s.mu, 0.0) * max(q_punta_kpa, 0.0) * g.dentellon_ancho * confinamiento
+    pasivo = 0.0
+    if s.eta_pasivo_dentellon > 0.0:
+        kp = math.tan(math.radians(45.0 + s.phi_deg / 2.0)) ** 2
+        ka = coeficiente_activo_rankine(s.phi_deg, 0.0)
+        d, dk = g.desplante, g.dentellon_prof
+        pasivo = s.eta_pasivo_dentellon * 0.5 * (kp - ka) * r.gamma * ((d + dk) ** 2 - d**2)
+    return punta, pasivo
 
 
 def coeficiente_activo_mononobe_okabe(phi_deg: float, beta_deg: float, kh: float, kv: float = 0.0) -> float:
@@ -231,9 +245,12 @@ def _resolver(g, r, s, gamma_c, pesos, fuerzas_h, pv, kh, con_sobrecarga, lim) -
     x_r = (m_b - m_vuelco) / v_b
     e = B / 2.0 - x_r
     q_max, q_min = v_b / B * (1.0 + 6.0 * e / B), v_b / B * (1.0 - 6.0 * e / B)
-    mu = mu_efectivo(g, s)
+    q_punta = v_b / B * (1.0 + 12.0 * e * (B / 2.0 - (g.dentellon_x_efectivo + g.dentellon_ancho / 2.0)) / B**2)
+    d_punta, r_pasivo = resistencia_dentellon(g, r, s, q_punta)
+    resistencia = v_est * s.mu + s.c_kpa * B + d_punta + r_pasivo
+    mu = (resistencia - s.c_kpa * B) / v_est
     fs_v = m_est / m_vuelco
-    fs_d = (v_est * mu + s.c_kpa * B) / ph if ph > 0 else math.inf
+    fs_d = resistencia / ph if ph > 0 else math.inf
     motivos = []
     if fs_v < lim["vol"]:
         motivos.append(f"volcamiento {fs_v:.2f} < {lim['vol']} (H.6.9-1)")

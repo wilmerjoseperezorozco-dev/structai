@@ -29,7 +29,7 @@ from entrenar import DIMS, ENTRADAS, ESCENARIOS, TIPOS  # noqa: E402
 from src.economia_concreto import Economia  # noqa: E402
 from src.muro_contencion import GeometriaMuro, Relleno, SueloApoyo, verificar_estabilidad, verificar_estabilidad_sismica  # noqa: E402
 from src.muro_contencion_estructural import disenar_estructura  # noqa: E402
-from src.muro_optimizador import LIMITES, PASO, CasoMuro, _redondear, optimizar, optimizar_todas  # noqa: E402
+from src.muro_optimizador import LIMITES, PASO, T_CORONA, CasoMuro, _redondear, optimizar, optimizar_todas  # noqa: E402
 
 
 def caso_desde_fila(f) -> CasoMuro:
@@ -56,7 +56,7 @@ class Modelo:
         def ac(nom, paso=PASO):
             lo, hi = LIMITES[{"dent_prof": "dentellon_prof", "band_y": "bandeja_y", "band_vuelo": "bandeja_vuelo"}.get(nom, nom)]
             return min(max(_redondear(d[nom], paso), lo), hi)
-        tc, tb = ac("t_corona"), ac("t_base")
+        tc, tb = T_CORONA, ac("t_base")
         g = GeometriaMuro(H, ac("h_zapata"), tc, max(tb, tc), ac("b_puntera"), ac("b_talon"), perfil=perfil)
         if tipo == "dentellon":
             g = replace(g, dentellon_prof=ac("dent_prof"), dentellon_ancho=0.4)
@@ -98,7 +98,7 @@ def reverificar(f: dict, r: dict) -> bool:
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--modelos", default=str(RAIZ / "data" / "surrogate_muro" / "modelos"))
+    ap.add_argument("--modelos", default=str(RAIZ / "data" / "surrogate_muro" / "modelos_v2"))
     ap.add_argument("--n", type=int, default=400)
     a = ap.parse_args()
     carpeta = Path(a.modelos)

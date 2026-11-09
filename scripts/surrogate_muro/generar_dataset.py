@@ -29,11 +29,11 @@ RHO_GAMMA_PHI = 0.6
 ESCENARIOS_CO2 = {"bajo": (0.892, 1.00), "base": (1.010, 1.322), "alto": (1.15, 1.80)}      # (fe_cemento, fe_acero) kgCO2e/kg; "bajo" y "alto" son SUPUESTOS
 NOMBRES = ["H", "phi", "gamma", "q_adm", "q_s", "beta", "a_max", "mult_concreto", "p_acero", "escenario_co2"]
 TIPOS = ("tradicional", "estandar", "dentellon", "bandeja")
-CAMPOS_SOL = ["ok", "obj", "costo", "co2", "perfil", "h_zapata", "t_corona", "t_base", "b_puntera", "b_talon", "dent_prof", "band_y", "band_vuelo", "evals", "en_limite"]
+CAMPOS_SOL = ["ok", "obj", "costo", "co2", "perfil", "h_zapata", "t_corona", "t_base", "b_puntera", "b_talon", "dent_prof", "band_y", "band_vuelo", "evals", "en_limite", "en_piso"]
 MANIFIESTO = {"muestreo": "Sobol scrambled", "rangos": RANGOS, "rho_gamma_phi": RHO_GAMMA_PHI, "escenarios_co2": ESCENARIOS_CO2,
-              "apoyo": "φ del suelo de apoyo = φ del relleno, c = 0, μ = tan(2φ/3) (HIPÓTESIS)", "materiales": "f'c 28 MPa, fy 420 MPa", "x_ceniza": 0.0,
+              "apoyo": "φ del suelo de apoyo = φ del relleno, c = 0, μ = tan(2φ/3); dentellón: aporte de punta (tan φ sobre su ancho, confinamiento min(d/w,1)) sin empuje pasivo, η = 0 (HIPÓTESIS, H.6.7b)", "materiales": "f'c 28 MPa, fy 420 MPa", "x_ceniza": 0.0,
               "objetivo": "costo APU (lam_co2 = 0)", "sismo": "seudoestático, K_ST = 0,80·a_max", "perfiles": ["lineal", "parabolico"],
-              "limites_busqueda": "ver packages/motor-concreto/src/muro_optimizador.py::LIMITES"}
+              "limites_busqueda": "ver packages/motor-concreto/src/muro_optimizador.py::LIMITES; t_corona = 0,25 m es CONSTANTE de diseño; los mínimos son pisos constructivos reportados en *_en_piso"}
 
 
 def muestrear(m: int, seed: int) -> list[dict]:
@@ -61,7 +61,8 @@ def _fila_solucion(prefijo: str, s) -> dict:
     return {f"{prefijo}_ok": 1, f"{prefijo}_obj": round(s.objetivo), f"{prefijo}_costo": round(d.costo_cop_m), f"{prefijo}_co2": round(d.co2_kg_m, 2),
             f"{prefijo}_perfil": g.perfil, f"{prefijo}_h_zapata": g.h_zapata, f"{prefijo}_t_corona": g.t_corona, f"{prefijo}_t_base": g.t_base,
             f"{prefijo}_b_puntera": g.b_puntera, f"{prefijo}_b_talon": g.b_talon, f"{prefijo}_dent_prof": g.dentellon_prof, f"{prefijo}_band_y": g.bandeja_y,
-            f"{prefijo}_band_vuelo": g.bandeja_vuelo, f"{prefijo}_evals": s.evaluaciones, f"{prefijo}_en_limite": "|".join(s.variables_en_limite)}
+            f"{prefijo}_band_vuelo": g.bandeja_vuelo, f"{prefijo}_evals": s.evaluaciones, f"{prefijo}_en_limite": "|".join(s.variables_en_limite),
+            f"{prefijo}_en_piso": "|".join(s.en_piso_constructivo)}
 
 
 def calcular(f: dict) -> dict:
@@ -94,7 +95,7 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--m", type=int, default=12)
     ap.add_argument("--seed", type=int, default=20261108)
-    ap.add_argument("--salida", default=str(RAIZ / "data" / "surrogate_muro" / "dataset.csv"))
+    ap.add_argument("--salida", default=str(RAIZ / "data" / "surrogate_muro" / "dataset_v2.csv"))
     ap.add_argument("--procesos", type=int, default=4)
     a = ap.parse_args()
     ruta = Path(a.salida)

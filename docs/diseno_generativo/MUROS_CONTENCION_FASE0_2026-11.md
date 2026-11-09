@@ -93,3 +93,29 @@ Implementado en `packages/motor-concreto/src/muro_contencion_estructural.py` con
 **Pareto** (`muro_pareto.py`): el costo y el CO₂ solo se separan con la mezcla (f'c y ceniza); para H = 4,5 m: mínimo costo 2,96 M COP/m con 1.320 kg CO₂e/m; mínima huella 3,01 M COP/m con 1.041 kg (+1,5 % costo, -21 % CO₂). Factores de CO₂ «bajo/alto» son SUPUESTOS.
 
 **Reglas (SHAP + árboles)** en `data/surrogate_muro/reglas.md`: solo descriptivas del optimizador bajo estas hipótesis; φ domina la elección (corte en φ ≈ 36,5°, exactitud 80 %).
+
+## 9. Calibración del dentellón y mínimos constructivos (2026-11-09)
+
+**Dentellón.** Se retiró la hipótesis escalonada («tan φ si la profundidad ≥ 0,30 m»), que explicaba buena parte del 53,7 % de victorias del dentellón de la sección 8. Modelo actual (`muro_contencion.resistencia_dentellon`), sin empuje pasivo (H.6.7b), continuo en la profundidad d_k y nulo sin dentellón:
+- *Aporte de punta* (HIPÓTESIS): sobre el ancho w de la punta la falla pasa por suelo (tan φ) en lugar de concreto-suelo (tan 2φ/3): (tan φ − μ)·q_punta·w·min(d_k/w, 1). La presión en la punta se toma de la distribución lineal de contacto.
+- *Reacción de las caras verticales*: en reposo la cara frontal y la posterior se anulan (K0 simétrico); solo la parte desplazada (Kp − Ka) cuenta, y esa es la que H.6.7b excluye. Parámetro `eta_pasivo_dentellon` (0 = lectura estricta, por defecto); η > 0 solo como sensibilidad.
+- Verificado con caso de mano (`test_dentellon_estricto_solo_aporta_la_punta_de_suelo`), continuidad y monotonía en d_k (`test_dentellon_es_continuo_en_la_profundidad`). 159 pruebas pasan.
+
+**Sensibilidad a η** (512 casos re-optimizados, `sensibilidad_dentellon.json`):
+
+| η | con solución | gana dentellón | gana estándar | ahorro mediano |
+|---|---|---|---|---|
+| 0 (estricto) | 44,5 % | 30,9 % | 13,5 % | 5,0 % |
+| 0,25 | 45,9 % | 35,0 % | 10,7 % | 6,8 % |
+| 0,5 | 47,3 % | 36,7 % | 10,4 % | 8,1 % |
+| 1,0 | 49,8 % | 39,3 % | 10,4 % | 10,8 % |
+
+Lectura: el dentellón sigue siendo la tipología ganadora más frecuente incluso en la lectura estricta, pero su ventaja crece con el empuje pasivo que se le conceda; la cifra de la sección 8 (53,7 %, ahorro 10,9 %) era mayor que la de cualquier η probado (≤ 39 %), es decir, el escalón regalaba más fricción que el empuje pasivo total. La fracción de casos sin solución sube de 32 % a 56 % porque ya no se regala fricción tan φ. η queda como decisión de ingeniería (no la fija la NSR-10): con η = 0 los resultados son defendibles ante H.6.7b.
+
+**Mínimos constructivos.** `t_corona = 0,25 m` pasa a ser constante de diseño (`T_CORONA`), ya no variable de búsqueda. Los demás mínimos (h_zapata 0,30; t_base 0,30; b_puntera 0,10; dentellón 0,10; vuelo de bandeja 0,40) son *pisos constructivos declarados* y se reportan aparte (`*_en_piso`), no como límite de búsqueda. Resultado del nuevo dataset (`dataset_v2.csv`, 4096 casos, 0 errores):
+- Variables pegadas al **techo** de búsqueda: ≤ 0,8 % en todas (compuerta del 5 % cumplida).
+- Variables pegadas al **piso** constructivo: h_zapata ≈ 59 %, t_base ≈ 57 %, b_puntera ≈ 29–34 %, vuelo de bandeja 50 %, dentellón 19 %. Esto NO es un hallazgo del optimizador: indica que, para estos rangos, el piso constructivo rige sobre la mecánica; hay que revisarlos con un constructor antes de publicarlos como regla.
+
+**Sustituto reentrenado** (`modelos_v2`, 614 reservados): viabilidad 95,8 % (base 56,4 %), tipología 91,4 % (mayoritaria 64,6 %), b_talon MAE 0,33 m, resto ≤ 0,08 m (bandeja: vuelo 0,23 m). **Guardrail** (400): 0 inseguros, 0 falsos inviables; directo 22,3 %, reparado 17,3 %, exacto 3,5 %, sin solución 57 %; brecha mediana 1,3 % (IC95 0,9–2,0 %), p90 10,6 %, p99 25,9 %; 14 casos < −1 % (optimizador local). Más brecha que en la v1 (p90 6 %): el espacio es más difícil y la corona fija recorta grados de libertad. Reglas: φ sigue dominando (corte ≈ 36,5°, 74 % de exactitud, menor que el 80 % de v1).
+
+Sigue pendiente: contrafuertes, anclajes/base inclinada para la región inviable, contraste con un ejemplo publicado (compuerta Fase 2).

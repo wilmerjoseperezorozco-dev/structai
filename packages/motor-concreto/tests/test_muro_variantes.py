@@ -5,7 +5,7 @@ import numpy as np
 import pytest
 
 from src.muro_contencion import (GeometriaMuro, Relleno, SueloApoyo, _piezas, coeficiente_activo_mononobe_okabe, coeficiente_activo_rankine,
-                                 mu_efectivo, verificar_estabilidad, verificar_estabilidad_sismica)
+                                 verificar_estabilidad, verificar_estabilidad_sismica)
 
 G = GeometriaMuro(3.0, 0.5, 0.3, 0.3, 0.6, 1.6)
 R = Relleno(18.0, 30.0)
@@ -62,17 +62,44 @@ def test_el_sismo_empeora_los_factores_pero_sus_limites_son_menores():
     assert any("1.05" in m for m in sis.motivos) or sis.fs_deslizamiento >= 1.05
 
 
-def test_dentellon_efectivo_sube_la_friccion_y_el_deslizamiento():
+def _q_en(res, B, x):
+    return res.sum_v_kn_m / B * (1.0 + 12.0 * res.excentricidad_m * (B / 2.0 - x) / B**2)
+
+
+def test_dentellon_estricto_solo_aporta_la_punta_de_suelo():
+    """Caso de mano: R = V·tan(2φ/3) + (tan φ − tan 2φ/3)·q(x_dentellón)·w, sin empuje pasivo (H.6.7b)."""
     gk = GeometriaMuro(3.0, 0.5, 0.3, 0.3, 0.6, 1.6, dentellon_prof=0.4)
-    assert mu_efectivo(gk, S) == pytest.approx(math.tan(math.radians(30.0)))
-    assert mu_efectivo(G, S) == pytest.approx(math.tan(math.radians(20.0)))
-    assert verificar_estabilidad(gk, R, S).fs_deslizamiento > verificar_estabilidad(G, R, S).fs_deslizamiento * 1.4
+    r = verificar_estabilidad(gk, R, S)
+    v, B = 141.84, 2.5
+    assert r.sum_v_kn_m == pytest.approx(v)
+    q = _q_en(r, B, 0.6 + 0.2)
+    esperado = (v * math.tan(math.radians(20.0)) + (math.tan(math.radians(30.0)) - math.tan(math.radians(20.0))) * q * 0.4) / 36.75
+    assert r.fs_deslizamiento == pytest.approx(esperado, rel=1e-6)
+    sin = verificar_estabilidad(G, R, S).fs_deslizamiento
+    assert sin < r.fs_deslizamiento < sin * 1.20         # el aporte estricto es modesto (aquí +13 %)
 
 
-def test_dentellon_corto_no_cambia_el_coeficiente_pero_suma_peso():
-    gk = GeometriaMuro(3.0, 0.5, 0.3, 0.3, 0.6, 1.6, dentellon_prof=0.2)
-    assert mu_efectivo(gk, S) == pytest.approx(S.mu)
-    assert verificar_estabilidad(gk, R, S).sum_v_kn_m == pytest.approx(138.0 + 0.2 * 0.4 * 24.0)
+def test_dentellon_pasivo_parcial_suma_la_reaccion_neta():
+    gk = GeometriaMuro(3.0, 0.5, 0.3, 0.3, 0.6, 1.6, dentellon_prof=0.4)
+    base = verificar_estabilidad(gk, R, S)
+    r = verificar_estabilidad(gk, R, SueloApoyo(30.0, 200.0, eta_pasivo_dentellon=0.5))
+    kp, ka = 3.0, 1.0 / 3.0
+    extra = 0.5 * 0.5 * (kp - ka) * 18.0 * ((1.0 + 0.4) ** 2 - 1.0)
+    assert (r.fs_deslizamiento - base.fs_deslizamiento) * 36.75 == pytest.approx(extra, rel=1e-6)
+
+
+def test_dentellon_es_continuo_en_la_profundidad():
+    prof = (0.0, 0.05, 0.10, 0.20, 0.30, 0.40, 0.60)
+    fs = [verificar_estabilidad(GeometriaMuro(3.0, 0.5, 0.3, 0.3, 0.6, 1.6, dentellon_prof=d), R, SueloApoyo(30.0, 200.0, eta_pasivo_dentellon=0.5)).fs_deslizamiento
+          for d in prof]
+    pendiente = np.diff(fs) / np.diff(prof)
+    assert (pendiente > 0).all() and pendiente.max() < 1.6      # monótono y sin escalón (el modelo anterior saltaba +40 % en 0,30 m)
+
+
+def test_mu_base_fijo_ignora_la_punta_del_dentellon():
+    gk = GeometriaMuro(3.0, 0.5, 0.3, 0.3, 0.6, 1.6, dentellon_prof=0.4)
+    s = SueloApoyo(30.0, 200.0, mu_base=0.5)
+    assert verificar_estabilidad(gk, R, s).fs_deslizamiento == pytest.approx(141.84 * 0.5 / 36.75, rel=1e-9)
 
 
 def test_bandeja_no_cambia_el_empuje_global_solo_el_peso():

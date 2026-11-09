@@ -1,0 +1,21 @@
+{
+  "n": 400,
+  "origenes": {
+    "sin_solucion": 0.57,
+    "directo": 0.2225,
+    "reparado": 0.1725,
+    "exacto": 0.035
+  },
+  "inseguros": 0,
+  "falsos_inviables": 0,
+  "tipo_correcto_directos": 0.9438202247191011,
+  "brecha_mediana": 0.013256907459499923,
+  "brecha_mediana_IC95": [
+    0.008615874773517218,
+    0.01985439683400969
+  ],
+  "brecha_p90": 0.10555814841737199,
+  "brecha_p99": 0.25894023457220894,
+  "brecha_negativa_mayor_1pct": 14,
+  "segundos_medio": 0.2589062237739563
+}

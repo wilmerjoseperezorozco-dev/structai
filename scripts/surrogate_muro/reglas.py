@@ -64,9 +64,9 @@ def reglas_dentellon(df: pd.DataFrame) -> tuple[str, pd.DataFrame]:
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--dataset", default=str(RAIZ / "data" / "surrogate_muro" / "dataset.csv"))
-    ap.add_argument("--modelos", default=str(RAIZ / "data" / "surrogate_muro" / "modelos"))
-    ap.add_argument("--salida", default=str(RAIZ / "data" / "surrogate_muro" / "reglas.md"))
+    ap.add_argument("--dataset", default=str(RAIZ / "data" / "surrogate_muro" / "dataset_v2.csv"))
+    ap.add_argument("--modelos", default=str(RAIZ / "data" / "surrogate_muro" / "modelos_v2"))
+    ap.add_argument("--salida", default=str(RAIZ / "data" / "surrogate_muro" / "reglas_v2.md"))
     a = ap.parse_args()
     df = preparar(pd.read_csv(a.dataset))
     df = df[df["error"].isna() | (df["error"] == "")]

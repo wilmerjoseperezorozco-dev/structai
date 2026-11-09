@@ -48,7 +48,7 @@ def memoria(caso: CasoMuro, g: GeometriaMuro, d: DisenoMuro) -> dict:
         L("Excentricidad e/B", round(float(est.excentricidad_m / g.ancho_base), 3), "Tabla H.6.9-1 (≤ 1/6)", "NSR-10 (leído)"),
         L("Presión máxima de contacto (kPa)", round(float(est.q_max_kpa), 1), "q_adm del estudio geotécnico", "NSR-10 (leído)"),
         L("Coeficiente activo Ka", round(est.ka, 4), "Rankine, plano virtual en el talón", "HIPÓTESIS"),
-        L("Fricción en la base μ", round(est.mu_usado, 3), "tan(2φ/3), tan φ con dentellón ≥ 0,30 m", "HIPÓTESIS"),
+        L("Fricción en la base μ", round(est.mu_usado, 3), "μ equivalente: tan(2φ/3) + aporte de la punta del dentellón (tan φ sobre su ancho), sin empuje pasivo (H.6.7b)", "HIPÓTESIS"),
         L("Combinaciones de carga", "A: B.2.4-2; S: B.2.4-7 con 1,4E; B: 0,9D+1,6H adicional", "B.2.4.2", "NSR-10 (leído) / HIPÓTESIS en 1,4E y B"),
         L("Recubrimientos", "75 mm contra suelo; 40/50 mm expuestos a suelo", "C.7.7.1", "NSR-10 (leído)"),
         L("Refuerzo mínimo de flexión", "max(0,25√f'c/fy; 1,4/fy)·b·d", "C.10.5.1", "NSR-10 (leído)"),

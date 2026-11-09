@@ -19,8 +19,8 @@ RAIZ = Path(__file__).resolve().parents[2]
 ESCENARIOS = {"bajo": (0.892, 1.00), "base": (1.010, 1.322), "alto": (1.15, 1.80)}
 ENTRADAS = ["H", "phi", "gamma", "q_adm", "q_s", "beta", "a_max", "mult_concreto", "p_acero", "fe_cemento", "fe_acero", "H_tanphi", "kh"]
 TIPOS = ["estandar", "dentellon", "bandeja"]
-DIMS = {"estandar": ["h_zapata", "t_corona", "t_base", "b_puntera", "b_talon"], "dentellon": ["h_zapata", "t_corona", "t_base", "b_puntera", "b_talon", "dent_prof"],
-        "bandeja": ["h_zapata", "t_corona", "t_base", "b_puntera", "b_talon", "band_y", "band_vuelo"]}
+DIMS = {"estandar": ["h_zapata", "t_base", "b_puntera", "b_talon"], "dentellon": ["h_zapata", "t_base", "b_puntera", "b_talon", "dent_prof"],
+        "bandeja": ["h_zapata", "t_base", "b_puntera", "b_talon", "band_y", "band_vuelo"]}
 PARAMS = dict(n_estimators=400, learning_rate=0.05, num_leaves=31, min_child_samples=10, subsample=0.9, subsample_freq=1, colsample_bytree=0.9, verbose=-1)
 
 
@@ -77,8 +77,8 @@ def metricas(mod: dict, res: pd.DataFrame) -> dict:
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--dataset", default=str(RAIZ / "data" / "surrogate_muro" / "dataset.csv"))
-    ap.add_argument("--salida", default=str(RAIZ / "data" / "surrogate_muro" / "modelos"))
+    ap.add_argument("--dataset", default=str(RAIZ / "data" / "surrogate_muro" / "dataset_v2.csv"))
+    ap.add_argument("--salida", default=str(RAIZ / "data" / "surrogate_muro" / "modelos_v2"))
     ap.add_argument("--seed", type=int, default=7)
     ap.add_argument("--hilos", type=int, default=4)
     a = ap.parse_args()

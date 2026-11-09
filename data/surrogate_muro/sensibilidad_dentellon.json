@@ -1,0 +1,45 @@
+{
+  "n": 512,
+  "resultados": {
+    "0.0": {
+      "con_solucion": 0.4453125,
+      "ganadora": {
+        "ninguna": 0.5547,
+        "dentellon": 0.3086,
+        "estandar": 0.1348,
+        "bandeja": 0.002
+      },
+      "ahorro_mediano": 0.05008363216975348
+    },
+    "0.25": {
+      "con_solucion": 0.458984375,
+      "ganadora": {
+        "ninguna": 0.541,
+        "dentellon": 0.3496,
+        "estandar": 0.1074,
+        "bandeja": 0.002
+      },
+      "ahorro_mediano": 0.06832251974093234
+    },
+    "0.5": {
+      "con_solucion": 0.47265625,
+      "ganadora": {
+        "ninguna": 0.5273,
+        "dentellon": 0.3672,
+        "estandar": 0.1035,
+        "bandeja": 0.002
+      },
+      "ahorro_mediano": 0.0811323777377641
+    },
+    "1.0": {
+      "con_solucion": 0.498046875,
+      "ganadora": {
+        "ninguna": 0.502,
+        "dentellon": 0.3926,
+        "estandar": 0.1035,
+        "bandeja": 0.002
+      },
+      "ahorro_mediano": 0.10753403431603537
+    }
+  }
+}

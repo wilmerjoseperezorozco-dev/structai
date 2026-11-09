@@ -16,7 +16,7 @@ from dataclasses import dataclass
 import numpy as np
 
 from .muro_contencion import (GAMMA_CONCRETO_KN_M3, GeometriaMuro, Relleno, SueloApoyo, coeficiente_activo_mononobe_okabe,
-                              coeficiente_activo_rankine, mu_efectivo)
+                              coeficiente_activo_rankine)
 from .muro_refuerzo import Franja, franja, phi_mn_knm, phi_vc_kn, recubrimiento, suelo, as_min_flexion
 from .viga import Materiales
 
