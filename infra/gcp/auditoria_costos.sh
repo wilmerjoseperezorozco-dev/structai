@@ -2,9 +2,11 @@
 # Auditoría de SOLO LECTURA: qué recursos del proyecto pueden estar generando costo.
 # No modifica nada. Uso: bash infra/gcp/auditoria_costos.sh   (requiere gcloud autenticado)
 set -u
+# Nunca preguntar ni habilitar APIs: una auditoría de solo lectura no debe modificar el proyecto.
+export CLOUDSDK_CORE_DISABLE_PROMPTS=1
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"; . "$HERE/config.sh"
 sec() { printf '\n== %s ==\n' "$1"; }
-try() { "$@" 2>&1 || echo "(no disponible: API deshabilitada o sin permiso)"; }
+try() { "$@" </dev/null 2>&1 || echo "(no disponible: API deshabilitada o sin permiso)"; }
 echo "Proyecto: $PROJECT   Región de referencia: $REGION   $(date -u +%FT%TZ)"
 
 sec "Cloud Run - servicios (todas las regiones)"
