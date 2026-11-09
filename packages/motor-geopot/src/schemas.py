@@ -35,7 +35,7 @@ class SlumpInput(BaseModel):
 
 class ConcretoRequest(BaseModel):
     fc_diseno_MPa: float
-    zona_sismica: str = Field(default="ALTA", description="BAJA | INTERMEDIA | ALTA")
+    zona_sismica: str = Field(..., description="BAJA | INTERMEDIA | ALTA (obligatoria: NSR-10 A.2.3)")
     proyecto: str = ""
     elemento: str = ""
     cilindros: list[CilindroInput] = Field(default_factory=list)
@@ -107,6 +107,6 @@ class MezclaACIRequest(BaseModel):
     fc_MPa: float
     tamaño_max_agregado_mm: float = 19.0
     asentamiento_mm: float = 75.0
-    zona_sismica: str = "ALTA"
+    zona_sismica: str = Field(..., description="BAJA | INTERMEDIA | ALTA (obligatoria: NSR-10 A.2.3)")
     densidad_fino: float = 2.65
     densidad_grueso: float = 2.70

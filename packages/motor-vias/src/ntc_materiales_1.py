@@ -225,7 +225,11 @@ class Cemento:
 
         resistencias_edad = []
         for edad, minimo in minimos.items():
-            valor = self.resistencia_compresion_mpa.get(edad, 0.0)
+            if edad not in self.resistencia_compresion_mpa:
+                fallas.append(f"Resistencia a {edad} días: no ensayada (NTC 121 exige el ensayo; mínimo {minimo} MPa)")
+                resistencias_edad.append({"edad_dias": edad, "valor_mpa": None, "minimo_mpa": minimo, "cumple": False})
+                continue
+            valor = self.resistencia_compresion_mpa[edad]
             cumple_edad = valor >= minimo
             if not cumple_edad:
                 fallas.append(f"Resistencia a {edad} días: {valor} MPa < mínimo {minimo} MPa (tipo {self.tipo.value})")
@@ -361,7 +365,11 @@ class CementoBlanco:
 
         resistencias_edad = []
         for edad, minimo in minimos.items():
-            valor = self.resistencia_mpa.get(edad, 0.0)
+            if edad not in self.resistencia_mpa:
+                fallas.append(f"Resistencia a {edad} días: no ensayada (NTC 1362 exige el ensayo; mínimo {minimo} MPa)")
+                resistencias_edad.append({"edad_dias": edad, "valor_mpa": None, "minimo_mpa": minimo, "cumple": False})
+                continue
+            valor = self.resistencia_mpa[edad]
             cumple_edad = valor >= minimo
             if not cumple_edad:
                 fallas.append(f"Resistencia a {edad} días: {valor} MPa < mínimo {minimo} MPa (tipo {self.tipo.value})")

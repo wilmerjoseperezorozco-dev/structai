@@ -718,3 +718,16 @@ def test_ancho_carril_tipo_sin_minimo_en_el_manual_lanza_valueerror_con_norma():
     )
     with pytest.raises(ValueError, match="INVIAS"):
         MotorValidacion(manual).validar(params)
+
+
+def test_ntc121_edad_sin_ensayo_se_reporta_como_no_ensayada_y_no_como_cero():
+    ce = Cemento(
+        nombre="CE-03", tipo=TipoCemento.UG,
+        resistencia_compresion_mpa={3: 13.0, 28: 29.0},   # falta el ensayo a 7 días
+        tiempo_fraguado_inicial_min=120.0, tiempo_fraguado_final_min=300.0,
+        expansion_autoclave_porcentaje=0.3, finura_blaine_m2_kg=350.0, densidad_g_cm3=3.15,
+    )
+    r = ce.verificar_ntc121()
+    assert r["veredicto"].startswith("NO CUMPLE")
+    assert any("no ensayada" in f and "NTC 121" in f for f in r["fallas"])
+    assert not any("0.0 MPa" in f for f in r["fallas"])

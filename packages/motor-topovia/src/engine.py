@@ -379,7 +379,18 @@ def radio_minimo_invias(
         60: 0.15, 70: 0.15, 80: 0.14, 90: 0.13,
         100: 0.12, 110: 0.10,
     }
-    f = friccion.get(velocidad_kmh, 0.14)
+    v_min, v_max = min(friccion), max(friccion)
+    if not v_min <= velocidad_kmh <= v_max:
+        raise ValueError(
+            f"Velocidad de diseño {velocidad_kmh} km/h fuera de la tabla de fricción lateral "
+            f"({v_min}-{v_max} km/h) del Manual de Diseño Geométrico INVIAS: no se asume fricción por defecto."
+        )
+    if velocidad_kmh in friccion:
+        f = friccion[velocidad_kmh]
+    else:  # interpolación lineal entre las dos velocidades tabuladas contiguas (f decrece con V)
+        v0 = max(v for v in friccion if v < velocidad_kmh)
+        v1 = min(v for v in friccion if v > velocidad_kmh)
+        f = friccion[v0] + (friccion[v1] - friccion[v0]) * (velocidad_kmh - v0) / (v1 - v0)
     return velocidad_kmh**2 / (127 * (peralte_max + f))
 
 

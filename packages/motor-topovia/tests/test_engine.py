@@ -268,3 +268,16 @@ def test_sn_flexible_contrato_uniforme():
 def test_sn_flexible_contrato_marca_borde_cuando_el_sn_es_extremo():
     from src.contrato_adapter import sn_flexible_con_contrato
     assert sn_flexible_con_contrato(1e10, 3000).en_borde_dominio is True
+
+
+def test_radio_minimo_velocidad_intermedia_interpola_la_friccion_entre_tabulados():
+    from src.engine import radio_minimo_invias
+    f = (0.14 + 0.13) / 2   # entre 80 y 90 km/h
+    assert radio_minimo_invias(85, 0.08) == pytest.approx(85**2 / (127 * (0.08 + f)))
+
+
+def test_radio_minimo_velocidad_fuera_de_tabla_lanza_valueerror_con_norma():
+    from src.engine import radio_minimo_invias
+    for v in (10, 130):
+        with pytest.raises(ValueError, match="INVIAS"):
+            radio_minimo_invias(v)

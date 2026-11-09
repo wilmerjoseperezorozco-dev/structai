@@ -417,3 +417,11 @@ def test_agregado_grueso_uso_desconocido_lanza_valueerror_con_norma():
                         masa_sumergida_g=1222.0, perdida_LA_pct=28.5)
     with pytest.raises(ValueError, match="NTC 174"):
         ag.verificar_ntc174("PLATINO")
+
+
+def test_solicitudes_exigen_zona_sismica_explicita():
+    from pydantic import ValidationError
+    with pytest.raises(ValidationError):
+        ConcretoRequest(fc_diseno_MPa=21.0)
+    with pytest.raises(ValidationError):
+        MezclaACIRequest(fc_MPa=21.0)
