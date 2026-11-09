@@ -1,0 +1,38 @@
+{
+ "rec75_sin_ensayo": {
+  "base_cop_mediana": 2777266,
+  "base_co2_mediana": 1540.8,
+  "ambos_min_co2_pct": 10.5,
+  "ambos_costo_pct": 11.3
+ },
+ "rec75_con_ensayo": {
+  "base_cop_mediana": 2777266,
+  "base_co2_mediana": 1540.8,
+  "ambos_min_co2_pct": 19.7,
+  "ambos_costo_pct": 10.5
+ },
+ "rec100_sin_ensayo": {
+  "base_cop_mediana": 3054968,
+  "base_co2_mediana": 1711.3,
+  "ambos_min_co2_pct": 18.7,
+  "ambos_costo_pct": 18.1
+ },
+ "rec100_con_ensayo": {
+  "base_cop_mediana": 3054968,
+  "base_co2_mediana": 1711.3,
+  "ambos_min_co2_pct": 27.1,
+  "ambos_costo_pct": 17.4
+ },
+ "rec125_sin_ensayo": {
+  "base_cop_mediana": 3075768,
+  "base_co2_mediana": 1717.9,
+  "ambos_min_co2_pct": 9.4,
+  "ambos_costo_pct": 10.2
+ },
+ "rec125_con_ensayo": {
+  "base_cop_mediana": 3075768,
+  "base_co2_mediana": 1717.9,
+  "ambos_min_co2_pct": 18.8,
+  "ambos_costo_pct": 9.3
+ }
+}

@@ -48,3 +48,16 @@ def test_el_optimo_troncopiramidal_nunca_usa_mas_que_el_prismatico():
 def test_espesor_de_borde_menor_a_d_minima_se_rechaza():
     r = t.verificar(2200.0, 450.0, 200.0, 400.0, CARGAS, SUELO, M)
     assert not r.cumple and "C.15.7" in r.motivo_fallo
+
+
+def test_mayor_recubrimiento_no_reduce_el_volumen_optimo():
+    from src import zapata as z
+    from src import zapata_troncopiramidal as t
+    from src.viga import Materiales
+    cargas = z.CargasZapata(P_serv=1000.0, P_u=1350.0)
+    suelo = z.Suelo(q_adm_kpa=200.0, profundidad_desplante_m=1.5)
+    m = Materiales(35.0, 420.0, 420.0)
+    base = t.optimizar(400.0, cargas, suelo, m, recubrimiento_mm=75.0)
+    mayor = t.optimizar(400.0, cargas, suelo, m, recubrimiento_mm=125.0)
+    assert base is not None and mayor is not None
+    assert mayor.volumen_m3 >= base.volumen_m3 - 1e-9

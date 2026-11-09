@@ -17,9 +17,16 @@ import numpy as np
 from .viga import AREA_MM2, DIAMETRO_MM, PHI_CORTANTE, PHI_FLEXION, Materiales  # noqa: F401
 from .zapata import (H_MIN_D_MM, PESO_CONCRETO_KN_M3, SEP_MAX_ABS_MM, CargasZapata, Suelo, _as_flexion, _barras, _rho_min)
 
-OFFSET_D_X_MM = 75.0 + 10.0              # recubrimiento + radio de barra (#6 supuesta), igual que zapata.py
-OFFSET_D_Y_MM = OFFSET_D_X_MM + 19.1     # segunda capa
-OFFSET_D_PUNZ_MM = OFFSET_D_X_MM + 9.55  # d promedio de ambas direcciones
+RECUBRIMIENTO_SUELO_MM = 75.0            # C.7.7.1(a): concreto colocado contra el suelo
+RADIO_BARRA_MM = 10.0                    # radio de barra (#6 supuesta), igual que zapata.py
+SEGUNDA_CAPA_MM = 19.1
+MEDIA_CAPA_MM = 9.55                     # d promedio de ambas direcciones para punzonamiento
+
+
+def _offsets(recub_mm: float) -> tuple[float, float, float]:
+    """(offset dir. x, offset dir. y, offset punzonamiento) = recubrimiento + radio (+ capa)."""
+    ox = recub_mm + RADIO_BARRA_MM
+    return ox, ox + SEGUNDA_CAPA_MM, ox + MEDIA_CAPA_MM
 ANGULO_SIN_CONTRAENCOFRADO_GRADOS = 25.0  # supuesto constructivo SIN fuente normativa: pendientes mayores requieren contraencofrado
 
 SUPUESTOS = (
@@ -71,8 +78,9 @@ def _espesor(s_mm: np.ndarray, a_mm: float, h_c: float, h_e: float) -> np.ndarra
 
 
 def verificar(L_mm: float, h_c_mm: float, h_e_mm: float, c_mm: float, cargas: CargasZapata, suelo: Suelo, m: Materiales,
-              *, lam: float = 1.0) -> ResultadoTroncopiramidal:
+              *, lam: float = 1.0, recubrimiento_mm: float = RECUBRIMIENTO_SUELO_MM) -> ResultadoTroncopiramidal:
     fc, fy = m.fc, m.fy
+    off_x, off_y, off_p = _offsets(recubrimiento_mm)
     a = (L_mm - c_mm) / 2
     fallos: list[str] = []
     A = (L_mm / 1000) ** 2
@@ -81,7 +89,7 @@ def verificar(L_mm: float, h_c_mm: float, h_e_mm: float, c_mm: float, cargas: Ca
     q = cargas.P_serv / A + PESO_CONCRETO_KN_M3 * h_med + suelo.peso_unitario_relleno_kn_m3 * max(suelo.profundidad_desplante_m - h_med, 0.0)
     if q > suelo.q_adm_kpa:
         fallos.append("q > q_adm")
-    if h_e_mm - OFFSET_D_Y_MM < H_MIN_D_MM:
+    if h_e_mm - off_y < H_MIN_D_MM:
         fallos.append("d < 150 mm (C.15.7)")
 
     pu = cargas.P_u / A                                   # kPa, presión neta última (igual que zapata.py)
@@ -91,7 +99,7 @@ def verificar(L_mm: float, h_c_mm: float, h_e_mm: float, c_mm: float, cargas: Ca
     rmin = _rho_min(fy)
     sep_max = min(3 * h_med * 1000, SEP_MAX_ABS_MM)
     barras = {}
-    for eje, off in (("x", OFFSET_D_X_MM), ("y", OFFSET_D_Y_MM)):
+    for eje, off in (("x", off_x), ("y", off_y)):
         d_s = h_s - off
         req = max(_as_flexion(float(Mi), L_mm, float(di), fc, fy) for Mi, di in zip(M, d_s))
         nec = max(req, rmin * L_mm * h_med * 1000)
@@ -99,14 +107,14 @@ def verificar(L_mm: float, h_c_mm: float, h_e_mm: float, c_mm: float, cargas: Ca
         if barras[eje] is None:
             fallos.append(f"flexión dir. {eje} sin solución")
     k = (h_c_mm - h_e_mm) / a
-    for eje, off in (("x", OFFSET_D_X_MM), ("y", OFFSET_D_Y_MM)):                       # cortante como viga a d de la cara
+    for eje, off in (("x", off_x), ("y", off_y)):                       # cortante como viga a d de la cara
         s_cr = (h_c_mm - off) / (1 + k)
         if 0 < s_cr < a:
             Vu = pu * (L_mm / 1000) * (a - s_cr) / 1000
             Vc = PHI_CORTANTE * 0.17 * lam * math.sqrt(fc) * L_mm * s_cr / 1000
             if Vu > Vc:
                 fallos.append(f"cortante viga dir. {eje}")
-    s_p = (h_c_mm - OFFSET_D_PUNZ_MM) / (2 + k)                                         # punzonamiento a d/2
+    s_p = (h_c_mm - off_p) / (2 + k)                                         # punzonamiento a d/2
     d_p = 2 * s_p
     b1 = c_mm + d_p
     bo = 4 * b1
@@ -124,7 +132,8 @@ def verificar(L_mm: float, h_c_mm: float, h_e_mm: float, c_mm: float, cargas: Ca
 
 
 def optimizar(c_mm: float, cargas: CargasZapata, suelo: Suelo, m: Materiales, *, paso_mm: float = 50.0, h_max_mm: float = 1000.0,
-              h_e_min_mm: float = 300.0, holgura_L_mm: float = 600.0) -> ResultadoTroncopiramidal | None:
+              h_e_min_mm: float = 300.0, holgura_L_mm: float = 600.0,
+              recubrimiento_mm: float = RECUBRIMIENTO_SUELO_MM) -> ResultadoTroncopiramidal | None:
     """Mínimo de (volumen + masa_acero/7850) —la misma función objetivo de `zapata.disenar`— sobre L, h_c y h_e en rejilla."""
     A_min = cargas.P_serv / suelo.q_adm_kpa
     L0 = max(math.ceil(math.sqrt(A_min) * 1000 / paso_mm) * paso_mm, c_mm + 200.0)
@@ -134,7 +143,7 @@ def optimizar(c_mm: float, cargas: CargasZapata, suelo: Suelo, m: Materiales, *,
             break
         for h_c in np.arange(h_e_min_mm, h_max_mm + 1, paso_mm):
             for h_e in np.arange(h_e_min_mm, h_c + 1, paso_mm):
-                r = verificar(float(L), float(h_c), float(h_e), c_mm, cargas, suelo, m)
+                r = verificar(float(L), float(h_c), float(h_e), c_mm, cargas, suelo, m, recubrimiento_mm=recubrimiento_mm)
                 if not r.cumple:
                     continue
                 obj = r.volumen_m3 + r.masa_acero_kg / 7850.0

@@ -36,3 +36,15 @@ Datos: `reoptimizacion_zapata_durabilidad_2026-11.json` (medianas de 15 casos; l
 
 Lectura: en costa el ahorro de CO₂ cae de 33 % a 10–20 % porque C2 obliga a f'c ≥ 35 MPa (más cemento) y S1 impide la ceniza sin un ensayo de 6 meses. El óptimo ya es interior respecto a la ceniza solo en interior (25 %, el tope); en costa con ensayo también topa en 25 %: **el tope sigue siendo el que manda, no el óptimo**.
 Notas: (1) con el modelo de Abrams, el 21 MPa sin ceniza da a/mc = 0,508, apenas sobre 0,50: es un artefacto del modelo sin calibrar, pero explica por qué en interior la línea base sube de f'c. (2) C.7.7.6 (recubrimiento para C2) y el cemento tipo II/MS no se verificaron en el costo; el recubrimiento extra de C2 aumentaría concreto y acero. (3) Retrieval de las tablas: la consulta con el numeral las devuelve, pero C.4.4.2 queda detrás de un fragmento viejo `C_4_4_1-sub3`.
+
+## Recubrimiento en ambiente C2 (2026-11-08)
+**C.7.7.6 ya estaba en el corpus, verbatim** (verificado contra la imagen de C-55; ingesta del 2026-09-09). Lo que dice es que, en ambientes corrosivos, el recubrimiento "debe aumentarse adecuadamente": **no da un número** para refuerzo no preesforzado. El factor 1,5 de C.7.7.6.1 es solo para preesforzado (Clase T o C). El mínimo normativo contra el suelo es 75 mm (C.7.7.1(a)), que ya usaba la zapata.
+Por eso 100 y 125 mm son **hipótesis de sensibilidad**, no requisitos. `zapata_troncopiramidal.verificar/optimizar` ahora aceptan `recubrimiento_mm` (default 75, comportamiento previo intacto). Script: `scripts/experimentos/sensibilidad_recubrimiento_c2_zapata.py`.
+
+| Recubrimiento (f'c 35, costa C2+S1) | Costo base (mediana, prisma sin ceniza) | CO₂ base (kg) |
+|---|---|---|
+| 75 mm (norma, contra el suelo) | 2.777.266 COP | 1.541 |
+| 100 mm (hipótesis) | 3.054.968 (+10 %) | 1.711 (+11 %) |
+| 125 mm (hipótesis) | 3.075.768 (+11 %) | 1.718 (+11 %) |
+
+Los porcentajes de ahorro frente a la base **no son monótonos** (con 100 mm el ahorro sube y con 125 mm baja) porque la rejilla de 50 mm en espesor y lado discretiza: no leer diferencias de pocos puntos. Lo robusto es el sobrecosto absoluto: un recubrimiento de 100 mm cuesta ~10 % más en la base. El óptimo de esta sensibilidad es por volumen + acero (no enumera todas las geometrías).
