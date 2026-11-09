@@ -248,6 +248,28 @@ La prórroga es robusta: al quitar cada departamento por turno el OR queda entre
 
 **Límites.** Falacia ecológica; 21 grupos; mezcla de 2011 frente a contratos 2016–2026; la proporción de pesados puede ser un indicador de la estructura económica del departamento (minería, agroindustria, comercio exterior) más que del tráfico en sí; la duración «Dia(s)» sin número excluye ~10 % de los contratos; el campo de avance parece autollenado; sin covariables departamentales (pobreza, capacidad fiscal, seguridad) cargadas localmente. Siguiente paso útil: incorporar covariables del DNP o DANE y repetir el logit con efectos aleatorios.
 
+## 5j. Prórrogas y pesados con covariables económicas departamentales (2026-11-09, issue #127)
+
+Script: `scripts/transporte/cruces_covariables.py`; resultados en `data/transporte/cruces_covariables.json`. Pregunta: ¿la asociación de 5i sobrevive al control por escala y estructura económica del departamento? Covariables: PIB departamental a precios constantes de 2015 (DANE, recurso `kgyi-qc7j` de datos.gov.co), promedio 2016–2023: log del PIB total y participación de minería, agro, industria y construcción (Bogotá se suma a Cundinamarca).
+
+**Método en dos etapas.** Con 21 departamentos la inferencia de efectos aleatorios es frágil. Etapa 1: logit de contrato (40.278 contratos) con efectos fijos de departamento y los controles de 5i, que da un efecto de prórroga ajustado por departamento con su error. Etapa 2: regresión ponderada por 1/ee² de ese efecto sobre pesados (+10 pp) y covariables estandarizadas, con inferencia t de G − k grados de libertad.
+
+Las covariables casi no se correlacionan con la proporción de pesados (Spearman: log PIB 0,29; minería 0,10; agro −0,20; industria 0,22; construcción −0,32), así que no son candidatas fuertes a explicar la asociación.
+
+| Modelo (prórroga) | OR por +10 pp de pesados | IC 95 % | p (t) | gl |
+|---|---|---|---|---|
+| M0 solo pesados | 1,171 | 1,018 a 1,347 | 0,030 | 19 |
+| M1 + escala (log PIB) | 1,166 | 1,005 a 1,352 | 0,043 | 18 |
+| M2 + escala + minería | 1,212 | 1,050 a 1,400 | 0,012 | 17 |
+| M3 + escala + minería + agro | 1,215 | 1,049 a 1,407 | 0,012 | 16 |
+| M4 + escala + minería + agro + industria + construcción | 1,214 | 1,031 a 1,429 | 0,023 | 14 |
+
+La estimación de prórroga **no se atenúa** al controlar por economía (1,17 sin covariables; 1,17 a 1,21 con ellas) y es coherente con el 1,144 del logit agrupado de 5i. La hipótesis de que los pesados fueran solo un indicador de tamaño o de minería queda debilitada con estas covariables, aunque no descartada: faltan seguridad, capacidad institucional y pobreza, que no hay cargadas localmente.
+
+**Suspensión.** Sin covariables el efecto no es distinguible de cero (OR 1,14; p = 0,22) y solo aparece al sumar covariables (OR 1,25; p = 0,026 con M4, 14 gl). Aumentar la significancia al agregar regresores, con 21 observaciones y varias especificaciones sin corregir, es señal de fragilidad, no de hallazgo: se mantiene como exploratorio, consistente con el resultado no robusto de 5i.
+
+**Límites.** Mismos de 5i (ecológico, 21 grupos, mezcla de 2011); con k = 6 en M4 quedan 14 grados de libertad; el PIB es de 2016–2023 y los contratos de 2016–2026; no hay covariables de seguridad, pobreza ni capacidad institucional; las cinco especificaciones no son pruebas independientes ni se corrigieron entre sí. Es un chequeo de sensibilidad de una asociación ya detectada, no una nueva prueba.
+
 ## 6. Qué no hace este documento
 
 No prueba que un modelo aprendido supere a la enumeración exacta para vigas aisladas (la medición de la sección 2 sugiere que no); no valida las cantidades contra planos reales; no incluye traslapos ni ganchos suplementarios.
