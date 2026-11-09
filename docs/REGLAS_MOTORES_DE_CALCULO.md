@@ -23,3 +23,19 @@ Vigente desde el 9 de noviembre de 2026. Aplica a los 12 motores existentes y a 
 | motor-concreto, motor-analisis, motor-deformacion, motor-estructural, motor-apu, motor-gerencia, motor-vulnerabilidad-vivienda, motor-acero-frio | Sin hallazgos de `.get` numérico en el barrido; resto no auditado | No | Contrato; pruebas de monotonicidad y dimensional |
 
 El contrato vive en `packages/contrato-motor`. La adopción completa en las funciones públicas de los 12 motores es la Fase 3 y no está hecha.
+
+## Hoja de ruta en issues (9 de noviembre de 2026)
+
+Transversales: [#130](https://github.com/wilmerjoseperezorozco-dev/structai/issues/130) Fase 3 (contrato y API) · [#131](https://github.com/wilmerjoseperezorozco-dev/structai/issues/131) gobernanza de sustitutos de aprendizaje · [#132](https://github.com/wilmerjoseperezorozco-dev/structai/issues/132) kit de verificación independiente · [#133](https://github.com/wilmerjoseperezorozco-dev/structai/issues/133) fail-fast residual · [#147](https://github.com/wilmerjoseperezorozco-dev/structai/issues/147) pruebas de plataforma y paquete geoespacial · [#148](https://github.com/wilmerjoseperezorozco-dev/structai/issues/148) resiliencia de datos externos.
+
+Datos y motores nuevos: [#134](https://github.com/wilmerjoseperezorozco-dev/structai/issues/134) IDF oficiales · [#135](https://github.com/wilmerjoseperezorozco-dev/structai/issues/135) sísmica municipal · [#136](https://github.com/wilmerjoseperezorozco-dev/structai/issues/136) asentamientos y consolidación · [#137](https://github.com/wilmerjoseperezorozco-dev/structai/issues/137) licuación · [#138](https://github.com/wilmerjoseperezorozco-dev/structai/issues/138) redes hidráulicas · [#139](https://github.com/wilmerjoseperezorozco-dev/structai/issues/139) alcantarillado y drenaje · [#140](https://github.com/wilmerjoseperezorozco-dev/structai/issues/140) puentes · [#141](https://github.com/wilmerjoseperezorozco-dev/structai/issues/141) acero, mampostería y madera · [#142](https://github.com/wilmerjoseperezorozco-dev/structai/issues/142) análisis modal 3D · [#143](https://github.com/wilmerjoseperezorozco-dev/structai/issues/143) eléctrica · [#144](https://github.com/wilmerjoseperezorozco-dev/structai/issues/144) minería e industrial · [#145](https://github.com/wilmerjoseperezorozco-dev/structai/issues/145) logística · [#146](https://github.com/wilmerjoseperezorozco-dev/structai/issues/146) impermeabilización.
+
+Ya existentes: #118 pilotes, #119 muros de corte, #120 nudos y ménsulas, #121 cerchas, #122 escaleras y losas, #123 gaviones y suelo reforzado, #81 acero formado en frío, #44 LSTM de caudal, #124–#128 refuerzo.
+
+## Orden de ejecución elegido
+
+1. #133 y #132 (cierran la Fase 1 y dan el marco de verificación).
+2. #130 en el orden motor-concreto → orquestador → análisis y deformación → resto.
+3. #131 antes de exponer cualquier sustituto de aprendizaje.
+4. #134 y #135 (datos que hoy dejan resultados no dimensionables o de resolución gruesa).
+5. Motores nuevos por impacto en seguridad: #136, #137, #138, #142, luego #139, #140, #141, y por último #143–#146.
