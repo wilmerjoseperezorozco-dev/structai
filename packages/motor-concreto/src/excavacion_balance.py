@@ -42,16 +42,20 @@ class Plan:
 
 def _validar(p: Problema) -> None:
     ni, nj, nl, nk = len(p.cortes_m3), len(p.demandas_m3), len(p.botaderos_cap_m3), len(p.prestamos_cap_m3)
-    if min(p.cortes_m3, default=0) < 0 or min(p.demandas_m3, default=0) < 0 or p.costo_cop_m3_km < 0 or not all(0 <= r <= 1 for r in p.aprovechable):
-        raise ValueError("volúmenes y costos >= 0; aprovechable en [0, 1]")
+    if ni < 1 or nj < 1:
+        raise ValueError("se requiere al menos un corte y un relleno")
+    escalares = np.array([*p.cortes_m3, *p.demandas_m3, p.costo_cop_m3_km, *p.aprovechable], float)
+    if not np.isfinite(escalares).all() or (escalares < 0).any() or not all(0 <= r <= 1 for r in p.aprovechable):
+        raise ValueError("volúmenes y costos finitos y >= 0; aprovechable en [0, 1]")
     if len(p.aprovechable) != ni or np.shape(p.d_corte_relleno_km) != (ni, nj) or np.shape(p.d_corte_botadero_km) != (ni, nl) or np.shape(p.d_prestamo_relleno_km) != (nk, nj):
         raise ValueError("dimensiones de distancias inconsistentes")
     if len(p.tarifa_botadero_cop_m3) != nl or len(p.precio_prestamo_cop_m3) != nk:
         raise ValueError("tarifas/precios inconsistentes con botaderos/préstamos")
     todas = np.concatenate([np.ravel(p.d_corte_relleno_km), np.ravel(p.d_corte_botadero_km), np.ravel(p.d_prestamo_relleno_km),
-                            p.tarifa_botadero_cop_m3, p.precio_prestamo_cop_m3, p.botaderos_cap_m3, p.prestamos_cap_m3]).astype(float)
-    if (todas < 0).any() or not np.isfinite(todas).all():
-        raise ValueError("distancias, tarifas, precios y capacidades deben ser finitos y >= 0 (use un valor grande para 'sin límite')")
+                            p.tarifa_botadero_cop_m3, p.precio_prestamo_cop_m3]).astype(float)
+    caps = np.array([*p.botaderos_cap_m3, *p.prestamos_cap_m3], float)
+    if (todas < 0).any() or not np.isfinite(todas).all() or (caps < 0).any() or np.isnan(caps).any():
+        raise ValueError("distancias, tarifas y precios finitos y >= 0; capacidades >= 0 (float('inf') = sin límite)")
 
 
 def _resolver(p: Problema, c: np.ndarray, extra_ub=None):
@@ -83,13 +87,15 @@ def _resolver(p: Problema, c: np.ndarray, extra_ub=None):
     for l in range(nl):
         g = np.zeros(n)
         g[[iy(i, l) for i in range(ni)]] = 1
-        a_ub.append(g)
-        b_ub.append(p.botaderos_cap_m3[l])
+        if np.isfinite(p.botaderos_cap_m3[l]):
+            a_ub.append(g)
+            b_ub.append(p.botaderos_cap_m3[l])
     for k in range(nk):
         g = np.zeros(n)
         g[[iz(k, j) for j in range(nj)]] = 1
-        a_ub.append(g)
-        b_ub.append(p.prestamos_cap_m3[k])
+        if np.isfinite(p.prestamos_cap_m3[k]):
+            a_ub.append(g)
+            b_ub.append(p.prestamos_cap_m3[k])
     if extra_ub is not None:
         a_ub.append(extra_ub[0])
         b_ub.append(extra_ub[1])
@@ -129,7 +135,7 @@ def resolver_balance(p: Problema, objetivo: str = "costo") -> Plan:
     r1, dims = _resolver(p, -sel)
     if not r1.success:
         raise ValueError(f"balance infactible: {r1.message}")
-    r2, dims = _resolver(p, c, extra_ub=(-sel, -(float(sel @ r1.x) - 1e-7)))
+    r2, dims = _resolver(p, c, extra_ub=(-sel, -(float(sel @ r1.x) - 1e-6 * max(1.0, float(sel @ r1.x)))))
     if not r2.success:
         raise ValueError(f"balance infactible: {r2.message}")
     return _a_plan(p, r2, dims)

@@ -60,6 +60,9 @@ def test_infactible_y_validaciones():
         resolver_balance(_p(botaderos_cap_m3=(100.0,), aprovechable=(0.0,)))     # 1000 m³ sin dónde ir y sin reutilizar
     with pytest.raises(ValueError):
         resolver_balance(_p(aprovechable=(1.5,)))
+    assert resolver_balance(_p(botaderos_cap_m3=(float("inf"),), prestamos_cap_m3=(float("inf"),))).reutilizacion_pct == pytest.approx(60.0)        # inf = sin límite
     with pytest.raises(ValueError):
-        resolver_balance(_p(botaderos_cap_m3=(float("inf"),)))
+        resolver_balance(_p(cortes_m3=(float("nan"),)))
+    with pytest.raises(ValueError):
+        resolver_balance(_p(demandas_m3=(), d_corte_relleno_km=((),), d_prestamo_relleno_km=((),)))
     assert combustible_gal_por_m3_km(6.0, 10.0, 0.25) == pytest.approx(2 * 1.25 / 60.0)

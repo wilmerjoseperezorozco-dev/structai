@@ -138,10 +138,19 @@ def test_agua_no_produce_fs_absurdo_y_la_caida_es_moderada():
     assert medio < seco and 0.2 < alto <= medio + 1e-9 and medio > 0.3 * seco
 
 
-def test_phi_cero_con_sismo_da_fs_finito_y_acotado():
-    # regresión: antes Nelder-Mead divergía a círculos gigantes (FS ~ 1e-42)
-    r = factor_seguridad_talud(perfil_talud(6.0, 45.0), SueloExc(gamma=18.0, c_kpa=200.0, phi_deg=0.0), kh=0.3)
-    assert 0.5 < r.fs < 100.0
+def test_phi_cero_con_sismo_depende_de_la_cota_y_lo_senala():
+    # en phi=0 con sismo el FS decrece al profundizar el círculo: el resultado depende del estrato firme supuesto; el módulo debe señalarlo
+    suelo, p = SueloExc(gamma=18.0, c_kpa=30.0, phi_deg=0.0), perfil_talud(6.0, 30.0)
+    por_defecto = factor_seguridad_talud(p, suelo, kh=0.1, grieta_traccion=False)
+    profundo = factor_seguridad_talud(p, suelo, kh=0.1, grieta_traccion=False, prof_estrato_firme=18.0)
+    assert por_defecto.en_borde_dominio and 0.5 < por_defecto.fs < 100.0
+    assert profundo.fs < por_defecto.fs          # un estrato más profundo admite superficies más críticas (el tope por defecto era no conservador)
+
+
+def test_selector_no_acepta_talud_cuyo_fs_depende_de_la_cota_de_busqueda():
+    from src.excavacion_estabilidad import decidir_talud_o_contencion
+    d = decidir_talud_o_contencion(6.0, SueloExc(gamma=18.0, c_kpa=30.0, phi_deg=0.0), 50.0, sismo=True, kh=0.12, grieta_traccion=False)
+    assert d.alternativa == "contencion" and d.advertencia is not None
 
 
 def test_selector_exige_kh_coherente_con_sismo():

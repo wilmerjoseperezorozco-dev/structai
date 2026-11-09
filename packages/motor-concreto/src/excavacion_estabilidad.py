@@ -13,7 +13,7 @@ Norma (leída del PDF fuente el 2026-11-09):
 
 HIPÓTESIS DE INVESTIGACIÓN (no están en la norma): (1) Bishop simplificado con búsqueda de círculos (rejilla y refinamiento); (2) suelo homogéneo; (3) freática
 horizontal, con presión de poros hidrostática limitada a la superficie del terreno (sin red de flujo): si queda sobre el fondo de la excavación hay flujo y se marca `requiere_abatimiento`; (4) grieta de tracción SECA (sin empuje hidrostático: no conservador con agua alta) de
-profundidad 2c/(γ√Ka) (conservadora respecto de una grieta inexistente); (5) sobrecarga en franja uniforme sin dispersión; (6) sismo como fuerza horizontal kh·W en el
+profundidad 2c/(γ√Ka) (conservadora respecto de una grieta inexistente); (5) sobrecarga en franja uniforme sin dispersión (la parte que cae sobre la masa trasera que corta la grieta se descarta junto con ella); (5b) la superficie de falla no baja más de 1,2·H bajo el pie salvo que se dé `prof_estrato_firme` (hipótesis de estrato firme, no dato: ver `en_borde_dominio`); (6) sismo como fuerza horizontal kh·W en el
 centroide de cada dovela. No cubre falla de fondo, flujo, suelos estratificados ni superficies no circulares. No es un estudio geotécnico (H.1): los parámetros son del sitio.
 """
 from __future__ import annotations
@@ -125,6 +125,7 @@ class ResultadoTalud:
     radio: float
     profundidad_grieta_m: float
     requiere_abatimiento: bool
+    en_borde_dominio: bool = False          # el óptimo toca la cota de radio o de profundidad: el FS depende de esa cota (ver prof_estrato_firme)
 
 
 def _fs_circulo(xc, yc, radio, perfil: Perfil, suelo: SueloExc, y_agua, q, q_x, kh, z_grieta) -> float:
@@ -182,8 +183,11 @@ def _fs_circulo(xc, yc, radio, perfil: Perfil, suelo: SueloExc, y_agua, q, q_x, 
 
 
 def factor_seguridad_talud(perfil: Perfil, suelo: SueloExc, prof_freatico: float | None = None, sobrecarga_kpa: float = 0.0,
-                           sobrecarga_x: tuple[float, float] | None = None, kh: float = 0.0, grieta_traccion: bool = True) -> ResultadoTalud:
-    """FS mínimo de Bishop simplificado. `prof_freatico`: profundidad del agua bajo la corona (m); None = sin agua. `sobrecarga_x`: (x_ini, x_fin) de la franja en el sistema del perfil."""
+                           sobrecarga_x: tuple[float, float] | None = None, kh: float = 0.0, grieta_traccion: bool = True,
+                           prof_estrato_firme: float | None = None) -> ResultadoTalud:
+    """FS mínimo de Bishop simplificado. `prof_freatico`: profundidad del agua bajo la corona (m); None = sin agua. `sobrecarga_x`: (x_ini, x_fin) de la franja en el sistema del perfil.
+    `prof_estrato_firme`: profundidad (m, bajo el pie) de un estrato firme que limita la superficie de falla. Si es None se ASUME 1,2·H (cota de búsqueda, no un dato
+    del sitio): en φ = 0 con sismo el FS decrece sin límite al agrandar el círculo, así que el resultado depende de esa cota y `en_borde_dominio` lo señala."""
     if sobrecarga_kpa < 0 or kh < 0 or (prof_freatico is not None and prof_freatico < 0):
         raise ValueError("sobrecarga, kh y profundidad freática deben ser >= 0")
     if sobrecarga_kpa > 0 and sobrecarga_x is None:
@@ -195,7 +199,10 @@ def factor_seguridad_talud(perfil: Perfil, suelo: SueloExc, prof_freatico: float
         z_grieta = min(2.0 * suelo.c_kpa / (suelo.gamma * math.sqrt(ka)), 0.9 * perfil.altura)
     args = (perfil, suelo, y_agua, sobrecarga_kpa, sobrecarga_x or (0.0, 0.0), kh, z_grieta)
     s = max(perfil.altura, perfil.x_cresta)
-    r_max, y_min = FACTOR_RADIO_MAX * s, PROF_BASE[-1] * perfil.altura        # dominio de búsqueda: sin círculos gigantes ni más profundos que 1,2 H bajo el pie
+    if prof_estrato_firme is not None and prof_estrato_firme <= 0:
+        raise ValueError("prof_estrato_firme debe ser > 0")
+    r_max = FACTOR_RADIO_MAX * s
+    y_min = prof_estrato_firme if prof_estrato_firme is not None else PROF_BASE[-1] * perfil.altura        # dominio de búsqueda: sin círculos gigantes ni más profundos que 1,2 H bajo el pie
 
     def fs_acotado(xc, yc, r):
         if r <= 0.0 or r > r_max or yc - r < -y_min:
@@ -219,7 +226,8 @@ def factor_seguridad_talud(perfil: Perfil, suelo: SueloExc, prof_freatico: float
         r = minimize(lambda p: fs_acotado(p[0], p[1], p[2]), [x0, y0, r0], method="Nelder-Mead", options={"xatol": 1e-3, "fatol": 1e-6, "maxiter": 250})
         if r.fun < mejor[0]:
             mejor = (float(r.fun), *map(float, r.x))
-    return ResultadoTalud(mejor[0], mejor[1], mejor[2], mejor[3], z_grieta, bool(y_agua is not None and y_agua > 0))
+    en_borde = bool(mejor[3] >= 0.98 * r_max or (prof_estrato_firme is None and mejor[2] - mejor[3] <= -0.98 * y_min))
+    return ResultadoTalud(mejor[0], mejor[1], mejor[2], mejor[3], z_grieta, bool(y_agua is not None and y_agua > 0), en_borde)
 
 
 def altura_critica_bishop(suelo: SueloExc, angulo_deg: float = 90.0, h_max: float = 200.0, tol: float = 1e-3, **kw) -> float:
@@ -260,6 +268,7 @@ class DecisionExcavacion:
     retiro_horizontal_m: float | None     # H / tan(beta): distancia en planta que ocupa el talud
     area_excavada_m2_por_m: float | None  # sección de corte por metro de longitud, ancho de fondo `ancho_fondo`
     fs_requerido: float
+    advertencia: str | None = None
 
 
 def decidir_talud_o_contencion(altura: float, suelo: SueloExc, distancia_lindero: float, estado: str = "construccion", sismo: bool = False,
@@ -274,6 +283,8 @@ def decidir_talud_o_contencion(altura: float, suelo: SueloExc, distancia_lindero
     ang = angulo_maximo_seguro(altura, suelo, req, **kw)
     if ang is None:
         return DecisionExcavacion("contencion", None, None, None, req)
+    if "prof_estrato_firme" not in kw and factor_seguridad_talud(perfil_talud(altura, ang), suelo, **kw).en_borde_dominio:
+        return DecisionExcavacion("contencion", ang, None, None, req, "el FS del talud depende de la cota de búsqueda (estrato firme supuesto a 1,2 H): sin dato de sitio no se acepta el talud; pase prof_estrato_firme")
     retiro = 0.0 if ang >= 90.0 else altura / math.tan(math.radians(ang))
     area = altura * (ancho_fondo + 0.5 * retiro)
     alt = "talud" if retiro <= distancia_lindero else "contencion"

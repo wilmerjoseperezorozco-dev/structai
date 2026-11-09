@@ -55,9 +55,10 @@ def dimensionar_voladizo(suelo: SueloExc, altura: float, sobrecarga_kpa: float, 
         d = brentq(f, 1e-3, 20.0 * altura)
     else:
         d = 0.0
-    d = max(d, empotramiento_min_m)
-    z, act, pas = _presiones(suelo, altura, d, sobrecarga_kpa, fs_pasivo)
+    d_diag = max(d, empotramiento_min_m)
+    d_total = max(d * factor_longitud, empotramiento_min_m)        # el factor amplía el empotramiento calculado; el piso práctico no se multiplica
+    z, act, pas = _presiones(suelo, altura, d_diag, sobrecarga_kpa, fs_pasivo)
     corte = np.concatenate([[0.0], np.cumsum(0.5 * ((act - pas)[1:] + (act - pas)[:-1]) * np.diff(z))])        # cortante (act - pas) acumulado desde la cabeza
     momento = np.concatenate([[0.0], np.cumsum(0.5 * (corte[1:] + corte[:-1]) * np.diff(z))])
     m_max = float(np.abs(momento).max())
-    return Pantalla(d * factor_longitud, altura + d * factor_longitud, m_max, False)
+    return Pantalla(d_total, altura + d_total, m_max, False)

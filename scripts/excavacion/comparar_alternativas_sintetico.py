@@ -15,6 +15,7 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(RAIZ / "packages" / "motor-concreto"))
 from src.transporte_acero import KG_CO2_GAL  # noqa: E402
+from src.excavacion_apuntalada import dimensionar_apuntalada  # noqa: E402
 from src.excavacion_contencion import dimensionar_voladizo  # noqa: E402
 from src.excavacion_estabilidad import SueloExc, angulo_maximo_seguro, factor_seguridad_requerido, perfil_talud  # noqa: E402
 from src.excavacion_metricas import costo_riesgo_geotecnico, indice_eficiencia_geometrica, intensidad_energetica  # noqa: E402
@@ -24,7 +25,7 @@ SINTETICO = {
     "suelo": {"gamma": 18.0, "c_kpa": 10.0, "phi_deg": 27.0}, "cov_c": 0.30, "cov_tan_phi": 0.10,
     "costo_consecuencia_cop_por_m": 400e6, "precio_excavacion_cop_m3": 25000.0,
     "sobrecarga_kpa": 10.0, "fs_pasivo": 1.5, "h_max_voladizo_m": 6.0, "empotramiento_min_m": 1.0, "factor_longitud_pantalla": 1.3, "holgura_trabajo_m": 0.5,
-    "precio_pantalla_cop_m2": 600000.0, "prob_falla_contencion": 0.005,
+    "precio_pantalla_cop_m2": 600000.0, "prof_apoyo_m": 1.0, "precio_apoyo_cop_por_m_frente": 1500000.0, "prob_falla_apuntalada": 0.003, "prob_falla_contencion": 0.005,
     "consumo_gal_h": 6.0, "rendimiento_m3_h": 40.0, "factor_kgco2e_gal": KG_CO2_GAL["diesel_fecoc"],
 }
 
@@ -66,6 +67,33 @@ def evaluar_contencion(d: dict) -> dict:
             "prob_falla": d["prob_falla_contencion"], "prob_falla_es_supuesto": True, "costo_riesgo_cop_por_m": round(riesgo), "costo_total_cop_por_m": round(costo_exc + costo_pan + riesgo)}
 
 
+def evaluar_apuntalada(d: dict) -> dict:
+    s = SueloExc(**d["suelo"])
+    pan = dimensionar_apuntalada(s, d["altura_m"], d["prof_apoyo_m"], d["sobrecarga_kpa"], d["fs_pasivo"], factor_longitud=d["factor_longitud_pantalla"])
+    if pan.sin_solucion:
+        return {"alternativa": "pantalla apoyada (1 nivel)", "nota": "sin solución con estos parámetros"}
+    area_proy, area = d["ancho_fondo_m"] * d["altura_m"], (d["ancho_fondo_m"] + d["holgura_trabajo_m"]) * d["altura_m"]
+    inten = intensidad_energetica(d["consumo_gal_h"], d["rendimiento_m3_h"], d["factor_kgco2e_gal"])
+    costo_exc, costo_pan = area * d["precio_excavacion_cop_m3"], pan.longitud_total_m * d["precio_pantalla_cop_m2"]
+    costo_apoyo = d["precio_apoyo_cop_por_m_frente"]
+    riesgo = d["prob_falla_apuntalada"] * d["costo_consecuencia_cop_por_m"]
+    return {"alternativa": "pantalla apoyada (1 nivel)", "angulo_deg": 90.0, "retiro_horizontal_m": d["holgura_trabajo_m"], "cabe_en_predio": d["holgura_trabajo_m"] <= d["distancia_lindero_m"],
+            "ieg": round(indice_eficiencia_geometrica(area_proy, area), 3), "area_m2_por_m": round(area, 1), "gal_acpm_por_m_long": round(area * inten.gal_por_m3, 1),
+            "kgco2e_por_m_long": round(area * inten.kg_co2e_por_m3, 0), "empotramiento_m": round(pan.empotramiento_m, 2), "longitud_pantalla_m": round(pan.longitud_total_m, 2),
+            "reaccion_apoyo_kn_por_m": round(pan.reaccion_apoyo_kn_por_m, 1), "momento_max_knm_por_m": round(pan.momento_max_knm_por_m, 1), "costo_excavacion_cop_por_m": round(costo_exc),
+            "costo_pantalla_cop_por_m": round(costo_pan), "costo_apoyo_cop_por_m": round(costo_apoyo), "prob_falla": d["prob_falla_apuntalada"], "prob_falla_es_supuesto": True,
+            "costo_riesgo_cop_por_m": round(riesgo), "costo_total_cop_por_m": round(costo_exc + costo_pan + costo_apoyo + riesgo)}
+
+
+def mapa_decision(filas: list, linderos: list) -> list:
+    """Mejor alternativa (menor costo total) entre las que caben para cada distancia al lindero. La Pf de las contenciones es supuesto."""
+    mapa = []
+    for lin in linderos:
+        ok = sorted((f for f in filas if f.get("retiro_horizontal_m") is not None and f["retiro_horizontal_m"] <= lin and f.get("costo_total_cop_por_m") is not None), key=lambda f: f["costo_total_cop_por_m"])
+        mapa.append({"lindero_m": lin, "mejor": ok[0]["alternativa"] if ok else "ninguna cabe", "costo_millones_cop_por_m": round(ok[0]["costo_total_cop_por_m"] / 1e6, 2) if ok else None})
+    return mapa
+
+
 def main() -> None:
     d = SINTETICO
     s = SueloExc(**d["suelo"])
@@ -76,6 +104,7 @@ def main() -> None:
         filas.append(evaluar(f"talud {ang:.0f}°", ang, (), d))
     filas.append(evaluar(f"talud {amax:.0f}° con berma de 2 m a media altura", amax, ((d["altura_m"] / 2, 2.0),), d))
     filas.append(evaluar_contencion(d))
+    filas.append(evaluar_apuntalada(d))
     viables = sorted((f for f in filas if f.get("cabe_en_predio") and f.get("costo_total_cop_por_m") is not None), key=lambda f: f["costo_total_cop_por_m"])
     ranking = [f["alternativa"] for f in viables]
     # sensibilidad: Pf de la contención que la empata con la mejor alternativa de talud (la Pf de la contención es supuesto, no cálculo)
@@ -86,12 +115,13 @@ def main() -> None:
         sin_riesgo = cont["costo_total_cop_por_m"] - cont["costo_riesgo_cop_por_m"]
         margen = taludes[0]["costo_total_cop_por_m"] - sin_riesgo
         pf_empate = margen / d["costo_consecuencia_cop_por_m"] if margen > 0 else None        # None: aun con Pf = 0 la contención cuesta más que el mejor talud
-    salida = {"sintetico": True, "aviso": "Entradas inventadas para validar la tubería; no usar para decisiones de obra.", "entradas": d, "fs_requerido": req, "ranking_por_costo_total_entre_las_que_caben": ranking, "pf_contencion_que_empata_con_el_mejor_talud": pf_empate, "resultados": filas}
+    salida = {"sintetico": True, "aviso": "Entradas inventadas para validar la tubería; no usar para decisiones de obra.", "entradas": d, "fs_requerido": req, "ranking_por_costo_total_entre_las_que_caben": ranking, "pf_contencion_que_empata_con_el_mejor_talud": pf_empate, "mapa_decision_por_lindero": mapa_decision(filas, [3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 10.0]), "resultados": filas}
     destino = RAIZ / "data" / "excavacion" / "comparacion_sintetica.json"
     destino.parent.mkdir(parents=True, exist_ok=True)
     destino.write_text(json.dumps(salida, ensure_ascii=False, indent=2), encoding="utf-8")
     for f in filas:
         print(f)
+    print(json.dumps(mapa_decision(filas, [3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 10.0]), ensure_ascii=False))
     print("RANKING:", ranking, "Pf de empate de la contención:", pf_empate)
 
 

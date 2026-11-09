@@ -55,13 +55,15 @@ El número de estabilidad del corte vertical con φ = 0 (4,25) coincide en tres 
 | Hallazgo | Efecto antes de corregir | Corrección |
 |---|---|---|
 | Presión de poros sin limitar a la superficie del terreno | FS = 0,0013 en un caso con freática a 3 m (físicamente absurdo); distorsionaba el ángulo máximo seguro | Carga piezométrica limitada al terreno |
-| Refinamiento Nelder-Mead sin cotas | Con φ = 0 y sismo, círculos de radio 10⁴³ y FS ≈ 10⁻⁴²; el selector elegía contención para cualquier arcilla con sismo | Dominio acotado (R ≤ 15·max(H, retiro), profundidad ≤ 1,2 H) |
+| Refinamiento Nelder-Mead sin cotas | Con φ = 0 y sismo, círculos de radio 10⁴³ y FS ≈ 10⁻⁴²; el selector elegía contención para cualquier arcilla con sismo | Dominio acotado (R ≤ 15·max(H, retiro), profundidad ≤ 1,2 H). **La cota es una hipótesis, no un dato**: ver 6.4 |
 | `sismo=True` sin kh | Análisis estático contra FS 1,00: talud de 67,3° en vez de 61,9° | El selector exige kh coherente con `sismo` |
 | Alternativas comparadas con hipótesis distintas | Taludes sin sobrecarga ni grieta frente a una contención con sobrecarga; el talud "máximo seguro" de 54,2° no cumplía 1,25 con grieta y sobrecarga (50,6° sí) | Misma sobrecarga y grieta en todas |
 | Voladizo con φ ≈ 0 | Excepción cruda de `brentq` | Devuelve `requiere_apoyos` |
+| Piso práctico de empotramiento multiplicado por el factor de longitud | Un piso de 1,0 m pasaba a 1,3 m | El factor se aplica al empotramiento calculado y el piso se aplica después |
 | Empotramiento del voladizo sin factor | Resultante horizontal sin equilibrar (empotramiento corto) | `factor_longitud` obligatorio, del usuario |
 | Costo de consecuencia sin base de longitud | Se sumaba un evento a costos por metro | Declarado por metro de frente |
 | Bishop sin convergencia y FS infinito | Aceptados en silencio | El círculo se descarta; sin superficie válida lanza error |
+| Balance de tierras: validación incompleta, tolerancia absoluta en la segunda etapa, capacidades 1e9 como infinito | NaN pasaba a HiGHS; riesgo de infactibilidad espuria | Validación de finitud, capacidades `inf` admitidas, tolerancia relativa |
 
 Quedan como limitaciones documentadas: la grieta se modela seca (no conservador con freática alta), el agua se trata sin red de flujo, y la bisección del ángulo máximo supone FS decreciente con el ángulo (no vale con franja de sobrecarga en coordenadas absolutas).
 
@@ -71,6 +73,7 @@ Quedan como limitaciones documentadas: la grieta se modela seca (no conservador 
 |---|---|---|---|---|---|
 | Talud 51° con berma de 2 m a media altura | 6,93 | 0,74 | 1,59 | 0,08 % | 2,3 |
 | Contención en voladizo (13,1 m de pantalla con factor 1,3; M máx 281 kN·m/m) | 0,5 | 0,95 | — | 0,5 % (supuesto) | 11,4 |
+| Pantalla apoyada de 1 nivel (8,9 m, apoyo a 1 m, reacción 37 kN/m, M máx 92 kN·m/m) | 0,5 | 0,95 | — | 0,3 % (supuesto) | 9,6 |
 | Talud 45° | 6,00 | 0,77 | 1,38 | 2,5 % | 12,1 |
 | Talud 50,6° (máximo con FS 1,25) | 4,93 | 0,80 | 1,25 | 7,3 % | 31,0 |
 | Talud 35° | 8,57 | 0,70 | 1,69 | 0,2 % | 3,0 (no cabe en el predio) |
@@ -79,9 +82,16 @@ Quedan como limitaciones documentadas: la grieta se modela seca (no conservador 
 
 1. **El ángulo que apenas cumple la Tabla H.2.4-1 es el más caro cuando se valora el riesgo.** Con FS 1,25 la probabilidad de falla estimada es 7,3 %; a 45° baja a 2,5 % y con una berma de 2 m a 0,08 %. La norma fija un factor mínimo, no un riesgo aceptable, y la distancia entre ambos es de un orden de magnitud en probabilidad.
 2. **La berma es la intervención de mayor rendimiento en este caso:** sube el FS de 1,25 a 1,59 con 2 m más de retiro y 6 m² más de corte por metro (IEG de 0,80 a 0,74). Su costo extra de excavación es marginal frente al riesgo evitado.
-3. **La contención en voladizo no gana ni con probabilidad de falla cero:** su costo sin riesgo (9,4 millones COP/m) ya supera el costo total de la mejor alternativa de talud. Por tanto, el resultado no depende del supuesto de Pf = 0,5 % que se le asignó. Solo cambia si el lindero queda a menos de ~6,9 m (retiro de la berma): entonces la mejor alternativa de talud que cabe cuesta más (12,1 millones a 45° y 31,0 a 50,6°) y la contención pasa a ser la más barata.
-4. **Eficiencia geométrica y riesgo se oponen:** la contención tiene el mayor IEG (0,95) pero un voladizo de 6 m con 7,1 m de empotramiento está en el límite de lo razonable; en obra se compararía con pantallas apoyadas, no dimensionadas aquí.
+3. **Ninguna contención gana si el predio permite retiro, ni con probabilidad de falla cero:** el voladizo cuesta 9,4 millones COP/m sin riesgo y la pantalla apoyada 8,4, frente a 2,3 de la mejor alternativa de talud. El resultado no depende de las probabilidades de falla supuestas (0,5 % y 0,3 %). Cambia solo cuando el lindero queda a menos de ~6,9 m (retiro de la berma): entonces la mejor opción es la pantalla apoyada (9,6 millones/m, frente a 12,1 del talud de 45° que cabe hasta 6 m). Mapa de decisión sintético por distancia al lindero: 3, 4, 5 y 6 m → pantalla apoyada (9,6); 7, 8 y 10 m → talud con berma (2,3). Debajo de 4,9 m ningún talud que cumpla la norma cabe.
+4. **La pantalla apoyada reduce la longitud (8,9 m frente a 13,1 m) y el momento (92 frente a 281 kN·m/m) respecto del voladizo,** a cambio de una reacción de 37 kN/m que debe tomar un puntal o anclaje (su verificación y la de los asentamientos de vecinos, H.5.1.3.2, no se hacen aquí). El 7,1 m de empotramiento del voladizo incluye el factor de longitud 1,3; el de equilibrio es 5,5 m. La eficiencia geométrica (IEG 0,95) favorece a ambas contenciones, pero el costo de la pantalla domina.
 5. **Alcance de las conclusiones:** dependen de la consecuencia (400 millones por metro), de la variabilidad supuesta y de los precios inventados. La probabilidad de falla es una estimación de confiabilidad de primer orden con FS log-normal y variables independientes, no una frecuencia observada. Sin datos de sitio ni de obra, la conclusión transferible es la estructura de la decisión (talud mínimo normativo frente a talud con riesgo valorado frente a contención), no las cifras.
+
+### 6.4 Limitaciones que condicionan las conclusiones
+
+- **La profundidad de la superficie de falla es una hipótesis.** El dominio de búsqueda limita el círculo a 1,2·H bajo el pie salvo que se dé `prof_estrato_firme`. En suelos con φ = 0 y sismo el FS decrece sin límite al agrandar el círculo: con c = 30 kPa, γ = 18, H = 6 m, 30° y kh = 0,1, el FS pasa de 1,12 (cota 1,2 H) a 0,96 (2 H) y 0,82 (3 H) (recalculado con el módulo). Por eso el resultado señala `en_borde_dominio` y el selector rechaza el talud (elige contención con advertencia) cuando el FS depende de esa cota y no se dio el estrato firme. Con φ > 0 y círculos superficiales o de pie el efecto no aparece (FS idénticos con ambos dominios en los casos probados).
+- Grieta de tracción seca; agua sin red de flujo; sobrecarga sobre la masa trasera que corta la grieta se descarta junto con ella.
+- Las contenciones usan empujes de Rankine, sin agua ni verificación estructural, y las probabilidades de falla de las contenciones son supuestos, no cálculos. El voladizo solo se considera hasta ~6 m.
+- La probabilidad de falla de los taludes es de primer orden (FS log-normal, c y tan φ independientes) y depende de los coeficientes de variación supuestos.
 
 ## 7. Fase 1b: balance de tierras por programación lineal (datos sintéticos)
 
