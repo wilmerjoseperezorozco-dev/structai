@@ -43,7 +43,9 @@
     "velocidad_ms": {"unidad": "m/s", "dominio": "no_negativo"},
     "golpe_ariete_pico_m": {"unidad": "m", "dominio": "no_negativo"},
     "capacidad_pilote_kn": {"unidad": "kN", "dominio": "positivo"},
-    "frontera_pareto": {"unidad": "-", "dominio": "compuesto"}
+    "frontera_pareto": {"unidad": "-", "dominio": "compuesto"},
+    "coef_espectro_local": {"unidad": "-", "dominio": "compuesto"},
+    "cortante_basal_kn": {"unidad": "kN", "dominio": "positivo"}
   },
   "nodos": [
     {
@@ -242,6 +244,43 @@
       ],
       "salidas": [
         {"magnitud": "frontera_pareto", "acceso": "paquete", "evidencia": "docs/investigacion/L1_OPTIMIZACION_ESTRUCTURAL_COSTO_SEGURIDAD_CARBONO.md::Frontera exacta por enumeración"}
+      ]
+    },
+    {
+      "id": "dato-microzonificacion-local", "tipo": "dato", "estado": "implementado", "declaracion": "completa",
+      "endpoints": [],
+      "entradas": [],
+      "salidas": [
+        {"magnitud": "coef_espectro_local", "acceso": "paquete", "evidencia": "packages/construdata/microzonificacion_local.py"}
+      ]
+    },
+    {
+      "id": "futuro-cortante-basal-espectro-local", "tipo": "motor", "estado": "planificado", "declaracion": "completa",
+      "endpoints": [],
+      "entradas": [
+        {"magnitud": "coef_espectro_local", "acceso": "paquete", "evidencia": "docs/investigacion/L2_VALOR_INFORMATIVO_DATOS_GEOTECNICOS.md::Fases"},
+        {"magnitud": "coef_aceleracion_aa", "acceso": "paquete", "evidencia": "docs/investigacion/L2_VALOR_INFORMATIVO_DATOS_GEOTECNICOS.md::Fases"},
+        {"magnitud": "coef_velocidad_av", "acceso": "paquete", "evidencia": "docs/investigacion/L2_VALOR_INFORMATIVO_DATOS_GEOTECNICOS.md::Fases"},
+        {"magnitud": "grupo_uso", "acceso": "paquete", "evidencia": "docs/investigacion/L2_VALOR_INFORMATIVO_DATOS_GEOTECNICOS.md::Fases"}
+      ],
+      "salidas": [
+        {"magnitud": "cortante_basal_kn", "acceso": "paquete", "evidencia": "docs/investigacion/L2_VALOR_INFORMATIVO_DATOS_GEOTECNICOS.md::Fases"}
+      ]
+    },
+    {
+      "id": "futuro-sustituto-seccion-portico", "tipo": "motor", "estado": "planificado", "declaracion": "completa",
+      "endpoints": [],
+      "entradas": [
+        {"magnitud": "coef_espectro_local", "acceso": "paquete", "evidencia": "docs/investigacion/L2_VALOR_INFORMATIVO_DATOS_GEOTECNICOS.md::Fases"},
+        {"magnitud": "coef_aceleracion_aa", "acceso": "paquete", "evidencia": "docs/investigacion/L2_VALOR_INFORMATIVO_DATOS_GEOTECNICOS.md::Fases"},
+        {"magnitud": "coef_velocidad_av", "acceso": "paquete", "evidencia": "docs/investigacion/L2_VALOR_INFORMATIVO_DATOS_GEOTECNICOS.md::Fases"},
+        {"magnitud": "perfil_suelo_clase", "acceso": "paquete", "evidencia": "docs/investigacion/L2_VALOR_INFORMATIVO_DATOS_GEOTECNICOS.md::Fases"},
+        {"magnitud": "geometria_portico", "acceso": "paquete", "evidencia": "docs/investigacion/L2_VALOR_INFORMATIVO_DATOS_GEOTECNICOS.md::Fases"}
+      ],
+      "salidas": [
+        {"magnitud": "seccion_columna_mm", "acceso": "paquete", "evidencia": "docs/investigacion/L2_VALOR_INFORMATIVO_DATOS_GEOTECNICOS.md::Fases"},
+        {"magnitud": "seccion_viga_mm", "acceso": "paquete", "evidencia": "docs/investigacion/L2_VALOR_INFORMATIVO_DATOS_GEOTECNICOS.md::Fases"},
+        {"magnitud": "costo_directo_cop", "acceso": "paquete", "evidencia": "docs/investigacion/L2_VALOR_INFORMATIVO_DATOS_GEOTECNICOS.md::Fases"}
       ]
     }
   ],

@@ -3,8 +3,8 @@
 Generado por `scripts/inventario/matriz_coherencia.py` desde [coherencia_motores.json](coherencia_motores.json); no editar a mano. Dos nodos se conectan cuando una magnitud que produce uno (con su unidad) es una que consume el otro. **Coherente no significa probado**: solo las cadenas de la sección «Cadenas probadas» tienen una prueba que las ejecuta.
 
 - Motores implementados: 16; con declaración completa: 8; **pendientes de declarar: 8** (`motor-aquai`, `motor-vias`, `motor-gerencia`, `motor-vulnerabilidad-vivienda`, `motor-estructural`, `motor-deformacion`, `motor-acero-frio`, `motor-topovia`). Lo no declarado no genera conexiones: no se infiere nada.
-- Motores futuros (planificados o bloqueados): 4. Nunca se cuentan como funcionando.
-- Magnitudes del vocabulario: 43, cada una con unidad y dominio físico.
+- Motores futuros (planificados o bloqueados): 6. Nunca se cuentan como funcionando.
+- Magnitudes del vocabulario: 45, cada una con unidad y dominio físico.
 
 ## Cuántas conexiones y cadenas cierran
 
@@ -12,9 +12,9 @@ Camino simple = sin repetir nodo. «Solo implementados» no incluye ningún moto
 
 | Nodos en la cadena | Solo implementados | Adicionales con motores futuros |
 |---|---|---|
-| 2 (pares) | 8 | 9 |
-| 3 (cadenas) | 7 | 11 |
-| 4 (cadenas) | 3 | 10 |
+| 2 (pares) | 8 | 17 |
+| 3 (cadenas) | 7 | 25 |
+| 4 (cadenas) | 3 | 27 |
 
 Probadas de extremo a extremo: **1**.
 
@@ -47,21 +47,30 @@ Vía: **endpoint** = ambos lados son campos del contrato HTTP; **adaptador** = e
 | `motor-concreto` | `futuro-optimizador-portico` | co2e_kg, costo_directo_cop, masa_acero_kg, razon_demanda_capacidad, volumen_concreto_m3 |
 | `motor-geotecnia` | `futuro-optimizador-portico` | razon_demanda_capacidad |
 | `motor-apu` | `futuro-optimizador-portico` | costo_directo_cop |
+| `motor-geopot` | `futuro-cortante-basal-espectro-local` | coef_aceleracion_aa, coef_velocidad_av |
+| `motor-geopot` | `futuro-sustituto-seccion-portico` | coef_aceleracion_aa, coef_velocidad_av |
 | `futuro-columna-circular` | `futuro-optimizador-portico` | masa_acero_kg, razon_demanda_capacidad, volumen_concreto_m3 |
 | `futuro-losas` | `futuro-optimizador-portico` | masa_acero_kg, razon_demanda_capacidad, volumen_concreto_m3 |
 | `futuro-pilotes` | `futuro-optimizador-portico` | razon_demanda_capacidad |
+| `dato-microzonificacion-local` | `futuro-cortante-basal-espectro-local` | coef_espectro_local |
+| `dato-microzonificacion-local` | `futuro-sustituto-seccion-portico` | coef_espectro_local |
+| `futuro-sustituto-seccion-portico` | `motor-analisis` | seccion_columna_mm, seccion_viga_mm |
+| `futuro-sustituto-seccion-portico` | `motor-concreto` | seccion_columna_mm |
+| `futuro-sustituto-seccion-portico` | `motor-apu` | seccion_columna_mm, seccion_viga_mm |
+| `futuro-sustituto-seccion-portico` | `futuro-optimizador-portico` | costo_directo_cop |
 
 ## Huecos
 
 **Magnitudes que algún nodo consume y ninguno produce** (las aporta el usuario o un estudio externo): `aceleracion_pico_g`, `angulo_friccion_deg`, `asentamiento_admisible_mm`, `carga_muerta_kn_m`, `carga_viva_kn_m`, `cohesion_kpa`, `estratos_arcilla`, `geometria_portico`, `grupo_uso`, `magnitud_momento_mw`, `modulo_balasto_kn_m3`, `municipio_codigo_dane`, `nivel_freatico_m`, `perfil_spt`, `perfil_suelo_clase`, `peso_unitario_kn_m3`, `red_hidraulica`.
 
-**Magnitudes que algún nodo produce y ninguno consume** (hoy salen de la cadena sin uso): `asentamiento_mm`, `capacidad_pilote_kn`, `caudal_m3s`, `factor_seguridad_talud`, `frontera_pareto`, `fs_licuacion_minimo`, `golpe_ariete_pico_m`, `lpi`, `presion_m`, `q_ult_kpa`, `velocidad_ms`.
+**Magnitudes que algún nodo produce y ninguno consume** (hoy salen de la cadena sin uso): `asentamiento_mm`, `capacidad_pilote_kn`, `caudal_m3s`, `cortante_basal_kn`, `factor_seguridad_talud`, `frontera_pareto`, `fs_licuacion_minimo`, `golpe_ariete_pico_m`, `lpi`, `presion_m`, `q_ult_kpa`, `velocidad_ms`.
 
 ## Nodos
 
 | Nodo | Tipo | Estado | Declaración | Entradas | Salidas | En cadena probada |
 |---|---|---|---|---|---|---|
 | `dato-factores-emision` | dato | implementado | completa | 0 | 1 | no |
+| `dato-microzonificacion-local` | dato | implementado | completa | 0 | 1 | no |
 | `motor-acero-frio` | motor | implementado | **?** pendiente | 0 | 0 | no |
 | `motor-analisis` | motor | implementado | completa | 5 | 2 | sí |
 | `motor-apu` | motor | implementado | completa | 2 | 1 | no |
@@ -79,9 +88,11 @@ Vía: **endpoint** = ambos lados son campos del contrato HTTP; **adaptador** = e
 | `motor-vulnerabilidad-vivienda` | motor | implementado | **?** pendiente | 0 | 0 | no |
 | `orquestador` | motor | implementado | completa | 7 | 4 | sí |
 | `futuro-columna-circular` | motor | planificado | completa | 2 | 3 | no |
+| `futuro-cortante-basal-espectro-local` | motor | planificado | completa | 4 | 1 | no |
 | `futuro-losas` | motor | planificado | completa | 3 | 3 | no |
 | `futuro-optimizador-portico` | motor | planificado | completa | 6 | 1 | no |
 | `futuro-pilotes` | motor | bloqueado (bloqueado: El corpus no tiene norma específica de pilotes (AASHTO LRFD, FHWA); sin ella el motor tendría que inventar criterios.) | completa | 3 | 2 | no |
+| `futuro-sustituto-seccion-portico` | motor | planificado | completa | 5 | 3 | no |
 
 ## Qué se valida hacia el futuro
 
