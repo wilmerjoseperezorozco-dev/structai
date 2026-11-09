@@ -154,6 +154,30 @@ columna × sección de viga, costo total APU vigas + columnas).
 - **Límites**: una sección de columna y una de viga en todo el pórtico (óptimo sobre la rejilla); flexión uniaxial; esfuerzos en el
   eje del nudo; ΣMnb sin aporte de losa; sin nudos (C.21.7), cimentación ni empalmes; Q > 1/3 se rechaza (sin segundo orden completo).
 
+## Secciones distintas por piso: MILP + verificación exacta (2026-11-08)
+
+`orquestador/src/diseno_por_pisos.py`. Cada piso elige su columna cuadrada y su viga de una biblioteca; el costo APU total se minimiza
+con deriva (A.6.4), Q, diseño completo por piso, columna fuerte–viga débil entre pisos, columna que no crece hacia arriba y topes
+de secciones distintas (columna / viga).
+
+- **Por qué no es un MILP puro**: la rigidez de un piso depende de los vecinos, así que la deriva no es separable. Se usa un MILP
+  maestro (scipy/HiGHS, binarias x[j,s], un candidato por piso, columna no creciente por umbrales, topes de secciones distintas)
+  y un juez exacto: análisis matricial del pórtico real con secciones por piso y diseño de arriba hacia abajo.
+- **Bucle**: biblioteca (pórticos uniformes → costo y razón deriva/cortante por piso) → MILP → verificación exacta → si falla se
+  añade un corte exacto y de dominancia (todos los demás pisos iguales o más blandos), si mejora se re-linealiza la deriva
+  alrededor del nuevo mejor y se adopta el costo exacto observado. Se detiene con una cota calibrada con los errores observados
+  (mínimo 3 %) o a los 60 s (se avisa en `diagnostico["busqueda_completa"]`).
+- **Resultado medido**: Pereira, perfil D, DES, 3 vanos × 4 pisos, biblioteca de 48 secciones: columnas 700/700/500/500 mm y vigas
+  250×500, 350×800, 300×800, 250×500; costo $45,65 M frente a $47,67 M del mejor pórtico uniforme de la misma biblioteca
+  (−4,2 %), en 15 s. El ahorro se mide solo contra un uniforme que cumple todo.
+- **Contra fuerza bruta** (3 pisos, 12 secciones, 8.000 asignaciones analizadas una a una): el MILP devuelve un costo 1,0 % por
+  encima del mínimo verdadero y nunca por debajo. Es una heurística con verificación exacta: no se afirma optimalidad global.
+- **Hallazgo durante la construcción**: la razón deriva/cortante medida en pórticos uniformes es muy pesimista para el piso
+  superior (un pórtico uniforme de vigas débiles amplifica la rotación de los nudos de abajo) y descartaba el óptimo real; por eso
+  la deriva del MILP se linealiza alrededor del mejor verificado y no se usa el pórtico uniforme como cota.
+- **Límites**: el costo del MILP viene de pórticos uniformes (la cota lleva tolerancia); la monotonía de la deriva respecto de c, b,
+  h se supone en el corte de dominancia; nudo de la base sin verificar; mismos límites normativos del diseño integral.
+
 ## Fases siguientes (no construidas)
 
 1. Extender la cascada sísmica ya construida (concreto) a los motores de mampostería y acero → cuantías finales; irregularidades φa/φp, torsión y P-Delta.

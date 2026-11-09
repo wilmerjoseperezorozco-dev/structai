@@ -260,13 +260,13 @@ def _geometria(h: float, b: float, nivel: str) -> Optional[list[Verificacion]]:
     return None if any(not g.cumple for g in geom) else geom
 
 
-def _scwb(cv: Curva, dem: DemandaColumna, mnb_int: float, mnb_ext: float) -> float:
+def _scwb(cv: Curva, dem: DemandaColumna, mnb_int: float, mnb_ext: float, cv_sup: Optional[Curva] = None) -> float:
     """Menor cociente ΣMnc/(1,2·ΣMnb) sobre todos los nudos y combinaciones con sismo; NaN si algún Mn no existe."""
     peor = math.inf
     for interior, p_inf, p_sup in dem.nudos:
         mc = mn_arr(cv, p_inf)
         if p_sup is not None:
-            mc = mc + mn_arr(cv, p_sup)
+            mc = mc + mn_arr(cv_sup if cv_sup is not None else cv, p_sup)
         if np.isnan(mc).any():
             return math.nan
         mnb = mnb_int if interior else mnb_ext
@@ -275,10 +275,11 @@ def _scwb(cv: Curva, dem: DemandaColumna, mnb_int: float, mnb_ext: float) -> flo
 
 
 def disenar_columna(h: float, b: float, dem: DemandaColumna, nivel: str, m: Materiales, *, recubrimiento: float = 40.0,
-                    mnb_int: float = 0.0, mnb_ext: float = 0.0) -> list[DisenoColumna]:
+                    mnb_int: float = 0.0, mnb_ext: float = 0.0, cv_sup: Optional[Curva] = None) -> list[DisenoColumna]:
     """Diseños factibles (uno por combinación de barras y estribo que cumple) para una columna h×b; vacío si ninguno.
 
-    mnb_int / mnb_ext: ΣMnb de las vigas que llegan a un nudo interior / exterior (kN·m), solo se usa en DES (C.21.6.2.2)."""
+    mnb_int / mnb_ext: ΣMnb de las vigas que llegan a un nudo interior / exterior (kN·m), solo se usa en DES (C.21.6.2.2).
+    cv_sup: curva de la columna del piso superior (si difiere de esta); None = misma sección."""
     if nivel not in NIVELES:
         raise ValueError(f"nivel '{nivel}' no válido: {NIVELES}")
     geom = _geometria(h, b, nivel)
@@ -312,7 +313,7 @@ def disenar_columna(h: float, b: float, dem: DemandaColumna, nivel: str, m: Mate
                 verifs.append(Verificacion("Esbeltez kℓu/r (magnificada si > 22)", esb, ESBELTEZ_MAX, "-", True, "C.10-6",
                                            "k de Jackson–Moreland y magnificación del ACI 318-08, no verificados en el corpus"))
                 if nivel == "DES":
-                    razon = _scwb(cv, dem, mnb_int, mnb_ext)
+                    razon = _scwb(cv, dem, mnb_int, mnb_ext, cv_sup)
                     if math.isnan(razon) or razon < 1.0 - 1e-9:
                         continue
                     verifs.append(Verificacion("ΣMnc ≥ 1,2·ΣMnb (columna fuerte–viga débil)", 1.0, razon, "-", True, "C.21.6.2.2",
