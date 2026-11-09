@@ -16,7 +16,7 @@ Proyecto `structai-507113`, región `us-east1`, servicio Cloud Run `structai-api
 | 2 | Decidir qué sobra | Cualquier servicio o recurso que no sea `structai-api` y no se use se borra a mano, con el nombre exacto (ver abajo). |
 | 3 | `bash infra/gcp/limpiar_versiones.sh` | Simulacro: muestra las revisiones e imágenes viejas que borraría. |
 | 4 | `bash infra/gcp/limpiar_versiones.sh --aplicar` | Conserva la revisión con tráfico más las 2 anteriores y las 3 últimas imágenes. |
-| 5 | `bash infra/gcp/desplegar.sh` | Pruebas locales, construcción, despliegue **sin tráfico**, verificación de 5 rutas y solo entonces mueve el tráfico. |
+| 5 | `bash infra/gcp/desplegar.sh` | Pruebas locales, construcción, despliegue **sin tráfico**, verificación de 8 rutas y, con `TOKEN_PRUEBA`, de una llamada real a `/redes/permanente` y solo entonces mueve el tráfico. |
 
 El despliegue conserva las variables de entorno y los secretos que ya tiene el servicio: no los pisa. Si la revisión candidata falla la verificación, el tráfico sigue en la revisión anterior y el script lo dice.
 
@@ -59,7 +59,7 @@ Las alertas llegan por correo a los administradores de facturación; no frenan e
 
 ## Rutas de verificación manual
 
-`/health?deep=true`, `/data-status`, `/proyecto/salud`, `/orquestador/salud`, `/analisis/salud`, `/concreto/salud`.
+`/health?deep=true`, `/data-status`, `/proyecto/salud`, `/orquestador/salud`, `/analisis/salud`, `/concreto/salud`, `/geotecnia/salud`, `/licuacion/salud`, `/redes/salud`.
 
 ## Limitaciones
 
