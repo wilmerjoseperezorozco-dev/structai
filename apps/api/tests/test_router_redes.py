@@ -62,3 +62,16 @@ def test_nan_en_el_cuerpo_se_rechaza(cliente):
     r = cliente.post("/redes/permanente", content='{"nodos": [], "tramos": [{"longitud_m": NaN}]}',
                      headers={"content-type": "application/json"})
     assert r.status_code == 422
+
+
+def test_bomba_por_el_endpoint_y_422_si_no_vence(cliente):
+    cuerpo = dict(
+        nodos=[dict(id="R", cota_m=10.0, carga_fija_m=10.0), dict(id="B", cota_m=10.0), dict(id="N", cota_m=30.0, demanda_m3s=0.03)],
+        tramos=[dict(id="t", desde="B", hasta="N", longitud_m=800.0, diametro_m=0.25, c_hw=120.0)],
+        bombas=[dict(id="bomba", desde="R", hasta="B", h0_m=60.0, a_s2m5=2000.0)])
+    r = cliente.post("/redes/permanente", json=cuerpo)
+    assert r.status_code == 200 and abs(r.json()["valor"]["bombas"]["bomba"]["caudal_m3s"] - 0.03) < 1e-8
+    cuerpo["bombas"][0]["h0_m"] = 5.0
+    cuerpo["nodos"][2]["demanda_m3s"] = 0.0
+    r = cliente.post("/redes/permanente", json=cuerpo)
+    assert r.status_code == 422 and "no vence" in str(r.json())

@@ -1,4 +1,5 @@
 """Salida con contrato uniforme de motor-redes (#138): red mallada en estado permanente (método del gradiente)."""
+import math
 import sys
 from pathlib import Path
 from typing import Optional
@@ -14,6 +15,7 @@ from contrato_motor import ResultadoMotor  # noqa: E402
 from .gradiente import resolver_red  # noqa: E402
 
 _MARGEN_BORDE = 0.10           # a menos de 10 % de un límite declarado, el veredicto es sensible a la incertidumbre
+_FRAC_CURVA_BOMBA = 0.8        # sobre el 80 % del caudal de carga nula la parábola es una extrapolación poco fiable
 _D_MIN_HW_M = 0.05             # Hazen-Williams: diámetros < 50 mm fuera de validez
 _V_MIN_HW_MS = 0.1             # a muy baja velocidad Hazen-Williams subestima la pérdida
 _C_HW_RANGO = (60.0, 160.0)    # rango práctico de Hazen-Williams; fuera de él el coeficiente es sospechoso
@@ -38,10 +40,20 @@ class TramoRed(BaseModel):
     c_hw: float = Field(..., gt=0, le=200, allow_inf_nan=False, description="Coeficiente de Hazen-Williams")
 
 
+class BombaRed(BaseModel):
+    model_config = ConfigDict(strict=True)
+    id: str = Field(..., min_length=1, max_length=40)
+    desde: str = Field(..., min_length=1, max_length=40)
+    hasta: str = Field(..., min_length=1, max_length=40)
+    h0_m: float = Field(..., gt=0, le=2000, allow_inf_nan=False, description="Carga de cierre (Q = 0) de la curva H = h0 − a·Q²")
+    a_s2m5: float = Field(..., gt=0, le=1e9, allow_inf_nan=False, description="Coeficiente de la curva, en s²/m⁵")
+
+
 class SolicitudRed(BaseModel):
     model_config = ConfigDict(strict=True)
     nodos: list[NudoRed] = Field(..., min_length=2, max_length=2000)
     tramos: list[TramoRed] = Field(..., min_length=1, max_length=4000)
+    bombas: list[BombaRed] = Field(default_factory=list, max_length=200)
     presion_min_m: Optional[float] = Field(default=None, ge=0, le=500, allow_inf_nan=False,
                                            description="Presión mínima de servicio exigida (m.c.a.); null = no se verifica")
     presion_max_m: Optional[float] = Field(default=None, gt=0, le=500, allow_inf_nan=False)
@@ -74,7 +86,8 @@ def _verificar_limites(res: dict, s: SolicitudRed):
 
 
 def red_permanente_contrato(s: SolicitudRed) -> ResultadoMotor:
-    res = resolver_red([n.model_dump() for n in s.nodos], [t.model_dump() for t in s.tramos])
+    res = resolver_red([n.model_dump() for n in s.nodos], [t.model_dump() for t in s.tramos],
+                       bombas=[b.model_dump() for b in s.bombas])
     incumple, borde = _verificar_limites(res, s)
     fuera_c = [t.id for t in s.tramos if not (_C_HW_RANGO[0] <= t.c_hw <= _C_HW_RANGO[1])]
     presiones_neg = [nid for nid, v in res["nodos"].items() if v["presion_m"] < 0]
@@ -82,16 +95,19 @@ def red_permanente_contrato(s: SolicitudRed) -> ResultadoMotor:
                     for nid in presiones_neg)
     finos = [t.id for t in s.tramos if t.diametro_m < _D_MIN_HW_M]
     lentos = [tid for tid, v in res["tramos"].items() if v["velocidad_ms"] < _V_MIN_HW_MS]
-    borde = borde or bool(fuera_c) or bool(presiones_neg) or bool(finos) or bool(lentos)
+    lejos = [b.id for b in s.bombas if res["bombas"][b.id]["caudal_m3s"] > _FRAC_CURVA_BOMBA * math.sqrt(b.h0_m / b.a_s2m5)]
+    borde = borde or bool(lejos) or bool(fuera_c) or bool(presiones_neg) or bool(finos) or bool(lentos)
     hay_limites = not (s.presion_min_m is None and s.presion_max_m is None and s.velocidad_max_ms is None)
     supuestos = [
-        "Estado permanente con demandas constantes en los nudos; sin bombas, válvulas, tanques de nivel variable ni periodo extendido.",
+        "Estado permanente con demandas constantes en los nudos; sin válvulas, tanques de nivel variable ni periodo extendido.",
         "Pérdidas por fricción de Hazen-Williams en SI (h = 10,67·L·Q^1,852/(C^1,852·D^4,871)); sin pérdidas menores (accesorios).",
         "Hazen-Williams es válido para agua a temperatura ambiente en flujo turbulento y diámetros ≥ 50 mm; a velocidades muy bajas subestima la pérdida.",
         "Los nudos con carga fija son embalses o tanques de nivel constante: el caudal que entregan sale de la solución, no es dato.",
         "El caudal es positivo de «desde» hacia «hasta»; el signo no es un error si el sentido real es inverso.",
         "Las presiones son carga de presión (carga total − cota); presión negativa indica nudo por encima de la línea piezométrica.",
         "Límites de presión y velocidad: los fija quien consulta; el motor no asume valores de norma (verificar en RAS 2000 Título B).",
+        "Las bombas se modelan con la curva parabólica H = h0 − a·Q² (Q ≥ 0), sin curva de eficiencia, NPSH, velocidad variable ni válvula "
+        "de retención: la curva real del fabricante puede diferir lejos del punto de ajuste.",
         "Resolución numérica: caudales cuya pérdida de carga queda bajo ~1e-12 m (redondeo de una carga de decenas de metros) no se distinguen de cero.",
         "Método del gradiente (Todini y Pilati, 1988) con Newton-Raphson y reducción de paso; si no converge falla con error.",
     ]
@@ -101,6 +117,8 @@ def red_permanente_contrato(s: SolicitudRed) -> ResultadoMotor:
         supuestos.append(f"Coeficiente C fuera de {_C_HW_RANGO[0]:g}–{_C_HW_RANGO[1]:g} en los tramos {fuera_c}: revisar material y edad de la tubería.")
     if presiones_neg:
         supuestos.append(f"Presión negativa en {presiones_neg}: no es alcanzable sin cavitación o entrada de aire.")
+    if lejos:
+        supuestos.append(f"Bombas {lejos} operan sobre el {_FRAC_CURVA_BOMBA * 100:g} % del caudal de carga nula de su parábola: ajuste poco fiable.")
     if finos:
         supuestos.append(f"Diámetro < {_D_MIN_HW_M * 1000:g} mm en los tramos {finos}: fuera del dominio de validez de Hazen-Williams.")
     if lentos:

@@ -89,3 +89,28 @@ def test_velocidad_muy_baja_activa_borde():
     r = red_permanente_contrato(_s(nodos=[dict(id="R", cota_m=50.0, carga_fija_m=100.0),
                                           dict(id="N", cota_m=40.0, demanda_m3s=0.0001)]))
     assert r.en_borde_dominio is True
+
+
+def _con_bomba(h0=60.0, a=2000.0, demanda=0.03):
+    return _s(nodos=[dict(id="R", cota_m=10.0, carga_fija_m=10.0), dict(id="B", cota_m=10.0),
+                     dict(id="N", cota_m=30.0, demanda_m3s=demanda)],
+              tramos=[_tramo(id="t", desde="B", hasta="N", longitud_m=800.0, diametro_m=0.25, c_hw=120.0)],
+              bombas=[dict(id="bomba", desde="R", hasta="B", h0_m=h0, a_s2m5=a)])
+
+
+def test_bomba_en_el_contrato_reporta_caudal_y_carga():
+    r = red_permanente_contrato(_con_bomba())
+    assert r.valor["bombas"]["bomba"]["caudal_m3s"] == pytest.approx(0.03, rel=1e-8)
+    assert r.valor["bombas"]["bomba"]["carga_m"] == pytest.approx(60.0 - 2000.0 * 0.03 ** 2, rel=1e-8)
+    assert any("curva" in x.lower() for x in r.supuestos)
+
+
+def test_bomba_lejos_del_punto_de_diseno_de_la_curva_activa_borde():
+    # Q_cierre-cero = sqrt(h0/a) = 0.1732; con 0.15 m3/s se opera en el tramo final de la curva parabólica extrapolada
+    r = red_permanente_contrato(_con_bomba(demanda=0.15))
+    assert r.en_borde_dominio is True
+
+
+def test_bomba_que_no_vence_la_carga_estatica_es_valueerror():
+    with pytest.raises(ValueError, match="no vence"):
+        red_permanente_contrato(_con_bomba(h0=5.0, demanda=0.0))
