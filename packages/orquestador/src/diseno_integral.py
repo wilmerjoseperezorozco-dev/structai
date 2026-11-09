@@ -46,7 +46,7 @@ SUPUESTOS = _dp.SUPUESTOS[:1] + (
     "Flexión uniaxial en el plano del pórtico, sin torsión ni biaxial. Esfuerzos en el eje del nudo (no se reducen a la cara: conservador).",
     "Columna fuerte–viga débil (C.21.6.2.2, DES): ΣMnb = Mn⁻ + Mn⁺ en nudo interior y el mayor de ambos en nudo exterior, sin aporte de losa (conservador); ΣMnc con la Pu más desfavorable de las combinaciones con E.",
     "Esbeltez: k de Jackson–Moreland (base empotrada ψ=1), magnificación δns (Cm=1) y δs = 1/(1−Q) con Q por entrepiso; rechaza Q > 1/3 y kℓu/r > 100. Fórmulas del ACI 318-08 (C.10.10.5–7 no recuperadas del corpus).",
-    "Pn,max con el 0,75 que da el corpus (C.10-2; el ACI usa 0,80). Ash en DES (C.21-7/-8) y so en DMO (C.21.3.5.6) tomados del ACI: no recuperados del corpus.",
+    "Pn,max 0,75 verificado (C.10.3.6.2, C.10-2). Ash en DES (C.21-7/-8) tomado del ACI: no recuperado del corpus. so y ℓo en DMO verificados (C.21.3.5.6).",
     "Costo = vigas + columnas, costo directo APU (Barranquilla 2026). No se diseñan nudos (C.21.7), cimentación, losas ni empalmes.",
 ) + _dp.SUPUESTOS[-1:]
 

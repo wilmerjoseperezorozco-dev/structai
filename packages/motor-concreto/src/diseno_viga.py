@@ -231,7 +231,7 @@ def _verificaciones(b, h, d, dia, est, n_sup, n_inf, s_conf, s_centro, dem, nive
         v.append(Verificacion("s confinamiento ≤ mín(d/4; 8db; 24dest; 300) en 2h", s_conf, s_norma, "mm", s_conf <= s_norma,
                               "C.21.5.3.2 / C.21.3.4.6"))
         fi = "C.21.5.4.1/.2" if nivel == "DES" else "C.21.3.3"
-        nota = "Mpr=1,25fy no verificado en el corpus (φ=0,75 sí, C.9.3.2.3)" if nivel == "DES" else "C.21.3.3(a)/(b) no recuperado; se usa Mn (ACI 318-08)"
+        nota = "Mpr=1,25fy no verificado en el corpus (φ=0,75 sí, C.9.3.2.3)" if nivel == "DES" else "C.21.3.3(a)/(b) recuperado en el corpus (etapa 1); se usa Mn"
         s_cap = Av * m.fyt * d / s_conf / 1000
         phi_vn = PHI_CORTANTE * (vc_ext + s_cap)
         v.append(Verificacion("Cortante por capacidad φ(Vc+Vs) ≥ Ve (zona de confinamiento)", max(ve, dem.V_max), phi_vn, "kN",

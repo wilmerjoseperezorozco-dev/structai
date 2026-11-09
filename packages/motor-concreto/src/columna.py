@@ -11,10 +11,10 @@ Verificado en el corpus nsr10_chunks (2026-11-08):
   C.21.6.4.3 y C-21-5 (so), C.21.6.4.5 (resto: ≤ mín(6db; 150)), C.21.6.5.1/.2 (Ve por Mpr; Vc = 0 si Pu < Ag·f'c/20),
   C.21.3.5.1/.2/.7/.9/.10/.11 y C-21-2/-3 (DMO: ≥ 250 mm, 1–4 %, Ash, so/2, 2·so fuera de ℓo).
 NO verificado en el corpus (declarado en cada verificación):
-  - Pn,max: el corpus da 0,75·φ·Po para estribos (C.10-2); el ACI 318-08 da 0,80. Se usa 0,75 (el menor, conservador).
+  - (Pn,max = 0,75·φ·Po para estribos: VERIFICADO en C.10.3.6.2 / C.10-2; el ACI 318-08 da 0,80.)
   - Ecuaciones C.21-7/-8 (Ash en DES): no se extrajeron; se usan 0,3·(Ag/Ach − 1) y 0,09 del ACI 318-08 (= 3/2 de las
     C.21-2/-3 de DMO, que sí se verificaron: 0,2 y 0,06).
-  - so en DMO: C.21.3.5.6 está truncado en el corpus; solo se recuperó 8·db. Se usa mín(8db; 24·dest; c/2; 300) del ACI.
+  - (so y ℓo en DMO: VERIFICADOS en C.21.3.5.6: so ≤ mín(8db; 16·dest; c/3; 150), ℓo ≥ máx(ℓn/6; c; 500).)
   - Mpr = 1,25·fy con φ = 1,0; Vc = 0,17·√f'c·b·d sin beneficio de la compresión axial (conservador); espaciamiento en DMI
     mín(16db; 48·dest; c) del ACI (C.7.10.5.2 no recuperado).
   - Esbeltez: factor k por Jackson–Moreland y magnificación de momentos (δns con 0,4·Ec·Ig/(1+βdns), δs = 1/(1−Q)) son del
@@ -357,9 +357,12 @@ def disenar_columna(h: float, b: float, dem: DemandaColumna, nivel: str, m: Mate
                         s_fuera_norma = min(6 * DIAMETRO_MM[dia], 150.0)
                         ref_c, nota_c = "C.21.6.5.1/.2", "Mpr=1,25fy no verificado"
                     else:
-                        s_norma = min(8 * DIAMETRO_MM[dia], 24 * d_est, min(h, b) / 2, 300.0)
+                        # C.21.3.5.6 (verbatim en el corpus): so ≤ mín(8db; 16·dest; menor dimensión/3; 150) y
+                        # ℓo ≥ máx(luz libre/6; mayor dimensión; 500)
+                        s_norma = min(8 * DIAMETRO_MM[dia], 16 * d_est, min(h, b) / 3, 150.0)
+                        lo = max(lu_max / 6, max(h, b), 500.0)
                         s_fuera_norma = 2 * s_norma
-                        ref_c, nota_c = "C.21.3.3", "C.21.3.3 (a)/(b) y C.21.3.5.6 no recuperados"
+                        ref_c, nota_c = "C.21.3.3", "C.21.3.3(a)/(b) y C.21.3.5.6 verificados en el corpus"
                     s_ash = av / ash_requerido(sec, 1.0, m, nivel)
                     s_conf = _redondeo(min(s_norma, s_sh, s_ash))
                     s_fuera = _redondeo(min(s_fuera_norma, s_sh_f, s_ties))

@@ -23,7 +23,7 @@ PHI_FLEXION = 0.90          # C.9.3.2.1, sección controlada por tensión
 PHI_CORTANTE = 0.75         # C.9.3.2.3 — verificado en el corpus (2026-11-08)
 EPS_CU = 0.003              # C.10.2.3
 EPS_T_MIN = 0.005           # sección controlada por tensión (C.10.3.4); el límite 0,004 de C.10.3.5 es menos exigente
-ALTURA_MIN_SIMPLE_L_SOBRE = 16.0   # Tabla C.9.5(a) — NO verificado en el corpus
+ALTURA_MIN_SIMPLE_L_SOBRE = 16.0   # Tabla C.9.5(a) — verificado en el corpus (etapa 1, 2026-11)
 PESO_UNIT_CONCRETO_KN_M3 = 24.0
 
 
@@ -162,5 +162,5 @@ def verificar(s: Seccion, m: Materiales, c: Cargas) -> Resultado:
 
     h_min = c.luz_m * 1000 / ALTURA_MIN_SIMPLE_L_SOBRE
     v.append(Verificacion("Altura mínima h ≥ l/16 (sin verificar deflexiones)", h_min, s.h, "mm", s.h >= h_min,
-                          "Tabla C.9.5(a)", "valor l/16 no verificado en el corpus"))
+                          "Tabla C.9.5(a)", "l/16 vigas simplemente apoyadas, fy=420 MPa (verificado en el corpus)"))
     return Resultado(all(x.cumple for x in v), wu, Mu, Vu, tuple(v))

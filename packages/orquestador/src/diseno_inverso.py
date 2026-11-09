@@ -85,7 +85,7 @@ class Informe:
 SUPUESTOS = (
     "Viga simplemente apoyada, carga uniforme gravitacional, sección rectangular, una capa de barras.",
     "Sin detallado sísmico del Capítulo C.21, sin torsión; deflexión solo por altura mínima l/16.",
-    "φ de cortante 0,75 y l/16 de la Tabla C.9.5(a) NO verificados contra el corpus; revisar antes de usar.",
+    "l/16 de la Tabla C.9.5(a) verificado en el corpus; φ de cortante 0,75 sigue sin verificar contra el corpus.",
     "Costo = costo directo APU determinista del catálogo motor-apu (Barranquilla 2026), por elemento.",
     "Óptimo sobre la rejilla: b 250-500 mm, h 300-800 mm (pasos de 50), barras #4-#8, 2-8 barras, estribos #3.",
     "Modo sísmico (DMO/DES): requisitos de C.21.5 como cota conservadora, refuerzo simétrico, estribos de confinamiento en toda la luz; la demanda sísmica de flexión debe venir del análisis del pórtico.",
