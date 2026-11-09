@@ -209,3 +209,62 @@ def test_homogeneidad_de_grado_1_al_escalar_c_y_gamma():
 def test_capacidad_rechaza_datos_fuera_de_dominio(malo):
     with pytest.raises(ValueError, match="NSR-10|Vesi"):
         capacidad_portante_general(**{**BASE_P, **malo})
+
+
+# ── Revisión adversaria (2026-11-09): validación de borde y ramas sin cubrir ──────────────────────────────────────────
+NAN, INF = float("nan"), float("inf")
+
+
+def test_peso_saturado_menor_que_el_del_agua_o_que_el_seco_es_rechazado():
+    for gsat in (5.0, 17.0):
+        with pytest.raises(ValueError, match="saturado"):
+            capacidad_portante_general(**{**BASE_P, "nivel_freatico_m": 0.5, "gamma_sat_kn_m3": gsat})
+
+
+def test_la_capacidad_crece_con_la_profundidad_del_nivel_freatico_y_se_satura_en_df_mas_b():
+    base = {**BASE_P, "c_kpa": 0.0, "phi_deg": 30.0, "gamma_kn_m3": 17.0, "gamma_sat_kn_m3": 20.0}
+    verificar_monotonia(lambda n: capacidad_portante_general(**{**base, "nivel_freatico_m": n})["q_ult_kpa"], [0.0, 0.5, 1.0, 1.5, 2.0, 3.0, 5.0])
+    seco = capacidad_portante_general(**{**base, "nivel_freatico_m": None})["q_ult_kpa"]
+    assert capacidad_portante_general(**{**base, "nivel_freatico_m": 5.0})["q_ult_kpa"] == pytest.approx(seco)  # agua a >= Df+B no influye
+
+
+def test_el_factor_de_profundidad_tiene_un_salto_en_df_igual_a_b_documentado():
+    """Limitación de la formulación de Hansen/Vesić (k = Df/B hasta 1, atan(Df/B) después): q_ult cae al cruzar Df = B."""
+    base = {**BASE_P, "c_kpa": 0.0, "phi_deg": 30.0, "B_m": 2.0, "L_m": 2.0}
+    justo_antes = capacidad_portante_general(**{**base, "Df_m": 2.0})["q_ult_kpa"]
+    justo_despues = capacidad_portante_general(**{**base, "Df_m": 2.0001})["q_ult_kpa"]
+    assert justo_despues < justo_antes
+    verificar_monotonia(lambda d: capacidad_portante_general(**{**base, "Df_m": d})["q_ult_kpa"], [2.5, 3.0, 4.0, 6.0])  # estable pasado el salto
+
+
+@pytest.mark.parametrize("malo", [dict(c_kpa=NAN), dict(phi_deg=NAN), dict(gamma_kn_m3=INF), dict(B_m=NAN), dict(Df_m=NAN), dict(L_m=NAN)])
+def test_capacidad_rechaza_no_finitos(malo):
+    with pytest.raises(ValueError, match="NSR-10|Vesi"):
+        capacidad_portante_general(**{**BASE_P, **malo})
+
+
+def test_capacidad_nula_se_rechaza_en_vez_de_devolver_cero():
+    with pytest.raises(ValueError, match="nula|capacidad"):
+        capacidad_portante_general(**{**BASE_P, "c_kpa": 0.0, "phi_deg": 0.0, "Df_m": 0.0})
+
+
+@pytest.mark.parametrize("args", [
+    dict(estratos=[(2.0, 17.0, 19.0)], z_m=NAN, nivel_freatico_m=None),
+    dict(estratos=[(2.0, 17.0, 5.0)], z_m=1.0, nivel_freatico_m=0.0),
+    dict(estratos=[(2.0, 17.0, 19.0)], z_m=1.0, nivel_freatico_m=-1.0),
+    dict(estratos=[(2.0, NAN, 19.0)], z_m=1.0, nivel_freatico_m=None),
+])
+def test_esfuerzo_efectivo_rechaza_datos_invalidos(args):
+    with pytest.raises(ValueError, match="NSR-10|Boussinesq"):
+        esfuerzo_efectivo_vertical(args["estratos"], args["z_m"], args["nivel_freatico_m"])
+
+
+@pytest.mark.parametrize("q,z", [(-5.0, 2.0), (NAN, 2.0), (100.0, NAN), (INF, 2.0)])
+def test_2a1_valida_igual_que_boussinesq(q, z):
+    with pytest.raises(ValueError, match="NSR-10|Boussinesq"):
+        esfuerzo_2a1(q, 2.0, 3.0, z)
+
+
+def test_tiempo_para_grado_diminuto_converge_con_la_raiz_de_tv():
+    t = tiempo_para_grado(1e-6, cv_m2_dia=0.002, hdr_m=2.0)
+    assert t == pytest.approx(math.pi / 4 * (1e-6) ** 2 * 4.0 / 0.002, rel=1e-6)

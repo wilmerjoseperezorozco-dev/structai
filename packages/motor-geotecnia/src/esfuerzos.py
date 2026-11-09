@@ -39,8 +39,10 @@ def esfuerzo_boussinesq_centro_rect(q_kpa: float, B_m: float, L_m: float, z_m: f
 def esfuerzo_2a1(q_kpa: float, B_m: float, L_m: Optional[float], z_m: float) -> float:
     """Método 2:1: la carga se reparte con pendiente 2V:1H. L_m=None → zapata corrida (por metro)."""
     _positivo("B", B_m)
-    if z_m < 0:
-        raise ValueError(f"La profundidad z no puede ser negativa ({_REF}).")
+    if not (math.isfinite(q_kpa) and q_kpa >= 0):
+        raise ValueError(f"La presión de contacto q debe ser finita y no negativa ({_REF}); se recibió {q_kpa!r}.")
+    if not (math.isfinite(z_m) and z_m >= 0):
+        raise ValueError(f"La profundidad z debe ser finita y no negativa ({_REF}); se recibió {z_m!r}.")
     if L_m is None:
         return q_kpa * B_m / (B_m + z_m)
     _positivo("L", L_m)
@@ -52,14 +54,18 @@ def esfuerzo_efectivo_vertical(estratos: Sequence[tuple[float, float, float]], z
 
     Sin nivel freático (None) se usa γ en todo el perfil. Bajo el nivel freático, γ' = γsat − γw.
     """
-    if z_m < 0:
-        raise ValueError(f"La profundidad z no puede ser negativa ({_REF}).")
+    if not (math.isfinite(z_m) and z_m >= 0):
+        raise ValueError(f"La profundidad z debe ser finita y no negativa ({_REF}); se recibió {z_m!r}.")
+    if nivel_freatico_m is not None and not (math.isfinite(nivel_freatico_m) and nivel_freatico_m >= 0):
+        raise ValueError(f"La profundidad del nivel freático debe ser finita y no negativa ({_REF}); se recibió {nivel_freatico_m!r}.")
     if z_m > sum(e[0] for e in estratos) + 1e-12:
         raise ValueError(f"La profundidad z={z_m} m excede el perfil de estratos definido ({_REF}).")
     sigma, tope = 0.0, 0.0
     for espesor, gamma, gamma_sat in estratos:
         _positivo("espesor del estrato", espesor)
         _positivo("peso unitario", gamma)
+        if nivel_freatico_m is not None and not (math.isfinite(gamma_sat) and gamma_sat > GAMMA_AGUA_KN_M3 and gamma_sat >= gamma):
+            raise ValueError(f"El peso unitario saturado debe ser finito, mayor que el del agua ({GAMMA_AGUA_KN_M3} kN/m³) y no menor que el seco ({_REF}); se recibió {gamma_sat!r}.")
         fondo = min(tope + espesor, z_m)
         if fondo > tope:
             if nivel_freatico_m is None:

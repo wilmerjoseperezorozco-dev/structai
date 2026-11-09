@@ -34,8 +34,10 @@ def _pesos_con_agua(gamma: float, gamma_sat: Optional[float], nf: Optional[float
     """(sobrecarga q a nivel de desplante, γ' efectivo bajo la base) considerando el nivel freático."""
     if nf is None:
         return gamma * Df, gamma
-    _requerir(gamma_sat is not None and gamma_sat > 0, "Con nivel freático se requiere el peso unitario saturado")
-    _requerir(nf >= 0, "La profundidad del nivel freático no puede ser negativa")
+    _requerir(gamma_sat is not None, "Con nivel freático se requiere el peso unitario saturado")
+    _requerir(math.isfinite(gamma_sat) and gamma_sat > GAMMA_AGUA_KN_M3 and gamma_sat >= gamma,
+              f"El peso unitario saturado debe ser finito, mayor que el del agua ({GAMMA_AGUA_KN_M3} kN/m³) y no menor que el seco; se recibió {gamma_sat!r}")
+    _requerir(math.isfinite(nf) and nf >= 0, "La profundidad del nivel freático debe ser finita y no negativa")
     sumergido = gamma_sat - GAMMA_AGUA_KN_M3
     q = gamma * Df if nf >= Df else gamma * nf + sumergido * (Df - nf)
     if nf <= Df:
@@ -51,11 +53,11 @@ def capacidad_portante_general(*, c_kpa: float, phi_deg: float, gamma_kn_m3: flo
                                Df_m: float, nivel_freatico_m: Optional[float],
                                gamma_sat_kn_m3: Optional[float] = None) -> dict:
     """q_ult (kPa) de una zapata de ancho B (L_m=None → corrida). Todos los parámetros físicos son obligatorios."""
-    _requerir(c_kpa >= 0, "La cohesión no puede ser negativa")
-    _requerir(gamma_kn_m3 > 0, "El peso unitario debe ser positivo")
-    _requerir(B_m > 0, "El ancho B debe ser positivo")
-    _requerir(Df_m >= 0, "La profundidad de desplante no puede ser negativa")
-    _requerir(L_m is None or L_m >= B_m, "Para zapata rectangular se requiere L ≥ B (B es la dimensión menor)")
+    _requerir(math.isfinite(c_kpa) and c_kpa >= 0, "La cohesión debe ser finita y no negativa")
+    _requerir(math.isfinite(gamma_kn_m3) and gamma_kn_m3 > 0, "El peso unitario debe ser finito y positivo")
+    _requerir(math.isfinite(B_m) and B_m > 0, "El ancho B debe ser finito y positivo")
+    _requerir(math.isfinite(Df_m) and Df_m >= 0, "La profundidad de desplante debe ser finita y no negativa")
+    _requerir(L_m is None or (math.isfinite(L_m) and L_m >= B_m), "Para zapata rectangular se requiere L finita y L ≥ B (B es la dimensión menor)")
     nc, nq, ng = factores_capacidad(phi_deg)
     phi = math.radians(phi_deg)
     t, s = math.tan(phi), math.sin(phi)
@@ -68,5 +70,6 @@ def capacidad_portante_general(*, c_kpa: float, phi_deg: float, gamma_kn_m3: flo
     dc = 1.0 + 0.4 * k if phi_deg == 0.0 else dq - (1.0 - dq) / (nc * t)
     q, g_ef = _pesos_con_agua(gamma_kn_m3, gamma_sat_kn_m3, nivel_freatico_m, Df_m, B_m)
     q_ult = c_kpa * nc * sc * dc + q * nq * sq * dq + 0.5 * g_ef * B_m * ng * sg
+    _requerir(q_ult > 0, "La capacidad portante resultante es nula o negativa (suelo sin cohesión ni sobrecarga a nivel de desplante): no hay capacidad que verificar")
     return {"q_ult_kpa": q_ult, "Nc": nc, "Nq": nq, "Ng": ng, "sc": sc, "sq": sq, "sg": sg, "dc": dc, "dq": dq,
             "sobrecarga_kpa": q, "gamma_efectivo_kn_m3": g_ef}

@@ -66,5 +66,6 @@ def tiempo_para_grado(grado: float, *, cv_m2_dia: float, hdr_m: float) -> float:
     _requerir(0.0 < grado < 1.0, "El grado de consolidación debe estar en (0, 1)")
     _requerir(cv_m2_dia > 0, "El coeficiente de consolidación cv debe ser positivo")
     _requerir(hdr_m > 0, "La trayectoria de drenaje Hdr debe ser positiva")
-    tv = brentq(lambda x: grado_consolidacion(x) - grado, 1e-12, _TV_MAX, xtol=1e-14, rtol=1e-13)
+    # cota inferior con U(0,25·g²) = g/√π < g: siempre encierra la raíz, incluso para grados diminutos
+    tv = brentq(lambda x: grado_consolidacion(x) - grado, 0.25 * grado ** 2, _TV_MAX, xtol=1e-300, rtol=1e-13)
     return tv * hdr_m ** 2 / cv_m2_dia

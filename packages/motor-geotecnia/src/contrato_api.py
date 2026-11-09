@@ -43,9 +43,22 @@ class SolicitudAsentamiento(BaseModel):
     tipo_cimentacion: Literal["aislada", "medianera"]
 
 
+def _validar_estratos(estratos: list[EstratoArcilla]) -> None:
+    for e in estratos:
+        if e.hdr_m > e.espesor_m:
+            raise ValueError(f"Hdr ({e.hdr_m} m) no puede exceder el espesor del estrato ({e.espesor_m} m) (Terzaghi / NSR-10 Título H).")
+        if e.z_medio_m < e.espesor_m / 2.0 - 1e-9:
+            raise ValueError(f"z_medio ({e.z_medio_m} m) es menor que la mitad del espesor ({e.espesor_m / 2.0} m): el estrato quedaría por encima de la base de la zapata (NSR-10 Título H).")
+    orden = sorted(estratos, key=lambda x: x.z_medio_m)
+    for a, c in zip(orden, orden[1:]):
+        if (a.z_medio_m + a.espesor_m / 2.0) > (c.z_medio_m - c.espesor_m / 2.0) + 1e-9:
+            raise ValueError("Los estratos se solapan: revise z_medio y espesor de cada uno (NSR-10 Título H).")
+
+
 def asentamiento_contrato(s: SolicitudAsentamiento) -> ResultadoMotor:
     if s.L_m is None and s.metodo == "boussinesq":
         raise ValueError("Zapata corrida: use el método 2a1; Boussinesq está implementado para áreas rectangulares (NSR-10 Título H, H.4.9).")
+    _validar_estratos(s.estratos)
     capas, total_m = [], 0.0
     for e in s.estratos:
         delta = (esfuerzo_boussinesq_centro_rect(s.q_kpa, s.B_m, s.L_m, e.z_medio_m) if s.metodo == "boussinesq"
@@ -65,9 +78,12 @@ def asentamiento_contrato(s: SolicitudAsentamiento) -> ResultadoMotor:
         ecuacion="S = Σ [H/(1+e0)]·[Cr·log10(σ'p/σ'0) + Cc·log10(σ'f/σ'p)] (ramal de recompresión hasta σ'p); "
                  "Δσ por Boussinesq (Newmark) o 2:1; t90 de Terzaghi con U(Tv) = 1 − Σ 2/M²·exp(−M²·Tv)",
         referencia_normativa="NSR-10 Título H (H.4.9, límites de asentamiento) · Terzaghi (1943) · Boussinesq/Newmark",
-        supuestos=["Solo consolidación primaria unidimensional: no incluye asentamiento inmediato ni consolidación secundaria.",
+        supuestos=["La presión q es neta (sobrecarga ya descontada); si se ingresa la presión bruta el asentamiento se sobrestima.",
+                   "Solo consolidación primaria unidimensional: no incluye asentamiento inmediato ni consolidación secundaria.",
                    "Δσ en el eje de la zapata, en el punto medio de cada estrato; los estratos se tratan como independientes.",
                    f"Límite total de {limite:.0f} mm para cimentación {s.tipo_cimentacion} (NSR-10 H.4.9.2); el asentamiento diferencial y el giro (H.4.9) NO se verifican.",
+                   "H.4.9.2 aplica 'siempre y cuando no se afecte la funcionalidad de conducciones/accesos': esa condición NO se verifica. "
+                   "El límite es sobre el asentamiento total a 20 años; el motor solo calcula la consolidación primaria última.",
                    "σ'0 y σ'p provienen del estudio geotécnico; el motor no calcula el perfil geostático ni la historia de esfuerzos."],
         en_borde_dominio=bool(utilizacion >= _UTILIZACION_BORDE),
     )
@@ -82,7 +98,7 @@ class SolicitudPortante(BaseModel):
     Df_m: float = Field(..., ge=0)
     nivel_freatico_m: Optional[float] = Field(..., ge=0, description="null = sin nivel freático (queda declarado)")
     gamma_sat_kn_m3: Optional[float] = Field(default=None, gt=0, description="Obligatorio si hay nivel freático")
-    factor_seguridad: float = Field(..., ge=1.0, description="NSR-10 Tabla H.4.7-1")
+    factor_seguridad: float = Field(..., ge=1.0, allow_inf_nan=False, description="NSR-10 Tabla H.4.7-1")
     q_aplicada_kpa: float = Field(..., gt=0)
 
 
@@ -90,12 +106,19 @@ def portante_contrato(s: SolicitudPortante) -> ResultadoMotor:
     r = capacidad_portante_general(c_kpa=s.c_kpa, phi_deg=s.phi_deg, gamma_kn_m3=s.gamma_kn_m3, B_m=s.B_m, L_m=s.L_m,
                                    Df_m=s.Df_m, nivel_freatico_m=s.nivel_freatico_m, gamma_sat_kn_m3=s.gamma_sat_kn_m3)
     q_adm = r["q_ult_kpa"] / s.factor_seguridad
+    if not (r["q_ult_kpa"] > 0 and q_adm > 0):
+        raise ValueError("La capacidad portante admisible es nula: no hay capacidad que verificar (Vesić / NSR-10 Título H).")
     utilizacion = s.q_aplicada_kpa / q_adm
+    advertencias = []
+    if s.factor_seguridad < 3.0:
+        advertencias.append(f"Factor de seguridad {s.factor_seguridad:g} < 3,0: verifique el mínimo de la Tabla H.4.7-1 de la NSR-10 para su caso de carga.")
     supuestos = ["Carga vertical y centrada: sin factores de inclinación ni de excentricidad.",
                  "El Título H de la NSR-10 no da una fórmula de capacidad portante; este resultado NO sustituye el estudio geotécnico (H.4.2.3).",
                  "La presión última puede disminuir al ensanchar la zapata a igual Df porque el factor de profundidad depende de Df/B "
                  "(comportamiento de las formulaciones de Hansen/Vesić); la carga última total sí crece con B.",
                  f"Factor de seguridad {s.factor_seguridad:g} suministrado por el usuario (NSR-10 Tabla H.4.7-1)."]
+    supuestos += ["q_aplicada es la presión de contacto bruta; la verificación de la tabla H.2.4-1 (F_SB) no se realiza aquí.",
+                  "Los factores de profundidad de Hansen/Vesić cambian de forma en Df = B (k=Df/B → atan(Df/B)): q_ult puede caer al cruzar Df = B."]
     if s.nivel_freatico_m is None:
         supuestos.append("Sin nivel freático: no se reduce el peso unitario ni la sobrecarga.")
     return ResultadoMotor(
@@ -104,5 +127,6 @@ def portante_contrato(s: SolicitudPortante) -> ResultadoMotor:
         ecuacion="q_ult = c·Nc·sc·dc + q·Nq·sq·dq + ½·γ'·B·Nγ·sγ; Nq = e^(π tanφ)·tan²(45°+φ/2), Nc = (Nq−1)cotφ, Nγ = 2(Nq+1)tanφ; q_adm = q_ult/FS",
         referencia_normativa="Vesić (1973) · NSR-10 Título H (H.4, Tabla H.4.7-1)",
         supuestos=supuestos,
+        advertencias=advertencias,
         en_borde_dominio=bool(utilizacion >= _UTILIZACION_BORDE or s.phi_deg >= _PHI_BORDE_DEG),
     )

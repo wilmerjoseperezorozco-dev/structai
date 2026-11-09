@@ -46,9 +46,11 @@ def test_asentamiento_devuelve_el_contrato_completo_y_coincide_con_el_calculo_di
 
 
 def test_asentamiento_suma_los_estratos():
-    uno = asentamiento_contrato(_asent(estratos=[_estrato()])).valor["asentamiento_total_mm"]
-    dos = asentamiento_contrato(_asent(estratos=[_estrato(), _estrato()])).valor["asentamiento_total_mm"]
-    assert dos == pytest.approx(2 * uno)
+    a = _estrato(espesor_m=2.0, z_medio_m=1.0, hdr_m=1.0)
+    b = _estrato(espesor_m=2.0, z_medio_m=3.0, hdr_m=1.0)
+    sa = asentamiento_contrato(_asent(estratos=[a])).valor["asentamiento_total_mm"]
+    sb = asentamiento_contrato(_asent(estratos=[b])).valor["asentamiento_total_mm"]
+    assert asentamiento_contrato(_asent(estratos=[a, b])).valor["asentamiento_total_mm"] == pytest.approx(sa + sb)
 
 
 def test_asentamiento_monotono_en_la_carga_de_la_zapata():
@@ -120,3 +122,59 @@ def test_portante_con_agua_exige_peso_saturado():
 def test_portante_fs_menor_a_uno_es_rechazado():
     with pytest.raises(ValidationError):
         _portante(factor_seguridad=0.9)
+
+
+# ── Revisión adversaria (2026-11-09) ──────────────────────────────────────────────────────────────────────────────────
+def test_portante_con_capacidad_nula_es_valueerror_no_500():
+    with pytest.raises(ValueError, match="capacidad"):
+        portante_contrato(_portante(c_kpa=0.0, phi_deg=0.0, Df_m=0.0))
+
+
+def test_portante_factor_de_seguridad_infinito_es_rechazado():
+    with pytest.raises(ValidationError):
+        _portante(factor_seguridad=float("inf"))
+
+
+def test_portante_fs_menor_a_3_se_advierte():
+    r = portante_contrato(_portante(factor_seguridad=1.5))
+    assert any("H.4.7-1" in a for a in r.advertencias)
+    assert not portante_contrato(_portante(factor_seguridad=3.0)).advertencias
+
+
+def test_portante_declara_presion_bruta_y_discontinuidad_en_df():
+    s = " ".join(portante_contrato(_portante()).supuestos)
+    assert "bruta" in s and "Df = B" in s and "H.2.4-1" in s
+
+
+def test_asentamiento_rechaza_hdr_mayor_que_el_espesor():
+    with pytest.raises(ValueError, match="Hdr"):
+        asentamiento_contrato(_asent(estratos=[_estrato(hdr_m=50.0)]))
+
+
+def test_asentamiento_rechaza_estrato_que_sale_por_encima_de_la_base():
+    with pytest.raises(ValueError, match="z_medio"):
+        asentamiento_contrato(_asent(estratos=[_estrato(espesor_m=4.0, z_medio_m=1.0)]))
+
+
+def test_asentamiento_rechaza_estratos_solapados():
+    with pytest.raises(ValueError, match="solap"):
+        asentamiento_contrato(_asent(estratos=[_estrato(espesor_m=4.0, z_medio_m=2.0), _estrato(espesor_m=4.0, z_medio_m=4.0)]))
+
+
+def test_asentamiento_acepta_estratos_contiguos_en_cualquier_orden():
+    a = _estrato(espesor_m=2.0, z_medio_m=1.0, hdr_m=1.0)
+    b = _estrato(espesor_m=2.0, z_medio_m=3.0, hdr_m=1.0)
+    assert asentamiento_contrato(_asent(estratos=[b, a])).valor["asentamiento_total_mm"] == pytest.approx(
+        asentamiento_contrato(_asent(estratos=[a, b])).valor["asentamiento_total_mm"])
+
+
+def test_asentamiento_2a1_en_zapata_corrida_funciona_y_boussinesq_se_rechaza():
+    r = asentamiento_contrato(_asent(L_m=None, metodo="2a1"))
+    assert r.valor["asentamiento_total_mm"] > 0
+    with pytest.raises(ValueError, match="corrida"):
+        asentamiento_contrato(_asent(L_m=None, metodo="boussinesq"))
+
+
+def test_asentamiento_declara_la_condicion_de_h492_y_la_presion_neta():
+    s = " ".join(asentamiento_contrato(_asent()).supuestos)
+    assert "neta" in s and "funcionalidad" in s and "20 años" in s
