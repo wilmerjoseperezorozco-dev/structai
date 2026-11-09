@@ -52,19 +52,25 @@ OBJETIVOS_LOTE2 = {
 SUB_VIEJOS = {"C.7.7.2": "NSR10-C-C_7_7_2-sub%", "C.9.5.3.1": "NSR10-C-C_9_5_3_1-sub%"}
 
 HEADING = re.compile(r"^\s*([A-K]\.\d{1,3}(?:\.\d{1,3}){0,6})\s*[—–\-]\s*\S")
+# Variante estricta para Título F: exige espacios alrededor del guion para no confundir «F.5.7.7-3» (figura) con un encabezado.
+HEADING_F = re.compile(r"^\s*([A-K]\.\d{1,3}(?:\.\d{1,3}){0,6})\s+[—–\-]\s+\S")
 PIE = re.compile(r"^\s*(NSR-10\s*[–—-].*|[A-K]-\d{1,4})\s*$")
 ECUACION = re.compile(r"\(C\.\d+-\d+\)")
 
 
-def extraer(numeral: str, pdf: str) -> str:
+def extraer(numeral: str, pdf: str, titulo_f: bool = False) -> str:
     import pypdf
 
     lector = pypdf.PdfReader(str(RAW / pdf))
     lineas = "\n".join((p.extract_text() or "") for p in lector.pages).splitlines()
-    ini = next((i for i, l in enumerate(lineas) if (m := HEADING.match(l)) and m.group(1) == numeral), None)
+    heading = HEADING_F if titulo_f else HEADING
+    ini = next((i for i, l in enumerate(lineas) if (m := heading.match(l)) and m.group(1) == numeral), None)
     if ini is None:
         raise SystemExit(f"{numeral}: encabezado no encontrado en {pdf}")
-    fin = next((j for j in range(ini + 1, len(lineas)) if HEADING.match(lineas[j])), len(lineas))
+    fin = next((j for j in range(ini + 1, len(lineas)) if heading.match(lineas[j])), len(lineas))
+    if titulo_f:  # un apéndice termina el capítulo aunque no haya otro encabezado numerado
+        corte = next((j for j in range(ini + 1, fin) if re.match(r"^\s*(NSR-10 [–-] Ap[ée]ndice|APENDICE|AP[ÉE]NDICE)", lineas[j])), fin)
+        fin = corte
     limpias = []
     for l in lineas[ini:fin]:
         if PIE.match(l) or not l.strip():
@@ -73,7 +79,7 @@ def extraer(numeral: str, pdf: str) -> str:
     texto = re.sub(r"\s+", " ", " ".join(limpias)).strip()
     if numeral.startswith("C.7.7."):  # verificado contra la imagen de la página: «db» (diámetro) sale como «bd», «10» como «.10»
         texto = texto.replace("— bd pero", "— db pero").replace("— .10", "— 10")
-    if ECUACION.search(texto):
+    if ECUACION.search(texto) and not titulo_f:
         texto += " [Nota de fidelidad: las ecuaciones de este numeral no se transcriben (la extracción de texto las desordena); consultar la fuente.]"
     return texto
 
