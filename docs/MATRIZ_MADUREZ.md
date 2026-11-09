@@ -15,7 +15,7 @@ Generado por `scripts/inventario/matriz_madurez.py`; no editar a mano. No existe
 | Motor de geotecnia (asentamiento, capacidad portante) | TRL 4 | 88 pruebas · CI sí · contrato/422/límite sí | 98,6 % | no desplegado | sin dependencias directas declaradas |
 | Motor estructural / BIM por visión (InfraCortex, YOLO) | ? | 18 pruebas · CI sí | 90,5 % | desactivado por defecto en producción | copyleft fuerte (red): revisar (ultralytics) |
 | Motor `licuacion` | ? | 53 pruebas · CI sí · contrato/422/límite sí | 100,0 % | ? | sin dependencias directas declaradas |
-| Motor `concreto` | ? | 283 pruebas · CI sí · contrato/422/límite sí | 96,3 % | ? | permisiva |
+| Motor `concreto` | ? | 285 pruebas · CI sí · contrato/422/límite sí | 96,3 % | ? | sin dependencias directas declaradas |
 | Motor `analisis` | ? | 18 pruebas · CI sí · contrato/422/límite sí | 98,4 % | ? | sin dependencias directas declaradas |
 | Motor `orquestador_api` | ? | 75 pruebas · CI sí · contrato/422/límite sí | 97,4 % | ? | sin dependencias directas declaradas |
 

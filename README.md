@@ -23,7 +23,7 @@
 ## Novedades (9-nov-2026)
 
 - **Motor de redes hidráulicas** (red mallada, bombas, válvulas, periodo extendido y golpe de ariete) con dos revisiones adversarias corregidas y validación contra EPANET. **Aún no está desplegado**: figura como «no desplegado» en la matriz.
-- **Registro de motores medidos a producción** y **matriz de madurez** generados desde el código, con verificación en CI: [`REGISTRO_MOTORES.md`](docs/REGISTRO_MOTORES.md) · [`MATRIZ_MADUREZ.md`](docs/MATRIZ_MADUREZ.md).
+- **Registro de motores medidos a producción**, **matriz de madurez** y **matriz de coherencia** entre motores, generados desde el código: [`REGISTRO_MOTORES.md`](docs/REGISTRO_MOTORES.md) · [`MATRIZ_MADUREZ.md`](docs/MATRIZ_MADUREZ.md) · [`MATRIZ_COHERENCIA.md`](docs/MATRIZ_COHERENCIA.md). CI verifica el registro y la matriz de coherencia; la matriz de madurez se regenera a mano porque depende de las licencias instaladas.
 - **Inventario de licencias** de las dependencias directas: [`LICENCIAS_DEPENDENCIAS.md`](docs/LICENCIAS_DEPENDENCIAS.md).
 - **Aviso semanal de vigencia normativa** (solo avisa; no ingesta): [`vigencia_normas.py`](scripts/mantenimiento/vigencia_normas.py).
 - Despliegue con verificación previa al tráfico: [`infra/gcp/`](infra/gcp/README.md).

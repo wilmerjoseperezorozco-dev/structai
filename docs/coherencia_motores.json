@@ -1,0 +1,254 @@
+{
+  "_nota": "Declaraciones de qué magnitud físicas consume y produce cada motor. Una evidencia tiene la forma «ruta::texto»: el archivo debe existir y contener el texto, o la verificación falla. «acceso» dice cómo se obtiene la magnitud: endpoint (campo del contrato HTTP), adaptador (exige una transformación escrita aparte, p. ej. combinar cargas o armar la malla) o paquete (solo desde Python, sin endpoint). Un nodo con declaracion «pendiente» figura en la matriz pero no genera conexiones. Los motores futuros (estado planificado o bloqueado) se declaran con su intención y la evidencia es el documento que los plantea; nunca cuentan como funcionando.",
+  "magnitudes": {
+    "carga_muerta_kn_m": {"unidad": "kN/m", "dominio": "no_negativo"},
+    "carga_viva_kn_m": {"unidad": "kN/m", "dominio": "no_negativo"},
+    "municipio_codigo_dane": {"unidad": "-", "dominio": "categoria"},
+    "perfil_suelo_clase": {"unidad": "-", "dominio": "categoria"},
+    "grupo_uso": {"unidad": "-", "dominio": "categoria"},
+    "coef_aceleracion_aa": {"unidad": "-", "dominio": "positivo"},
+    "coef_velocidad_av": {"unidad": "-", "dominio": "positivo"},
+    "geometria_portico": {"unidad": "m", "dominio": "compuesto"},
+    "seccion_columna_mm": {"unidad": "mm", "dominio": "positivo"},
+    "seccion_viga_mm": {"unidad": "mm", "dominio": "compuesto"},
+    "reaccion_vertical_kn": {"unidad": "kN", "dominio": "real"},
+    "momento_flector_knm": {"unidad": "kN*m", "dominio": "real"},
+    "cohesion_kpa": {"unidad": "kPa", "dominio": "no_negativo"},
+    "angulo_friccion_deg": {"unidad": "grados", "dominio": "no_negativo", "max": 90},
+    "peso_unitario_kn_m3": {"unidad": "kN/m3", "dominio": "positivo"},
+    "nivel_freatico_m": {"unidad": "m", "dominio": "no_negativo"},
+    "q_adm_kpa": {"unidad": "kPa", "dominio": "positivo"},
+    "q_ult_kpa": {"unidad": "kPa", "dominio": "positivo"},
+    "presion_contacto_kpa": {"unidad": "kPa", "dominio": "positivo"},
+    "modulo_balasto_kn_m3": {"unidad": "kN/m3", "dominio": "positivo"},
+    "asentamiento_admisible_mm": {"unidad": "mm", "dominio": "positivo"},
+    "asentamiento_mm": {"unidad": "mm", "dominio": "no_negativo"},
+    "estratos_arcilla": {"unidad": "-", "dominio": "compuesto"},
+    "perfil_spt": {"unidad": "-", "dominio": "compuesto"},
+    "aceleracion_pico_g": {"unidad": "g", "dominio": "positivo", "max": 2},
+    "magnitud_momento_mw": {"unidad": "-", "dominio": "real"},
+    "lpi": {"unidad": "-", "dominio": "no_negativo"},
+    "fs_licuacion_minimo": {"unidad": "-", "dominio": "no_negativo"},
+    "factor_seguridad_talud": {"unidad": "-", "dominio": "positivo"},
+    "volumen_concreto_m3": {"unidad": "m3", "dominio": "no_negativo"},
+    "masa_acero_kg": {"unidad": "kg", "dominio": "no_negativo"},
+    "costo_directo_cop": {"unidad": "COP", "dominio": "no_negativo"},
+    "co2e_kg": {"unidad": "kgCO2e", "dominio": "no_negativo"},
+    "factor_emision_kgco2e_kg": {"unidad": "kgCO2e/kg", "dominio": "no_negativo"},
+    "deriva_relativa": {"unidad": "-", "dominio": "no_negativo"},
+    "razon_demanda_capacidad": {"unidad": "-", "dominio": "no_negativo"},
+    "red_hidraulica": {"unidad": "-", "dominio": "compuesto"},
+    "caudal_m3s": {"unidad": "m3/s", "dominio": "real"},
+    "presion_m": {"unidad": "m", "dominio": "real"},
+    "velocidad_ms": {"unidad": "m/s", "dominio": "no_negativo"},
+    "golpe_ariete_pico_m": {"unidad": "m", "dominio": "no_negativo"},
+    "capacidad_pilote_kn": {"unidad": "kN", "dominio": "positivo"},
+    "frontera_pareto": {"unidad": "-", "dominio": "compuesto"}
+  },
+  "nodos": [
+    {
+      "id": "motor-analisis", "tipo": "motor", "estado": "implementado", "declaracion": "completa",
+      "endpoints": ["POST /analisis/portico"],
+      "entradas": [
+        {"magnitud": "geometria_portico", "acceso": "endpoint", "evidencia": "packages/motor-analisis/src/contrato_api.py::class SolicitudPortico"},
+        {"magnitud": "carga_muerta_kn_m", "acceso": "endpoint", "evidencia": "packages/motor-analisis/src/contrato_api.py::uniformes"},
+        {"magnitud": "carga_viva_kn_m", "acceso": "endpoint", "evidencia": "packages/motor-analisis/src/contrato_api.py::uniformes"},
+        {"magnitud": "seccion_columna_mm", "acceso": "adaptador", "evidencia": "packages/dag-proyecto/dag_proyecto/motores.py::def _malla"},
+        {"magnitud": "seccion_viga_mm", "acceso": "adaptador", "evidencia": "packages/dag-proyecto/dag_proyecto/motores.py::def _malla"}
+      ],
+      "salidas": [
+        {"magnitud": "reaccion_vertical_kn", "acceso": "endpoint", "evidencia": "packages/motor-analisis/src/contrato_api.py::reacciones"},
+        {"magnitud": "momento_flector_knm", "acceso": "endpoint", "evidencia": "packages/motor-analisis/src/contrato_api.py::momento_max_knm"}
+      ]
+    },
+    {
+      "id": "orquestador", "tipo": "motor", "estado": "implementado", "declaracion": "completa",
+      "endpoints": ["POST /orquestador/portico-integral"],
+      "entradas": [
+        {"magnitud": "carga_muerta_kn_m", "acceso": "endpoint", "evidencia": "packages/orquestador/src/contrato_api.py::carga_muerta_kn_m"},
+        {"magnitud": "carga_viva_kn_m", "acceso": "endpoint", "evidencia": "packages/orquestador/src/contrato_api.py::carga_viva_kn_m"},
+        {"magnitud": "municipio_codigo_dane", "acceso": "endpoint", "evidencia": "packages/orquestador/src/contrato_api.py::codigo_dane"},
+        {"magnitud": "perfil_suelo_clase", "acceso": "endpoint", "evidencia": "packages/orquestador/src/contrato_api.py::perfil_suelo"},
+        {"magnitud": "grupo_uso", "acceso": "endpoint", "evidencia": "packages/orquestador/src/contrato_api.py::grupo_uso"},
+        {"magnitud": "coef_aceleracion_aa", "acceso": "paquete", "evidencia": "packages/orquestador/src/diseno_portico.py::_a4.buscar"},
+        {"magnitud": "coef_velocidad_av", "acceso": "paquete", "evidencia": "packages/orquestador/src/diseno_portico.py::_a4.buscar"}
+      ],
+      "salidas": [
+        {"magnitud": "seccion_columna_mm", "acceso": "endpoint", "evidencia": "packages/orquestador/src/contrato_api.py::c_mm"},
+        {"magnitud": "seccion_viga_mm", "acceso": "endpoint", "evidencia": "packages/orquestador/src/contrato_api.py::b_mm"},
+        {"magnitud": "costo_directo_cop", "acceso": "endpoint", "evidencia": "packages/orquestador/src/contrato_api.py::costo_directo_cop"},
+        {"magnitud": "deriva_relativa", "acceso": "endpoint", "evidencia": "packages/orquestador/src/contrato_api.py::deriva"}
+      ]
+    },
+    {
+      "id": "motor-concreto", "tipo": "motor", "estado": "implementado", "declaracion": "completa",
+      "endpoints": ["POST /concreto/talud", "POST /concreto/zapata"],
+      "entradas": [
+        {"magnitud": "seccion_columna_mm", "acceso": "endpoint", "evidencia": "packages/motor-concreto/src/contrato_api.py::c1_mm"},
+        {"magnitud": "reaccion_vertical_kn", "acceso": "adaptador", "evidencia": "packages/dag-proyecto/dag_proyecto/motores.py::p_serv, p_u"},
+        {"magnitud": "q_adm_kpa", "acceso": "endpoint", "evidencia": "packages/motor-concreto/src/contrato_api.py::q_adm_kpa"},
+        {"magnitud": "asentamiento_admisible_mm", "acceso": "endpoint", "evidencia": "packages/motor-concreto/src/contrato_api.py::asentamiento_max_mm"},
+        {"magnitud": "modulo_balasto_kn_m3", "acceso": "endpoint", "evidencia": "packages/motor-concreto/src/contrato_api.py::ks_kn_m3"},
+        {"magnitud": "cohesion_kpa", "acceso": "endpoint", "evidencia": "packages/motor-concreto/src/contrato_api.py::c_kpa"},
+        {"magnitud": "angulo_friccion_deg", "acceso": "endpoint", "evidencia": "packages/motor-concreto/src/contrato_api.py::phi_deg"},
+        {"magnitud": "peso_unitario_kn_m3", "acceso": "endpoint", "evidencia": "packages/motor-concreto/src/contrato_api.py::gamma_kn_m3"},
+        {"magnitud": "nivel_freatico_m", "acceso": "endpoint", "evidencia": "packages/motor-concreto/src/contrato_api.py::prof_freatico_m"},
+        {"magnitud": "factor_emision_kgco2e_kg", "acceso": "paquete", "evidencia": "packages/motor-concreto/src/economia_concreto.py::fe_cemento"}
+      ],
+      "salidas": [
+        {"magnitud": "volumen_concreto_m3", "acceso": "endpoint", "evidencia": "packages/motor-concreto/src/contrato_api.py::volumen_concreto_m3"},
+        {"magnitud": "masa_acero_kg", "acceso": "endpoint", "evidencia": "packages/motor-concreto/src/contrato_api.py::masa_acero_kg"},
+        {"magnitud": "presion_contacto_kpa", "acceso": "endpoint", "evidencia": "packages/motor-concreto/src/contrato_api.py::q_max_serv_kpa"},
+        {"magnitud": "razon_demanda_capacidad", "acceso": "endpoint", "evidencia": "packages/motor-concreto/src/contrato_api.py::utilizacion_maxima"},
+        {"magnitud": "factor_seguridad_talud", "acceso": "endpoint", "evidencia": "packages/motor-concreto/src/contrato_api.py::\"fs\": res.fs"},
+        {"magnitud": "costo_directo_cop", "acceso": "paquete", "evidencia": "packages/motor-concreto/src/cantidades_costo.py::def costo_co2"},
+        {"magnitud": "co2e_kg", "acceso": "paquete", "evidencia": "packages/motor-concreto/src/cantidades_costo.py::def costo_co2"}
+      ]
+    },
+    {
+      "id": "motor-geotecnia", "tipo": "motor", "estado": "implementado", "declaracion": "completa",
+      "endpoints": ["POST /geotecnia/asentamiento", "POST /geotecnia/portante"],
+      "entradas": [
+        {"magnitud": "cohesion_kpa", "acceso": "endpoint", "evidencia": "packages/motor-geotecnia/src/contrato_api.py::c_kpa"},
+        {"magnitud": "angulo_friccion_deg", "acceso": "endpoint", "evidencia": "packages/motor-geotecnia/src/contrato_api.py::phi_deg"},
+        {"magnitud": "peso_unitario_kn_m3", "acceso": "endpoint", "evidencia": "packages/motor-geotecnia/src/contrato_api.py::gamma_kn_m3"},
+        {"magnitud": "nivel_freatico_m", "acceso": "endpoint", "evidencia": "packages/motor-geotecnia/src/contrato_api.py::nivel_freatico_m"},
+        {"magnitud": "estratos_arcilla", "acceso": "endpoint", "evidencia": "packages/motor-geotecnia/src/contrato_api.py::class EstratoArcilla"},
+        {"magnitud": "presion_contacto_kpa", "acceso": "adaptador", "evidencia": "packages/motor-geotecnia/src/contrato_api.py::Presión neta aplicada"}
+      ],
+      "salidas": [
+        {"magnitud": "q_ult_kpa", "acceso": "endpoint", "evidencia": "packages/motor-geotecnia/src/contrato_api.py::q_ult_kpa"},
+        {"magnitud": "q_adm_kpa", "acceso": "endpoint", "evidencia": "packages/motor-geotecnia/src/contrato_api.py::q_adm_kpa"},
+        {"magnitud": "asentamiento_mm", "acceso": "endpoint", "evidencia": "packages/motor-geotecnia/src/contrato_api.py::asentamiento_total_mm"},
+        {"magnitud": "razon_demanda_capacidad", "acceso": "endpoint", "evidencia": "packages/motor-geotecnia/src/contrato_api.py::utilizacion"}
+      ]
+    },
+    {
+      "id": "motor-licuacion", "tipo": "motor", "estado": "implementado", "declaracion": "completa",
+      "endpoints": ["POST /licuacion/spt"],
+      "entradas": [
+        {"magnitud": "perfil_spt", "acceso": "endpoint", "evidencia": "packages/motor-licuacion/src/contrato_api.py::class EstratoSPT"},
+        {"magnitud": "aceleracion_pico_g", "acceso": "endpoint", "evidencia": "packages/motor-licuacion/src/contrato_api.py::amax_g"},
+        {"magnitud": "magnitud_momento_mw", "acceso": "endpoint", "evidencia": "packages/motor-licuacion/src/contrato_api.py::mw"},
+        {"magnitud": "nivel_freatico_m", "acceso": "endpoint", "evidencia": "packages/motor-licuacion/src/contrato_api.py::nivel_freatico_m"}
+      ],
+      "salidas": [
+        {"magnitud": "lpi", "acceso": "endpoint", "evidencia": "packages/motor-licuacion/src/contrato_api.py::\"lpi\": lpi"},
+        {"magnitud": "fs_licuacion_minimo", "acceso": "endpoint", "evidencia": "packages/motor-licuacion/src/contrato_api.py::fs_minimo"}
+      ]
+    },
+    {
+      "id": "motor-redes", "tipo": "motor", "estado": "implementado", "declaracion": "completa",
+      "endpoints": ["POST /redes/ariete", "POST /redes/periodo", "POST /redes/permanente"],
+      "entradas": [
+        {"magnitud": "red_hidraulica", "acceso": "endpoint", "evidencia": "packages/motor-redes/src/contrato_api.py::class SolicitudRed"}
+      ],
+      "salidas": [
+        {"magnitud": "presion_m", "acceso": "endpoint", "evidencia": "packages/motor-redes/src/contrato_api.py::presion_m"},
+        {"magnitud": "caudal_m3s", "acceso": "endpoint", "evidencia": "packages/motor-redes/src/contrato_api.py::caudal_m3s"},
+        {"magnitud": "velocidad_ms", "acceso": "endpoint", "evidencia": "packages/motor-redes/src/contrato_api.py::velocidad_max_ms"},
+        {"magnitud": "golpe_ariete_pico_m", "acceso": "endpoint", "evidencia": "packages/motor-redes/src/contrato_ariete.py::h_max_m"}
+      ]
+    },
+    {
+      "id": "motor-apu", "tipo": "motor", "estado": "implementado", "declaracion": "completa",
+      "endpoints": [],
+      "entradas": [
+        {"magnitud": "seccion_columna_mm", "acceso": "paquete", "evidencia": "packages/motor-apu/src/cantidades.py::class GeometriaElementoConcreto"},
+        {"magnitud": "seccion_viga_mm", "acceso": "paquete", "evidencia": "packages/motor-apu/src/cantidades.py::class GeometriaElementoConcreto"}
+      ],
+      "salidas": [
+        {"magnitud": "costo_directo_cop", "acceso": "paquete", "evidencia": "packages/motor-apu/src/cantidades.py::def calcular_apu_dinamico"}
+      ]
+    },
+    {
+      "id": "motor-geopot", "tipo": "motor", "estado": "implementado", "declaracion": "completa",
+      "endpoints": [],
+      "entradas": [
+        {"magnitud": "municipio_codigo_dane", "acceso": "paquete", "evidencia": "packages/motor-geopot/src/a4.py::def buscar"}
+      ],
+      "salidas": [
+        {"magnitud": "coef_aceleracion_aa", "acceso": "paquete", "evidencia": "packages/motor-geopot/src/a4.py::def buscar"},
+        {"magnitud": "coef_velocidad_av", "acceso": "paquete", "evidencia": "packages/motor-geopot/src/a4.py::def buscar"}
+      ]
+    },
+    {"id": "motor-aquai", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
+    {"id": "motor-vias", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
+    {"id": "motor-gerencia", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
+    {"id": "motor-vulnerabilidad-vivienda", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
+    {"id": "motor-estructural", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
+    {"id": "motor-deformacion", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
+    {"id": "motor-acero-frio", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
+    {"id": "motor-topovia", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
+    {
+      "id": "dato-factores-emision", "tipo": "dato", "estado": "implementado", "declaracion": "completa",
+      "endpoints": [],
+      "entradas": [],
+      "salidas": [
+        {"magnitud": "factor_emision_kgco2e_kg", "acceso": "paquete", "evidencia": "data/factores_emision/factores_emision_2026-11.json"}
+      ]
+    },
+    {
+      "id": "futuro-columna-circular", "tipo": "motor", "estado": "planificado", "declaracion": "completa",
+      "endpoints": [],
+      "entradas": [
+        {"magnitud": "reaccion_vertical_kn", "acceso": "endpoint", "evidencia": "docs/ANALISIS_MOTORES_Y_ROADMAP_2026-11.md::Columna circular"},
+        {"magnitud": "momento_flector_knm", "acceso": "endpoint", "evidencia": "docs/ANALISIS_MOTORES_Y_ROADMAP_2026-11.md::Columna circular"}
+      ],
+      "salidas": [
+        {"magnitud": "razon_demanda_capacidad", "acceso": "endpoint", "evidencia": "docs/ANALISIS_MOTORES_Y_ROADMAP_2026-11.md::Columna circular"},
+        {"magnitud": "masa_acero_kg", "acceso": "endpoint", "evidencia": "docs/ANALISIS_MOTORES_Y_ROADMAP_2026-11.md::Columna circular"},
+        {"magnitud": "volumen_concreto_m3", "acceso": "endpoint", "evidencia": "docs/ANALISIS_MOTORES_Y_ROADMAP_2026-11.md::Columna circular"}
+      ]
+    },
+    {
+      "id": "futuro-losas", "tipo": "motor", "estado": "planificado", "declaracion": "completa",
+      "endpoints": [],
+      "entradas": [
+        {"magnitud": "carga_muerta_kn_m", "acceso": "endpoint", "evidencia": "docs/ANALISIS_MOTORES_Y_ROADMAP_2026-11.md::Losas en una dirección"},
+        {"magnitud": "carga_viva_kn_m", "acceso": "endpoint", "evidencia": "docs/ANALISIS_MOTORES_Y_ROADMAP_2026-11.md::Losas en una dirección"},
+        {"magnitud": "geometria_portico", "acceso": "endpoint", "evidencia": "docs/ANALISIS_MOTORES_Y_ROADMAP_2026-11.md::Losas en una dirección"}
+      ],
+      "salidas": [
+        {"magnitud": "razon_demanda_capacidad", "acceso": "endpoint", "evidencia": "docs/ANALISIS_MOTORES_Y_ROADMAP_2026-11.md::Losas en una dirección"},
+        {"magnitud": "masa_acero_kg", "acceso": "endpoint", "evidencia": "docs/ANALISIS_MOTORES_Y_ROADMAP_2026-11.md::Losas en una dirección"},
+        {"magnitud": "volumen_concreto_m3", "acceso": "endpoint", "evidencia": "docs/ANALISIS_MOTORES_Y_ROADMAP_2026-11.md::Losas en una dirección"}
+      ]
+    },
+    {
+      "id": "futuro-pilotes", "tipo": "motor", "estado": "bloqueado", "declaracion": "completa",
+      "bloqueo": "El corpus no tiene norma específica de pilotes (AASHTO LRFD, FHWA); sin ella el motor tendría que inventar criterios.",
+      "endpoints": [],
+      "entradas": [
+        {"magnitud": "perfil_spt", "acceso": "endpoint", "evidencia": "docs/ANALISIS_MOTORES_Y_ROADMAP_2026-11.md::Cimentaciones profundas/pilotes"},
+        {"magnitud": "reaccion_vertical_kn", "acceso": "endpoint", "evidencia": "docs/ANALISIS_MOTORES_Y_ROADMAP_2026-11.md::Cimentaciones profundas/pilotes"},
+        {"magnitud": "nivel_freatico_m", "acceso": "endpoint", "evidencia": "docs/ANALISIS_MOTORES_Y_ROADMAP_2026-11.md::Cimentaciones profundas/pilotes"}
+      ],
+      "salidas": [
+        {"magnitud": "capacidad_pilote_kn", "acceso": "endpoint", "evidencia": "docs/ANALISIS_MOTORES_Y_ROADMAP_2026-11.md::Cimentaciones profundas/pilotes"},
+        {"magnitud": "razon_demanda_capacidad", "acceso": "endpoint", "evidencia": "docs/ANALISIS_MOTORES_Y_ROADMAP_2026-11.md::Cimentaciones profundas/pilotes"}
+      ]
+    },
+    {
+      "id": "futuro-optimizador-portico", "tipo": "motor", "estado": "planificado", "declaracion": "completa",
+      "endpoints": [],
+      "entradas": [
+        {"magnitud": "costo_directo_cop", "acceso": "paquete", "evidencia": "docs/investigacion/L1_OPTIMIZACION_ESTRUCTURAL_COSTO_SEGURIDAD_CARBONO.md::Frontera exacta por enumeración"},
+        {"magnitud": "masa_acero_kg", "acceso": "paquete", "evidencia": "docs/investigacion/L1_OPTIMIZACION_ESTRUCTURAL_COSTO_SEGURIDAD_CARBONO.md::Frontera exacta por enumeración"},
+        {"magnitud": "volumen_concreto_m3", "acceso": "paquete", "evidencia": "docs/investigacion/L1_OPTIMIZACION_ESTRUCTURAL_COSTO_SEGURIDAD_CARBONO.md::Frontera exacta por enumeración"},
+        {"magnitud": "co2e_kg", "acceso": "paquete", "evidencia": "docs/investigacion/L1_OPTIMIZACION_ESTRUCTURAL_COSTO_SEGURIDAD_CARBONO.md::Frontera exacta por enumeración"},
+        {"magnitud": "deriva_relativa", "acceso": "paquete", "evidencia": "docs/investigacion/L1_OPTIMIZACION_ESTRUCTURAL_COSTO_SEGURIDAD_CARBONO.md::Frontera exacta por enumeración"},
+        {"magnitud": "razon_demanda_capacidad", "acceso": "paquete", "evidencia": "docs/investigacion/L1_OPTIMIZACION_ESTRUCTURAL_COSTO_SEGURIDAD_CARBONO.md::Frontera exacta por enumeración"}
+      ],
+      "salidas": [
+        {"magnitud": "frontera_pareto", "acceso": "paquete", "evidencia": "docs/investigacion/L1_OPTIMIZACION_ESTRUCTURAL_COSTO_SEGURIDAD_CARBONO.md::Frontera exacta por enumeración"}
+      ]
+    }
+  ],
+  "cadenas_probadas": [
+    {
+      "nodos": ["orquestador", "motor-analisis", "motor-concreto"],
+      "evidencia": "packages/dag-proyecto/tests/test_motores_reales.py::def test_la_cadena_produce_los_tres_artefactos_con_linaje"
+    }
+  ]
+}

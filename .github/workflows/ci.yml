@@ -202,6 +202,8 @@ jobs:
         with: { python-version: '${{ env.PYTHON_VERSION }}' }
       - name: Verificar que el registro coincide con el código
         run: python scripts/inventario/registro_motores.py --verificar
+      - name: Verificar la matriz de coherencia (evidencias vigentes, ningún motor sin declarar)
+        run: python scripts/inventario/matriz_coherencia.py --verificar
 
   # ── 4b. Cobertura de ingesta — idea 6 del roadmap (2026-09-16) ─────
   # No re-extrae del PDF fuente (gitignored, no viaja con el checkout) --
