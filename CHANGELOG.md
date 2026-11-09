@@ -4,6 +4,25 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y 
 
 Cada versión corresponde a un tag `vX.Y.Z` sobre `master`. Los estados cerrados de investigación llevan además un tag `research/…` (ver la política). Las versiones `v1.1.0`–`v1.9.0` conservan también su tag descriptivo original por compatibilidad de enlaces.
 
+## [Sin publicar]
+
+Periodo: 9–10 de noviembre de 2026. Borrador: se redacta a mano al publicar (`python scripts/mantenimiento/changelog.py --borrador --desde cca89c0` lista los commits).
+
+### Agregado
+- **motor-redes** (#138): red mallada permanente (método del gradiente), bombas, válvulas, periodo extendido con tanques y golpe de ariete, con contrato `ResultadoMotor`, endpoint y dos revisiones adversarias.
+- **Registro de motores medidos a producción** (`docs/REGISTRO_MOTORES.md`), **matriz de madurez** por subsistema, **inventario de licencias** y cobertura de líneas medida con `pytest-cov`; todos generados y verificables por script.
+- **Vigilancia de vigencia normativa** semanal (`scripts/mantenimiento/vigencia_normas.py`) que solo avisa.
+- `SECURITY.md`, Dependabot, CODEOWNERS y plantillas de issues y de PR.
+- Automatización de releases: `changelog.py` (borrador, notas, verificación) y el workflow `release.yml`, que crea el release en borrador.
+
+### Corregido
+- Dependencias de CI de `motor-analisis`, `motor-concreto` y `orquestador`; ambos últimos entran en la matriz de CI.
+- Alertas altas de `js-yaml`.
+
+### Limitaciones documentadas
+- Ningún motor cumple aún las cuatro condiciones de «medido a producción»: falta desplegar y verificar con una llamada real.
+- Tres alertas altas de Dependabot (`decode-uri-component`, `image-size`) en `apps/native` sin corrección aplicable; ver `SECURITY.md`.
+
 ## [1.16.0] — Precios y costos de obra, plugins del chat y comparación de métodos
 
 Periodo: 7–8 de noviembre de 2026.

@@ -41,11 +41,12 @@ Un milestone agrupa los issues de una fase y suele coincidir con un release. Los
 ## Cómo publicar una versión
 
 1. `master` limpio y la CI en verde.
-2. Mover lo de `[Sin publicar]` en [`CHANGELOG.md`](../CHANGELOG.md) a la nueva versión, con fecha y periodo.
+2. `python scripts/mantenimiento/changelog.py --borrador` imprime los commits desde el último tag, agrupados por tipo. Úselo de apoyo: mover lo de `[Sin publicar]` en [`CHANGELOG.md`](../CHANGELOG.md) a la nueva versión, con fecha y periodo, redactado a mano.
 3. Actualizar `API_VERSION` en `apps/api/main.py` (la versión que reporta `/health`). Los `package.json` de los workspaces no se versionan con el monorepo: la versión pública es el tag.
-4. Tag anotado: `git tag -a vX.Y.Z -m "…"` y `git push origin vX.Y.Z`.
-5. Release en GitHub con el título `vX.Y.Z — <nombre>` y las notas tomadas del CHANGELOG.
-6. Cerrar el milestone de la fase y abrir el siguiente.
+4. Comprobar en local: `python scripts/mantenimiento/changelog.py --verificar-release vX.Y.Z` (tag, sección del CHANGELOG y `API_VERSION` deben coincidir).
+5. Tag anotado: `git tag -a vX.Y.Z -m "…"` y `git push origin vX.Y.Z`.
+6. El workflow `release.yml` repite la verificación y crea el release en **borrador** con las notas del CHANGELOG. Revisarlo en GitHub y publicarlo a mano; no se publica solo.
+7. Cerrar el milestone de la fase y abrir el siguiente.
 
 ## Cómo citar
 

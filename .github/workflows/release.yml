@@ -1,0 +1,29 @@
+name: Release
+
+# Se dispara solo al subir un tag vX.Y.Z. Verifica que tag, CHANGELOG y API_VERSION coincidan y crea el release
+# como BORRADOR con las notas del CHANGELOG: una persona lo revisa y lo publica.
+on:
+  push:
+    tags: ["v[0-9]+.[0-9]+.[0-9]+"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verificar coherencia tag / CHANGELOG / API_VERSION
+        run: python scripts/mantenimiento/changelog.py --verificar-release "$GITHUB_REF_NAME"
+      - name: Extraer notas
+        run: python scripts/mantenimiento/changelog.py --notas "${GITHUB_REF_NAME#v}" > notas.md
+      - name: Crear release en borrador
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" --draft --verify-tag \
+            --title "$GITHUB_REF_NAME" --notes-file notas.md
