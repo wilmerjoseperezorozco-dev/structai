@@ -23,15 +23,20 @@ ANTIGUAS = ("estandar", "dentellon", "bandeja")
 
 
 def _caso(args):
-    f, mult_ancl = args
+    f, mult_ancl, muestrear_precios, semilla = args
+    import numpy as np
+    from dataclasses import replace
     from src.economia_concreto import Economia
+    from src.precios_distribucion import muestrear
     from src.muro_contencion import Relleno, SueloApoyo
     from src.muro_optimizador import CasoMuro, optimizar
 
     fe_c, fe_a = ESC[f["escenario_co2"]]
-    caso = CasoMuro(f["H"], Relleno(f["gamma"], f["phi"], f["beta"], f["q_s"]), SueloApoyo(f["phi"], f["q_adm"]),
-                    economia=Economia(mult_concreto=f["mult_concreto"], p_acero=f["p_acero"], fe_cemento=fe_c, fe_acero=fe_a,
-                                      p_perforacion_m=180_000.0 * mult_ancl, p_cabeza_anclaje=450_000.0 * mult_ancl), a_max_g=f["a_max"])
+    eco = Economia(mult_concreto=f["mult_concreto"], p_acero=f["p_acero"], fe_cemento=fe_c, fe_acero=fe_a)
+    eco = replace(eco, p_perforacion_m=eco.p_perforacion_m * mult_ancl, p_cabeza_anclaje=eco.p_cabeza_anclaje * mult_ancl)
+    if muestrear_precios:        # un escenario de precios por caso: marginaliza la incertidumbre sobre todo el conjunto
+        eco = muestrear(eco, np.random.default_rng([semilla, int(f["id"])]))
+    caso = CasoMuro(f["H"], Relleno(f["gamma"], f["phi"], f["beta"], f["q_s"]), SueloApoyo(f["phi"], f["q_adm"]), economia=eco, a_max_g=f["a_max"])
     out = {}
     cf = optimizar(caso, "contrafuerte", "lineal")
     out["contrafuerte"] = None if cf is None else float(cf.objetivo)
@@ -53,13 +58,15 @@ def _resumen(df: pd.DataFrame, mascara: pd.Series) -> dict:
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--n", type=int, default=512)
-    ap.add_argument("--mult-precio-anclaje", type=float, default=1.0, help="multiplica los precios SUPUESTOS de perforación y cabeza (sensibilidad)")
+    ap.add_argument("--mult-precio-anclaje", type=float, default=1.0, help="multiplica los precios INVIAS de perforación y cabeza (sensibilidad)")
+    ap.add_argument("--muestrear-precios", action="store_true", help="un escenario lognormal de precios (acero, concreto, perforación) por caso")
+    ap.add_argument("--semilla", type=int, default=2026)
     ap.add_argument("--dataset", default=str(RAIZ / "data" / "surrogate_muro" / "dataset_v2.csv"))
     ap.add_argument("--salida", default=str(RAIZ / "data" / "surrogate_muro" / "region_sin_solucion.json"))
     a = ap.parse_args()
     df = pd.read_csv(a.dataset).head(a.n).copy()
     with Pool(4) as pool:
-        res = pool.map(_caso, [(f, a.mult_precio_anclaje) for f in df.to_dict("records")], chunksize=4)
+        res = pool.map(_caso, [(f, a.mult_precio_anclaje, a.muestrear_precios, a.semilla) for f in df.to_dict("records")], chunksize=4)
     df["cf_obj"] = [r["contrafuerte"] for r in res]
     df["anc_obj"] = [r["anclaje"] for r in res]
     df["anc_fuerza"] = [r["anclaje_fuerza"] for r in res]
@@ -74,6 +81,7 @@ if __name__ == "__main__":
     out = {
         "n": int(len(df)),
         "mult_precio_anclaje": a.mult_precio_anclaje,
+        "muestrear_precios": a.muestrear_precios,
         "sin_solucion_antes": float(sin.mean()),
         "sin_solucion_despues": float((sin & ~(df["cf_ok"] | df["anc_ok"])).mean()),
         "recuperados_de_los_sin_solucion": _resumen(df, sin),

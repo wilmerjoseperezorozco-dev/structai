@@ -25,13 +25,28 @@ Catálogo reproducible: `scripts/precios/descargar_invias.py` → `scripts/preci
 
 ## 3. Efecto en la tipología ganadora del muro (512 casos, mismo conjunto)
 
-| Precio de perforación y cabeza | Casos con solución previa donde gana una tipología nueva | Gana anclaje | Gana contrafuerte |
-|---|---|---|---|
-| Supuesto original (×1) | 73,7 % | 73,2 % | 0,4 % |
-| ×3 (≈ INVIAS real) | 23,2 % | 16,7 % | 6,6 % |
-| ×6 | 10,1 % | 0 % | 10,1 % |
+| Precio de perforación y cabeza | Casos con solución previa donde gana una tipología nueva | Gana anclaje | Gana contrafuerte | Ahorro mediano si gana |
+|---|---|---|---|---|
+| Supuesto original (180 mil COP/m, cabeza 450 mil) | 73,7 % | 73,2 % | 0,4 % | 18,6 % |
+| ×3 sobre el supuesto (sensibilidad) | 23,2 % | 16,7 % | 6,6 % | 11,3 % |
+| ×6 sobre el supuesto (sensibilidad) | 10,1 % | 0 % | 10,1 % | 7,5 % |
+| **INVIAS 2026-1 (490.100 COP/m sin torón, cabezal 114.571, torón 10.790 COP/kg) con un escenario lognormal de precios por caso** | **36,0 %** | **29,4 %** | **6,6 %** | **15,3 %** |
 
-La recuperación mecánica de casos sin solución (50 %) no depende del precio. El ranking económico sí: con el precio real el anclaje deja de dominar y pasa a ser una solución de rescate donde el voladizo no cumple. Conclusión de diseño: los precios del anclaje deben entrar como distribución, no como constante.
+Con precios reales, el 50 % de los casos sin solución sigue recuperándose con anclaje (es mecánico: no depende del precio) y la recuperación es mayor en muros bajos (66 % a 1,5–3 m; 74 % a 3–5 m; 49 % a 5–6,5 m; 24 % a 6,5–8 m). La fracción sin solución tras las dos tipologías nuevas se mantiene en 27,7 %. Conclusión de diseño: el anclaje es una solución de rescate competitiva, no dominante, y su ranking económico depende de la distribución de precios, que ahora entra por `precios_distribucion.muestrear`. Archivo: `data/surrogate_muro/region_sin_solucion_invias_muestreo.json`.
+
+La corrida usa un escenario por caso (marginaliza la incertidumbre sobre el conjunto); no estima la probabilidad de ganar de un caso individual, que requeriría varios escenarios por caso.
+
+## 3.1 Indices del DANE
+
+El ICCV se descontinuó en dic-2021 y lo reemplaza el ICOCED (base dic-2021 = 100). `scripts/precios/indices_dane.py` lee el anexo mensual (hoja 7.2) y produce `data/precios_elementos/indices_icoced.csv`: 100.719 filas, 19 dominios geográficos, 93 grupos de insumos, 2022-01 a 2026-09. Para Barranquilla AM la variación anual a sep-2026 es +9,1 % en acero corrugado y −0,9 % en concreto común. `factor(df, dominio, insumo, desde, hasta)` lleva un precio de una fecha a otra.
+
+## 3.2 Incertidumbres calibradas
+
+`scripts/precios/calibrar_distribuciones.py` compone el sigma de cada familia (localización entre 140 provincias + fuente entre contratos locales + deriva temporal del ICOCED + especificación declarada): acero 0,120; concreto 0,090; perforación de anclaje 0,283 (de los cuales 0,25 es un supuesto de especificación, porque la receta INVIAS es en roca).
+
+## 3.3 Defecto de ingesta INVIAS confirmado
+
+En `invias_actividad_insumos`, para filas de **material** la columna `cantidad_o_rendimiento` contiene el precio unitario del insumo y `valor_unitario_linea` contiene el valor de la línea (cantidad × precio). Ejemplo en 623,1: torón con `cantidad_o_rendimiento` = 10.790 (igual al precio en Atlántico) y `valor_unitario_linea` = 59.670; la cantidad real es 59.670 / 10.790 = 5,53 kg/m. Las filas de equipo conservan el rendimiento en horas. Hasta corregir la ingesta no deben usarse las cantidades de material de esa tabla.
 
 ## 4. Método propuesto y coherencia del aprendizaje automático
 
@@ -55,7 +70,9 @@ La recuperación mecánica de casos sin solución (50 %) no depende del precio. 
 
 ## 6. Pendiente
 
-- Verificar la inversión de columnas en `invias_actividad_insumos`.
-- Integrar ICCV/ICOCED del DANE.
-- Reemplazar los defaults de `Economia` por distribuciones y repetir `region_sin_solucion.py` con muestreo de precios.
+- Corregir en la ingesta las columnas de material de `invias_actividad_insumos`.
+- Integrar el factor ICOCED y la lectura del catálogo en `Economia`.
+- Sigmas para pilotes, tablestacas, gaviones y preesfuerzo.
 - Acero estructural fabricado y montado para cerchas y nudos (sin fuente INVIAS).
+- Varios escenarios de precio por caso para estimar la probabilidad de que una tipología gane.
+- Matriz de elementos y laboratorio digital: ver `MATRIZ_ESTANDARIZACION_MOTORES_2026-11.md`.

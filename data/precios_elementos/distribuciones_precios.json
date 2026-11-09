@@ -1,0 +1,35 @@
+{
+  "periodo_indices": "2026-09",
+  "observaciones_locales": "acero 4.979–7.388 COP/kg y concreto 28 MPa 772–947 mil COP/m³ en contratos de Barranquilla/Puerto Colombia (consulta SQL 2026-11-08)",
+  "familias": {
+    "acero": {
+      "mediana_catalogo": 6825.88,
+      "sigma_localizacion": 0.0101,
+      "sigma_fuente": 0.0987,
+      "sigma_tiempo": 0.0671,
+      "sigma_especificacion": 0.0,
+      "sigma_total": 0.1198,
+      "insumo_icoced": "Acero corrugado",
+      "variacion_anual_ultimo_periodo": 0.0911
+    },
+    "concreto": {
+      "mediana_catalogo": 852673.34,
+      "sigma_localizacion": 0.007,
+      "sigma_fuente": 0.0511,
+      "sigma_tiempo": 0.0742,
+      "sigma_especificacion": 0.0,
+      "sigma_total": 0.0904,
+      "insumo_icoced": "Concreto común",
+      "variacion_anual_ultimo_periodo": -0.0093
+    },
+    "perforacion_anclaje": {
+      "mediana_catalogo": 549775.78,
+      "sigma_localizacion": 0.129,
+      "sigma_fuente": 0.0,
+      "sigma_tiempo": 0.0261,
+      "sigma_especificacion": 0.25,
+      "sigma_total": 0.2825,
+      "insumo_icoced": "Servicios de preliminares y cimentación"
+    }
+  }
+}

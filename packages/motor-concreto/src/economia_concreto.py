@@ -53,6 +53,8 @@ class Economia:
     fe_cemento: float = 1.010           # EPD 857 Argos Cartagena
     fe_acero: float = FE["acero"]       # Pardo 2022
     lam_co2: float = 0.0                # COP por kg CO2e (precio sombra) para el objetivo mixto
-    p_perforacion_m: float = 180_000.0  # COP por metro de tirante perforado, inyectado y tensado SUPUESTO (sin dato en el APU consultado)
-    p_cabeza_anclaje: float = 450_000.0  # COP por cabeza de anclaje (placa, cuña, protección) SUPUESTO
-    factor_precio_cordon: float = 2.5   # precio del cordón de preesfuerzo = factor × p_acero SUPUESTO
+    # INVIAS APU 2026-1, Atlántico Norte (0802): actividad 623,1 = 549.776 COP/m con 5,53 kg/m de torón a 10.790 COP/kg
+    # -> parte sin torón 549.776 - 5,53 x 10.790 = 490.100 COP/m. El anclaje de la receta es en ROCA: en suelo es una cota de referencia.
+    p_perforacion_m: float = 490_100.0  # COP por metro de tirante perforado, inyectado y tensado, sin el cordón
+    p_cabeza_anclaje: float = 114_571.0  # COP por cabezal de tensionamiento de 12 torones (INVIAS B0033264)
+    factor_precio_cordon: float = 2.6   # torón 10.790 COP/kg (INVIAS B0015150) / p_acero 4.151 = 2,6

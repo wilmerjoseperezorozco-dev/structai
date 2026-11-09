@@ -125,7 +125,8 @@ def test_cantidades_y_costo_por_metro_de_muro():
     assert a.kg_cordon_m == pytest.approx(a.n_cordones * 140e-6 * largo * 7850.0 / SEP_ANCLAJES_M)
     eco = Economia()
     c, co2 = costo_co2_anclaje(a, eco)
-    assert c == pytest.approx(a.longitud_perforada_m_m * 180_000.0 + 450_000.0 / SEP_ANCLAJES_M + a.kg_cordon_m * eco.p_acero * 2.5)
+    assert c == pytest.approx(a.longitud_perforada_m_m * eco.p_perforacion_m + eco.p_cabeza_anclaje / SEP_ANCLAJES_M + a.kg_cordon_m * eco.p_acero * eco.factor_precio_cordon)
+    assert eco.p_perforacion_m == pytest.approx(549_776.0 - 5.53 * 10_790.0, rel=1e-3)      # INVIAS 623,1 menos el torón de su receta
     assert co2 == pytest.approx(a.kg_cordon_m * eco.fe_acero + a.cemento_kg_m * eco.fe_cemento)
 
 
