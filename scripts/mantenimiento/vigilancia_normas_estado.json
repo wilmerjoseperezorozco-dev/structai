@@ -1,0 +1,23 @@
+{
+ "fuentes": {
+  "nsr10-decreto-926-dms": [
+   "decreto-1077-2015",
+   "decreto-1513-2012",
+   "decreto-1711-2021",
+   "decreto-2113-2019",
+   "decreto-2525-2010",
+   "decreto-340-2012",
+   "decreto-92-2011",
+   "decreto-945-2017",
+   "resolucion-1856-2017"
+  ],
+  "nsr10-decreto-945-alcaldia-bogota": [
+   "decreto-945-2017",
+   "resolucion-15-2015"
+  ],
+  "peru-e030-rm-183-2026-el-peruano": [
+   "rm-183-2026-vivienda",
+   "rm-217-2026-vivienda"
+  ]
+ }
+}

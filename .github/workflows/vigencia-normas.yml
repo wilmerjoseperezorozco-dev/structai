@@ -1,0 +1,26 @@
+name: Vigencia normativa (aviso semanal)
+
+# Solo avisa: no ingesta ni modifica el corpus. Ver scripts/mantenimiento/vigencia_normas.py.
+on:
+  schedule:
+    - cron: '0 12 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  vigilar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Comparar contra la foto guardada
+        run: |
+          set +e
+          python scripts/mantenimiento/vigencia_normas.py | tee informe.txt
+          codigo=${PIPESTATUS[0]}
+          { echo '## Vigilancia de vigencia normativa'; echo '```'; cat informe.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          # 0 sin novedades; 3 hay novedades (aviso, no fallo); 2 ninguna fuente legible (sí falla)
+          [ "$codigo" = "0" ] || [ "$codigo" = "3" ]

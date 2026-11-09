@@ -15,7 +15,7 @@ import json
 import re
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Set
 
 RAIZ = Path(__file__).resolve().parents[2]
 RUTAS = RAIZ / "apps" / "api" / "routers"
@@ -33,6 +33,12 @@ _RE_PAQUETE = re.compile(r'"packages"\s*/\s*"([a-z0-9-]+)"')
 
 class ErrorRegistro(ValueError):
     pass
+
+
+def paquetes_en_matriz() -> Set[str]:
+    """Paquetes de la lista `paquete: [...]` del job test-motores de ci.yml (no basta con que el nombre aparezca en el texto)."""
+    m = re.search(r"paquete:\s*\[([^\]]+)\]", CI.read_text(encoding="utf-8"))
+    return {p.strip() for p in m.group(1).split(",")} if m else set()
 
 
 def _endpoints(texto: str) -> List[dict]:
@@ -55,7 +61,7 @@ def _contar_pruebas(directorio: Path) -> int:
 
 
 def descubrir() -> List[dict]:
-    ci = CI.read_text(encoding="utf-8")
+    en_matriz = paquetes_en_matriz()
     motores = []
     for ruta in sorted(RUTAS.glob("*.py")):
         texto = ruta.read_text(encoding="utf-8")
@@ -73,7 +79,7 @@ def descubrir() -> List[dict]:
             "id": ruta.stem, "prefijo": prefijo.group(1), "paquete": paquete.group(1), "endpoints": eps,
             "pruebas_paquete": _contar_pruebas(carpeta / "tests"),
             "pruebas_router": _contar_pruebas_router(ruta.stem),
-            "en_ci": paquete.group(1) in ci,
+            "en_ci": paquete.group(1) in en_matriz,
             "condicion_3": bool(eps) and usa_resultado and all(e["limite"] and e["falla_422"] for e in eps),
         })
     return motores

@@ -12,8 +12,8 @@ Generado por `scripts/inventario/registro_motores.py`; no editar a mano. Criteri
 |---|---|---|---|---|---|---|---|---|
 | `analisis` | `motor-analisis` | ? | ? | sí | ? | 18 / 3 | sí | POST /analisis/portico |
 | `concreto` | `motor-concreto` | ? | ? | sí | ? | 283 / 5 | sí | POST /concreto/zapata, POST /concreto/talud |
-| `geotecnia` | `motor-geotecnia` | sí | sí | sí | ? | 88 / 5 | sí | POST /geotecnia/asentamiento, POST /geotecnia/portante |
-| `licuacion` | `motor-licuacion` | ? | ? | sí | ? | 53 / 7 | sí | POST /licuacion/spt |
+| `geotecnia` | `motor-geotecnia` | sí | sí | sí | no | 88 / 5 | sí | POST /geotecnia/asentamiento, POST /geotecnia/portante |
+| `licuacion` | `motor-licuacion` | ? | ? | sí | no | 53 / 7 | sí | POST /licuacion/spt |
 | `orquestador_api` | `orquestador` | ? | ? | sí | ? | 75 / 4 | sí | POST /orquestador/portico-integral |
 | `redes` | `motor-redes` | sí | sí | sí | no | 105 / 11 | sí | POST /redes/permanente, POST /redes/periodo, POST /redes/ariete |
 
@@ -24,6 +24,10 @@ El conteo de pruebas son funciones `test_*`; una prueba parametrizada cuenta una
 ### `geotecnia`
 - condicion 1: docs/REGLAS_MOTORES_DE_CALCULO.md declara que motor-geotecnia cumple 1–3 en su primer corte. Atestación heredada de ese documento; no re-verificada en esta revisión.
 - condicion 2: Mismo documento (cumple 1–3). Atestación heredada; no re-verificada en esta revisión.
+- condicion 4: Sin desplegar según el estado de la sesión del 2026-11-09 (la imagen de Cloud Run es anterior a este motor); confirmar con infra/gcp/desplegar.sh.
+
+### `licuacion`
+- condicion 4: Sin desplegar según el estado de la sesión del 2026-11-09 (la imagen de Cloud Run es anterior a este motor); confirmar con infra/gcp/desplegar.sh.
 
 ### `redes`
 - condicion 1: docs/VALIDACION_REDES_EPANET_2026-11.md y packages/motor-redes/tests/test_validacion_epanet.py: Hardy-Cross, soluciones cerradas, scipy y casos EPANET (Net1, todinitest); golpe de ariete contra Joukowsky y onda cuadrada. Es validación frente a otro solver y a casos analíticos, no contra datos medidos.

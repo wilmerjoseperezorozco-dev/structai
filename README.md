@@ -2,6 +2,7 @@
 
 [![Web](https://img.shields.io/badge/web-structai.online-0ea5e9)](https://www.structai.online)
 [![Versión](https://img.shields.io/github/v/release/wilmerjoseperezorozco-dev/structai?label=versi%C3%B3n&color=0ea5e9)](https://github.com/wilmerjoseperezorozco-dev/structai/releases)
+[![CI](https://github.com/wilmerjoseperezorozco-dev/structai/actions/workflows/ci.yml/badge.svg)](https://github.com/wilmerjoseperezorozco-dev/structai/actions/workflows/ci.yml)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21851529.svg)](https://doi.org/10.5281/zenodo.21851529)
 [![Estado en vivo](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fstructai-api-235651108862.us-east1.run.app%2Fdata-status&query=%24.corpus_normativo.nsr10_chunks.chunks&label=chunks%20NSR-10%20en%20vivo&color=16a34a)](https://structai-api-235651108862.us-east1.run.app/data-status)
 
@@ -18,6 +19,56 @@
 | Saber si una norma sigue vigente | Registro de normas con cadena de modificaciones y estado de verificación (cadena completa en 6 de 64; el resto, parcial o sin revisar) | `normas_registro` |
 | Caracterizar un sitio antes de diseñar | **Informe de sitio** por municipio: amenaza sísmica, suelos, caudales, vulnerabilidad de vivienda, emergencias, susceptibilidad a movimientos en masa y contexto de ENSO, más los títulos de la NSR-10 a consultar; se entrega con datos verificados, sin texto del modelo de lenguaje | [`docs/investigacion/oceanos_azules_y_plugins.md`](docs/investigacion/oceanos_azules_y_plugins.md) |
 | Replicar el método fuera de Colombia | E.030 (Perú, edición RM 183-2026) y NEC-SE-DS (Ecuador), verbatim y con aviso profesional propio | [`docs/DETALLE_TECNICO.md`](docs/DETALLE_TECNICO.md) |
+
+## Novedades (9-nov-2026)
+
+- **Motor de redes hidráulicas** (red mallada, bombas, válvulas, periodo extendido y golpe de ariete) con dos revisiones adversarias corregidas y validación contra EPANET. **Aún no está desplegado**: figura como «no desplegado» en la matriz.
+- **Registro de motores medidos a producción** y **matriz de madurez** generados desde el código, con verificación en CI: [`REGISTRO_MOTORES.md`](docs/REGISTRO_MOTORES.md) · [`MATRIZ_MADUREZ.md`](docs/MATRIZ_MADUREZ.md).
+- **Inventario de licencias** de las dependencias directas: [`LICENCIAS_DEPENDENCIAS.md`](docs/LICENCIAS_DEPENDENCIAS.md).
+- **Aviso semanal de vigencia normativa** (solo avisa; no ingesta): [`vigencia_normas.py`](scripts/mantenimiento/vigencia_normas.py).
+- Despliegue con verificación previa al tráfico: [`infra/gcp/`](infra/gcp/README.md).
+
+## Madurez por subsistema
+
+No hay una nota única de «madurez»: cada columna sale de una fuente distinta. El TRL es **autoevaluado, sin revisión externa**; «?» significa sin atestar, no que cumpla. Matriz completa, evidencias y límites: [`docs/MATRIZ_MADUREZ.md`](docs/MATRIZ_MADUREZ.md).
+
+| Subsistema | TRL (autoevaluado) | Calidad de software | Operación |
+|---|---|---|---|
+| Corpus normativo y consulta con citas | 6 | CI de paquetes + job de integración; métricas RAGAS publicadas | En producción |
+| Motor de redes hidráulicas | 4 | 105 pruebas, CI, contrato, 422 y límite de tasa | No desplegado |
+| Motor de geotecnia | 4 | 88 pruebas, CI, contrato, 422 y límite de tasa | No desplegado |
+| Demás motores con contrato (licuación, concreto, análisis, orquestador) | ? | Pruebas y CI; contrato, 422 y límite de tasa | ? |
+| Motor estructural / BIM por visión | ? | 18 pruebas, CI | Desactivado por defecto en producción |
+
+Lo que **no** se publica: un badge único de madurez, un porcentaje de cobertura (hoy no se mide) ni TRL 7 o superior (exige uso por terceros medido y revisión técnica independiente). El criterio de «motor medido a producción» tiene cuatro condiciones y hoy **ningún motor las cumple todas**: [`REGLAS_MOTORES_DE_CALCULO.md`](docs/REGLAS_MOTORES_DE_CALCULO.md).
+
+## Tecnologías y librerías
+
+Versiones tomadas de `apps/api/requirements.txt` y `apps/web/package.json`; licencias de las dependencias directas en [`LICENCIAS_DEPENDENCIAS.md`](docs/LICENCIAS_DEPENDENCIAS.md).
+
+| Capa | Qué usa | Para qué |
+|---|---|---|
+| API | FastAPI 0.141 · Starlette · Uvicorn · Pydantic 2.9 · slowapi · httpx | Endpoints, validación estricta con fallo explícito (422), límites de tasa |
+| Autenticación | Supabase Auth · PyJWT · cryptography | Verificación del JWT de Supabase en los endpoints protegidos |
+| Recuperación y síntesis | sentence-transformers 5.6 (`paraphrase-multilingual-MiniLM-L12-v2`, 384 dim, local) · Groq (principal) · OpenAI `gpt-4o-mini` (respaldo) · re-ranking | Búsqueda con cita verificable y respuesta con abstención |
+| Cálculo | numpy 1.26 · scipy 1.13 · motores propios `packages/motor-*` | Resultados determinísticos con el contrato `ResultadoMotor` |
+| Reportes | reportlab 4.2 · openpyxl 3.1 | Memorias de cálculo en PDF y hojas de cálculo |
+| Datos | Supabase (Postgres) · datos abiertos IDEAM, SGC, IGAC, UNGRD | Corpus, precios y contexto territorial |
+| Web | Next.js 15 · React 18 · TypeScript 5 · Tailwind 3 · next-pwa · react-markdown | PWA para ingenieros y maestros de obra |
+| Observabilidad | sentry-sdk · `@sentry/nextjs` · `/health` y `/data-status` públicos | Errores y estado en vivo |
+| Infraestructura | Google Cloud Run · Cloud Build · GitHub Actions | Despliegue manual verificado y CI |
+| Opcional, desactivado por defecto | ultralytics (**AGPL-3.0**) · opencv-python · ifcopenshell (LGPL) | BIM y visión (InfraCortex); su licencia exige revisión antes de ofrecerlo como servicio |
+
+## Visibilidad e impacto
+
+| A quién sirve | Qué recibe | Cómo se comprueba |
+|---|---|---|
+| Ingenieros y maestros de obra | Requisito exacto de la norma con cita, y precios desglosados | Pruebe la [web](https://www.structai.online); cada respuesta cita capítulo y numeral |
+| Municipios y gestores del riesgo | Informe de sitio con amenaza, suelos, caudales y vulnerabilidad, solo con datos verificados | [`/data-status`](https://structai-api-235651108862.us-east1.run.app/data-status) |
+| Academia | Investigación preregistrada, con resultados nulos incluidos y tags reproducibles | Tabla del programa de investigación, [DOI](https://doi.org/10.5281/zenodo.21851529) y [`CITATION.cff`](CITATION.cff) |
+| Otros países | Método replicable (E.030 Perú, NEC-SE-DS Ecuador) con aviso profesional propio | [`PROTOCOLO_REPLICACION_PAISES_VECINOS_2026-11.md`](docs/PROTOCOLO_REPLICACION_PAISES_VECINOS_2026-11.md) |
+
+No se publican cifras de usuarios ni de uso porque hoy no se miden en el repositorio. Para alianzas, revisión técnica independiente o acceso educativo: [`docs/contacto-institucional.md`](docs/contacto-institucional.md).
 
 ## Estado verificado (7-nov-2026, contra producción)
 

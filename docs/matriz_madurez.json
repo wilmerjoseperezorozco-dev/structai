@@ -1,0 +1,61 @@
+{
+  "_nota": "Atestaciones de TRL y operación por subsistema. TRL es AUTOEVALUADO (sin revisión externa): cada valor exige evidencia y el límite que impide subir un nivel. Lo que no figura se muestra como «?» (sin atestar), no como cumplido.",
+  "subsistemas": [
+    {
+      "id": "corpus-rag",
+      "nombre": "Corpus normativo y consulta con citas (NSR-10, NTC, SG-SST, RAS)",
+      "paquetes": [
+        "rag-audit-kit",
+        "eval-stats"
+      ],
+      "datos_en_vivo": "https://structai-api-235651108862.us-east1.run.app/data-status",
+      "trl": {
+        "valor": 6,
+        "evidencia": "Piloto en producción (structai.online, Cloud Run) con métricas medidas y publicadas: RAGAS n = 278, 88,2 % de citas con soporte en el contexto, abstención cuando no hay base; auditoría de cobertura por título con línea base en CI.",
+        "limite": "No se declara TRL 7: falta uso por terceros medido y la revisión técnica independiente de la extracción normativa; los Títulos A y B tienen cierre verbatim parcial (45,6 % y 41,9 %)."
+      },
+      "operacion": {
+        "estado": "en producción",
+        "evidencia": "Cloud Run structai-api (us-east1), despliegue manual con verificación previa al tráfico (infra/gcp/desplegar.sh), /health y /data-status públicos, límites de tasa."
+      },
+      "ci_extra": "job test-api de integración (RAG, límites de tasa, salud)"
+    },
+    {
+      "id": "redes",
+      "nombre": "Motor de redes hidráulicas (permanente, periodo extendido, golpe de ariete)",
+      "motor": "redes",
+      "trl": {
+        "valor": 4,
+        "evidencia": "Validado en laboratorio contra Hardy-Cross, soluciones cerradas, scipy y casos de EPANET (Net1, todinitest); golpe de ariete contra Joukowsky; dos revisiones adversarias corregidas.",
+        "limite": "Es validación frente a otro solver y casos analíticos, no contra datos medidos; sin desplegar en producción."
+      }
+    },
+    {
+      "id": "geotecnia",
+      "nombre": "Motor de geotecnia (asentamiento, capacidad portante)",
+      "motor": "geotecnia",
+      "trl": {
+        "valor": 4,
+        "evidencia": "REGLAS_MOTORES_DE_CALCULO.md declara que cumple las condiciones 1–3 en su primer corte (atestación heredada, no re-verificada aquí).",
+        "limite": "Sin desplegar en producción; imagen de Cloud Run anterior a este motor."
+      }
+    },
+    {
+      "id": "estructural-yolo",
+      "nombre": "Motor estructural / BIM por visión (InfraCortex, YOLO)",
+      "paquetes": [
+        "motor-estructural"
+      ],
+      "operacion": {
+        "estado": "desactivado por defecto en producción",
+        "evidencia": "apps/api/main.py: ENABLE_YOLO y ENABLE_ESTRUCTURAL se leen con valor por defecto false."
+      }
+    }
+  ],
+  "motores_sin_atestar": [
+    "licuacion",
+    "concreto",
+    "analisis",
+    "orquestador_api"
+  ]
+}

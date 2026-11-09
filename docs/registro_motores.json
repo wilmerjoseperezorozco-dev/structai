@@ -23,6 +23,16 @@
       "condicion_2": {
         "valor": true,
         "evidencia": "Mismo documento (cumple 1–3). Atestación heredada; no re-verificada en esta revisión."
+      },
+      "condicion_4": {
+        "valor": false,
+        "evidencia": "Sin desplegar según el estado de la sesión del 2026-11-09 (la imagen de Cloud Run es anterior a este motor); confirmar con infra/gcp/desplegar.sh."
+      }
+    },
+    "licuacion": {
+      "condicion_4": {
+        "valor": false,
+        "evidencia": "Sin desplegar según el estado de la sesión del 2026-11-09 (la imagen de Cloud Run es anterior a este motor); confirmar con infra/gcp/desplegar.sh."
       }
     }
   }

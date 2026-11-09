@@ -1,0 +1,28 @@
+{
+  "_nota": "Fuentes de la cadena de modificaciones que se vigilan. Las páginas de terceros (DMS Jurídica, Alcaldía de Bogotá) son fuentes secundarias: un cambio es una señal para ir a leer la norma oficial, no una prueba de vigencia.",
+  "fuentes": [
+    {
+      "id": "nsr10-decreto-926-dms",
+      "norma": "NSR-10 (Decreto 926 de 2010) y sus modificaciones",
+      "url": "https://www.dmsjuridica.com/buscador_20179478954/legislacion/decretos/?p=42628",
+      "solo_en_contexto_de_modificacion": true
+    },
+    {
+      "id": "nsr10-decreto-945-alcaldia-bogota",
+      "norma": "NSR-10 (Decreto 945 de 2017, modifica parcialmente)",
+      "url": "https://www.alcaldiabogota.gov.co/sisjur/normas/Norma1.jsp?dt=S&i=71292"
+    },
+    {
+      "id": "peru-e030-rm-183-2026-el-peruano",
+      "norma": "E.030 Perú (RM 183-2026-VIVIENDA)",
+      "url": "https://busquedas.elperuano.pe/dispositivo/NL/2521423-1"
+    }
+  ],
+  "pendientes_conocidos": [
+    {
+      "id": "rm-217-2026-vivienda",
+      "norma": "E.030 Perú",
+      "nota": "Según una búsqueda web (fuente secundaria, texto íntegro no leído), modifica la Única Disposición Complementaria Transitoria de la RM 183-2026-VIVIENDA («Normativa aplicable a proyectos de edificación en curso»). No figura en scripts/ingesta/peru_e030. Leer el texto oficial y decidir si cambia el aviso de la ingesta; no cambia por sí sola el cuerpo de la norma."
+    }
+  ]
+}
