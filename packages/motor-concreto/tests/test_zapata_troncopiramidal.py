@@ -61,3 +61,39 @@ def test_mayor_recubrimiento_no_reduce_el_volumen_optimo():
     mayor = t.optimizar(400.0, cargas, suelo, m, recubrimiento_mm=125.0)
     assert base is not None and mayor is not None
     assert mayor.volumen_m3 >= base.volumen_m3 - 1e-9
+
+
+def _entorno(**kw):
+    from src import zapata as z
+    from src.viga import Materiales
+    return z.CargasZapata(P_serv=1500.0, P_u=2025.0, **{k: v for k, v in kw.items() if k.startswith(("M",))}), \
+        z.Suelo(q_adm_kpa=200.0, profundidad_desplante_m=1.5, ks_kn_m3=kw.get("ks", 0.0)), Materiales(28.0, 420.0, 420.0)
+
+
+def test_el_optimo_concentrico_no_cambia():
+    from src import zapata_troncopiramidal as t
+    cargas, suelo, m = _entorno()
+    r = t.optimizar(400.0, cargas, suelo, m)
+    assert (r.L_mm, r.h_c_mm, r.h_e_mm) == (3000.0, 600.0, 300.0)
+
+
+def test_el_momento_no_reduce_la_zapata_ni_el_acero():
+    from src import zapata_troncopiramidal as t
+    c0, suelo, m = _entorno()
+    c1, _, _ = _entorno(Mx_serv=150.0, My_serv=150.0, Mx_u=200.0, My_u=200.0)
+    a, b = t.optimizar(400.0, c0, suelo, m), t.optimizar(400.0, c1, suelo, m)
+    assert b is not None and b.L_mm >= a.L_mm and b.volumen_m3 >= a.volumen_m3 - 1e-9
+
+
+def test_excentricidad_con_despegue_se_rechaza():
+    from src import zapata_troncopiramidal as t
+    cargas, suelo, m = _entorno(Mx_serv=900.0, My_serv=0.0, Mx_u=1200.0, My_u=0.0)   # e = 0.6 m > L/6 = 0.5 m
+    r = t.verificar(3000.0, 600.0, 600.0, 400.0, cargas, suelo, m)
+    assert not r.cumple and "despegue" in r.motivo_fallo
+
+
+def test_balasto_blando_rechaza_por_asentamiento():
+    from src import zapata_troncopiramidal as t
+    cargas, suelo, m = _entorno(ks=2000.0)    # (q - 25.5)/2000 m > 25 mm
+    r = t.verificar(3000.0, 600.0, 300.0, 400.0, cargas, suelo, m)
+    assert not r.cumple and "asentamiento" in r.motivo_fallo

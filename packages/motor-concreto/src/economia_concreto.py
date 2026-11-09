@@ -25,11 +25,31 @@ def mezcla(fc: float, x: float) -> dict:
     return {"cem": cem, "ash": ash, "gru": 0.55 * agg, "fin": 0.45 * agg, "ref_cem": AGUA / wc, "wc": wc}
 
 
-def costo_m3(fc, x, p_ash):
+def ancla(fc: float) -> float:
+    """Precio base del concreto a ceniza = 0, interpolado/extrapolado linealmente entre los anclajes del APU (21 y 28 MPa)."""
+    return PRECIO_ANCLA[21.0] + (fc - 21.0) * (PRECIO_ANCLA[28.0] - PRECIO_ANCLA[21.0]) / 7.0
+
+
+def costo_m3(fc, x, p_ash, mult=1.0):
     m = mezcla(fc, x)
-    return PRECIO_ANCLA[fc] + (m["cem"] - m["ref_cem"]) * PRECIO_CEMENTO + m["ash"] * p_ash
+    return mult * ancla(fc) + (m["cem"] - m["ref_cem"]) * PRECIO_CEMENTO + m["ash"] * p_ash
 
 
-def co2_m3(fc, x, fe_cem):
+def co2_m3(fc, x, fe_cem=1.010):
     m = mezcla(fc, x)
     return m["cem"] * fe_cem + m["ash"] * FE["ceniza"] + m["gru"] * FE["grueso"] + m["fin"] * FE["fino"] + AGUA * FE["agua"] + (m["cem"] + m["ash"]) * ADITIVO_FRAC * FE["aditivo"]
+
+
+from dataclasses import dataclass  # noqa: E402
+
+
+@dataclass(frozen=True)
+class Economia:
+    """Precios (COP) y factores (kgCO2e/kg) del proyecto. Los valores por defecto son los de la línea base 2026-11."""
+    mult_concreto: float = 1.0          # multiplica el precio ancla del APU del concreto
+    p_acero: float = PRECIO_ACERO       # COP/kg
+    p_encofrado: float = PRECIO_ENC     # COP/m2 (solo material)
+    p_ceniza: float = 150.0             # COP/kg SUPUESTO
+    fe_cemento: float = 1.010           # EPD 857 Argos Cartagena
+    fe_acero: float = FE["acero"]       # Pardo 2022
+    lam_co2: float = 0.0                # COP por kg CO2e (precio sombra) para el objetivo mixto

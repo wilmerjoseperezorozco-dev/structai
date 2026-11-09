@@ -66,3 +66,27 @@ def test_costa_exige_fc_35_y_sin_ensayo_no_usa_ceniza(entorno, tmp_path):
 def test_exposicion_desconocida_falla(entorno):
     with pytest.raises(ValueError):
         optimizar_conjunto(400.0, *entorno, exposicion="marte")
+
+
+def test_base_con_momentos_exige_mas_acero_que_la_concentrica():
+    a = disenar_pedestal(400.0, 900.0, 1500.0, 28.0, 420.0, 600.0)
+    b = disenar_pedestal(400.0, 900.0, 1500.0, 28.0, 420.0, 600.0, Mux_kNm=120.0, Muy_kNm=80.0, Vux_kN=60.0, Vuy_kN=40.0)
+    assert a.cumple and b.cumple and b.As_mm2 > a.As_mm2 and 0 < b.utilizacion_flexion <= 1.0
+
+
+def test_friccion_por_cortante_coincide_con_c11_25():
+    r = disenar_pedestal(400.0, 900.0, 1500.0, 28.0, 420.0, 600.0, Vux_kN=100.0)
+    assert r.Avf_mm2 == pytest.approx(100e3 / (0.75 * 420.0 * 0.6))          # junta lisa: μ = 0.6
+    rr = disenar_pedestal(400.0, 900.0, 1500.0, 28.0, 420.0, 600.0, Vux_kN=100.0, junta_rugosa=True)
+    assert rr.Avf_mm2 == pytest.approx(100e3 / (0.75 * 420.0 * 1.0))        # junta rugosa: μ = 1.0
+
+
+def test_cortante_excesivo_se_rechaza_por_c11_6_5():
+    r = disenar_pedestal(300.0, 600.0, 800.0, 28.0, 420.0, 600.0, Vux_kN=900.0)   # φVn,max = 0.75·5.5·90000 N = 371 kN
+    assert not r.cumple and "C.11.6.5" in r.motivo_fallo
+
+
+def test_con_momentos_el_pedestal_crece_y_la_base_cumple(entorno):
+    cargas, suelo = entorno
+    d = optimizar_conjunto(400.0, cargas, suelo, fc=28.0, momentos_columna=(150.0, 100.0))
+    assert d is not None and d.pedestal.cumple and d.pedestal.c_mm > 400.0 and d.pedestal.utilizacion_flexion <= 1.0

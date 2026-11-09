@@ -60,6 +60,8 @@ class Suelo:
     q_adm_kpa: float                    # capacidad admisible BRUTA del informe geotécnico
     profundidad_desplante_m: float = 1.5
     peso_unitario_relleno_kn_m3: float = 17.0
+    ks_kn_m3: float = 0.0               # módulo de balasto; 0 = no se verifica asentamiento
+    asentamiento_max_mm: float = 25.0   # límite de servicio (valor de referencia SIN fuente en el corpus; parámetro del proyecto)
 
 
 @dataclass(frozen=True)
