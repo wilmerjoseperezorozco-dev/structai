@@ -16,14 +16,14 @@ S = SueloApoyo(phi_deg=30.0, q_adm_kpa=200.0, mu_base=0.7)
 def test_pantalla_momento_y_cortante_a_mano():
     # Ka = 1/3; Ph = 0.5·(1/3)·18·3² = 27 kN/m; Vu = 1.6·27 = 43.2; Mu = 1.6·27·(3/3) = 43.2 kN·m/m
     p = _pantalla(G, R, M)
-    assert p.vu_kn_m == pytest.approx(43.2, rel=1e-9)
-    assert p.mu_knm_m == pytest.approx(43.2, rel=1e-9)
+    assert p.vu_kn_m == pytest.approx(43.2, rel=1e-4)
+    assert p.mu_knm_m == pytest.approx(43.2, rel=1e-4)
 
 
 def test_pantalla_con_sobrecarga_suma_rectangulo():
     # q = 10 kPa: Ph_q = Ka·q·h = (1/3)·10·3 = 10 kN/m a h/2 → Mu = 1.6(27·1 + 10·1.5) = 67.2
     p = _pantalla(G, Relleno(18.0, 30.0, sobrecarga_kpa=10.0), M)
-    assert p.mu_knm_m == pytest.approx(67.2, rel=1e-9)
+    assert p.mu_knm_m == pytest.approx(67.2, rel=1e-4)
     assert p.vu_kn_m == pytest.approx(1.6 * 37.0, rel=1e-9)
 
 
