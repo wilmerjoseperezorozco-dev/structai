@@ -44,9 +44,11 @@ El ICCV se descontinuó en dic-2021 y lo reemplaza el ICOCED (base dic-2021 = 10
 
 `scripts/precios/calibrar_distribuciones.py` compone el sigma de cada familia (localización entre 140 provincias + fuente entre contratos locales + deriva temporal del ICOCED + especificación declarada): acero 0,120; concreto 0,090; perforación de anclaje 0,283 (de los cuales 0,25 es un supuesto de especificación, porque la receta INVIAS es en roca).
 
-## 3.3 Defecto de ingesta INVIAS confirmado
+## 3.3 Defecto de ingesta INVIAS (issue #112, corregido 2026-11-09)
 
-En `invias_actividad_insumos`, para filas de **material** la columna `cantidad_o_rendimiento` contiene el precio unitario del insumo y `valor_unitario_linea` contiene el valor de la línea (cantidad × precio). Ejemplo en 623,1: torón con `cantidad_o_rendimiento` = 10.790 (igual al precio en Atlántico) y `valor_unitario_linea` = 59.670; la cantidad real es 59.670 / 10.790 = 5,53 kg/m. Las filas de equipo conservan el rendimiento en horas. Hasta corregir la ingesta no deben usarse las cantidades de material de esa tabla.
+En el Excel FR-APU-1 las columnas cambian según la sección: en materiales idx10 = cantidad e idx11 = precio unitario; en equipo y mano de obra idx11 = rendimiento. El cargador leía idx11 para todo, de modo que en las 185.780 filas de material `cantidad_o_rendimiento` guardaba el precio (100 % de las filas, comprobado contra `invias_insumos_precios`). Ejemplo en 623,1: torón con 10.790 donde debía haber 5,53 kg/m.
+
+Corrección: el cargador (`scripts/ingesta/invias_apu/cargar_invias_apu.py`) lee la columna correcta por sección y guarda `precio_unitario`; la migración `20261109120000_corregir_invias_cantidad_material.sql` conserva el valor leído en `precio_unitario` y reconstruye la cantidad como `valor_unitario_linea / precio_unitario` (4 decimales). Contra el Excel de Atlántico Norte (1.328 filas de material) el error relativo mediano es 0 y 14 filas con cantidades menores de 0,01 difieren más de 0,1 % por el redondeo del valor de línea; tras la migración quedan 140 filas (de 185.780) con `cantidad × precio` a más de 2 % del valor de línea, atribuibles al mismo redondeo. Equipo, transporte y mano de obra no se tocaron. El costo directo por actividad nunca estuvo afectado.
 
 ## 4. Método propuesto y coherencia del aprendizaje automático
 
@@ -70,7 +72,6 @@ En `invias_actividad_insumos`, para filas de **material** la columna `cantidad_o
 
 ## 6. Pendiente
 
-- Corregir en la ingesta las columnas de material de `invias_actividad_insumos`.
 - Integrar el factor ICOCED y la lectura del catálogo en `Economia`.
 - Sigmas para pilotes, tablestacas, gaviones y preesfuerzo.
 - Acero estructural fabricado y montado para cerchas y nudos (sin fuente INVIAS).

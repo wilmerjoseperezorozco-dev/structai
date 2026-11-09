@@ -282,6 +282,7 @@ class CargadorInvias:
                         "insumo_descripcion": linea["descripcion"],
                         "tipo_insumo": linea["tipo_insumo"],
                         "cantidad_o_rendimiento": linea["cantidad"],
+                        "precio_unitario": linea["precio_unitario"],
                         "valor_unitario_linea": linea["valor"],
                     }
                 )
@@ -413,9 +414,18 @@ class CargadorInvias:
                     continue
                 desc_linea = row[2] if len(row) > 2 and row[2] else codigo
                 valor_linea = _num(row[13]) if len(row) > 13 else None
-                cantidad = _num(row[11]) if len(row) > 11 else None
-                if cantidad is None:
-                    cantidad = _num(row[9]) if len(row) > 9 else None
+                # Columnas por sección en FR-APU-1 (verificado en APU_0802, hoja 623,1; issue #112):
+                #   equipo / mano de obra: idx11 = rendimiento (idx10 = tarifa o jornal total)
+                #   materiales:            idx10 = cantidad,    idx11 = precio unitario
+                #   transportes:           idx11 = cantidad × distancia (idx9 cantidad, idx10 distancia)
+                precio_unitario = None
+                if seccion_actual == "material":
+                    cantidad = _num(row[10]) if len(row) > 10 else None
+                    precio_unitario = _num(row[11]) if len(row) > 11 else None
+                else:
+                    cantidad = _num(row[11]) if len(row) > 11 else None
+                    if cantidad is None:
+                        cantidad = _num(row[9]) if len(row) > 9 else None
                 if valor_linea is None:
                     continue
                 lineas.append(
@@ -424,6 +434,7 @@ class CargadorInvias:
                         "descripcion": str(desc_linea).strip(),
                         "tipo_insumo": seccion_actual,
                         "cantidad": cantidad,
+                        "precio_unitario": precio_unitario,
                         "valor": valor_linea,
                     }
                 )
