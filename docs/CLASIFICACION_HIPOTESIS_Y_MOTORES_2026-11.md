@@ -43,4 +43,15 @@ Lectura hecha sobre el veredicto de cada archivo `RESULTADOS_*.md` (no se re-eje
 | Barrido exploratorio del Caribe | Genera hipótesis; no confirma nada |
 | Catálogo de sismos del SGC frente al Aa; intensidad frente al A-4 | Débil; PGA del SGC no comparable con Aa |
 
-El valor de estos resultados negativos es evitar construir motores sobre hipótesis que no se sostuvieron.
+El valor de estos resultados negativos es evitar construir motores sobre hipótesis que no se sostuvieron. Las limitaciones de cada caso y lo que haría falta para repetirlo están en [`informes_no_calificados/INFORMES_NO_CALIFICADOS_2026-11.md`](informes_no_calificados/INFORMES_NO_CALIFICADOS_2026-11.md).
+
+## Issues abiertos a partir de esta clasificación
+
+| Issue | Tipo |
+|---|---|
+| #151 Caudal de diseño en sitios sin aforo por regionalización | Motor |
+| #152 Cribado hidroeléctrico a filo de agua (F1) | Motor |
+| #153 Señal de lluvia acumulada de 5 días para movimientos en masa | Motor |
+| #154 Evaluar la literatura de caudales que no se pudo leer | Repetición con protocolo ya fijado |
+| #155 Repetir E1 y el índice vial con DEM de 30 m y radar | Protocolos nuevos |
+| #156 Más estaciones para Orinoquía, Amazonía, Pacífica y Caribe | Datos y potencia |
