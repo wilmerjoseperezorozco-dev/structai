@@ -1,0 +1,39 @@
+{
+  "n_reservado": 614,
+  "viable_accuracy": 0.9723127035830619,
+  "viable_tasa_base": 0.7117263843648208,
+  "tipo_accuracy": 0.9588100686498856,
+  "tipo_mayoritaria": 0.7711670480549199,
+  "estandar_n": 258,
+  "estandar_mae_m": {
+    "h_zapata": 0.018468070184163177,
+    "t_corona": 0.004539403979701893,
+    "t_base": 0.024106213516879693,
+    "b_puntera": 0.0870814789731135,
+    "b_talon": 0.3191866468084366
+  },
+  "estandar_perfil_accuracy": 0.9767441860465116,
+  "dentellon_n": 434,
+  "dentellon_mae_m": {
+    "h_zapata": 0.020506413804750923,
+    "t_corona": 0.005220885921584488,
+    "t_base": 0.024454444120567912,
+    "b_puntera": 0.05494660753654265,
+    "b_talon": 0.22120432588806693,
+    "dent_prof": 0.021088865867274882
+  },
+  "dentellon_perfil_accuracy": 0.9769585253456221,
+  "bandeja_n": 258,
+  "bandeja_mae_m": {
+    "h_zapata": 0.018055046029359093,
+    "t_corona": 0.003296431917605405,
+    "t_base": 0.031199236020200798,
+    "b_puntera": 0.06937977993481538,
+    "b_talon": 0.3239616328731098,
+    "band_y": 0.08807110844026562,
+    "band_vuelo": 0.2458090105761848
+  },
+  "bandeja_perfil_accuracy": 0.8643410852713178,
+  "n_entrenamiento": 3482,
+  "seed": 7
+}

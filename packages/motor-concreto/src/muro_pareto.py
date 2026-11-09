@@ -4,8 +4,10 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 
 from .muro_optimizador import CasoMuro, Solucion, optimizar_todas
+from .viga import Materiales
 
 LAMBDAS = (0.0, 50.0, 150.0, 400.0, 1000.0, 2500.0, 6000.0, 15000.0)
+MEZCLAS = ((21.0, 0.0), (28.0, 0.0), (28.0, 0.3), (28.0, 0.5), (35.0, 0.0), (21.0, 0.5))      # (f'c MPa, fracción de ceniza): palancas de CO₂ del concreto
 
 
 @dataclass(frozen=True)
@@ -17,12 +19,14 @@ class PuntoPareto:
     solucion: Solucion
 
 
-def frontera(caso: CasoMuro, lambdas=LAMBDAS) -> list[PuntoPareto]:
-    """Puntos no dominados (ordenados por costo creciente): para cada λ, la mejor tipología por objetivo costo + λ·CO₂."""
+def frontera(caso: CasoMuro, lambdas=LAMBDAS, mezclas=MEZCLAS) -> list[PuntoPareto]:
+    """Puntos no dominados (ordenados por costo creciente): para cada λ, la mejor tipología y mezcla (f'c, ceniza) por objetivo costo + λ·CO₂."""
     pts: list[PuntoPareto] = []
     for lam in lambdas:
-        sols = optimizar_todas(replace(caso, lam_co2=lam), perfiles=("lineal",))
-        cand = [s for k, s in sols.items() if k != "tradicional" and s is not None]
+        cand = []
+        for fc, x in mezclas:
+            sols = optimizar_todas(replace(caso, lam_co2=lam, materiales=Materiales(fc, caso.materiales.fy), x_ceniza=x), perfiles=("lineal",))
+            cand += [s for k, s in sols.items() if k != "tradicional" and s is not None]
         if cand:
             s = min(cand, key=lambda x: x.objetivo)
             pts.append(PuntoPareto(lam, s.tipologia, s.diseno.costo_cop_m, s.diseno.co2_kg_m, s))

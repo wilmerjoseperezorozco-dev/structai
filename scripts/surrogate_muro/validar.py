@@ -54,7 +54,7 @@ class Modelo:
     @staticmethod
     def _geometria(H: float, tipo: str, perfil: str, d: dict) -> GeometriaMuro:
         def ac(nom, paso=PASO):
-            lo, hi = LIMITES[nom]
+            lo, hi = LIMITES[{"dent_prof": "dentellon_prof", "band_y": "bandeja_y", "band_vuelo": "bandeja_vuelo"}.get(nom, nom)]
             return min(max(_redondear(d[nom], paso), lo), hi)
         tc, tb = ac("t_corona"), ac("t_base")
         g = GeometriaMuro(H, ac("h_zapata"), tc, max(tb, tc), ac("b_puntera"), ac("b_talon"), perfil=perfil)

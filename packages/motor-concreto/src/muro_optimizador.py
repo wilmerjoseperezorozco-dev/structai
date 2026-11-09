@@ -31,6 +31,7 @@ class CasoMuro:
     economia: Economia = Economia()
     a_max_g: float | None = None
     lam_co2: float = 0.0                # COP por kg CO2e para el objetivo mixto
+    x_ceniza: float = 0.0               # fracción de ceniza volante del ligante (mezcla de economia_concreto)
 
 
 @dataclass(frozen=True)
@@ -61,7 +62,7 @@ def _inicial(caso: CasoMuro, tip: str, perfil: str) -> GeometriaMuro:
 
 def _evaluar(g: GeometriaMuro, caso: CasoMuro) -> DisenoMuro | None:
     try:
-        return disenar_estructura(g, caso.relleno, caso.apoyo, caso.materiales, caso.economia, a_max_g=caso.a_max_g)
+        return disenar_estructura(g, caso.relleno, caso.apoyo, caso.materiales, caso.economia, a_max_g=caso.a_max_g, x_ceniza=caso.x_ceniza)
     except ValueError:
         return None
 

@@ -1,0 +1,2 @@
+# Modelos LightGBM: se regeneran con scripts/surrogate_muro/entrenar.py (semilla fija)
+modelos*/*.txt

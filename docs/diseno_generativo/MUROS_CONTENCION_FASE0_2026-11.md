@@ -79,3 +79,17 @@ Implementado en `packages/motor-concreto/src/muro_contencion_estructural.py` con
 **Implementado** (`muro_contencion.py`, `muro_pantalla.py`, `muro_refuerzo.py`, `muro_contencion_estructural.py`; 27 pruebas nuevas): pantalla lineal o parabólica con verificación en 8 secciones, bandeja de alivio (sombreado del empuje, contramomento, losa), dentellón (fricción plena tan φ si ≥ 0,30 m, diseñado con el déficit de la fricción simple), Mononobe-Okabe validado contra una cuña de Coulomb independiente, estabilidad seudoestática (FS 1,05 / 2,00 / e ≤ B/4) y combinación sísmica estructural.
 
 **Hallazgo del modelo, a medir en la ablación:** con el método del plano virtual en el extremo del talón, la bandeja NO cambia el empuje global (el suelo sobre ella ya está en el prisma), solo la pantalla y el peso. Cualquier beneficio de estabilidad que se le atribuya depende de un modelo más fino (cuña de Coulomb con rozamiento muro-suelo) que no está implementado. Contrafuertes: no implementados.
+
+## 8. Dataset, sustituto y guardrail (2026-11-08)
+
+**Dataset** (`data/surrogate_muro/`, Sobol scrambled, 4.096 casos, 0 errores, 1,5 s por caso por proceso): 32 % sin solución; ganadora: dentellón 53,7 %, estándar 14 %, bandeja 0,2 %. Ahorro mediano frente al estándar lineal del mismo caso: 10,9 % (p90 35 %).
+
+**Puerta de la Fase 4 NO cumplida (variables en el límite):** t_corona en su mínimo en 76-98 % de los casos, h_zapata 52-60 %, t_base 39-47 %, profundidad del dentellón 81 %. Son mínimos constructivos del optimizador (`LIMITES`), no resultados de optimización: el modelo aprende en buena parte a repetirlos. Además, **el predominio del dentellón es en gran medida consecuencia de mi hipótesis** (fricción tan φ si profundidad ≥ 0,30 m, escalón único): hasta calibrar ese supuesto con un método de superficie de falla o ensayo, «el dentellón gana en 54 %» no es un hallazgo de mecánica. La bandeja casi nunca gana porque el modelo del plano virtual no le da beneficio de estabilidad.
+
+**Sustituto** (reservado 614 casos): factibilidad 97,2 % (tasa base 71,2 %); tipología 95,9 % (mayoritaria 77,1 %); MAE de b_talon 0,22-0,32 m, de las demás dimensiones ≤ 0,09 m (t_corona y t_base, que viven en el mínimo, ~0,005-0,03 m).
+
+**Guardrail** (400 reservados): directo 35,8 %, reparado 33,8 %, exacto 1,8 %, sin solución 28,8 %; **0 inseguros** tras re-verificación (por construcción del validador, solo respecto de lo que el motor verifica), 0 factibles perdidos; brecha mediana 1,26 % (IC95 0,96-1,54 %), p90 6,0 %, p99 15 %. 37 casos con brecha < -1 %: el sustituto + reparación superó al optimizador de referencia, que es una búsqueda local y no un óptimo global.
+
+**Pareto** (`muro_pareto.py`): el costo y el CO₂ solo se separan con la mezcla (f'c y ceniza); para H = 4,5 m: mínimo costo 2,96 M COP/m con 1.320 kg CO₂e/m; mínima huella 3,01 M COP/m con 1.041 kg (+1,5 % costo, -21 % CO₂). Factores de CO₂ «bajo/alto» son SUPUESTOS.
+
+**Reglas (SHAP + árboles)** en `data/surrogate_muro/reglas.md`: solo descriptivas del optimizador bajo estas hipótesis; φ domina la elección (corte en φ ≈ 36,5°, exactitud 80 %).
