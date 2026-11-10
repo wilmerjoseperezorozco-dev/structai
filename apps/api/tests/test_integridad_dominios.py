@@ -56,9 +56,13 @@ def test_dominios_del_contrastivo_tienen_fuentes():
 def _casos_fuente():
     for dominio, fuentes in r.FUENTES_DOMINIO.items():
         for tipo, valor in fuentes:
-            if tipo == "nsr10_prefijos":
+            if tipo in ("nsr10_prefijos", "ntc_normas"):
                 for p in valor:
                     yield pytest.param(dominio, tipo, p, id=f"{dominio}-{p}")
+            elif tipo == "motor_chunks_normas":
+                otro, normas = valor
+                for n in normas:
+                    yield pytest.param(dominio, tipo, (otro, n), id=f"{dominio}-{otro}-{n[:30]}")
             else:
                 yield pytest.param(dominio, tipo, valor, id=f"{dominio}-{tipo}")
 
@@ -71,6 +75,14 @@ def test_fuente_declarada_tiene_contenido(dominio, tipo, valor):
     elif tipo == "nsr10_prefijos":
         n = r.sb.table("nsr10_chunks").select("id", count="exact").like("id", f"{valor}%").limit(1).execute().count
         assert n and n > 0, f"{dominio}: nsr10_chunks con prefijo {valor} tiene {n} filas"
+    elif tipo == "motor_chunks_normas":
+        otro, norma = valor
+        filas = r.sb.table("motor_chunks").select("norma_ref").eq("motor", otro).like("norma_ref", f"{norma}%").limit(50).execute().data
+        assert any(r._norma_empieza(f["norma_ref"], (norma,)) for f in filas), \
+            f"{dominio}: motor_chunks[motor={otro}] no tiene filas de «{norma}»"
+    elif tipo == "ntc_normas":
+        filas = r.sb.table("ntc_chunks").select("norma").like("norma", f"{valor}%").limit(50).execute().data
+        assert any(r._norma_empieza(f["norma"], (valor,)) for f in filas), f"{dominio}: ntc_chunks no tiene filas de «{valor}»"
     elif tipo == "rama_propia":
         if valor == "checklist_ais_motor_vulnerabilidad_vivienda":
             assert "15 criterios" in r._bloque_checklist_ais(), "el checklist AIS no carga desde el motor"

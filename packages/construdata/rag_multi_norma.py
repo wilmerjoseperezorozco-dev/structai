@@ -2600,10 +2600,10 @@ def aviso_responsabilidad_para_dominio(dominio: str) -> Optional[str]:
 # ─── AGENTE DELEGADOR — endpoint /consultar ──────────────────────────────────
 MOTOR_LABEL = {
     "aquai": "AquAI (acueducto, alcantarillado y saneamiento — RAS 2000)",
-    "geopot": "GeoPot (sísmica NSR-10 y laboratorio de suelos/concreto/agregados)",
+    "geopot": "GeoPot (sísmica NSR-10, geotecnia, laboratorio de suelos/concreto/agregados y POT)",
     "vulnerabilidad_vivienda": "Vulnerabilidad Vivienda (checklist AIS, Título E NSR-10, vivienda de mampostería 1-2 pisos)",
-    "vias": "motor-vías (diseño geométrico, pavimentos, mantenimiento vial — INVIAS)",
-    "gerencia": "motor-gerencia (EVM y predicción de proyectos)",
+    "vias": "motor-vías (diseño geométrico, pavimentos, puentes CCP-14, túneles y normas de ensayo INVIAS)",
+    "gerencia": "motor-gerencia (EVM, contratación pública, interventoría y sistemas de gestión ISO)",
     "apu_precios": "Precios de construcción (Barranquilla/Atlántico + INVIAS nacional, 140 provincias)",
     "peru_e030": "Norma E.030 — Diseño Sismorresistente (Perú)",
     "ecuador_nec_se_ds": "NEC-SE-DS — Peligro Sísmico, Diseño Sismo Resistente (Ecuador)",
@@ -2616,12 +2616,26 @@ MOTOR_LABEL = {
 # buscaba en motor_chunks (0 filas) mientras 426 chunks propios (AIS 2004,
 # AIS 410-23, Build Change, NSR-10 Título E y A.10) vivían en nsr10_chunks;
 # toda pregunta del dominio terminaba en "no tiene contenido cargado".
-#   ("motor_chunks", motor)        -> search(..., motor_filter=motor)
-#   ("nsr10_prefijos", (p1, ...))  -> search() global filtrado por prefijo de chunk_id
-#   ("rama_propia", nombre)        -> el dominio tiene su propia rama en _ask_delegado_interno
+#   ("motor_chunks", motor)                   -> search(..., motor_filter=motor)
+#   ("motor_chunks_normas", (motor, (n1,...))) -> motor_chunks de OTRO motor, solo esas normas
+#   ("ntc_normas", (n1, ...))                 -> search() global filtrado por norma de ntc_chunks
+#   ("nsr10_prefijos", (p1, ...))             -> search() global filtrado por prefijo de chunk_id
+#   ("rama_propia", nombre)                   -> el dominio tiene su propia rama en _ask_delegado_interno
+#
+# Alineación de taxonomía (issue #169, E1c): un fragmento puede servir a más
+# de un dominio sin moverlo en la base. El laboratorio de materiales vive en
+# motor_chunks[vias] (Normas de Ensayo INVIAS, 1.208 chunks) y en ntc_chunks,
+# pero conceptualmente es de geopot, que solo tenía una ficha por ensayo. La
+# geotecnia (NSR-10 Título H) y la zonificación sísmica (A.2) también son de
+# geopot; siguen siendo además de normativa_general.
 FUENTES_DOMINIO: dict[str, list[tuple[str, object]]] = {
     "aquai": [("motor_chunks", "aquai")],
-    "geopot": [("motor_chunks", "geopot")],
+    "geopot": [
+        ("motor_chunks", "geopot"),
+        ("motor_chunks_normas", ("vias", ("Normas de Ensayo — Sección 200", "Normas de Ensayo — Sección 300"))),
+        ("ntc_normas", ("NTC 121", "NTC 174", "NTC 396", "NTC 454", "NTC 673")),
+        ("nsr10_prefijos", ("NSR10-H-", "NSR10-A-A_2")),
+    ],
     "vulnerabilidad_vivienda": [
         ("nsr10_prefijos", ("AIS2004-", "AIS410-23-", "BUILDCHANGE-", "NSR10-E-", "NSR10-A-A_10")),
         ("rama_propia", "checklist_ais_motor_vulnerabilidad_vivienda"),
@@ -2647,6 +2661,50 @@ def _buscar_por_prefijos(question: str, prefijos: tuple[str, ...], top_k: int) -
     No se agrega un RPC nuevo: misma búsqueda híbrida RRF de siempre."""
     candidatos = search(question, top_k=top_k * 4)
     return [c for c in candidatos if str(c.chunk_id).startswith(prefijos)][:top_k]
+
+
+def _tiene_fuentes_compartidas(motor: str) -> bool:
+    """True si el dominio declara algo más que su propio motor_chunks. Los que
+    no, siguen exactamente el camino de búsqueda de siempre."""
+    return any(t in ("motor_chunks_normas", "ntc_normas", "nsr10_prefijos") for t, _ in FUENTES_DOMINIO.get(motor, []))
+
+
+def _norma_empieza(norma: str, prefijos: tuple[str, ...]) -> bool:
+    # "NTC 77" no debe calzar "NTC 774": se exige fin de código tras el prefijo.
+    return any(norma == p or norma.startswith(p) and not norma[len(p)].isdigit() for p in prefijos)
+
+
+def _recuperar_fuentes_dominio(question: str, motor: str, top_k: int) -> list[ChunkResult]:
+    """Una lista por fuente declarada en FUENTES_DOMINIO, intercaladas por rango
+    (1.º de cada fuente, luego 2.º...), sin duplicados y con tope top_k. Se
+    intercala por rango y no por score porque cada fuente sale de una llamada
+    RRF distinta. La búsqueda global se hace una sola vez y se reusa para las
+    fuentes ntc_normas y nsr10_prefijos."""
+    globales: Optional[list[ChunkResult]] = None
+    listas: list[list[ChunkResult]] = []
+    for tipo, valor in FUENTES_DOMINIO.get(motor, []):
+        if tipo == "motor_chunks":
+            listas.append(search(question, top_k=top_k, motor_filter=valor))
+        elif tipo == "motor_chunks_normas":
+            otro, normas = valor  # type: ignore[misc]
+            listas.append([c for c in search(question, top_k=top_k * 3, motor_filter=otro)
+                           if _norma_empieza(c.norma, normas)][:top_k])
+        elif tipo in ("ntc_normas", "nsr10_prefijos"):
+            if globales is None:
+                globales = search(question, top_k=top_k * 4)
+            if tipo == "ntc_normas":
+                listas.append([c for c in globales if str(c.chunk_id).isdigit() and _norma_empieza(c.norma, valor)][:top_k])
+            else:
+                listas.append([c for c in globales if str(c.chunk_id).startswith(valor)][:top_k])
+    vistos, salida = set(), []
+    for rango in range(max((len(l) for l in listas), default=0)):
+        for l in listas:
+            if rango < len(l):
+                clave = (str(l[rango].chunk_id), l[rango].norma)
+                if clave not in vistos:
+                    vistos.add(clave)
+                    salida.append(l[rango])
+    return salida[:top_k]
 
 
 @lru_cache(maxsize=1)
@@ -3092,6 +3150,9 @@ def _ask_delegado_interno(question: str, motores: list[str], top_k: int) -> dict
             chunks_global = search(question, top_k=top_k, motor_filter=motor)
             seen_ids = {c.chunk_id for c in chunks_norma}
             chunks = chunks_norma + [c for c in chunks_global if c.chunk_id not in seen_ids]
+        elif _tiene_fuentes_compartidas(motor):
+            # Dominios con fuentes en más de una tabla o motor (FUENTES_DOMINIO).
+            chunks = _recuperar_fuentes_dominio(question, motor, top_k)
         else:
             chunks = search(question, top_k=top_k, motor_filter=motor)
         # Dominios cuyo corpus vive en nsr10_chunks y no en motor_chunks
