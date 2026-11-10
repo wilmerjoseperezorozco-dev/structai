@@ -1,0 +1,1334 @@
+{
+ "n_test": 58,
+ "rho": 0.4,
+ "K": 10,
+ "variantes": {
+  "V1_produccion": {
+   "n": 58,
+   "estricto": {
+    "k": 32,
+    "p": 0.5517241379310345,
+    "ic95": [
+     0.42452083125844636,
+     0.6725014595221879
+    ]
+   },
+   "aceptable": {
+    "k": 41,
+    "p": 0.7068965517241379,
+    "ic95": [
+     0.5798709910321587,
+     0.808218172090378
+    ]
+   },
+   "callejon_falso": {
+    "k": 6,
+    "p": 0.10344827586206896,
+    "ic95": [
+     0.048281407423628964,
+     0.2078810299248423
+    ]
+   },
+   "aceptable_ic95_cluster": [
+    0.5833333333333334,
+    0.8225806451612904
+   ],
+   "por_estrato": {
+    "S1_sismica_municipio": {
+     "n": 18,
+     "estricto": 0.16666666666666666,
+     "aceptable": 0.6666666666666666
+    },
+    "S2_directa": {
+     "n": 15,
+     "estricto": 1.0,
+     "aceptable": 1.0
+    },
+    "S3_coloquial": {
+     "n": 10,
+     "estricto": 0.6,
+     "aceptable": 0.6
+    },
+    "S4_sinonimo": {
+     "n": 3,
+     "estricto": 1.0,
+     "aceptable": 1.0
+    },
+    "S5_negacion": {
+     "n": 3,
+     "estricto": 0.3333333333333333,
+     "aceptable": 0.3333333333333333
+    },
+    "S6_confusor_sismico": {
+     "n": 5,
+     "estricto": 0.2,
+     "aceptable": 0.2
+    },
+    "S7_general": {
+     "n": 4,
+     "estricto": 0.75,
+     "aceptable": 0.75
+    }
+   },
+   "mcnemar_vs_V1": null,
+   "p_holm_vs_V1": null
+  },
+  "V3_margen_delta0.18": {
+   "n": 58,
+   "estricto": {
+    "k": 33,
+    "p": 0.5689655172413793,
+    "ic95": [
+     0.44118104569962735,
+     0.6881820086745515
+    ]
+   },
+   "aceptable": {
+    "k": 50,
+    "p": 0.8620689655172413,
+    "ic95": [
+     0.7507409056616206,
+     0.9284151298028187
+    ]
+   },
+   "callejon_falso": {
+    "k": 2,
+    "p": 0.034482758620689655,
+    "ic95": [
+     0.00950792833116542,
+     0.11729145464312693
+    ]
+   },
+   "aceptable_ic95_cluster": [
+    0.7666666666666667,
+    0.9464285714285714
+   ],
+   "por_estrato": {
+    "S1_sismica_municipio": {
+     "n": 18,
+     "estricto": 0.0,
+     "aceptable": 0.9444444444444444
+    },
+    "S2_directa": {
+     "n": 15,
+     "estricto": 1.0,
+     "aceptable": 1.0
+    },
+    "S3_coloquial": {
+     "n": 10,
+     "estricto": 0.8,
+     "aceptable": 0.8
+    },
+    "S4_sinonimo": {
+     "n": 3,
+     "estricto": 0.6666666666666666,
+     "aceptable": 0.6666666666666666
+    },
+    "S5_negacion": {
+     "n": 3,
+     "estricto": 0.3333333333333333,
+     "aceptable": 0.3333333333333333
+    },
+    "S6_confusor_sismico": {
+     "n": 5,
+     "estricto": 0.6,
+     "aceptable": 0.6
+    },
+    "S7_general": {
+     "n": 4,
+     "estricto": 1.0,
+     "aceptable": 1.0
+    }
+   },
+   "mcnemar_vs_V1": {
+    "n_pares": 58,
+    "n11": 40,
+    "n10_solo_a": 1,
+    "n01_solo_b": 10,
+    "n00": 7,
+    "prop_a": 0.7068965517241379,
+    "prop_b": 0.8620689655172413,
+    "razon_momios": 10.0,
+    "razon_momios_haldane": 7.0,
+    "diff_prop": 0.15517241379310343,
+    "p": 0.01171875,
+    "rm_ic_inf": 1.4225984812825672,
+    "rm_ic_sup": 433.97698405863036
+   },
+   "p_holm_vs_V1": 0.09375
+  },
+  "C3_minilm_logreg": {
+   "n": 58,
+   "estricto": {
+    "k": 48,
+    "p": 0.8275862068965517,
+    "ic95": [
+     0.7109174349067378,
+     0.903557073370612
+    ]
+   },
+   "aceptable": {
+    "k": 49,
+    "p": 0.8448275862068966,
+    "ic95": [
+     0.730660191401075,
+     0.9161550804698196
+    ]
+   },
+   "callejon_falso": {
+    "k": 3,
+    "p": 0.05172413793103448,
+    "ic95": [
+     0.017746134659410488,
+     0.1413940119084266
+    ]
+   },
+   "aceptable_ic95_cluster": [
+    0.7407407407407407,
+    0.9310344827586207
+   ],
+   "por_estrato": {
+    "S1_sismica_municipio": {
+     "n": 18,
+     "estricto": 0.9444444444444444,
+     "aceptable": 0.9444444444444444
+    },
+    "S2_directa": {
+     "n": 15,
+     "estricto": 0.8666666666666667,
+     "aceptable": 0.8666666666666667
+    },
+    "S3_coloquial": {
+     "n": 10,
+     "estricto": 0.9,
+     "aceptable": 0.9
+    },
+    "S4_sinonimo": {
+     "n": 3,
+     "estricto": 1.0,
+     "aceptable": 1.0
+    },
+    "S5_negacion": {
+     "n": 3,
+     "estricto": 0.3333333333333333,
+     "aceptable": 0.3333333333333333
+    },
+    "S6_confusor_sismico": {
+     "n": 5,
+     "estricto": 0.4,
+     "aceptable": 0.6
+    },
+    "S7_general": {
+     "n": 4,
+     "estricto": 0.75,
+     "aceptable": 0.75
+    }
+   },
+   "mcnemar_vs_V1": {
+    "n_pares": 58,
+    "n11": 38,
+    "n10_solo_a": 3,
+    "n01_solo_b": 11,
+    "n00": 6,
+    "prop_a": 0.7068965517241379,
+    "prop_b": 0.8448275862068966,
+    "razon_momios": 3.6666666666666665,
+    "razon_momios_haldane": 3.2857142857142856,
+    "diff_prop": 0.13793103448275867,
+    "p": 0.057373046875,
+    "rm_ic_inf": 0.968598193146517,
+    "rm_ic_sup": 20.468769603480062
+   },
+   "p_holm_vs_V1": 0.29425048828125
+  },
+  "K1_voto_corpus": {
+   "n": 58,
+   "estricto": {
+    "k": 20,
+    "p": 0.3448275862068966,
+    "ic95": [
+     0.23561089331950166,
+     0.47332223433859577
+    ]
+   },
+   "aceptable": {
+    "k": 39,
+    "p": 0.6724137931034483,
+    "ic95": [
+     0.544240546784708,
+     0.7791670891507392
+    ]
+   },
+   "callejon_falso": {
+    "k": 1,
+    "p": 0.017241379310344827,
+    "ic95": [
+     0.0030500384460675073,
+     0.09140858093468013
+    ]
+   },
+   "aceptable_ic95_cluster": [
+    0.534454022988506,
+    0.7931034482758621
+   ],
+   "por_estrato": {
+    "S1_sismica_municipio": {
+     "n": 18,
+     "estricto": 0.0,
+     "aceptable": 0.9444444444444444
+    },
+    "S2_directa": {
+     "n": 15,
+     "estricto": 0.4,
+     "aceptable": 0.4
+    },
+    "S3_coloquial": {
+     "n": 10,
+     "estricto": 0.6,
+     "aceptable": 0.6
+    },
+    "S4_sinonimo": {
+     "n": 3,
+     "estricto": 0.3333333333333333,
+     "aceptable": 0.3333333333333333
+    },
+    "S5_negacion": {
+     "n": 3,
+     "estricto": 0.3333333333333333,
+     "aceptable": 0.6666666666666666
+    },
+    "S6_confusor_sismico": {
+     "n": 5,
+     "estricto": 0.6,
+     "aceptable": 0.8
+    },
+    "S7_general": {
+     "n": 4,
+     "estricto": 0.75,
+     "aceptable": 0.75
+    }
+   },
+   "mcnemar_vs_V1": {
+    "n_pares": 58,
+    "n11": 25,
+    "n10_solo_a": 16,
+    "n01_solo_b": 14,
+    "n00": 3,
+    "prop_a": 0.7068965517241379,
+    "prop_b": 0.6724137931034483,
+    "razon_momios": 0.875,
+    "razon_momios_haldane": 0.8787878787878788,
+    "diff_prop": -0.03448275862068961,
+    "p": 0.8555355519056321,
+    "rm_ic_inf": 0.3955138567557153,
+    "rm_ic_sup": 1.913284019663867
+   },
+   "p_holm_vs_V1": 1.0
+  },
+  "K2_voto+rechazo_rho0.4": {
+   "n": 58,
+   "estricto": {
+    "k": 19,
+    "p": 0.3275862068965517,
+    "ic95": [
+     0.22083291084926077,
+     0.45575945321529193
+    ]
+   },
+   "aceptable": {
+    "k": 39,
+    "p": 0.6724137931034483,
+    "ic95": [
+     0.544240546784708,
+     0.7791670891507392
+    ]
+   },
+   "callejon_falso": {
+    "k": 1,
+    "p": 0.017241379310344827,
+    "ic95": [
+     0.0030500384460675073,
+     0.09140858093468013
+    ]
+   },
+   "aceptable_ic95_cluster": [
+    0.52,
+    0.796875
+   ],
+   "por_estrato": {
+    "S1_sismica_municipio": {
+     "n": 18,
+     "estricto": 0.0,
+     "aceptable": 1.0
+    },
+    "S2_directa": {
+     "n": 15,
+     "estricto": 0.4,
+     "aceptable": 0.4
+    },
+    "S3_coloquial": {
+     "n": 10,
+     "estricto": 0.5,
+     "aceptable": 0.5
+    },
+    "S4_sinonimo": {
+     "n": 3,
+     "estricto": 0.3333333333333333,
+     "aceptable": 0.3333333333333333
+    },
+    "S5_negacion": {
+     "n": 3,
+     "estricto": 0.3333333333333333,
+     "aceptable": 0.6666666666666666
+    },
+    "S6_confusor_sismico": {
+     "n": 5,
+     "estricto": 0.6,
+     "aceptable": 0.8
+    },
+    "S7_general": {
+     "n": 4,
+     "estricto": 0.75,
+     "aceptable": 0.75
+    }
+   },
+   "mcnemar_vs_V1": {
+    "n_pares": 58,
+    "n11": 26,
+    "n10_solo_a": 15,
+    "n01_solo_b": 13,
+    "n00": 4,
+    "prop_a": 0.7068965517241379,
+    "prop_b": 0.6724137931034483,
+    "razon_momios": 0.8666666666666667,
+    "razon_momios_haldane": 0.8709677419354839,
+    "diff_prop": -0.03448275862068961,
+    "p": 0.8505540192127228,
+    "rm_ic_inf": 0.3795169114000638,
+    "rm_ic_sup": 1.952473362111115
+   },
+   "p_holm_vs_V1": 1.0
+  },
+  "K3_jerarquico_rho0.4": {
+   "n": 58,
+   "estricto": {
+    "k": 25,
+    "p": 0.43103448275862066,
+    "ic95": [
+     0.31181799132544846,
+     0.5588189543003725
+    ]
+   },
+   "aceptable": {
+    "k": 45,
+    "p": 0.7758620689655172,
+    "ic95": [
+     0.6533888236108131,
+     0.8640633938859025
+    ]
+   },
+   "callejon_falso": {
+    "k": 1,
+    "p": 0.017241379310344827,
+    "ic95": [
+     0.0030500384460675073,
+     0.09140858093468013
+    ]
+   },
+   "aceptable_ic95_cluster": [
+    0.6481481481481481,
+    0.8823529411764706
+   ],
+   "por_estrato": {
+    "S1_sismica_municipio": {
+     "n": 18,
+     "estricto": 0.0,
+     "aceptable": 1.0
+    },
+    "S2_directa": {
+     "n": 15,
+     "estricto": 0.6666666666666666,
+     "aceptable": 0.6666666666666666
+    },
+    "S3_coloquial": {
+     "n": 10,
+     "estricto": 0.6,
+     "aceptable": 0.6
+    },
+    "S4_sinonimo": {
+     "n": 3,
+     "estricto": 0.6666666666666666,
+     "aceptable": 0.6666666666666666
+    },
+    "S5_negacion": {
+     "n": 3,
+     "estricto": 0.3333333333333333,
+     "aceptable": 0.6666666666666666
+    },
+    "S6_confusor_sismico": {
+     "n": 5,
+     "estricto": 0.6,
+     "aceptable": 0.8
+    },
+    "S7_general": {
+     "n": 4,
+     "estricto": 0.75,
+     "aceptable": 0.75
+    }
+   },
+   "mcnemar_vs_V1": {
+    "n_pares": 58,
+    "n11": 32,
+    "n10_solo_a": 9,
+    "n01_solo_b": 13,
+    "n00": 4,
+    "prop_a": 0.7068965517241379,
+    "prop_b": 0.7758620689655172,
+    "razon_momios": 1.4444444444444444,
+    "razon_momios_haldane": 1.4210526315789473,
+    "diff_prop": 0.06896551724137934,
+    "p": 0.5234670639038086,
+    "rm_ic_inf": 0.571207834466102,
+    "rm_ic_sup": 3.828745568793058
+   },
+   "p_holm_vs_V1": 1.0
+  },
+  "K4_keyword+K3": {
+   "n": 58,
+   "estricto": {
+    "k": 30,
+    "p": 0.5172413793103449,
+    "ic95": [
+     0.3916226178340947,
+     0.64071814575945
+    ]
+   },
+   "aceptable": {
+    "k": 50,
+    "p": 0.8620689655172413,
+    "ic95": [
+     0.7507409056616206,
+     0.9284151298028187
+    ]
+   },
+   "callejon_falso": {
+    "k": 1,
+    "p": 0.017241379310344827,
+    "ic95": [
+     0.0030500384460675073,
+     0.09140858093468013
+    ]
+   },
+   "aceptable_ic95_cluster": [
+    0.7592592592592593,
+    0.9444444444444444
+   ],
+   "por_estrato": {
+    "S1_sismica_municipio": {
+     "n": 18,
+     "estricto": 0.0,
+     "aceptable": 1.0
+    },
+    "S2_directa": {
+     "n": 15,
+     "estricto": 1.0,
+     "aceptable": 1.0
+    },
+    "S3_coloquial": {
+     "n": 10,
+     "estricto": 0.6,
+     "aceptable": 0.6
+    },
+    "S4_sinonimo": {
+     "n": 3,
+     "estricto": 0.6666666666666666,
+     "aceptable": 0.6666666666666666
+    },
+    "S5_negacion": {
+     "n": 3,
+     "estricto": 0.3333333333333333,
+     "aceptable": 0.6666666666666666
+    },
+    "S6_confusor_sismico": {
+     "n": 5,
+     "estricto": 0.6,
+     "aceptable": 0.8
+    },
+    "S7_general": {
+     "n": 4,
+     "estricto": 0.75,
+     "aceptable": 0.75
+    }
+   },
+   "mcnemar_vs_V1": {
+    "n_pares": 58,
+    "n11": 37,
+    "n10_solo_a": 4,
+    "n01_solo_b": 13,
+    "n00": 4,
+    "prop_a": 0.7068965517241379,
+    "prop_b": 0.8620689655172413,
+    "razon_momios": 3.25,
+    "razon_momios_haldane": 3.0,
+    "diff_prop": 0.15517241379310343,
+    "p": 0.049041748046875,
+    "rm_ic_inf": 1.004035031530404,
+    "rm_ic_sup": 13.682618944315276
+   },
+   "p_holm_vs_V1": 0.29425048828125
+  },
+  "K5_acuerdo_K3_C3": {
+   "n": 58,
+   "estricto": {
+    "k": 26,
+    "p": 0.4482758620689655,
+    "ic95": [
+     0.3274985404778122,
+     0.5754791687415537
+    ]
+   },
+   "aceptable": {
+    "k": 46,
+    "p": 0.7931034482758621,
+    "ic95": [
+     0.6723078207851659,
+     0.8774851603050945
+    ]
+   },
+   "callejon_falso": {
+    "k": 1,
+    "p": 0.017241379310344827,
+    "ic95": [
+     0.0030500384460675073,
+     0.09140858093468013
+    ]
+   },
+   "aceptable_ic95_cluster": [
+    0.6666666666666666,
+    0.8928571428571429
+   ],
+   "por_estrato": {
+    "S1_sismica_municipio": {
+     "n": 18,
+     "estricto": 0.0,
+     "aceptable": 1.0
+    },
+    "S2_directa": {
+     "n": 15,
+     "estricto": 0.6,
+     "aceptable": 0.6
+    },
+    "S3_coloquial": {
+     "n": 10,
+     "estricto": 0.6,
+     "aceptable": 0.6
+    },
+    "S4_sinonimo": {
+     "n": 3,
+     "estricto": 0.6666666666666666,
+     "aceptable": 0.6666666666666666
+    },
+    "S5_negacion": {
+     "n": 3,
+     "estricto": 0.3333333333333333,
+     "aceptable": 0.6666666666666666
+    },
+    "S6_confusor_sismico": {
+     "n": 5,
+     "estricto": 0.8,
+     "aceptable": 1.0
+    },
+    "S7_general": {
+     "n": 4,
+     "estricto": 1.0,
+     "aceptable": 1.0
+    }
+   },
+   "mcnemar_vs_V1": {
+    "n_pares": 58,
+    "n11": 32,
+    "n10_solo_a": 9,
+    "n01_solo_b": 14,
+    "n00": 3,
+    "prop_a": 0.7068965517241379,
+    "prop_b": 0.7931034482758621,
+    "razon_momios": 1.5555555555555556,
+    "razon_momios_haldane": 1.5263157894736843,
+    "diff_prop": 0.0862068965517242,
+    "p": 0.4048728942871094,
+    "rm_ic_inf": 0.6271247088119344,
+    "rm_ic_sup": 4.074173662483476
+   },
+   "p_holm_vs_V1": 1.0
+  },
+  "K6_keyword+C3_posthoc": {
+   "n": 58,
+   "estricto": {
+    "k": 49,
+    "p": 0.8448275862068966,
+    "ic95": [
+     0.730660191401075,
+     0.9161550804698196
+    ]
+   },
+   "aceptable": {
+    "k": 50,
+    "p": 0.8620689655172413,
+    "ic95": [
+     0.7507409056616206,
+     0.9284151298028187
+    ]
+   },
+   "callejon_falso": {
+    "k": 2,
+    "p": 0.034482758620689655,
+    "ic95": [
+     0.00950792833116542,
+     0.11729145464312693
+    ]
+   },
+   "aceptable_ic95_cluster": [
+    0.7592592592592593,
+    0.9464285714285714
+   ],
+   "por_estrato": {
+    "S1_sismica_municipio": {
+     "n": 18,
+     "estricto": 0.9444444444444444,
+     "aceptable": 0.9444444444444444
+    },
+    "S2_directa": {
+     "n": 15,
+     "estricto": 1.0,
+     "aceptable": 1.0
+    },
+    "S3_coloquial": {
+     "n": 10,
+     "estricto": 0.8,
+     "aceptable": 0.8
+    },
+    "S4_sinonimo": {
+     "n": 3,
+     "estricto": 1.0,
+     "aceptable": 1.0
+    },
+    "S5_negacion": {
+     "n": 3,
+     "estricto": 0.3333333333333333,
+     "aceptable": 0.3333333333333333
+    },
+    "S6_confusor_sismico": {
+     "n": 5,
+     "estricto": 0.4,
+     "aceptable": 0.6
+    },
+    "S7_general": {
+     "n": 4,
+     "estricto": 0.75,
+     "aceptable": 0.75
+    }
+   },
+   "mcnemar_vs_V1": {
+    "n_pares": 58,
+    "n11": 40,
+    "n10_solo_a": 1,
+    "n01_solo_b": 10,
+    "n00": 7,
+    "prop_a": 0.7068965517241379,
+    "prop_b": 0.8620689655172413,
+    "razon_momios": 10.0,
+    "razon_momios_haldane": 7.0,
+    "diff_prop": 0.15517241379310343,
+    "p": 0.01171875,
+    "rm_ic_inf": 1.4225984812825672,
+    "rm_ic_sup": 433.97698405863036
+   },
+   "p_holm_vs_V1": 0.09375
+  }
+ },
+ "fallos": {
+  "V1_produccion": [
+   {
+    "pregunta": "¿Cuál es la amenaza sísmica (Aa/Av) de Riohacha?",
+    "esperado": "geopot",
+    "obtenido": "vulnerabilidad_vivienda"
+   },
+   {
+    "pregunta": "¿Cuál es la amenaza sísmica (Aa/Av) de Girardot?",
+    "esperado": "geopot",
+    "obtenido": "vulnerabilidad_vivienda"
+   },
+   {
+    "pregunta": "voy a construir en Cartagena, que tan sismica es la zona",
+    "esperado": "geopot",
+    "obtenido": "apu_precios"
+   },
+   {
+    "pregunta": "En Florencia la amenaza sismica es alta, intermedia o baja?",
+    "esperado": "geopot",
+    "obtenido": "vulnerabilidad_vivienda"
+   },
+   {
+    "pregunta": "En Ipiales la amenaza sismica es alta, intermedia o baja?",
+    "esperado": "geopot",
+    "obtenido": "vulnerabilidad_vivienda"
+   },
+   {
+    "pregunta": "parámetros sísmicos de Manizales para el espectro de diseño",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "el concreto que me llegó a la obra parece muy aguado, cómo lo verifico",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "mi casa es de dos pisos y tiene grietas en los muros, ¿resiste un sismo?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿qué tan gruesa debe ser una columna de un edificio de cinco pisos en Colombia?",
+    "esperado": "normativa_general",
+    "obtenido": "ecuador_nec_se_ds"
+   },
+   {
+    "pregunta": "¿los obreros tienen que usar arnés para trabajar en el techo?",
+    "esperado": "normativa_general",
+    "obtenido": "apu_precios"
+   },
+   {
+    "pregunta": "no es sobre mi casa, quiero la zona de amenaza sísmica de Sincelejo",
+    "esperado": "geopot",
+    "obtenido": "vulnerabilidad_vivienda"
+   },
+   {
+    "pregunta": "no quiero evaluar la vulnerabilidad de la vivienda, solo saber el Aa de Montería",
+    "esperado": "geopot",
+    "obtenido": "vulnerabilidad_vivienda"
+   },
+   {
+    "pregunta": "¿cuál es el coeficiente de capacidad de disipación de energía R0 para pórticos de concreto DES?",
+    "esperado": "normativa_general",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿qué es el espectro elástico de aceleraciones de diseño?",
+    "esperado": "normativa_general",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿un hospital tiene un coeficiente de importancia mayor en el diseño sísmico?",
+    "esperado": "normativa_general",
+    "obtenido": "gerencia"
+   },
+   {
+    "pregunta": "licuación de suelos durante un sismo, cómo se evalúa",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "hola, ¿qué puedes hacer?",
+    "esperado": "normativa_general",
+    "obtenido": "ecuador_nec_se_ds"
+   }
+  ],
+  "V3_margen_delta0.18": [
+   {
+    "pregunta": "voy a construir en Cartagena, que tan sismica es la zona",
+    "esperado": "geopot",
+    "obtenido": "apu_precios"
+   },
+   {
+    "pregunta": "el concreto que me llegó a la obra parece muy aguado, cómo lo verifico",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "mi casa es de dos pisos y tiene grietas en los muros, ¿resiste un sismo?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿cuál es la capacidad de carga admisible de una arcilla blanda?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "no es sobre mi casa, quiero la zona de amenaza sísmica de Sincelejo",
+    "esperado": "geopot",
+    "obtenido": "vulnerabilidad_vivienda"
+   },
+   {
+    "pregunta": "no quiero evaluar la vulnerabilidad de la vivienda, solo saber el Aa de Montería",
+    "esperado": "geopot",
+    "obtenido": "vulnerabilidad_vivienda"
+   },
+   {
+    "pregunta": "¿un hospital tiene un coeficiente de importancia mayor en el diseño sísmico?",
+    "esperado": "normativa_general",
+    "obtenido": "gerencia"
+   },
+   {
+    "pregunta": "licuación de suelos durante un sismo, cómo se evalúa",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   }
+  ],
+  "C3_minilm_logreg": [
+   {
+    "pregunta": "parámetros sísmicos de Mocoa para el espectro de diseño",
+    "esperado": "geopot",
+    "obtenido": "peru_e030"
+   },
+   {
+    "pregunta": "¿Cuál es la dotación neta mínima para un municipio de nivel de complejidad medio según la Resolución 0330?",
+    "esperado": "aquai",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿Qué carga viva vehicular exige la CCP-14 para puentes?",
+    "esperado": "vias",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "el concreto que me llegó a la obra parece muy aguado, cómo lo verifico",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "no es sobre mi casa, quiero la zona de amenaza sísmica de Sincelejo",
+    "esperado": "geopot",
+    "obtenido": "vulnerabilidad_vivienda"
+   },
+   {
+    "pregunta": "no quiero evaluar la vulnerabilidad de la vivienda, solo saber el Aa de Montería",
+    "esperado": "geopot",
+    "obtenido": "vulnerabilidad_vivienda"
+   },
+   {
+    "pregunta": "¿cuál es el coeficiente de capacidad de disipación de energía R0 para pórticos de concreto DES?",
+    "esperado": "normativa_general",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿un hospital tiene un coeficiente de importancia mayor en el diseño sísmico?",
+    "esperado": "normativa_general",
+    "obtenido": "vulnerabilidad_vivienda"
+   },
+   {
+    "pregunta": "hola, ¿qué puedes hacer?",
+    "esperado": "normativa_general",
+    "obtenido": "geopot"
+   }
+  ],
+  "K1_voto_corpus": [
+   {
+    "pregunta": "parámetros sísmicos de Armenia para el espectro de diseño",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Cuál es la dotación neta mínima para un municipio de nivel de complejidad medio según la Resolución 0330?",
+    "esperado": "aquai",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cómo se clasifica un suelo con el sistema USCS?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Qué es el límite líquido en el ensayo de Atterberg?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Cómo se interpreta el ensayo de asentamiento con el cono de Abrams?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cómo se interpreta un SPI menor a 1 en valor ganado?",
+    "esperado": "gerencia",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cuánto cuesta el metro cúbico de concreto de 3000 psi?",
+    "esperado": "apu_precios",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "precio del bulto de cemento gris en Bogotá",
+    "esperado": "apu_precios",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Cuál es el factor de zona Z para Lima según la E.030?",
+    "esperado": "peru_e030",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Qué valor de Z establece la NEC-SE-DS para Quito?",
+    "esperado": "ecuador_nec_se_ds",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "el concreto que me llegó a la obra parece muy aguado, cómo lo verifico",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿cómo sé si mi proyecto va a terminar a tiempo con lo que llevo ejecutado?",
+    "esperado": "gerencia",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "tengo una casa de ladrillo sin columnas, ¿es peligrosa si tiembla?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "voy a construir en Cuenca, Ecuador, que coeficiente sismico uso",
+    "esperado": "ecuador_nec_se_ds",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿cuál es la capacidad de carga admisible de una arcilla blanda?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿cuánto vale el análisis de precio unitario de un muro en bloque?",
+    "esperado": "apu_precios",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "no quiero evaluar la vulnerabilidad de la vivienda, solo saber el Aa de Montería",
+    "esperado": "geopot",
+    "obtenido": "vulnerabilidad_vivienda"
+   },
+   {
+    "pregunta": "¿un hospital tiene un coeficiente de importancia mayor en el diseño sísmico?",
+    "esperado": "normativa_general",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿qué requisitos de señalización exige una obra en vía pública?",
+    "esperado": "normativa_general",
+    "obtenido": "gerencia"
+   }
+  ],
+  "K2_voto+rechazo_rho0.4": [
+   {
+    "pregunta": "¿Cuál es la dotación neta mínima para un municipio de nivel de complejidad medio según la Resolución 0330?",
+    "esperado": "aquai",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cómo se clasifica un suelo con el sistema USCS?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Qué es el límite líquido en el ensayo de Atterberg?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Cómo se interpreta el ensayo de asentamiento con el cono de Abrams?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cómo se interpreta un SPI menor a 1 en valor ganado?",
+    "esperado": "gerencia",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cuánto cuesta el metro cúbico de concreto de 3000 psi?",
+    "esperado": "apu_precios",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "precio del bulto de cemento gris en Bogotá",
+    "esperado": "apu_precios",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cuál es el factor de zona Z para Lima según la E.030?",
+    "esperado": "peru_e030",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Qué valor de Z establece la NEC-SE-DS para Quito?",
+    "esperado": "ecuador_nec_se_ds",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "el concreto que me llegó a la obra parece muy aguado, cómo lo verifico",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿cómo sé si mi proyecto va a terminar a tiempo con lo que llevo ejecutado?",
+    "esperado": "gerencia",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "tengo una casa de ladrillo sin columnas, ¿es peligrosa si tiembla?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "mi casa es de dos pisos y tiene grietas en los muros, ¿resiste un sismo?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "voy a construir en Cuenca, Ecuador, que coeficiente sismico uso",
+    "esperado": "ecuador_nec_se_ds",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿cuál es la capacidad de carga admisible de una arcilla blanda?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿cuánto vale el análisis de precio unitario de un muro en bloque?",
+    "esperado": "apu_precios",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "no quiero evaluar la vulnerabilidad de la vivienda, solo saber el Aa de Montería",
+    "esperado": "geopot",
+    "obtenido": "vulnerabilidad_vivienda"
+   },
+   {
+    "pregunta": "¿un hospital tiene un coeficiente de importancia mayor en el diseño sísmico?",
+    "esperado": "normativa_general",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿qué requisitos de señalización exige una obra en vía pública?",
+    "esperado": "normativa_general",
+    "obtenido": "gerencia"
+   }
+  ],
+  "K3_jerarquico_rho0.4": [
+   {
+    "pregunta": "¿Cuál es la dotación neta mínima para un municipio de nivel de complejidad medio según la Resolución 0330?",
+    "esperado": "aquai",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cómo se clasifica un suelo con el sistema USCS?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Qué es el límite líquido en el ensayo de Atterberg?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Cómo se interpreta el ensayo de asentamiento con el cono de Abrams?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cómo se interpreta un SPI menor a 1 en valor ganado?",
+    "esperado": "gerencia",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "el concreto que me llegó a la obra parece muy aguado, cómo lo verifico",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿cómo sé si mi proyecto va a terminar a tiempo con lo que llevo ejecutado?",
+    "esperado": "gerencia",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "tengo una casa de ladrillo sin columnas, ¿es peligrosa si tiembla?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "mi casa es de dos pisos y tiene grietas en los muros, ¿resiste un sismo?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿cuál es la capacidad de carga admisible de una arcilla blanda?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "no quiero evaluar la vulnerabilidad de la vivienda, solo saber el Aa de Montería",
+    "esperado": "geopot",
+    "obtenido": "vulnerabilidad_vivienda"
+   },
+   {
+    "pregunta": "¿un hospital tiene un coeficiente de importancia mayor en el diseño sísmico?",
+    "esperado": "normativa_general",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿qué requisitos de señalización exige una obra en vía pública?",
+    "esperado": "normativa_general",
+    "obtenido": "gerencia"
+   }
+  ],
+  "K4_keyword+K3": [
+   {
+    "pregunta": "el concreto que me llegó a la obra parece muy aguado, cómo lo verifico",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿cómo sé si mi proyecto va a terminar a tiempo con lo que llevo ejecutado?",
+    "esperado": "gerencia",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "tengo una casa de ladrillo sin columnas, ¿es peligrosa si tiembla?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "mi casa es de dos pisos y tiene grietas en los muros, ¿resiste un sismo?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿cuál es la capacidad de carga admisible de una arcilla blanda?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "no quiero evaluar la vulnerabilidad de la vivienda, solo saber el Aa de Montería",
+    "esperado": "geopot",
+    "obtenido": "vulnerabilidad_vivienda"
+   },
+   {
+    "pregunta": "¿un hospital tiene un coeficiente de importancia mayor en el diseño sísmico?",
+    "esperado": "normativa_general",
+    "obtenido": "gerencia"
+   },
+   {
+    "pregunta": "¿qué requisitos de señalización exige una obra en vía pública?",
+    "esperado": "normativa_general",
+    "obtenido": "gerencia"
+   }
+  ],
+  "K5_acuerdo_K3_C3": [
+   {
+    "pregunta": "¿Cuál es la dotación neta mínima para un municipio de nivel de complejidad medio según la Resolución 0330?",
+    "esperado": "aquai",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cómo se clasifica un suelo con el sistema USCS?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Qué es el límite líquido en el ensayo de Atterberg?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cómo se interpreta el ensayo de asentamiento con el cono de Abrams?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Qué carga viva vehicular exige la CCP-14 para puentes?",
+    "esperado": "vias",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cómo se interpreta un SPI menor a 1 en valor ganado?",
+    "esperado": "gerencia",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "el concreto que me llegó a la obra parece muy aguado, cómo lo verifico",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿cómo sé si mi proyecto va a terminar a tiempo con lo que llevo ejecutado?",
+    "esperado": "gerencia",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "tengo una casa de ladrillo sin columnas, ¿es peligrosa si tiembla?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "mi casa es de dos pisos y tiene grietas en los muros, ¿resiste un sismo?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿cuál es la capacidad de carga admisible de una arcilla blanda?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "no quiero evaluar la vulnerabilidad de la vivienda, solo saber el Aa de Montería",
+    "esperado": "geopot",
+    "obtenido": "vulnerabilidad_vivienda"
+   }
+  ],
+  "K6_keyword+C3_posthoc": [
+   {
+    "pregunta": "parámetros sísmicos de Mocoa para el espectro de diseño",
+    "esperado": "geopot",
+    "obtenido": "peru_e030"
+   },
+   {
+    "pregunta": "el concreto que me llegó a la obra parece muy aguado, cómo lo verifico",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "mi casa es de dos pisos y tiene grietas en los muros, ¿resiste un sismo?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "no es sobre mi casa, quiero la zona de amenaza sísmica de Sincelejo",
+    "esperado": "geopot",
+    "obtenido": "vulnerabilidad_vivienda"
+   },
+   {
+    "pregunta": "no quiero evaluar la vulnerabilidad de la vivienda, solo saber el Aa de Montería",
+    "esperado": "geopot",
+    "obtenido": "vulnerabilidad_vivienda"
+   },
+   {
+    "pregunta": "¿cuál es el coeficiente de capacidad de disipación de energía R0 para pórticos de concreto DES?",
+    "esperado": "normativa_general",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿un hospital tiene un coeficiente de importancia mayor en el diseño sísmico?",
+    "esperado": "normativa_general",
+    "obtenido": "gerencia"
+   },
+   {
+    "pregunta": "hola, ¿qué puedes hacer?",
+    "esperado": "normativa_general",
+    "obtenido": "geopot"
+   }
+  ]
+ }
+}
