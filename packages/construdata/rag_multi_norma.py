@@ -2609,6 +2609,77 @@ MOTOR_LABEL = {
     "ecuador_nec_se_ds": "NEC-SE-DS — Peligro Sísmico, Diseño Sismo Resistente (Ecuador)",
 }
 
+# Dónde vive realmente el contenido de cada dominio. Contrato verificado en
+# apps/api/tests/test_integridad_dominios.py: todo dominio enrutable debe
+# declarar aquí al menos una fuente, y cada fuente debe tener filas reales.
+# Bug que lo motivó (issue #169, 2026-11-10): vulnerabilidad_vivienda solo
+# buscaba en motor_chunks (0 filas) mientras 426 chunks propios (AIS 2004,
+# AIS 410-23, Build Change, NSR-10 Título E y A.10) vivían en nsr10_chunks;
+# toda pregunta del dominio terminaba en "no tiene contenido cargado".
+#   ("motor_chunks", motor)        -> search(..., motor_filter=motor)
+#   ("nsr10_prefijos", (p1, ...))  -> search() global filtrado por prefijo de chunk_id
+#   ("rama_propia", nombre)        -> el dominio tiene su propia rama en _ask_delegado_interno
+FUENTES_DOMINIO: dict[str, list[tuple[str, object]]] = {
+    "aquai": [("motor_chunks", "aquai")],
+    "geopot": [("motor_chunks", "geopot")],
+    "vulnerabilidad_vivienda": [
+        ("nsr10_prefijos", ("AIS2004-", "AIS410-23-", "BUILDCHANGE-", "NSR10-E-", "NSR10-A-A_10")),
+        ("rama_propia", "checklist_ais_motor_vulnerabilidad_vivienda"),
+    ],
+    "vias": [("motor_chunks", "vias")],
+    "gerencia": [("motor_chunks", "gerencia")],
+    "apu_precios": [("rama_propia", "ask_precios")],
+    "peru_e030": [("rama_propia", "search_peru_e030")],
+    "ecuador_nec_se_ds": [("rama_propia", "search_ecuador_nec_se_ds")],
+}
+
+
+def _prefijos_nsr10(motor: str) -> tuple[str, ...]:
+    for tipo, valor in FUENTES_DOMINIO.get(motor, []):
+        if tipo == "nsr10_prefijos":
+            return valor  # type: ignore[return-value]
+    return ()
+
+
+def _buscar_por_prefijos(question: str, prefijos: tuple[str, ...], top_k: int) -> list[ChunkResult]:
+    """search() global (nsr10 + ntc + motor) con un pool más grande, quedándose
+    solo con los chunks cuyo id empieza por alguno de los prefijos del dominio.
+    No se agrega un RPC nuevo: misma búsqueda híbrida RRF de siempre."""
+    candidatos = search(question, top_k=top_k * 4)
+    return [c for c in candidatos if str(c.chunk_id).startswith(prefijos)][:top_k]
+
+
+@lru_cache(maxsize=1)
+def _bloque_checklist_ais() -> str:
+    """Los 15 criterios del checklist AIS (2004) tal como los usa el motor
+    determinístico, para que el chat explique QUÉ observar sin inventar
+    criterios. Se carga con importlib igual que apps/api/routers/
+    vulnerabilidad_vivienda.py, para no chocar con el nombre genérico 'src'.
+    Si el motor no está disponible devuelve '' y el chat sigue solo con RAG."""
+    try:
+        import importlib.util as ilu
+        import sys
+        from pathlib import Path
+        init = Path(__file__).resolve().parents[1] / "motor-vulnerabilidad-vivienda" / "src" / "__init__.py"
+        mod = sys.modules.get("motor_vulnerabilidad_vivienda")
+        if mod is None:
+            spec = ilu.spec_from_file_location("motor_vulnerabilidad_vivienda", init,
+                                               submodule_search_locations=[str(init.parent)])
+            mod = ilu.module_from_spec(spec)
+            sys.modules["motor_vulnerabilidad_vivienda"] = mod
+            spec.loader.exec_module(mod)
+        from motor_vulnerabilidad_vivienda import checklist as ck
+    except Exception as e:  # noqa: BLE001
+        log.warning(f"Checklist AIS no disponible para el chat: {e}")
+        return ""
+    lineas = ["CHECKLIST AIS 2004 (Capítulo II) — 15 criterios, cada uno se califica BAJA / MEDIA / ALTA.",
+              "Peso por aspecto: " + ", ".join(f"{ck.ASPECTO_LABEL[a]} {int(ck.PESO_ASPECTO[a] * 100)} %" for a in ck.ASPECTOS_ORDEN),
+              "La clasificación final la calcula el endpoint /vulnerabilidad-vivienda/evaluar, no el chat."]
+    for c in ck.CRITERIOS:
+        lineas.append(f"- [{ck.ASPECTO_LABEL[c.aspecto]}] {c.nombre}\n"
+                      f"    BAJA: {c.descripcion_baja}\n    MEDIA: {c.descripcion_media}\n    ALTA: {c.descripcion_alta}")
+    return "\n".join(lineas)
+
 
 # ─── PROMPTS ESPECIALIZADOS POR MOTOR ────────────────────────────────────────
 # Hasta 2026-08-21, aquai/geopot/vias/gerencia compartían el mismo
@@ -3023,6 +3094,12 @@ def _ask_delegado_interno(question: str, motores: list[str], top_k: int) -> dict
             chunks = chunks_norma + [c for c in chunks_global if c.chunk_id not in seen_ids]
         else:
             chunks = search(question, top_k=top_k, motor_filter=motor)
+        # Dominios cuyo corpus vive en nsr10_chunks y no en motor_chunks
+        # (ver FUENTES_DOMINIO): se busca ahí en vez de abstenerse.
+        prefijos = _prefijos_nsr10(motor)
+        if prefijos and not chunks:
+            chunks = _buscar_por_prefijos(question, prefijos, top_k)
+        checklist_ais = _bloque_checklist_ais() if motor == "vulnerabilidad_vivienda" else ""
         # Para vias, un precio INVIAS encontrado también cuenta como "sí hay
         # contenido" -- calculado aquí (antes del early-return de abajo) para
         # no descartar la pregunta solo porque motor_chunks no tuvo match,
@@ -3030,7 +3107,7 @@ def _ask_delegado_interno(question: str, motores: list[str], top_k: int) -> dict
         precios_invias_disponibilidad = (
             motor == "vias" and _score_motores(question).get("apu_precios", 0) > 0
         )
-        if not chunks and not precios_invias_disponibilidad:
+        if not chunks and not precios_invias_disponibilidad and not checklist_ais:
             # El dominio se detectó pero aún no tiene chunks cargados —
             # no fabricar respuesta, avisar y devolver dominio vacío en vez
             # de responder con contexto de otro dominio.
@@ -3066,7 +3143,7 @@ def _ask_delegado_interno(question: str, motores: list[str], top_k: int) -> dict
     # siempre. Ver sgc_amenaza_sismica.py para el detalle.
     sgc_registro = (
         sgc_amenaza_sismica.detectar_municipio_en_texto(question)
-        if motor in ("geopot", "aquai")
+        if motor in ("geopot", "aquai", "vulnerabilidad_vivienda")
         else None
     )
 
@@ -3082,7 +3159,7 @@ def _ask_delegado_interno(question: str, motores: list[str], top_k: int) -> dict
         if motor == "vias" and _score_motores(question).get("apu_precios", 0) > 0
         else []
     )
-    if not chunks and not precios_invias:
+    if not chunks and not precios_invias and not checklist_ais:
         # precios_invias_disponibilidad predijo que había precio (evitó el
         # early-return de arriba), pero la RPC no encontró match real -- caer
         # al mismo mensaje honesto de "no hay contenido" en vez de llamar al
@@ -3108,6 +3185,8 @@ def _ask_delegado_interno(question: str, motores: list[str], top_k: int) -> dict
             _format_precio_context(p) for p in precios_invias
         )
         contexto = f"{bloque_precios}\n\n---\n\n{contexto}" if contexto else bloque_precios
+    if checklist_ais:
+        contexto = f"{checklist_ais}\n\n---\n\n{contexto}" if contexto else checklist_ais
 
     # Mismo enriquecimiento de noticias que ask() -- faltaba aquí (bug real
     # encontrado 2026-08-20 con Groq en vivo: una pregunta de geopot con
@@ -3139,6 +3218,10 @@ def _ask_delegado_interno(question: str, motores: list[str], top_k: int) -> dict
             }
             for p in precios_invias
         ] + fuentes
+    if checklist_ais:
+        fuente_ais = "Checklist AIS 2004 Cap. II (motor-vulnerabilidad-vivienda)"
+        normas_citadas = [fuente_ais] + normas_citadas
+        fuentes = [{"norma": fuente_ais, "seccion": "15 criterios", "score": 1.0}] + fuentes
 
     return {
         "dominio": motor,
