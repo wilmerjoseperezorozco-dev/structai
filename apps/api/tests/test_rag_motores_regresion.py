@@ -37,7 +37,7 @@ sys.path.insert(0, str(API_DIR))
 # uniformidad-cu, ambos ya arreglados dos veces antes por variantes Unicode/
 # fraseo distintas). Reintentar 1 vez filtra ese ruido sin ocultar una
 # regresión real de contenido, que fallaría en ambos intentos.
-pytestmark = pytest.mark.flaky(reruns=1, reruns_delay=3)
+pytestmark = [pytest.mark.flaky(reruns=1, reruns_delay=3), pytest.mark.llm]
 sys.path.insert(0, str(API_DIR.parents[1] / "packages" / "construdata"))
 
 # rag_multi_norma.py lee credenciales de os.environ a nivel de módulo — igual
