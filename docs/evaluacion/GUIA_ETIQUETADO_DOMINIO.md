@@ -33,4 +33,4 @@ E1e mostró que las etiquetas inconsistentes dañan el modelo tanto como las eti
 
 ## Para el set held-out
 
-Escribir las preguntas **antes** de ver el dataset E1, con el lenguaje con que las haría un ingeniero, un maestro de obra o un estudiante. Repartir aproximadamente: 25 % sísmica por lugar y geotecnia, 15 % laboratorio, 15 % vivienda, 10 % cada uno de agua, vías, gerencia y precios, y el resto de NSR-10 de diseño. Incluir al menos 5 negaciones y 5 preguntas compuestas.
+Escribir las preguntas **antes** de ver el dataset E1, con el lenguaje con que las haría un ingeniero, un maestro de obra o un estudiante. Reparto de las 60 (plantilla en `PLANTILLA_HELDOUT_K6.md`): 12 sísmica por lugar y geotecnia, 6 laboratorio, 6 vivienda, 6 agua, 6 vías, 6 gerencia, 6 precios, 9 NSR-10 de diseño o generales y 3 de Perú o Ecuador. Incluir al menos 5 negaciones y 5 preguntas compuestas.

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Held-out K6</title>
+<style>
+  :root { --tinta:#111; --linea:#999; --suave:#555; --fondo:#fff; }
+  body { font: 12px/1.35 system-ui, "Segoe UI", Arial, sans-serif; color: var(--tinta); background: var(--fondo); margin: 16px; }
+  h1 { font-size: 17px; margin: 0 0 4px; }
+  .sub { color: var(--suave); margin: 0 0 10px; }
+  .reparto { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px 18px; margin: 8px 0 12px; font-size: 11px; }
+  .guia { font-size: 11px; margin: 0 0 10px; padding-left: 16px; }
+  table.hoja { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .hoja th, .hoja td { border: 1px solid var(--linea); padding: 3px 5px; vertical-align: top; }
+  .hoja th { font-size: 11px; text-align: left; background: #f2f2f2; }
+  .hoja td { height: 46px; }
+  .n { width: 26px; text-align: right; color: var(--suave); }
+  col.p { width: auto; } col.e { width: 17%; } col.a { width: 15%; } col.t { width: 42px; }
+  .hoja tr { break-inside: avoid; }
+  .pie { margin-top: 8px; font-size: 10px; color: var(--suave); }
+  @media print { body { margin: 10mm; } @page { size: A4 portrait; margin: 10mm; } thead { display: table-header-group; } }
+</style></head><body>
+<h1>StructAI · 60 preguntas held-out para validar el enrutador K6 (issue #171)</h1>
+<p class="sub">Autor: ______________________ &nbsp;·&nbsp; Fecha: ____ / ____ / 2026 &nbsp;·&nbsp; Escribir sin mirar el dataset E1.</p>
+<div class="reparto">
+  <div><b>12</b> sísmica de un lugar y geotecnia → geopot</div>
+  <div><b>6</b> laboratorio (concreto, agregados, suelos) → geopot</div>
+  <div><b>6</b> vivienda existente 1-2 pisos → vulnerabilidad_vivienda</div>
+  <div><b>6</b> agua (acueducto, alcantarillado) → aquai</div>
+  <div><b>6</b> vías, pavimentos, puentes, túneles → vias</div>
+  <div><b>6</b> gerencia, contratación, interventoría → gerencia</div>
+  <div><b>6</b> precios, costos, APU → apu_precios</div>
+  <div><b>9</b> NSR-10 de diseño, NTC, SST, fuera de tema → normativa_general</div>
+  <div><b>3</b> Perú o Ecuador → peru_e030 / ecuador_nec_se_ds</div>
+</div>
+<ul class="guia">
+  <li><b>Etiqueta</b> = el dominio que da la mejor respuesta. <b>Aceptables</b> = otros que también servirían (opcional). En blanco si dudas.</li>
+  <li><b>Tipo</b>: N = tiene negación ("no quiero X, sino Y") · C = compuesta (dos temas). Mínimo 5 N y 5 C en total.</li>
+  <li>Reglas de desempate: docs/evaluacion/GUIA_ETIQUETADO_DOMINIO.md (lugar + sísmica → geopot; casa existente → vivienda; se etiqueta lo preguntado, no lo negado).</li>
+</ul>
+<table class="hoja">
+<colgroup><col class="n"><col class="p"><col class="e"><col class="a"><col class="t"></colgroup>
+<thead><tr><th>#</th><th>Pregunta (tal cual la harías)</th><th>Etiqueta</th><th>Aceptables</th><th>Tipo</th></tr></thead>
+<tbody>
+<tr><td class="n">1</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">2</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">3</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">4</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">5</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">6</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">7</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">8</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">9</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">10</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">11</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">12</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">13</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">14</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">15</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">16</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">17</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">18</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">19</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">20</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">21</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">22</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">23</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">24</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">25</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">26</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">27</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">28</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">29</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">30</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">31</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">32</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">33</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">34</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">35</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">36</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">37</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">38</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">39</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">40</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">41</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">42</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">43</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">44</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">45</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">46</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">47</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">48</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">49</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">50</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">51</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">52</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">53</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">54</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">55</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">56</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">57</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">58</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">59</td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="n">60</td><td></td><td></td><td></td><td></td></tr>
+</tbody></table>
+<p class="pie">Al terminar: foto, PDF o el CSV a Claude. Se transcribe sin cambiar palabras ni etiquetas; lo ilegible se marca y se pregunta.</p>
+</body></html>
