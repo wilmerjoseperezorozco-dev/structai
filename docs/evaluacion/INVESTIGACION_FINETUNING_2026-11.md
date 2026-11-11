@@ -49,13 +49,15 @@ Ordenadas por valor esperado y por lo que se puede hacer **en este PC sin GPU**:
 | # | Línea | Por qué importa en StructAI | ¿Se puede aquí? |
 |---|---|---|---|
 | 1 | **Fine-tuning del modelo de embeddings** (MiniLM 384-dim) con pares pregunta → chunk correcto (pérdida contrastiva con negativos del mismo lote) | Mejora a la vez la **recuperación** y el **enrutador**: C3/K6 usa los mismos embeddings. Ataca el entrelazamiento geopot–vías medido en el E1c (coseno 0,78) | Sí, en CPU: el modelo es chico. Se evalúa con un índice local (recall@k, E2) antes de reindexar producción |
-| 2 | **Cascada de modelos con el umbral de confianza** | El τ del E1e también sirve para decidir **quién responde**: preguntas fáciles y seguras → modelo local o barato; difíciles → Groq. Baja costo y dependencia de cuota | Sí, cuando #172 diga qué modelo local es confiable |
+| 2 | ~~Cascada de modelos en producción~~ | **Descartada (2026-11-11):** el modelo local no va a producción, solo a CI y evaluaciones. El τ del E1e se sigue usando para el enrutador | — |
 | 3 | **Salidas estructuradas + verificación determinista** | Para la auditoría de documentos (T2 de #169): el LLM extrae valores a un esquema JSON y Python compara contra la lista de control. Es la hipótesis principal del benchmark | Sí: Ollama soporta `format` con JSON Schema |
 | 4 | **Juez LLM calibrado con anotación experta** | La auditoría #109 mostró un juez sin calibrar y métricas con hasta 51 % de faltantes. Un juez local evaluado contra anotaciones humanas (`anotacion_experto.py`) evalúa sin gastar cuota | Sí, lento pero gratis |
 | 5 | **Observabilidad por consulta** | Trazas de enrutamiento, chunks usados, latencia, costo y alucinación por consulta real. Es el pool del aprendizaje activo | Sí, por ejemplo Langfuse self-hosted en el homelab |
 | 6 | **Optimización automática de prompts** contra las baterías (estilo DSPy) | Las baterías de 138 casos son una función objetivo lista | Sí con un modelo local; es caro en tiempo |
 | 7 | **Reranker cross-encoder ajustado al dominio** | Producción ya usa un reranker; ajustarlo con los mismos pares de la línea 1 | Sí en CPU para uno pequeño |
 | 8 | **Serving local eficiente** (prompt caching del system prompt, `keep_alive`, `num_ctx` justo, cuantización) | La lectura del prompt es el cuello de botella medido (30 tok/s en el 7B) | Sí |
+
+**Issues abiertos (2026-11-11):** #173 embeddings y reranker · #174 salidas estructuradas · #175 juez local calibrado · #176 observabilidad · #177 optimización de prompts · #178 procesos nocturnos locales (CI con modelo local **sin** runner propio: GitHub y OWASP desaconsejan runners propios en repos públicos) · #179 entrenamiento QLoRA en Colab/Kaggle.
 
 **Sobre usar el modelo local como respaldo de producción:** con ~3 minutos por respuesta en CPU, no sirve para el chat en vivo (Cloud Run además no tiene GPU). Sí sirve para el CI, la evaluación y los procesos nocturnos. Para el respaldo de producción, lo práctico sigue siendo recargar OpenAI u otro proveedor barato. Se decide con los datos de #172.
 
