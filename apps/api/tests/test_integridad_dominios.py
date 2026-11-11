@@ -92,6 +92,22 @@ def test_fuente_declarada_tiene_contenido(dominio, tipo, valor):
         pytest.fail(f"tipo de fuente desconocido: {tipo}")
 
 
+def test_todo_motor_de_motor_chunks_tiene_dominio():
+    """Si alguien carga motor_chunks con un motor nuevo y no lo declara en
+    FUENTES_DOMINIO, ese corpus queda invisible para el chat (issue #170)."""
+    motores, off = set(), 0
+    while True:
+        d = r.sb.table("motor_chunks").select("motor").range(off, off + 999).execute().data
+        motores |= {f["motor"] for f in d}
+        off += 1000
+        if len(d) < 1000:
+            break
+    declarados = {v if t == "motor_chunks" else v[0] for fs in r.FUENTES_DOMINIO.values()
+                  for t, v in fs if t in ("motor_chunks", "motor_chunks_normas")}
+    huerfanos = sorted(motores - declarados)
+    assert not huerfanos, f"motor_chunks tiene motores que ningún dominio declara: {huerfanos}"
+
+
 @pytest.mark.parametrize("dominio,pregunta", list(PREGUNTA_CANONICA.items()))
 def test_pregunta_canonica_recupera_chunks_propios(dominio, pregunta):
     prefijos = r._prefijos_nsr10(dominio)

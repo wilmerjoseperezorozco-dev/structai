@@ -2629,7 +2629,9 @@ MOTOR_LABEL = {
 # geotecnia (NSR-10 Título H) y la zonificación sísmica (A.2) también son de
 # geopot; siguen siendo además de normativa_general.
 FUENTES_DOMINIO: dict[str, list[tuple[str, object]]] = {
-    "aquai": [("motor_chunks", "aquai")],
+    # NTC 1500 (código colombiano de fontanería) vive completo en ntc_chunks;
+    # en motor_chunks[aquai] solo hay su ficha (inventario del issue #170).
+    "aquai": [("motor_chunks", "aquai"), ("ntc_normas", ("NTC 1500",))],
     "geopot": [
         ("motor_chunks", "geopot"),
         ("motor_chunks_normas", ("vias", ("Normas de Ensayo — Sección 200", "Normas de Ensayo — Sección 300"))),

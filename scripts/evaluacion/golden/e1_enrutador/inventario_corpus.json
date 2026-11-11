@@ -1,0 +1,1260 @@
+{
+ "totales_corpus": {
+  "nsr10_chunks": 10909,
+  "ntc_chunks": 294,
+  "motor_chunks": 4060,
+  "peru_e030_chunks": 204,
+  "ecuador_nec_se_ds_chunks": 395
+ },
+ "chunks_por_dominio": {
+  "normativa_general": 11203,
+  "vias": 2816,
+  "geopot": 2157,
+  "gerencia": 818,
+  "vulnerabilidad_vivienda": 426,
+  "ecuador_nec_se_ds": 395,
+  "aquai": 333,
+  "peru_e030": 204
+ },
+ "corpus": [
+  {
+   "tabla": "ecuador_nec_se_ds_chunks",
+   "unidad": "ecuador_nec_se_ds_chunks",
+   "n_chunks": 395,
+   "dominio_primario": "ecuador_nec_se_ds",
+   "dominios": {
+    "ecuador_nec_se_ds": 395
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[vias] Normas de Ensayo — Sección 200 (Agregados Pétreos)",
+   "n_chunks": 1145,
+   "dominio_primario": "geopot",
+   "dominios": {
+    "geopot": 1145,
+    "vias": 1145
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[vias] CCP-14 — Norma Colombiana de Diseño de Puentes (INVIAS / AASHTO LRFD)",
+   "n_chunks": 1096,
+   "dominio_primario": "vias",
+   "dominios": {
+    "vias": 1096
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[aquai] Resolución 0330 de 2017",
+   "n_chunks": 287,
+   "dominio_primario": "aquai",
+   "dominios": {
+    "aquai": 287
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[gerencia] Ley 80 de 1993",
+   "n_chunks": 223,
+   "dominio_primario": "gerencia",
+   "dominios": {
+    "gerencia": 223
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[gerencia] Manual de Interventoría y Supervisión de Obra Pública — Capítulo 2 (Resolución 970/2024)",
+   "n_chunks": 174,
+   "dominio_primario": "gerencia",
+   "dominios": {
+    "gerencia": 174
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[gerencia] Ley 1474 de 2011",
+   "n_chunks": 163,
+   "dominio_primario": "gerencia",
+   "dominios": {
+    "gerencia": 163
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[gerencia] Manual de Interventoría de Obra Pública 2022 (INVIAS, MEPI-MN1 v1)",
+   "n_chunks": 154,
+   "dominio_primario": "gerencia",
+   "dominios": {
+    "gerencia": 154
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[vias] Manual de Túneles de Carretera para Colombia (Edición 2021, INVIAS)",
+   "n_chunks": 143,
+   "dominio_primario": "vias",
+   "dominios": {
+    "vias": 143
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[vias] CCP-14 — Norma Colombiana de Diseño de Puentes (INVIAS / AASHTO LRFD) [⚠ extracción con posible ruido en fórmulas/tablas — verificar valores numéricos contra el PDF oficial antes de usar en diseño]",
+   "n_chunks": 124,
+   "dominio_primario": "vias",
+   "dominios": {
+    "vias": 124
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[geopot] Guía POT — Ministerio de Vivienda, Ciudad y Territorio (2024)",
+   "n_chunks": 89,
+   "dominio_primario": "geopot",
+   "dominios": {
+    "geopot": 89
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[gerencia] Ley 1150 de 2007",
+   "n_chunks": 71,
+   "dominio_primario": "gerencia",
+   "dominios": {
+    "gerencia": 71
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[vias] Manual de Pavimentos INVIAS — bajos_volumenes",
+   "n_chunks": 69,
+   "dominio_primario": "vias",
+   "dominios": {
+    "vias": 69
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[vias] Normas de Ensayo — Sección 300 (Cemento)",
+   "n_chunks": 63,
+   "dominio_primario": "geopot",
+   "dominios": {
+    "geopot": 63,
+    "vias": 63
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[vias] Manual de Pavimentos INVIAS — concreto",
+   "n_chunks": 57,
+   "dominio_primario": "vias",
+   "dominios": {
+    "vias": 57
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[vias] Manual de Pavimentos INVIAS — asfaltico",
+   "n_chunks": 42,
+   "dominio_primario": "vias",
+   "dominios": {
+    "vias": 42
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[vias] INV E-826-22",
+   "n_chunks": 38,
+   "dominio_primario": "vias",
+   "dominios": {
+    "vias": 38
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[vias] INV E-632-22",
+   "n_chunks": 14,
+   "dominio_primario": "vias",
+   "dominios": {
+    "vias": 14
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[aquai] Resolución CRA 956 de 2021",
+   "n_chunks": 14,
+   "dominio_primario": "aquai",
+   "dominios": {
+    "aquai": 14
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[aquai] NTC 1500 (ficha técnica — no es el texto normativo completo)",
+   "n_chunks": 13,
+   "dominio_primario": "aquai",
+   "dominios": {
+    "aquai": 13
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[gerencia] ISO 9001:2015 (ficha técnica — no es el texto normativo completo, protegido por copyright)",
+   "n_chunks": 11,
+   "dominio_primario": "gerencia",
+   "dominios": {
+    "gerencia": 11
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[vias] INV E-631-22",
+   "n_chunks": 10,
+   "dominio_primario": "vias",
+   "dominios": {
+    "vias": 10
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[geopot] Fuentes de información secundaria para el ordenamiento territorial — MVCT (sept. 2023)",
+   "n_chunks": 5,
+   "dominio_primario": "geopot",
+   "dominios": {
+    "geopot": 5
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[aquai] Resolución CRA 955 de 2021",
+   "n_chunks": 5,
+   "dominio_primario": "aquai",
+   "dominios": {
+    "aquai": 5
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[gerencia] NTC-ISO 31000:2018 (ficha técnica — no es el texto normativo completo, protegido por copyright)",
+   "n_chunks": 4,
+   "dominio_primario": "gerencia",
+   "dominios": {
+    "gerencia": 4
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[gerencia] ISO 19011:2011 (ficha técnica — no es el texto normativo completo, protegido por copyright)",
+   "n_chunks": 4,
+   "dominio_primario": "gerencia",
+   "dominios": {
+    "gerencia": 4
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[gerencia] PMI/PMBOK — Earned Value Management (EVM)",
+   "n_chunks": 3,
+   "dominio_primario": "gerencia",
+   "dominios": {
+    "gerencia": 3
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[gerencia] ISO/IEC 27001:2022 (ficha técnica — no es el texto normativo completo, protegido por copyright)",
+   "n_chunks": 3,
+   "dominio_primario": "gerencia",
+   "dominios": {
+    "gerencia": 3
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[gerencia] ISO 14001:2015 (ficha técnica — no es el texto normativo completo, protegido por copyright)",
+   "n_chunks": 3,
+   "dominio_primario": "gerencia",
+   "dominios": {
+    "gerencia": 3
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[geopot] ASTM D2487 — Sistema Unificado de Clasificación de Suelos (USCS)",
+   "n_chunks": 1,
+   "dominio_primario": "geopot",
+   "dominios": {
+    "geopot": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[geopot] ASTM D2487 (USCS) · AASHTO M145",
+   "n_chunks": 1,
+   "dominio_primario": "geopot",
+   "dominios": {
+    "geopot": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[geopot] INV E-125 (Límite Líquido) / INV E-126 (Límite Plástico)",
+   "n_chunks": 1,
+   "dominio_primario": "geopot",
+   "dominios": {
+    "geopot": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[geopot] INV E-141 (Proctor Estándar) / INV E-142 (Proctor Modificado)",
+   "n_chunks": 1,
+   "dominio_primario": "geopot",
+   "dominios": {
+    "geopot": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[geopot] INV E-148 — California Bearing Ratio (CBR)",
+   "n_chunks": 1,
+   "dominio_primario": "geopot",
+   "dominios": {
+    "geopot": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[geopot] INV E-123 (granulometría suelos) / NTC 77 (agregados)",
+   "n_chunks": 1,
+   "dominio_primario": "geopot",
+   "dominios": {
+    "geopot": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[geopot] NTC 673 (compresión de cilindros) / NTC 396 (asentamiento — cono de Abrams)",
+   "n_chunks": 1,
+   "dominio_primario": "geopot",
+   "dominios": {
+    "geopot": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[geopot] NSR-10 (Título C) / ACI 318 — Conformidad de resistencia del concreto",
+   "n_chunks": 1,
+   "dominio_primario": "geopot",
+   "dominios": {
+    "geopot": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[geopot] NTC 174 (requisitos generales) / NTC 237 (densidad y absorción) / NTC 218 (desgaste Los Ángeles)",
+   "n_chunks": 1,
+   "dominio_primario": "geopot",
+   "dominios": {
+    "geopot": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[geopot] NTC 174 (requisitos) / NTC 237 (densidad SSS por picnómetro, ASTM C128) / NTC 77 (granulometría)",
+   "n_chunks": 1,
+   "dominio_primario": "geopot",
+   "dominios": {
+    "geopot": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[geopot] ACI 211.1 — Diseño básico de proporciones de concreto (aplicación simplificada)",
+   "n_chunks": 1,
+   "dominio_primario": "geopot",
+   "dominios": {
+    "geopot": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[geopot] NSR-10 (Título A) — Movimientos sísmicos de diseño, zonificación por municipio/departamento",
+   "n_chunks": 1,
+   "dominio_primario": "geopot",
+   "dominios": {
+    "geopot": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[vias] Manual de Diseño Geométrico de Carreteras INVIAS 2008 — Capítulo 3, Tabla 3.2",
+   "n_chunks": 1,
+   "dominio_primario": "vias",
+   "dominios": {
+    "vias": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[vias] Manual INVIAS 2008 Cap. 3 (Tablas 3.4-3.5), Cap. 4 (Tabla 4.1), Cap. 5 — con bombeo actualizado según Manual INVIAS 2025",
+   "n_chunks": 1,
+   "dominio_primario": "vias",
+   "dominios": {
+    "vias": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[vias] Método mecánico-empírico, ábacos AASHTO 93 adaptados (Manual INVIAS)",
+   "n_chunks": 1,
+   "dominio_primario": "vias",
+   "dominios": {
+    "vias": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[vias] Método mecánico-empírico AASHTO 93 adaptado — estructura flexible",
+   "n_chunks": 1,
+   "dominio_primario": "vias",
+   "dominios": {
+    "vias": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[vias] Método mecánico-empírico AASHTO 93 adaptado — estructura rígida",
+   "n_chunks": 1,
+   "dominio_primario": "vias",
+   "dominios": {
+    "vias": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[vias] Manual de Mantenimiento de Carreteras INVIAS (2016), adoptado por Resolución 04046 de 2018",
+   "n_chunks": 1,
+   "dominio_primario": "vias",
+   "dominios": {
+    "vias": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[vias] Manual de Mantenimiento de Carreteras INVIAS (2016), Resolución 04046 de 2018",
+   "n_chunks": 1,
+   "dominio_primario": "vias",
+   "dominios": {
+    "vias": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[vias] Guía de estandarización INVIAS 2023 / IDU / IGAC · NTC 6271",
+   "n_chunks": 1,
+   "dominio_primario": "vias",
+   "dominios": {
+    "vias": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[vias] NTC 2017 (tercera actualización, 2018) — INVIAS Art. 510",
+   "n_chunks": 1,
+   "dominio_primario": "vias",
+   "dominios": {
+    "vias": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[vias] NTC 4342 — Geotextiles en pavimentos asfálticos, equivalente INVIAS D6140",
+   "n_chunks": 1,
+   "dominio_primario": "vias",
+   "dominios": {
+    "vias": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[vias] NTC 121 (especificación de desempeño, 2021) / NTC 1362 (cemento blanco, incluida en NSR-10)",
+   "n_chunks": 1,
+   "dominio_primario": "vias",
+   "dominios": {
+    "vias": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[vias] NTC 1299 (IDT ASTM C494/C494M-05a) / NTC 3502 (equivalente ASTM C260)",
+   "n_chunks": 1,
+   "dominio_primario": "vias",
+   "dominios": {
+    "vias": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[vias] NTC 3459 (ed. 2001)",
+   "n_chunks": 1,
+   "dominio_primario": "vias",
+   "dominios": {
+    "vias": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[gerencia] Extensión predictiva sobre EVM (PMI/PMBOK) — modelo de riesgo",
+   "n_chunks": 1,
+   "dominio_primario": "gerencia",
+   "dominios": {
+    "gerencia": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[vias] NTC 3493 (equivalente ASTM C618) / NTC 4018 (primera actualización 2017, equivalente ASTM C989)",
+   "n_chunks": 1,
+   "dominio_primario": "vias",
+   "dominios": {
+    "vias": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[vias] NTC 4024 (muestreo y ensayo, 2001) / NTC 4924 (equivalente ASTM C331, 2001)",
+   "n_chunks": 1,
+   "dominio_primario": "vias",
+   "dominios": {
+    "vias": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[gerencia] PMI/PMBOK — Earned Value Management (EVM), extensión de portafolio",
+   "n_chunks": 1,
+   "dominio_primario": "gerencia",
+   "dominios": {
+    "gerencia": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[gerencia] Estadística aplicada a series de tiempo de KPIs de proyecto (sin dependencias externas — regresión y estadística pura)",
+   "n_chunks": 1,
+   "dominio_primario": "gerencia",
+   "dominios": {
+    "gerencia": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[gerencia] Extensión predictiva sobre EVM (PMI/PMBOK) — proyección de cronograma",
+   "n_chunks": 1,
+   "dominio_primario": "gerencia",
+   "dominios": {
+    "gerencia": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[gerencia] Extensión predictiva sobre EVM (PMI/PMBOK) — forecasting y análisis de correlación",
+   "n_chunks": 1,
+   "dominio_primario": "gerencia",
+   "dominios": {
+    "gerencia": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "motor_chunks",
+   "unidad": "[aquai] Ley 142/1994 Art. 85 + Res. CRA 884/2019 Art. 4, aplicado en Res. UAE-CRA 350/2022",
+   "n_chunks": 1,
+   "dominio_primario": "aquai",
+   "dominios": {
+    "aquai": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "nsr10_chunks",
+   "unidad": "NSR-10 Título F",
+   "n_chunks": 2728,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 2728
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "nsr10_chunks",
+   "unidad": "NSR-10 Título C",
+   "n_chunks": 2559,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 2559
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "nsr10_chunks",
+   "unidad": "NSR-10 Título A",
+   "n_chunks": 1587,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 1587,
+    "vulnerabilidad_vivienda": 145,
+    "geopot": 235
+   },
+   "parcial": true
+  },
+  {
+   "tabla": "nsr10_chunks",
+   "unidad": "NSR-10 Título G",
+   "n_chunks": 1193,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 1193
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "nsr10_chunks",
+   "unidad": "NSR-10 Título D",
+   "n_chunks": 719,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 719
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "nsr10_chunks",
+   "unidad": "NSR-10 Título H",
+   "n_chunks": 552,
+   "dominio_primario": "geopot",
+   "dominios": {
+    "geopot": 552,
+    "normativa_general": 552
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "nsr10_chunks",
+   "unidad": "NSR-10 Título K",
+   "n_chunks": 433,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 433
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "nsr10_chunks",
+   "unidad": "NSR-10 Título B",
+   "n_chunks": 315,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 315
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "nsr10_chunks",
+   "unidad": "NSR-10 Título J",
+   "n_chunks": 288,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 288
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "nsr10_chunks",
+   "unidad": "NSR-10 Título E",
+   "n_chunks": 177,
+   "dominio_primario": "vulnerabilidad_vivienda",
+   "dominios": {
+    "vulnerabilidad_vivienda": 177,
+    "normativa_general": 177
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "nsr10_chunks",
+   "unidad": "RES0312",
+   "n_chunks": 76,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 76
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "nsr10_chunks",
+   "unidad": "NSR-10 Título I",
+   "n_chunks": 62,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 62
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "nsr10_chunks",
+   "unidad": "AIS2004",
+   "n_chunks": 55,
+   "dominio_primario": "vulnerabilidad_vivienda",
+   "dominios": {
+    "vulnerabilidad_vivienda": 55,
+    "normativa_general": 55
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "nsr10_chunks",
+   "unidad": "NSR10",
+   "n_chunks": 50,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 50
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "nsr10_chunks",
+   "unidad": "RES4272",
+   "n_chunks": 47,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 47
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "nsr10_chunks",
+   "unidad": "BUILDCHANGE",
+   "n_chunks": 27,
+   "dominio_primario": "vulnerabilidad_vivienda",
+   "dominios": {
+    "vulnerabilidad_vivienda": 27,
+    "normativa_general": 27
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "nsr10_chunks",
+   "unidad": "AIS410",
+   "n_chunks": 22,
+   "dominio_primario": "vulnerabilidad_vivienda",
+   "dominios": {
+    "vulnerabilidad_vivienda": 22,
+    "normativa_general": 22
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "nsr10_chunks",
+   "unidad": "NSR-10 Alcance",
+   "n_chunks": 11,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 11
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "nsr10_chunks",
+   "unidad": "RES5018",
+   "n_chunks": 8,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 8
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "Decreto 1072 de 2015",
+   "n_chunks": 59,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 59
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "ACI 318-05 (ficha técnica curada -- Cap. 11 y 21, no es el texto completo verbatim)",
+   "n_chunks": 17,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 17
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "NTC 2289",
+   "n_chunks": 14,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 14
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "NTC 1500",
+   "n_chunks": 13,
+   "dominio_primario": "aquai",
+   "dominios": {
+    "aquai": 13,
+    "normativa_general": 13
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "NTC 121",
+   "n_chunks": 13,
+   "dominio_primario": "geopot",
+   "dominios": {
+    "geopot": 13,
+    "normativa_general": 13
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "NTC 30",
+   "n_chunks": 13,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 13
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "NTC 4026",
+   "n_chunks": 13,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 13
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "NTC 396",
+   "n_chunks": 12,
+   "dominio_primario": "geopot",
+   "dominios": {
+    "geopot": 12,
+    "normativa_general": 12
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "NTC 4076",
+   "n_chunks": 12,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 12
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "NTC 454",
+   "n_chunks": 12,
+   "dominio_primario": "geopot",
+   "dominios": {
+    "geopot": 12,
+    "normativa_general": 12
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "NTC 1032",
+   "n_chunks": 11,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 11
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "NTC 174",
+   "n_chunks": 11,
+   "dominio_primario": "geopot",
+   "dominios": {
+    "geopot": 11,
+    "normativa_general": 11
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "NTC 3459",
+   "n_chunks": 10,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 10
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "NTC 4595",
+   "n_chunks": 10,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 10
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "NTC 504",
+   "n_chunks": 10,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 10
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "NTC 1028",
+   "n_chunks": 9,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 9
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "NTC 4027",
+   "n_chunks": 9,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 9
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "Ley 1562 de 2012",
+   "n_chunks": 8,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 8
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "NTC 1328",
+   "n_chunks": 8,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 8
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "NTC 673",
+   "n_chunks": 8,
+   "dominio_primario": "geopot",
+   "dominios": {
+    "geopot": 8,
+    "normativa_general": 8
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "SGSST",
+   "n_chunks": 7,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 7
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "AISC 360-2010 (ficha técnica curada -- Cap. A y arranque de B, no es el texto completo verbatim)",
+   "n_chunks": 6,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 6
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "NTC 2516",
+   "n_chunks": 3,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 3
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "NSR-10 Título C — Concreto Estructural",
+   "n_chunks": 2,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 2
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "NSR-10 — Elementos No Estructurales (resumen técnico, no verbatim — probablemente Título A.9, sin confirmar contra índice oficial)",
+   "n_chunks": 2,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 2
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "APU — Conceptos Generales",
+   "n_chunks": 1,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "ntc_chunks",
+   "unidad": "NSR-10 Título D — Mampostería Estructural",
+   "n_chunks": 1,
+   "dominio_primario": "normativa_general",
+   "dominios": {
+    "normativa_general": 1
+   },
+   "parcial": false
+  },
+  {
+   "tabla": "peru_e030_chunks",
+   "unidad": "peru_e030_chunks",
+   "n_chunks": 204,
+   "dominio_primario": "peru_e030",
+   "dominios": {
+    "peru_e030": 204
+   },
+   "parcial": false
+  }
+ ],
+ "datos_estructurados": [
+  {
+   "tabla": "apu_precios_referencia",
+   "filas": 4566,
+   "dominio": "apu_precios",
+   "uso": "buscar_precios_apu"
+  },
+  {
+   "tabla": "apu_insumos_referencia",
+   "filas": 10281,
+   "dominio": "apu_precios",
+   "uso": "buscar_precios_apu"
+  },
+  {
+   "tabla": "apu_items_nacional",
+   "filas": 1754,
+   "dominio": "apu_precios",
+   "uso": "precios nacionales MiPymes"
+  },
+  {
+   "tabla": "apu_precios_nacional_detalle",
+   "filas": 114616,
+   "dominio": "apu_precios",
+   "uso": "precios nacionales MiPymes"
+  },
+  {
+   "tabla": "invias_actividades",
+   "filas": 526,
+   "dominio": "apu_precios+vias",
+   "uso": "buscar_precios_invias_vias"
+  },
+  {
+   "tabla": "invias_insumos_precios",
+   "filas": 92820,
+   "dominio": "apu_precios+vias",
+   "uso": "buscar_precios_invias_vias"
+  },
+  {
+   "tabla": "invias_provincias",
+   "filas": 140,
+   "dominio": "apu_precios+vias",
+   "uso": "buscar_precios_invias_vias"
+  },
+  {
+   "tabla": "sgc_amenaza_sismica_municipios",
+   "filas": 1121,
+   "dominio": "geopot+aquai+vivienda+NG",
+   "uso": "sgc_amenaza_sismica"
+  },
+  {
+   "tabla": "nsr10_apendice_a4_municipios",
+   "filas": 1117,
+   "dominio": "geopot",
+   "uso": "Apéndice A-4 municipal"
+  },
+  {
+   "tabla": "microzonificacion_sismica_local",
+   "filas": 36,
+   "dominio": "geopot",
+   "uso": "microzonificacion_local"
+  },
+  {
+   "tabla": "igac_suelos_ufh",
+   "filas": 169088,
+   "dominio": "geopot",
+   "uso": "igac_client"
+  },
+  {
+   "tabla": "ideam_estaciones_caudal",
+   "filas": 3099,
+   "dominio": "aquai",
+   "uso": "ideam_client"
+  },
+  {
+   "tabla": "ideam_caudal_historico",
+   "filas": 352022,
+   "dominio": "aquai",
+   "uso": "ideam_client"
+  },
+  {
+   "tabla": "ideam_caudal_estadisticas_mes",
+   "filas": 11310,
+   "dominio": "aquai",
+   "uso": "ideam_client"
+  },
+  {
+   "tabla": "sisben_vulnerabilidad_vivienda_municipio",
+   "filas": 1099,
+   "dominio": "vulnerabilidad_vivienda",
+   "uso": "_bloque_vulnerabilidad_vivienda"
+  },
+  {
+   "tabla": "ungrd_emergencias",
+   "filas": 41893,
+   "dominio": "geopot+NG",
+   "uso": "informe de sitio"
+  },
+  {
+   "tabla": "peru_e030_zonificacion_distrital",
+   "filas": 1884,
+   "dominio": "peru_e030",
+   "uso": "pais_zonificacion"
+  },
+  {
+   "tabla": "ecuador_nec_se_ds_zonificacion_poblacion",
+   "filas": 512,
+   "dominio": "ecuador_nec_se_ds",
+   "uso": "pais_zonificacion"
+  },
+  {
+   "tabla": "normas_registro",
+   "filas": 69,
+   "dominio": "todos (vigencia)",
+   "uso": "metadata de búsqueda"
+  },
+  {
+   "tabla": "normas_modificaciones",
+   "filas": 28,
+   "dominio": "todos (vigencia)",
+   "uso": "vigilancia normativa"
+  },
+  {
+   "tabla": "normas_referencias_cruzadas",
+   "filas": 1354,
+   "dominio": "todos",
+   "uso": "referencias cruzadas"
+  },
+  {
+   "tabla": "noticias_relevantes",
+   "filas": 9786,
+   "dominio": "NG (actualidad)",
+   "uso": "_bloque_contexto_noticias"
+  }
+ ]
+}
