@@ -1,0 +1,49 @@
+{
+ "fuente": "scripts/evaluacion/qlora_export (train/heldout originales, partición respetada)",
+ "sha1_fuente": {
+  "train.jsonl": "143b30072330",
+  "heldout.jsonl": "521e2628c1f8"
+ },
+ "semilla": 179,
+ "fraccion_sin_oraculo": 0.25,
+ "train": {
+  "n": 222,
+  "variantes": {
+   "original": 98,
+   "con_oraculo+distractor": 81,
+   "sin_oraculo": 43
+  },
+  "transformaciones": {
+   "original": 95,
+   "sin_oraculo": 43,
+   "con_oraculo+distractor": 81,
+   "oraculo_no_identificable": 25,
+   "descartado_cifra_no_soportada": 6,
+   "sin_formato_contexto (se usa tal cual)": 3
+  },
+  "por_dominio": {
+   "nsr10/ntc/general": 175,
+   "precios": 47
+  }
+ },
+ "heldout": {
+  "n": 31,
+  "transformaciones": {
+   "original": 31,
+   "sin_oraculo": 9,
+   "oraculo_no_identificable": 2
+  }
+ },
+ "heldout_abstencion": {
+  "n": 9
+ },
+ "largo_user_caracteres": {
+  "p50": 5926,
+  "p95": 17697,
+  "max": 26654
+ },
+ "huecos": [
+  "Sin ejemplos de los motores (aquai, geopot, vias, gerencia, vivienda): faltan respuestas de un modelo maestro para esas preguntas (OpenAI sin crédito, Groq reservado para producción). Ver #170/#179.",
+  "Contextos largos: max_seq_length en el entrenamiento debe cubrir el p95 o recortar distractores."
+ ]
+}
