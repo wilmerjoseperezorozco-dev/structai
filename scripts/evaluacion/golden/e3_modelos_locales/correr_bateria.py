@@ -33,6 +33,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import statistics
 import sys
 import time
@@ -47,6 +48,11 @@ sys.path.insert(0, str(API))
 sys.path.insert(0, str(API / "tests"))
 sys.path.insert(0, str(RAIZ / "packages" / "construdata"))
 load_dotenv(API / ".env")
+# El caché de respuestas vive en el Supabase de PRODUCCIÓN (rag_cache_respuestas):
+# sin esto, ask() escribiría ahí y, peor, leería respuestas viejas de Groq en vez
+# de llamar al modelo local (se mediría a Groq). Se fija antes de importar el
+# módulo porque lo lee al importarse. Mismo criterio que el CI (ci.yml).
+os.environ["RAG_CACHE_DISABLED"] = "true"
 
 import rag_multi_norma as r  # noqa: E402
 

@@ -36,7 +36,7 @@ from rag_multi_norma import ask_precios  # noqa: E402
 
 # Mismo motivo que test_rag_nsr10_regresion.py: el LLM redacta la misma
 # respuesta correcta con palabras/formato distinto entre corridas.
-pytestmark = pytest.mark.flaky(reruns=1, reruns_delay=3)
+pytestmark = [pytest.mark.flaky(reruns=1, reruns_delay=3), pytest.mark.llm]
 
 
 def _contiene_alguna(texto: str, variantes: list[str]) -> bool:
