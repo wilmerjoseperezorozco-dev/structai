@@ -73,3 +73,15 @@ Antes de cualquier descarga se confirma la fuente oficial y su versión vigente.
 - `auditoria_paginas.py` y `indice_numerales.py` vuelven a correr: los numerales ingeridos dejan de aparecer como faltantes.
 - `test_integridad_dominios.py` y la prueba motor → numeral pasan.
 - `test_rag_nsr10_regresion.py` (con el modelo local, `-m llm`) sin regresiones.
+
+## Fase 1, Título B: resultados (2026-11-11)
+
+- PDF `NSR-10-240-301.pdf` descargado a `raw/` (3.101.062 bytes, igual al tamaño en Drive).
+- Los tres candidatos tienen **encabezado real** en el PDF: B.6.1.2 (pág. 1), B.6.3 Nomenclatura (pág. 3) y B.6.5.6.3 Categorías de exposición (pág. 8). Son huecos verdaderos.
+- **Vigencia:**
+  - Decreto 1711/2021: el anexo, leído completo, solo cambia la Figura B.6.4-1 del Título B.
+  - Decreto 340/2012: cambia B.4.5-1, B.6.4-1 y B.6.4-2.
+  - Ninguno de los dos toca estos numerales. **El Decreto 945/2017 está pendiente** (sin copia legible).
+- **Hallazgo:** los chunks actuales de B.6.1 y de B.6.2–B.6.4 son **resúmenes parafraseados**, no verbatim (uno dice "PENDIENTE: … mapa de velocidad básica"). El hueco real de B.6 es el inicio completo del capítulo, no solo tres numerales.
+- **Hallazgo de vigencia en producción:** el anexo del Decreto 1711 no está aplicado (Aa de Supía 0,15 en vez de 0,25; Figura B.6.4-1; Apéndice F.4-A ausente). Ver #189.
+- Script `_ingest_titulo_b_b6_huecos_grafo.py`: dry-run por defecto. B.6.1.2 y B.6.5.6.3 están listos. B.6.3 queda pendiente de transcribir los subíndices a mano (21 símbolos desordenados por la extracción). **Sin upsert.**
