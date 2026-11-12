@@ -1,0 +1,1509 @@
+{
+ "n_test": 60,
+ "rho": 0.4,
+ "K": 10,
+ "variantes": {
+  "V1_produccion": {
+   "n": 60,
+   "estricto": {
+    "k": 34,
+    "p": 0.5666666666666667,
+    "ic95": [
+     0.4410343877612556,
+     0.6842760319531324
+    ]
+   },
+   "aceptable": {
+    "k": 35,
+    "p": 0.5833333333333334,
+    "ic95": [
+     0.45728081022640116,
+     0.6993572144165839
+    ]
+   },
+   "callejon_falso": {
+    "k": 3,
+    "p": 0.05,
+    "ic95": [
+     0.017149502164395668,
+     0.13700516476348518
+    ]
+   },
+   "aceptable_ic95_cluster": [
+    0.45,
+    0.7
+   ],
+   "por_estrato": {
+    "H_compuesta": {
+     "n": 50,
+     "estricto": 0.58,
+     "aceptable": 0.6
+    },
+    "H_negacion": {
+     "n": 10,
+     "estricto": 0.5,
+     "aceptable": 0.5
+    }
+   },
+   "mcnemar_vs_V1": null,
+   "p_holm_vs_V1": null
+  },
+  "V3_margen_delta0.18": {
+   "n": 60,
+   "estricto": {
+    "k": 31,
+    "p": 0.5166666666666667,
+    "ic95": [
+     0.39307810032592494,
+     0.6382495046026722
+    ]
+   },
+   "aceptable": {
+    "k": 42,
+    "p": 0.7,
+    "ic95": [
+     0.5749129205308552,
+     0.8010183386123089
+    ]
+   },
+   "callejon_falso": {
+    "k": 1,
+    "p": 0.016666666666666666,
+    "ic95": [
+     0.0029481597947862495,
+     0.08855129727590061
+    ]
+   },
+   "aceptable_ic95_cluster": [
+    0.5833333333333334,
+    0.8166666666666667
+   ],
+   "por_estrato": {
+    "H_compuesta": {
+     "n": 50,
+     "estricto": 0.5,
+     "aceptable": 0.68
+    },
+    "H_negacion": {
+     "n": 10,
+     "estricto": 0.6,
+     "aceptable": 0.8
+    }
+   },
+   "mcnemar_vs_V1": {
+    "n_pares": 60,
+    "n11": 30,
+    "n10_solo_a": 5,
+    "n01_solo_b": 12,
+    "n00": 13,
+    "prop_a": 0.5833333333333334,
+    "prop_b": 0.7,
+    "razon_momios": 2.4,
+    "razon_momios_haldane": 2.272727272727273,
+    "diff_prop": 0.11666666666666659,
+    "p": 0.143463134765625,
+    "rm_ic_inf": 0.7870458941728161,
+    "rm_ic_sup": 8.695981118680269
+   },
+   "p_holm_vs_V1": 0.7324687242507935
+  },
+  "C3_minilm_logreg": {
+   "n": 60,
+   "estricto": {
+    "k": 35,
+    "p": 0.5833333333333334,
+    "ic95": [
+     0.45728081022640116,
+     0.6993572144165839
+    ]
+   },
+   "aceptable": {
+    "k": 45,
+    "p": 0.75,
+    "ic95": [
+     0.6276792992295218,
+     0.8422347746994333
+    ]
+   },
+   "callejon_falso": {
+    "k": 1,
+    "p": 0.016666666666666666,
+    "ic95": [
+     0.0029481597947862495,
+     0.08855129727590061
+    ]
+   },
+   "aceptable_ic95_cluster": [
+    0.6333333333333333,
+    0.85
+   ],
+   "por_estrato": {
+    "H_compuesta": {
+     "n": 50,
+     "estricto": 0.6,
+     "aceptable": 0.78
+    },
+    "H_negacion": {
+     "n": 10,
+     "estricto": 0.5,
+     "aceptable": 0.6
+    }
+   },
+   "mcnemar_vs_V1": {
+    "n_pares": 60,
+    "n11": 32,
+    "n10_solo_a": 3,
+    "n01_solo_b": 13,
+    "n00": 12,
+    "prop_a": 0.5833333333333334,
+    "prop_b": 0.75,
+    "razon_momios": 4.333333333333333,
+    "razon_momios_haldane": 3.857142857142857,
+    "diff_prop": 0.16666666666666663,
+    "p": 0.021270751953125,
+    "rm_ic_inf": 1.1907890428031842,
+    "rm_ic_sup": 23.70738188682643
+   },
+   "p_holm_vs_V1": 0.148895263671875
+  },
+  "K1_voto_corpus": {
+   "n": 60,
+   "estricto": {
+    "k": 16,
+    "p": 0.26666666666666666,
+    "ic95": [
+     0.17132640003280553,
+     0.39008713096683645
+    ]
+   },
+   "aceptable": {
+    "k": 26,
+    "p": 0.43333333333333335,
+    "ic95": [
+     0.31572396804686764,
+     0.5589656122387443
+    ]
+   },
+   "callejon_falso": {
+    "k": 0,
+    "p": 0.0,
+    "ic95": [
+     0.0,
+     0.06017185214208986
+    ]
+   },
+   "aceptable_ic95_cluster": [
+    0.31666666666666665,
+    0.55
+   ],
+   "por_estrato": {
+    "H_compuesta": {
+     "n": 50,
+     "estricto": 0.3,
+     "aceptable": 0.48
+    },
+    "H_negacion": {
+     "n": 10,
+     "estricto": 0.1,
+     "aceptable": 0.2
+    }
+   },
+   "mcnemar_vs_V1": {
+    "n_pares": 60,
+    "n11": 17,
+    "n10_solo_a": 18,
+    "n01_solo_b": 9,
+    "n00": 16,
+    "prop_a": 0.5833333333333334,
+    "prop_b": 0.43333333333333335,
+    "razon_momios": 0.5,
+    "razon_momios_haldane": 0.5135135135135135,
+    "diff_prop": -0.15000000000000002,
+    "p": 0.12207812070846558,
+    "rm_ic_inf": 0.19787474933639798,
+    "rm_ic_sup": 1.1720587007394836
+   },
+   "p_holm_vs_V1": 0.7324687242507935
+  },
+  "K2_voto+rechazo_rho0.4": {
+   "n": 60,
+   "estricto": {
+    "k": 18,
+    "p": 0.3,
+    "ic95": [
+     0.19898166138769108,
+     0.42508707946914487
+    ]
+   },
+   "aceptable": {
+    "k": 34,
+    "p": 0.5666666666666667,
+    "ic95": [
+     0.4410343877612556,
+     0.6842760319531324
+    ]
+   },
+   "callejon_falso": {
+    "k": 0,
+    "p": 0.0,
+    "ic95": [
+     0.0,
+     0.06017185214208986
+    ]
+   },
+   "aceptable_ic95_cluster": [
+    0.43333333333333335,
+    0.6833333333333333
+   ],
+   "por_estrato": {
+    "H_compuesta": {
+     "n": 50,
+     "estricto": 0.32,
+     "aceptable": 0.6
+    },
+    "H_negacion": {
+     "n": 10,
+     "estricto": 0.2,
+     "aceptable": 0.4
+    }
+   },
+   "mcnemar_vs_V1": {
+    "n_pares": 60,
+    "n11": 21,
+    "n10_solo_a": 14,
+    "n01_solo_b": 13,
+    "n00": 12,
+    "prop_a": 0.5833333333333334,
+    "prop_b": 0.5666666666666667,
+    "razon_momios": 0.9285714285714286,
+    "razon_momios_haldane": 0.9310344827586207,
+    "diff_prop": -0.01666666666666672,
+    "p": 1.0,
+    "rm_ic_inf": 0.40188071744789244,
+    "rm_ic_sup": 2.1299242890193995
+   },
+   "p_holm_vs_V1": 1.0
+  },
+  "K3_jerarquico_rho0.4": {
+   "n": 60,
+   "estricto": {
+    "k": 22,
+    "p": 0.36666666666666664,
+    "ic95": [
+     0.2562091668722543,
+     0.4931699936989697
+    ]
+   },
+   "aceptable": {
+    "k": 38,
+    "p": 0.6333333333333333,
+    "ic95": [
+     0.5068300063010304,
+     0.7437908331277457
+    ]
+   },
+   "callejon_falso": {
+    "k": 0,
+    "p": 0.0,
+    "ic95": [
+     0.0,
+     0.06017185214208986
+    ]
+   },
+   "aceptable_ic95_cluster": [
+    0.5166666666666667,
+    0.75
+   ],
+   "por_estrato": {
+    "H_compuesta": {
+     "n": 50,
+     "estricto": 0.4,
+     "aceptable": 0.68
+    },
+    "H_negacion": {
+     "n": 10,
+     "estricto": 0.2,
+     "aceptable": 0.4
+    }
+   },
+   "mcnemar_vs_V1": {
+    "n_pares": 60,
+    "n11": 25,
+    "n10_solo_a": 10,
+    "n01_solo_b": 13,
+    "n00": 12,
+    "prop_a": 0.5833333333333334,
+    "prop_b": 0.6333333333333333,
+    "razon_momios": 1.3,
+    "razon_momios_haldane": 1.2857142857142858,
+    "diff_prop": 0.04999999999999993,
+    "p": 0.6776394844055176,
+    "rm_ic_inf": 0.5265931164951495,
+    "rm_ic_sup": 3.3119395103496077
+   },
+   "p_holm_vs_V1": 1.0
+  },
+  "K4_keyword+K3": {
+   "n": 60,
+   "estricto": {
+    "k": 23,
+    "p": 0.38333333333333336,
+    "ic95": [
+     0.27088272374082023,
+     0.5098240417590008
+    ]
+   },
+   "aceptable": {
+    "k": 39,
+    "p": 0.65,
+    "ic95": [
+     0.5236261884175486,
+     0.7583222559398244
+    ]
+   },
+   "callejon_falso": {
+    "k": 0,
+    "p": 0.0,
+    "ic95": [
+     0.0,
+     0.06017185214208986
+    ]
+   },
+   "aceptable_ic95_cluster": [
+    0.5333333333333333,
+    0.7666666666666667
+   ],
+   "por_estrato": {
+    "H_compuesta": {
+     "n": 50,
+     "estricto": 0.4,
+     "aceptable": 0.68
+    },
+    "H_negacion": {
+     "n": 10,
+     "estricto": 0.3,
+     "aceptable": 0.5
+    }
+   },
+   "mcnemar_vs_V1": {
+    "n_pares": 60,
+    "n11": 27,
+    "n10_solo_a": 8,
+    "n01_solo_b": 12,
+    "n00": 13,
+    "prop_a": 0.5833333333333334,
+    "prop_b": 0.65,
+    "razon_momios": 1.5,
+    "razon_momios_haldane": 1.4705882352941178,
+    "diff_prop": 0.06666666666666665,
+    "p": 0.5034446716308594,
+    "rm_ic_inf": 0.5638258000466363,
+    "rm_ic_sup": 4.230397418176331
+   },
+   "p_holm_vs_V1": 1.0
+  },
+  "K5_acuerdo_K3_C3": {
+   "n": 60,
+   "estricto": {
+    "k": 22,
+    "p": 0.36666666666666664,
+    "ic95": [
+     0.2562091668722543,
+     0.4931699936989697
+    ]
+   },
+   "aceptable": {
+    "k": 41,
+    "p": 0.6833333333333333,
+    "ic95": [
+     0.5576623297382323,
+     0.7869413244763347
+    ]
+   },
+   "callejon_falso": {
+    "k": 0,
+    "p": 0.0,
+    "ic95": [
+     0.0,
+     0.06017185214208986
+    ]
+   },
+   "aceptable_ic95_cluster": [
+    0.5666666666666667,
+    0.8
+   ],
+   "por_estrato": {
+    "H_compuesta": {
+     "n": 50,
+     "estricto": 0.38,
+     "aceptable": 0.7
+    },
+    "H_negacion": {
+     "n": 10,
+     "estricto": 0.3,
+     "aceptable": 0.6
+    }
+   },
+   "mcnemar_vs_V1": {
+    "n_pares": 60,
+    "n11": 24,
+    "n10_solo_a": 11,
+    "n01_solo_b": 17,
+    "n00": 8,
+    "prop_a": 0.5833333333333334,
+    "prop_b": 0.6833333333333333,
+    "razon_momios": 1.5454545454545454,
+    "razon_momios_haldane": 1.5217391304347827,
+    "diff_prop": 0.09999999999999998,
+    "p": 0.34492845088243484,
+    "rm_ic_inf": 0.6828449957029128,
+    "rm_ic_sup": 3.650236438488695
+   },
+   "p_holm_vs_V1": 1.0
+  },
+  "K6_keyword+C3_posthoc": {
+   "n": 60,
+   "estricto": {
+    "k": 37,
+    "p": 0.6166666666666667,
+    "ic95": [
+     0.49017595824099924,
+     0.7291172762591798
+    ]
+   },
+   "aceptable": {
+    "k": 47,
+    "p": 0.7833333333333333,
+    "ic95": [
+     0.6637997242680521,
+     0.868769559518097
+    ]
+   },
+   "callejon_falso": {
+    "k": 1,
+    "p": 0.016666666666666666,
+    "ic95": [
+     0.0029481597947862495,
+     0.08855129727590061
+    ]
+   },
+   "aceptable_ic95_cluster": [
+    0.6833333333333333,
+    0.8833333333333333
+   ],
+   "por_estrato": {
+    "H_compuesta": {
+     "n": 50,
+     "estricto": 0.62,
+     "aceptable": 0.8
+    },
+    "H_negacion": {
+     "n": 10,
+     "estricto": 0.6,
+     "aceptable": 0.7
+    }
+   },
+   "mcnemar_vs_V1": {
+    "n_pares": 60,
+    "n11": 35,
+    "n10_solo_a": 0,
+    "n01_solo_b": 12,
+    "n00": 13,
+    "prop_a": 0.5833333333333334,
+    "prop_b": 0.7833333333333333,
+    "razon_momios": Infinity,
+    "razon_momios_haldane": 25.0,
+    "diff_prop": 0.19999999999999996,
+    "p": 0.00048828125,
+    "rm_ic_inf": 2.7785973305581577,
+    "rm_ic_sup": Infinity
+   },
+   "p_holm_vs_V1": 0.00390625
+  }
+ },
+ "fallos": {
+  "V1_produccion": [
+   {
+    "pregunta": "¿Qué es un sismo y cual es la diferencia principal entre el hipocentro y el epicentro?",
+    "esperado": "geopot",
+    "obtenido": "vulnerabilidad_vivienda"
+   },
+   {
+    "pregunta": "¿Cómo se relaciona la teoria tectonica de placas con la ocurrecnia de los terremotos en colombia?",
+    "esperado": "geopot",
+    "obtenido": "ecuador_nec_se_ds"
+   },
+   {
+    "pregunta": "¿Qué son las ondas sismicas y que diferencias existen entre las ondas primarias y las ondas secundarias?",
+    "esperado": "geopot",
+    "obtenido": "peru_e030"
+   },
+   {
+    "pregunta": "¿Cuál no es la entidad oficial encargada de monitorear la informacion oficial sobre la actividad sismica en Colombia?",
+    "esperado": "geopot",
+    "obtenido": "ecuador_nec_se_ds"
+   },
+   {
+    "pregunta": "¿Qué escala mide los efectos y daños causado por un sismo en las personas, edificaciones y el terreno en un lugar especifico de Colombia?",
+    "esperado": "geopot",
+    "obtenido": "ecuador_nec_se_ds"
+   },
+   {
+    "pregunta": "¿Cuáles son las tres capas principales que interactuan directamente en el territorio colombiano?",
+    "esperado": "normativa_general",
+    "obtenido": "ecuador_nec_se_ds"
+   },
+   {
+    "pregunta": "si un sismo en Colombia tiene una profundidad focal de 140KM  ¿Cómo se clasifica según los estandares simologicos?",
+    "esperado": "geopot",
+    "obtenido": "ecuador_nec_se_ds"
+   },
+   {
+    "pregunta": "¿Qué zonas de colombia presentan un nivel de ameza sismica alta?",
+    "esperado": "geopot",
+    "obtenido": "ecuador_nec_se_ds"
+   },
+   {
+    "pregunta": "¿Cómo se clasifican los terremotos?",
+    "esperado": "geopot",
+    "obtenido": "vulnerabilidad_vivienda"
+   },
+   {
+    "pregunta": "¿Cómo es el metodo racional de escorrentia?",
+    "esperado": "aquai",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿Qué variables tiene en cuenta un APU?",
+    "esperado": "apu_precios",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿Cómo se hace un presupuesto solo mano de obra?",
+    "esperado": "apu_precios",
+    "obtenido": "gerencia"
+   },
+   {
+    "pregunta": "¿como se hacen las conversiones de m2/m3 y que caso no se pueden aplicar?",
+    "esperado": "apu_precios",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿de que manera influye una variacion con controlada en el contenido de humedad de los agregados finos y gruesos sobre la relacion agua-cemente efectiva y la resistencia final de la mezcla?",
+    "esperado": "geopot",
+    "obtenido": "aquai"
+   },
+   {
+    "pregunta": "¿Por qué el cemento pega?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Qué es trazabilidad vial?",
+    "esperado": "vias",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿Por qué es critico el nivel freatico y el drenaje superficial en el diseño de carretera y en excavaciones profundas?",
+    "esperado": "normativa_general",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Dame la formula general para diseñar una Viga 30cm X 50cm y a su vez dime cual no usar?",
+    "esperado": "normativa_general",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Cómo se diseña una columna en zona sismica alta para una vivienda de 3 pisos?",
+    "esperado": "normativa_general",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿si tengo un hombre trabajando a 3 metros de altura por encima del suelo que hago?",
+    "esperado": "normativa_general",
+    "obtenido": "apu_precios"
+   },
+   {
+    "pregunta": "¿Se observan grietas diagonales, fisuras profundas o desprendimiento de material en las paredes de carga?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿De qué material está construido el techo (y el entrepiso, si es de dos niveles) y cómo está fijado?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "Presenta la vivienda problemas de asentamientos (hundimientos en pisos) o humedad ascendente severa en la base de los muros?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿Por qué no se debe utilizar agua salada en la mezcla de concreto armado?",
+    "esperado": "geopot",
+    "obtenido": "aquai"
+   },
+   {
+    "pregunta": "¿Qué sucede en una viga simplemente apoyadada cuando ningun apoyo restrige el desplazamiento horizontal?",
+    "esperado": "normativa_general",
+    "obtenido": "vias"
+   }
+  ],
+  "V3_margen_delta0.18": [
+   {
+    "pregunta": "¿Qué son las ondas sismicas y que diferencias existen entre las ondas primarias y las ondas secundarias?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Qué zonas de colombia presentan un nivel de ameza sismica alta?",
+    "esperado": "geopot",
+    "obtenido": "ecuador_nec_se_ds"
+   },
+   {
+    "pregunta": "¿Cómo es el metodo racional de escorrentia?",
+    "esperado": "aquai",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿A como el acero corrugado de 5/8?\"",
+    "esperado": "apu_precios",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cómo se comportan los costos de productos por regiones en colombia?",
+    "esperado": "apu_precios",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cómo se hace un presupuesto solo mano de obra?",
+    "esperado": "apu_precios",
+    "obtenido": "gerencia"
+   },
+   {
+    "pregunta": "¿de que manera influye una variacion con controlada en el contenido de humedad de los agregados finos y gruesos sobre la relacion agua-cemente efectiva y la resistencia final de la mezcla?",
+    "esperado": "geopot",
+    "obtenido": "aquai"
+   },
+   {
+    "pregunta": "¿Por qué el cemento pega?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Qué materiales no utiliza cemento portland para producirse?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cuáles son los limites maximos de temperaturas permitidos para el concrecto fresco al momento de su colocacion en climas calidos y que ensayos de laboratorio permiten evaluar?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Qué es trazabilidad vial?",
+    "esperado": "vias",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿Por qué es critico el nivel freatico y el drenaje superficial en el diseño de carretera y en excavaciones profundas?",
+    "esperado": "normativa_general",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Cómo se diseña una columna en zona sismica alta para una vivienda de 3 pisos?",
+    "esperado": "normativa_general",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿Se observan grietas diagonales, fisuras profundas o desprendimiento de material en las paredes de carga?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿De qué material está construido el techo (y el entrepiso, si es de dos niveles) y cómo está fijado?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿En qué rango de tiempo  se construye una vivienda recibiendo intervención estructural?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "Presenta la vivienda problemas de asentamientos (hundimientos en pisos) o humedad ascendente severa en la base de los muros?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿Por qué no se debe utilizar agua salada en la mezcla de concreto armado?",
+    "esperado": "geopot",
+    "obtenido": "aquai"
+   }
+  ],
+  "C3_minilm_logreg": [
+   {
+    "pregunta": "¿Qué son las ondas sismicas y que diferencias existen entre las ondas primarias y las ondas secundarias?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cuál es la diferencia fundamental entre un costo de produccion y un gasto operativo, y como se refleja cada uno en el estado de resultados?",
+    "esperado": "apu_precios",
+    "obtenido": "gerencia"
+   },
+   {
+    "pregunta": "¿Qué variables tiene en cuenta un APU?",
+    "esperado": "apu_precios",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿Cómo se hace un presupuesto solo mano de obra?",
+    "esperado": "apu_precios",
+    "obtenido": "gerencia"
+   },
+   {
+    "pregunta": "¿como se hacen las conversiones de m2/m3 y que caso no se pueden aplicar?",
+    "esperado": "apu_precios",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿Cómo se interpreta el resultado de un cono de abrams cuando el  concreto no presenta un asentameinto por corte o colapso?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Por qué el cemento pega?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Qué es trazabilidad vial?",
+    "esperado": "vias",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿Por qué es critico el nivel freatico y el drenaje superficial en el diseño de carretera y en excavaciones profundas?",
+    "esperado": "normativa_general",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Dame la formula general para diseñar una Viga 30cm X 50cm y a su vez dime cual no usar?",
+    "esperado": "normativa_general",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿Cómo se diseña una columna en zona sismica alta para una vivienda de 3 pisos?",
+    "esperado": "normativa_general",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿Se observan grietas diagonales, fisuras profundas o desprendimiento de material en las paredes de carga?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿De qué material está construido el techo (y el entrepiso, si es de dos niveles) y cómo está fijado?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿ Cuál es el límite máximo permitido para la deriva inelástica de entrepiso en estructuras de concreto armado y acero según la E.030 (Perú), y cómo se compara con el límite establecido en la NEC-SE-DS (Ecuador)?",
+    "esperado": "peru_e030",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Por qué no se debe utilizar agua salada en la mezcla de concreto armado?",
+    "esperado": "geopot",
+    "obtenido": "aquai"
+   }
+  ],
+  "K1_voto_corpus": [
+   {
+    "pregunta": "¿Cómo se relaciona la teoria tectonica de placas con la ocurrecnia de los terremotos en colombia?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Qué son las ondas sismicas y que diferencias existen entre las ondas primarias y las ondas secundarias?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cuáles son las tres capas principales que interactuan directamente en el territorio colombiano?",
+    "esperado": "normativa_general",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "si un sismo en Colombia tiene una profundidad focal de 140KM  ¿Cómo se clasifica según los estandares simologicos?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Cuál   es el nombre del reglamento tecnico colombiano  que no establece  los requisitos de diseño y construccion sismorresistente de edificaciones?",
+    "esperado": "normativa_general",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Qué es un flujo laminar?",
+    "esperado": "aquai",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Cómo es el metodo racional de escorrentia?",
+    "esperado": "aquai",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Cuál es la diferencia fundamental entre un costo de produccion y un gasto operativo, y como se refleja cada uno en el estado de resultados?",
+    "esperado": "apu_precios",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿A como el acero corrugado de 5/8?\"",
+    "esperado": "apu_precios",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cómo se hace un presupuesto solo mano de obra?",
+    "esperado": "apu_precios",
+    "obtenido": "gerencia"
+   },
+   {
+    "pregunta": "si quiero medir una columna para calcular el precio total ¿Cuál es la unidad que utiliza?",
+    "esperado": "apu_precios",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "si necesito usar un dataset de precios cual me sugieres?",
+    "esperado": "apu_precios",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿como se hacen las conversiones de m2/m3 y que caso no se pueden aplicar?",
+    "esperado": "apu_precios",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Cómo se interpreta el resultado de un cono de abrams cuando el  concreto no presenta un asentameinto por corte o colapso?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿de que manera influye una variacion con controlada en el contenido de humedad de los agregados finos y gruesos sobre la relacion agua-cemente efectiva y la resistencia final de la mezcla?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Por qué el cemento pega?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Qué materiales no utiliza cemento portland para producirse?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "una mezcla rigida es lo mismo que hormigon?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cuáles son los limites maximos de temperaturas permitidos para el concrecto fresco al momento de su colocacion en climas calidos y que ensayos de laboratorio permiten evaluar?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Cómo es un diseño geometrico espiral-espiral?",
+    "esperado": "vias",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Por qué es critico el nivel freatico y el drenaje superficial en el diseño de carretera y en excavaciones profundas?",
+    "esperado": "normativa_general",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Dame la formula general para diseñar una Viga 30cm X 50cm y a su vez dime cual no usar?",
+    "esperado": "normativa_general",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿si tengo un hombre trabajando a 3 metros de altura por encima del suelo que hago?",
+    "esperado": "normativa_general",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Bajo qué condiciones específicas el Título A (Capítulo A.3) de la NSR-10 exige realizar un análisis dinámico elástico espectral o cronológico en lugar del método de la fuerza horizontal equivalente para una estructura con irregularidad torsional extrema (Tipo 1aP) y retrocesos excesivos en las esquinas (Tipo 3P) en zona de amenaza sísmica intermedia?",
+    "esperado": "normativa_general",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Cuál no es el material principal de la estructura portante de la vivienda?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Se observan grietas diagonales, fisuras profundas o desprendimiento de material en las paredes de carga?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿De qué material está construido el techo (y el entrepiso, si es de dos niveles) y cómo está fijado?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": ": ¿La vivienda se encuentra emplazada sobre o cerca de alguna zona de riesgo geotécnico o hídrico?",
+    "esperado": "normativa_general",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "Presenta la vivienda problemas de asentamientos (hundimientos en pisos) o humedad ascendente severa en la base de los muros?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿qué diferencias existen en la clasificación de perfiles de suelo y en el cálculo de los factores de amplificación sísmica (S, \\(F_{a}\\), \\(F_{d}\\), \\(F_{s}\\)) entre la norma E.030 de Perú y la NEC-SE-DS de Ecuador?",
+    "esperado": "peru_e030",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿ Cuál es el límite máximo permitido para la deriva inelástica de entrepiso en estructuras de concreto armado y acero según la E.030 (Perú), y cómo se compara con el límite establecido en la NEC-SE-DS (Ecuador)?",
+    "esperado": "peru_e030",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Cómo se diferencia la construcción del espectro elástico de aceleraciones y la fórmula para el cortante basal mínimo en la base entre la norma sísmica de Perú (E.030) y la de Ecuador (NEC-SE-DS)?",
+    "esperado": "peru_e030",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Qué tipo de cimentacion nunca debe emplearse en suelos altamentes expansivos?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Qué sucede en una viga simplemente apoyadada cuando ningun apoyo restrige el desplazamiento horizontal?",
+    "esperado": "normativa_general",
+    "obtenido": "vias"
+   }
+  ],
+  "K2_voto+rechazo_rho0.4": [
+   {
+    "pregunta": "¿Cómo se relaciona la teoria tectonica de placas con la ocurrecnia de los terremotos en colombia?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Qué son las ondas sismicas y que diferencias existen entre las ondas primarias y las ondas secundarias?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cómo es el metodo racional de escorrentia?",
+    "esperado": "aquai",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Cuál es la diferencia fundamental entre un costo de produccion y un gasto operativo, y como se refleja cada uno en el estado de resultados?",
+    "esperado": "apu_precios",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿A como el acero corrugado de 5/8?\"",
+    "esperado": "apu_precios",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cómo se hace un presupuesto solo mano de obra?",
+    "esperado": "apu_precios",
+    "obtenido": "gerencia"
+   },
+   {
+    "pregunta": "¿como se hacen las conversiones de m2/m3 y que caso no se pueden aplicar?",
+    "esperado": "apu_precios",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Cómo se interpreta el resultado de un cono de abrams cuando el  concreto no presenta un asentameinto por corte o colapso?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿de que manera influye una variacion con controlada en el contenido de humedad de los agregados finos y gruesos sobre la relacion agua-cemente efectiva y la resistencia final de la mezcla?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Por qué el cemento pega?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Qué materiales no utiliza cemento portland para producirse?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "una mezcla rigida es lo mismo que hormigon?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cuáles son los limites maximos de temperaturas permitidos para el concrecto fresco al momento de su colocacion en climas calidos y que ensayos de laboratorio permiten evaluar?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Qué es trazabilidad vial?",
+    "esperado": "vias",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cómo es un diseño geometrico espiral-espiral?",
+    "esperado": "vias",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cuál no es el material principal de la estructura portante de la vivienda?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Se observan grietas diagonales, fisuras profundas o desprendimiento de material en las paredes de carga?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿De qué material está construido el techo (y el entrepiso, si es de dos niveles) y cómo está fijado?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿En qué rango de tiempo  se construye una vivienda recibiendo intervención estructural?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": ": ¿La vivienda se encuentra emplazada sobre o cerca de alguna zona de riesgo geotécnico o hídrico?",
+    "esperado": "normativa_general",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "Presenta la vivienda problemas de asentamientos (hundimientos en pisos) o humedad ascendente severa en la base de los muros?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿qué diferencias existen en la clasificación de perfiles de suelo y en el cálculo de los factores de amplificación sísmica (S, \\(F_{a}\\), \\(F_{d}\\), \\(F_{s}\\)) entre la norma E.030 de Perú y la NEC-SE-DS de Ecuador?",
+    "esperado": "peru_e030",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿ Cuál es el límite máximo permitido para la deriva inelástica de entrepiso en estructuras de concreto armado y acero según la E.030 (Perú), y cómo se compara con el límite establecido en la NEC-SE-DS (Ecuador)?",
+    "esperado": "peru_e030",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cómo se diferencia la construcción del espectro elástico de aceleraciones y la fórmula para el cortante basal mínimo en la base entre la norma sísmica de Perú (E.030) y la de Ecuador (NEC-SE-DS)?",
+    "esperado": "peru_e030",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Qué tipo de cimentacion nunca debe emplearse en suelos altamentes expansivos?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Qué sucede en una viga simplemente apoyadada cuando ningun apoyo restrige el desplazamiento horizontal?",
+    "esperado": "normativa_general",
+    "obtenido": "vias"
+   }
+  ],
+  "K3_jerarquico_rho0.4": [
+   {
+    "pregunta": "¿Cómo se relaciona la teoria tectonica de placas con la ocurrecnia de los terremotos en colombia?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Qué son las ondas sismicas y que diferencias existen entre las ondas primarias y las ondas secundarias?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cómo es el metodo racional de escorrentia?",
+    "esperado": "aquai",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿A como el acero corrugado de 5/8?\"",
+    "esperado": "apu_precios",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cómo se hace un presupuesto solo mano de obra?",
+    "esperado": "apu_precios",
+    "obtenido": "gerencia"
+   },
+   {
+    "pregunta": "¿como se hacen las conversiones de m2/m3 y que caso no se pueden aplicar?",
+    "esperado": "apu_precios",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Cómo se interpreta el resultado de un cono de abrams cuando el  concreto no presenta un asentameinto por corte o colapso?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿de que manera influye una variacion con controlada en el contenido de humedad de los agregados finos y gruesos sobre la relacion agua-cemente efectiva y la resistencia final de la mezcla?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Por qué el cemento pega?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Qué materiales no utiliza cemento portland para producirse?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "una mezcla rigida es lo mismo que hormigon?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cuáles son los limites maximos de temperaturas permitidos para el concrecto fresco al momento de su colocacion en climas calidos y que ensayos de laboratorio permiten evaluar?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Qué es trazabilidad vial?",
+    "esperado": "vias",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cómo es un diseño geometrico espiral-espiral?",
+    "esperado": "vias",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cuál no es el material principal de la estructura portante de la vivienda?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Se observan grietas diagonales, fisuras profundas o desprendimiento de material en las paredes de carga?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿De qué material está construido el techo (y el entrepiso, si es de dos niveles) y cómo está fijado?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿En qué rango de tiempo  se construye una vivienda recibiendo intervención estructural?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": ": ¿La vivienda se encuentra emplazada sobre o cerca de alguna zona de riesgo geotécnico o hídrico?",
+    "esperado": "normativa_general",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "Presenta la vivienda problemas de asentamientos (hundimientos en pisos) o humedad ascendente severa en la base de los muros?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Qué tipo de cimentacion nunca debe emplearse en suelos altamentes expansivos?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Qué sucede en una viga simplemente apoyadada cuando ningun apoyo restrige el desplazamiento horizontal?",
+    "esperado": "normativa_general",
+    "obtenido": "vias"
+   }
+  ],
+  "K4_keyword+K3": [
+   {
+    "pregunta": "¿Cómo se relaciona la teoria tectonica de placas con la ocurrecnia de los terremotos en colombia?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Qué son las ondas sismicas y que diferencias existen entre las ondas primarias y las ondas secundarias?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cómo es el metodo racional de escorrentia?",
+    "esperado": "aquai",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿A como el acero corrugado de 5/8?\"",
+    "esperado": "apu_precios",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cómo se hace un presupuesto solo mano de obra?",
+    "esperado": "apu_precios",
+    "obtenido": "gerencia"
+   },
+   {
+    "pregunta": "¿como se hacen las conversiones de m2/m3 y que caso no se pueden aplicar?",
+    "esperado": "apu_precios",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿de que manera influye una variacion con controlada en el contenido de humedad de los agregados finos y gruesos sobre la relacion agua-cemente efectiva y la resistencia final de la mezcla?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Por qué el cemento pega?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Qué materiales no utiliza cemento portland para producirse?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "una mezcla rigida es lo mismo que hormigon?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cuáles son los limites maximos de temperaturas permitidos para el concrecto fresco al momento de su colocacion en climas calidos y que ensayos de laboratorio permiten evaluar?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Qué es trazabilidad vial?",
+    "esperado": "vias",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cómo se diseña una columna en zona sismica alta para una vivienda de 3 pisos?",
+    "esperado": "normativa_general",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿Cuál no es el material principal de la estructura portante de la vivienda?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Se observan grietas diagonales, fisuras profundas o desprendimiento de material en las paredes de carga?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿De qué material está construido el techo (y el entrepiso, si es de dos niveles) y cómo está fijado?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿En qué rango de tiempo  se construye una vivienda recibiendo intervención estructural?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": ": ¿La vivienda se encuentra emplazada sobre o cerca de alguna zona de riesgo geotécnico o hídrico?",
+    "esperado": "normativa_general",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "Presenta la vivienda problemas de asentamientos (hundimientos en pisos) o humedad ascendente severa en la base de los muros?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿Qué tipo de cimentacion nunca debe emplearse en suelos altamentes expansivos?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Qué sucede en una viga simplemente apoyadada cuando ningun apoyo restrige el desplazamiento horizontal?",
+    "esperado": "normativa_general",
+    "obtenido": "vias"
+   }
+  ],
+  "K5_acuerdo_K3_C3": [
+   {
+    "pregunta": "¿Qué son las ondas sismicas y que diferencias existen entre las ondas primarias y las ondas secundarias?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿A como el acero corrugado de 5/8?\"",
+    "esperado": "apu_precios",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cómo se comportan los costos de productos por regiones en colombia?",
+    "esperado": "apu_precios",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cómo se hace un presupuesto solo mano de obra?",
+    "esperado": "apu_precios",
+    "obtenido": "gerencia"
+   },
+   {
+    "pregunta": "¿Cómo se interpreta el resultado de un cono de abrams cuando el  concreto no presenta un asentameinto por corte o colapso?",
+    "esperado": "geopot",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿de que manera influye una variacion con controlada en el contenido de humedad de los agregados finos y gruesos sobre la relacion agua-cemente efectiva y la resistencia final de la mezcla?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Por qué el cemento pega?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Qué materiales no utiliza cemento portland para producirse?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "una mezcla rigida es lo mismo que hormigon?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cuáles son los limites maximos de temperaturas permitidos para el concrecto fresco al momento de su colocacion en climas calidos y que ensayos de laboratorio permiten evaluar?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Qué es trazabilidad vial?",
+    "esperado": "vias",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cómo es un diseño geometrico espiral-espiral?",
+    "esperado": "vias",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Cuál no es el material principal de la estructura portante de la vivienda?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Se observan grietas diagonales, fisuras profundas o desprendimiento de material en las paredes de carga?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿De qué material está construido el techo (y el entrepiso, si es de dos niveles) y cómo está fijado?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿En qué rango de tiempo  se construye una vivienda recibiendo intervención estructural?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "Presenta la vivienda problemas de asentamientos (hundimientos en pisos) o humedad ascendente severa en la base de los muros?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿ Cuál es el límite máximo permitido para la deriva inelástica de entrepiso en estructuras de concreto armado y acero según la E.030 (Perú), y cómo se compara con el límite establecido en la NEC-SE-DS (Ecuador)?",
+    "esperado": "peru_e030",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Qué tipo de cimentacion nunca debe emplearse en suelos altamentes expansivos?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   }
+  ],
+  "K6_keyword+C3_posthoc": [
+   {
+    "pregunta": "¿Qué son las ondas sismicas y que diferencias existen entre las ondas primarias y las ondas secundarias?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Qué variables tiene en cuenta un APU?",
+    "esperado": "apu_precios",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿Cómo se hace un presupuesto solo mano de obra?",
+    "esperado": "apu_precios",
+    "obtenido": "gerencia"
+   },
+   {
+    "pregunta": "¿como se hacen las conversiones de m2/m3 y que caso no se pueden aplicar?",
+    "esperado": "apu_precios",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿Por qué el cemento pega?",
+    "esperado": "geopot",
+    "obtenido": "normativa_general"
+   },
+   {
+    "pregunta": "¿Qué es trazabilidad vial?",
+    "esperado": "vias",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿Por qué es critico el nivel freatico y el drenaje superficial en el diseño de carretera y en excavaciones profundas?",
+    "esperado": "normativa_general",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿Dame la formula general para diseñar una Viga 30cm X 50cm y a su vez dime cual no usar?",
+    "esperado": "normativa_general",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿Cómo se diseña una columna en zona sismica alta para una vivienda de 3 pisos?",
+    "esperado": "normativa_general",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿Se observan grietas diagonales, fisuras profundas o desprendimiento de material en las paredes de carga?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "vias"
+   },
+   {
+    "pregunta": "¿De qué material está construido el techo (y el entrepiso, si es de dos niveles) y cómo está fijado?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "Presenta la vivienda problemas de asentamientos (hundimientos en pisos) o humedad ascendente severa en la base de los muros?",
+    "esperado": "vulnerabilidad_vivienda",
+    "obtenido": "geopot"
+   },
+   {
+    "pregunta": "¿Por qué no se debe utilizar agua salada en la mezcla de concreto armado?",
+    "esperado": "geopot",
+    "obtenido": "aquai"
+   }
+  ]
+ }
+}

@@ -125,9 +125,24 @@ def k4(q, mapa, rho):
 
 
 def main():
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--dataset", help="evaluar en otro conjunto (p. ej. dataset_heldout_k6.jsonl). El ajuste (rho, "
+                                      "entrenamiento de C3, umbral) sigue saliendo SOLO del dev de dataset_e1: nada se "
+                                      "reajusta con el conjunto evaluado.")
+    args = ap.parse_args()
     casos = [json.loads(l) for l in (AQUI / "dataset_e1.jsonl").read_text(encoding="utf-8").splitlines()]
     dev = [c for c in casos if c["split"] == "dev"]
     test = [c for c in casos if c["split"] == "test"]
+    sufijo = ""
+    if args.dataset:
+        test = [json.loads(l) for l in (AQUI / args.dataset).read_text(encoding="utf-8").splitlines() if l.strip()]
+        sufijo = "_" + Path(args.dataset).stem
+        fuga = e.chequeo_fuga(test)
+        dev_norm = {e._norm(c["pregunta"]) for c in dev}
+        fuga_dev = [c["id"] for c in test if e._norm(c["pregunta"]) in dev_norm]
+        print(f"evaluado: {args.dataset} n={len(test)} | chequeo de fuga: {len(fuga)} casi-duplicados de ejemplos "
+              f"del contrastivo; {len(fuga_dev)} iguales a dev")
     mapa = construir_mapa()
 
     # ajuste de rho solo en dev, con K3 (la variante que lo usa en todas las demás)
@@ -189,7 +204,7 @@ def main():
         a = res["aceptable"]
         p = f"{ph[k]:.4f}" if k in ph else "—"
         print(f"{k:30s} {res['estricto']['p']:9.1%} {a['p']:8.1%} [{a['ic95'][0]:.1%}-{a['ic95'][1]:.1%}] {res['callejon_falso']['k']:>9d} {p:>13s}")
-    (AQUI / "resultados_e1c.json").write_text(json.dumps(salida, ensure_ascii=False, indent=1, default=float), encoding="utf-8")
+    (AQUI / f"resultados_e1c{sufijo}.json").write_text(json.dumps(salida, ensure_ascii=False, indent=1, default=float), encoding="utf-8")
 
 
 if __name__ == "__main__":
