@@ -297,9 +297,18 @@ jobs:
         run: |
           python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')"
           python -c "from sentence_transformers import CrossEncoder; CrossEncoder('cross-encoder/mmarco-mMiniLMv2-L12-H384-v1')"
-      - name: Correr pytest
+      # Issue #178 (2026-11-11, decisión del dueño del proyecto): las 142
+      # pruebas que llaman a un LLM real (marcador `llm`: regresión NSR-10,
+      # regresión de motores y desglose de actividad) ya no corren en GitHub.
+      # Cada corrida costaba ~USD 0,13 con OpenAI y hubo días con más de 90
+      # push a master: el crédito se agotaba y con él el respaldo de
+      # producción. Tampoco pueden usar la cuota de Groq de producción (#53).
+      # Ahora las corre solo el proceso nocturno local con Ollama
+      # (STRUCTAI_LLM_LOCAL, ver apps/api/tests/conftest.py); el modelo local
+      # nunca va a producción. El resto de las pruebas de la API sigue aquí.
+      - name: Correr pytest (sin las pruebas que llaman a un LLM)
         working-directory: apps/api
-        run: pytest -v
+        run: pytest -v -m "not llm"
         env:
           SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}

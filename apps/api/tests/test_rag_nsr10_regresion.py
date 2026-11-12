@@ -43,7 +43,7 @@ from rag_multi_norma import ask  # noqa: E402
 # en CI 2026-08-15: B-biblioteca-estanterias-7kNm2 esperaba "7.0"/"7,0" y la
 # respuesta usó otro formato). Reintentar 1 vez filtra ese ruido sin ocultar
 # una regresión real de contenido, que fallaría en ambos intentos.
-pytestmark = pytest.mark.flaky(reruns=1, reruns_delay=3)
+pytestmark = [pytest.mark.flaky(reruns=1, reruns_delay=3), pytest.mark.llm]
 
 
 # narrow/no-break/thin/figure space -- encontrado real en CI 2026-08-17: Groq
