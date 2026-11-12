@@ -47,8 +47,10 @@ def pytest_configure(config):
         r = httpx.post(f"{url}/api/chat", timeout=3600, json={
             "model": MODELO_LOCAL, "messages": messages, "stream": False,
             # num_ctx explícito: el valor por defecto de Ollama (2048) truncaría
-            # en silencio el contexto del RAG (3.000-5.000 tokens).
-            "options": {"temperature": 0.1, "num_predict": max_tokens_groq, "num_ctx": 8192},
+            # en silencio el contexto del RAG. 16384 desde el hallazgo E3 (#172): con
+            # 8192 los contextos > ~18.000 caracteres se recortaban a 4.098 tokens.
+            "options": {"temperature": 0.1, "num_predict": max_tokens_groq,
+                        "num_ctx": int(os.environ.get("STRUCTAI_NUM_CTX", "16384"))},
         })
         r.raise_for_status()
         return r.json()["message"]["content"]
