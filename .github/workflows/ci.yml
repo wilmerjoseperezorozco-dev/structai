@@ -78,6 +78,35 @@ jobs:
       - run: npm run lint
       - run: npx tsc --noEmit
 
+  # ── 1b. E2E del chat (apps/web, issue #190) ─────────────────
+  # Playwright contra `next dev` con la API SIMULADA (e2e/soporte.ts): el
+  # navegador aborta toda petición que no sea al servidor local o al backend
+  # falso, así que no toca producción, Supabase ni un LLM y no necesita
+  # secretos. Seguro para PRs de forks.
+  e2e-web:
+    name: 🎭 E2E chat (web)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: apps/web/package-lock.json
+      - run: npm install -g npm@11
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-trazas
+          path: apps/web/test-results/
+          retention-days: 7
+
   # ── 2. Auditoría de dependencias (apps/web) ─────────────────
   # No bloquea el pipeline a propósito. Actualizado 2026-08-26 (repaso
   # general de la app) — la nota anterior, del 2026-07-13, ya estaba

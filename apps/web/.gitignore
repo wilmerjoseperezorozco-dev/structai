@@ -9,3 +9,8 @@ next-env.d.ts
 public/sw.js
 public/workbox-*.js
 public/fallback-*.js
+
+# Playwright (issue #190)
+/test-results/
+/playwright-report/
+/blob-report/
