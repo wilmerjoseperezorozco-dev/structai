@@ -88,3 +88,6 @@ scripts/presupuesto/_privado/
 
 # Claves locales de seudonimización (SECOP)
 scripts/ingesta/*/_privado/
+
+# Salidas derivadas de ingestas (regenerables, pesadas)
+scripts/ingesta/*/salida/
