@@ -138,6 +138,13 @@ def main():
         if s:
             existentes.add(f"{s.group(1).upper()}.{s.group(2)}")
 
+    # Índice por encabezados dentro del texto (indice_numerales.py). Sin él, la
+    # primera versión solo miraba `seccion` y el id: 72 de 82 numerales "sin
+    # destino" en realidad tenían su encabezado dentro de otro chunk.
+    ruta_ix = AQUI / "indice_numerales_nsr10.json"
+    if ruta_ix.exists():
+        existentes |= set(json.loads(ruta_ix.read_text(encoding="utf-8")))
+
     def existe_hoy(n):
         return n in existentes or any(e.startswith(n + ".") for e in existentes)
 

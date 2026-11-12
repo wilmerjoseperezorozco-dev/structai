@@ -5,36 +5,34 @@ Reproducir: `python scripts/evaluacion/golden/e5_grafo/g2_g4_grafo.py` (resultad
 
 **Grafo de numerales:** de 1.354 aristas, 22 no tienen numeral de origen derivable. Quedan **973 nodos y 1.129 aristas dirigidas**. Los nodos con más PageRank: G.12, A.3, F.2, F.3, G.6, C.21, F.5, K.3, A.6, G.4.
 
-## G2: priorización de huecos de ingesta
+## G2: priorización de huecos de ingesta (CORREGIDO)
 
-| Medida | Valor |
-|---|---|
-| Numerales citados que no están en el grafo (`sin_destino`) | 82 (137 citas) |
-| Re-verificados contra el corpus actual: ya existen hoy | 2 |
-| **Siguen faltando** | **80 numerales, 134 citas** |
-| Concentración | **F.4 (acero formado en frío): 27** · **B.6 (viento): 22** · A-3.2: 4 · K.3: 4 · A.2: 3 · F.3: 3 · K.4: 3 |
-| Pareto | Cubrir el 80 % de las citas exige 54 de 80 numerales: **no hay atajo**, las citas están repartidas |
-| **Huecos que usan los motores** | **5** (tabla abajo) |
+> **Corrección importante (misma fecha).** La primera versión concluyó que faltaban 80 numerales, 5 de ellos usados por motores, y que había que ingerirlos. **Era un error de método:** el grafo, y luego mi re-verificación, comparaban la cita solo contra la columna `seccion` y el id del chunk. Pero un chunk suele contener varios numerales como **encabezados dentro de su texto**. Al buscar el encabezado en el texto, **72 de los 82 numerales "sin destino" ya estaban en el corpus**, incluidos los 5 de los motores (p. ej. A.2.6.1.1 es un encabezado dentro de `NSR10-A-A_2_6_1_espectro_aceleraciones_p3`). **No se ingirió nada**: hacerlo habría duplicado contenido.
 
-| Numeral faltante | Citas | Motor | Numeral en el código del motor | Tipo |
-|---|---|---|---|---|
-| **A.2.6.1.1** | 1 | motor-geopot | A.2.6.1.1 (también A.2.6) | **exacta** |
-| | | motor-estructural | A.2.6 | prefijo |
-| **F.4.2.3.1** | 1 | motor-acero-frio | F.4.2.3.1 | **exacta** |
-| F.4.2.2.2 | 2 | motor-acero-frio | F.4.2.2 | prefijo |
-| A.4.3.1 | 2 | motor-geopot | A.4.3 | prefijo |
-| A.6.4.1 | 1 | motor-geopot | A.6.4 | prefijo |
+**Arreglo:** `indice_numerales.py` construye un índice **numeral → chunks** a partir de los encabezados del texto (`indice_numerales_nsr10.json`: 10.674 chunks leídos, 5.141 numerales indexados). `g2_g4_grafo.py` ahora lo usa.
 
-**Corrección durante el análisis:** la primera versión relacionaba un hueco con un motor por cualquier prefijo. Un "F.4" genérico en el código de `motor-acero-frio` se relacionaba así con todos los F.4.x y daba **31** huecos usados por motores. Con la regla estricta (coincidencia exacta, o prefijo solo si el numeral corto tiene al menos tres niveles) son **5**. `motor-aquai` se excluye porque sus numerales son del RAS / Res. 0330, no de la NSR-10.
+| Medida | Primera versión | **Con el índice** |
+|---|---|---|
+| Numerales "sin destino" en el grafo | 82 (137 citas) | 82 (137 citas) |
+| Existen hoy en el corpus | 2 | **71** |
+| **Siguen faltando** | 80 (134 citas) | **11 (28 citas)** |
+| Huecos usados por motores | 5 (31 con prefijo libre) | **0** |
+| Pareto 80 % | 54 de 80 | 6 de 11 |
 
-**Lectura:**
-- **Dos motores implementan numerales cuyo texto verbatim no está en StructAI:** `motor-geopot` (A.2.6.1.1, espectro de diseño) y `motor-acero-frio` (F.4.2.3.1). El cálculo puede estar bien, pero el usuario no puede verificarlo contra el texto de la norma dentro de StructAI. Rompe la regla del proyecto de "honestidad de fuente siempre verificable".
-- **Prioridad de ingesta:**
-  1. los 5 numerales que usan los motores;
-  2. el capítulo **F.4** (27; el motor de acero formado en frío depende de él);
-  3. **B.6**, viento (22).
-  
-  Antes de ingerir, verificar contra `docs/fuentes-normativas.md` y la vigencia (regla de CLAUDE.md).
+Los 11 restantes, **todos por verificar contra el PDF** antes de ingerir:
+
+| Numeral | Citas | Hipótesis |
+|---|---|---|
+| A-4 | 8 | Apéndice A-4 (Aa/Av por municipio): ya está como **tabla estructurada** (`nsr10_apendice_a4_municipios`, 1.117 filas), no como texto. Se resuelve mapeando el apéndice a la tabla, no ingiriendo |
+| B.6.5.6.3 | 7 | Viento: candidato real |
+| D-1 | 5 | Apéndice D-1: verificar si existe y su forma |
+| B.6.3, H.6.2.5, H.7.5, F.3.10.1.4 | 1 c/u | Candidatos reales |
+| F.5.19, A.1.9, C-11, H-6 | 1 c/u | **Sospecha de lectura errónea** del extractor del grafo (numerales con forma rara o que quizá no existen) |
+
+**Lectura corregida:**
+- El corpus de la NSR-10 está **mucho más completo** de lo que sugería el grafo. Los huecos reales son a lo sumo unos 7, concentrados en B.6 (viento).
+- **El problema real es de direccionamiento, no de contenido:** los chunks se indexan por un solo numeral. Por eso el grafo resolvió 925 citas solo "por prefijo". El índice por encabezados permite resolverlas exactamente sin tocar la base.
+- Ningún motor depende de un numeral ausente. La prueba de contrato motor → numeral de #186 puede usar el índice.
 
 ## G4: comunidades frente a la taxonomía
 
@@ -70,6 +68,7 @@ Las comunidades mayores que **mezclan dominios** son todas del núcleo sísmico 
 
 ## Próximos pasos propuestos
 
-- Ingerir los 5 numerales que usan los motores (con prioridad sobre el resto) y después F.4 y B.6. Agregar la prueba de contrato de #186: un motor no puede citar un numeral NSR-10 ausente del corpus.
+- **No** ingerir los 5 numerales de los motores (ya están). Verificar contra el PDF los ~7 huecos reales restantes (sobre todo B.6) y descartar las lecturas erróneas. Plan: `scripts/ingesta/nsr10/PLAN_HUECOS_GRAFO_2026-11.md`.
+- Resolver las citas del grafo con el índice por encabezados (recalcular `resolucion` exacta/prefijo) y usarlo en la prueba de contrato motor → numeral.
 - G4 con 20 semillas (estabilidad, NMI entre corridas) y, cuando el grafo incluya la Res. 0330, el CCP-14 y las NTC, repetir el AMI contra los dominios.
 - Usar las aristas puente del núcleo A como set de preguntas multi-salto para #188.
