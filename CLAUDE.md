@@ -88,6 +88,15 @@ la cuota de Groq de producción queda intacta sin importar cuántas veces
 se reintente CI. En producción esta bandera no está seteada (default
 `false`), Groq sigue siendo el proveedor principal ahí.
 
+**Desde 2026-11-11 (issue #178) GitHub ya no corre ninguna prueba que
+llame a un LLM.** Las 142 marcadas con `@pytest.mark.llm` se omiten en
+`ci.yml` (`pytest -m "not llm"`): con OpenAI costaban ~USD 0,13 por
+corrida y hubo días con más de 90 push a master, lo que agotaba el
+crédito del respaldo de producción. Las corre el proceso nocturno local
+del homelab con Ollama: `STRUCTAI_LLM_LOCAL=qwen2.5:7b pytest -m llm`
+(ver `apps/api/tests/conftest.py`). **El modelo local nunca va a
+producción.** Al agregar una prueba que llame al LLM, marcarla con `llm`.
+
 ## Infraestructura de producción (actualizado 2026-09-01)
 
 `apps/api` corre en **Google Cloud Run** (`structai-api`,
@@ -153,8 +162,9 @@ Desde 2026-11-09 el deploy manual está scripteado en `infra/gcp/` (`auditoria_c
   título en SQL (la columna `capitulo` está confirmada inconsistente,
   no usarla para eso).
 - `docs/comparacion.md` — comparación pública StructAI vs. IA genérica.
-- `.github/workflows/ci.yml` — lint+build web, tests de los 7 motores, tests
-  de integración de `apps/api` (usa Groq/OpenAI reales, no mocks).
+- `.github/workflows/ci.yml` — lint+build web, tests de los motores, tests
+  de integración de `apps/api` sin LLM (`-m "not llm"`); las que llaman a
+  un LLM corren solo en el proceso nocturno local con Ollama (#178).
 - Roadmap activo: [issues del milestone "Colombia: cobertura nacional y
   visibilidad académica"](https://github.com/wilmerjoseperezorozco-dev/structai/milestone/1).
 
