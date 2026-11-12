@@ -54,3 +54,27 @@ aritmética derivada de cifras del contexto (mejora propuesta, no aplicada).
 WSL se apagó por inactividad entre dos renovaciones del keepalive (una falló al lanzarse desde PowerShell). 5 casos
 quedaron con `ConnectError`; se borraron de la caché y se re-corrieron. Para #178: el proceso nocturno debe verificar
 `/api/version` antes de cada caso y reintentar, en vez de grabar el error.
+
+## Fase 4b: ¿recuperación o generación? (2026-11-12)
+
+`recuperacion_sin_llm.py` corre `ask()` de producción con un generador falso y verifica si el hecho esperado está en
+el contexto recuperado (mismo `_contiene_alguna` del test). Resultado: **120/125 con el hecho en contexto**; los 21
+casos del Título H lo tienen todos. Los fallos de H NO eran de recuperación.
+
+Causa real: **truncamiento silencioso de Ollama.** 9 casos tenían contextos > 18.000 caracteres; con `num_ctx` 8192 y
+`num_predict` 700 no cabían y Ollama recortó el prompt a la mitad (exactamente 4.098 tokens en los 9). De esos 9
+pasaba 1; del resto, 118/129. El indicador `prompt_truncado` (>= num_ctx − 8) no lo detectaba.
+
+Re-corrida de esos 9 con `STRUCTAI_NUM_CTX=16384`: **9/9 OK** (prompts reales de 8.207 a 10.284 tokens; ~4–7 min por
+caso). Desaparece también la única alucinación numérica real (Kst/amax).
+
+| Clasificación de los 19 fallos originales | n |
+|---|---|
+| Truncamiento del prompt (config, no modelo) | 8 (todos H) |
+| Recuperación: hecho ausente del contexto | 5 (F 3, K 2) |
+| Generación: el hecho estaba y el modelo no lo usó | 6 (H raíces, F 3, B 1, NTC 174 1) |
+
+**Resultado corregido de qwen2.5:7b con num_ctx 16384: 127/138 (92,0 %, Wilson IC95 86,3–95,5 %); NSR-10 114/125.**
+Recomendación para #178: `num_ctx` 16384 (o calcularlo por caso), y marcar truncado si `prompt_eval_count` es mucho
+menor que la estimación de tokens del prompt (~caracteres/3,5). Las comparaciones entre modelos deben repetirse con
+la misma ventana corregida: con 8192 se medía, en parte, cómo cada modelo tolera un contexto cortado.

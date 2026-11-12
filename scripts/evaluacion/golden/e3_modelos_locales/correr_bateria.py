@@ -59,7 +59,9 @@ import rag_multi_norma as r  # noqa: E402
 AQUI = Path(__file__).parent
 RESULTADOS = AQUI / "resultados"
 OLLAMA = "http://127.0.0.1:11434"
-NUM_CTX = 8192
+# Ventana de contexto. 8192 por defecto; los contextos de más de ~18.000 caracteres no caben
+# con num_predict 700 y Ollama los recorta a la mitad (4.098 tokens) sin avisar (hallazgo E3).
+NUM_CTX = int(os.environ.get("STRUCTAI_NUM_CTX", "8192"))
 _ultima: dict = {}
 
 
@@ -122,14 +124,15 @@ def cargar_casos(bateria: str) -> list[dict]:
 
 def _archivo(modelo):
     RESULTADOS.mkdir(parents=True, exist_ok=True)
-    return RESULTADOS / f"{modelo.replace(':', '_').replace('/', '_')}.jsonl"
+    sufijo = "" if NUM_CTX == 8192 else f"_ctx{NUM_CTX}"
+    return RESULTADOS / f"{modelo.replace(':', '_').replace('/', '_')}{sufijo}.jsonl"
 
 
-def correr(modelo: str, bateria: str):
+def correr(modelo: str, bateria: str, ids: set | None = None):
     r._llamar_llm_con_respaldo = generador_local(modelo)
     salida = _archivo(modelo)
     hechos = {json.loads(l)["clave"] for l in salida.read_text(encoding="utf-8").splitlines()} if salida.exists() else set()
-    casos = cargar_casos(bateria)
+    casos = [c for c in cargar_casos(bateria) if not ids or c["id"] in ids]
     print(f"{modelo} | {bateria}: {len(casos)} casos | ya hechos {sum(1 for c in casos if _clave(c) in hechos)}", flush=True)
     for i, c in enumerate(casos, 1):
         if _clave(c) in hechos:
@@ -199,11 +202,12 @@ def main():
     ap.add_argument("--modelo")
     ap.add_argument("--bateria", choices=["motores", "nsr10", "piloto", "todo"], default="piloto")
     ap.add_argument("--resumen", action="store_true")
+    ap.add_argument("--ids", help="ids de casos separados por coma (solo esos)")
     a = ap.parse_args()
     if a.resumen:
         resumen()
     else:
-        correr(a.modelo, a.bateria)
+        correr(a.modelo, a.bateria, set(a.ids.split(",")) if a.ids else None)
         resumen()
 
 
