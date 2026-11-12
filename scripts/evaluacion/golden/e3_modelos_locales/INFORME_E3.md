@@ -78,3 +78,33 @@ caso). Desaparece también la única alucinación numérica real (Kst/amax).
 Recomendación para #178: `num_ctx` 16384 (o calcularlo por caso), y marcar truncado si `prompt_eval_count` es mucho
 menor que la estimación de tokens del prompt (~caracteres/3,5). Las comparaciones entre modelos deben repetirse con
 la misma ventana corregida: con 8192 se medía, en parte, cómo cada modelo tolera un contexto cortado.
+
+## Fase 4c: robustez del proceso nocturno y fallos restantes (2026-11-12)
+
+**Causa raíz de las caídas:** WSL apaga la distro ~16 s después de que sale su último proceso, y con ella
+el servicio de Ollama (journalctl: ciclos Started/Stopped cada ~16 s tras un `wsl -- true`). Por eso se
+cayeron dos corridas cuando venció un keepalive externo. Cambios en `correr_bateria.py`:
+- El harness mantiene `wsl.exe -d Ubuntu -- sleep infinity` como proceso hijo mientras corre y pide a
+  Windows no suspenderse (`SetThreadExecutionState`). Se libera al salir.
+- Antes de cada caso verifica `/api/version`; si Ollama no responde, espera hasta 600 s.
+- Un error de conexión en cualquier llamada del caso (incluida la descomposición, que `ask()` atrapa
+  por dentro) descarta y repite el caso completo (2 reintentos). **Nunca se graba un caso con Ollama
+  caído**: si no vuelve, sale con código 4 y relanzar retoma de la caché.
+- `num_ctx` 16384 por defecto; `prompt_truncado` también se marca si leyó < 60 % de los tokens estimados
+  (caracteres / 3,2), porque Ollama recorta a ~num_ctx/2 en vez de llenar la ventana.
+Verificado: con puerto muerto corta sin grabar (exit 4); con WSL apagado, Ollama vuelve en ~13 s y sigue
+vivo sin uso; un caso real pasa de punta a punta.
+
+`nocturno.sh` corre los modelos indicados con la batería completa, relanza ante el código 4 y al final
+ejecuta `comparar_modelos.py` (criterio prerregistrado: McNemar exacto + Holm contra el de mayor tasa,
+IC de Wilson y bootstrap por título; empate → el más barato solo si está a ≤ 3 puntos del candidato).
+
+**Los 5 fallos de recuperación** (`diagnostico_fallos.py`, búsqueda literal en `nsr10_chunks`):
+
+| Caso | Diagnóstico |
+|---|---|
+| F-f544-kz-6061-t6 | Recuperación: la Tabla F.5.4.4-1 (kz) está en el corpus y no se trae |
+| K-esfuerzos-termicos-probabilidad-rotura-08porciento | Recuperación probable: K.4.2.4 (esfuerzos térmicos) contiene "0.8" |
+| K-templado-vs-termoendurecido-compresion | No concluyente: la variante "moderada" es genérica |
+| F-f52-durabilidad-a-agua-salada-proteccion | Dato no hallado literalmente: hueco o redacción distinta |
+| F-f541-2-esfuerzo-limite-po-6061-t6 | Dato no hallado literalmente: hueco o redacción distinta |
