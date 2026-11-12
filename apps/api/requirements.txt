@@ -49,7 +49,7 @@ openai==1.54.4
 
 # ── Motor APU / Motor Deformación ───────────────────────────────
 numpy==1.26.4
-scipy==1.18.1
+scipy==1.17.1   # no 1.18: exige numpy>=2 y Python>=3.12 (API fija numpy 1.26.4, Docker usa 3.11)
 
 # ── YOLO / Visión y Motor Estructural / Infracortex ──────────────
 # 2026-08-20: separados a requirements-vision.txt y
