@@ -164,7 +164,7 @@ jobs:
         paquete: [motor-apu, motor-deformacion, motor-aquai, motor-geopot, motor-vulnerabilidad-vivienda, motor-vias, motor-gerencia, motor-estructural, motor-acero-frio, motor-topovia, motor-analisis, motor-geotecnia, motor-licuacion, motor-redes, motor-concreto, orquestador, contrato-motor, dag-proyecto, eval-stats, rag-audit-kit]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with: { python-version: '${{ env.PYTHON_VERSION }}' }
       - name: Instalar dependencias
         working-directory: packages/${{ matrix.paquete }}
@@ -198,7 +198,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with: { python-version: '${{ env.PYTHON_VERSION }}' }
       - name: Verificar que el registro coincide con el código
         run: python scripts/inventario/registro_motores.py --verificar
@@ -222,7 +222,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with: { python-version: '${{ env.PYTHON_VERSION }}' }
       - name: Instalar dependencias
         run: pip install supabase python-dotenv
@@ -238,7 +238,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with: { python-version: '${{ env.PYTHON_VERSION }}' }
       - name: Instalar dependencias
         working-directory: apps/api
@@ -257,7 +257,7 @@ jobs:
       # revisar este paso). Se cachea entre corridas para que esto solo
       # pese la primera vez.
       - name: Cachear modelos (HF — embeddings + reranker)
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cache/huggingface
           key: hf-embeddings-minilm-l12-v2_reranker-mmarco-mminilmv2-l12-h384-v1

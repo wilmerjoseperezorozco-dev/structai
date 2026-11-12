@@ -32,4 +32,4 @@
 # Ver Dockerfile (ARG INSTALL_ESTRUCTURAL) para habilitarlo en el build
 # de producción (Google Cloud Run desde el 2026-09-01, antes DigitalOcean).
 
-ifcopenshell==0.8.5
+ifcopenshell==0.9.0.post1
