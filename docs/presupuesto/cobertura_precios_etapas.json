@@ -1,0 +1,488 @@
+{
+ "total": 4566,
+ "insumos_sueltos": 1754,
+ "actividades": 2812,
+ "sin_clasificar": 966,
+ "ambiguas": 374,
+ "capitulos": [
+  {
+   "etapa": "0. Costos indirectos y transversales",
+   "id": "0.1",
+   "capitulo": "AIU (administración, imprevistos y utilidad)",
+   "actividades": 0,
+   "con_desglose": 0,
+   "regiones": {},
+   "motores": [
+    "motor-apu (AIU con valor por defecto, sin calibrar por tipo de proyecto)"
+   ],
+   "normas_faltantes": [
+    "Decreto 1625 de 2016, art. 1.3.1.7.9 (IVA en construcción)",
+    "IDU GU-DP-017 (guía, no norma)"
+   ],
+   "issues": []
+  },
+  {
+   "etapa": "0. Costos indirectos y transversales",
+   "id": "0.2",
+   "capitulo": "Gastos generales, PMA, SST, PMT y gestión social",
+   "actividades": 11,
+   "con_desglose": 0,
+   "regiones": {
+    "Barranquilla": 11
+   },
+   "motores": [],
+   "normas_faltantes": [
+    "Resolución 0312 de 2019 (estándares mínimos SG-SST)",
+    "Resolución 1257 de 2021 (RCD)"
+   ],
+   "issues": []
+  },
+  {
+   "etapa": "0. Costos indirectos y transversales",
+   "id": "0.3",
+   "capitulo": "Supervisión técnica, interventoría y trámites",
+   "actividades": 3,
+   "con_desglose": 0,
+   "regiones": {
+    "Barranquilla": 3
+   },
+   "motores": [
+    "motor-geotecnia",
+    "motor-topovia"
+   ],
+   "normas_faltantes": [
+    "Ley 1796 de 2016 (vivienda segura, revisión independiente)"
+   ],
+   "issues": []
+  },
+  {
+   "etapa": "0. Costos indirectos y transversales",
+   "id": "0.4",
+   "capitulo": "Equipos y herramienta (alquiler y compra)",
+   "actividades": 11,
+   "con_desglose": 0,
+   "regiones": {
+    "Barranquilla": 9,
+    "Puerto Colombia": 2
+   },
+   "motores": [],
+   "normas_faltantes": [
+    "Resolución 4272 de 2021 (trabajo en alturas)"
+   ],
+   "issues": []
+  },
+  {
+   "etapa": "1. Fase inicial y obra negra",
+   "id": "1.1",
+   "capitulo": "Preliminares",
+   "actividades": 59,
+   "con_desglose": 2,
+   "regiones": {
+    "Barranquilla": 43,
+    "Puerto Colombia": 15,
+    "Atlántico": 1
+   },
+   "motores": [
+    "motor-topovia (replanteo)"
+   ],
+   "normas_faltantes": [
+    "Resolución 1257 de 2021 (gestión de RCD de demoliciones)"
+   ],
+   "issues": []
+  },
+  {
+   "etapa": "1. Fase inicial y obra negra",
+   "id": "1.2",
+   "capitulo": "Excavación y movimiento de tierras",
+   "actividades": 97,
+   "con_desglose": 4,
+   "regiones": {
+    "Atlántico": 37,
+    "Barranquilla": 32,
+    "Puerto Colombia": 28
+   },
+   "motores": [
+    "motor-geotecnia",
+    "motor-geopot (proctor, CBR, USCS)",
+    "motor-licuacion"
+   ],
+   "normas_faltantes": [
+    "Resolución 1257 de 2021 (RCD)"
+   ],
+   "issues": []
+  },
+  {
+   "etapa": "1. Fase inicial y obra negra",
+   "id": "1.3",
+   "capitulo": "Cimentación",
+   "actividades": 32,
+   "con_desglose": 3,
+   "regiones": {
+    "Barranquilla": 21,
+    "Puerto Colombia": 11
+   },
+   "motores": [
+    "motor-geotecnia (capacidad portante)",
+    "motor-concreto (cantidades)",
+    "motor-apu.cantidades"
+   ],
+   "normas_faltantes": [],
+   "issues": [
+    "#149",
+    "#136"
+   ]
+  },
+  {
+   "etapa": "1. Fase inicial y obra negra",
+   "id": "1.4",
+   "capitulo": "Estructura en concreto",
+   "actividades": 79,
+   "con_desglose": 14,
+   "regiones": {
+    "Barranquilla": 55,
+    "Puerto Colombia": 16,
+    "Atlántico": 8
+   },
+   "motores": [
+    "motor-concreto",
+    "motor-estructural",
+    "motor-analisis",
+    "motor-apu.cantidades"
+   ],
+   "normas_faltantes": [],
+   "issues": [
+    "#122",
+    "#142",
+    "#149"
+   ]
+  },
+  {
+   "etapa": "1. Fase inicial y obra negra",
+   "id": "1.5",
+   "capitulo": "Estructura metálica",
+   "actividades": 6,
+   "con_desglose": 0,
+   "regiones": {
+    "Barranquilla": 4,
+    "Puerto Colombia": 2
+   },
+   "motores": [
+    "motor-acero-frio (F.4)"
+   ],
+   "normas_faltantes": [],
+   "issues": [
+    "#141",
+    "#121"
+   ]
+  },
+  {
+   "etapa": "1. Fase inicial y obra negra",
+   "id": "1.6",
+   "capitulo": "Mampostería",
+   "actividades": 66,
+   "con_desglose": 6,
+   "regiones": {
+    "Barranquilla": 45,
+    "Puerto Colombia": 19,
+    "—": 2
+   },
+   "motores": [
+    "motor-vulnerabilidad-vivienda"
+   ],
+   "normas_faltantes": [],
+   "issues": [
+    "#141",
+    "#184"
+   ]
+  },
+  {
+   "etapa": "1. Fase inicial y obra negra",
+   "id": "1.7",
+   "capitulo": "Cubierta e impermeabilización",
+   "actividades": 102,
+   "con_desglose": 20,
+   "regiones": {
+    "Barranquilla": 85,
+    "Puerto Colombia": 10,
+    "Atlántico": 6
+   },
+   "motores": [],
+   "normas_faltantes": [],
+   "issues": [
+    "#121",
+    "#146"
+   ]
+  },
+  {
+   "etapa": "2. Obra gris (instalaciones)",
+   "id": "2.1",
+   "capitulo": "Instalaciones hidrosanitarias",
+   "actividades": 560,
+   "con_desglose": 32,
+   "regiones": {
+    "Barranquilla": 421,
+    "Puerto Colombia": 88,
+    "Atlántico": 42
+   },
+   "motores": [
+    "motor-aquai (redes externas, bombeo, ariete)",
+    "motor-redes"
+   ],
+   "normas_faltantes": [
+    "Resolución 0194 de 2025 (ahorro de agua en edificaciones nuevas)"
+   ],
+   "issues": [
+    "#138",
+    "#139"
+   ]
+  },
+  {
+   "etapa": "2. Obra gris (instalaciones)",
+   "id": "2.2",
+   "capitulo": "Red contra incendio",
+   "actividades": 11,
+   "con_desglose": 2,
+   "regiones": {
+    "Atlántico": 9,
+    "Barranquilla": 2
+   },
+   "motores": [],
+   "normas_faltantes": [
+    "NTC 1669 / NFPA 13 y 14"
+   ],
+   "issues": []
+  },
+  {
+   "etapa": "2. Obra gris (instalaciones)",
+   "id": "2.3",
+   "capitulo": "Instalaciones de gas",
+   "actividades": 2,
+   "con_desglose": 0,
+   "regiones": {
+    "Barranquilla": 2
+   },
+   "motores": [],
+   "normas_faltantes": [
+    "Resolución 90902 de 2013 (instalaciones internas de gas)",
+    "NTC 2505"
+   ],
+   "issues": []
+  },
+  {
+   "etapa": "2. Obra gris (instalaciones)",
+   "id": "2.4",
+   "capitulo": "Instalaciones eléctricas",
+   "actividades": 71,
+   "con_desglose": 6,
+   "regiones": {
+    "Barranquilla": 64,
+    "—": 7
+   },
+   "motores": [],
+   "normas_faltantes": [
+    "RETIE (Res. 40117 de 2024 y modificaciones)",
+    "NTC 2050 (código eléctrico)",
+    "RETILAP (iluminación)",
+    "NTC 4552 (protección contra rayos)"
+   ],
+   "issues": [
+    "#143"
+   ]
+  },
+  {
+   "etapa": "2. Obra gris (instalaciones)",
+   "id": "2.5",
+   "capitulo": "Comunicaciones y redes de datos",
+   "actividades": 1,
+   "con_desglose": 1,
+   "regiones": {
+    "Barranquilla": 1
+   },
+   "motores": [],
+   "normas_faltantes": [
+    "RITEL (Res. CRC 5050 de 2016, Anexo 8.1, act. Res. 7930 de 2025)"
+   ],
+   "issues": []
+  },
+  {
+   "etapa": "2. Obra gris (instalaciones)",
+   "id": "2.6",
+   "capitulo": "Equipos especiales",
+   "actividades": 0,
+   "con_desglose": 0,
+   "regiones": {},
+   "motores": [],
+   "normas_faltantes": [
+    "NTC 5926 (ascensores)"
+   ],
+   "issues": []
+  },
+  {
+   "etapa": "3. Obra blanca (acabados)",
+   "id": "3.1",
+   "capitulo": "Pañetes, estucos y pinturas",
+   "actividades": 65,
+   "con_desglose": 6,
+   "regiones": {
+    "Barranquilla": 49,
+    "Puerto Colombia": 11,
+    "—": 5
+   },
+   "motores": [],
+   "normas_faltantes": [
+    "NTC 1335 (pinturas tipo emulsión)"
+   ],
+   "issues": []
+  },
+  {
+   "etapa": "3. Obra blanca (acabados)",
+   "id": "3.2",
+   "capitulo": "Pisos y enchapes",
+   "actividades": 103,
+   "con_desglose": 14,
+   "regiones": {
+    "Barranquilla": 94,
+    "—": 5,
+    "Puerto Colombia": 4
+   },
+   "motores": [],
+   "normas_faltantes": [
+    "NTC 919 / ISO 13006 (baldosas cerámicas)"
+   ],
+   "issues": []
+  },
+  {
+   "etapa": "3. Obra blanca (acabados)",
+   "id": "3.3",
+   "capitulo": "Carpintería, ventanería y cerrajería",
+   "actividades": 112,
+   "con_desglose": 20,
+   "regiones": {
+    "Barranquilla": 103,
+    "—": 5,
+    "Atlántico": 4
+   },
+   "motores": [],
+   "normas_faltantes": [],
+   "issues": []
+  },
+  {
+   "etapa": "3. Obra blanca (acabados)",
+   "id": "3.4",
+   "capitulo": "Cielorrasos",
+   "actividades": 37,
+   "con_desglose": 6,
+   "regiones": {
+    "Barranquilla": 32,
+    "Puerto Colombia": 4,
+    "—": 1
+   },
+   "motores": [],
+   "normas_faltantes": [],
+   "issues": []
+  },
+  {
+   "etapa": "3. Obra blanca (acabados)",
+   "id": "3.5",
+   "capitulo": "Aparatos sanitarios, griferías y accesorios",
+   "actividades": 25,
+   "con_desglose": 2,
+   "regiones": {
+    "Barranquilla": 18,
+    "—": 7
+   },
+   "motores": [],
+   "normas_faltantes": [
+    "Resolución 0194 de 2025 (aparatos ahorradores)"
+   ],
+   "issues": []
+  },
+  {
+   "etapa": "3. Obra blanca (acabados)",
+   "id": "3.6",
+   "capitulo": "Aseo y entrega",
+   "actividades": 1,
+   "con_desglose": 0,
+   "regiones": {
+    "Barranquilla": 1
+   },
+   "motores": [],
+   "normas_faltantes": [],
+   "issues": []
+  },
+  {
+   "etapa": "4. Fase final: urbanismo y obras exteriores",
+   "id": "4.1",
+   "capitulo": "Urbanismo y espacio público",
+   "actividades": 138,
+   "con_desglose": 2,
+   "regiones": {
+    "Puerto Colombia": 86,
+    "Barranquilla": 52
+   },
+   "motores": [
+    "motor-vias"
+   ],
+   "normas_faltantes": [
+    "NTC 4143 y Ley 361 de 1997 (accesibilidad)",
+    "IDU ET-IC-01 (espacio público, Bogotá)"
+   ],
+   "issues": []
+  },
+  {
+   "etapa": "4. Fase final: urbanismo y obras exteriores",
+   "id": "4.2",
+   "capitulo": "Vías internas y parqueaderos",
+   "actividades": 160,
+   "con_desglose": 1,
+   "regiones": {
+    "Barranquilla": 126,
+    "Puerto Colombia": 34
+   },
+   "motores": [
+    "motor-vias",
+    "motor-topovia"
+   ],
+   "normas_faltantes": [],
+   "issues": [
+    "#185"
+   ]
+  },
+  {
+   "etapa": "4. Fase final: urbanismo y obras exteriores",
+   "id": "4.3",
+   "capitulo": "Redes externas y drenaje",
+   "actividades": 73,
+   "con_desglose": 2,
+   "regiones": {
+    "Barranquilla": 47,
+    "Puerto Colombia": 22,
+    "Atlántico": 4
+   },
+   "motores": [
+    "motor-aquai",
+    "motor-redes"
+   ],
+   "normas_faltantes": [],
+   "issues": [
+    "#138",
+    "#139"
+   ]
+  },
+  {
+   "etapa": "4. Fase final: urbanismo y obras exteriores",
+   "id": "4.4",
+   "capitulo": "Cerramiento definitivo, portería y alumbrado exterior",
+   "actividades": 21,
+   "con_desglose": 0,
+   "regiones": {
+    "Barranquilla": 21
+   },
+   "motores": [],
+   "normas_faltantes": [
+    "RETILAP (alumbrado exterior)"
+   ],
+   "issues": []
+  }
+ ]
+}
