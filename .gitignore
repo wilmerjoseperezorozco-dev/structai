@@ -85,3 +85,6 @@ data/transporte/_cache/
 
 # Datos de terceros (APU de colegas, permiso de uso para StructAI, no para publicar)
 scripts/presupuesto/_privado/
+
+# Claves locales de seudonimización (SECOP)
+scripts/ingesta/*/_privado/
