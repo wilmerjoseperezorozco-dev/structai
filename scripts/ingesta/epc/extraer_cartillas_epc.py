@@ -64,8 +64,19 @@ def precio(s: str | None) -> float | None:
         return None
 
 
-def textos_fila(page, fila) -> list[str]:
-    return [limpiar(page.get_textbox(pymupdf.Rect(c))) if c else "" for c in fila.cells]
+def textos_fila(palabras, fila) -> list[str]:
+    """Texto de cada celda a partir de las palabras de la página (leídas UNA vez por página): una palabra pertenece
+    a la celda que contiene su centro. Mucho más rápido que get_textbox por celda (la primera versión tardaba horas)."""
+    out = []
+    for c in fila.cells:
+        if not c:
+            out.append("")
+            continue
+        x0, y0, x1, y1 = c
+        dentro = [w for w in palabras if x0 <= (w[0] + w[2]) / 2 <= x1 and y0 <= (w[1] + w[3]) / 2 <= y1]
+        dentro.sort(key=lambda w: (round(w[1], 0), w[0]))
+        out.append(limpiar(" ".join(w[4] for w in dentro)))
+    return out
 
 
 def meta_archivo(nombre: str) -> tuple[str, int]:
@@ -81,9 +92,10 @@ def extraer(pdf: Path) -> tuple[list[dict], dict]:
     pendiente_cap = None       # encabezado visto; si le sigue otro encabezado, era capítulo
     doc = pymupdf.open(pdf)
     for np_, page in enumerate(doc, 1):
+        palabras = page.get_text("words")
         for tab in page.find_tables().tables:
             for fila in tab.rows:
-                t = textos_fila(page, fila)
+                t = textos_fila(palabras, fila)
                 tn = [norm(x) for x in t]
                 if any(x.startswith("DESCRIPCI") for x in tn) and "UNIDAD" in tn:
                     i_desc = next(i for i, x in enumerate(tn) if x.startswith("DESCRIPCI"))
@@ -133,9 +145,24 @@ def extraer(pdf: Path) -> tuple[list[dict], dict]:
 
 def main() -> None:
     SALIDA.parent.mkdir(parents=True, exist_ok=True)
+    partes = SALIDA.parent / "partes"
+    partes.mkdir(exist_ok=True)
     todas, resumen = [], []
+    campos = ["anio", "provincia", "municipio", "codigo", "capitulo", "subcapitulo", "actividad", "unidad", "precio",
+              "archivo", "pagina"]
     for pdf in sorted(RAW.glob("CARTILLA-*.pdf")):
-        filas, info = extraer(pdf)
+        parte = partes / (pdf.stem + ".csv")
+        if parte.exists():                       # retomar: la cartilla ya se extrajo
+            with parte.open(encoding="utf-8") as fh:
+                filas = list(csv.DictReader(fh))
+            info = collections.Counter(items=len({(f["actividad"], f["unidad"], f["pagina"]) for f in filas}),
+                                       municipios=len({f["municipio"] for f in filas}))
+        else:
+            filas, info = extraer(pdf)
+            with parte.open("w", encoding="utf-8", newline="") as fh:
+                w = csv.DictWriter(fh, fieldnames=campos)
+                w.writeheader()
+                w.writerows(filas)
         todas += filas
         resumen.append((pdf.name, info))
         print(f"{pdf.name:40s} ítems={info['items']:4d} municipios={info['municipios']:2d} filas={len(filas)}", flush=True)
