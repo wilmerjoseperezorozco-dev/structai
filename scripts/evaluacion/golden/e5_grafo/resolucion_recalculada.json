@@ -1,0 +1,1367 @@
+{
+ "aristas": 1354,
+ "antes": {
+  "prefijo": 925,
+  "sin_destino": 137,
+  "exacta": 292
+ },
+ "ahora": {
+  "prefijo": 846,
+  "exacta": 480,
+  "sin_destino": 28
+ },
+ "transiciones": {
+  "prefijo -> prefijo": 842,
+  "exacta -> exacta": 292,
+  "sin_destino -> exacta": 105,
+  "prefijo -> exacta": 83,
+  "sin_destino -> sin_destino": 28,
+  "sin_destino -> prefijo": 4
+ },
+ "cambios": [
+  {
+   "id": 3,
+   "numeral_destino": "A.10.9.4",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 47,
+   "numeral_destino": "A.10.10",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 110,
+   "numeral_destino": "A.2.9",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 2
+  },
+  {
+   "id": 117,
+   "numeral_destino": "A.2.2.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 2
+  },
+  {
+   "id": 123,
+   "numeral_destino": "A.2.9.3",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 124,
+   "numeral_destino": "A.2.9.3",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 129,
+   "numeral_destino": "A.2.9.3.4",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 172,
+   "numeral_destino": "A-2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 2
+  },
+  {
+   "id": 210,
+   "numeral_destino": "A-2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 2
+  },
+  {
+   "id": 211,
+   "numeral_destino": "A-2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 2
+  },
+  {
+   "id": 216,
+   "numeral_destino": "A-2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 2
+  },
+  {
+   "id": 217,
+   "numeral_destino": "A-2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 2
+  },
+  {
+   "id": 219,
+   "numeral_destino": "A-2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 2
+  },
+  {
+   "id": 220,
+   "numeral_destino": "A-2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 2
+  },
+  {
+   "id": 221,
+   "numeral_destino": "A-2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 2
+  },
+  {
+   "id": 222,
+   "numeral_destino": "A-2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 2
+  },
+  {
+   "id": 224,
+   "numeral_destino": "A-2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 2
+  },
+  {
+   "id": 225,
+   "numeral_destino": "A-2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 2
+  },
+  {
+   "id": 227,
+   "numeral_destino": "A-2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 2
+  },
+  {
+   "id": 231,
+   "numeral_destino": "A-3.2.4",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 244,
+   "numeral_destino": "A-3.2.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 251,
+   "numeral_destino": "A.4.3.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 2
+  },
+  {
+   "id": 257,
+   "numeral_destino": "A.2.6.1.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 261,
+   "numeral_destino": "A.6.4.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 266,
+   "numeral_destino": "A-3.2.9.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 267,
+   "numeral_destino": "A-3.2.9.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 270,
+   "numeral_destino": "A.4.3.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 2
+  },
+  {
+   "id": 289,
+   "numeral_destino": "B.2.4.2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 2
+  },
+  {
+   "id": 298,
+   "numeral_destino": "B.6.5",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 300,
+   "numeral_destino": "B.6.5",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 305,
+   "numeral_destino": "B.6.5.11.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 309,
+   "numeral_destino": "B.6.5.11.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 312,
+   "numeral_destino": "B.6.5.4.4",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 313,
+   "numeral_destino": "B.6.5.6.6",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 314,
+   "numeral_destino": "B.6.5.7.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 316,
+   "numeral_destino": "B.6.5.12.2.4",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 317,
+   "numeral_destino": "B.6.5.12.4.4",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 318,
+   "numeral_destino": "B.6.5.8.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 321,
+   "numeral_destino": "B.6.5.9.3",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 325,
+   "numeral_destino": "B.6.5.12.2.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 326,
+   "numeral_destino": "B.6.5.9.3",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 330,
+   "numeral_destino": "B.6.5.12.2.4",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 332,
+   "numeral_destino": "B.6.5.6.4.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 338,
+   "numeral_destino": "B.6.5.4.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 339,
+   "numeral_destino": "B.6.5.4.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 345,
+   "numeral_destino": "B.6.5.6.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 350,
+   "numeral_destino": "B.6.5.3",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 352,
+   "numeral_destino": "B.6.5.7.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 357,
+   "numeral_destino": "B.6.5.8.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 360,
+   "numeral_destino": "B.6.5.9.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 362,
+   "numeral_destino": "B.6.5.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 365,
+   "numeral_destino": "B.6.6.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 366,
+   "numeral_destino": "B.6.5.4.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 572,
+   "numeral_destino": "A.3.2.4",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 674,
+   "numeral_destino": "F.2.2",
+   "antes": "sin_destino",
+   "ahora": "prefijo",
+   "n_chunks": 2
+  },
+  {
+   "id": 691,
+   "numeral_destino": "F.2.6",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 745,
+   "numeral_destino": "F.3.8.4.5.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 748,
+   "numeral_destino": "F.3.7.2.6.6",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 753,
+   "numeral_destino": "F.4.2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 757,
+   "numeral_destino": "F.4.1.2.3.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 758,
+   "numeral_destino": "F.4.1.2.3",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 759,
+   "numeral_destino": "F.4.1.2.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 760,
+   "numeral_destino": "F.4.3.5",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 761,
+   "numeral_destino": "F.4.1.2.3.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 763,
+   "numeral_destino": "F.4.6.1",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 764,
+   "numeral_destino": "F.4.2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 766,
+   "numeral_destino": "F.4.1.6.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 767,
+   "numeral_destino": "F.4.3.4",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 769,
+   "numeral_destino": "F.4.1.5",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 773,
+   "numeral_destino": "F.4.1.2.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 774,
+   "numeral_destino": "F.4.1.6.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 789,
+   "numeral_destino": "F.4.2.3.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 792,
+   "numeral_destino": "F.4.2.3.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 804,
+   "numeral_destino": "F.4.2.3.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 807,
+   "numeral_destino": "F.4.2.5.1.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 811,
+   "numeral_destino": "F.4.2.5.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 813,
+   "numeral_destino": "F.4.2.5.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 814,
+   "numeral_destino": "F.4.2.5.1.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 815,
+   "numeral_destino": "F.4.2.5.1.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 817,
+   "numeral_destino": "F.4.1.6.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 818,
+   "numeral_destino": "F.4.1.2.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 820,
+   "numeral_destino": "F.4.1.6.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 821,
+   "numeral_destino": "F.4.2.3.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 824,
+   "numeral_destino": "F.4.1.6.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 837,
+   "numeral_destino": "F.4.3.4.1",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 839,
+   "numeral_destino": "F.4.3.3.2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 840,
+   "numeral_destino": "F.4.2.1.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 843,
+   "numeral_destino": "F.4.3.4.1",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 844,
+   "numeral_destino": "F.4.2.2.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 856,
+   "numeral_destino": "F.4.3.3.1.2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 857,
+   "numeral_destino": "F.4.3.3.1.3",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 858,
+   "numeral_destino": "F.4.1.6.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 862,
+   "numeral_destino": "F.4.3.4",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 863,
+   "numeral_destino": "F.4.3.3.1.2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 864,
+   "numeral_destino": "F.4.3.3.1.3",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 866,
+   "numeral_destino": "F.4.3.4",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 869,
+   "numeral_destino": "F.4.3.4.1",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 873,
+   "numeral_destino": "F.4.2.2.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 881,
+   "numeral_destino": "F.4.6.1",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 884,
+   "numeral_destino": "F.4.3.4.1",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 885,
+   "numeral_destino": "F.4.3.4.1",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 889,
+   "numeral_destino": "F.4.4.6.1",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 890,
+   "numeral_destino": "F.4.4.6.3",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 894,
+   "numeral_destino": "F.4.1.2.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 895,
+   "numeral_destino": "F.4.1.2.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 896,
+   "numeral_destino": "F.4.1.2.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 897,
+   "numeral_destino": "F.4.5.2.2.1",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 898,
+   "numeral_destino": "F.4.5.2.2.1",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 899,
+   "numeral_destino": "F.4.5.2.2.1",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 900,
+   "numeral_destino": "F.4.5.2.2.1",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 901,
+   "numeral_destino": "F.4.5.2.2.1",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 903,
+   "numeral_destino": "F.4.1.2.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 904,
+   "numeral_destino": "F.4.1.2.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 905,
+   "numeral_destino": "F.4.1.2.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 907,
+   "numeral_destino": "F.4.1.2.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 909,
+   "numeral_destino": "F.4.5.3.3.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 910,
+   "numeral_destino": "F.4.5.3.3.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 911,
+   "numeral_destino": "F.4.5.3.3.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 912,
+   "numeral_destino": "F.4.1.2.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 919,
+   "numeral_destino": "F.4.6.1",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 921,
+   "numeral_destino": "F.4.6.1",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 922,
+   "numeral_destino": "F.4.5.4.3",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 926,
+   "numeral_destino": "F.4.1.2.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 929,
+   "numeral_destino": "F.4.1.5.1.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 930,
+   "numeral_destino": "F.4.1.2.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 931,
+   "numeral_destino": "F.4.1.6.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 932,
+   "numeral_destino": "F.4.1.6.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 933,
+   "numeral_destino": "F.4.1.2.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 934,
+   "numeral_destino": "F.4.1.6.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 936,
+   "numeral_destino": "F.4.1",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 937,
+   "numeral_destino": "F.4.7.2.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 938,
+   "numeral_destino": "F.4.1.2.4",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 940,
+   "numeral_destino": "F.4.3.3.4",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 941,
+   "numeral_destino": "F.4.2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 942,
+   "numeral_destino": "F.4.7.2.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 947,
+   "numeral_destino": "F.4.7.5.5",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 949,
+   "numeral_destino": "F.4.7.5.6.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 952,
+   "numeral_destino": "F.4.1.6.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 953,
+   "numeral_destino": "F.4.1.6.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 954,
+   "numeral_destino": "F.4.1.6.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 955,
+   "numeral_destino": "F.4.1.6.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 956,
+   "numeral_destino": "F.4.7.5.6.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 960,
+   "numeral_destino": "F.4.1",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 961,
+   "numeral_destino": "F.4.1",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 962,
+   "numeral_destino": "F.4.2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 964,
+   "numeral_destino": "F.4.3.4",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 965,
+   "numeral_destino": "F.4.3.4",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 968,
+   "numeral_destino": "F.4.3.3.2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 969,
+   "numeral_destino": "F.4.3.5",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 970,
+   "numeral_destino": "F.4.3.3.4",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 972,
+   "numeral_destino": "F.4.8.4.2.5",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 975,
+   "numeral_destino": "F.4.6.1",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 976,
+   "numeral_destino": "F.4.4.3",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 977,
+   "numeral_destino": "F.4.4.3",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 978,
+   "numeral_destino": "F.4.2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 984,
+   "numeral_destino": "F.4.3.4",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 985,
+   "numeral_destino": "F.4.3.5.2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 990,
+   "numeral_destino": "F.4.3.4",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 991,
+   "numeral_destino": "F.4.3.5.2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 993,
+   "numeral_destino": "F.4.3.5.2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 994,
+   "numeral_destino": "F.4.3.3.2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 997,
+   "numeral_destino": "F.4.6.1",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 998,
+   "numeral_destino": "F.4.3.3.2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 999,
+   "numeral_destino": "F.4.3.3.4",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 1001,
+   "numeral_destino": "F.4.3.3.2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 1003,
+   "numeral_destino": "F.4.3.3.4",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 1007,
+   "numeral_destino": "F.4.8.4.4.1.2.3",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 1011,
+   "numeral_destino": "F.4.8.4.4.1.3.1",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 1012,
+   "numeral_destino": "F.4.8.4.4.1.4.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 1013,
+   "numeral_destino": "F.4.8",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 1014,
+   "numeral_destino": "F.4.8.4.4.2.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 1015,
+   "numeral_destino": "F.4.2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 1018,
+   "numeral_destino": "F.4.3.3.2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 1019,
+   "numeral_destino": "F.4.3.3.4",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 1044,
+   "numeral_destino": "F.5.4",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 1051,
+   "numeral_destino": "F.2.2",
+   "antes": "sin_destino",
+   "ahora": "prefijo",
+   "n_chunks": 2
+  },
+  {
+   "id": 1220,
+   "numeral_destino": "H-9",
+   "antes": "sin_destino",
+   "ahora": "prefijo",
+   "n_chunks": 2
+  },
+  {
+   "id": 1239,
+   "numeral_destino": "H-9",
+   "antes": "sin_destino",
+   "ahora": "prefijo",
+   "n_chunks": 2
+  },
+  {
+   "id": 1242,
+   "numeral_destino": "H.9.4",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 1252,
+   "numeral_destino": "K.2.1.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 1257,
+   "numeral_destino": "J.3.4.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 1267,
+   "numeral_destino": "J.4.3.1",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 1268,
+   "numeral_destino": "J.4.3.1",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 1269,
+   "numeral_destino": "J.4.3.1",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 1306,
+   "numeral_destino": "K.3.18.3.1",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 1310,
+   "numeral_destino": "K.3.3.3",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 1311,
+   "numeral_destino": "K.3.3.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 1322,
+   "numeral_destino": "K.3.8.3.6",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 1330,
+   "numeral_destino": "K.4.2.4.3",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 1340,
+   "numeral_destino": "K.4.2.5.2",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 1342,
+   "numeral_destino": "B.4.2",
+   "antes": "prefijo",
+   "ahora": "exacta",
+   "n_chunks": 1
+  },
+  {
+   "id": 1350,
+   "numeral_destino": "K.4.3.11",
+   "antes": "sin_destino",
+   "ahora": "exacta",
+   "n_chunks": 1
+  }
+ ]
+}

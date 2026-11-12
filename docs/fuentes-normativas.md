@@ -32,6 +32,25 @@ cubra esa página — pérdida real de una fracción del Apéndice C-F. Document
 por decisión del usuario (2026-08-01): no bloquea el resto del catálogo, pero
 sigue pendiente de completar si aparece la fuente.
 
+## Inventario real de huecos NSR-10 (2026-11-11, issue #186)
+
+**Cómo medir qué falta:** no comparar solo contra la columna `seccion`. Un
+chunk contiene varios numerales como encabezados dentro del texto, y comparar
+contra `seccion` hizo creer que faltaban numerales que sí estaban (el grafo
+`normas_referencias_cruzadas` marcaba 137 citas "sin destino"; con el índice
+por encabezados quedan 28). Usar
+`scripts/evaluacion/golden/e5_grafo/indice_numerales.py` (5.141 numerales
+indexados) cruzado con `docs/AUDITORIA_NSR10_PAGINAS_2026-11.json`.
+
+Numerales del PDF sin texto en el corpus: **79**:
+- **K.4: 52.** **Hueco de fuente:** `NSR-10-1571-1625.pdf` es el último
+  archivo de la carpeta y termina en K.4.3.16.
+- K.3: 9 · Título I: 9 · H.2/H.3: 6 · E.7/E.8: 2 · B.6: 1.
+
+Plan por fases y orden de ingesta:
+`scripts/ingesta/nsr10/PLAN_HUECOS_GRAFO_2026-11.md`. Ningún motor cita un
+numeral ausente; lo vigila `apps/api/tests/test_contrato_motor_numerales.py`.
+
 ## Estado real de ingesta verbatim por título (actualizado 2026-09-07, `count(*)` real contra `nsr10_chunks`)
 
 Los conteos de esta tabla crecieron bastante frente a versiones anteriores
