@@ -85,7 +85,10 @@ jobs:
   # secretos. Seguro para PRs de forks.
   e2e-web:
     name: 🎭 E2E chat (web)
-    runs-on: ubuntu-latest
+    # Fijo, no ubuntu-latest: este ya es 26.04 y Playwright 1.56.1 no tiene
+    # navegadores para esa versión ("does not support chromium on
+    # ubuntu26.04-x64"). Subir a ubuntu-latest junto con Playwright.
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: apps/web
