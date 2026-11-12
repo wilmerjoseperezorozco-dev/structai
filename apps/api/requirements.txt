@@ -40,7 +40,7 @@ fastapi-mcp==0.4.0
 # (sb_secret_..., sin puntos) — encontrado y verificado el 2026-07-21, no era
 # un problema de credenciales sino de versión de librería desactualizada.
 supabase>=2.15.0
-httpx==0.28.1
+httpx==0.27.2   # no 0.28: quita `proxies` y openai==1.54.4 lo pasa (TypeError al importar). Subir junto con openai>=1.55.3
 sentence-transformers==5.6.0
 
 # ── Síntesis LLM: Groq y el respaldo OpenAI (rag_multi_norma.py) usan el
