@@ -110,4 +110,15 @@ Precios (`apu_precios_referencia`): 4.566 filas. De ellas, 1.754 son insumos sue
 4. Obra blanca: conseguir una fuente de recetas y rendimientos (#19). Los presupuestos y contratos reales del usuario son la mejor.
 5. Cobertura regional de precios.
 
+## 5. Issues
+
+| Issue | Qué |
+|---|---|
+| #196 | clasificador de actividades por etapa y capítulo, revisor de presupuestos (faltantes, AIU, IVA, atípicos, peso por capítulo) y plantillas por tipo de proyecto |
+| #197 | ingesta de reglamentos que faltan: RETIE, RETILAP, RITEL, gas, 0194 de 2025, RCD, SST, accesibilidad, IVA, Ley 1796, IDU ET-IC-01 |
+| #198 | motores hidrosanitario interior (NTC 1500), gas (Res. 90902) y contra incendio (NSR-10 J) |
+| #199 | motor de cantidades y APU de obra blanca, con recetas con fuente (destraba #19) |
+| #200 | precios: cobertura regional, desglose MO/materiales, 22 filas con texto invertido |
+| #143, #113, #121 | existentes, actualizados con estos datos (eléctrico y RITEL, ICOCED por capítulo, cubiertas) |
+
 Ninguno de estos pasos toca producción hasta que el usuario lo apruebe. La taxonomía y la cobertura son archivos del repositorio; la carga a la base queda para cuando se decida.
