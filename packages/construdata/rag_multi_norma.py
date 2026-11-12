@@ -2191,6 +2191,45 @@ def _bloque_historico_emergencias(municipio: str, departamento: Optional[str]) -
     return " ".join(partes)
 
 
+def _sin_tildes(s: str) -> str:
+    return "".join(c for c in unicodedata.normalize("NFKD", (s or "").lower()) if not unicodedata.combining(c)).strip()
+
+
+@lru_cache(maxsize=2048)
+def _a4_modificado(municipio: str, departamento: str) -> Optional[dict]:
+    """Fila del Apéndice A-4 de ese municipio SOLO si un decreto posterior a 2010
+    la modificó (columna modificado_por). None si no hay modificación o falla la consulta."""
+    try:
+        filas = sb.table("nsr10_apendice_a4_municipios").select(
+            "municipio,departamento,aa,av,ae,ad,zona,modificado_por,valores_originales_2010"
+        ).ilike("municipio", municipio).not_.is_("modificado_por", "null").execute().data
+    except Exception as e:  # noqa: BLE001
+        log.warning(f"No se pudo consultar el A-4 modificado de {municipio}: {e}")
+        return None
+    dep = _sin_tildes(departamento)
+    return next((f for f in filas if not dep or _sin_tildes(f["departamento"]) == dep), None)
+
+
+def _advertencia_a4_modificado(sgc_registro: dict) -> str:
+    """Issue #189: el servicio del SGC (Zonas_amenaza_Sismica_NR10) refleja el
+    Apéndice A-4 de 2010, pero decretos posteriores modificaron municipios (p. ej.
+    Supía, Aa 0,15 -> 0,25 por el Decreto 1711 de 2021). Si el valor del A-4
+    vigente difiere del que entrega el SGC, se advierte y se da el valor vigente.
+    No se edita el espejo del SGC: es el dato oficial de esa fuente."""
+    fila = _a4_modificado(sgc_registro.get("municipio") or "", sgc_registro.get("departamento") or "")
+    if not fila:
+        return ""
+    difiere = [k for k in ("aa", "av", "ae", "ad") if fila.get(k) is not None and sgc_registro.get(k) is not None
+               and abs(float(fila[k]) - float(sgc_registro[k])) > 1e-9]
+    if not difiere:
+        return ""
+    vigente = ", ".join(f"{k.capitalize()} = {fila[k]}" for k in ("aa", "av", "ae", "ad") if fila.get(k) is not None)
+    sgc = ", ".join(f"{k.capitalize()} = {sgc_registro[k]}" for k in difiere)
+    return (f"VIGENCIA NORMATIVA: el Apéndice A-4 de la NSR-10, modificado por el {fila['modificado_por']}, fija para "
+            f"{fila['municipio']} ({fila['departamento']}) {vigente} (zona {fila['zona']}). El servicio del SGC aún muestra "
+            f"{sgc}, que es el valor de 2010. Para diseño rige el valor vigente del reglamento.")
+
+
 def _bloque_contexto_sgc(sgc_registro: dict) -> str:
     """Arma el bloque de contexto en vivo del SGC/IGAC/IDEAM a partir de un
     registro de sgc_amenaza_sismica.detectar_municipio_en_texto(): siempre
@@ -2212,6 +2251,9 @@ def _bloque_contexto_sgc(sgc_registro: dict) -> str:
     pieza es independiente -- si una fuente no responde o no tiene datos
     para ese municipio, las demás se siguen mostrando igual."""
     partes = [sgc_amenaza_sismica.formatear_respuesta(sgc_registro)]
+    aviso_a4 = _advertencia_a4_modificado(sgc_registro)
+    if aviso_a4:
+        partes.append(aviso_a4)
     lat, lon = sgc_registro.get("latitud"), sgc_registro.get("longitud")
     if lat is not None and lon is not None:
         movimientos = sgc_movimientos_masa.consultar_movimientos_cercanos(lat, lon)
