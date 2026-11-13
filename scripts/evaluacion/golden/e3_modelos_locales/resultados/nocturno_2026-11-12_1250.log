@@ -1,0 +1,340 @@
+[2026-11-12 12:50:16] inicio: modelos=llama3:8b hermes3:latest num_ctx=16384
+[2026-11-12 12:50:16] llama3:8b: corrida (intento 1/3)
+llama3:8b | todo: 138 casos | ya hechos 0
+  ! Ollama no responde; manteniendo WSL despierto y esperando hasta 600s
+  ! Ollama volvió tras 10s
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  52%|█████▏    | 103/199 [00:00<00:00, 937.99it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1779.76it/s]
+  [1/138] aquai-dotacion-neta-definicion                OK   185.8s prompt=3353
+  [2/138] aquai-dotacion-bruta-perdidas                 OK   104.2s prompt=3240
+  [3/138] aquai-experiencia-profesional-5-anos          OK    87.5s prompt=3172
+  [4/138] geopot-ip-limites-atterberg                   OK   110.0s prompt=2614
+  [5/138] geopot-ip-muy-alta-50                         OK    56.6s prompt=2563
+  [6/138] geopot-coeficiente-uniformidad-cu             OK    32.9s prompt=1916
+  [7/138] vias-radio-minimo-80kmh-8porciento            NO    91.7s prompt=2698
+  [8/138] vias-sn-tabla-esals-cbr                       NO   113.1s prompt=4000
+  [9/138] vias-espesor-losa-factor-039                  OK    80.8s prompt=3210
+  [10/138] gerencia-cpi-formula-ev-ac                    OK    69.3s prompt=2109
+  [11/138] gerencia-spi-formula-ev-pv                    OK    20.4s prompt=2111
+  [12/138] gerencia-alerta-critica-cpi-090               OK    40.4s prompt=2121
+  [13/138] gerencia-score-compuesto-cpi-30porciento      OK    54.9s prompt=2843
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights:  52%|█████▏    | 104/201 [00:00<00:00, 1032.52it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 1893.71it/s]
+  [14/138] B-viento-no-es-sismo                          OK   187.7s prompt=4141
+  [15/138] B-biblioteca-estanterias-7kNm2                OK    77.7s prompt=3997
+  [16/138] B-viento-minimo-040                           OK    90.6s prompt=4303
+  [17/138] A-4-sistemas-estructurales                    OK    91.7s prompt=4013
+  [18/138] A-ajuste-dinamico-80-90                       OK   128.5s prompt=4185
+  [19/138] A-Aa-Av-Barranquilla                          OK   179.2s prompt=5815
+  [20/138] A-deriva-maxima-1-porciento                   OK   100.4s prompt=4062
+  [21/138] C-fc-minimo-general-17MPa                     NO    83.3s prompt=4311
+  [22/138] C-fc-minimo-DMO-DES-21MPa                     OK   109.2s prompt=4088
+  [23/138] C-recubrimiento-contacto-suelo-75mm           OK   127.6s prompt=5354
+  [24/138] C-factor-phi-traccion-090                     OK   166.7s prompt=4967
+  [25/138] C-ganchos-sismicos-135grados                  OK    87.2s prompt=4059
+  [26/138] C-cuantia-maxima-flexion-DES-0025             OK   226.4s prompt=6790
+  [27/138] C-fyt-maximo-confinamiento-700MPa             NO    70.0s prompt=3797
+  [28/138] C-diafragmas-espaciamiento-max-450mm          NO   223.4s prompt=6394
+  [29/138] D-supervision-tecnica-3000m2                  OK    91.3s prompt=3964
+  [30/138] D-mortero-relleno-minimo-125MPa               OK   104.3s prompt=3796
+  [31/138] D-celdas-verticales-max-65porciento           OK   114.1s prompt=4728
+  [32/138] D-diametro-minimo-refuerzo-celdas-10mm        OK    80.7s prompt=4010
+  [33/138] D-espesor-minimo-no-reforzada-120mm           OK   102.6s prompt=3951
+  [34/138] D-no-reforzada-zona-baja-Aa-005               OK    96.7s prompt=4135
+  [35/138] D-morteros-probetas-cubos-50mm                OK    75.1s prompt=4114
+  [36/138] E-mortero-pega-75MPa                          OK    80.7s prompt=4258
+  [37/138] E-espesor-muro-zona-alta-2pisos-110mm         OK   105.6s prompt=4719
+  [38/138] E-columnas-confinamiento-area-20000mm2        OK    84.4s prompt=4287
+  [39/138] G-m3-424-pies-tablares                        OK    82.6s prompt=4345
+  [40/138] G-humedad-madera-estructural-19-12porciento   OK   102.3s prompt=4311
+  [41/138] G-guadua-uniones-clavadas-prohibidas          OK   113.8s prompt=4215
+  [42/138] G-guadua-humedad-cargas-admisibles-19porcient NO   126.9s prompt=4422
+  [43/138] A-deriva-mamposteria-cortante-05porciento     OK    79.5s prompt=4145
+  [44/138] F-DCCR-formula-Ru-phiRn                       OK   116.8s prompt=4564
+  [45/138] F-PCD-limites-luz20m-peralte18m               OK   103.1s prompt=4401
+  [46/138] J-hidrante-hospital-500m2-63Ls                OK   105.4s prompt=4940
+  [47/138] J-muro-cortafuego-categoria1-3horas           OK    83.7s prompt=4371
+  [48/138] K-fuerza-apertura-puerta-250N                 OK    75.7s prompt=4293
+  [49/138] K-iluminacion-emergencia-15horas              OK   105.0s prompt=4938
+  [50/138] K-numero-salidas-501-1000-3salidas            OK    86.0s prompt=4252
+  [51/138] H-experiencia-geotecnista-5anos               OK   222.5s prompt=7307
+  [52/138] H-sondeos-categoria-alta-25m-4sondeos         OK   132.5s prompt=5180
+  [53/138] H-categoria-media-4a10niveles                 OK   277.1s prompt=7782
+  [54/138] I-excepcion-titulo-E-15viviendas              OK    76.6s prompt=4153
+  [55/138] I-registro-supervisor-5anos                   OK   106.8s prompt=5023
+  [56/138] I-dos-grados-supervision-AB                   OK    84.8s prompt=3994
+  [57/138] B-impacto-ascensores-100porciento             OK   113.8s prompt=4771
+  [58/138] B-factor-rafaga-G085                          OK   140.0s prompt=4882
+  [59/138] NTC1500-instalaciones-prohibidas-ascensor     OK    82.3s prompt=3786
+  [60/138] NTC174-modulo-finura-23-31                    OK   107.6s prompt=4817
+  [61/138] NTC121-fraguado-inicial-45min                 OK    62.8s prompt=3874
+  [62/138] Decreto1072-multa-no-reportar-AT-1000SMMLV    OK    93.1s prompt=4573
+  [63/138] Decreto1072-fase3-empresa-grande-6meses       OK   199.9s prompt=4108 TRUNCADO
+  [64/138] NTC174-terrones-arcilla-max-3porciento        OK    94.7s prompt=4460
+  [65/138] NTC121-expansion-autoclave-08porciento        OK    81.3s prompt=4415
+  [66/138] K-vidrio-templado-fragmenta-pequeños-pedazos  OK    86.6s prompt=4330
+  [67/138] K-tragaluz-angulo-15grados                    NO   116.7s prompt=3878
+  [68/138] K-templado-vs-termoendurecido-compresion      OK   119.4s prompt=4399
+  [69/138] K-barandas-vidrio-factor-seguridad-4          OK    99.4s prompt=4487
+  [70/138] K-vidrio-2mm-prohibido                        OK   135.8s prompt=4946
+  [71/138] K-esfuerzos-termicos-probabilidad-rotura-08po NO   164.3s prompt=5094
+  [72/138] K-vidrio-inclinado-mas-de-15grados            OK    98.9s prompt=4548
+  [73/138] F-analisis-racional-phi-miembros-080-conexion OK   213.6s prompt=5839
+  [74/138] F-espesor-minimo-entregado-95porciento        OK   116.8s prompt=4551
+  [75/138] F-f41-alcance-espesor-maximo-254mm            OK   111.1s prompt=4887
+  [76/138] F-f42-max-wt-elemento-rigidizado-ambos-bordes NO   203.9s prompt=6321
+  [77/138] F-f42-max-ht-almas-no-reforzadas-200          OK   136.3s prompt=5399
+  [78/138] F-f42-k-elemento-no-rigidizado-043            OK    94.7s prompt=4159
+  [79/138] F-f43-kv-almas-no-reforzadas-534              OK    84.4s prompt=4192
+  [80/138] F-f43-phi-tension-fluencia-seccion-bruta-090  OK    90.2s prompt=4406
+  [81/138] F-f43-phi-tension-rotura-seccion-neta-075     NO   149.2s prompt=4336
+  [82/138] F-f44-espesor-entramados-livianos-0455-2997   NO   158.0s prompt=5197
+  [83/138] F-f44-pbr1-riostra-compresion-001pn           OK   108.5s prompt=4389
+  [84/138] F-f45-tapon-diametro-efectivo-minimo-95mm     OK    92.6s prompt=4457
+  [85/138] F-f45-pernos-distancia-minima-3d              OK   157.0s prompt=5362
+  [86/138] F-f45-cierre-pnot-desgarramiento-tornillo-085 OK   107.4s prompt=4409
+  [87/138] F-f45-cierre-bloque-cortante-476mm            OK   135.1s prompt=4895
+  [88/138] F-f45-cierre-conexiones-otros-materiales      OK   250.3s prompt=5539
+  [89/138] F-f46-ntc3353-prueba-tension-seccion-completa OK   118.3s prompt=5068
+  [90/138] F-f46-acero-virgen-cuatro-especimenes         OK    97.3s prompt=4363
+  [91/138] F-f46-dccr-tres-especimenes-15pct             OK   156.5s prompt=5326
+  [92/138] F-f47-recubrimiento-minimo-50mm               OK   117.0s prompt=4945
+  [93/138] F-f47-espesor-minimo-071mm-calibre22          OK   104.1s prompt=4782
+  [94/138] F-f47-apuntalamiento-75pct-7dias              OK   137.3s prompt=4743
+  [95/138] F-f48-espesor-046-300mm                       OK   168.2s prompt=4525
+  [96/138] F-f48-perforaciones-espaciamiento-600mm       OK   107.1s prompt=4479
+  [97/138] F-f48-carga-axial-tablero-yeso-258kn          OK   168.7s prompt=6252
+  [98/138] F-f51-sistema-unidades-kgf                    OK    93.6s prompt=4452
+  [99/138] F-f51-alcance-tipos-estructuras               NO    71.1s prompt=3821
+  [100/138] F-f52-6082-t6-esfuerzo-255kgf                 OK   122.1s prompt=4794
+  [101/138] F-f52-durabilidad-a-agua-salada-proteccion    NO    87.2s prompt=4316
+  [102/138] F-f53-deflexion-voladizo-L180                 OK    87.7s prompt=4446
+  [103/138] F-f53-phi-union-soldada                       NO   108.7s prompt=4755
+  [104/138] F-f53-fatiga-crecimiento-grietas              OK   125.9s prompt=4491
+  [105/138] F-f541-2-esfuerzo-limite-po-6061-t6           OK   170.8s prompt=6242
+  [106/138] F-f543-totalmente-compacta-pandeo-local       OK    86.9s prompt=4297
+  [107/138] F-f543-beta0-elementos-salientes-no-soldados  OK   105.6s prompt=4847
+  [108/138] H-asentamiento-maximo-aisladas-30cm           OK   102.9s prompt=4290
+  [109/138] H-fsicp-carga-muerta-viva-normal-30           OK   175.8s prompt=6108
+  [110/138] H-sobrecarga-minima-excavaciones-15kpa        OK   198.4s prompt=7033
+  [111/138] H-cohesion-arcillas-30porciento-1mes          NO   224.0s prompt=4108 TRUNCADO
+  [112/138] H-kst-amax-macizos-rocosos-100                NO   176.2s prompt=4108 TRUNCADO
+  [113/138] H-desplante-muro-gravedad-1m                  NO   210.6s prompt=4108 TRUNCADO
+  [114/138] H-fs-deslizamiento-estatico-160               NO   176.0s prompt=4108 TRUNCADO
+  [115/138] H-componente-vertical-25km                    NO   184.1s prompt=4108 TRUNCADO
+  [116/138] H-amplificacion-limite-04g                    OK   104.9s prompt=4685
+  [117/138] H-historias-movimiento-minimo-tres            OK   272.8s prompt=8044
+  [118/138] H-plan-contingencia-3m                        NO   148.5s prompt=4108 TRUNCADO
+  [119/138] H-desviacion-verticalidad-pilote-3-100        NO   179.2s prompt=4108 TRUNCADO
+  [120/138] H-profundidad-raices-6m                       OK   163.7s prompt=6346
+  [121/138] H-punto-marchitamiento-pf-42                  OK   153.6s prompt=5895
+  [122/138] H-criterio-colapsabilidad-gamma-dcrit         OK   119.4s prompt=5044
+  [123/138] H-suelo-dispersivo-sales-sodio-40-60          OK   127.3s prompt=5097
+  [124/138] H-inclinacion-talud-rehabilitacion-18grados   OK   255.8s prompt=7823
+  [125/138] H-n160-minimo-licuacion-30golpes              OK   211.5s prompt=7240
+  [126/138] A-phi-p-torsional-extrema-1bP-08              OK    79.5s prompt=4160
+  [127/138] A-piso-debil-extremo-5bA-65porciento          OK    89.8s prompt=4246
+  [128/138] B-equipos-fijos-cargas-muertas                OK   100.9s prompt=4034
+  [129/138] B-responsabilidad-verificar-pesos-obra        NO   229.0s prompt=6711
+  [130/138] F-f544-kz-6061-t6                             NO    88.1s prompt=4282
+  [131/138] F-f544-tiempo-recuperacion-serie-7000         NO   195.4s prompt=5369
+  [132/138] F-f544-eta-un-camino-calor-tc25               OK   109.0s prompt=4819
+  [133/138] F-f545-espaciamiento-40epsilon-ry             OK    79.9s prompt=4204
+  [134/138] F-f545-restricciones-laterales-3-porciento    OK   135.8s prompt=5114
+  [135/138] F-f545-vigas-ensambladas-f5541                OK    85.9s prompt=4128
+  [136/138] F-f546-tirante-excentrico-06ao                OK   117.5s prompt=4802
+  [137/138] F-f546-tres-tipos-conexion-excentrica         OK   163.1s prompt=5633
+  [138/138] F-f546-prs-menor-fluencia-falla-local         OK    92.0s prompt=4355
+| Modelo | Batería | n | Pasa | Hecho | Enruta | Alucinación num. | Latencia p50 / p95 | tok/s | Truncados | Errores |
+|---|---|---|---|---|---|---|---|---|---|---|
+| hermes3:latest (ctx 8192) | motores | 13 | 13/13 | 13/13 | 13/13 | 0 | 90s / 187s | 5.4 | 0 | 0 |
+| hermes3:latest (ctx 8192) | nsr10 | 25 | 21/25 | 21/25 | — | 0 | 127s / 232s | 4.5 | 0 | 0 |
+| llama3:8b (ctx 8192) | motores | 13 | 11/13 | 11/13 | 13/13 | 0 | 77s / 111s | 6.2 | 0 | 0 |
+| llama3:8b (ctx 8192) | nsr10 | 25 | 23/25 | 23/25 | — | 0 | 96s / 239s | 4.9 | 0 | 0 |
+| llama3:8b (ctx 16384) | motores | 13 | 11/13 | 11/13 | 13/13 | 0 | 81s / 113s | 5.7 | 0 | 0 |
+| llama3:8b (ctx 16384) | nsr10 | 125 | 103/125 | 103/125 | — | 2 | 109s / 224s | 4.7 | 8 | 0 |
+| qwen2.5:14b (ctx 8192) | motores | 13 | 13/13 | 13/13 | 13/13 | 0 | 185s / 350s | 2.8 | 0 | 0 |
+| qwen2.5:14b (ctx 8192) | nsr10 | 25 | 24/25 | 24/25 | — | 0 | 212s / 469s | 2.4 | 0 | 0 |
+| qwen2.5:7b (ctx 8192) | motores | 13 | 13/13 | 13/13 | 13/13 | 0 | 132s / 230s | 5.1 | 0 | 0 |
+| qwen2.5:7b (ctx 8192) | nsr10 | 125 | 106/125 | 106/125 | — | 4 | 122s / 221s | 5.8 | 0 | 0 |
+| qwen2.5:7b (ctx 16384) | motores | 1 | 1/1 | 1/1 | 1/1 | 0 | 213s / 213s | 5.7 | 0 | 0 |
+| qwen2.5:7b (ctx 16384) | nsr10 | 9 | 9/9 | 9/9 | — | 0 | 302s / 452s | 3.2 | 0 | 0 |
+[2026-11-12 17:34:55] llama3:8b: terminado
+[2026-11-12 17:34:55] hermes3:latest: corrida (intento 1/3)
+hermes3:latest | todo: 138 casos | ya hechos 0
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  43%|████▎     | 86/199 [00:00<00:00, 856.64it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1852.01it/s]
+  [1/138] aquai-dotacion-neta-definicion                OK   177.2s prompt=3352
+  [2/138] aquai-dotacion-bruta-perdidas                 OK   107.8s prompt=3239
+  [3/138] aquai-experiencia-profesional-5-anos          OK    85.1s prompt=3171
+  [4/138] geopot-ip-limites-atterberg                   OK   127.2s prompt=2613
+  [5/138] geopot-ip-muy-alta-50                         OK    50.3s prompt=2562
+  [6/138] geopot-coeficiente-uniformidad-cu             OK    76.2s prompt=1915
+  [7/138] vias-radio-minimo-80kmh-8porciento            OK    89.6s prompt=2697
+  [8/138] vias-sn-tabla-esals-cbr                       OK   142.1s prompt=3999
+  [9/138] vias-espesor-losa-factor-039                  OK    89.6s prompt=3209
+  [10/138] gerencia-cpi-formula-ev-ac                    OK    87.6s prompt=2108
+  [11/138] gerencia-spi-formula-ev-pv                    OK    61.5s prompt=2110
+  [12/138] gerencia-alerta-critica-cpi-090               OK    37.8s prompt=2120
+  [13/138] gerencia-score-compuesto-cpi-30porciento      OK    60.4s prompt=2842
+Loading weights:   0%|          | 0/201 [00:00<?, ?it/s]Loading weights: 100%|██████████| 201/201 [00:00<00:00, 2180.31it/s]
+  [14/138] B-viento-no-es-sismo                          OK   237.9s prompt=4771
+  [15/138] B-biblioteca-estanterias-7kNm2                OK    77.1s prompt=4054
+  [16/138] B-viento-minimo-040                           OK   118.3s prompt=4523
+  [17/138] A-4-sistemas-estructurales                    OK   112.6s prompt=4054
+  [18/138] A-ajuste-dinamico-80-90                       OK   118.4s prompt=4243
+  [19/138] A-Aa-Av-Barranquilla                          OK   150.6s prompt=5125
+  [20/138] A-deriva-maxima-1-porciento                   OK   117.9s prompt=4061
+  [21/138] C-fc-minimo-general-17MPa                     NO   145.2s prompt=4402
+  [22/138] C-fc-minimo-DMO-DES-21MPa                     NO   135.2s prompt=4169
+  [23/138] C-recubrimiento-contacto-suelo-75mm           OK   152.1s prompt=5805
+  [24/138] C-factor-phi-traccion-090                     OK   131.7s prompt=4966
+  [25/138] C-ganchos-sismicos-135grados                  OK    90.0s prompt=4184
+  [26/138] C-cuantia-maxima-flexion-DES-0025             OK   170.8s prompt=4794
+  [27/138] C-fyt-maximo-confinamiento-700MPa             OK   103.1s prompt=4743
+  [28/138] C-diafragmas-espaciamiento-max-450mm          NO   233.1s prompt=6888
+  [29/138] D-supervision-tecnica-3000m2                  OK    83.4s prompt=4043
+  [30/138] D-mortero-relleno-minimo-125MPa               OK    77.3s prompt=3918
+  [31/138] D-celdas-verticales-max-65porciento           OK    90.2s prompt=4326
+  [32/138] D-diametro-minimo-refuerzo-celdas-10mm        NO   156.5s prompt=4018
+  [33/138] D-espesor-minimo-no-reforzada-120mm           OK   127.3s prompt=4005
+  [34/138] D-no-reforzada-zona-baja-Aa-005               OK   136.2s prompt=4065
+  [35/138] D-morteros-probetas-cubos-50mm                OK    81.5s prompt=4139
+  [36/138] E-mortero-pega-75MPa                          OK    80.7s prompt=3848
+  [37/138] E-espesor-muro-zona-alta-2pisos-110mm         OK    98.0s prompt=4566
+  [38/138] E-columnas-confinamiento-area-20000mm2        OK    89.7s prompt=4299
+  [39/138] G-m3-424-pies-tablares                        OK    76.6s prompt=4141
+  [40/138] G-humedad-madera-estructural-19-12porciento   OK   120.2s prompt=4310
+  [41/138] G-guadua-uniones-clavadas-prohibidas          OK   109.1s prompt=4241
+  [42/138] G-guadua-humedad-cargas-admisibles-19porcient OK   154.5s prompt=4940
+  [43/138] A-deriva-mamposteria-cortante-05porciento     OK    87.0s prompt=4144
+  [44/138] F-DCCR-formula-Ru-phiRn                       OK   128.4s prompt=4753
+  [45/138] F-PCD-limites-luz20m-peralte18m               OK   145.2s prompt=4452
+  [46/138] J-hidrante-hospital-500m2-63Ls                OK   110.4s prompt=4823
+  [47/138] J-muro-cortafuego-categoria1-3horas           OK    87.6s prompt=4422
+  [48/138] K-fuerza-apertura-puerta-250N                 NO   125.8s prompt=4463
+  [49/138] K-iluminacion-emergencia-15horas              OK   111.2s prompt=4980
+  [50/138] K-numero-salidas-501-1000-3salidas            OK    99.0s prompt=4324
+  [51/138] H-experiencia-geotecnista-5anos               OK   196.8s prompt=6746
+  [52/138] H-sondeos-categoria-alta-25m-4sondeos         OK   131.5s prompt=5275
+  [53/138] H-categoria-media-4a10niveles                 OK   165.1s prompt=6008
+  [54/138] I-excepcion-titulo-E-15viviendas              OK   134.3s prompt=4152
+  [55/138] I-registro-supervisor-5anos                   OK   147.6s prompt=5022
+  [56/138] I-dos-grados-supervision-AB                   OK    71.9s prompt=4026
+  [57/138] B-impacto-ascensores-100porciento             NO   206.5s prompt=5106
+  [58/138] B-factor-rafaga-G085                          OK   179.7s prompt=5276
+  [59/138] NTC1500-instalaciones-prohibidas-ascensor     OK   160.6s prompt=3785
+  [60/138] NTC174-modulo-finura-23-31                    OK   128.3s prompt=4057
+  [61/138] NTC121-fraguado-inicial-45min                 OK    95.5s prompt=3925
+  [62/138] Decreto1072-multa-no-reportar-AT-1000SMMLV    OK   310.5s prompt=7862
+  [63/138] Decreto1072-fase3-empresa-grande-6meses       OK   349.5s prompt=8585
+  [64/138] NTC174-terrones-arcilla-max-3porciento        OK   112.5s prompt=4459
+  [65/138] NTC121-expansion-autoclave-08porciento        OK   136.7s prompt=4337
+  [66/138] K-vidrio-templado-fragmenta-pequeños-pedazos  NO   280.3s prompt=6989
+  [67/138] K-tragaluz-angulo-15grados                    OK   108.5s prompt=4587
+  [68/138] K-templado-vs-termoendurecido-compresion      NO   200.2s prompt=4535
+  [69/138] K-barandas-vidrio-factor-seguridad-4          OK   117.7s prompt=4466
+  [70/138] K-vidrio-2mm-prohibido                        OK   215.6s prompt=4367
+  [71/138] K-esfuerzos-termicos-probabilidad-rotura-08po NO   174.2s prompt=4606
+  [72/138] K-vidrio-inclinado-mas-de-15grados            OK    99.9s prompt=4427
+  [73/138] F-analisis-racional-phi-miembros-080-conexion OK   250.0s prompt=6426
+  [74/138] F-espesor-minimo-entregado-95porciento        OK   120.1s prompt=4543
+  [75/138] F-f41-alcance-espesor-maximo-254mm            OK   154.0s prompt=4662
+  [76/138] F-f42-max-wt-elemento-rigidizado-ambos-bordes NO   209.3s prompt=4974
+  [77/138] F-f42-max-ht-almas-no-reforzadas-200          OK   211.1s prompt=5138
+  [78/138] F-f42-k-elemento-no-rigidizado-043            NO   165.4s prompt=4411
+  [79/138] F-f43-kv-almas-no-reforzadas-534              OK   163.8s prompt=5095
+  [80/138] F-f43-phi-tension-fluencia-seccion-bruta-090  NO   231.2s prompt=5592
+  [81/138] F-f43-phi-tension-rotura-seccion-neta-075     NO   244.6s prompt=5560
+  [82/138] F-f44-espesor-entramados-livianos-0455-2997   NO   158.7s prompt=5182
+  [83/138] F-f44-pbr1-riostra-compresion-001pn           OK   146.0s prompt=4841
+  [84/138] F-f45-tapon-diametro-efectivo-minimo-95mm     OK   107.9s prompt=4482
+  [85/138] F-f45-pernos-distancia-minima-3d              OK   162.3s prompt=5361
+  [86/138] F-f45-cierre-pnot-desgarramiento-tornillo-085 NO   167.5s prompt=4536
+  [87/138] F-f45-cierre-bloque-cortante-476mm            OK   187.1s prompt=5207
+  [88/138] F-f45-cierre-conexiones-otros-materiales      OK   195.4s prompt=4460
+  [89/138] F-f46-ntc3353-prueba-tension-seccion-completa OK   146.0s prompt=5410
+  [90/138] F-f46-acero-virgen-cuatro-especimenes         OK    89.1s prompt=4225
+  [91/138] F-f46-dccr-tres-especimenes-15pct             OK   173.4s prompt=4786
+  [92/138] F-f47-recubrimiento-minimo-50mm               OK   127.4s prompt=5022
+  [93/138] F-f47-espesor-minimo-071mm-calibre22          OK   153.2s prompt=5530
+  [94/138] F-f47-apuntalamiento-75pct-7dias              OK   152.6s prompt=5137
+  [95/138] F-f48-espesor-046-300mm                       OK   114.5s prompt=4545
+  [96/138] F-f48-perforaciones-espaciamiento-600mm       OK   103.4s prompt=4508
+  [97/138] F-f48-carga-axial-tablero-yeso-258kn          OK   201.7s prompt=6368
+  [98/138] F-f51-sistema-unidades-kgf                    OK   132.7s prompt=5207
+  [99/138] F-f51-alcance-tipos-estructuras               OK   104.2s prompt=3812
+  [100/138] F-f52-6082-t6-esfuerzo-255kgf                 NO   153.4s prompt=5574
+  [101/138] F-f52-durabilidad-a-agua-salada-proteccion    NO   120.4s prompt=5005
+  [102/138] F-f53-deflexion-voladizo-L180                 OK   150.6s prompt=4885
+  [103/138] F-f53-phi-union-soldada                       NO   170.5s prompt=5102
+  [104/138] F-f53-fatiga-crecimiento-grietas              OK   215.4s prompt=4872
+  [105/138] F-f541-2-esfuerzo-limite-po-6061-t6           NO   156.9s prompt=5673
+  [106/138] F-f543-totalmente-compacta-pandeo-local       OK   118.5s prompt=4506
+  [107/138] F-f543-beta0-elementos-salientes-no-soldados  OK   166.1s prompt=5915
+  [108/138] H-asentamiento-maximo-aisladas-30cm           OK    99.5s prompt=4456
+  [109/138] H-fsicp-carga-muerta-viva-normal-30           OK   265.1s prompt=6064
+  [110/138] H-sobrecarga-minima-excavaciones-15kpa        OK   225.9s prompt=7417
+  [111/138] H-cohesion-arcillas-30porciento-1mes          OK   222.4s prompt=6530
+  [112/138] H-kst-amax-macizos-rocosos-100                OK   258.6s prompt=7546
+  [113/138] H-desplante-muro-gravedad-1m                  OK   396.0s prompt=9802
+  [114/138] H-fs-deslizamiento-estatico-160               OK   186.6s prompt=6123
+  [115/138] H-componente-vertical-25km                    OK   380.4s prompt=10407
+  [116/138] H-amplificacion-limite-04g                    OK   120.5s prompt=4470
+  [117/138] H-historias-movimiento-minimo-tres            OK   249.5s prompt=6861
+  [118/138] H-plan-contingencia-3m                        NO   328.3s prompt=9699
+  [119/138] H-desviacion-verticalidad-pilote-3-100        OK   249.8s prompt=7963
+  [120/138] H-profundidad-raices-6m                       NO    16.0s prompt=233 ConnectError: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+  [121/138] H-punto-marchitamiento-pf-42                  OK   148.3s prompt=5098
+  [122/138] H-criterio-colapsabilidad-gamma-dcrit         OK   242.7s prompt=7503
+  [123/138] H-suelo-dispersivo-sales-sodio-40-60          OK   142.7s prompt=5759
+  [124/138] H-inclinacion-talud-rehabilitacion-18grados   OK   338.0s prompt=9061
+  [125/138] H-n160-minimo-licuacion-30golpes              OK   233.3s prompt=7476
+  [126/138] A-phi-p-torsional-extrema-1bP-08              OK    77.9s prompt=4147
+  [127/138] A-piso-debil-extremo-5bA-65porciento          OK   148.0s prompt=4455
+  [128/138] B-equipos-fijos-cargas-muertas                NO   119.6s prompt=4445
+  [129/138] B-responsabilidad-verificar-pesos-obra        OK   230.4s prompt=6596
+  [130/138] F-f544-kz-6061-t6                             NO   116.6s prompt=4495
+  [131/138] F-f544-tiempo-recuperacion-serie-7000         NO   171.7s prompt=5229
+  [132/138] F-f544-eta-un-camino-calor-tc25               OK   117.2s prompt=4790
+  [133/138] F-f545-espaciamiento-40epsilon-ry             OK   194.8s prompt=5576
+  [134/138] F-f545-restricciones-laterales-3-porciento    NO   184.4s prompt=5262
+  [135/138] F-f545-vigas-ensambladas-f5541                OK   116.5s prompt=4205
+  [136/138] F-f546-tirante-excentrico-06ao                OK   116.5s prompt=4889
+  [137/138] F-f546-tres-tipos-conexion-excentrica         NO   166.7s prompt=5084
+  [138/138] F-f546-prs-menor-fluencia-falla-local         OK   122.4s prompt=5064
+| Modelo | Batería | n | Pasa | Hecho | Enruta | Alucinación num. | Latencia p50 / p95 | tok/s | Truncados | Errores |
+|---|---|---|---|---|---|---|---|---|---|---|
+| hermes3:latest (ctx 8192) | motores | 13 | 13/13 | 13/13 | 13/13 | 0 | 90s / 187s | 5.4 | 0 | 0 |
+| hermes3:latest (ctx 8192) | nsr10 | 25 | 21/25 | 21/25 | — | 0 | 127s / 232s | 4.5 | 0 | 0 |
+| hermes3:latest (ctx 16384) | motores | 13 | 13/13 | 13/13 | 13/13 | 0 | 88s / 142s | 5.6 | 0 | 0 |
+| hermes3:latest (ctx 16384) | nsr10 | 125 | 99/125 | 99/125 | — | 1 | 146s / 280s | 4.1 | 0 | 1 |
+| llama3:8b (ctx 8192) | motores | 13 | 11/13 | 11/13 | 13/13 | 0 | 77s / 111s | 6.2 | 0 | 0 |
+| llama3:8b (ctx 8192) | nsr10 | 25 | 23/25 | 23/25 | — | 0 | 96s / 239s | 4.9 | 0 | 0 |
+| llama3:8b (ctx 16384) | motores | 13 | 11/13 | 11/13 | 13/13 | 0 | 81s / 113s | 5.7 | 0 | 0 |
+| llama3:8b (ctx 16384) | nsr10 | 125 | 103/125 | 103/125 | — | 2 | 109s / 224s | 4.7 | 8 | 0 |
+| qwen2.5:14b (ctx 8192) | motores | 13 | 13/13 | 13/13 | 13/13 | 0 | 185s / 350s | 2.8 | 0 | 0 |
+| qwen2.5:14b (ctx 8192) | nsr10 | 25 | 24/25 | 24/25 | — | 0 | 212s / 469s | 2.4 | 0 | 0 |
+| qwen2.5:7b (ctx 8192) | motores | 13 | 13/13 | 13/13 | 13/13 | 0 | 132s / 230s | 5.1 | 0 | 0 |
+| qwen2.5:7b (ctx 8192) | nsr10 | 125 | 106/125 | 106/125 | — | 4 | 122s / 221s | 5.8 | 0 | 0 |
+| qwen2.5:7b (ctx 16384) | motores | 1 | 1/1 | 1/1 | 1/1 | 0 | 213s / 213s | 5.7 | 0 | 0 |
+| qwen2.5:7b (ctx 16384) | nsr10 | 9 | 9/9 | 9/9 | — | 0 | 302s / 452s | 3.2 | 0 | 0 |
+[2026-11-12 23:25:46] hermes3:latest: terminado
+[2026-11-12 23:25:46] comparación
+# Comparación de modelos locales (#172)
+
+Criterio prerregistrado: ver el docstring de `comparar_modelos.py`. Casos pareados (presentes en todos): **137**.
+
+| Modelo | Pasa | Tasa | Wilson IC95 | Bootstrap por título IC95 | Latencia p50 | Origen de filas |
+|---|---|---|---|---|---|---|
+| qwen2.5:7b | 127/137 | 92.7% | 87.1%–96.0% | 88.3%–98.9% | 122 s | {'ctx16384': 10, 'ctx8192_sin_truncar': 128, 'excluidos_truncados_8k': 0} |
+| llama3:8b | 113/137 | 82.5% | 75.3%–87.9% | 76.1%–90.2% | 107 s | {'ctx16384': 138, 'ctx8192_sin_truncar': 0, 'excluidos_truncados_8k': 0} |
+| hermes3:latest | 112/137 | 81.8% | 74.4%–87.3% | 73.5%–94.5% | 142 s | {'ctx16384': 137, 'ctx8192_sin_truncar': 0, 'excluidos_truncados_8k': 0} |
+
+Candidato (mayor tasa): **qwen2.5:7b**
+
+| Rival | Solo candidato acierta | Solo rival acierta | p McNemar | p Holm | ¿Se distingue? |
+|---|---|---|---|---|---|
+| llama3:8b | 18 | 4 | 0.0043 | 0.0043 | sí |
+| hermes3:latest | 17 | 2 | 0.0007 | 0.0015 | sí |
+
+**Gana qwen2.5:7b**: se distingue de todos los rivales (p_Holm < 0.05).
+
+[2026-11-12 23:25:47] fin
