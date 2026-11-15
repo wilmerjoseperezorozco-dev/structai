@@ -123,8 +123,7 @@ def correr(modelo: str, modos: list[str], maximo: int | None = None, salida_nomb
                 # falsear no tiene qué cambiar. Se registra sin llamar al LLM.
                 with salida.open("a", encoding="utf-8") as fh:
                     fh.write(json.dumps({"clave": clave, "id": c["id"], "modo": modo, "modelo": modelo,
-                                         "resultado": "no_aplica", "motivo": "hecho no numérico"}, ensure_ascii=False) + "
-")
+                                         "resultado": "no_aplica", "motivo": "hecho no numérico"}, ensure_ascii=False) + "\n")
                 continue
             for intento in range(cb.REINTENTOS_CASO + 1):
                 cb.esperar_ollama()
