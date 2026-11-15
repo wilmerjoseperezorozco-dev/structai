@@ -118,6 +118,14 @@ def correr(modelo: str, modos: list[str], maximo: int | None = None, salida_nomb
             clave = hashlib.sha1(f"{modo}|{c['id']}|{c['pregunta']}".encode()).hexdigest()[:16]
             if clave in hechos:
                 continue
+            if not any(RX_NUM.search(v) for v in c["variantes"]):
+                # Hecho no numérico (p. ej. "no", "nivel máximo"): quitar borraría líneas con palabras genéricas y
+                # falsear no tiene qué cambiar. Se registra sin llamar al LLM.
+                with salida.open("a", encoding="utf-8") as fh:
+                    fh.write(json.dumps({"clave": clave, "id": c["id"], "modo": modo, "modelo": modelo,
+                                         "resultado": "no_aplica", "motivo": "hecho no numérico"}, ensure_ascii=False) + "
+")
+                continue
             for intento in range(cb.REINTENTOS_CASO + 1):
                 cb.esperar_ollama()
                 estado = {"cambios": 0, "mapa": {}}
