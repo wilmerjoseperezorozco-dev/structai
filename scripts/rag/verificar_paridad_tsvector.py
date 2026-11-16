@@ -61,6 +61,23 @@ def sql_bloque(idx, corpus, bloque) -> str:
             "and h.hv <> loc.hv order by 1")
 
 
+def sql_docs(idx, corpus, bloques=None) -> str:
+    """Comparación por documento de todo el corpus (id md5 de 7 hex, huella de 6 hex): devuelve conteos y los ids que
+    difieren. Más pesado que por bloques, pero dice cuántos documentos y cuáles."""
+    tabla, col = TABLA[corpus]
+    loc = bloques_locales(idx, corpus)
+    sel = sorted(loc) if bloques is None else bloques
+    pares = sorted((mid[:7], h[:6]) for b in sel for mid, h in loc.get(b, []))
+    filtro = "" if bloques is None else (f" where get_byte(decode(md5(id::text),'hex'),0) % {BLOQUES} in "
+                                         f"({','.join(map(str, bloques))})")
+    valores = ",".join(f"('{m}','{h}')" for m, h in pares)
+    return (f"with h as (select id::text id, left(md5(id::text),7) mid, left({_HUELLA_PG.format(col=col)},6) hv "
+            f"from public.{tabla}{filtro}), loc(mid,hv) as (values {valores}) "
+            "select count(*) n, count(*) filter (where h.hv <> loc.hv) distintos, "
+            "(select count(*) from h) n_pg, string_agg(h.id, ' ; ') filter (where h.hv <> loc.hv) ids "
+            "from h join loc using (mid)")
+
+
 def sql_diff(idx, corpus, chunk_id) -> str:
     """Lexemas en los que difieren Postgres y el analizador local para un documento (solo lexemas, no el texto)."""
     tabla, col = TABLA[corpus]
@@ -82,11 +99,15 @@ def main() -> None:
     ap.add_argument("corpus", choices=CORPUS)
     ap.add_argument("--bloque", type=int)
     ap.add_argument("--diff", help="id de un documento: lexemas en que difieren")
+    ap.add_argument("--docs", action="store_true", help="comparación por documento de todo el corpus")
+    ap.add_argument("--bloques", help="con --docs: solo estos bloques, p. ej. 0,1,2")
     ap.add_argument("--indice", type=Path, default=RAIZ / "apps" / "api" / "datos_indice" / "indice_rag.npz")
     a = ap.parse_args()
     idx = IndiceLocal.cargar(a.indice)
     if a.diff:
         print(sql_diff(idx, a.corpus, a.diff))
+    elif a.docs:
+        print(sql_docs(idx, a.corpus, [int(x) for x in a.bloques.split(",")] if a.bloques else None))
     else:
         print(sql_bloque(idx, a.corpus, a.bloque) if a.bloque is not None else sql_bloques(idx, a.corpus))
 

@@ -1798,8 +1798,9 @@ def _indice_local():
 
 
 def estado_indice_local() -> dict:
-    """Para /health?deep=true."""
-    idx = _indice["valor"]
+    """Para /health?deep=true. Fuerza la carga perezosa (una sola vez), así el chequeo del despliegue ve el estado real
+    aunque todavía no haya llegado ninguna consulta."""
+    idx = _indice_local()
     return {"activo": idx is not None, "error": _indice["error"], **(idx.resumen() if idx is not None else {})}
 
 

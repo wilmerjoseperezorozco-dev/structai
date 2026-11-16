@@ -92,6 +92,7 @@ _CIENTIFICO = re.compile(r"[+-]?[0-9]+(?:\.[0-9]+)?[eE][+-]?[0-9]+")
 _NUMERO = re.compile(r"[+-]?[0-9]+(?:\.[0-9]+)*")
 _PUNTEADO = re.compile(r"[A-Za-z0-9]+(?:\.[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*)+")   # 'A-3.2.2' no: es 'a' + '3.2.2'
 _CARS_RUTA = re.compile(r"[A-Za-z0-9._\-~/]*")
+_CON_GUION_BAJO = re.compile(r"[A-Za-z0-9]*_[A-Za-z0-9_]*(?=[./][A-Za-z0-9])")  # 'L0080_93.pdf' es una ruta; 'a_b' no
 _RUTA_URL = re.compile(r"/[A-Za-z0-9._\-~/%]*")
 
 
@@ -107,8 +108,13 @@ def _alnum_fin(s: str, i: int) -> int:
     return i
 
 
+def _punto_doble(s: str, i: int) -> bool:
+    """Exactamente dos puntos tras una palabra o número: Postgres emite el token de archivo '..' (con tres, nada)."""
+    return s.startswith("..", i) and not s.startswith("...", i)
+
+
 def _recortar_ruta(t: str) -> str:
-    return t.rstrip(".-")
+    return t.rstrip(".-/")                # PG: "mm/mm/ºC" -> "mm/mm", "kN/m/." -> "kn/m"
 
 
 def tokens(s: str) -> Iterable[list[tuple[str, str]]]:
@@ -137,6 +143,9 @@ def tokens(s: str) -> Iterable[list[tuple[str, str]]]:
                 continue
             yield [(_tipo_numero(m.group()), m.group())]
             i = m.end()
+            if _punto_doble(s, i):
+                yield [("file", "..")]         # 'x -1.. y' -> '-1', '..'
+                i += 2
             continue
         if c == "/" and i + 1 < n and (s[i + 1].isascii() and (s[i + 1].isalnum() or s[i + 1] in "._-~")):
             m = _CARS_RUTA.match(s, i)
@@ -147,8 +156,8 @@ def tokens(s: str) -> Iterable[list[tuple[str, str]]]:
                 continue
             i += 1
             continue
-        if not _es_alnum(c):
-            i += 1
+        if not _es_alnum(c) or unicodedata.category(c)[0] == "M":
+            i += 1                              # una marca combinante solo cuenta dentro de una palabra (v̄s), no sola (⚠️)
             continue
         # Correo, URL sin protocolo, host o ruta: solo arrancan con ASCII alfanumérico.
         if c.isascii():
@@ -167,6 +176,12 @@ def tokens(s: str) -> Iterable[list[tuple[str, str]]]:
                     yield [("sci", m.group())]
                     i = m.end()
                     continue
+            m = _CON_GUION_BAJO.match(s, i)
+            if m:
+                t = _recortar_ruta(_CARS_RUTA.match(s, i).group())
+                yield [("file", t)]
+                i += len(t)
+                continue
             m = _PUNTEADO.match(s, i)
             if m and not (m.end() < n and _es_alnum(s[m.end()]) and not s[m.end()].isascii()):
                 p = m.group()
@@ -200,6 +215,9 @@ def tokens(s: str) -> Iterable[list[tuple[str, str]]]:
                 m = _NUMERO.match(s, i)
                 yield [(_tipo_numero(m.group()), m.group())]
                 i = m.end()
+                if _punto_doble(s, i):
+                    yield [("file", "..")]     # 'Artículo 5.12.. Aparte' -> '5.12', '..' (igual que tras palabra)
+                    i += 2
                 continue
         j = _alnum_fin(s, i)
         partes = [s[i:j]]
@@ -227,11 +245,20 @@ def tokens(s: str) -> Iterable[list[tuple[str, str]]]:
                 i += 1                         # tras un compuesto, '-1' pierde el signo: 'G-A-1' -> 'g-a', 'g', 'a', '1'
             continue
         w = partes[0]
+        if (any(_es_digito(x) for x in w) and j + 1 < n and s[j] in "./" and s[j + 1].isascii()
+                and s[j + 1].isalnum()):
+            t = _recortar_ruta(w + _CARS_RUTA.match(s, j).group())   # 'artículo10.6.1.3' es una ruta, 'artículo.3' no
+            yield [("file", t)]
+            i += len(t)
+            continue
         if any(_es_digito(x) for x in w):
             yield [("numword", w)]
         else:
             yield [("asciiword" if w.isascii() else "word", w)]
         i = j
+        if _punto_doble(s, i):
+            yield [("file", "..")]             # 'concreto.. Los' -> 'concret', '..'; con tres puntos no hay token
+            i += 2
 
 
 def _tipo_numero(t: str) -> str:
@@ -391,8 +418,17 @@ class IndiceLocal:
         return cand[orden].tolist()
 
     def _lexica(self, grupos: list[list[str]], mascara: np.ndarray, limite: int) -> list[int]:
-        if not grupos:
+        docs, res = self._puntajes_lexicos(grupos, mascara)
+        if docs.size == 0:
             return []
+        orden = np.argsort(-res, kind="stable")[:limite]
+        return docs[orden].tolist()
+
+    def _puntajes_lexicos(self, grupos: list[list[str]], mascara: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        """Documentos que cumplen la consulta y su ts_rank en float32 (sin ordenar)."""
+        vacio = (np.zeros(0, dtype=np.int64), np.zeros(0, dtype=np.float32))
+        if not grupos:
+            return vacio
         # documentos que cumplen algún grupo (OR de grupos; dentro de un grupo, todos sus lexemas)
         cumple = np.zeros(self.n, dtype=bool)
         conteo: dict[str, np.ndarray] = {}
@@ -411,7 +447,7 @@ class IndiceLocal:
         cumple &= mascara
         docs = np.flatnonzero(cumple)
         if docs.size == 0:
-            return []
+            return vacio
         # ts_rank (calc_rank_or): suma por término único, en el orden de bytes de los términos, float32 como en C
         items = sorted({x for g in grupos for x in g}, key=lambda x: x.encode("utf-8"))
         res = np.zeros(docs.size, dtype=np.float32)
@@ -420,8 +456,7 @@ class IndiceLocal:
             aporte = _APORTE[n].astype(np.float64) / _PI2_6
             res = np.where(n > 0, (res.astype(np.float64) + aporte).astype(np.float32), res)
         res = (res / np.float32(len(items))).astype(np.float32)
-        orden = np.argsort(-res, kind="stable")[:limite]
-        return docs[orden].tolist()
+        return docs, res
 
     def _metadata(self, i: int) -> dict:
         nid = self.norma_ids[i]
@@ -489,6 +524,14 @@ def _ilike(patron: str) -> re.Pattern:
 
 
 # ─── Construcción de la instantánea (lo usa scripts/rag/construir_indice_local.py) ─────────────────────────────────────
+def _version_snowball() -> str:
+    try:
+        from importlib.metadata import version
+        return version("snowballstemmer")
+    except Exception:  # noqa: BLE001
+        return "?"
+
+
 def construir_archivo(filas: list[dict], normas_registro: dict, ruta: Path, extra_manifiesto: dict) -> dict:
     """filas: dicts con corpus (nombre), id, norma, seccion, contenido, motor, norma_id, embedding (lista o None)."""
     import datetime as dt
@@ -529,6 +572,6 @@ def construir_archivo(filas: list[dict], normas_registro: dict, ruta: Path, extr
     man = {"construido_en": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
            "filas_por_corpus": dict(Counter(f["corpus"] for f in filas)), "dim": dim, "lexemas": len(vocab),
            "postings": len(docs), "bytes": len(datos), "sha256": hashlib.sha256(datos).hexdigest(),
-           "snowballstemmer": getattr(snowballstemmer, "__version__", "?"), **extra_manifiesto}
+           "snowballstemmer": _version_snowball(), **extra_manifiesto}
     ruta.with_suffix(".manifiesto.json").write_text(json.dumps(man, indent=2, ensure_ascii=False), encoding="utf-8")
     return man

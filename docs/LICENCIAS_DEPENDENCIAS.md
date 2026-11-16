@@ -2,7 +2,7 @@
 
 Generado por `scripts/inventario/licencias.py`; no editar a mano. Lee la licencia de los metadatos del paquete instalado (Python) o de `node_modules` (npm). **«Sin verificar» significa que el paquete no estaba instalado al generar el informe, no que su licencia sea buena o mala.** Solo dependencias directas; las transitivas no se revisan. No es asesoría legal.
 
-**Resumen (57 dependencias directas):** copyleft débil: revisar: 2 · permisiva: 51 · sin verificar: 4.
+**Resumen (58 dependencias directas):** copyleft débil: revisar: 2 · permisiva: 52 · sin verificar: 4.
 
 **Para revisar primero (6):** `pytest-rerunfailures`, `ifcopenshell`, `qdrant-client`, `anthropic`, `google-generativeai`, `watchdog`.
 
@@ -14,6 +14,7 @@ El repositorio es de propiedad del autor y no es de código abierto ([LICENSE](.
 | Python | `google-generativeai` | packages/bim-intelligence | sin verificar (no instalado) | sin verificar |
 | Python | `ifcopenshell` | packages/bim-intelligence | GNU Lesser General Public License v3 or later (LGPLv3+) | copyleft débil: revisar |
 | Python | `qdrant-client` | packages/bim-intelligence | sin verificar (no instalado) | sin verificar |
+| Python | `snowballstemmer` | apps/api | BSD-3-Clause | permisiva |
 | Python | `watchdog` | packages/bim-intelligence | sin verificar (no instalado) | sin verificar |
 | Python (pruebas) | `pytest-rerunfailures` | apps/api | Mozilla Public License 2.0 (MPL 2.0) | copyleft débil: revisar |
 | Python | `cryptography` | apps/api | Apache-2.0 OR BSD-3-Clause | permisiva |
