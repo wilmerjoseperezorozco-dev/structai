@@ -1,6 +1,6 @@
 {
-"fuente": "NSR-10 Apéndice A-4 (Decreto 926 de 2010) con modificaciones del Decreto 092 de 2011",
-"vigencia": "Posteriores al Decreto 092 de 2011 sin verificar; Supía (Decreto 1711/2021) y Guamal sin resolver",
+"fuente": "NSR-10 Apéndice A-4 (Decreto 926 de 2010) con modificaciones de los Decretos 092 de 2011 y 1711 de 2021",
+"vigencia": "Decretos 092/2011 y 1711/2021 aplicados; Guamal sin resolver; auditoría completa de anexos pendiente (#189)",
 "municipios": [
 {
 "codigo": "05001",
@@ -3746,12 +3746,12 @@
 "codigo": "17777",
 "municipio": "Supía",
 "departamento": "Caldas",
-"aa": 0.15,
+"aa": 0.25,
 "av": 0.3,
 "ae": 0.2,
 "ad": 0.1,
 "zona": "Alta",
-"modificado_por": null
+"modificado_por": "Decreto 1711 de 2021 (anexo técnico, pág. 4 del PDF oficial de MinVivienda)"
 },
 {
 "codigo": "17867",
