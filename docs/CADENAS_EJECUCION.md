@@ -2,11 +2,11 @@
 
 Generado por `scripts/inventario/cadenas_ejecucion.py`; no editar a mano. Análisis **estático** (AST + imports): dice qué pasos hay y de qué tipo, **no cuánto tardan**. El orden de trabajo lo da latencia × frecuencia medidas (fase 1, paso 2), nunca este conteo solo. Ver el docstring para la definición de paso, tipo y etiqueta.
 
-- Código analizado: 691 módulos, 2,792 funciones (sin pruebas).
-- Puntos de entrada: 99 endpoints y 372 pipelines fuera de línea.
-- **Candidatas a flujo atómico (≥ 4 pasos secuenciales): 99** (12 endpoints, 87 pipelines).
-- Cadenas futuras con ≥ 4 motores que pasan por un motor planificado o bloqueado: **46** (solo nodos declarados en `docs/coherencia_motores.json`).
-- Resolución de los pasos: externo 1258, import 126, local 381, por_nombre 62 (`por_nombre` = función única en el repo con ese nombre; revisar si un paso parece fuera de lugar).
+- Código analizado: 694 módulos, 2,826 funciones (sin pruebas).
+- Puntos de entrada: 100 endpoints y 373 pipelines fuera de línea.
+- **Candidatas a flujo atómico (≥ 4 pasos secuenciales): 100** (13 endpoints, 87 pipelines).
+- Cadenas futuras con ≥ 4 motores que pasan por un motor planificado o bloqueado: **36** (solo nodos declarados en `docs/coherencia_motores.json`).
+- Resolución de los pasos: externo 1260, import 151, local 391, por_nombre 55 (`por_nombre` = función única en el repo con ese nombre; revisar si un paso parece fuera de lugar).
 
 ## Etiquetas de las candidatas
 
@@ -14,12 +14,12 @@ Generado por `scripts/inventario/cadenas_ejecucion.py`; no editar a mano. Análi
 |---|---|---|
 | `con_efectos` | 91 | llave de idempotencia (no caché) |
 | `con_LLM` | 7 | caché por hash de prompt + modelo + contexto, con aviso |
-| `dependiente_de_norma` | 16 | caché con la versión de la norma en la llave (#193) |
+| `dependiente_de_norma` | 17 | caché con la versión de la norma en la llave (#193) |
 | `dependiente_de_datos` | 94 | caché con la versión/fecha del dato (catálogo, tabla) en la llave |
 | `pura` | 1 | caché directa |
 | `sin_clasificar` | 0 | revisar a mano |
 
-Con caché ya existente en la secuencia: 14 de 99.
+Con caché ya existente en la secuencia: 14 de 100.
 
 ## Por familia
 
@@ -34,8 +34,8 @@ Con caché ya existente en la secuencia: 14 de 99.
 | scripts/regional | 9 | 0 | 0 | 6 |
 | scripts/mantenimiento | 8 | 3 | 0 | 7 |
 | scripts/inventario | 7 | 1 | 0 | 6 |
+| orquestador | 5 | 2 | 0 | 0 |
 | precios | 5 | 3 | 0 | 3 |
-| orquestador | 4 | 1 | 0 | 0 |
 | scripts/secop | 4 | 3 | 0 | 4 |
 | scripts/macro | 4 | 2 | 0 | 3 |
 | rag | 3 | 2 | 2 | 2 |
@@ -45,6 +45,7 @@ Con caché ya existente en la secuencia: 14 de 99.
 | scripts/clima | 2 | 1 | 0 | 2 |
 | scripts/surrogate_zapata | 2 | 0 | 0 | 2 |
 | vision | 1 | 0 | 0 | 0 |
+| scripts/medicion | 1 | 0 | 0 | 1 |
 
 ## Endpoints candidatos (los que ve el usuario)
 
@@ -52,7 +53,8 @@ Con caché ya existente en la secuencia: 14 de 99.
 |---|---|---|---|---|
 | `POST /consultar` | 60 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | sí | _uso_sb.table().select().eq().maybe_single().execute[bd] → _uso_sb.table().select().eq().gte().execute[bd] → _cache_consultar.get[cache] → _informe_sitio_directo[bd] → embed_query[cache] → _centroides[embeddings] → embed_query[cache] → sb.rpc().execute[bd] → buscar_precios_apu[bd] → buscar_precios_invias_vias[bd] → search[bd] → _format_precio_context[bd] → … (+48) |
 | `POST /ask` | 39 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | sí | _uso_sb.table().select().eq().maybe_single().execute[bd] → _uso_sb.table().select().eq().gte().execute[bd] → _cache_ask.get[cache] → _informe_sitio_directo[bd] → sb.table().select().eq().limit().execute[bd] → sb.table().update().eq().execute[efecto] → _con_plugins[bd] → groq_client.chat.completions.create[llm] → openai_client.chat.completions.create[llm] → embed_query[cache] → sb.rpc().execute[bd] → embed_query[cache] → … (+27) |
-| `POST /orquestador/portico-integral` | 20 | dependiente_de_norma | no | _capacidad[motor] → _ctx_sismico[motor] → _tabla_secciones[motor] → _modelo[motor] → construir_plantilla[motor] → alturas_nivel_m[motor] → pesos_nivel_kn[motor] → parametros_espectro[motor] → fuerzas_vectorizadas[motor] → analizar_lote[motor] → _costo_nivel[motor] → _combos[motor] → … (+8) |
+| `POST /orquestador/portico-pareto` | 24 | dependiente_de_norma | no | _capacidad[motor] → _ctx_sismico[motor] → _tabla_secciones[motor] → _lote_vectorizado[motor] → disenar[motor] → _costo_nivel[motor] → demanda_columnas[motor] → _mn_viga[motor] → disenar_columna[motor] → costo_columnas[motor] → _verificar_optimo[motor] → cantidades_portico[motor] → … (+12) |
+| `POST /orquestador/portico-integral` | 23 | dependiente_de_norma | no | _capacidad[motor] → _ctx_sismico[motor] → _tabla_secciones[motor] → _modelo[motor] → construir_plantilla[motor] → alturas_nivel_m[motor] → pesos_nivel_kn[motor] → parametros_espectro[motor] → fuerzas_vectorizadas[motor] → analizar_lote[motor] → disenar[motor] → _costo_nivel[motor] → … (+11) |
 | `GET /aquai/hidrologia/caudal-ideam` | 9 | dependiente_de_datos | sí | _get[red] → resolver_departamento[red] → _CACHE_DEPARTAMENTOS.get[cache] → httpx.Client[red] → client.get[red] → httpx.Client[red] → client.get[red] → httpx.Client[red] → client.get[red] |
 | `GET /aquai/hidrologia/estaciones-ideam` | 8 | dependiente_de_datos | sí | httpx.Client[red] → client.get[red] → resolver_departamento[red] → _CACHE_DEPARTAMENTOS.get[cache] → httpx.Client[red] → client.get[red] → httpx.Client[red] → client.get[red] |
 | `GET /amenaza-sismica` | 7 | dependiente_de_norma, dependiente_de_datos | sí | create_client[bd] → sb.table().select().range().execute[bd] → _agrupar[red] → httpx.get[red] → _agrupar[red] → cache.get[cache] → consultar_movimientos_cercanos[red] |
@@ -115,7 +117,6 @@ Inventario estricto: caminos simples entre nodos **declarados** (con evidencia) 
 
 | Motor futuro | Estado | Cadenas futuras en las que aparece | Máximo de nodos |
 |---|---|---|---|
-| `futuro-optimizador-portico` | planificado | 33 | 6 |
 | `futuro-sustituto-seccion-portico` | planificado | 30 | 6 |
 | `futuro-columna-circular` | planificado | 8 | 5 |
 | `futuro-pilotes` | bloqueado | 8 | 5 |
@@ -124,48 +125,43 @@ Un motor futuro que aparece en muchas cadenas desbloquea más flujos al implemen
 
 | Nodos | Cadena | Motores futuros | Magnitudes que pasan |
 |---|---|---|---|
-| 6 | dato-microzonificacion-local → futuro-sustituto-seccion-portico → motor-analisis → motor-concreto → motor-geotecnia → futuro-optimizador-portico | futuro-sustituto-seccion-portico, futuro-optimizador-portico | coef_espectro_local / seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / presion_contacto_kpa / razon_demanda_capacidad |
-| 6 | motor-geopot → futuro-sustituto-seccion-portico → motor-analisis → motor-concreto → motor-geotecnia → futuro-optimizador-portico | futuro-sustituto-seccion-portico, futuro-optimizador-portico | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / presion_contacto_kpa / razon_demanda_capacidad |
-| 6 | motor-geopot → orquestador → motor-analisis → motor-concreto → motor-geotecnia → futuro-optimizador-portico | futuro-optimizador-portico | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / presion_contacto_kpa / razon_demanda_capacidad |
-| 5 | dato-microzonificacion-local → futuro-sustituto-seccion-portico → motor-analisis → futuro-columna-circular → futuro-optimizador-portico | futuro-sustituto-seccion-portico, futuro-columna-circular, futuro-optimizador-portico | coef_espectro_local / seccion_columna_mm,seccion_viga_mm / momento_flector_knm,reaccion_vertical_kn / masa_acero_kg,razon_demanda_capacidad,volumen_concreto_m3 |
-| 5 | dato-microzonificacion-local → futuro-sustituto-seccion-portico → motor-analisis → futuro-pilotes → futuro-optimizador-portico | futuro-sustituto-seccion-portico, futuro-pilotes, futuro-optimizador-portico | coef_espectro_local / seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / razon_demanda_capacidad |
-| 5 | dato-microzonificacion-local → futuro-sustituto-seccion-portico → motor-analisis → motor-concreto → futuro-optimizador-portico | futuro-sustituto-seccion-portico, futuro-optimizador-portico | coef_espectro_local / seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / co2e_kg,costo_directo_cop,masa_acero_kg,razon_demanda_capacidad,volumen_concreto_m3 |
+| 6 | dato-microzonificacion-local → futuro-sustituto-seccion-portico → motor-analisis → motor-concreto → motor-geotecnia → optimizador-portico | futuro-sustituto-seccion-portico | coef_espectro_local / seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / presion_contacto_kpa / razon_demanda_capacidad |
+| 6 | motor-geopot → futuro-sustituto-seccion-portico → motor-analisis → motor-concreto → motor-geotecnia → optimizador-portico | futuro-sustituto-seccion-portico | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / presion_contacto_kpa / razon_demanda_capacidad |
+| 5 | dato-microzonificacion-local → futuro-sustituto-seccion-portico → motor-analisis → futuro-columna-circular → optimizador-portico | futuro-sustituto-seccion-portico, futuro-columna-circular | coef_espectro_local / seccion_columna_mm,seccion_viga_mm / momento_flector_knm,reaccion_vertical_kn / masa_acero_kg,razon_demanda_capacidad,volumen_concreto_m3 |
+| 5 | dato-microzonificacion-local → futuro-sustituto-seccion-portico → motor-analisis → futuro-pilotes → optimizador-portico | futuro-sustituto-seccion-portico, futuro-pilotes | coef_espectro_local / seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / razon_demanda_capacidad |
 | 5 | dato-microzonificacion-local → futuro-sustituto-seccion-portico → motor-analisis → motor-concreto → motor-geotecnia | futuro-sustituto-seccion-portico | coef_espectro_local / seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / presion_contacto_kpa |
-| 5 | dato-microzonificacion-local → futuro-sustituto-seccion-portico → motor-concreto → motor-geotecnia → futuro-optimizador-portico | futuro-sustituto-seccion-portico, futuro-optimizador-portico | coef_espectro_local / seccion_columna_mm / presion_contacto_kpa / razon_demanda_capacidad |
-| 5 | futuro-sustituto-seccion-portico → motor-analisis → motor-concreto → motor-geotecnia → futuro-optimizador-portico | futuro-sustituto-seccion-portico, futuro-optimizador-portico | seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / presion_contacto_kpa / razon_demanda_capacidad |
-| 5 | motor-geopot → futuro-sustituto-seccion-portico → motor-analisis → futuro-columna-circular → futuro-optimizador-portico | futuro-sustituto-seccion-portico, futuro-columna-circular, futuro-optimizador-portico | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm,seccion_viga_mm / momento_flector_knm,reaccion_vertical_kn / masa_acero_kg,razon_demanda_capacidad,volumen_concreto_m3 |
-| 5 | motor-geopot → futuro-sustituto-seccion-portico → motor-analisis → futuro-pilotes → futuro-optimizador-portico | futuro-sustituto-seccion-portico, futuro-pilotes, futuro-optimizador-portico | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / razon_demanda_capacidad |
-| 5 | motor-geopot → futuro-sustituto-seccion-portico → motor-analisis → motor-concreto → futuro-optimizador-portico | futuro-sustituto-seccion-portico, futuro-optimizador-portico | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / co2e_kg,costo_directo_cop,masa_acero_kg,razon_demanda_capacidad,volumen_concreto_m3 |
+| 5 | dato-microzonificacion-local → futuro-sustituto-seccion-portico → motor-analisis → motor-concreto → optimizador-portico | futuro-sustituto-seccion-portico | coef_espectro_local / seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / co2e_kg,costo_directo_cop,masa_acero_kg,razon_demanda_capacidad,volumen_concreto_m3 |
+| 5 | dato-microzonificacion-local → futuro-sustituto-seccion-portico → motor-concreto → motor-geotecnia → optimizador-portico | futuro-sustituto-seccion-portico | coef_espectro_local / seccion_columna_mm / presion_contacto_kpa / razon_demanda_capacidad |
+| 5 | futuro-sustituto-seccion-portico → motor-analisis → motor-concreto → motor-geotecnia → optimizador-portico | futuro-sustituto-seccion-portico | seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / presion_contacto_kpa / razon_demanda_capacidad |
+| 5 | motor-geopot → futuro-sustituto-seccion-portico → motor-analisis → futuro-columna-circular → optimizador-portico | futuro-sustituto-seccion-portico, futuro-columna-circular | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm,seccion_viga_mm / momento_flector_knm,reaccion_vertical_kn / masa_acero_kg,razon_demanda_capacidad,volumen_concreto_m3 |
+| 5 | motor-geopot → futuro-sustituto-seccion-portico → motor-analisis → futuro-pilotes → optimizador-portico | futuro-sustituto-seccion-portico, futuro-pilotes | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / razon_demanda_capacidad |
 | 5 | motor-geopot → futuro-sustituto-seccion-portico → motor-analisis → motor-concreto → motor-geotecnia | futuro-sustituto-seccion-portico | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / presion_contacto_kpa |
-| 5 | motor-geopot → futuro-sustituto-seccion-portico → motor-concreto → motor-geotecnia → futuro-optimizador-portico | futuro-sustituto-seccion-portico, futuro-optimizador-portico | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm / presion_contacto_kpa / razon_demanda_capacidad |
-| 5 | motor-geopot → orquestador → motor-analisis → futuro-columna-circular → futuro-optimizador-portico | futuro-columna-circular, futuro-optimizador-portico | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm,seccion_viga_mm / momento_flector_knm,reaccion_vertical_kn / masa_acero_kg,razon_demanda_capacidad,volumen_concreto_m3 |
-| 5 | motor-geopot → orquestador → motor-analisis → futuro-pilotes → futuro-optimizador-portico | futuro-pilotes, futuro-optimizador-portico | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / razon_demanda_capacidad |
-| 5 | motor-geopot → orquestador → motor-analisis → motor-concreto → futuro-optimizador-portico | futuro-optimizador-portico | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / co2e_kg,costo_directo_cop,masa_acero_kg,razon_demanda_capacidad,volumen_concreto_m3 |
-| 5 | motor-geopot → orquestador → motor-concreto → motor-geotecnia → futuro-optimizador-portico | futuro-optimizador-portico | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm / presion_contacto_kpa / razon_demanda_capacidad |
-| 5 | orquestador → motor-analisis → motor-concreto → motor-geotecnia → futuro-optimizador-portico | futuro-optimizador-portico | seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / presion_contacto_kpa / razon_demanda_capacidad |
-| 4 | dato-factores-emision → motor-concreto → motor-geotecnia → futuro-optimizador-portico | futuro-optimizador-portico | factor_emision_kgco2e_kg / presion_contacto_kpa / razon_demanda_capacidad |
+| 5 | motor-geopot → futuro-sustituto-seccion-portico → motor-analisis → motor-concreto → optimizador-portico | futuro-sustituto-seccion-portico | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / co2e_kg,costo_directo_cop,masa_acero_kg,razon_demanda_capacidad,volumen_concreto_m3 |
+| 5 | motor-geopot → futuro-sustituto-seccion-portico → motor-concreto → motor-geotecnia → optimizador-portico | futuro-sustituto-seccion-portico | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm / presion_contacto_kpa / razon_demanda_capacidad |
+| 5 | motor-geopot → orquestador → motor-analisis → futuro-columna-circular → optimizador-portico | futuro-columna-circular | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm,seccion_viga_mm / momento_flector_knm,reaccion_vertical_kn / masa_acero_kg,razon_demanda_capacidad,volumen_concreto_m3 |
+| 5 | motor-geopot → orquestador → motor-analisis → futuro-pilotes → optimizador-portico | futuro-pilotes | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / razon_demanda_capacidad |
 | 4 | dato-microzonificacion-local → futuro-sustituto-seccion-portico → motor-analisis → futuro-columna-circular | futuro-sustituto-seccion-portico, futuro-columna-circular | coef_espectro_local / seccion_columna_mm,seccion_viga_mm / momento_flector_knm,reaccion_vertical_kn |
 | 4 | dato-microzonificacion-local → futuro-sustituto-seccion-portico → motor-analisis → futuro-pilotes | futuro-sustituto-seccion-portico, futuro-pilotes | coef_espectro_local / seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn |
 | 4 | dato-microzonificacion-local → futuro-sustituto-seccion-portico → motor-analisis → motor-concreto | futuro-sustituto-seccion-portico | coef_espectro_local / seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn |
-| 4 | dato-microzonificacion-local → futuro-sustituto-seccion-portico → motor-apu → futuro-optimizador-portico | futuro-sustituto-seccion-portico, futuro-optimizador-portico | coef_espectro_local / seccion_columna_mm,seccion_viga_mm / costo_directo_cop |
-| 4 | dato-microzonificacion-local → futuro-sustituto-seccion-portico → motor-concreto → futuro-optimizador-portico | futuro-sustituto-seccion-portico, futuro-optimizador-portico | coef_espectro_local / seccion_columna_mm / co2e_kg,costo_directo_cop,masa_acero_kg,razon_demanda_capacidad,volumen_concreto_m3 |
+| 4 | dato-microzonificacion-local → futuro-sustituto-seccion-portico → motor-apu → optimizador-portico | futuro-sustituto-seccion-portico | coef_espectro_local / seccion_columna_mm,seccion_viga_mm / costo_directo_cop |
 | 4 | dato-microzonificacion-local → futuro-sustituto-seccion-portico → motor-concreto → motor-geotecnia | futuro-sustituto-seccion-portico | coef_espectro_local / seccion_columna_mm / presion_contacto_kpa |
-| 4 | futuro-sustituto-seccion-portico → motor-analisis → futuro-columna-circular → futuro-optimizador-portico | futuro-sustituto-seccion-portico, futuro-columna-circular, futuro-optimizador-portico | seccion_columna_mm,seccion_viga_mm / momento_flector_knm,reaccion_vertical_kn / masa_acero_kg,razon_demanda_capacidad,volumen_concreto_m3 |
-| 4 | futuro-sustituto-seccion-portico → motor-analisis → futuro-pilotes → futuro-optimizador-portico | futuro-sustituto-seccion-portico, futuro-pilotes, futuro-optimizador-portico | seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / razon_demanda_capacidad |
-| 4 | futuro-sustituto-seccion-portico → motor-analisis → motor-concreto → futuro-optimizador-portico | futuro-sustituto-seccion-portico, futuro-optimizador-portico | seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / co2e_kg,costo_directo_cop,masa_acero_kg,razon_demanda_capacidad,volumen_concreto_m3 |
+| 4 | dato-microzonificacion-local → futuro-sustituto-seccion-portico → motor-concreto → optimizador-portico | futuro-sustituto-seccion-portico | coef_espectro_local / seccion_columna_mm / co2e_kg,costo_directo_cop,masa_acero_kg,razon_demanda_capacidad,volumen_concreto_m3 |
+| 4 | futuro-sustituto-seccion-portico → motor-analisis → futuro-columna-circular → optimizador-portico | futuro-sustituto-seccion-portico, futuro-columna-circular | seccion_columna_mm,seccion_viga_mm / momento_flector_knm,reaccion_vertical_kn / masa_acero_kg,razon_demanda_capacidad,volumen_concreto_m3 |
+| 4 | futuro-sustituto-seccion-portico → motor-analisis → futuro-pilotes → optimizador-portico | futuro-sustituto-seccion-portico, futuro-pilotes | seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / razon_demanda_capacidad |
 | 4 | futuro-sustituto-seccion-portico → motor-analisis → motor-concreto → motor-geotecnia | futuro-sustituto-seccion-portico | seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / presion_contacto_kpa |
-| 4 | futuro-sustituto-seccion-portico → motor-concreto → motor-geotecnia → futuro-optimizador-portico | futuro-sustituto-seccion-portico, futuro-optimizador-portico | seccion_columna_mm / presion_contacto_kpa / razon_demanda_capacidad |
-| 4 | motor-analisis → motor-concreto → motor-geotecnia → futuro-optimizador-portico | futuro-optimizador-portico | reaccion_vertical_kn / presion_contacto_kpa / razon_demanda_capacidad |
+| 4 | futuro-sustituto-seccion-portico → motor-analisis → motor-concreto → optimizador-portico | futuro-sustituto-seccion-portico | seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / co2e_kg,costo_directo_cop,masa_acero_kg,razon_demanda_capacidad,volumen_concreto_m3 |
+| 4 | futuro-sustituto-seccion-portico → motor-concreto → motor-geotecnia → optimizador-portico | futuro-sustituto-seccion-portico | seccion_columna_mm / presion_contacto_kpa / razon_demanda_capacidad |
 | 4 | motor-geopot → futuro-sustituto-seccion-portico → motor-analisis → futuro-columna-circular | futuro-sustituto-seccion-portico, futuro-columna-circular | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm,seccion_viga_mm / momento_flector_knm,reaccion_vertical_kn |
 | 4 | motor-geopot → futuro-sustituto-seccion-portico → motor-analisis → futuro-pilotes | futuro-sustituto-seccion-portico, futuro-pilotes | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn |
 | 4 | motor-geopot → futuro-sustituto-seccion-portico → motor-analisis → motor-concreto | futuro-sustituto-seccion-portico | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn |
-| 4 | motor-geopot → futuro-sustituto-seccion-portico → motor-apu → futuro-optimizador-portico | futuro-sustituto-seccion-portico, futuro-optimizador-portico | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm,seccion_viga_mm / costo_directo_cop |
-| 4 | motor-geopot → futuro-sustituto-seccion-portico → motor-concreto → futuro-optimizador-portico | futuro-sustituto-seccion-portico, futuro-optimizador-portico | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm / co2e_kg,costo_directo_cop,masa_acero_kg,razon_demanda_capacidad,volumen_concreto_m3 |
+| 4 | motor-geopot → futuro-sustituto-seccion-portico → motor-apu → optimizador-portico | futuro-sustituto-seccion-portico | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm,seccion_viga_mm / costo_directo_cop |
 | 4 | motor-geopot → futuro-sustituto-seccion-portico → motor-concreto → motor-geotecnia | futuro-sustituto-seccion-portico | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm / presion_contacto_kpa |
+| 4 | motor-geopot → futuro-sustituto-seccion-portico → motor-concreto → optimizador-portico | futuro-sustituto-seccion-portico | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm / co2e_kg,costo_directo_cop,masa_acero_kg,razon_demanda_capacidad,volumen_concreto_m3 |
 | 4 | motor-geopot → orquestador → motor-analisis → futuro-columna-circular | futuro-columna-circular | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm,seccion_viga_mm / momento_flector_knm,reaccion_vertical_kn |
 | 4 | motor-geopot → orquestador → motor-analisis → futuro-pilotes | futuro-pilotes | coef_aceleracion_aa,coef_velocidad_av / seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn |
-| … | 6 más en `docs/cadenas_ejecucion.json` | | |
+| 4 | orquestador → motor-analisis → futuro-columna-circular → optimizador-portico | futuro-columna-circular | seccion_columna_mm,seccion_viga_mm / momento_flector_knm,reaccion_vertical_kn / masa_acero_kg,razon_demanda_capacidad,volumen_concreto_m3 |
+| 4 | orquestador → motor-analisis → futuro-pilotes → optimizador-portico | futuro-pilotes | seccion_columna_mm,seccion_viga_mm / reaccion_vertical_kn / razon_demanda_capacidad |
 
 ## Cadenas cortas (< 4 pasos)
 
-372 cadenas no llegan al umbral. No se descartan: una de 3 pasos con un LLM puede pesar más que una de 6 en CPU. Están completas en el JSON.
+373 cadenas no llegan al umbral. No se descartan: una de 3 pasos con un LLM puede pesar más que una de 6 en CPU. Están completas en el JSON.

@@ -1,13 +1,13 @@
 {
  "umbral": 4,
  "profundidad": 3,
- "modulos": 691,
- "funciones": 2792,
+ "modulos": 694,
+ "funciones": 2826,
  "resolucion": {
-  "externo": 1258,
-  "import": 126,
-  "local": 381,
-  "por_nombre": 62
+  "externo": 1260,
+  "import": 151,
+  "local": 391,
+  "por_nombre": 55
  },
  "cadenas": [
   {
@@ -1074,11 +1074,268 @@
    ]
   },
   {
+   "entrada": "POST /orquestador/portico-pareto",
+   "clase": "endpoint",
+   "familia": "orquestador",
+   "funcion": "apps/api/routers/orquestador_api.py::endpoint_pareto",
+   "pasos": 24,
+   "puntual": false,
+   "candidata": true,
+   "etiquetas": [
+    "dependiente_de_norma"
+   ],
+   "cache_existente": false,
+   "secuencia": [
+    {
+     "paso": "packages/orquestador/src/diseno_portico.py::_capacidad",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_integral.py:193",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_portico.py::_ctx_sismico",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_integral.py:194",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_integral.py::_tabla_secciones",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_integral.py:198",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_portico.py::_lote_vectorizado",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_integral.py:206",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-concreto/src/diseno_viga.py::disenar",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_integral.py:218",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_portico.py::_costo_nivel",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_integral.py:222",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_integral.py::demanda_columnas",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_integral.py:223",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_integral.py::_mn_viga",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_integral.py:228",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-concreto/src/columna.py::disenar_columna",
+     "tipo": "motor",
+     "tipos": [
+      "cache",
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_integral.py:229",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_integral.py::costo_columnas",
+     "tipo": "motor",
+     "tipos": [
+      "cache",
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_integral.py:233",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_integral.py::_verificar_optimo",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_integral.py:247",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/optimizador_pareto.py::cantidades_portico",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/optimizador_pareto.py:123",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-concreto/src/cantidades_costo.py::costo_co2",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/optimizador_pareto.py:124",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/optimizador_pareto.py::razon_dc",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/optimizador_pareto.py:127",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/optimizador_pareto.py::no_dominados",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/optimizador_pareto.py:188",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/optimizador_pareto.py::puntos_nombrados",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/optimizador_pareto.py:190",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_portico.py::_capacidad",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/optimizador_pareto.py:192",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_portico.py::_ctx_sismico",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/optimizador_pareto.py:193",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_portico.py::_basal_escalar",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_integral.py:259",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_portico.py::_analizar",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_integral.py:261",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_portico.py::_demanda",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_integral.py:262",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_portico.py::_lote_vectorizado",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_integral.py:265",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_portico.py::_derivar_basal",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_integral.py:278",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/contrato_api.py::_fila",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/contrato_api.py:134",
+     "norma": true
+    }
+   ]
+  },
+  {
    "entrada": "POST /orquestador/portico-integral",
    "clase": "endpoint",
    "familia": "orquestador",
    "funcion": "apps/api/routers/orquestador_api.py::endpoint_portico",
-   "pasos": 20,
+   "pasos": 23,
    "puntual": false,
    "candidata": true,
    "etiquetas": [
@@ -1187,6 +1444,16 @@
      "norma": true
     },
     {
+     "paso": "packages/motor-concreto/src/diseno_viga.py::disenar",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_integral.py:218",
+     "norma": true
+    },
+    {
      "paso": "packages/orquestador/src/diseno_portico.py::_costo_nivel",
      "tipo": "motor",
      "tipos": [
@@ -1217,13 +1484,34 @@
      "norma": true
     },
     {
-     "paso": "packages/orquestador/src/diseno_integral.py::_mn_viga",
+     "paso": "packages/motor-concreto/src/diseno_viga.py::_d",
      "tipo": "motor",
      "tipos": [
       "motor"
      ],
-     "via": "local",
-     "linea": "packages/orquestador/src/diseno_integral.py:228",
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_integral.py:100",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-concreto/src/diseno_viga.py::_mn_nominal",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_integral.py:102",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-concreto/src/columna.py::disenar_columna",
+     "tipo": "motor",
+     "tipos": [
+      "cache",
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_integral.py:229",
      "norma": true
     },
     {
@@ -2376,7 +2664,7 @@
      "tipos": [
       "motor"
      ],
-     "via": "por_nombre",
+     "via": "import",
      "linea": "apps/api/routers/analisis.py:38",
      "norma": true
     }
@@ -2726,7 +3014,7 @@
      "tipos": [
       "motor"
      ],
-     "via": "por_nombre",
+     "via": "import",
      "linea": "apps/api/routers/concreto.py:50",
      "norma": true
     }
@@ -2751,7 +3039,7 @@
      "tipos": [
       "motor"
      ],
-     "via": "por_nombre",
+     "via": "import",
      "linea": "apps/api/routers/concreto.py:41",
      "norma": true
     }
@@ -3103,7 +3391,7 @@
      "tipos": [
       "motor"
      ],
-     "via": "por_nombre",
+     "via": "import",
      "linea": "apps/api/routers/geotecnia.py:41",
      "norma": true
     }
@@ -3128,7 +3416,7 @@
      "tipos": [
       "motor"
      ],
-     "via": "por_nombre",
+     "via": "import",
      "linea": "apps/api/routers/geotecnia.py:50",
      "norma": true
     }
@@ -3335,7 +3623,7 @@
      "tipos": [
       "motor"
      ],
-     "via": "por_nombre",
+     "via": "import",
      "linea": "apps/api/routers/licuacion.py:39",
      "norma": true
     }
@@ -3410,7 +3698,7 @@
      "tipos": [
       "motor"
      ],
-     "via": "por_nombre",
+     "via": "import",
      "linea": "apps/api/routers/redes.py:41",
      "norma": true
     }
@@ -18065,7 +18353,7 @@
       "efecto"
      ],
      "via": "externo",
-     "linea": "scripts/inventario/cadenas_ejecucion.py:603",
+     "linea": "scripts/inventario/cadenas_ejecucion.py:643",
      "norma": false
     },
     {
@@ -18075,7 +18363,7 @@
       "efecto"
      ],
      "via": "externo",
-     "linea": "scripts/inventario/cadenas_ejecucion.py:604",
+     "linea": "scripts/inventario/cadenas_ejecucion.py:644",
      "norma": false
     }
    ]
@@ -22880,6 +23168,55 @@
    ]
   },
   {
+   "entrada": "scripts/medicion/medir_cadenas.py",
+   "clase": "pipeline",
+   "familia": "scripts/medicion",
+   "funcion": "scripts/medicion/medir_cadenas.py::main",
+   "pasos": 3,
+   "puntual": false,
+   "candidata": false,
+   "etiquetas": [
+    "con_efectos",
+    "dependiente_de_norma",
+    "dependiente_de_datos"
+   ],
+   "cache_existente": false,
+   "secuencia": [
+    {
+     "paso": "scripts/medicion/medir_cadenas.py::medir",
+     "tipo": "bd",
+     "tipos": [
+      "bd",
+      "cache",
+      "embeddings"
+     ],
+     "via": "local",
+     "linea": "scripts/medicion/medir_cadenas.py:222",
+     "norma": true
+    },
+    {
+     "paso": "f.write_text",
+     "tipo": "efecto",
+     "tipos": [
+      "efecto"
+     ],
+     "via": "externo",
+     "linea": "scripts/medicion/medir_cadenas.py:225",
+     "norma": false
+    },
+    {
+     "paso": "DOC.write_text",
+     "tipo": "efecto",
+     "tipos": [
+      "efecto"
+     ],
+     "via": "externo",
+     "linea": "scripts/medicion/medir_cadenas.py:227",
+     "norma": false
+    }
+   ]
+  },
+  {
    "entrada": "scripts/precios/p2a_control_sin_variantes.py",
    "clase": "pipeline",
    "familia": "scripts/precios",
@@ -26122,12 +26459,11 @@
     "motor-analisis",
     "motor-concreto",
     "motor-geotecnia",
-    "futuro-optimizador-portico"
+    "optimizador-portico"
    ],
    "pasos": 6,
    "futuros": [
-    "futuro-sustituto-seccion-portico",
-    "futuro-optimizador-portico"
+    "futuro-sustituto-seccion-portico"
    ],
    "estados": [
     "implementado",
@@ -26135,7 +26471,7 @@
     "implementado",
     "implementado",
     "implementado",
-    "planificado"
+    "implementado"
    ],
    "magnitudes": [
     [
@@ -26167,12 +26503,11 @@
     "motor-analisis",
     "motor-concreto",
     "motor-geotecnia",
-    "futuro-optimizador-portico"
+    "optimizador-portico"
    ],
    "pasos": 6,
    "futuros": [
-    "futuro-sustituto-seccion-portico",
-    "futuro-optimizador-portico"
+    "futuro-sustituto-seccion-portico"
    ],
    "estados": [
     "implementado",
@@ -26180,52 +26515,7 @@
     "implementado",
     "implementado",
     "implementado",
-    "planificado"
-   ],
-   "magnitudes": [
-    [
-     "coef_aceleracion_aa",
-     "coef_velocidad_av"
-    ],
-    [
-     "seccion_columna_mm",
-     "seccion_viga_mm"
-    ],
-    [
-     "reaccion_vertical_kn"
-    ],
-    [
-     "presion_contacto_kpa"
-    ],
-    [
-     "razon_demanda_capacidad"
-    ]
-   ],
-   "etiquetas": [
-    "dependiente_de_norma",
-    "pura"
-   ]
-  },
-  {
-   "nodos": [
-    "motor-geopot",
-    "orquestador",
-    "motor-analisis",
-    "motor-concreto",
-    "motor-geotecnia",
-    "futuro-optimizador-portico"
-   ],
-   "pasos": 6,
-   "futuros": [
-    "futuro-optimizador-portico"
-   ],
-   "estados": [
-    "implementado",
-    "implementado",
-    "implementado",
-    "implementado",
-    "implementado",
-    "planificado"
+    "implementado"
    ],
    "magnitudes": [
     [
@@ -26257,20 +26547,19 @@
     "futuro-sustituto-seccion-portico",
     "motor-analisis",
     "futuro-columna-circular",
-    "futuro-optimizador-portico"
+    "optimizador-portico"
    ],
    "pasos": 5,
    "futuros": [
     "futuro-sustituto-seccion-portico",
-    "futuro-columna-circular",
-    "futuro-optimizador-portico"
+    "futuro-columna-circular"
    ],
    "estados": [
     "implementado",
     "planificado",
     "implementado",
     "planificado",
-    "planificado"
+    "implementado"
    ],
    "magnitudes": [
     [
@@ -26301,20 +26590,19 @@
     "futuro-sustituto-seccion-portico",
     "motor-analisis",
     "futuro-pilotes",
-    "futuro-optimizador-portico"
+    "optimizador-portico"
    ],
    "pasos": 5,
    "futuros": [
     "futuro-sustituto-seccion-portico",
-    "futuro-pilotes",
-    "futuro-optimizador-portico"
+    "futuro-pilotes"
    ],
    "estados": [
     "implementado",
     "planificado",
     "implementado",
     "bloqueado",
-    "planificado"
+    "implementado"
    ],
    "magnitudes": [
     [
@@ -26329,50 +26617,6 @@
     ],
     [
      "razon_demanda_capacidad"
-    ]
-   ],
-   "etiquetas": [
-    "dependiente_de_norma",
-    "pura"
-   ]
-  },
-  {
-   "nodos": [
-    "dato-microzonificacion-local",
-    "futuro-sustituto-seccion-portico",
-    "motor-analisis",
-    "motor-concreto",
-    "futuro-optimizador-portico"
-   ],
-   "pasos": 5,
-   "futuros": [
-    "futuro-sustituto-seccion-portico",
-    "futuro-optimizador-portico"
-   ],
-   "estados": [
-    "implementado",
-    "planificado",
-    "implementado",
-    "implementado",
-    "planificado"
-   ],
-   "magnitudes": [
-    [
-     "coef_espectro_local"
-    ],
-    [
-     "seccion_columna_mm",
-     "seccion_viga_mm"
-    ],
-    [
-     "reaccion_vertical_kn"
-    ],
-    [
-     "co2e_kg",
-     "costo_directo_cop",
-     "masa_acero_kg",
-     "razon_demanda_capacidad",
-     "volumen_concreto_m3"
     ]
    ],
    "etiquetas": [
@@ -26423,21 +26667,63 @@
    "nodos": [
     "dato-microzonificacion-local",
     "futuro-sustituto-seccion-portico",
+    "motor-analisis",
     "motor-concreto",
-    "motor-geotecnia",
-    "futuro-optimizador-portico"
+    "optimizador-portico"
    ],
    "pasos": 5,
    "futuros": [
-    "futuro-sustituto-seccion-portico",
-    "futuro-optimizador-portico"
+    "futuro-sustituto-seccion-portico"
    ],
    "estados": [
     "implementado",
     "planificado",
     "implementado",
     "implementado",
-    "planificado"
+    "implementado"
+   ],
+   "magnitudes": [
+    [
+     "coef_espectro_local"
+    ],
+    [
+     "seccion_columna_mm",
+     "seccion_viga_mm"
+    ],
+    [
+     "reaccion_vertical_kn"
+    ],
+    [
+     "co2e_kg",
+     "costo_directo_cop",
+     "masa_acero_kg",
+     "razon_demanda_capacidad",
+     "volumen_concreto_m3"
+    ]
+   ],
+   "etiquetas": [
+    "dependiente_de_norma",
+    "pura"
+   ]
+  },
+  {
+   "nodos": [
+    "dato-microzonificacion-local",
+    "futuro-sustituto-seccion-portico",
+    "motor-concreto",
+    "motor-geotecnia",
+    "optimizador-portico"
+   ],
+   "pasos": 5,
+   "futuros": [
+    "futuro-sustituto-seccion-portico"
+   ],
+   "estados": [
+    "implementado",
+    "planificado",
+    "implementado",
+    "implementado",
+    "implementado"
    ],
    "magnitudes": [
     [
@@ -26464,19 +26750,18 @@
     "motor-analisis",
     "motor-concreto",
     "motor-geotecnia",
-    "futuro-optimizador-portico"
+    "optimizador-portico"
    ],
    "pasos": 5,
    "futuros": [
-    "futuro-sustituto-seccion-portico",
-    "futuro-optimizador-portico"
+    "futuro-sustituto-seccion-portico"
    ],
    "estados": [
     "planificado",
     "implementado",
     "implementado",
     "implementado",
-    "planificado"
+    "implementado"
    ],
    "magnitudes": [
     [
@@ -26504,20 +26789,19 @@
     "futuro-sustituto-seccion-portico",
     "motor-analisis",
     "futuro-columna-circular",
-    "futuro-optimizador-portico"
+    "optimizador-portico"
    ],
    "pasos": 5,
    "futuros": [
     "futuro-sustituto-seccion-portico",
-    "futuro-columna-circular",
-    "futuro-optimizador-portico"
+    "futuro-columna-circular"
    ],
    "estados": [
     "implementado",
     "planificado",
     "implementado",
     "planificado",
-    "planificado"
+    "implementado"
    ],
    "magnitudes": [
     [
@@ -26549,20 +26833,19 @@
     "futuro-sustituto-seccion-portico",
     "motor-analisis",
     "futuro-pilotes",
-    "futuro-optimizador-portico"
+    "optimizador-portico"
    ],
    "pasos": 5,
    "futuros": [
     "futuro-sustituto-seccion-portico",
-    "futuro-pilotes",
-    "futuro-optimizador-portico"
+    "futuro-pilotes"
    ],
    "estados": [
     "implementado",
     "planificado",
     "implementado",
     "bloqueado",
-    "planificado"
+    "implementado"
    ],
    "magnitudes": [
     [
@@ -26578,51 +26861,6 @@
     ],
     [
      "razon_demanda_capacidad"
-    ]
-   ],
-   "etiquetas": [
-    "dependiente_de_norma",
-    "pura"
-   ]
-  },
-  {
-   "nodos": [
-    "motor-geopot",
-    "futuro-sustituto-seccion-portico",
-    "motor-analisis",
-    "motor-concreto",
-    "futuro-optimizador-portico"
-   ],
-   "pasos": 5,
-   "futuros": [
-    "futuro-sustituto-seccion-portico",
-    "futuro-optimizador-portico"
-   ],
-   "estados": [
-    "implementado",
-    "planificado",
-    "implementado",
-    "implementado",
-    "planificado"
-   ],
-   "magnitudes": [
-    [
-     "coef_aceleracion_aa",
-     "coef_velocidad_av"
-    ],
-    [
-     "seccion_columna_mm",
-     "seccion_viga_mm"
-    ],
-    [
-     "reaccion_vertical_kn"
-    ],
-    [
-     "co2e_kg",
-     "costo_directo_cop",
-     "masa_acero_kg",
-     "razon_demanda_capacidad",
-     "volumen_concreto_m3"
     ]
    ],
    "etiquetas": [
@@ -26674,21 +26912,64 @@
    "nodos": [
     "motor-geopot",
     "futuro-sustituto-seccion-portico",
+    "motor-analisis",
     "motor-concreto",
-    "motor-geotecnia",
-    "futuro-optimizador-portico"
+    "optimizador-portico"
    ],
    "pasos": 5,
    "futuros": [
-    "futuro-sustituto-seccion-portico",
-    "futuro-optimizador-portico"
+    "futuro-sustituto-seccion-portico"
    ],
    "estados": [
     "implementado",
     "planificado",
     "implementado",
     "implementado",
-    "planificado"
+    "implementado"
+   ],
+   "magnitudes": [
+    [
+     "coef_aceleracion_aa",
+     "coef_velocidad_av"
+    ],
+    [
+     "seccion_columna_mm",
+     "seccion_viga_mm"
+    ],
+    [
+     "reaccion_vertical_kn"
+    ],
+    [
+     "co2e_kg",
+     "costo_directo_cop",
+     "masa_acero_kg",
+     "razon_demanda_capacidad",
+     "volumen_concreto_m3"
+    ]
+   ],
+   "etiquetas": [
+    "dependiente_de_norma",
+    "pura"
+   ]
+  },
+  {
+   "nodos": [
+    "motor-geopot",
+    "futuro-sustituto-seccion-portico",
+    "motor-concreto",
+    "motor-geotecnia",
+    "optimizador-portico"
+   ],
+   "pasos": 5,
+   "futuros": [
+    "futuro-sustituto-seccion-portico"
+   ],
+   "estados": [
+    "implementado",
+    "planificado",
+    "implementado",
+    "implementado",
+    "implementado"
    ],
    "magnitudes": [
     [
@@ -26716,19 +26997,18 @@
     "orquestador",
     "motor-analisis",
     "futuro-columna-circular",
-    "futuro-optimizador-portico"
+    "optimizador-portico"
    ],
    "pasos": 5,
    "futuros": [
-    "futuro-columna-circular",
-    "futuro-optimizador-portico"
+    "futuro-columna-circular"
    ],
    "estados": [
     "implementado",
     "implementado",
     "implementado",
     "planificado",
-    "planificado"
+    "implementado"
    ],
    "magnitudes": [
     [
@@ -26760,19 +27040,18 @@
     "orquestador",
     "motor-analisis",
     "futuro-pilotes",
-    "futuro-optimizador-portico"
+    "optimizador-portico"
    ],
    "pasos": 5,
    "futuros": [
-    "futuro-pilotes",
-    "futuro-optimizador-portico"
+    "futuro-pilotes"
    ],
    "estados": [
     "implementado",
     "implementado",
     "implementado",
     "bloqueado",
-    "planificado"
+    "implementado"
    ],
    "magnitudes": [
     [
@@ -26785,161 +27064,6 @@
     ],
     [
      "reaccion_vertical_kn"
-    ],
-    [
-     "razon_demanda_capacidad"
-    ]
-   ],
-   "etiquetas": [
-    "dependiente_de_norma",
-    "pura"
-   ]
-  },
-  {
-   "nodos": [
-    "motor-geopot",
-    "orquestador",
-    "motor-analisis",
-    "motor-concreto",
-    "futuro-optimizador-portico"
-   ],
-   "pasos": 5,
-   "futuros": [
-    "futuro-optimizador-portico"
-   ],
-   "estados": [
-    "implementado",
-    "implementado",
-    "implementado",
-    "implementado",
-    "planificado"
-   ],
-   "magnitudes": [
-    [
-     "coef_aceleracion_aa",
-     "coef_velocidad_av"
-    ],
-    [
-     "seccion_columna_mm",
-     "seccion_viga_mm"
-    ],
-    [
-     "reaccion_vertical_kn"
-    ],
-    [
-     "co2e_kg",
-     "costo_directo_cop",
-     "masa_acero_kg",
-     "razon_demanda_capacidad",
-     "volumen_concreto_m3"
-    ]
-   ],
-   "etiquetas": [
-    "dependiente_de_norma",
-    "pura"
-   ]
-  },
-  {
-   "nodos": [
-    "motor-geopot",
-    "orquestador",
-    "motor-concreto",
-    "motor-geotecnia",
-    "futuro-optimizador-portico"
-   ],
-   "pasos": 5,
-   "futuros": [
-    "futuro-optimizador-portico"
-   ],
-   "estados": [
-    "implementado",
-    "implementado",
-    "implementado",
-    "implementado",
-    "planificado"
-   ],
-   "magnitudes": [
-    [
-     "coef_aceleracion_aa",
-     "coef_velocidad_av"
-    ],
-    [
-     "seccion_columna_mm"
-    ],
-    [
-     "presion_contacto_kpa"
-    ],
-    [
-     "razon_demanda_capacidad"
-    ]
-   ],
-   "etiquetas": [
-    "dependiente_de_norma",
-    "pura"
-   ]
-  },
-  {
-   "nodos": [
-    "orquestador",
-    "motor-analisis",
-    "motor-concreto",
-    "motor-geotecnia",
-    "futuro-optimizador-portico"
-   ],
-   "pasos": 5,
-   "futuros": [
-    "futuro-optimizador-portico"
-   ],
-   "estados": [
-    "implementado",
-    "implementado",
-    "implementado",
-    "implementado",
-    "planificado"
-   ],
-   "magnitudes": [
-    [
-     "seccion_columna_mm",
-     "seccion_viga_mm"
-    ],
-    [
-     "reaccion_vertical_kn"
-    ],
-    [
-     "presion_contacto_kpa"
-    ],
-    [
-     "razon_demanda_capacidad"
-    ]
-   ],
-   "etiquetas": [
-    "dependiente_de_norma",
-    "pura"
-   ]
-  },
-  {
-   "nodos": [
-    "dato-factores-emision",
-    "motor-concreto",
-    "motor-geotecnia",
-    "futuro-optimizador-portico"
-   ],
-   "pasos": 4,
-   "futuros": [
-    "futuro-optimizador-portico"
-   ],
-   "estados": [
-    "implementado",
-    "implementado",
-    "implementado",
-    "planificado"
-   ],
-   "magnitudes": [
-    [
-     "factor_emision_kgco2e_kg"
-    ],
-    [
-     "presion_contacto_kpa"
     ],
     [
      "razon_demanda_capacidad"
@@ -27060,18 +27184,17 @@
     "dato-microzonificacion-local",
     "futuro-sustituto-seccion-portico",
     "motor-apu",
-    "futuro-optimizador-portico"
+    "optimizador-portico"
    ],
    "pasos": 4,
    "futuros": [
-    "futuro-sustituto-seccion-portico",
-    "futuro-optimizador-portico"
+    "futuro-sustituto-seccion-portico"
    ],
    "estados": [
     "implementado",
     "planificado",
     "implementado",
-    "planificado"
+    "implementado"
    ],
    "magnitudes": [
     [
@@ -27083,44 +27206,6 @@
     ],
     [
      "costo_directo_cop"
-    ]
-   ],
-   "etiquetas": [
-    "dependiente_de_norma",
-    "pura"
-   ]
-  },
-  {
-   "nodos": [
-    "dato-microzonificacion-local",
-    "futuro-sustituto-seccion-portico",
-    "motor-concreto",
-    "futuro-optimizador-portico"
-   ],
-   "pasos": 4,
-   "futuros": [
-    "futuro-sustituto-seccion-portico",
-    "futuro-optimizador-portico"
-   ],
-   "estados": [
-    "implementado",
-    "planificado",
-    "implementado",
-    "planificado"
-   ],
-   "magnitudes": [
-    [
-     "coef_espectro_local"
-    ],
-    [
-     "seccion_columna_mm"
-    ],
-    [
-     "co2e_kg",
-     "costo_directo_cop",
-     "masa_acero_kg",
-     "razon_demanda_capacidad",
-     "volumen_concreto_m3"
     ]
    ],
    "etiquetas": [
@@ -27163,22 +27248,58 @@
   },
   {
    "nodos": [
+    "dato-microzonificacion-local",
+    "futuro-sustituto-seccion-portico",
+    "motor-concreto",
+    "optimizador-portico"
+   ],
+   "pasos": 4,
+   "futuros": [
+    "futuro-sustituto-seccion-portico"
+   ],
+   "estados": [
+    "implementado",
+    "planificado",
+    "implementado",
+    "implementado"
+   ],
+   "magnitudes": [
+    [
+     "coef_espectro_local"
+    ],
+    [
+     "seccion_columna_mm"
+    ],
+    [
+     "co2e_kg",
+     "costo_directo_cop",
+     "masa_acero_kg",
+     "razon_demanda_capacidad",
+     "volumen_concreto_m3"
+    ]
+   ],
+   "etiquetas": [
+    "dependiente_de_norma",
+    "pura"
+   ]
+  },
+  {
+   "nodos": [
     "futuro-sustituto-seccion-portico",
     "motor-analisis",
     "futuro-columna-circular",
-    "futuro-optimizador-portico"
+    "optimizador-portico"
    ],
    "pasos": 4,
    "futuros": [
     "futuro-sustituto-seccion-portico",
-    "futuro-columna-circular",
-    "futuro-optimizador-portico"
+    "futuro-columna-circular"
    ],
    "estados": [
     "planificado",
     "implementado",
     "planificado",
-    "planificado"
+    "implementado"
    ],
    "magnitudes": [
     [
@@ -27205,19 +27326,18 @@
     "futuro-sustituto-seccion-portico",
     "motor-analisis",
     "futuro-pilotes",
-    "futuro-optimizador-portico"
+    "optimizador-portico"
    ],
    "pasos": 4,
    "futuros": [
     "futuro-sustituto-seccion-portico",
-    "futuro-pilotes",
-    "futuro-optimizador-portico"
+    "futuro-pilotes"
    ],
    "estados": [
     "planificado",
     "implementado",
     "bloqueado",
-    "planificado"
+    "implementado"
    ],
    "magnitudes": [
     [
@@ -27229,45 +27349,6 @@
     ],
     [
      "razon_demanda_capacidad"
-    ]
-   ],
-   "etiquetas": [
-    "dependiente_de_norma",
-    "pura"
-   ]
-  },
-  {
-   "nodos": [
-    "futuro-sustituto-seccion-portico",
-    "motor-analisis",
-    "motor-concreto",
-    "futuro-optimizador-portico"
-   ],
-   "pasos": 4,
-   "futuros": [
-    "futuro-sustituto-seccion-portico",
-    "futuro-optimizador-portico"
-   ],
-   "estados": [
-    "planificado",
-    "implementado",
-    "implementado",
-    "planificado"
-   ],
-   "magnitudes": [
-    [
-     "seccion_columna_mm",
-     "seccion_viga_mm"
-    ],
-    [
-     "reaccion_vertical_kn"
-    ],
-    [
-     "co2e_kg",
-     "costo_directo_cop",
-     "masa_acero_kg",
-     "razon_demanda_capacidad",
-     "volumen_concreto_m3"
     ]
    ],
    "etiquetas": [
@@ -27312,30 +27393,34 @@
   {
    "nodos": [
     "futuro-sustituto-seccion-portico",
+    "motor-analisis",
     "motor-concreto",
-    "motor-geotecnia",
-    "futuro-optimizador-portico"
+    "optimizador-portico"
    ],
    "pasos": 4,
    "futuros": [
-    "futuro-sustituto-seccion-portico",
-    "futuro-optimizador-portico"
+    "futuro-sustituto-seccion-portico"
    ],
    "estados": [
     "planificado",
     "implementado",
     "implementado",
-    "planificado"
+    "implementado"
    ],
    "magnitudes": [
     [
-     "seccion_columna_mm"
+     "seccion_columna_mm",
+     "seccion_viga_mm"
     ],
     [
-     "presion_contacto_kpa"
+     "reaccion_vertical_kn"
     ],
     [
-     "razon_demanda_capacidad"
+     "co2e_kg",
+     "costo_directo_cop",
+     "masa_acero_kg",
+     "razon_demanda_capacidad",
+     "volumen_concreto_m3"
     ]
    ],
    "etiquetas": [
@@ -27345,24 +27430,24 @@
   },
   {
    "nodos": [
-    "motor-analisis",
+    "futuro-sustituto-seccion-portico",
     "motor-concreto",
     "motor-geotecnia",
-    "futuro-optimizador-portico"
+    "optimizador-portico"
    ],
    "pasos": 4,
    "futuros": [
-    "futuro-optimizador-portico"
+    "futuro-sustituto-seccion-portico"
    ],
    "estados": [
+    "planificado",
     "implementado",
     "implementado",
-    "implementado",
-    "planificado"
+    "implementado"
    ],
    "magnitudes": [
     [
-     "reaccion_vertical_kn"
+     "seccion_columna_mm"
     ],
     [
      "presion_contacto_kpa"
@@ -27489,18 +27574,17 @@
     "motor-geopot",
     "futuro-sustituto-seccion-portico",
     "motor-apu",
-    "futuro-optimizador-portico"
+    "optimizador-portico"
    ],
    "pasos": 4,
    "futuros": [
-    "futuro-sustituto-seccion-portico",
-    "futuro-optimizador-portico"
+    "futuro-sustituto-seccion-portico"
    ],
    "estados": [
     "implementado",
     "planificado",
     "implementado",
-    "planificado"
+    "implementado"
    ],
    "magnitudes": [
     [
@@ -27513,45 +27597,6 @@
     ],
     [
      "costo_directo_cop"
-    ]
-   ],
-   "etiquetas": [
-    "dependiente_de_norma",
-    "pura"
-   ]
-  },
-  {
-   "nodos": [
-    "motor-geopot",
-    "futuro-sustituto-seccion-portico",
-    "motor-concreto",
-    "futuro-optimizador-portico"
-   ],
-   "pasos": 4,
-   "futuros": [
-    "futuro-sustituto-seccion-portico",
-    "futuro-optimizador-portico"
-   ],
-   "estados": [
-    "implementado",
-    "planificado",
-    "implementado",
-    "planificado"
-   ],
-   "magnitudes": [
-    [
-     "coef_aceleracion_aa",
-     "coef_velocidad_av"
-    ],
-    [
-     "seccion_columna_mm"
-    ],
-    [
-     "co2e_kg",
-     "costo_directo_cop",
-     "masa_acero_kg",
-     "razon_demanda_capacidad",
-     "volumen_concreto_m3"
     ]
    ],
    "etiquetas": [
@@ -27586,6 +27631,44 @@
     ],
     [
      "presion_contacto_kpa"
+    ]
+   ],
+   "etiquetas": [
+    "dependiente_de_norma",
+    "pura"
+   ]
+  },
+  {
+   "nodos": [
+    "motor-geopot",
+    "futuro-sustituto-seccion-portico",
+    "motor-concreto",
+    "optimizador-portico"
+   ],
+   "pasos": 4,
+   "futuros": [
+    "futuro-sustituto-seccion-portico"
+   ],
+   "estados": [
+    "implementado",
+    "planificado",
+    "implementado",
+    "implementado"
+   ],
+   "magnitudes": [
+    [
+     "coef_aceleracion_aa",
+     "coef_velocidad_av"
+    ],
+    [
+     "seccion_columna_mm"
+    ],
+    [
+     "co2e_kg",
+     "costo_directo_cop",
+     "masa_acero_kg",
+     "razon_demanda_capacidad",
+     "volumen_concreto_m3"
     ]
    ],
    "etiquetas": [
@@ -27666,94 +27749,20 @@
   },
   {
    "nodos": [
-    "motor-geopot",
-    "orquestador",
-    "motor-apu",
-    "futuro-optimizador-portico"
-   ],
-   "pasos": 4,
-   "futuros": [
-    "futuro-optimizador-portico"
-   ],
-   "estados": [
-    "implementado",
-    "implementado",
-    "implementado",
-    "planificado"
-   ],
-   "magnitudes": [
-    [
-     "coef_aceleracion_aa",
-     "coef_velocidad_av"
-    ],
-    [
-     "seccion_columna_mm",
-     "seccion_viga_mm"
-    ],
-    [
-     "costo_directo_cop"
-    ]
-   ],
-   "etiquetas": [
-    "dependiente_de_norma",
-    "pura"
-   ]
-  },
-  {
-   "nodos": [
-    "motor-geopot",
-    "orquestador",
-    "motor-concreto",
-    "futuro-optimizador-portico"
-   ],
-   "pasos": 4,
-   "futuros": [
-    "futuro-optimizador-portico"
-   ],
-   "estados": [
-    "implementado",
-    "implementado",
-    "implementado",
-    "planificado"
-   ],
-   "magnitudes": [
-    [
-     "coef_aceleracion_aa",
-     "coef_velocidad_av"
-    ],
-    [
-     "seccion_columna_mm"
-    ],
-    [
-     "co2e_kg",
-     "costo_directo_cop",
-     "masa_acero_kg",
-     "razon_demanda_capacidad",
-     "volumen_concreto_m3"
-    ]
-   ],
-   "etiquetas": [
-    "dependiente_de_norma",
-    "pura"
-   ]
-  },
-  {
-   "nodos": [
     "orquestador",
     "motor-analisis",
     "futuro-columna-circular",
-    "futuro-optimizador-portico"
+    "optimizador-portico"
    ],
    "pasos": 4,
    "futuros": [
-    "futuro-columna-circular",
-    "futuro-optimizador-portico"
+    "futuro-columna-circular"
    ],
    "estados": [
     "implementado",
     "implementado",
     "planificado",
-    "planificado"
+    "implementado"
    ],
    "magnitudes": [
     [
@@ -27780,18 +27789,17 @@
     "orquestador",
     "motor-analisis",
     "futuro-pilotes",
-    "futuro-optimizador-portico"
+    "optimizador-portico"
    ],
    "pasos": 4,
    "futuros": [
-    "futuro-pilotes",
-    "futuro-optimizador-portico"
+    "futuro-pilotes"
    ],
    "estados": [
     "implementado",
     "implementado",
     "bloqueado",
-    "planificado"
+    "implementado"
    ],
    "magnitudes": [
     [
@@ -27800,77 +27808,6 @@
     ],
     [
      "reaccion_vertical_kn"
-    ],
-    [
-     "razon_demanda_capacidad"
-    ]
-   ],
-   "etiquetas": [
-    "dependiente_de_norma",
-    "pura"
-   ]
-  },
-  {
-   "nodos": [
-    "orquestador",
-    "motor-analisis",
-    "motor-concreto",
-    "futuro-optimizador-portico"
-   ],
-   "pasos": 4,
-   "futuros": [
-    "futuro-optimizador-portico"
-   ],
-   "estados": [
-    "implementado",
-    "implementado",
-    "implementado",
-    "planificado"
-   ],
-   "magnitudes": [
-    [
-     "seccion_columna_mm",
-     "seccion_viga_mm"
-    ],
-    [
-     "reaccion_vertical_kn"
-    ],
-    [
-     "co2e_kg",
-     "costo_directo_cop",
-     "masa_acero_kg",
-     "razon_demanda_capacidad",
-     "volumen_concreto_m3"
-    ]
-   ],
-   "etiquetas": [
-    "dependiente_de_norma",
-    "pura"
-   ]
-  },
-  {
-   "nodos": [
-    "orquestador",
-    "motor-concreto",
-    "motor-geotecnia",
-    "futuro-optimizador-portico"
-   ],
-   "pasos": 4,
-   "futuros": [
-    "futuro-optimizador-portico"
-   ],
-   "estados": [
-    "implementado",
-    "implementado",
-    "implementado",
-    "planificado"
-   ],
-   "magnitudes": [
-    [
-     "seccion_columna_mm"
-    ],
-    [
-     "presion_contacto_kpa"
     ],
     [
      "razon_demanda_capacidad"
