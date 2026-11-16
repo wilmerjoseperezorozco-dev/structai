@@ -1,13 +1,13 @@
 {
  "umbral": 4,
  "profundidad": 3,
- "modulos": 691,
- "funciones": 2792,
+ "modulos": 693,
+ "funciones": 2815,
  "resolucion": {
-  "externo": 1258,
-  "import": 126,
+  "externo": 1260,
+  "import": 137,
   "local": 381,
-  "por_nombre": 62
+  "por_nombre": 55
  },
  "cadenas": [
   {
@@ -1078,7 +1078,7 @@
    "clase": "endpoint",
    "familia": "orquestador",
    "funcion": "apps/api/routers/orquestador_api.py::endpoint_portico",
-   "pasos": 20,
+   "pasos": 23,
    "puntual": false,
    "candidata": true,
    "etiquetas": [
@@ -1187,6 +1187,16 @@
      "norma": true
     },
     {
+     "paso": "packages/motor-concreto/src/diseno_viga.py::disenar",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_integral.py:218",
+     "norma": true
+    },
+    {
      "paso": "packages/orquestador/src/diseno_portico.py::_costo_nivel",
      "tipo": "motor",
      "tipos": [
@@ -1217,13 +1227,34 @@
      "norma": true
     },
     {
-     "paso": "packages/orquestador/src/diseno_integral.py::_mn_viga",
+     "paso": "packages/motor-concreto/src/diseno_viga.py::_d",
      "tipo": "motor",
      "tipos": [
       "motor"
      ],
-     "via": "local",
-     "linea": "packages/orquestador/src/diseno_integral.py:228",
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_integral.py:100",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-concreto/src/diseno_viga.py::_mn_nominal",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_integral.py:102",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-concreto/src/columna.py::disenar_columna",
+     "tipo": "motor",
+     "tipos": [
+      "cache",
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_integral.py:229",
      "norma": true
     },
     {
@@ -2376,7 +2407,7 @@
      "tipos": [
       "motor"
      ],
-     "via": "por_nombre",
+     "via": "import",
      "linea": "apps/api/routers/analisis.py:38",
      "norma": true
     }
@@ -2726,7 +2757,7 @@
      "tipos": [
       "motor"
      ],
-     "via": "por_nombre",
+     "via": "import",
      "linea": "apps/api/routers/concreto.py:50",
      "norma": true
     }
@@ -2751,7 +2782,7 @@
      "tipos": [
       "motor"
      ],
-     "via": "por_nombre",
+     "via": "import",
      "linea": "apps/api/routers/concreto.py:41",
      "norma": true
     }
@@ -3103,7 +3134,7 @@
      "tipos": [
       "motor"
      ],
-     "via": "por_nombre",
+     "via": "import",
      "linea": "apps/api/routers/geotecnia.py:41",
      "norma": true
     }
@@ -3128,7 +3159,7 @@
      "tipos": [
       "motor"
      ],
-     "via": "por_nombre",
+     "via": "import",
      "linea": "apps/api/routers/geotecnia.py:50",
      "norma": true
     }
@@ -3335,7 +3366,7 @@
      "tipos": [
       "motor"
      ],
-     "via": "por_nombre",
+     "via": "import",
      "linea": "apps/api/routers/licuacion.py:39",
      "norma": true
     }
@@ -3410,7 +3441,7 @@
      "tipos": [
       "motor"
      ],
-     "via": "por_nombre",
+     "via": "import",
      "linea": "apps/api/routers/redes.py:41",
      "norma": true
     }
@@ -18065,7 +18096,7 @@
       "efecto"
      ],
      "via": "externo",
-     "linea": "scripts/inventario/cadenas_ejecucion.py:603",
+     "linea": "scripts/inventario/cadenas_ejecucion.py:643",
      "norma": false
     },
     {
@@ -18075,7 +18106,7 @@
       "efecto"
      ],
      "via": "externo",
-     "linea": "scripts/inventario/cadenas_ejecucion.py:604",
+     "linea": "scripts/inventario/cadenas_ejecucion.py:644",
      "norma": false
     }
    ]
@@ -22875,6 +22906,55 @@
      ],
      "via": "externo",
      "linea": "scripts/mantenimiento/vigencia_normas.py:123",
+     "norma": false
+    }
+   ]
+  },
+  {
+   "entrada": "scripts/medicion/medir_cadenas.py",
+   "clase": "pipeline",
+   "familia": "scripts/medicion",
+   "funcion": "scripts/medicion/medir_cadenas.py::main",
+   "pasos": 3,
+   "puntual": false,
+   "candidata": false,
+   "etiquetas": [
+    "con_efectos",
+    "dependiente_de_norma",
+    "dependiente_de_datos"
+   ],
+   "cache_existente": false,
+   "secuencia": [
+    {
+     "paso": "scripts/medicion/medir_cadenas.py::medir",
+     "tipo": "bd",
+     "tipos": [
+      "bd",
+      "cache",
+      "embeddings"
+     ],
+     "via": "local",
+     "linea": "scripts/medicion/medir_cadenas.py:213",
+     "norma": true
+    },
+    {
+     "paso": "f.write_text",
+     "tipo": "efecto",
+     "tipos": [
+      "efecto"
+     ],
+     "via": "externo",
+     "linea": "scripts/medicion/medir_cadenas.py:216",
+     "norma": false
+    },
+    {
+     "paso": "DOC.write_text",
+     "tipo": "efecto",
+     "tipos": [
+      "efecto"
+     ],
+     "via": "externo",
+     "linea": "scripts/medicion/medir_cadenas.py:218",
      "norma": false
     }
    ]

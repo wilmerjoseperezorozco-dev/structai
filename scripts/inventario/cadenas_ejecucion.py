@@ -180,6 +180,30 @@ def archivos() -> List[Path]:
     return salida
 
 
+def _alias_de_modulo(arbol: ast.Module, m: "Modulo") -> None:
+    """Alias que el análisis de `import` no ve y que esconden el paso más caro de una cadena (medido en #221: el diseño de
+    columna era el 82 % del pórtico): `_col = importlib.import_module("motor_concreto.columna")` y
+    `_dv, _viga = _dp._dv, _dp._viga` (alias reexportado por otro módulo; se resuelve en el Resolutor con «@»)."""
+    def uno(destino: ast.expr, valor: ast.expr) -> None:
+        if not isinstance(destino, ast.Name):
+            return
+        if isinstance(valor, ast.Call) and _texto(valor.func).endswith("import_module") and valor.args \
+                and isinstance(valor.args[0], ast.Constant) and isinstance(valor.args[0].value, str):
+            m.importados[destino.id] = (valor.args[0].value, None)
+        elif isinstance(valor, ast.Attribute) and isinstance(valor.value, ast.Name) and valor.value.id in m.importados:
+            m.importados[destino.id] = (f"@{valor.value.id}.{valor.attr}", None)
+
+    for n in arbol.body:
+        if not isinstance(n, ast.Assign) or len(n.targets) != 1:
+            continue
+        t, v = n.targets[0], n.value
+        if isinstance(t, ast.Tuple) and isinstance(v, ast.Tuple) and len(t.elts) == len(v.elts):
+            for a, b in zip(t.elts, v.elts):
+                uno(a, b)
+        else:
+            uno(t, v)
+
+
 def indexar() -> Dict[str, Modulo]:
     mods: Dict[str, Modulo] = {}
     for p in archivos():
@@ -199,6 +223,7 @@ def indexar() -> Dict[str, Modulo]:
             elif isinstance(n, ast.ImportFrom):
                 for a in n.names:
                     m.importados[a.asname or a.name] = (a.name, None)
+        _alias_de_modulo(arbol, m)
         fuente = p.read_text(encoding="utf-8")
 
         def registrar(fn, clase=None):
@@ -250,11 +275,26 @@ class Resolutor:
         if len(candidatos) == 1:
             return candidatos[0]
         cola = "/".join(partes)
-        for c in candidatos:                                   # coincidencia por sufijo de ruta
-            if c.replace("-", "_").removesuffix(".py").endswith(cola):
+        for c in candidatos:                                   # coincidencia por sufijo de ruta (con o sin «src/»)
+            norm = c.replace("-", "_").removesuffix(".py")
+            if norm.endswith(cola) or norm.replace("/src/", "/").endswith(cola):
                 return c
         mismo = [c for c in candidatos if c.split("/")[:2] == desde.split("/")[:2]]
         return mismo[0] if len(mismo) == 1 else None
+
+    def _importado(self, m: "Modulo", nombre: str, saltos: int = 0) -> Optional[Tuple[str, Optional[str]]]:
+        """(módulo, nombre) de un alias, persiguiendo los reexportados «@base.attr» (máximo 3 saltos)."""
+        par = m.importados.get(nombre)
+        if not par or not par[0].startswith("@"):
+            return par
+        if saltos >= 3:
+            return None
+        base, _, attr = par[0][1:].partition(".")
+        bm = m.importados.get(base)
+        ruta = self.modulo_de(bm[0] if bm[1] is None else f"{bm[0]}.{bm[1]}", m.ruta) if bm and not bm[0].startswith("@") else None
+        if ruta is None and bm:
+            ruta = self.modulo_de(bm[0], m.ruta)
+        return self._importado(self.mods[ruta], attr, saltos + 1) if ruta else None
 
     def resolver(self, texto: str, f: Funcion) -> Tuple[Optional[Funcion], str]:
         m = self.mods[f.modulo]
@@ -274,8 +314,8 @@ class Resolutor:
             g = m.funciones.get(f"{f.clase}.{ultimo}")
             if g:
                 return g, "metodo"
-        if cabeza in m.importados and len(partes) == 2:
-            mod, nom = m.importados[cabeza]
+        if cabeza in m.importados and len(partes) == 2 and self._importado(m, cabeza):
+            mod, nom = self._importado(m, cabeza)
             ruta = self.modulo_de(f"{mod}.{nom}" if nom else mod, f.modulo) or self.modulo_de(mod, f.modulo)
             if ruta and ultimo in self.mods[ruta].funciones:
                 return self.mods[ruta].funciones[ultimo], "import"

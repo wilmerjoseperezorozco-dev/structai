@@ -2,11 +2,11 @@
 
 Generado por `scripts/inventario/cadenas_ejecucion.py`; no editar a mano. Análisis **estático** (AST + imports): dice qué pasos hay y de qué tipo, **no cuánto tardan**. El orden de trabajo lo da latencia × frecuencia medidas (fase 1, paso 2), nunca este conteo solo. Ver el docstring para la definición de paso, tipo y etiqueta.
 
-- Código analizado: 691 módulos, 2,792 funciones (sin pruebas).
-- Puntos de entrada: 99 endpoints y 372 pipelines fuera de línea.
+- Código analizado: 693 módulos, 2,815 funciones (sin pruebas).
+- Puntos de entrada: 99 endpoints y 373 pipelines fuera de línea.
 - **Candidatas a flujo atómico (≥ 4 pasos secuenciales): 99** (12 endpoints, 87 pipelines).
 - Cadenas futuras con ≥ 4 motores que pasan por un motor planificado o bloqueado: **46** (solo nodos declarados en `docs/coherencia_motores.json`).
-- Resolución de los pasos: externo 1258, import 126, local 381, por_nombre 62 (`por_nombre` = función única en el repo con ese nombre; revisar si un paso parece fuera de lugar).
+- Resolución de los pasos: externo 1260, import 137, local 381, por_nombre 55 (`por_nombre` = función única en el repo con ese nombre; revisar si un paso parece fuera de lugar).
 
 ## Etiquetas de las candidatas
 
@@ -45,6 +45,7 @@ Con caché ya existente en la secuencia: 14 de 99.
 | scripts/clima | 2 | 1 | 0 | 2 |
 | scripts/surrogate_zapata | 2 | 0 | 0 | 2 |
 | vision | 1 | 0 | 0 | 0 |
+| scripts/medicion | 1 | 0 | 0 | 1 |
 
 ## Endpoints candidatos (los que ve el usuario)
 
@@ -52,7 +53,7 @@ Con caché ya existente en la secuencia: 14 de 99.
 |---|---|---|---|---|
 | `POST /consultar` | 60 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | sí | _uso_sb.table().select().eq().maybe_single().execute[bd] → _uso_sb.table().select().eq().gte().execute[bd] → _cache_consultar.get[cache] → _informe_sitio_directo[bd] → embed_query[cache] → _centroides[embeddings] → embed_query[cache] → sb.rpc().execute[bd] → buscar_precios_apu[bd] → buscar_precios_invias_vias[bd] → search[bd] → _format_precio_context[bd] → … (+48) |
 | `POST /ask` | 39 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | sí | _uso_sb.table().select().eq().maybe_single().execute[bd] → _uso_sb.table().select().eq().gte().execute[bd] → _cache_ask.get[cache] → _informe_sitio_directo[bd] → sb.table().select().eq().limit().execute[bd] → sb.table().update().eq().execute[efecto] → _con_plugins[bd] → groq_client.chat.completions.create[llm] → openai_client.chat.completions.create[llm] → embed_query[cache] → sb.rpc().execute[bd] → embed_query[cache] → … (+27) |
-| `POST /orquestador/portico-integral` | 20 | dependiente_de_norma | no | _capacidad[motor] → _ctx_sismico[motor] → _tabla_secciones[motor] → _modelo[motor] → construir_plantilla[motor] → alturas_nivel_m[motor] → pesos_nivel_kn[motor] → parametros_espectro[motor] → fuerzas_vectorizadas[motor] → analizar_lote[motor] → _costo_nivel[motor] → _combos[motor] → … (+8) |
+| `POST /orquestador/portico-integral` | 23 | dependiente_de_norma | no | _capacidad[motor] → _ctx_sismico[motor] → _tabla_secciones[motor] → _modelo[motor] → construir_plantilla[motor] → alturas_nivel_m[motor] → pesos_nivel_kn[motor] → parametros_espectro[motor] → fuerzas_vectorizadas[motor] → analizar_lote[motor] → disenar[motor] → _costo_nivel[motor] → … (+11) |
 | `GET /aquai/hidrologia/caudal-ideam` | 9 | dependiente_de_datos | sí | _get[red] → resolver_departamento[red] → _CACHE_DEPARTAMENTOS.get[cache] → httpx.Client[red] → client.get[red] → httpx.Client[red] → client.get[red] → httpx.Client[red] → client.get[red] |
 | `GET /aquai/hidrologia/estaciones-ideam` | 8 | dependiente_de_datos | sí | httpx.Client[red] → client.get[red] → resolver_departamento[red] → _CACHE_DEPARTAMENTOS.get[cache] → httpx.Client[red] → client.get[red] → httpx.Client[red] → client.get[red] |
 | `GET /amenaza-sismica` | 7 | dependiente_de_norma, dependiente_de_datos | sí | create_client[bd] → sb.table().select().range().execute[bd] → _agrupar[red] → httpx.get[red] → _agrupar[red] → cache.get[cache] → consultar_movimientos_cercanos[red] |
@@ -168,4 +169,4 @@ Un motor futuro que aparece en muchas cadenas desbloquea más flujos al implemen
 
 ## Cadenas cortas (< 4 pasos)
 
-372 cadenas no llegan al umbral. No se descartan: una de 3 pasos con un LLM puede pesar más que una de 6 en CPU. Están completas en el JSON.
+373 cadenas no llegan al umbral. No se descartan: una de 3 pasos con un LLM puede pesar más que una de 6 en CPU. Están completas en el JSON.
