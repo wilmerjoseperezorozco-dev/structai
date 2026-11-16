@@ -82,7 +82,7 @@
     },
     {
       "titulo": "Licencia no reutilizable",
-      "hecho": "El repositorio es de propiedad del autor y no es de código abierto; además, `ultralytics` (AGPL-3.0) exige revisión antes de ofrecer el motor de visión como servicio."
+      "hecho": "El repositorio es de propiedad del autor y no es de código abierto; `ultralytics` (AGPL-3.0) se retiró en #217 (el detector se entrena con RF-DETR, Apache-2.0) y el CI lo veta."
     },
     {
       "titulo": "Módulos BIM y de aprendizaje automático experimentales",

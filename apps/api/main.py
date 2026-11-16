@@ -13,7 +13,7 @@ Endpoints:
 Wiring:
   packages/construdata/rag_multi_norma.py  → /ask
   packages/motor-apu/src/catalogue.py     → /apu/*
-  packages/yolo/model.onnx (entrenar con packages/yolo/train.py) → /detect
+  packages/yolo/model.onnx (entrenar con packages/yolo/train_rfdetr.py, RF-DETR Apache-2.0) → /detect
     — la inferencia real (_load_onnx_model/_detect_onnx) vive en este mismo
     archivo, no en un módulo separado; corre en modo stub si el .onnx no
     existe todavía (ver packages/yolo/README.md)
@@ -1077,7 +1077,7 @@ STUB_CLASES = list(CLASE_APU_MAP.keys())
 _onnx_session: Optional["ort.InferenceSession"] = None  # type: ignore[name-defined]
 
 def _load_onnx_model() -> Optional["ort.InferenceSession"]:  # type: ignore[name-defined]
-    """Carga el modelo ONNX si existe en packages/yolo/model.onnx"""
+    """Carga el modelo ONNX si existe en packages/yolo/model.onnx (RF-DETR o YOLO heredado, ver _detect_onnx)."""
     if not YOLO_DEPS:
         return None
     model_path = ROOT / "packages" / "yolo" / "model.onnx"
@@ -1093,67 +1093,48 @@ def _load_onnx_model() -> Optional["ort.InferenceSession"]:  # type: ignore[name
         return None
 
 
+def _decodificador_vision():
+    """packages/yolo/src/decodificar.py cargado como módulo propio (sin sys.path: evita choques con otros "src")."""
+    global _mod_decodificar
+    if _mod_decodificar is None:
+        import importlib.util as _ilu_v
+        ruta = ROOT / "packages" / "yolo" / "src" / "decodificar.py"
+        spec = _ilu_v.spec_from_file_location("structai_vision_decodificar", ruta)
+        _mod_decodificar = _ilu_v.module_from_spec(spec)
+        spec.loader.exec_module(_mod_decodificar)
+    return _mod_decodificar
+
+
+_mod_decodificar = None
+
+
+def _version_modelo_vision() -> str:
+    """Versión que reporta /detect: sale de packages/yolo/model.json (lo escribe train_rfdetr.py) para no anunciar una
+    arquitectura que no es la cargada. Sin model.json → 'onnx-sin-metadatos'."""
+    import json as _json_v
+    try:
+        meta = _json_v.loads((ROOT / "packages" / "yolo" / "model.json").read_text(encoding="utf-8"))
+        arq = str(meta.get("arquitectura", "onnx")).lower().replace(" ", "-")
+        return f"{arq}-construdata-{meta.get('fecha', 's-f')}"
+    except (OSError, ValueError):
+        return "onnx-sin-metadatos"
+
+
 def _detect_onnx(img_bytes: bytes, session: "ort.InferenceSession") -> list[DeteccionElemento]:  # type: ignore[name-defined]
-    """Inferencia real con YOLOv8/v11 ONNX — misma cabeza anchor-free, output shape [1, num_classes+4, anchors]"""
+    """Inferencia real con el ONNX en packages/yolo/model.onnx (issue #217).
+
+    El formato se detecta por las salidas del grafo: RF-DETR (dets + labels, Apache-2.0, sin NMS) o el YOLOv8/v11
+    heredado (un tensor [1, 4+nc, N], con NMS). El pre/posproceso vive en packages/yolo/src/decodificar.py, con pruebas."""
     import numpy as np
     import cv2
 
-    # Decode + resize
     arr = np.frombuffer(img_bytes, np.uint8)
     img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
-    img_h, img_w = img.shape[:2]
-
-    # Pre-process: BGR→RGB, resize 640×640, normalize
-    inp = cv2.resize(img, (640, 640))
-    inp = inp[:, :, ::-1].transpose(2, 0, 1).astype(np.float32) / 255.0
-    inp = np.expand_dims(inp, 0)
-
-    input_name = session.get_inputs()[0].name
-    outputs = session.run(None, {input_name: inp})[0]   # [1, 4+nc, 8400]
-
-    predictions = outputs[0].T                          # [8400, 4+nc]
-    conf_threshold = 0.4
-
-    candidatos: list[tuple[float, float, float, float, float, int]] = []  # x1,y1,x2,y2,conf,class_id
-    for pred in predictions:
-        boxes = pred[:4]
-        scores = pred[4:]
-        class_id = int(np.argmax(scores))
-        conf = float(scores[class_id])
-        if conf < conf_threshold:
-            continue
-
-        cx, cy, w, h = boxes
-        x1 = max(0.0, (cx - w / 2) / 640)
-        y1 = max(0.0, (cy - h / 2) / 640)
-        x2 = min(1.0, (cx + w / 2) / 640)
-        y2 = min(1.0, (cy + h / 2) / 640)
-        candidatos.append((x1, y1, x2, y2, conf, class_id))
-
-    # Supresión de no-máximos (NMS): sin esto, un mismo objeto real genera
-    # varias cajas superpuestas casi idénticas en vez de una sola limpia.
-    # Greedy IoU — suficiente para un modelo de 7 clases, no hace falta
-    # traer una librería aparte solo para esto.
-    def iou(a: tuple, b: tuple) -> float:
-        ax1, ay1, ax2, ay2 = a[:4]
-        bx1, by1, bx2, by2 = b[:4]
-        ix1, iy1 = max(ax1, bx1), max(ay1, by1)
-        ix2, iy2 = min(ax2, bx2), min(ay2, by2)
-        inter = max(0.0, ix2 - ix1) * max(0.0, iy2 - iy1)
-        area_a = (ax2 - ax1) * (ay2 - ay1)
-        area_b = (bx2 - bx1) * (by2 - by1)
-        union = area_a + area_b - inter
-        return inter / union if union > 0 else 0.0
-
-    candidatos.sort(key=lambda c: c[4], reverse=True)
-    conservados: list[tuple] = []
-    nms_iou_threshold = 0.5
-    for c in candidatos:
-        if all(iou(c, k) < nms_iou_threshold or c[5] != k[5] for k in conservados):
-            conservados.append(c)
+    rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    cajas = _decodificador_vision().inferir(session, rgb, umbral=0.4, clase_fondo=-1)
 
     detecciones: list[DeteccionElemento] = []
-    for x1, y1, x2, y2, conf, class_id in conservados:
+    for x1, y1, x2, y2, conf, class_id in cajas:
         clase = (
             CLASES_MODELO[class_id]
             if class_id < len(CLASES_MODELO)
@@ -1792,7 +1773,7 @@ async def detect_structural(
     es una verificación sugerida, no una afirmación de cumplimiento (el
     modelo detecta presencia del elemento, no si cumple la norma).
 
-    Usa YOLOv11 ONNX (packages/yolo/model.onnx) cuando el modelo está
+    Usa el ONNX de packages/yolo/model.onnx (RF-DETR; YOLO heredado aún se lee) cuando el modelo está
     disponible; retorna stub determinístico si aún no se ha entrenado (ver
     packages/yolo/README.md).
 
@@ -1843,7 +1824,7 @@ async def detect_structural(
         elementos_detectados=detecciones,
         imagen_ancho=img_w,
         imagen_alto=img_h,
-        modelo_version="yolo11n-construdata-v1" if modo == "onnx" else "stub-v1",
+        modelo_version=_version_modelo_vision() if modo == "onnx" else "stub-v1",
         latencia_ms=latencia,
         modo=modo,
     )
