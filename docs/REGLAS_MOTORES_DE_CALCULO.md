@@ -33,7 +33,7 @@ Un motor nuevo entra al registro (y solo entonces se conecta al DAG de `packages
 3. Salida con `ResultadoMotor`, endpoint con fallo explícito (ValueError→422) y límites de tasa.
 4. Desplegado en Cloud Run y verificado con una llamada real contra la revisión en producción.
 
-El DAG se conecta cuando haya acumulados diez motores que cumplan las cuatro. Estado: ninguno cumple aún la condición 4 de forma verificada; `motor-geotecnia` cumple 1–3 en su primer corte.
+El DAG se conecta cuando haya acumulados diez motores que cumplan las cuatro. Estado (2026-11-16): `redes`, `geotecnia` y `licuacion` cumplen la condición 4, verificada con llamadas reales contra `structai-api-00015-hot` (`infra/gcp/llamadas_reales.py`); el detalle por motor está en `docs/REGISTRO_MOTORES.md`.
 
 ## Hoja de ruta en issues (9 de noviembre de 2026)
 
