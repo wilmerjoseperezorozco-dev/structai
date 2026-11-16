@@ -2,11 +2,11 @@
 
 Generado por `scripts/inventario/cadenas_ejecucion.py`; no editar a mano. Análisis **estático** (AST + imports): dice qué pasos hay y de qué tipo, **no cuánto tardan**. El orden de trabajo lo da latencia × frecuencia medidas (fase 1, paso 2), nunca este conteo solo. Ver el docstring para la definición de paso, tipo y etiqueta.
 
-- Código analizado: 703 módulos, 2,928 funciones (sin pruebas).
-- Puntos de entrada: 100 endpoints y 379 pipelines fuera de línea.
+- Código analizado: 706 módulos, 2,945 funciones (sin pruebas).
+- Puntos de entrada: 101 endpoints y 379 pipelines fuera de línea.
 - **Candidatas a flujo atómico (≥ 4 pasos secuenciales): 103** (13 endpoints, 90 pipelines).
 - Cadenas futuras con ≥ 4 motores que pasan por un motor planificado o bloqueado: **36** (solo nodos declarados en `docs/coherencia_motores.json`).
-- Resolución de los pasos: externo 1287, import 148, local 413, por_nombre 96 (`por_nombre` = función única en el repo con ese nombre; revisar si un paso parece fuera de lugar).
+- Resolución de los pasos: externo 1287, import 148, local 413, por_nombre 97 (`por_nombre` = función única en el repo con ese nombre; revisar si un paso parece fuera de lugar).
 
 ## Etiquetas de las candidatas
 
@@ -26,7 +26,7 @@ Con caché ya existente en la secuencia: 18 de 103.
 | Familia | Cadenas | Candidatas | Con LLM | Con efectos |
 |---|---|---|---|---|
 | scripts/ingesta | 225 | 35 | 0 | 219 |
-| motor | 84 | 5 | 0 | 1 |
+| motor | 85 | 5 | 0 | 1 |
 | scripts/satelite | 48 | 19 | 0 | 44 |
 | scripts/evaluacion | 27 | 10 | 9 | 20 |
 | scripts/precios | 16 | 5 | 0 | 15 |
@@ -168,4 +168,4 @@ Un motor futuro que aparece en muchas cadenas desbloquea más flujos al implemen
 
 ## Cadenas cortas (< 4 pasos)
 
-376 cadenas no llegan al umbral. No se descartan: una de 3 pasos con un LLM puede pesar más que una de 6 en CPU. Están completas en el JSON.
+377 cadenas no llegan al umbral. No se descartan: una de 3 pasos con un LLM puede pesar más que una de 6 en CPU. Están completas en el JSON.

@@ -5,6 +5,7 @@ from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(RAIZ / "apps" / "api"))
+sys.path.insert(0, str(RAIZ / "packages" / "construdata"))
 sys.path.insert(0, str(Path(__file__).parent))
 os.environ.setdefault("SUPABASE_URL", "http://localhost:54321")
 os.environ.setdefault("SUPABASE_JWT_SECRET", "secreto-de-prueba-local")
@@ -16,14 +17,14 @@ from fastapi.testclient import TestClient  # noqa: E402
 import llamadas_reales as lr  # noqa: E402
 from auth import AuthenticatedUser, get_current_user  # noqa: E402
 from rate_limit import limiter  # noqa: E402
-from routers import geotecnia, licuacion, redes  # noqa: E402
+from routers import aquai, geotecnia, licuacion, redes  # noqa: E402
 
 
 @pytest.fixture()
 def en_proceso(monkeypatch):
     limiter.reset()
     app = FastAPI()
-    for r in (redes, geotecnia, licuacion):
+    for r in (redes, geotecnia, licuacion, aquai):
         app.include_router(r.router)
     app.dependency_overrides[get_current_user] = lambda: AuthenticatedUser(id="u-prueba", email=None)
     c = TestClient(app)

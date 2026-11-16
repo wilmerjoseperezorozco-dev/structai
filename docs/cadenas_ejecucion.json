@@ -1,13 +1,13 @@
 {
  "umbral": 4,
  "profundidad": 3,
- "modulos": 703,
- "funciones": 2928,
+ "modulos": 706,
+ "funciones": 2945,
  "resolucion": {
   "externo": 1287,
   "import": 148,
   "local": 413,
-  "por_nombre": 96
+  "por_nombre": 97
  },
  "cadenas": [
   {
@@ -2995,7 +2995,32 @@
       "motor"
      ],
      "via": "por_nombre",
-     "linea": "apps/api/routers/aquai.py:292",
+     "linea": "apps/api/routers/aquai.py:301",
+     "norma": true
+    }
+   ]
+  },
+  {
+   "entrada": "POST /aquai/saneamiento/lagunas",
+   "clase": "endpoint",
+   "familia": "motor",
+   "funcion": "apps/api/routers/aquai.py::endpoint_lagunas",
+   "pasos": 1,
+   "puntual": false,
+   "candidata": false,
+   "etiquetas": [
+    "dependiente_de_norma"
+   ],
+   "cache_existente": false,
+   "secuencia": [
+    {
+     "paso": "packages/motor-aquai/src/contrato_saneamiento.py::lagunas_contrato",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "por_nombre",
+     "linea": "apps/api/routers/aquai.py:258",
      "norma": true
     }
    ]
@@ -3014,7 +3039,7 @@
    "cache_existente": false,
    "secuencia": [
     {
-     "paso": "packages/motor-aquai/src/ptap.py::calcular_ptap",
+     "paso": "packages/motor-aquai/src/contrato_saneamiento.py::ptap_contrato",
      "tipo": "motor",
      "tipos": [
       "motor"
@@ -3039,7 +3064,7 @@
    "cache_existente": false,
    "secuencia": [
     {
-     "paso": "packages/motor-aquai/src/ptar.py::calcular_ptar",
+     "paso": "packages/motor-aquai/src/contrato_saneamiento.py::ptar_contrato",
      "tipo": "motor",
      "tipos": [
       "motor"
@@ -3070,7 +3095,7 @@
       "motor"
      ],
      "via": "por_nombre",
-     "linea": "apps/api/routers/aquai.py:267",
+     "linea": "apps/api/routers/aquai.py:276",
      "norma": true
     }
    ]
@@ -3095,7 +3120,7 @@
       "motor"
      ],
      "via": "por_nombre",
-     "linea": "apps/api/routers/aquai.py:258",
+     "linea": "apps/api/routers/aquai.py:267",
      "norma": true
     }
    ]
