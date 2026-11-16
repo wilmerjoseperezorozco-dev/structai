@@ -53,7 +53,10 @@ def cargar_env() -> dict:
     for linea in ruta.read_text(encoding="utf-8").splitlines():
         if "=" in linea and not linea.lstrip().startswith("#"):
             k, v = linea.split("=", 1)
-            env[k.strip()] = v.strip()
+            env[k.strip()] = v.strip().strip('"').strip("'")
+    for k in ("CATALIZA_SUPABASE_URL", "CATALIZA_SUPABASE_SERVICE_KEY"):
+        if not env.get(k):
+            raise SystemExit(f"{ruta}: {k} está vacío. Pega el valor después del '=' y GUARDA el archivo.")
     return env
 
 
