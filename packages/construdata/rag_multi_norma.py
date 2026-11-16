@@ -13,10 +13,13 @@ import hashlib
 import json
 import logging
 import os
+import threading
+import time
 import re
 import unicodedata
 from dataclasses import dataclass
 from functools import lru_cache
+from pathlib import Path
 from typing import Optional
 from openai import APIConnectionError, APIStatusError, InternalServerError, OpenAI, RateLimitError
 from supabase import create_client
@@ -335,6 +338,26 @@ RAG_CACHE_DISABLED = os.getenv("RAG_CACHE_DISABLED", "false").lower() == "true"
 
 _ESPACIOS_MULTIPLES = re.compile(r"\s+")
 
+# Nivel 1 en memoria del proceso (2026-11-16, descarga de Supabase para seguir en el plan gratuito): Supabase queda como
+# nivel 2, compartido entre instancias y sobreviviente a reinicios. Un acierto de nivel 1 no viaja a Supabase; un acierto
+# de nivel 2 hace UNA lectura (antes eran dos: lectura + UPDATE del contador `hits`, que era el 34 % de las operaciones
+# sobre la tabla) y sube la entrada al nivel 1. La entrada del nivel 1 guarda su `expira_en` de Supabase: nunca se sirve
+# algo que en Supabase ya expiró. El contador de aciertos vive en memoria (uso_cache_hoy).
+RAG_CACHE_L1_HORAS = float(os.getenv("RAG_CACHE_L1_HORAS", "6"))
+# Diagnóstico de rag_cache_respuestas (2026-11-16): 190 de 222 filas estaban vencidas (nunca se borraban) y cada fila
+# pesaba ~9,8 KB porque guardaba `contextos_recuperados` (el texto completo de los trozos, que FastAPI ni siquiera devuelve:
+# solo lo usan las evaluaciones RAGAS, que ahora corren con la caché apagada). Se guarda sin ese campo y se purgan las
+# vencidas como máximo una vez por hora por instancia.
+_CAMPOS_NO_CACHEADOS = ("contextos_recuperados",)
+RAG_CACHE_PURGA_S = float(os.getenv("RAG_CACHE_PURGA_S", "3600"))
+_ultima_purga_cache = {"t": None}
+
+try:
+    from cache import TTLCache as _TTLCache          # apps/api/cache.py (en la API está en sys.path)
+    _cache_l1 = _TTLCache(ttl_seconds=RAG_CACHE_L1_HORAS * 3600, max_size=int(os.getenv("RAG_CACHE_L1_MAX", "2000")))
+except ImportError:                                  # scripts sueltos sin la API: solo nivel 2, como antes
+    _cache_l1 = None
+
 
 def _normalizar_pregunta_cache(question: str) -> str:
     return _ESPACIOS_MULTIPLES.sub(" ", question.strip().lower())
@@ -344,18 +367,18 @@ def _hash_cache(ruta: str, pregunta_normalizada: str) -> str:
     return hashlib.sha256(f"{ruta}|{pregunta_normalizada}".encode("utf-8")).hexdigest()
 
 
-_uso_cache_hoy = {"fecha": None, "hits": 0, "misses": 0}
+_uso_cache_hoy = {"fecha": None, "hits": 0, "misses": 0, "hits_l1": 0, "hits_l2": 0}
 
 
-def _registrar_cache(hit: bool) -> None:
+def _registrar_cache(hit: bool, nivel: Optional[int] = None) -> None:
     import datetime
 
     hoy = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
     if _uso_cache_hoy["fecha"] != hoy:
-        _uso_cache_hoy["fecha"] = hoy
-        _uso_cache_hoy["hits"] = 0
-        _uso_cache_hoy["misses"] = 0
+        _uso_cache_hoy.update(fecha=hoy, hits=0, misses=0, hits_l1=0, hits_l2=0)
     _uso_cache_hoy["hits" if hit else "misses"] += 1
+    if hit and nivel in (1, 2):
+        _uso_cache_hoy[f"hits_l{nivel}"] += 1
 
 
 def uso_cache_hoy() -> dict:
@@ -376,10 +399,16 @@ def _buscar_en_cache(ruta: str, question: str) -> Optional[dict]:
 
     pregunta_normalizada = _normalizar_pregunta_cache(question)
     cache_id = _hash_cache(ruta, pregunta_normalizada)
+    ahora = datetime.datetime.now(datetime.timezone.utc)
+    if _cache_l1 is not None:
+        en_l1 = _cache_l1.get(cache_id)
+        if en_l1 is not None and en_l1[1] > ahora:
+            _registrar_cache(hit=True, nivel=1)
+            return {**en_l1[0], "desde_cache": True}
     try:
         res = (
             sb.table("rag_cache_respuestas")
-            .select("respuesta, expira_en, hits")
+            .select("respuesta, expira_en")
             .eq("id", cache_id)
             .limit(1)
             .execute()
@@ -395,21 +424,14 @@ def _buscar_en_cache(ruta: str, question: str) -> Optional[dict]:
 
     fila = res.data[0]
     expira_en = datetime.datetime.fromisoformat(fila["expira_en"].replace("Z", "+00:00"))
-    if expira_en < datetime.datetime.now(datetime.timezone.utc):
+    if expira_en < ahora:
         _registrar_cache(hit=False)
         return None
 
-    try:
-        sb.table("rag_cache_respuestas").update({
-            "hits": fila["hits"] + 1,
-            "ultimo_hit_en": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-        }).eq("id", cache_id).execute()
-    except Exception as e:
-        # Contador de hits es solo observabilidad -- si falla el update no
-        # vale la pena descartar la respuesta cacheada que sí se recuperó.
-        log.warning(f"Caché de respuestas: no se pudo actualizar contador de hits: {e}")
-
-    _registrar_cache(hit=True)
+    # Sin UPDATE del contador `hits` (escritura por cada acierto): el conteo queda en memoria (uso_cache_hoy).
+    if _cache_l1 is not None:
+        _cache_l1.set(cache_id, (fila["respuesta"], expira_en))
+    _registrar_cache(hit=True, nivel=2)
     return {**fila["respuesta"], "desde_cache": True}
 
 
@@ -423,7 +445,10 @@ def _guardar_en_cache(ruta: str, question: str, respuesta: dict) -> None:
 
     pregunta_normalizada = _normalizar_pregunta_cache(question)
     cache_id = _hash_cache(ruta, pregunta_normalizada)
+    respuesta = {k: v for k, v in respuesta.items() if k not in _CAMPOS_NO_CACHEADOS}
     expira_en = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=RAG_CACHE_TTL_DIAS)
+    if _cache_l1 is not None:
+        _cache_l1.set(cache_id, (respuesta, expira_en))
     try:
         sb.table("rag_cache_respuestas").upsert({
             "id": cache_id,
@@ -434,6 +459,22 @@ def _guardar_en_cache(ruta: str, question: str, respuesta: dict) -> None:
         }, on_conflict="id").execute()
     except Exception as e:
         log.warning(f"Caché de respuestas no disponible (escritura): {e}")
+    _purgar_cache_vencida()
+
+
+def _purgar_cache_vencida() -> None:
+    """Borra las filas vencidas de rag_cache_respuestas (nunca se sirven: _buscar_en_cache revisa expira_en), como máximo
+    una vez cada RAG_CACHE_PURGA_S por instancia. Best-effort, igual que el resto de la caché."""
+    import datetime
+
+    t = time.monotonic()
+    if _ultima_purga_cache["t"] is not None and t - _ultima_purga_cache["t"] < RAG_CACHE_PURGA_S:
+        return
+    _ultima_purga_cache["t"] = t
+    try:
+        sb.table("rag_cache_respuestas").delete().lt("expira_en", datetime.datetime.now(datetime.timezone.utc).isoformat()).execute()
+    except Exception as e:
+        log.warning(f"Caché de respuestas: no se pudieron purgar las vencidas: {e}")
 
 
 def uso_groq_hoy() -> dict:
@@ -1721,10 +1762,64 @@ def embed_query(text: str) -> list[float]:
     model = _embedding_model()
     return model.encode(text, normalize_embeddings=True).tolist()
 
+
+# ─── Índice local (2026-11-16): búsqueda híbrida en memoria, sin viajes a Supabase ───────────────────────────────────
+# La instantánea (apps/api/datos_indice/indice_rag.npz) se construye en el despliegue con
+# scripts/rag/construir_indice_local.py y viaja en la imagen: el arranque en frío la lee del disco. Reproduce
+# search_knowledge y las RPC de Perú/Ecuador (packages/construdata/indice_local.py), con la parte semántica exacta
+# (HNSW con ef_search=40 truncaba a 40 vecinos). Si el archivo no está o falla, se usa la RPC de siempre.
+# RAG_INDICE_LOCAL=false la apaga; RAG_INDICE_LOCAL_RUTA cambia la ruta.
+RAG_INDICE_LOCAL = os.getenv("RAG_INDICE_LOCAL", "true").lower() != "false"
+RAG_INDICE_LOCAL_RUTA = Path(os.getenv("RAG_INDICE_LOCAL_RUTA", str(Path(__file__).resolve().parents[2] / "apps" / "api" / "datos_indice" / "indice_rag.npz")))
+_indice = {"cargado": False, "valor": None, "error": None}
+_lock_indice = threading.Lock()
+
+
+def _indice_local():
+    """El índice en memoria, o None si está apagado, no existe o no pasó la verificación sha256 (se intenta una vez)."""
+    if not RAG_INDICE_LOCAL:
+        return None
+    if not _indice["cargado"]:
+        with _lock_indice:
+            if not _indice["cargado"]:
+                try:
+                    if RAG_INDICE_LOCAL_RUTA.exists():
+                        from indice_local import IndiceLocal
+                        t0 = time.perf_counter()
+                        _indice["valor"] = IndiceLocal.cargar(RAG_INDICE_LOCAL_RUTA)
+                        log.info(f"Índice RAG local cargado en {time.perf_counter() - t0:.2f}s: {_indice['valor'].resumen()}")
+                    else:
+                        _indice["error"] = f"no existe {RAG_INDICE_LOCAL_RUTA.name}"
+                except Exception as e:
+                    _indice["error"] = str(e)
+                    log.warning(f"Índice RAG local no disponible, se usa la RPC de Supabase: {e}")
+                _indice["cargado"] = True
+    return _indice["valor"]
+
+
+def estado_indice_local() -> dict:
+    """Para /health?deep=true. Fuerza la carga perezosa (una sola vez), así el chequeo del despliegue ve el estado real
+    aunque todavía no haya llegado ninguna consulta."""
+    idx = _indice_local()
+    return {"activo": idx is not None, "error": _indice["error"], **(idx.resumen() if idx is not None else {})}
+
+
+def _chunk_de_fila(r) -> "ChunkResult":
+    meta = r.metadata or {}
+    return ChunkResult(chunk_id=r.chunk_id, norma=r.norma, seccion=r.seccion, contenido=r.contenido, score=r.score,
+                       estado_vigencia=meta.get("estado_vigencia"), derogada_por=meta.get("derogada_por"),
+                       alcance_derogacion=meta.get("alcance_derogacion"))
+
 def search(query: str, norma_filter: Optional[str] = None, top_k: int = TOP_K_DEFAULT_RAG, motor_filter: Optional[str] = None) -> list[ChunkResult]:
     """Búsqueda híbrida RRF en Supabase. motor_filter restringe a motor_chunks.motor
     (ej. 'aquai') — deja fuera nsr10_chunks/ntc_chunks cuando se usa."""
     embedding = embed_query(query)
+    idx = _indice_local()
+    if idx is not None:
+        try:
+            return [_chunk_de_fila(r) for r in idx.search_knowledge(embedding, query, norma_filter, top_k, p_motor=motor_filter)]
+        except Exception as e:
+            log.warning(f"Índice RAG local falló en search(); se usa la RPC: {e}")
     result = sb.rpc("search_knowledge", {
         "query_embedding": embedding,
         "query_text": query,
@@ -1759,8 +1854,17 @@ def search(query: str, norma_filter: Optional[str] = None, top_k: int = TOP_K_DE
 # trackea vigencia/derogación para estas dos normas, a diferencia de
 # nsr10_chunks/ntc_chunks) -- por eso NO reusan search(), que está atado a
 # la forma exacta de search_knowledge.
+_PAIS_DE_RPC = {"search_knowledge_peru_e030": "peru", "search_knowledge_ecuador_nec_se_ds": "ecuador"}
+
+
 def _search_pais_hybrid(rpc_name: str, query: str, top_k: int = TOP_K_DEFAULT_RAG) -> list[ChunkResult]:
     embedding = embed_query(query)
+    idx = _indice_local()
+    if idx is not None and rpc_name in _PAIS_DE_RPC:
+        try:
+            return [_chunk_de_fila(r) for r in idx.search_pais(_PAIS_DE_RPC[rpc_name], embedding, query, None, top_k)]
+        except Exception as e:
+            log.warning(f"Índice RAG local falló en {rpc_name}; se usa la RPC: {e}")
     result = sb.rpc(rpc_name, {
         "query_embedding": embedding,
         "query_text": query,
@@ -1997,6 +2101,38 @@ def _bloque_contexto_noticias() -> Optional[str]:
     )
 
 
+# Estadísticas hidrológicas por estación y mes en RAM (2026-11-16, descarga de Supabase). La tabla resumen
+# ideam_caudal_estadisticas_mes tiene una fila por (estación, mes): ~11 mil filas, ~1 MB. Se carga entera una vez por
+# instancia de Cloud Run y se renueva cada 24 h (el resumen solo cambia cuando se reingesta el IDEAM), así que cada
+# comparación de caudal deja de ser un viaje a Supabase. Si la carga falla se usa la consulta puntual de siempre.
+CAUDAL_MES_TTL_S = float(os.getenv("CAUDAL_MES_TTL_S", str(24 * 3600)))
+_caudal_mes: dict = {"cargado": 0.0, "datos": None}
+_lock_caudal_mes = threading.Lock()
+
+
+def _estadisticas_caudal_mes() -> Optional[dict]:
+    """{(codigo_estacion, mes): {promedio_m3s, p90_m3s, n_observaciones}} o None si no se pudo cargar."""
+    with _lock_caudal_mes:
+        if _caudal_mes["datos"] is not None and time.monotonic() - _caudal_mes["cargado"] < CAUDAL_MES_TTL_S:
+            return _caudal_mes["datos"]
+        try:
+            datos, ini = {}, 0
+            while True:
+                pag = (sb.table("ideam_caudal_estadisticas_mes")
+                       .select("codigo_estacion, mes, promedio_m3s, p90_m3s, n_observaciones")
+                       .order("codigo_estacion").order("mes").range(ini, ini + 999).execute().data or [])
+                for f in pag:
+                    datos[(f["codigo_estacion"], int(f["mes"]))] = f
+                if len(pag) < 1000:
+                    break
+                ini += 1000
+        except Exception as e:
+            log.warning(f"Estadísticas de caudal no cargadas en memoria (se consulta por estación): {e}")
+            return None
+        _caudal_mes.update(cargado=time.monotonic(), datos=datos)
+        return datos
+
+
 def _comparar_caudal_historico(registro: dict) -> Optional[dict]:
     """Compara un registro de caudal ACTUAL (de
     ideam_client.caudal_por_municipio(), siempre en vivo) contra las
@@ -2015,16 +2151,22 @@ def _comparar_caudal_historico(registro: dict) -> Optional[dict]:
         return None
     if not (1 <= mes <= 12):
         return None
-    resultado = (
-        sb.table("ideam_caudal_estadisticas_mes")
-        .select("promedio_m3s, p90_m3s, n_observaciones")
-        .eq("codigo_estacion", registro["codigo_estacion"])
-        .eq("mes", mes)
-        .execute()
-    )
-    if not resultado.data:
-        return None
-    stats = resultado.data[0]
+    en_memoria = _estadisticas_caudal_mes()
+    if en_memoria is not None:
+        stats = en_memoria.get((registro["codigo_estacion"], mes))
+        if stats is None:
+            return None
+    else:
+        resultado = (
+            sb.table("ideam_caudal_estadisticas_mes")
+            .select("promedio_m3s, p90_m3s, n_observaciones")
+            .eq("codigo_estacion", registro["codigo_estacion"])
+            .eq("mes", mes)
+            .execute()
+        )
+        if not resultado.data:
+            return None
+        stats = resultado.data[0]
     promedio = stats.get("promedio_m3s")
     if not promedio:
         return None
