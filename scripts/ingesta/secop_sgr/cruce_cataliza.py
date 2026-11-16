@@ -106,8 +106,8 @@ def main():
         a_ciiu = anillo_ciiu(cod)
         s = secop.get(n, [])
         anillos_secop = sorted({x["anillo"] for x in s})
-        contratos = sum(int(x["contratos"]) for x in s)
-        valor = sum(int(x["valor_cop"]) for x in s)
+        contratos = sum(int(x["contratos"]) + int(x.get("contratos_en_grupo") or 0) for x in s)   # incluye consorcios (#218)
+        valor = sum(int(x.get("valor_total_cop") or x["valor_cop"]) for x in s)
         activa_secop = any(x["activa_desde_2024"] == "True" for x in s)
         grupo = a_ciiu or ("ganan_obra_sin_ciiu_construccion" if s and cod[:2] not in CONSTRUCCION else
                            ("solo_secop" if s else "otro"))
