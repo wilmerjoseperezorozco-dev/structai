@@ -64,12 +64,29 @@ DATASETS = [
                   "nit_del_proveedor_adjudicado", "nombre_del_proveedor", "codigo_principal_de_categoria",
                   "estado_de_apertura_del_proceso", "tipo_de_contrato", "subtipo_de_contrato", "urlproceso",
                   "estado_resumen"]},
+    # Anillo 1 de clientes (#216): firmas de interventoría y consultoría. Mismas columnas que contratos de obra.
+    {"nombre": "secop2_contratos_interventoria_consultoria", "id": "jbjy-vk9h",
+     "where": "tipo_de_contrato in ('Interventoría','Consultoría')", "orden": "id_contrato",
+     "columnas": ["nombre_entidad", "nit_entidad", "codigo_entidad", "departamento", "ciudad", "localizaci_n", "orden",
+                  "sector", "rama", "entidad_centralizada", "proceso_de_compra", "id_contrato", "referencia_del_contrato",
+                  "estado_contrato", "codigo_de_categoria_principal", "descripcion_del_proceso", "objeto_del_contrato",
+                  "tipo_de_contrato", "modalidad_de_contratacion", "justificacion_modalidad_de", "fecha_de_firma",
+                  "fecha_de_inicio_del_contrato", "fecha_de_fin_del_contrato", "duraci_n_del_contrato",
+                  "tipodocproveedor", "documento_proveedor", "proveedor_adjudicado", "codigo_proveedor", "es_grupo",
+                  "es_pyme", "origen_de_los_recursos", "destino_gasto", "valor_del_contrato", "valor_de_pago_adelantado",
+                  "valor_facturado", "valor_pagado", "valor_pendiente_de_ejecucion", "dias_adicionados",
+                  "el_contrato_puede_ser_prorrogado", "presupuesto_general_de_la_nacion_pgn",
+                  "sistema_general_de_participaciones", "sistema_general_de_regal_as", "recursos_propios",
+                  "recursos_de_credito", "documentos_tipo", "direcci_n_de_ejecuci_n_del_contrato", "urlproceso",
+                  "ultima_actualizacion"]},
     {"nombre": "sgr_proyectos", "id": "mzgh-shtp", "where": None, "orden": "codigobpin", "columnas": None},
     {"nombre": "dnp_proyectos_infraestructura", "id": "cf9k-55fw", "orden": "bpin", "columnas": None,
      "where": "sector in ('Transporte','Vivienda, Ciudad y Territorio','Minas y Energía','Educación')"},
 ]
 # Columnas de proveedor a seudonimizar si no son claramente una empresa
 PROVEEDOR = {"secop2_contratos_obra": ("tipodocproveedor", "documento_proveedor", "proveedor_adjudicado"),
+             "secop2_contratos_interventoria_consultoria": ("tipodocproveedor", "documento_proveedor",
+                                                            "proveedor_adjudicado"),
              "secop2_procesos_obra": (None, "nit_del_proveedor_adjudicado", "nombre_del_proveedor")}
 RX_NIT_EMPRESA = re.compile(r"^[89]\d{8}(-?\d)?$")      # NIT de persona jurídica: 9 dígitos que empiezan por 8 o 9
 
