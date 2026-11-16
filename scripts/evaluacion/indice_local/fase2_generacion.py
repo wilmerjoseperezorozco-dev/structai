@@ -75,7 +75,9 @@ def main() -> int:
             ahora = time.time()
             while ventana and ahora - ventana[0][0] > 60:
                 ventana.popleft()
-            if sum(t for _, t in ventana) + tokens_previstos <= TPM_SEGURO:
+            # Un prompt que solo ya supera TPM_SEGURO nunca cabría: con la ventana vacía se envía igual (antes se
+            # quedaba esperando para siempre) y Groq decide; si lo rechaza, el error queda en el log.
+            if not ventana or sum(t for _, t in ventana) + tokens_previstos <= TPM_SEGURO:
                 return
             time.sleep(2)
 
@@ -85,6 +87,8 @@ def main() -> int:
             if k in cache:
                 return cache[k]
         previsto = sum(len(m["content"]) for m in messages) // 3 + max_tokens_groq
+        if previsto > TPM_SEGURO:
+            print(f"  aviso: prompt estimado en {previsto} tokens (> {TPM_SEGURO})", flush=True)
         esperar(previsto)
         try:
             texto, uso = fc._groq_eval(clave, rmn.GROQ_MODEL, messages, max_tokens_groq)
