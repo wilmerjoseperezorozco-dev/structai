@@ -2,8 +2,8 @@
 
 Generado por `scripts/inventario/matriz_coherencia.py` desde [coherencia_motores.json](coherencia_motores.json); no editar a mano. Dos nodos se conectan cuando una magnitud que produce uno (con su unidad) es una que consume el otro. **Coherente no significa probado**: solo las cadenas de la sección «Cadenas probadas» tienen una prueba que las ejecuta.
 
-- Motores implementados: 16; con declaración completa: 8; **pendientes de declarar: 8** (`motor-aquai`, `motor-vias`, `motor-gerencia`, `motor-vulnerabilidad-vivienda`, `motor-estructural`, `motor-deformacion`, `motor-acero-frio`, `motor-topovia`). Lo no declarado no genera conexiones: no se infiere nada.
-- Motores futuros (planificados o bloqueados): 6. Nunca se cuentan como funcionando.
+- Motores implementados: 17; con declaración completa: 9; **pendientes de declarar: 8** (`motor-aquai`, `motor-vias`, `motor-gerencia`, `motor-vulnerabilidad-vivienda`, `motor-estructural`, `motor-deformacion`, `motor-acero-frio`, `motor-topovia`). Lo no declarado no genera conexiones: no se infiere nada.
+- Motores futuros (planificados o bloqueados): 5. Nunca se cuentan como funcionando.
 - Magnitudes del vocabulario: 45, cada una con unidad y dominio físico.
 
 ## Cuántas conexiones y cadenas cierran
@@ -12,9 +12,9 @@ Camino simple = sin repetir nodo. «Solo implementados» no incluye ningún moto
 
 | Nodos en la cadena | Solo implementados | Adicionales con motores futuros |
 |---|---|---|
-| 2 (pares) | 8 | 17 |
-| 3 (cadenas) | 7 | 25 |
-| 4 (cadenas) | 3 | 27 |
+| 2 (pares) | 12 | 13 |
+| 3 (cadenas) | 14 | 18 |
+| 4 (cadenas) | 9 | 21 |
 
 Probadas de extremo a extremo: **1**.
 
@@ -32,8 +32,12 @@ Vía: **endpoint** = ambos lados son campos del contrato HTTP; **adaptador** = e
 | `orquestador` | `motor-analisis` | seccion_columna_mm, seccion_viga_mm | adaptador |
 | `orquestador` | `motor-concreto` | seccion_columna_mm | endpoint |
 | `orquestador` | `motor-apu` | seccion_columna_mm, seccion_viga_mm | paquete |
+| `orquestador` | `optimizador-portico` | costo_directo_cop, deriva_relativa | paquete |
 | `motor-concreto` | `motor-geotecnia` | presion_contacto_kpa | adaptador |
+| `motor-concreto` | `optimizador-portico` | co2e_kg, costo_directo_cop, masa_acero_kg, razon_demanda_capacidad, volumen_concreto_m3 | paquete |
 | `motor-geotecnia` | `motor-concreto` | q_adm_kpa | endpoint |
+| `motor-geotecnia` | `optimizador-portico` | razon_demanda_capacidad | paquete |
+| `motor-apu` | `optimizador-portico` | costo_directo_cop | paquete |
 | `motor-geopot` | `orquestador` | coef_aceleracion_aa, coef_velocidad_av | paquete |
 | `dato-factores-emision` | `motor-concreto` | factor_emision_kgco2e_kg | paquete |
 
@@ -43,21 +47,17 @@ Vía: **endpoint** = ambos lados son campos del contrato HTTP; **adaptador** = e
 |---|---|---|
 | `motor-analisis` | `futuro-columna-circular` | momento_flector_knm, reaccion_vertical_kn |
 | `motor-analisis` | `futuro-pilotes` | reaccion_vertical_kn |
-| `orquestador` | `futuro-optimizador-portico` | costo_directo_cop, deriva_relativa |
-| `motor-concreto` | `futuro-optimizador-portico` | co2e_kg, costo_directo_cop, masa_acero_kg, razon_demanda_capacidad, volumen_concreto_m3 |
-| `motor-geotecnia` | `futuro-optimizador-portico` | razon_demanda_capacidad |
-| `motor-apu` | `futuro-optimizador-portico` | costo_directo_cop |
 | `motor-geopot` | `futuro-cortante-basal-espectro-local` | coef_aceleracion_aa, coef_velocidad_av |
 | `motor-geopot` | `futuro-sustituto-seccion-portico` | coef_aceleracion_aa, coef_velocidad_av |
-| `futuro-columna-circular` | `futuro-optimizador-portico` | masa_acero_kg, razon_demanda_capacidad, volumen_concreto_m3 |
-| `futuro-losas` | `futuro-optimizador-portico` | masa_acero_kg, razon_demanda_capacidad, volumen_concreto_m3 |
-| `futuro-pilotes` | `futuro-optimizador-portico` | razon_demanda_capacidad |
+| `futuro-columna-circular` | `optimizador-portico` | masa_acero_kg, razon_demanda_capacidad, volumen_concreto_m3 |
+| `futuro-losas` | `optimizador-portico` | masa_acero_kg, razon_demanda_capacidad, volumen_concreto_m3 |
+| `futuro-pilotes` | `optimizador-portico` | razon_demanda_capacidad |
 | `dato-microzonificacion-local` | `futuro-cortante-basal-espectro-local` | coef_espectro_local |
 | `dato-microzonificacion-local` | `futuro-sustituto-seccion-portico` | coef_espectro_local |
 | `futuro-sustituto-seccion-portico` | `motor-analisis` | seccion_columna_mm, seccion_viga_mm |
 | `futuro-sustituto-seccion-portico` | `motor-concreto` | seccion_columna_mm |
 | `futuro-sustituto-seccion-portico` | `motor-apu` | seccion_columna_mm, seccion_viga_mm |
-| `futuro-sustituto-seccion-portico` | `futuro-optimizador-portico` | costo_directo_cop |
+| `futuro-sustituto-seccion-portico` | `optimizador-portico` | costo_directo_cop |
 
 ## Huecos
 
@@ -86,11 +86,11 @@ Vía: **endpoint** = ambos lados son campos del contrato HTTP; **adaptador** = e
 | `motor-topovia` | motor | implementado | **?** pendiente | 0 | 0 | no |
 | `motor-vias` | motor | implementado | **?** pendiente | 0 | 0 | no |
 | `motor-vulnerabilidad-vivienda` | motor | implementado | **?** pendiente | 0 | 0 | no |
+| `optimizador-portico` | motor | implementado | completa | 11 | 7 | no |
 | `orquestador` | motor | implementado | completa | 7 | 4 | sí |
 | `futuro-columna-circular` | motor | planificado | completa | 2 | 3 | no |
 | `futuro-cortante-basal-espectro-local` | motor | planificado | completa | 4 | 1 | no |
 | `futuro-losas` | motor | planificado | completa | 3 | 3 | no |
-| `futuro-optimizador-portico` | motor | planificado | completa | 6 | 1 | no |
 | `futuro-pilotes` | motor | bloqueado (bloqueado: El corpus no tiene norma específica de pilotes (AASHTO LRFD, FHWA); sin ella el motor tendría que inventar criterios.) | completa | 3 | 2 | no |
 | `futuro-sustituto-seccion-portico` | motor | planificado | completa | 5 | 3 | no |
 

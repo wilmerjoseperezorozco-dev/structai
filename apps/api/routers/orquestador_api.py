@@ -21,7 +21,8 @@ orquestador = _ilu.module_from_spec(_spec)
 sys.modules["orquestador"] = orquestador
 _spec.loader.exec_module(orquestador)
 
-from orquestador.contrato_api import SolicitudDisenoIntegral, disenar_integral_contrato  # noqa: E402
+from orquestador.contrato_api import (  # noqa: E402
+    SolicitudDisenoIntegral, SolicitudParetoPortico, disenar_integral_contrato, optimizar_portico_contrato)
 
 router = APIRouter(prefix="/orquestador", tags=["Diseño integral"])
 
@@ -36,5 +37,14 @@ def salud():
 def endpoint_portico(request: Request, req: SolicitudDisenoIntegral, user: AuthenticatedUser = Depends(get_current_user)):
     try:
         return disenar_integral_contrato(req)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+
+
+@router.post("/portico-pareto", summary="Optimizador de pórtico: frontera de Pareto exacta (costo, acero, concreto, CO₂e, deriva, D/C)")
+@limiter.limit("3/minute")
+def endpoint_pareto(request: Request, req: SolicitudParetoPortico, user: AuthenticatedUser = Depends(get_current_user)):
+    try:
+        return optimizar_portico_contrato(req)
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e))
