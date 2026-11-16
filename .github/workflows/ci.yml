@@ -238,6 +238,11 @@ jobs:
         run: python scripts/inventario/matriz_coherencia.py --verificar
       - name: Ninguna dependencia AGPL vetada (ultralytics, PyMuPDF…; #217/#219)
         run: python scripts/inventario/verificar_licencias.py
+      - name: Inventario de cadenas de ejecución al día (#221, informativo)
+        continue-on-error: true
+        run: |
+          python scripts/inventario/cadenas_ejecucion.py --verificar
+          sed -n '/^- Código/,/^- Resolución/p' docs/CADENAS_EJECUCION.md >> "$GITHUB_STEP_SUMMARY"
 
   # ── 4b. Cobertura de ingesta — idea 6 del roadmap (2026-09-16) ─────
   # No re-extrae del PDF fuente (gitignored, no viaja con el checkout) --
