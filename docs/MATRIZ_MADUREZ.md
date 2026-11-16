@@ -13,7 +13,7 @@ Generado por `scripts/inventario/matriz_madurez.py`; no editar a mano. No existe
 | Corpus normativo y consulta con citas (NSR-10, NTC, SG-SST, RAS) | TRL 6 | 31 pruebas · CI sí · job test-api de integración (RAG, límites de tasa, salud) | 95,1 % (solo rag-audit-kit y eval-stats; el pipeline RAG y apps/api no se miden) | en producción | permisiva |
 | Motor de redes hidráulicas (permanente, periodo extendido, golpe de ariete) | TRL 4 | 105 pruebas · CI sí · contrato/422/límite sí | 95,0 % | no desplegado | sin dependencias directas declaradas |
 | Motor de geotecnia (asentamiento, capacidad portante) | TRL 4 | 88 pruebas · CI sí · contrato/422/límite sí | 98,6 % | no desplegado | sin dependencias directas declaradas |
-| Motor estructural / BIM por visión (InfraCortex, YOLO) | ? | 18 pruebas · CI sí | 90,5 % | desactivado por defecto en producción | copyleft fuerte (red): revisar (ultralytics) |
+| Motor estructural / BIM por visión (InfraCortex, YOLO) | ? | 18 pruebas · CI sí | 90,5 % | desactivado por defecto en producción | permisiva |
 | Motor `licuacion` | ? | 53 pruebas · CI sí · contrato/422/límite sí | 100,0 % | ? | sin dependencias directas declaradas |
 | Motor `concreto` | ? | 285 pruebas · CI sí · contrato/422/límite sí | 96,3 % | ? | sin dependencias directas declaradas |
 | Motor `analisis` | ? | 18 pruebas · CI sí · contrato/422/límite sí | 98,4 % | ? | sin dependencias directas declaradas |
@@ -34,7 +34,7 @@ Generado por `scripts/inventario/matriz_madurez.py`; no editar a mano. No existe
 - **Validación externa independiente limitada.** No hay revisión técnica independiente de la extracción normativa por un ingeniero estructural externo; el trabajo de grado aprobado (4,7/5,0) es una evaluación académica, no una validación profesional.
 - **Motores sin despliegue verificado.** Ningún motor cumple las cuatro condiciones de «medido a producción»; la condición 4 (llamada real en producción) no está verificada en ninguno. Desde el 9-nov-2026 `motor-concreto` y `orquestador` ya corren en la matriz de CI.
 - **Vulnerabilidades de dependencias pendientes.** El 9-nov-2026 había 15 alertas abiertas de Dependabot (6 altas, 7 medias, 2 bajas). El estado vigente es el de la pestaña Security del repositorio.
-- **Licencia no reutilizable.** El repositorio es de propiedad del autor y no es de código abierto; además, `ultralytics` (AGPL-3.0) exige revisión antes de ofrecer el motor de visión como servicio.
+- **Licencia no reutilizable.** El repositorio es de propiedad del autor y no es de código abierto; `ultralytics` (AGPL-3.0) se retiró en #217 (el detector se entrena con RF-DETR, Apache-2.0) y el CI lo veta.
 - **Módulos BIM y de aprendizaje automático experimentales.** InfraCortex (YOLO) y los sustitutos de aprendizaje están desactivados por defecto o sin gobernanza completa.
 - **Investigación no equivale a validación profesional.** Los resultados del programa de investigación son señales estadísticas preregistradas; no sustituyen el criterio de un ingeniero responsable.
 

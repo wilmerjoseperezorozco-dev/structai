@@ -161,7 +161,7 @@ jobs:
         # solo. Su test de validación real contra un PDF de NSR-10 se
         # auto-salta en CI (@pytest.mark.skipif) porque ese PDF es fuente
         # gitignored, no viaja con el checkout.
-        paquete: [motor-apu, motor-deformacion, motor-aquai, motor-geopot, motor-vulnerabilidad-vivienda, motor-vias, motor-gerencia, motor-estructural, motor-acero-frio, motor-topovia, motor-analisis, motor-geotecnia, motor-licuacion, motor-redes, motor-concreto, orquestador, contrato-motor, dag-proyecto, eval-stats, rag-audit-kit]
+        paquete: [motor-apu, motor-deformacion, motor-aquai, motor-geopot, motor-vulnerabilidad-vivienda, motor-vias, motor-gerencia, motor-estructural, motor-acero-frio, motor-topovia, motor-analisis, motor-geotecnia, motor-licuacion, motor-redes, motor-concreto, orquestador, contrato-motor, dag-proyecto, eval-stats, rag-audit-kit, yolo]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -204,6 +204,8 @@ jobs:
         run: python scripts/inventario/registro_motores.py --verificar
       - name: Verificar la matriz de coherencia (evidencias vigentes, ningún motor sin declarar)
         run: python scripts/inventario/matriz_coherencia.py --verificar
+      - name: Ninguna dependencia AGPL vetada (ultralytics, PyMuPDF…; #217/#219)
+        run: python scripts/inventario/verificar_licencias.py
 
   # ── 4b. Cobertura de ingesta — idea 6 del roadmap (2026-09-16) ─────
   # No re-extrae del PDF fuente (gitignored, no viaja con el checkout) --
