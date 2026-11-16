@@ -37,6 +37,7 @@ LICENCIAS = {
     "Crack500": {"licencia": "sin licencia explícita (pedir permiso)", "comercial": False},
 }
 
+METODOS = ("tipicos", "kcenter", "azar")
 SDNET_SUPERFICIE = {"D": "tablero_puente", "W": "muro", "P": "pavimento"}
 
 
@@ -119,6 +120,26 @@ def k_center(emb: np.ndarray, idx: np.ndarray, k: int, semilla: int = 0) -> np.n
     return idx[np.array(elegidos)]
 
 
+def tipicos(emb: np.ndarray, idx: np.ndarray, k: int, semilla: int = 0) -> np.ndarray:
+    """Representativos (TypiClust simplificado, Hacohen et al. 2022): k-means con k grupos y, de cada grupo, el
+    punto más cercano a su centroide. Con pocas etiquetas, lo típico enseña más que lo extremo."""
+    if k >= len(idx):
+        return idx.copy()
+    from sklearn.cluster import MiniBatchKMeans
+    X = emb[idx]
+    km = MiniBatchKMeans(n_clusters=k, random_state=semilla, n_init=3, batch_size=2048).fit(X)
+    elegidos = []
+    for c in range(k):
+        miembros = np.where(km.labels_ == c)[0]
+        if len(miembros):
+            elegidos.append(miembros[np.argmax(X[miembros] @ km.cluster_centers_[c])])
+    faltan = k - len(elegidos)
+    if faltan:
+        resto = np.setdiff1d(np.arange(len(idx)), elegidos)
+        elegidos += list(np.random.default_rng(semilla).choice(resto, faltan, replace=False))
+    return idx[np.array(elegidos)]
+
+
 def radio_cobertura(emb: np.ndarray, pool: np.ndarray, sel: np.ndarray) -> float:
     """Máxima distancia coseno de un punto del pool a su elegido más cercano (menor = mejor cobertura)."""
     d = 1.0 - emb[pool] @ emb[sel].T
@@ -144,7 +165,12 @@ def seleccionar(emb, filas, pool, n, frac_fisura, metodo, semilla):
     sel = []
     for k, q in cuotas(estratos, n, frac_fisura).items():
         g = estratos[k]
-        sel.append(k_center(emb, g, q, semilla) if metodo == "kcenter" else rng.choice(g, q, replace=False))
+        if metodo == "kcenter":
+            sel.append(k_center(emb, g, q, semilla))
+        elif metodo == "tipicos":
+            sel.append(tipicos(emb, g, q, semilla))
+        else:
+            sel.append(rng.choice(g, q, replace=False))
     return np.concatenate(sel)
 
 
@@ -155,7 +181,7 @@ def experimento(emb, filas, pool, prueba, ns, semillas, frac_fisura):
     y = np.array([1 if f["clase"] == "fisura" else 0 for f in filas])
     res = []
     for n in ns:
-        for metodo in ("kcenter", "azar"):
+        for metodo in METODOS:
             for s in range(semillas):
                 sel = seleccionar(emb, filas, pool, n, frac_fisura, metodo, s)
                 clf = LogisticRegression(max_iter=2000, C=1.0, class_weight="balanced").fit(emb[sel], y[sel])
@@ -166,7 +192,7 @@ def experimento(emb, filas, pool, prueba, ns, semillas, frac_fisura):
                             "radio": round(radio_cobertura(emb, pool, sel), 4)})
         print(f"  n={n}: " + "  ".join(
             f"{m} F1={np.mean([r['f1_fisura'] for r in res if r['n'] == n and r['metodo'] == m]):.3f}"
-            for m in ("kcenter", "azar")), flush=True)
+            for m in METODOS), flush=True)
     # Techo: todo el pool etiquetado
     clf = LogisticRegression(max_iter=3000, class_weight="balanced").fit(emb[pool], y[pool])
     techo = float(f1_score(y[prueba], clf.predict(emb[prueba])))
@@ -184,6 +210,7 @@ def main():
     ap.add_argument("--frac-prueba", type=float, default=0.25)
     ap.add_argument("--semillas", type=int, default=5)
     ap.add_argument("--modelo", default="facebook/dinov2-small")
+    ap.add_argument("--metodo-final", default="tipicos", choices=METODOS)
     a = ap.parse_args()
     a.salida.mkdir(parents=True, exist_ok=True)
 
@@ -212,7 +239,7 @@ def main():
     ns = [n for n in (25, 50, 100, 200, 400, 800) if n <= len(pool_limpio)]
     res, techo = experimento(emb, filas, pool_limpio, prueba, ns, a.semillas, a.frac_fisura)
 
-    sel = seleccionar(emb, filas, pool_limpio, a.n, a.frac_fisura, "kcenter", 0)
+    sel = seleccionar(emb, filas, pool_limpio, a.n, a.frac_fisura, a.metodo_final, 0)
     with (a.salida / "seleccion_para_etiquetar.csv").open("w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=["orden", "ruta", "superficie", "clase", "fuente", "licencia"])
         w.writeheader()
@@ -220,7 +247,7 @@ def main():
             w.writerow({"orden": o, **filas[i]})
     resumen = {"imagenes": len(filas), "pool": int(len(pool)), "pool_sin_duplicados": int(len(pool_limpio)),
                "prueba": int(len(prueba)), "modelo": a.modelo, "techo_f1_pool_completo": round(techo, 4),
-               "seleccion": int(len(sel)), "curva": res, "licencias": LICENCIAS}
+               "seleccion": int(len(sel)), "metodo_final": a.metodo_final, "frac_fisura": a.frac_fisura, "curva": res, "licencias": LICENCIAS}
     (a.salida / "resultado_curaduria.json").write_text(json.dumps(resumen, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"techo (pool completo, {len(pool_limpio)} etiquetas): F1 fisura = {techo:.3f}")
     print(f"selección de {len(sel)} → {a.salida / 'seleccion_para_etiquetar.csv'}")
