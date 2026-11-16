@@ -33,7 +33,7 @@ pydantic==2.14.3
 # cual hacia auth.get_current_user() -- mismo JWT de Supabase del chat web,
 # sin sistema de login nuevo. Verificado en vivo 2026-09-30 (TestClient real).
 fastapi-mcp==0.4.0
-mcp==1.12.4                     # fijo: fastapi-mcp 0.4.0 usa la firma de mcp.Server de la serie 1.x; con mcp 2.x -> TypeError (CI de #194)
+mcp==1.30.0                     # fijo: serie 1.x por fastapi-mcp 0.4.0 (con mcp 2.x -> TypeError); >=1.2x por pydantic 2.14 (1.12 importaba eval_type_backport, ya retirado)
 
 # ── RAG / Embeddings ─────────────────────────────────────────
 # supabase>=2.15 requerido: 2.9.1 valida las keys con una regex de JWT viejo
