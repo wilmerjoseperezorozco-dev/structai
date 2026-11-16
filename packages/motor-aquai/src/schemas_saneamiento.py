@@ -76,10 +76,10 @@ class PTARRequest(BaseModel):
     caudal_acueducto_ls: float      = Field(..., gt=0, description="Qmd del acueducto (L/s)")
     factor_retorno: float           = Field(..., ge=0.60, le=0.95,
                                             description="Fracción del caudal acueducto que llega al alcantarillado")
-    dbo5_cruda_mg_l: Optional[float] = Field(None, description="DBO₅ agua residual cruda (mg/L). Si no se provee, se estima per cápita.")
-    sst_crudo_mg_l: Optional[float]  = Field(None, description="SST agua residual cruda (mg/L). Estimado si no se provee.")
+    dbo5_cruda_mg_l: Optional[float] = Field(None, gt=0, le=5000, description="DBO₅ agua residual cruda (mg/L). Si no se provee, se estima per cápita.")
+    sst_crudo_mg_l: Optional[float]  = Field(None, gt=0, le=5000, description="SST agua residual cruda (mg/L). Estimado si no se provee.")
     tecnologia: TecnologiaPTAR      = TecnologiaPTAR.UASB
-    nivel_complejidad: str          = Field(default="medio")
+    nivel_complejidad: str          = Field(default="medio", pattern="^(bajo|medio|medio_alto|alto)$")
     tipo_cuerpo_receptor: TipoCuerpoReceptor
     temperatura_agua_c: Optional[float] = Field(None, ge=0, le=40,
         description="Temperatura del agua residual (°C). Obligatoria para UASB (Res. 0330 tabla 31) y laguna.")

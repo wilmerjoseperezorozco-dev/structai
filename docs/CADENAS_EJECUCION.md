@@ -2,7 +2,7 @@
 
 Generado por `scripts/inventario/cadenas_ejecucion.py`; no editar a mano. Análisis **estático** (AST + imports): dice qué pasos hay y de qué tipo, **no cuánto tardan**. El orden de trabajo lo da latencia × frecuencia medidas (fase 1, paso 2), nunca este conteo solo. Ver el docstring para la definición de paso, tipo y etiqueta.
 
-- Código analizado: 706 módulos, 2,945 funciones (sin pruebas).
+- Código analizado: 706 módulos, 2,948 funciones (sin pruebas).
 - Puntos de entrada: 101 endpoints y 379 pipelines fuera de línea.
 - **Candidatas a flujo atómico (≥ 4 pasos secuenciales): 103** (13 endpoints, 90 pipelines).
 - Cadenas futuras con ≥ 4 motores que pasan por un motor planificado o bloqueado: **36** (solo nodos declarados en `docs/coherencia_motores.json`).

@@ -321,7 +321,7 @@ export const AQUAI_MODULES: ModuleSpec[] = [
       { key: "tecnologia", label: "Tecnología", type: "select", options: TECNOLOGIA_PTAR, default: "uasb" },
       { key: "nivel_complejidad", label: "Nivel de complejidad", type: "select", options: NIVEL_COMPLEJIDAD, default: "medio_alto" },
       { key: "tipo_cuerpo_receptor", label: "Cuerpo receptor", type: "select", options: CUERPO_RECEPTOR, default: "rio" },
-      { key: "temperatura_agua_c", label: "Temperatura del agua residual (°C)", type: "number", required: false, help: "Obligatoria para UASB (tabla 31) y laguna." },
+      { key: "temperatura_agua_c", label: "Temperatura del agua residual (°C)", type: "number", default: 25, required: false, help: "Obligatoria para UASB (tabla 31) y laguna." },
       { key: "profundidad_laguna_m", label: "Profundidad laguna facultativa (m)", type: "number", step: 0.1, required: false, help: "Obligatoria para laguna: 1,5 a 2,5 m (art. 197)." },
       { key: "factor_pico", label: "Factor pico Qmax/Qmed", type: "number", step: 0.1, required: false, help: "Si se da, se verifica la velocidad del UASB a caudal máximo." },
       { key: "eficiencia_requerida_dbo_pct", label: "Eficiencia mínima remoción DBO (%)", type: "number", required: false, help: "Si se omite, se calcula desde la Res. 0631/2015." },

@@ -22,8 +22,8 @@ from src.schemas_saneamiento import (  # noqa: E402
 def _lagunas(**cambios):
     base = dict(caudal_medio_m3_dia=1000.0, poblacion_equivalente=5000, dbo5_afluente_mg_l=300.0,
                 coliformes_afluente_nmp_100ml=1e7, coliformes_objetivo_nmp_100ml=1000.0, temperatura_agua_c=25.0,
-                incluir_anaerobia=True, profundidad_anaerobia_m=3.0, profundidad_facultativa_m=1.5,
-                profundidad_maduracion_m=1.0, borde_libre_m=0.4, alta_turbulencia_atmosferica=False,
+                incluir_anaerobia=True, profundidad_anaerobia_m=3.0, profundidad_facultativa_m=2.0,
+                profundidad_maduracion_m=0.95, borde_libre_m=0.4, alta_turbulencia_atmosferica=False,
                 tasa_acumulacion_lodos_m3_hab_ano=0.04, area_disponible_m2=None, cuerpo_receptor="rio")
     base.update(cambios)
     return SolicitudLagunas(**base)
@@ -54,18 +54,20 @@ def test_lagunas_caso_a_mano_25c():
     assert (n_fac / 1000 - 1) / kt * q > 2 * 3.0 * q
     n_final = n_fac / (1 + kt * 3.0) ** 2
 
-    r = lagunas_contrato(_lagunas())
+    r = lagunas_contrato(_lagunas(profundidad_facultativa_m=1.5, profundidad_maduracion_m=1.0))
     v = r.valor
-    ana, fac, mad = v["lagunas"]
+    ana, fac, m1, m2 = v["lagunas"]
     assert ana["trh_d"] == pytest.approx(theta_a) and ana["area_m2"] == pytest.approx(q * theta_a / 3.0, rel=1e-4)
     assert fac["area_m2"] == pytest.approx(af, rel=1e-4) and fac["trh_d"] == pytest.approx(5.0)
     assert v["dbo5_efluente_mg_l"] == pytest.approx(le, rel=1e-4)
-    assert v["n_lagunas_maduracion"] == 2 and mad["trh_d"] == pytest.approx(3.0)
+    assert v["n_lagunas_maduracion"] == 2 and m1["trh_d"] == pytest.approx(3.0) and m2["trh_d"] == pytest.approx(3.0)
     assert v["coliformes_efluente_nmp_100ml"] == pytest.approx(n_final, rel=1e-9)
     assert v["area_espejo_total_m2"] == pytest.approx(q / 3.0 + af + 6000.0, rel=1e-4)
     assert v["lodos"]["periodo_remocion_anos"] == pytest.approx(0.5 * q * theta_a / (5000 * 0.04), rel=1e-4)
     assert v["limites_res0631_mg_l"]["DBO5"] == 90.0 and v["cumple_res0631_dbo5"] is True
-    assert r.en_borde_dominio is True             # los TRH tocaron los mínimos normativos
+    b = v["borde_dominio"]                        # los TRH tocaron los mínimos normativos: debe decirlo
+    assert "TRH anaerobio llevado al mínimo de 1 d del art. 196" in b
+    assert "TRH facultativo llevado al mínimo de 5 d del art. 197" in b and r.en_borde_dominio is True
     assert r.aviso_responsabilidad_profesional
 
 
@@ -73,7 +75,8 @@ def test_maduracion_una_laguna_coincide_con_mezcla_completa_cerrada():
     """Sin anaerobia y con objetivo laxo, N = N0 / [(1 + k·θf)(1 + k·θm)] (solución cerrada de mezcla completa)."""
     t = 20.0
     r = lagunas_contrato(_lagunas(temperatura_agua_c=t, incluir_anaerobia=False, profundidad_anaerobia_m=None,
-                                  dbo5_afluente_mg_l=200.0, coliformes_objetivo_nmp_100ml=5e4))
+                                  dbo5_afluente_mg_l=200.0, coliformes_objetivo_nmp_100ml=5e4,
+                                  profundidad_facultativa_m=1.5, profundidad_maduracion_m=1.0))
     fac = r.valor["lagunas"][0]
     k = 2.6
     lam_s = 350 * (1.107 - 0.002 * t) ** (t - 25)
@@ -205,3 +208,93 @@ def test_lagunas_escala_lineal_con_el_caudal():
 def test_lagunas_mas_calor_no_aumenta_area():
     a = [lagunas_contrato(_lagunas(temperatura_agua_c=t)).valor["area_espejo_total_m2"] for t in (15, 20, 25, 30)]
     assert all(x >= y - 1e-6 for x, y in zip(a, a[1:]))
+
+
+# ─── Revisión adversaria (regla 7): cada hallazgo entra con su prueba ──────
+
+def test_maduracion_es_optima_frente_a_solver_independiente():
+    """Hallazgo 1: con θ iguales el motor perdía hasta 12 % de área. Se compara con SLSQP (scipy) por cada n."""
+    from scipy.optimize import minimize
+    r = lagunas_contrato(_lagunas(temperatura_agua_c=10.0, dbo5_afluente_mg_l=150.0, incluir_anaerobia=False,
+                                  profundidad_anaerobia_m=None, profundidad_facultativa_m=1.5,
+                                  coliformes_objetivo_nmp_100ml=1e4, poblacion_equivalente=3000))
+    v = r.valor
+    mad = [l for l in v["lagunas"] if l["tipo"].startswith("maduracion")]
+    fac = next(l for l in v["lagunas"] if l["tipo"] == "facultativa")
+    k = 2.6 * 1.19 ** (10 - 20)
+    n_fac = 1e7 / (1 + k * fac["trh_d"])
+    a = max(3.0, v["constantes"]["theta_carga_maduracion_d"])
+    mejor = float("inf")
+    for n in range(1, 9):
+        cons = [{"type": "ineq", "fun": lambda x: sum(math.log(1 + k * xi) for xi in x) - math.log(n_fac / 1e4)}]
+        res = minimize(lambda x: sum(x), x0=[a + 5] * n, bounds=[(a, None)] + [(3.0, None)] * (n - 1),
+                       constraints=cons, method="SLSQP", options={"ftol": 1e-12, "maxiter": 500})
+        if res.success:
+            mejor = min(mejor, res.fun)
+    assert sum(l["trh_d"] for l in mad) <= mejor * (1 + 1e-4)
+    assert sum(l["trh_d"] for l in mad) < 18.13            # el diseño de θ iguales daba 18,13 d
+    assert v["coliformes_efluente_nmp_100ml"] <= 1e4 * (1 + 1e-9)
+
+
+def test_lagunas_interiores_sin_borde():
+    """Hallazgo 7: la base anterior tocaba extremos y la aserción de borde no podía fallar."""
+    r = lagunas_contrato(_lagunas(temperatura_agua_c=18.0, coliformes_objetivo_nmp_100ml=10.0, poblacion_equivalente=6000))
+    assert r.en_borde_dominio is False, r.valor["borde_dominio"]
+
+
+def test_lagunas_bordes_de_la_anaerobia_a_10c():
+    """Hallazgo 6: θa = 3 d y λv = 100 g/m³·d (extremos del art. 196) no se marcaban."""
+    b = lagunas_contrato(_lagunas(temperatura_agua_c=10.0, profundidad_facultativa_m=1.5)).valor["borde_dominio"]
+    assert "TRH anaerobio en el máximo de 3 d del art. 196" in b
+    assert "carga volumétrica anaerobia en un extremo del art. 196" in b
+    assert "temperatura en el extremo del dominio del método de Mara" in b
+
+
+def test_lagunas_poblacion_incoherente_con_la_carga_falla():
+    """Hallazgo 8: 100.000 hab con 300 kg DBO5/d (3 g/hab·d) devolvía un diseño con lodos en 0,125 años."""
+    with pytest.raises(ValueError, match="g DBO5/hab"):
+        lagunas_contrato(_lagunas(poblacion_equivalente=100_000))
+
+
+def test_lagunas_lodos_en_menos_de_un_ano_falla():
+    with pytest.raises(ValueError, match="art. 216"):
+        lagunas_contrato(_lagunas(tasa_acumulacion_lodos_m3_hab_ano=0.2, poblacion_equivalente=6000))
+
+
+def test_filtro_percolador_diluido_falla_en_vez_de_violar_la_tabla_38():
+    """Hallazgo 2: con DBO5 = 40 mg/L la carga orgánica quedaba en 0,222 < 0,24 sin error."""
+    with pytest.raises(ValueError, match="tabla 38"):
+        ptar_contrato(_ptar(tecnologia=TecnologiaPTAR.FILTRO_PERCOLADOR, dbo5_cruda_mg_l=40.0))
+
+
+def test_filtro_percolador_declara_borde():
+    """Hallazgo 5: la carga orgánica queda en el máximo por construcción y no se marcaba."""
+    assert ptar_contrato(_ptar(tecnologia=TecnologiaPTAR.FILTRO_PERCOLADOR)).en_borde_dominio is True
+
+
+def test_ptar_laguna_carga_baja_falla_como_en_lagunas():
+    """Hallazgo 3: la PTAR devolvía 90 kg/ha·d (< 100 del art. 197) donde /lagunas fallaba."""
+    with pytest.raises(ValueError, match="art. 197"):
+        ptar_contrato(_ptar(tecnologia=TecnologiaPTAR.LAGUNA_FACULTATIVA, dbo5_cruda_mg_l=30.0,
+                            profundidad_laguna_m=1.5, temperatura_agua_c=30.0))
+
+
+def test_uasb_declara_sus_restricciones_activas():
+    """Hallazgo 4: H = 4,5 m y v = 0,7 m/h (extremos) daban en_borde_dominio = False."""
+    r = ptar_contrato(_ptar(factor_pico=1.5))
+    b = r.valor["borde_dominio"]
+    assert "UASB: profundidad en un extremo del art. 189 (4,5–6 m)" in b
+    assert "UASB: velocidad a caudal medio en un extremo de la tabla 32" in b
+
+
+def test_tramo_625_no_es_borde_porque_los_limites_no_cambian():
+    """Hallazgo 13."""
+    assert vertimientos.en_borde_de_tramo(625.0) is False and vertimientos.en_borde_de_tramo(3000.0) is True
+
+
+def test_dbo_cruda_no_positiva_se_rechaza():
+    """Hallazgo 12."""
+    with pytest.raises(Exception):
+        _ptar(dbo5_cruda_mg_l=0.0)
+    with pytest.raises(Exception):
+        _ptar(nivel_complejidad="Bajo")

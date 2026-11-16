@@ -70,6 +70,9 @@ def _uasb(q_m3dia: float, temperatura: float | None, factor_pico: float | None, 
         v_max = min(v_max, UASB_V_CAUDAL_MAXIMO_MAX / factor_pico)
     else:
         advertencias.append("UASB: sin factor pico no se verificó la velocidad a caudal máximo (≤ 1,1 m/h, tabla 32).")
+        borde.append("UASB: velocidad a caudal máximo no verificada (falta el factor pico)")
+    if temperatura > _lag.T_MAX_C:
+        borde.append(f"UASB: temperatura {temperatura:g} °C por encima de {_lag.T_MAX_C:g} °C, fuera del rango habitual")
     if v_max < UASB_V_CAUDAL_MEDIO[0]:
         raise ValueError(f"UASB: con factor pico {factor_pico:g} la velocidad a caudal medio debería ser < 0,5 m/h "
                          f"({RES0330}, art. 189, tabla 32): no hay diseño que cumpla ambas velocidades.")
@@ -78,8 +81,15 @@ def _uasb(q_m3dia: float, temperatura: float | None, factor_pico: float | None, 
         raise ValueError(f"UASB: el TRH necesario para la profundidad mínima ({trh:.2f} h) supera el de la tabla 31 "
                          f"({trh_hi:g} h) del {RES0330}, art. 189.")
     v = min(v_max, UASB_PROFUNDIDAD[1] / trh)
-    if trh == trh_lo:
-        borde.append("UASB: TRH en el mínimo de la tabla 31")
+    h = v * trh
+    if _lag._toca(trh, trh_lo) or _lag._toca(trh, trh_hi):
+        borde.append("UASB: TRH en un extremo de la tabla 31")
+    if _lag._toca(h, UASB_PROFUNDIDAD[0]) or _lag._toca(h, UASB_PROFUNDIDAD[1]):
+        borde.append("UASB: profundidad en un extremo del art. 189 (4,5–6 m)")
+    if _lag._toca(v, UASB_V_CAUDAL_MEDIO[0]) or _lag._toca(v, UASB_V_CAUDAL_MEDIO[1]):
+        borde.append("UASB: velocidad a caudal medio en un extremo de la tabla 32")
+    if factor_pico is not None and _lag._toca(v * factor_pico, UASB_V_CAUDAL_MAXIMO_MAX):
+        borde.append("UASB: velocidad a caudal máximo en el límite de 1,1 m/h (tabla 32)")
     q_m3h = q_m3dia / 24.0
     area = q_m3h / v
     vol = q_m3h * trh
@@ -128,6 +138,7 @@ def _filtro_percolador(q_m3dia: float, carga_dbo_kg_dia: float, borde: list) -> 
     """Volumen mínimo con la carga orgánica máxima de tasa intermedia; profundidad y recirculación para la carga
     hidráulica de la tabla 38. q_h = Q(1+R)·D/V crece con D y R: se elige D máximo y R mínimo que la cumplan."""
     vol = carga_dbo_kg_dia / FP_CARGA_ORGANICA[1]
+    borde.append("filtro percolador: volumen mínimo, con la carga orgánica en el máximo de la tabla 38")
     d = FP_PROFUNDIDAD[1]
     qh = q_m3dia * d / vol                      # R = 0
     r = 0.0
@@ -138,6 +149,12 @@ def _filtro_percolador(q_m3dia: float, carga_dbo_kg_dia: float, borde: list) -> 
             vol = q_m3dia * d / FP_CARGA_HIDRAULICA[1]
             qh = FP_CARGA_HIDRAULICA[1]
             borde.append("filtro percolador: el volumen lo fija la carga hidráulica máxima, no la orgánica")
+            if carga_dbo_kg_dia / vol < FP_CARGA_ORGANICA[0] - 1e-12:
+                raise ValueError(f"Filtro percolador: con la carga hidráulica máxima de 10 m³/m²·d la carga orgánica "
+                                 f"sería {carga_dbo_kg_dia / vol:.3f} kg DBO/m³·d < 0,24 ({RES0330}, art. 192, tabla 38, "
+                                 "tasa intermedia): el agua residual es demasiado diluida para esta tecnología.")
+        if _lag._toca(qh, FP_CARGA_HIDRAULICA[1]):
+            borde.append("filtro percolador: carga hidráulica en el máximo de la tabla 38")
     elif qh < FP_CARGA_HIDRAULICA[0]:
         r = FP_CARGA_HIDRAULICA[0] / qh - 1.0
         if r > FP_RECIRCULACION[1] + 1e-9:
@@ -167,25 +184,9 @@ def _laguna_facultativa(q_m3dia: float, dbo_mg_l: float, temperatura: float | No
     if temperatura is None or profundidad is None:
         raise ValueError(f"Laguna facultativa: la temperatura del agua y la profundidad son obligatorias ({RES0330}, "
                          "art. 197: profundidad 1,5 a 2,5 m). No se asume ningún valor.")
-    if not (_lag.T_MIN_C <= temperatura <= _lag.T_MAX_C):
-        raise ValueError(f"Temperatura {temperatura:g} °C fuera del dominio del método de Mara "
-                         f"({_lag.T_MIN_C:g}–{_lag.T_MAX_C:g} °C).")
-    if _lag._en_rango(profundidad, _lag.PROF_FACULTATIVA, "Profundidad de la laguna facultativa (m)", "art. 197"):
-        borde.append("profundidad facultativa en el extremo del art. 197")
-    lam_mara = _lag.carga_superficial_facultativa_mara(temperatura)
-    lam = min(lam_mara, _lag.CARGA_SUP_FACULTATIVA[1])
-    if lam_mara > lam:
-        borde.append("λs de Mara limitada a 350 kg/ha·d (art. 197)")
-    area = 10.0 * dbo_mg_l * q_m3dia / lam
-    trh = area * profundidad / q_m3dia
-    if trh < _lag.TRH_FACULTATIVA[0]:
-        trh = _lag.TRH_FACULTATIVA[0]
-        area = q_m3dia * trh / profundidad
-        borde.append("TRH facultativo llevado al mínimo de 5 d (art. 197)")
-    if trh > _lag.TRH_FACULTATIVA[1] + 1e-9:
-        raise ValueError(f"Laguna facultativa: θ = {trh:.1f} d > 30 d ({RES0330}, art. 197). Reduzca la profundidad o "
-                         "use el sistema lagunar con laguna anaerobia (/aquai/saneamiento/lagunas).")
-    le = dbo_mg_l / (1.0 + _lag.k1_dbo_facultativa(temperatura) * trh)
+    _lag.validar_temperatura(temperatura, borde)
+    f = _lag.facultativa(q_m3dia, dbo_mg_l, temperatura, profundidad, borde)   # misma verificación que /lagunas
+    area, trh, le = f["area_m2"], f["trh_d"], f["dbo5_salida_mg_l"]
     efic = 1.0 - le / dbo_mg_l
     advertencias.append(f"Laguna facultativa: {area / 10000:.2f} ha de espejo de agua; verificar distancias mínimas "
                         f"({RES0330}, art. 181). Para anaerobia + maduración use /aquai/saneamiento/lagunas.")
@@ -196,7 +197,7 @@ def _laguna_facultativa(q_m3dia: float, dbo_mg_l: float, temperatura: float | No
         "profundidad_m": profundidad,
         "volumen_m3": round(area * profundidad, 1),
         "trh_dias": round(trh, 2),
-        "carga_superficial_kg_dbo_ha_dia": round(10.0 * dbo_mg_l * q_m3dia / area, 2),
+        "carga_superficial_kg_dbo_ha_dia": round(f["carga_superficial_kg_ha_d"], 2),
         "eficiencia_dbo_pct": round(efic * 100, 2),
         "eficiencia_sst_pct": 60.0,
         "norma_ref": f"{RES0330}, art. 197; método de Mara (2003)",

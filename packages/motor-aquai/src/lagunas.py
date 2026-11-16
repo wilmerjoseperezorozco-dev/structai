@@ -12,16 +12,17 @@ contrastarse con la edición citada antes del diseño definitivo:
   = 2T + 20 % (T ≤ 25) o 70 % (T > 25);
 - facultativa: λs = 350·(1,107 − 0,002T)^(T − 25) kg/ha·d; DBO5 del efluente por primer orden en mezcla completa con
   k1 = 0,3·1,05^(T − 20) d⁻¹;
-- coliformes: N = N0 / [(1 + kT·θa)(1 + kT·θf)(1 + kT·θm)^n], kT = 2,6·1,19^(T − 20) d⁻¹;
-- maduración: θm ≥ 3 d y carga superficial de la primera ≤ 0,75 de la facultativa.
+- coliformes: N = N0 / [(1 + kT·θa)(1 + kT·θf)·Π(1 + kT·θi)], kT = 2,6·1,19^(T − 20) d⁻¹;
+- maduración: θi ≥ 3 d, y la carga superficial de la primera ≤ 0,75 de la carga real de la facultativa.
 
-Optimización (regla 6): para cada número entero n de lagunas de maduración, el θm continuo mínimo que cumple el
-objetivo de coliformes tiene forma cerrada; se elige el n que minimiza el área total. La búsqueda es exhaustiva en
-n ∈ [0, N_MAX] y el resultado se marca en borde de dominio si el óptimo cae en la cota.
+Optimización (regla 6): minimizar Σθi (área total de maduración, a profundidad común) sujeto a Π(1 + kT·θi) ≥ R,
+θ1 ≥ a = máx(3, θcarga) y θi ≥ 3 para i ≥ 2. El problema es convexo (Σ ln(1 + kT·θi) es cóncava). Por KKT, las
+lagunas no acotadas tienen el mismo θ, así que el óptimo es uno de dos: todas iguales si ese θ común ya cumple
+θ ≥ a, o θ1 = a con las demás iguales (forma cerrada). Se recorre n ∈ [0, N_MAX] de forma exhaustiva, y el
+resultado se marca en borde de dominio si el óptimo cae en la cota.
 """
 from __future__ import annotations
 
-import math
 import sys
 from pathlib import Path
 from typing import Optional
@@ -41,6 +42,9 @@ T_MIN_C, T_MAX_C = 10.0, 35.0           # dominio del método de Mara para λv y
 N_MAX_MADURACION = 8
 THETA_MIN_MADURACION_D = 3.0            # Mara (2003)
 FRACCION_CARGA_MADURACION = 0.75        # Mara (2003): λs de la 1.ª de maduración ≤ 0,75 λs facultativa
+PERIODO_MIN_LODOS_ANOS = 1.0            # menos de un año entre remociones: diseño no operable (se rechaza)
+DBO_PER_CAPITA_COHERENTE = (10.0, 200.0)  # g/hab·d: fuera de esto, población y carga no son del mismo sistema
+DBO_PER_CAPITA_TIPICA = (30.0, 80.0)      # g/hab·d: fuera de esto, borde de dominio
 
 # Rangos de la Res. 0330 (solo los números de los artículos).
 PROF_ANAEROBIA = (2.5, 5.0)             # art. 196, num. 1
@@ -87,7 +91,11 @@ def _en_rango(valor: float, rango: tuple[float, float], que: str, articulo: str)
     lo, hi = rango
     if valor < lo - _EPS or valor > hi + _EPS:
         raise ValueError(f"{que} = {valor:g} fuera del rango {lo:g}–{hi:g} del {RES0330}, {articulo}.")
-    return abs(valor - lo) <= _EPS or abs(valor - hi) <= _EPS
+    return _toca(valor, lo) or _toca(valor, hi)
+
+
+def _toca(valor: float, limite: float) -> bool:
+    return abs(valor - limite) <= 1e-6 * max(1.0, abs(limite))
 
 
 def carga_volumetrica_anaerobia_mara(t: float) -> float:
@@ -117,30 +125,73 @@ def k_coliformes_marais(t: float) -> float:
     return 2.6 * 1.19 ** (t - 20.0)
 
 
-def _maduracion_optima(n_entrada: float, objetivo: float, kt: float, theta_carga: float, q: float, d: float):
-    """(n, θm, área) de mínima área total de maduración; θm continuo en forma cerrada para cada n entero."""
-    mejor = None
-    for n in range(0, N_MAX_MADURACION + 1):
-        if n == 0:
-            if n_entrada <= objetivo * (1 + 1e-12):
-                return 0, 0.0, 0.0
-            continue
-        theta_req = ((n_entrada / objetivo) ** (1.0 / n) - 1.0) / kt
-        theta = max(THETA_MIN_MADURACION_D, theta_carga, theta_req)
-        area = n * q * theta / d
-        if mejor is None or area < mejor[2] - 1e-9:
-            mejor = (n, theta, area)
+def validar_temperatura(t: float, borde: list) -> None:
+    if not (T_MIN_C <= t <= T_MAX_C):
+        raise ValueError(f"Temperatura del agua {t:g} °C fuera del dominio del método de Mara ({T_MIN_C:g}–{T_MAX_C:g} °C); "
+                         f"la {RES0330} (arts. 196–198) no fija un método fuera de él.")
+    if _toca(t, T_MIN_C) or _toca(t, T_MAX_C):
+        borde.append("temperatura en el extremo del dominio del método de Mara")
+
+
+def facultativa(q: float, lf: float, t: float, df: float, borde: list) -> dict:
+    """Laguna facultativa por Mara (2003) dentro del art. 197. La usan el sistema lagunar y la PTAR."""
+    if _en_rango(df, PROF_FACULTATIVA, "Profundidad de la laguna facultativa (m)", "art. 197"):
+        borde.append("profundidad facultativa en el extremo del art. 197")
+    lam_s_mara = carga_superficial_facultativa_mara(t)
+    lam_s = min(lam_s_mara, CARGA_SUP_FACULTATIVA[1])
+    if lam_s_mara > CARGA_SUP_FACULTATIVA[1]:
+        borde.append("λs de Mara limitada al máximo de 350 kg/ha·d del art. 197")
+    af = 10.0 * lf * q / lam_s
+    theta_f = af * df / q
+    if theta_f < TRH_FACULTATIVA[0]:
+        theta_f = TRH_FACULTATIVA[0]
+        af = q * theta_f / df
+        borde.append("TRH facultativo llevado al mínimo de 5 d del art. 197")
+    if theta_f > TRH_FACULTATIVA[1] + _EPS:
+        raise ValueError(f"La laguna facultativa necesitaría θ = {theta_f:.1f} d > 30 d ({RES0330}, art. 197). "
+                         "Reduzca la profundidad o incluya una laguna anaerobia previa.")
+    if _toca(theta_f, TRH_FACULTATIVA[0]) and "TRH facultativo llevado al mínimo de 5 d del art. 197" not in borde:
+        borde.append("TRH facultativo en el mínimo de 5 d del art. 197")
+    if _toca(theta_f, TRH_FACULTATIVA[1]):
+        borde.append("TRH facultativo en el máximo de 30 d del art. 197")
+    lam_s_real = 10.0 * lf * q / af
+    if lam_s_real < CARGA_SUP_FACULTATIVA[0] - _EPS:
+        raise ValueError(f"Carga superficial {lam_s_real:.0f} kg/ha·d < 100 ({RES0330}, art. 197) con θ = 5 d: "
+                         "reduzca la profundidad facultativa o revise la DBO5 afluente.")
+    if _toca(lam_s_real, CARGA_SUP_FACULTATIVA[0]) or _toca(lam_s_real, CARGA_SUP_FACULTATIVA[1]):
+        borde.append("carga superficial facultativa en un extremo del art. 197")
+    le = lf / (1.0 + k1_dbo_facultativa(t) * theta_f)
+    return dict(area_m2=af, profundidad_m=df, volumen_m3=af * df, trh_d=theta_f, carga_superficial_kg_ha_d=lam_s_real,
+                dbo5_entrada_mg_l=lf, dbo5_salida_mg_l=le, lambda_s_mara=lam_s_mara)
+
+
+def maduracion_optima(n_entrada: float, objetivo: float, kt: float, theta_carga: float) -> tuple[int, list[float]]:
+    """(n, [θ1..θn]) de mínima Σθ. Ver la cabecera del módulo: problema convexo resuelto por KKT en forma cerrada."""
+    if n_entrada <= objetivo * (1 + 1e-12):
+        return 0, []
+    r = n_entrada / objetivo
+    a = max(THETA_MIN_MADURACION_D, theta_carga)
+    mejor: Optional[tuple[int, list[float]]] = None
+    for n in range(1, N_MAX_MADURACION + 1):
+        theta_eq = (r ** (1.0 / n) - 1.0) / kt
+        if theta_eq >= a:
+            thetas = [theta_eq] * n
+        elif n == 1:
+            thetas = [a]
+        else:
+            resto = max(THETA_MIN_MADURACION_D, ((r / (1.0 + kt * a)) ** (1.0 / (n - 1)) - 1.0) / kt)
+            thetas = [a] + [resto] * (n - 1)
+        if mejor is None or sum(thetas) < sum(mejor[1]) - 1e-9:
+            mejor = (n, thetas)
     return mejor
 
 
 def disenar_lagunas(req: SolicitudLagunas) -> ResultadoMotor:
     t = req.temperatura_agua_c
-    if not (T_MIN_C <= t <= T_MAX_C):
-        raise ValueError(f"Temperatura del agua {t:g} °C fuera del dominio del método de Mara ({T_MIN_C:g}–{T_MAX_C:g} °C); "
-                         f"la {RES0330} (arts. 196–198) no fija un método fuera de él.")
-    q, li = req.caudal_medio_m3_dia, req.dbo5_afluente_mg_l
     borde: list[str] = []
     advertencias: list[str] = []
+    validar_temperatura(t, borde)
+    q, li = req.caudal_medio_m3_dia, req.dbo5_afluente_mg_l
     supuestos = [
         "Constantes del método de Mara (2003) y kT de Marais (1974), declaradas en la cabecera del módulo: "
         "contrastarlas con la edición citada antes del diseño definitivo.",
@@ -152,7 +203,17 @@ def disenar_lagunas(req: SolicitudLagunas) -> ResultadoMotor:
         "No se modelan SST ni DQO del efluente: el cumplimiento de esos parámetros de la Res. 0631 no se verifica.",
         "Áreas al nivel del agua; no incluyen taludes, diques ni vías (Res. 0330 art. 200).",
         "El tramo de carga del art. 8 de la Res. 0631 se elige con la carga de DBO5 del afluente crudo.",
+        f"Se rechaza un diseño cuya laguna receptora llegue al 50 % de lodos en menos de {PERIODO_MIN_LODOS_ANOS:g} año.",
     ]
+
+    # Coherencia entre la población y la carga (el balance de lodos depende de ambas)
+    g_hab = li * q / req.poblacion_equivalente      # mg/L · m³/d / hab = g/hab·d
+    if not (DBO_PER_CAPITA_COHERENTE[0] <= g_hab <= DBO_PER_CAPITA_COHERENTE[1]):
+        raise ValueError(f"La carga equivale a {g_hab:.1f} g DBO5/hab·d con la población dada: fuera de "
+                         f"{DBO_PER_CAPITA_COHERENTE[0]:g}–{DBO_PER_CAPITA_COHERENTE[1]:g}. Población, caudal y DBO5 "
+                         "no describen el mismo sistema; revíselos.")
+    if not (DBO_PER_CAPITA_TIPICA[0] <= g_hab <= DBO_PER_CAPITA_TIPICA[1]):
+        borde.append(f"carga per cápita atípica ({g_hab:.1f} g DBO5/hab·d)")
 
     # Borde libre (art. 199)
     rango_bl = BORDE_LIBRE_TURBULENCIA if req.alta_turbulencia_atmosferica else BORDE_LIBRE
@@ -180,48 +241,31 @@ def disenar_lagunas(req: SolicitudLagunas) -> ResultadoMotor:
         if theta_a > TRH_ANAEROBIA[1] + _EPS:
             raise ValueError(f"La laguna anaerobia necesitaría θ = {theta_a:.2f} d > 3 d ({RES0330}, art. 196, num. 3) "
                              f"con λv = {lam_v:.0f} g/m³·d a {t:g} °C. Reduzca la DBO5 afluente con pretratamiento.")
+        if _toca(theta_a, TRH_ANAEROBIA[0]) and "TRH anaerobio llevado al mínimo de 1 d del art. 196" not in borde:
+            borde.append("TRH anaerobio en el mínimo de 1 d del art. 196")
+        if _toca(theta_a, TRH_ANAEROBIA[1]):
+            borde.append("TRH anaerobio en el máximo de 3 d del art. 196")
         lam_v_real = li / theta_a
         if lam_v_real < CARGA_VOL_ANAEROBIA[0] - _EPS:
             raise ValueError(f"Carga volumétrica {lam_v_real:.0f} g/m³·d < 100 g/m³·d ({RES0330}, art. 196, num. 2): "
                              "el afluente es demasiado diluido para una laguna anaerobia; omítala.")
+        if _toca(lam_v_real, CARGA_VOL_ANAEROBIA[0]) or _toca(lam_v_real, CARGA_VOL_ANAEROBIA[1]):
+            borde.append("carga volumétrica anaerobia en un extremo del art. 196")
         va = q * theta_a
-        aa = va / da
         lf = li * (1.0 - remocion_dbo_anaerobia_mara(t))
         vol_receptora = va
-        lagunas.append(dict(tipo="anaerobia", cantidad=1, area_m2=aa, profundidad_m=da, profundidad_total_m=da + req.borde_libre_m,
-                            volumen_m3=va, trh_d=theta_a, carga_volumetrica_g_m3_d=lam_v_real,
-                            dbo5_entrada_mg_l=li, dbo5_salida_mg_l=lf))
+        lagunas.append(dict(tipo="anaerobia", cantidad=1, area_m2=va / da, profundidad_m=da,
+                            profundidad_total_m=da + req.borde_libre_m, volumen_m3=va, trh_d=theta_a,
+                            carga_volumetrica_g_m3_d=lam_v_real, dbo5_entrada_mg_l=li, dbo5_salida_mg_l=lf))
     elif req.profundidad_anaerobia_m is not None:
         raise ValueError("Se dio profundidad anaerobia sin incluir la laguna anaerobia: dato contradictorio.")
 
     # ── Facultativa (art. 197) ───────────────────────────────────────────
-    df = req.profundidad_facultativa_m
-    if _en_rango(df, PROF_FACULTATIVA, "Profundidad de la laguna facultativa (m)", "art. 197"):
-        borde.append("profundidad facultativa en el extremo del art. 197")
-    lam_s_mara = carga_superficial_facultativa_mara(t)
-    lam_s = min(lam_s_mara, CARGA_SUP_FACULTATIVA[1])
-    if lam_s_mara > CARGA_SUP_FACULTATIVA[1]:
-        borde.append("λs de Mara limitada al máximo de 350 kg/ha·d del art. 197")
-    af = 10.0 * lf * q / lam_s
-    theta_f = af * df / q
-    if theta_f < TRH_FACULTATIVA[0]:
-        theta_f = TRH_FACULTATIVA[0]
-        af = q * theta_f / df
-        borde.append("TRH facultativo llevado al mínimo de 5 d del art. 197")
-    if theta_f > TRH_FACULTATIVA[1] + _EPS:
-        raise ValueError(f"La laguna facultativa necesitaría θ = {theta_f:.1f} d > 30 d ({RES0330}, art. 197). "
-                         "Reduzca la profundidad o incluya una laguna anaerobia previa.")
-    lam_s_real = 10.0 * lf * q / af
-    if lam_s_real < CARGA_SUP_FACULTATIVA[0] - _EPS:
-        raise ValueError(f"Carga superficial {lam_s_real:.0f} kg/ha·d < 100 ({RES0330}, art. 197) con θ = 5 d: "
-                         "reduzca la profundidad facultativa.")
-    k1 = k1_dbo_facultativa(t)
-    le = lf / (1.0 + k1 * theta_f)
+    fac = facultativa(q, lf, t, req.profundidad_facultativa_m, borde)
+    theta_f, le, lam_s_mara = fac["trh_d"], fac["dbo5_salida_mg_l"], fac.pop("lambda_s_mara")
     if vol_receptora is None:
-        vol_receptora = af * df
-    lagunas.append(dict(tipo="facultativa", cantidad=1, area_m2=af, profundidad_m=df, profundidad_total_m=df + req.borde_libre_m,
-                        volumen_m3=af * df, trh_d=theta_f, carga_superficial_kg_ha_d=lam_s_real,
-                        dbo5_entrada_mg_l=lf, dbo5_salida_mg_l=le))
+        vol_receptora = fac["volumen_m3"]
+    lagunas.append(dict(tipo="facultativa", cantidad=1, profundidad_total_m=fac["profundidad_m"] + req.borde_libre_m, **fac))
 
     # ── Maduración (art. 198) ────────────────────────────────────────────
     dm = req.profundidad_maduracion_m
@@ -230,22 +274,29 @@ def disenar_lagunas(req: SolicitudLagunas) -> ResultadoMotor:
     kt = k_coliformes_marais(t)
     n0 = req.coliformes_afluente_nmp_100ml
     n_fac = n0 / ((1.0 + kt * theta_a) * (1.0 + kt * theta_f))
-    theta_carga = 10.0 * le * dm / (FRACCION_CARGA_MADURACION * lam_s)
-    n_mad, theta_m, area_mad = _maduracion_optima(n_fac, req.coliformes_objetivo_nmp_100ml, kt, theta_carga, q, dm)
+    # Mara: la primera de maduración no debe recibir más de 0,75 de la carga real de la facultativa.
+    theta_carga = 10.0 * le * dm / (FRACCION_CARGA_MADURACION * fac["carga_superficial_kg_ha_d"])
+    n_mad, thetas = maduracion_optima(n_fac, req.coliformes_objetivo_nmp_100ml, kt, theta_carga)
     if n_mad == N_MAX_MADURACION:
         borde.append(f"el óptimo cae en la cota de búsqueda de {N_MAX_MADURACION} lagunas de maduración")
-    n_final = n_fac / (1.0 + kt * theta_m) ** n_mad if n_mad else n_fac
-    if n_mad:
-        lagunas.append(dict(tipo="maduracion", cantidad=n_mad, area_m2=area_mad / n_mad, profundidad_m=dm,
-                            profundidad_total_m=dm + req.borde_libre_m, volumen_m3=area_mad * dm / n_mad, trh_d=theta_m,
-                            coliformes_entrada_nmp_100ml=n_fac, coliformes_salida_nmp_100ml=n_final))
+    if any(_toca(th, THETA_MIN_MADURACION_D) or _toca(th, theta_carga) for th in thetas):
+        borde.append("al menos una laguna de maduración en su TRH mínimo (3 d o el de carga superficial)")
+    n_actual = n_fac
+    for i, th in enumerate(thetas, start=1):
+        n_sale = n_actual / (1.0 + kt * th)
+        lagunas.append(dict(tipo=f"maduracion_{i}", cantidad=1, area_m2=q * th / dm, profundidad_m=dm,
+                            profundidad_total_m=dm + req.borde_libre_m, volumen_m3=q * th, trh_d=th,
+                            coliformes_entrada_nmp_100ml=n_actual, coliformes_salida_nmp_100ml=n_sale))
+        n_actual = n_sale
+    n_final = n_actual
 
     area_total = sum(l["area_m2"] * l["cantidad"] for l in lagunas)
     if req.area_disponible_m2 is not None:
         if area_total > req.area_disponible_m2 * (1 + 1e-12):
-            raise ValueError(f"El sistema de área mínima necesita {area_total:,.0f} m² de espejo de agua y hay "
-                             f"{req.area_disponible_m2:,.0f} m² disponibles: no existe configuración que cumpla el "
-                             f"objetivo de coliformes con los rangos del {RES0330} (arts. 196–198).")
+            raise ValueError(f"Con estas profundidades y esta configuración, el diseño de área mínima necesita "
+                             f"{area_total:,.0f} m² de espejo de agua y hay {req.area_disponible_m2:,.0f} m² disponibles "
+                             f"({RES0330}, arts. 196–198). Pruebe a {'cambiar' if req.incluir_anaerobia else 'incluir una laguna anaerobia o cambiar'} "
+                             "las profundidades, o a revisar el objetivo de coliformes con la autoridad.")
         if area_total >= 0.95 * req.area_disponible_m2:
             borde.append("el área requerida está a menos del 5 % del área disponible")
 
@@ -253,7 +304,7 @@ def disenar_lagunas(req: SolicitudLagunas) -> ResultadoMotor:
     carga_kg_d = li * q / 1000.0
     limites = vertimientos.limites_art8(carga_kg_d, req.cuerpo_receptor)
     if vertimientos.en_borde_de_tramo(carga_kg_d):
-        borde.append("la carga de DBO5 está a menos del 5 % de un cambio de tramo de la Res. 0631 art. 8")
+        borde.append("la carga de DBO5 está a menos del 5 % del cambio de tramo de la Res. 0631 art. 8")
     cumple_dbo = le <= limites["DBO5"]
     if not cumple_dbo:
         advertencias.append(f"DBO5 del efluente {le:.1f} mg/L > {limites['DBO5']:g} mg/L ({vertimientos.NORMA}).")
@@ -262,9 +313,9 @@ def disenar_lagunas(req: SolicitudLagunas) -> ResultadoMotor:
     acumulacion = req.poblacion_equivalente * req.tasa_acumulacion_lodos_m3_hab_ano
     periodo = FRACCION_LODOS_REMOCION * vol_receptora / acumulacion
     receptora = lagunas[0]["tipo"]
-    if periodo < 1.0:
-        advertencias.append(f"La laguna {receptora} llegaría al 50 % de lodos en {periodo:.2f} años: revise la tasa "
-                            "de acumulación o el tamaño.")
+    if periodo < PERIODO_MIN_LODOS_ANOS:
+        raise ValueError(f"La laguna {receptora} llegaría al 50 % de lodos ({RES0330}, art. 216) en {periodo:.2f} años, "
+                         f"menos de {PERIODO_MIN_LODOS_ANOS:g}: revise la tasa de acumulación, la población o el tamaño.")
     advertencias.append(f"{RES0330} art. 216: después de 5 años, medir la capa de lodos al menos una vez al año.")
 
     valor = {
@@ -278,15 +329,15 @@ def disenar_lagunas(req: SolicitudLagunas) -> ResultadoMotor:
         "cumple_res0631_dbo5": cumple_dbo,
         "lodos": {"laguna_receptora": receptora, "acumulacion_m3_ano": round(acumulacion, 3),
                   "periodo_remocion_anos": round(periodo, 3), "criterio": "50 % del volumen (Res. 0330 art. 216)"},
-        "constantes": {"kT_coliformes_d": round(kt, 6), "k1_dbo_facultativa_d": round(k1, 6),
-                       "lambda_s_mara_kg_ha_d": round(lam_s_mara, 3)},
+        "constantes": {"kT_coliformes_d": round(kt, 6), "k1_dbo_facultativa_d": round(k1_dbo_facultativa(t), 6),
+                       "lambda_s_mara_kg_ha_d": round(lam_s_mara, 3), "theta_carga_maduracion_d": round(theta_carga, 4)},
         "borde_dominio": borde,
     }
     return ResultadoMotor(
         valor=valor,
         unidad_si="m², m, m³, d, mg/L, NMP/100 mL",
         ecuacion=("Va = Li·Q/λv; Af = 10·L·Q/λs; Le = L/(1 + k1·θf); "
-                  "N = N0/[(1 + kT·θa)(1 + kT·θf)(1 + kT·θm)^n]; mín Σ área sobre n entero y θm continuo"),
+                  "N = N0/[(1 + kT·θa)(1 + kT·θf)·Π(1 + kT·θi)]; mín Σθi con θ1 ≥ máx(3, θcarga), θi ≥ 3 (KKT)"),
         referencia_normativa=(f"{RES0330}, arts. 164, 196–200 y 216; {vertimientos.NORMA}; Mara (2003) cap. 11; "
                               "Marais (1974)"),
         supuestos=supuestos,

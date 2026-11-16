@@ -41,5 +41,7 @@ def limites_art8(carga_dbo_kg_dia: float, cuerpo_receptor: str) -> dict[str, flo
 
 
 def en_borde_de_tramo(carga_dbo_kg_dia: float, tolerancia: float = 0.05) -> bool:
-    """True si la carga está a menos del 5 % de un cambio de tramo (el límite aplicable cambia con poca incertidumbre)."""
-    return any(abs(carga_dbo_kg_dia - t) <= tolerancia * t for t, _ in _TRAMOS_PRESTADOR if t != float("inf"))
+    """True si la carga está a menos del 5 % de un cambio de tramo en el que **cambian los límites** (solo 3.000 kg/d:
+    los tramos de 625 y 3.000 tienen los mismos valores)."""
+    cambios = [t for (t, lim), (_, sig) in zip(_TRAMOS_PRESTADOR, _TRAMOS_PRESTADOR[1:]) if lim != sig]
+    return any(abs(carga_dbo_kg_dia - t) <= tolerancia * t for t in cambios)
