@@ -19,6 +19,7 @@ import re
 import unicodedata
 from dataclasses import dataclass
 from functools import lru_cache
+from pathlib import Path
 from typing import Optional
 from openai import APIConnectionError, APIStatusError, InternalServerError, OpenAI, RateLimitError
 from supabase import create_client
@@ -1761,10 +1762,63 @@ def embed_query(text: str) -> list[float]:
     model = _embedding_model()
     return model.encode(text, normalize_embeddings=True).tolist()
 
+
+# ─── Índice local (2026-11-16): búsqueda híbrida en memoria, sin viajes a Supabase ───────────────────────────────────
+# La instantánea (apps/api/datos_indice/indice_rag.npz) se construye en el despliegue con
+# scripts/rag/construir_indice_local.py y viaja en la imagen: el arranque en frío la lee del disco. Reproduce
+# search_knowledge y las RPC de Perú/Ecuador (packages/construdata/indice_local.py), con la parte semántica exacta
+# (HNSW con ef_search=40 truncaba a 40 vecinos). Si el archivo no está o falla, se usa la RPC de siempre.
+# RAG_INDICE_LOCAL=false la apaga; RAG_INDICE_LOCAL_RUTA cambia la ruta.
+RAG_INDICE_LOCAL = os.getenv("RAG_INDICE_LOCAL", "true").lower() != "false"
+RAG_INDICE_LOCAL_RUTA = Path(os.getenv("RAG_INDICE_LOCAL_RUTA", str(Path(__file__).resolve().parents[2] / "apps" / "api" / "datos_indice" / "indice_rag.npz")))
+_indice = {"cargado": False, "valor": None, "error": None}
+_lock_indice = threading.Lock()
+
+
+def _indice_local():
+    """El índice en memoria, o None si está apagado, no existe o no pasó la verificación sha256 (se intenta una vez)."""
+    if not RAG_INDICE_LOCAL:
+        return None
+    if not _indice["cargado"]:
+        with _lock_indice:
+            if not _indice["cargado"]:
+                try:
+                    if RAG_INDICE_LOCAL_RUTA.exists():
+                        from indice_local import IndiceLocal
+                        t0 = time.perf_counter()
+                        _indice["valor"] = IndiceLocal.cargar(RAG_INDICE_LOCAL_RUTA)
+                        log.info(f"Índice RAG local cargado en {time.perf_counter() - t0:.2f}s: {_indice['valor'].resumen()}")
+                    else:
+                        _indice["error"] = f"no existe {RAG_INDICE_LOCAL_RUTA.name}"
+                except Exception as e:
+                    _indice["error"] = str(e)
+                    log.warning(f"Índice RAG local no disponible, se usa la RPC de Supabase: {e}")
+                _indice["cargado"] = True
+    return _indice["valor"]
+
+
+def estado_indice_local() -> dict:
+    """Para /health?deep=true."""
+    idx = _indice["valor"]
+    return {"activo": idx is not None, "error": _indice["error"], **(idx.resumen() if idx is not None else {})}
+
+
+def _chunk_de_fila(r) -> "ChunkResult":
+    meta = r.metadata or {}
+    return ChunkResult(chunk_id=r.chunk_id, norma=r.norma, seccion=r.seccion, contenido=r.contenido, score=r.score,
+                       estado_vigencia=meta.get("estado_vigencia"), derogada_por=meta.get("derogada_por"),
+                       alcance_derogacion=meta.get("alcance_derogacion"))
+
 def search(query: str, norma_filter: Optional[str] = None, top_k: int = TOP_K_DEFAULT_RAG, motor_filter: Optional[str] = None) -> list[ChunkResult]:
     """Búsqueda híbrida RRF en Supabase. motor_filter restringe a motor_chunks.motor
     (ej. 'aquai') — deja fuera nsr10_chunks/ntc_chunks cuando se usa."""
     embedding = embed_query(query)
+    idx = _indice_local()
+    if idx is not None:
+        try:
+            return [_chunk_de_fila(r) for r in idx.search_knowledge(embedding, query, norma_filter, top_k, p_motor=motor_filter)]
+        except Exception as e:
+            log.warning(f"Índice RAG local falló en search(); se usa la RPC: {e}")
     result = sb.rpc("search_knowledge", {
         "query_embedding": embedding,
         "query_text": query,
@@ -1799,8 +1853,17 @@ def search(query: str, norma_filter: Optional[str] = None, top_k: int = TOP_K_DE
 # trackea vigencia/derogación para estas dos normas, a diferencia de
 # nsr10_chunks/ntc_chunks) -- por eso NO reusan search(), que está atado a
 # la forma exacta de search_knowledge.
+_PAIS_DE_RPC = {"search_knowledge_peru_e030": "peru", "search_knowledge_ecuador_nec_se_ds": "ecuador"}
+
+
 def _search_pais_hybrid(rpc_name: str, query: str, top_k: int = TOP_K_DEFAULT_RAG) -> list[ChunkResult]:
     embedding = embed_query(query)
+    idx = _indice_local()
+    if idx is not None and rpc_name in _PAIS_DE_RPC:
+        try:
+            return [_chunk_de_fila(r) for r in idx.search_pais(_PAIS_DE_RPC[rpc_name], embedding, query, None, top_k)]
+        except Exception as e:
+            log.warning(f"Índice RAG local falló en {rpc_name}; se usa la RPC: {e}")
     result = sb.rpc(rpc_name, {
         "query_embedding": embedding,
         "query_text": query,

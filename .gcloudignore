@@ -1,0 +1,7 @@
+# gcloud builds submit usa este archivo en vez de .gitignore. Se parte de .gitignore (secretos y cachés fuera) y se
+# vuelve a incluir la instantánea del índice RAG, que es gitignored pero debe viajar en la imagen Docker para que el
+# arranque en frío de Cloud Run la lea del disco (scripts/rag/construir_indice_local.py).
+#!include:.gitignore
+.git
+!apps/api/datos_indice/
+!apps/api/datos_indice/**
