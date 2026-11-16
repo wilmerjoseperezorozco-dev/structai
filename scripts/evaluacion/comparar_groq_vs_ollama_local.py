@@ -41,6 +41,8 @@ al escribir este script).
 """
 from __future__ import annotations
 
+import os as _os_cache  # noqa: E402
+_os_cache.environ.setdefault("RAG_CACHE_DISABLED", "true")  # mide el pipeline, no respuestas guardadas (ver ci.yml)
 import importlib.util
 import json
 import os

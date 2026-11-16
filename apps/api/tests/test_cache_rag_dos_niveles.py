@@ -38,8 +38,15 @@ class _Consulta:
     def limit(self, _n):
         return self
 
+    def lt(self, _col, valor):
+        self.limite = valor
+        return self
+
     def execute(self):
         self.sb.viajes.append(self.op)
+        if self.op == "delete":
+            self.sb.purgas += 1
+            return type("R", (), {"data": []})()
         if self.op == "select":
             fila = self.sb.filas.get(self.id)
             return type("R", (), {"data": [fila] if fila else []})()
@@ -61,11 +68,15 @@ class _Tabla:
     def upsert(self, datos, on_conflict=None):
         return _Consulta(self.sb, "upsert", datos)
 
+    def delete(self):
+        return _Consulta(self.sb, "delete")
+
 
 class _SupabaseFalso:
     def __init__(self):
         self.viajes: list[str] = []
         self.filas: dict = {}
+        self.purgas = 0
 
     def table(self, nombre):
         assert nombre == "rag_cache_respuestas"
@@ -77,6 +88,8 @@ def sb(monkeypatch):
     falso = _SupabaseFalso()
     monkeypatch.setattr(rmn, "sb", falso)
     monkeypatch.setattr(rmn, "RAG_CACHE_DISABLED", False)
+    monkeypatch.setattr(rmn, "_ultima_purga_cache", {"t": 0.0})          # purga "reciente": no interfiere con los conteos
+    monkeypatch.setattr(rmn.time, "monotonic", lambda: 1.0)
     assert rmn._cache_l1 is not None, "en la API, cache.py debe estar disponible como nivel 1"
     rmn._cache_l1.clear()
     yield falso
@@ -111,3 +124,81 @@ def test_nunca_sirve_de_memoria_lo_que_ya_expiro(sb):
 def test_rutas_distintas_no_se_mezclan(sb):
     rmn._guardar_en_cache("ask", "p", {"r": "ask"})
     assert rmn._buscar_en_cache("ask_precios", "p") is None
+
+
+# --- Estadísticas de caudal IDEAM en RAM: una carga por instancia, cero viajes por comparación ------------------------------
+
+class _SBCaudal:
+    def __init__(self, filas, falla=False):
+        self.filas, self.falla, self.viajes = filas, falla, 0
+
+    def table(self, nombre):
+        assert nombre == "ideam_caudal_estadisticas_mes"
+        sb = self
+
+        class Q:
+            def __init__(self):
+                self.rango, self.filtros = (0, 10**9), {}
+
+            def select(self, *_a):
+                return self
+
+            def order(self, *_a):
+                return self
+
+            def range(self, a, b):
+                self.rango = (a, b)
+                return self
+
+            def eq(self, c, v):
+                self.filtros[c] = v
+                return self
+
+            def execute(self):
+                sb.viajes += 1
+                if sb.falla and not self.filtros:
+                    raise ConnectionError("Supabase caído")
+                fs = [f for f in sb.filas if all(f[c] == v for c, v in self.filtros.items())]
+                return type("R", (), {"data": fs[self.rango[0]:self.rango[1] + 1]})()
+        return Q()
+
+
+def _filas_caudal(n_est):
+    return [{"codigo_estacion": f"E{i:04d}", "mes": m, "promedio_m3s": 10.0 + i, "p90_m3s": 20.0 + i, "n_observaciones": 30}
+            for i in range(n_est) for m in range(1, 13)]
+
+
+def test_caudal_se_carga_una_vez_y_compara_sin_viajes(monkeypatch):
+    sb = _SBCaudal(_filas_caudal(100))                            # 1.200 filas: 2 páginas
+    monkeypatch.setattr(rmn, "sb", sb)
+    monkeypatch.setattr(rmn, "_caudal_mes", {"cargado": 0.0, "datos": None})
+    r = rmn._comparar_caudal_historico({"codigo_estacion": "E0005", "fecha": "2026-07-01", "caudal_m3s": 30.0})
+    assert r == {"caudal_actual": 30.0, "promedio_historico": 15.0, "pct_diferencia": 100.0, "excede_p90": True, "n_anos_historicos": 30}
+    viajes = sb.viajes
+    assert viajes == 2
+    for i in range(50):
+        rmn._comparar_caudal_historico({"codigo_estacion": f"E{i:04d}", "fecha": "2026-03-01", "caudal_m3s": 1.0})
+    assert sb.viajes == viajes                                    # 50 comparaciones, 0 viajes
+    assert rmn._comparar_caudal_historico({"codigo_estacion": "NO-EXISTE", "fecha": "2026-03-01", "caudal_m3s": 1.0}) is None
+
+
+def test_caudal_si_falla_la_carga_usa_la_consulta_puntual(monkeypatch):
+    sb = _SBCaudal(_filas_caudal(3), falla=True)
+    monkeypatch.setattr(rmn, "sb", sb)
+    monkeypatch.setattr(rmn, "_caudal_mes", {"cargado": 0.0, "datos": None})
+    r = rmn._comparar_caudal_historico({"codigo_estacion": "E0001", "fecha": "2026-02-01", "caudal_m3s": 11.0})
+    assert r["promedio_historico"] == 11.0 and r["excede_p90"] is False
+
+
+def test_no_guarda_contextos_recuperados_y_purga_vencidas_una_vez_por_hora(sb, monkeypatch):
+    reloj = {"t": 10_000.0}
+    monkeypatch.setattr(rmn.time, "monotonic", lambda: reloj["t"])
+    monkeypatch.setattr(rmn, "_ultima_purga_cache", {"t": None})
+    rmn._guardar_en_cache("ask", "p", {"respuesta": "r", "contextos_recuperados": [{"contenido": "x" * 5000}]})
+    assert "contextos_recuperados" not in next(iter(sb.filas.values()))["respuesta"]
+    assert sb.purgas == 1
+    rmn._guardar_en_cache("ask", "q", {"respuesta": "r"})
+    assert sb.purgas == 1                                                   # dentro de la hora: no vuelve a purgar
+    reloj["t"] += rmn.RAG_CACHE_PURGA_S + 1
+    rmn._guardar_en_cache("ask", "z", {"respuesta": "r"})
+    assert sb.purgas == 2

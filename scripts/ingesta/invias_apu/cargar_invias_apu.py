@@ -27,6 +27,7 @@ Uso:
 """
 from __future__ import annotations
 
+import json
 import os
 import re
 import sys
@@ -330,10 +331,21 @@ class CargadorInvias:
                     on_conflict="numeral,provincia_codigo,periodo",
                 ).execute()
         if insumos_linea_batch:
-            for i in range(0, len(insumos_linea_batch), 500):
-                self.sb.table("invias_actividad_insumos").insert(
-                    insumos_linea_batch[i : i + 500]
-                ).execute()
+            # invias_actividad_insumos (620 mil filas, 154 MB) salió de Supabase el 2026-11-16 para seguir en el plan gratuito:
+            # nada en producción la lee. Las líneas se escriben a un JSONL.gz local (formato de scripts/respaldo); a Supabase solo
+            # con INVIAS_INSUMOS_A_SUPABASE=true, sabiendo que vuelve a ocupar ese espacio.
+            if os.environ.get("INVIAS_INSUMOS_A_SUPABASE", "").lower() == "true":
+                for i in range(0, len(insumos_linea_batch), 500):
+                    self.sb.table("invias_actividad_insumos").insert(
+                        insumos_linea_batch[i : i + 500]
+                    ).execute()
+            else:
+                import gzip
+                destino = Path(os.environ.get("STRUCTAI_RESPALDOS", Path.home() / "structai-respaldos")) / "invias_actividad_insumos_carga.jsonl.gz"
+                destino.parent.mkdir(parents=True, exist_ok=True)
+                with gzip.open(destino, "at", encoding="utf-8") as gz:
+                    for fila in insumos_linea_batch:
+                        gz.write(json.dumps(fila, ensure_ascii=False, default=str) + chr(10))
 
         if saltadas:
             print(f"  [aviso] {saltadas} hojas con nombre de numeral pero formato inesperado, saltadas")

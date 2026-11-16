@@ -13,6 +13,8 @@ import hashlib
 import json
 import logging
 import os
+import threading
+import time
 import re
 import unicodedata
 from dataclasses import dataclass
@@ -341,6 +343,14 @@ _ESPACIOS_MULTIPLES = re.compile(r"\s+")
 # sobre la tabla) y sube la entrada al nivel 1. La entrada del nivel 1 guarda su `expira_en` de Supabase: nunca se sirve
 # algo que en Supabase ya expiró. El contador de aciertos vive en memoria (uso_cache_hoy).
 RAG_CACHE_L1_HORAS = float(os.getenv("RAG_CACHE_L1_HORAS", "6"))
+# Diagnóstico de rag_cache_respuestas (2026-11-16): 190 de 222 filas estaban vencidas (nunca se borraban) y cada fila
+# pesaba ~9,8 KB porque guardaba `contextos_recuperados` (el texto completo de los trozos, que FastAPI ni siquiera devuelve:
+# solo lo usan las evaluaciones RAGAS, que ahora corren con la caché apagada). Se guarda sin ese campo y se purgan las
+# vencidas como máximo una vez por hora por instancia.
+_CAMPOS_NO_CACHEADOS = ("contextos_recuperados",)
+RAG_CACHE_PURGA_S = float(os.getenv("RAG_CACHE_PURGA_S", "3600"))
+_ultima_purga_cache = {"t": None}
+
 try:
     from cache import TTLCache as _TTLCache          # apps/api/cache.py (en la API está en sys.path)
     _cache_l1 = _TTLCache(ttl_seconds=RAG_CACHE_L1_HORAS * 3600, max_size=int(os.getenv("RAG_CACHE_L1_MAX", "2000")))
@@ -434,6 +444,7 @@ def _guardar_en_cache(ruta: str, question: str, respuesta: dict) -> None:
 
     pregunta_normalizada = _normalizar_pregunta_cache(question)
     cache_id = _hash_cache(ruta, pregunta_normalizada)
+    respuesta = {k: v for k, v in respuesta.items() if k not in _CAMPOS_NO_CACHEADOS}
     expira_en = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=RAG_CACHE_TTL_DIAS)
     if _cache_l1 is not None:
         _cache_l1.set(cache_id, (respuesta, expira_en))
@@ -447,6 +458,22 @@ def _guardar_en_cache(ruta: str, question: str, respuesta: dict) -> None:
         }, on_conflict="id").execute()
     except Exception as e:
         log.warning(f"Caché de respuestas no disponible (escritura): {e}")
+    _purgar_cache_vencida()
+
+
+def _purgar_cache_vencida() -> None:
+    """Borra las filas vencidas de rag_cache_respuestas (nunca se sirven: _buscar_en_cache revisa expira_en), como máximo
+    una vez cada RAG_CACHE_PURGA_S por instancia. Best-effort, igual que el resto de la caché."""
+    import datetime
+
+    t = time.monotonic()
+    if _ultima_purga_cache["t"] is not None and t - _ultima_purga_cache["t"] < RAG_CACHE_PURGA_S:
+        return
+    _ultima_purga_cache["t"] = t
+    try:
+        sb.table("rag_cache_respuestas").delete().lt("expira_en", datetime.datetime.now(datetime.timezone.utc).isoformat()).execute()
+    except Exception as e:
+        log.warning(f"Caché de respuestas: no se pudieron purgar las vencidas: {e}")
 
 
 def uso_groq_hoy() -> dict:
@@ -2010,6 +2037,38 @@ def _bloque_contexto_noticias() -> Optional[str]:
     )
 
 
+# Estadísticas hidrológicas por estación y mes en RAM (2026-11-16, descarga de Supabase). La tabla resumen
+# ideam_caudal_estadisticas_mes tiene una fila por (estación, mes): ~11 mil filas, ~1 MB. Se carga entera una vez por
+# instancia de Cloud Run y se renueva cada 24 h (el resumen solo cambia cuando se reingesta el IDEAM), así que cada
+# comparación de caudal deja de ser un viaje a Supabase. Si la carga falla se usa la consulta puntual de siempre.
+CAUDAL_MES_TTL_S = float(os.getenv("CAUDAL_MES_TTL_S", str(24 * 3600)))
+_caudal_mes: dict = {"cargado": 0.0, "datos": None}
+_lock_caudal_mes = threading.Lock()
+
+
+def _estadisticas_caudal_mes() -> Optional[dict]:
+    """{(codigo_estacion, mes): {promedio_m3s, p90_m3s, n_observaciones}} o None si no se pudo cargar."""
+    with _lock_caudal_mes:
+        if _caudal_mes["datos"] is not None and time.monotonic() - _caudal_mes["cargado"] < CAUDAL_MES_TTL_S:
+            return _caudal_mes["datos"]
+        try:
+            datos, ini = {}, 0
+            while True:
+                pag = (sb.table("ideam_caudal_estadisticas_mes")
+                       .select("codigo_estacion, mes, promedio_m3s, p90_m3s, n_observaciones")
+                       .order("codigo_estacion").order("mes").range(ini, ini + 999).execute().data or [])
+                for f in pag:
+                    datos[(f["codigo_estacion"], int(f["mes"]))] = f
+                if len(pag) < 1000:
+                    break
+                ini += 1000
+        except Exception as e:
+            log.warning(f"Estadísticas de caudal no cargadas en memoria (se consulta por estación): {e}")
+            return None
+        _caudal_mes.update(cargado=time.monotonic(), datos=datos)
+        return datos
+
+
 def _comparar_caudal_historico(registro: dict) -> Optional[dict]:
     """Compara un registro de caudal ACTUAL (de
     ideam_client.caudal_por_municipio(), siempre en vivo) contra las
@@ -2028,16 +2087,22 @@ def _comparar_caudal_historico(registro: dict) -> Optional[dict]:
         return None
     if not (1 <= mes <= 12):
         return None
-    resultado = (
-        sb.table("ideam_caudal_estadisticas_mes")
-        .select("promedio_m3s, p90_m3s, n_observaciones")
-        .eq("codigo_estacion", registro["codigo_estacion"])
-        .eq("mes", mes)
-        .execute()
-    )
-    if not resultado.data:
-        return None
-    stats = resultado.data[0]
+    en_memoria = _estadisticas_caudal_mes()
+    if en_memoria is not None:
+        stats = en_memoria.get((registro["codigo_estacion"], mes))
+        if stats is None:
+            return None
+    else:
+        resultado = (
+            sb.table("ideam_caudal_estadisticas_mes")
+            .select("promedio_m3s, p90_m3s, n_observaciones")
+            .eq("codigo_estacion", registro["codigo_estacion"])
+            .eq("mes", mes)
+            .execute()
+        )
+        if not resultado.data:
+            return None
+        stats = resultado.data[0]
     promedio = stats.get("promedio_m3s")
     if not promedio:
         return None

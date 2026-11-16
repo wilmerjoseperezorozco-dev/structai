@@ -2,24 +2,24 @@
 
 Generado por `scripts/inventario/cadenas_ejecucion.py`; no editar a mano. Análisis **estático** (AST + imports): dice qué pasos hay y de qué tipo, **no cuánto tardan**. El orden de trabajo lo da latencia × frecuencia medidas (fase 1, paso 2), nunca este conteo solo. Ver el docstring para la definición de paso, tipo y etiqueta.
 
-- Código analizado: 697 módulos, 2,858 funciones (sin pruebas).
-- Puntos de entrada: 100 endpoints y 375 pipelines fuera de línea.
-- **Candidatas a flujo atómico (≥ 4 pasos secuenciales): 100** (13 endpoints, 87 pipelines).
+- Código analizado: 699 módulos, 2,868 funciones (sin pruebas).
+- Puntos de entrada: 100 endpoints y 376 pipelines fuera de línea.
+- **Candidatas a flujo atómico (≥ 4 pasos secuenciales): 99** (13 endpoints, 86 pipelines).
 - Cadenas futuras con ≥ 4 motores que pasan por un motor planificado o bloqueado: **36** (solo nodos declarados en `docs/coherencia_motores.json`).
-- Resolución de los pasos: externo 1288, import 151, local 395, por_nombre 55 (`por_nombre` = función única en el repo con ese nombre; revisar si un paso parece fuera de lugar).
+- Resolución de los pasos: externo 1286, import 150, local 405, por_nombre 55 (`por_nombre` = función única en el repo con ese nombre; revisar si un paso parece fuera de lugar).
 
 ## Etiquetas de las candidatas
 
 | Etiqueta | Candidatas | Qué permite |
 |---|---|---|
-| `con_efectos` | 91 | llave de idempotencia (no caché) |
+| `con_efectos` | 90 | llave de idempotencia (no caché) |
 | `con_LLM` | 7 | caché por hash de prompt + modelo + contexto, con aviso |
 | `dependiente_de_norma` | 17 | caché con la versión de la norma en la llave (#193) |
-| `dependiente_de_datos` | 94 | caché con la versión/fecha del dato (catálogo, tabla) en la llave |
+| `dependiente_de_datos` | 93 | caché con la versión/fecha del dato (catálogo, tabla) en la llave |
 | `pura` | 1 | caché directa |
 | `sin_clasificar` | 0 | revisar a mano |
 
-Con caché ya existente en la secuencia: 14 de 100.
+Con caché ya existente en la secuencia: 14 de 99.
 
 ## Por familia
 
@@ -29,7 +29,7 @@ Con caché ya existente en la secuencia: 14 de 100.
 | motor | 84 | 5 | 0 | 1 |
 | scripts/satelite | 48 | 19 | 0 | 44 |
 | scripts/evaluacion | 27 | 10 | 9 | 20 |
-| scripts/precios | 16 | 6 | 0 | 15 |
+| scripts/precios | 16 | 5 | 0 | 15 |
 | scripts/hidro | 16 | 7 | 0 | 15 |
 | scripts/regional | 9 | 0 | 0 | 6 |
 | scripts/mantenimiento | 8 | 3 | 0 | 7 |
@@ -46,13 +46,14 @@ Con caché ya existente en la secuencia: 14 de 100.
 | scripts/medicion | 2 | 0 | 0 | 1 |
 | scripts/surrogate_zapata | 2 | 0 | 0 | 2 |
 | vision | 1 | 0 | 0 | 0 |
+| scripts/respaldo | 1 | 0 | 0 | 1 |
 
 ## Endpoints candidatos (los que ve el usuario)
 
 | Entrada | Pasos | Etiquetas | Caché | Secuencia |
 |---|---|---|---|---|
 | `POST /consultar` | 61 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | sí | _uso_sb.table().select().eq().maybe_single().execute[bd] → _uso_sb.table().select().eq().gte().execute[bd] → _cache_consultar.get[cache] → _informe_sitio_directo[bd] → embed_query[cache] → _centroides[embeddings] → embed_query[cache] → sb.rpc().execute[bd] → buscar_precios_apu[bd] → buscar_precios_invias_vias[bd] → search[bd] → _format_precio_context[bd] → … (+49) |
-| `POST /ask` | 42 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | sí | _uso_sb.table().select().eq().maybe_single().execute[bd] → _uso_sb.table().select().eq().gte().execute[bd] → _cache_ask.get[cache] → _informe_sitio_directo[bd] → _cache_l1.get[cache] → sb.table().select().eq().limit().execute[bd] → _cache_l1.set[cache] → _con_plugins[bd] → groq_client.chat.completions.create[llm] → openai_client.chat.completions.create[llm] → embed_query[cache] → sb.rpc().execute[bd] → … (+30) |
+| `POST /ask` | 43 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | sí | _uso_sb.table().select().eq().maybe_single().execute[bd] → _uso_sb.table().select().eq().gte().execute[bd] → _cache_ask.get[cache] → _informe_sitio_directo[bd] → _cache_l1.get[cache] → sb.table().select().eq().limit().execute[bd] → _cache_l1.set[cache] → _con_plugins[bd] → groq_client.chat.completions.create[llm] → openai_client.chat.completions.create[llm] → embed_query[cache] → sb.rpc().execute[bd] → … (+31) |
 | `POST /orquestador/portico-pareto` | 24 | dependiente_de_norma | no | _capacidad[motor] → _ctx_sismico[motor] → _tabla_secciones[motor] → _lote_vectorizado[motor] → disenar[motor] → _costo_nivel[motor] → demanda_columnas[motor] → _mn_viga[motor] → disenar_columna[motor] → costo_columnas[motor] → _verificar_optimo[motor] → cantidades_portico[motor] → … (+12) |
 | `POST /orquestador/portico-integral` | 23 | dependiente_de_norma | no | _capacidad[motor] → _ctx_sismico[motor] → _tabla_secciones[motor] → _modelo[motor] → construir_plantilla[motor] → alturas_nivel_m[motor] → pesos_nivel_kn[motor] → parametros_espectro[motor] → fuerzas_vectorizadas[motor] → analizar_lote[motor] → disenar[motor] → _costo_nivel[motor] → … (+11) |
 | `GET /aquai/hidrologia/caudal-ideam` | 9 | dependiente_de_datos | sí | _get[red] → resolver_departamento[red] → _CACHE_DEPARTAMENTOS.get[cache] → httpx.Client[red] → client.get[red] → httpx.Client[red] → client.get[red] → httpx.Client[red] → client.get[red] |
@@ -67,14 +68,14 @@ Con caché ya existente en la secuencia: 14 de 100.
 
 ## Pipelines recurrentes candidatos (fuera de línea)
 
-87 pipelines recurrentes llegan al umbral; 161 scripts puntuales (prefijo `_`, fecha en el nombre, fix/parche/reintento) no cuentan como candidatos. Los 25 más largos:
+86 pipelines recurrentes llegan al umbral; 161 scripts puntuales (prefijo `_`, fecha en el nombre, fix/parche/reintento) no cuentan como candidatos. Los 25 más largos:
 
 | Entrada | Pasos | Etiquetas | Secuencia |
 |---|---|---|---|
-| `scripts/evaluacion/comparar_groq_vs_gemini_vertex.py` | 39 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | _informe_sitio_directo[bd] → _cache_l1.get[cache] → sb.table().select().eq().limit().execute[bd] → _cache_l1.set[cache] → _con_plugins[bd] → groq_client.chat.completions.create[llm] → openai_client.chat.completions.create[llm] → … (+32) |
-| `scripts/evaluacion/comparar_groq_vs_ollama_local.py` | 39 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | _informe_sitio_directo[bd] → _cache_l1.get[cache] → sb.table().select().eq().limit().execute[bd] → _cache_l1.set[cache] → _con_plugins[bd] → groq_client.chat.completions.create[llm] → openai_client.chat.completions.create[llm] → … (+32) |
-| `scripts/evaluacion/ragas_52preguntas.py` | 26 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | _informe_sitio_directo[bd] → _cache_l1.get[cache] → sb.table().select().eq().limit().execute[bd] → _cache_l1.set[cache] → _con_plugins[bd] → _descomponer_pregunta[llm] → _recuperar_candidatos_normativa[bd] → … (+19) |
-| `scripts/evaluacion/ragas_baseline_nsr10.py` | 26 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | _informe_sitio_directo[bd] → _cache_l1.get[cache] → sb.table().select().eq().limit().execute[bd] → _cache_l1.set[cache] → _con_plugins[bd] → _descomponer_pregunta[llm] → _recuperar_candidatos_normativa[bd] → … (+19) |
+| `scripts/evaluacion/comparar_groq_vs_gemini_vertex.py` | 40 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | _informe_sitio_directo[bd] → _cache_l1.get[cache] → sb.table().select().eq().limit().execute[bd] → _cache_l1.set[cache] → _con_plugins[bd] → groq_client.chat.completions.create[llm] → openai_client.chat.completions.create[llm] → … (+33) |
+| `scripts/evaluacion/comparar_groq_vs_ollama_local.py` | 40 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | _informe_sitio_directo[bd] → _cache_l1.get[cache] → sb.table().select().eq().limit().execute[bd] → _cache_l1.set[cache] → _con_plugins[bd] → groq_client.chat.completions.create[llm] → openai_client.chat.completions.create[llm] → … (+33) |
+| `scripts/evaluacion/ragas_52preguntas.py` | 27 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | _informe_sitio_directo[bd] → _cache_l1.get[cache] → sb.table().select().eq().limit().execute[bd] → _cache_l1.set[cache] → _con_plugins[bd] → _descomponer_pregunta[llm] → _recuperar_candidatos_normativa[bd] → … (+20) |
+| `scripts/evaluacion/ragas_baseline_nsr10.py` | 27 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | _informe_sitio_directo[bd] → _cache_l1.get[cache] → sb.table().select().eq().limit().execute[bd] → _cache_l1.set[cache] → _con_plugins[bd] → _descomponer_pregunta[llm] → _recuperar_candidatos_normativa[bd] → … (+20) |
 | `scripts/excavacion/comparar_alternativas_sintetico.py` | 21 | con_efectos, dependiente_de_norma | factor_seguridad_requerido[motor] → angulo_maximo_seguro[motor] → perfil_talud[motor] → costo_riesgo_geotecnico[motor] → intensidad_energetica[motor] → indice_eficiencia_geometrica[motor] → perfil_talud[motor] → … (+14) |
 | `scripts/precios/agregados_canteras.py` | 13 | con_efectos, dependiente_de_datos | httpx.Client[red] → client.get[red] → requests.get[red] → CACHE_ANM.write_text[efecto] → httpx.Client[red] → client.get[red] → httpx.Client[red] → … (+6) |
 | `scripts/precios/geografia_precios_invias.py` | 12 | con_efectos, dependiente_de_datos | create_client[bd] → sb.table().select().range().execute[bd] → f.write_text[efecto] → sb.table().select().range().execute[bd] → f.write_text[efecto] → sb.table().select().range().execute[bd] → f.write_text[efecto] → … (+5) |
@@ -103,7 +104,7 @@ Con caché ya existente en la secuencia: 14 de 100.
 | `scripts/satelite` | 19 | 19 | 0 |
 | `scripts/evaluacion` | 10 | 9 | 5 |
 | `scripts/hidro` | 7 | 7 | 0 |
-| `scripts/precios` | 6 | 6 | 0 |
+| `scripts/precios` | 5 | 5 | 0 |
 | `scripts/secop` | 3 | 3 | 0 |
 | `scripts/mantenimiento` | 3 | 3 | 0 |
 | `scripts/excavacion` | 2 | 2 | 0 |
@@ -164,4 +165,4 @@ Un motor futuro que aparece en muchas cadenas desbloquea más flujos al implemen
 
 ## Cadenas cortas (< 4 pasos)
 
-375 cadenas no llegan al umbral. No se descartan: una de 3 pasos con un LLM puede pesar más que una de 6 en CPU. Están completas en el JSON.
+377 cadenas no llegan al umbral. No se descartan: una de 3 pasos con un LLM puede pesar más que una de 6 en CPU. Están completas en el JSON.

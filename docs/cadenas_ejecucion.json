@@ -1,12 +1,12 @@
 {
  "umbral": 4,
  "profundidad": 3,
- "modulos": 697,
- "funciones": 2858,
+ "modulos": 699,
+ "funciones": 2868,
  "resolucion": {
-  "externo": 1288,
-  "import": 151,
-  "local": 395,
+  "externo": 1286,
+  "import": 150,
+  "local": 405,
   "por_nombre": 55
  },
  "cadenas": [
@@ -65,7 +65,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2957",
+     "linea": "packages/construdata/rag_multi_norma.py:3022",
      "norma": true
     },
     {
@@ -96,7 +96,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -106,7 +106,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -116,7 +116,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2850",
+     "linea": "packages/construdata/rag_multi_norma.py:2915",
      "norma": false
     },
     {
@@ -126,7 +126,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2857",
+     "linea": "packages/construdata/rag_multi_norma.py:2922",
      "norma": false
     },
     {
@@ -138,7 +138,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2858",
+     "linea": "packages/construdata/rag_multi_norma.py:2923",
      "norma": true
     },
     {
@@ -148,7 +148,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2867",
+     "linea": "packages/construdata/rag_multi_norma.py:2932",
      "norma": false
     },
     {
@@ -158,7 +158,7 @@
       "llm"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2890",
+     "linea": "packages/construdata/rag_multi_norma.py:2955",
      "norma": false
     },
     {
@@ -168,7 +168,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2934",
+     "linea": "packages/construdata/rag_multi_norma.py:2999",
      "norma": false
     },
     {
@@ -178,7 +178,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1634",
+     "linea": "packages/construdata/rag_multi_norma.py:1661",
      "norma": false
     },
     {
@@ -188,7 +188,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1641",
+     "linea": "packages/construdata/rag_multi_norma.py:1668",
      "norma": false
     },
     {
@@ -198,7 +198,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1688",
+     "linea": "packages/construdata/rag_multi_norma.py:1715",
      "norma": false
     },
     {
@@ -208,7 +208,7 @@
       "llm"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1694",
+     "linea": "packages/construdata/rag_multi_norma.py:1721",
      "norma": false
     },
     {
@@ -258,7 +258,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:3039",
+     "linea": "packages/construdata/rag_multi_norma.py:3104",
      "norma": false
     },
     {
@@ -268,7 +268,7 @@
       "llm"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:3043",
+     "linea": "packages/construdata/rag_multi_norma.py:3108",
      "norma": false
     },
     {
@@ -278,7 +278,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -288,7 +288,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -298,7 +298,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -308,7 +308,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -318,7 +318,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -328,7 +328,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -340,7 +340,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2402",
+     "linea": "packages/construdata/rag_multi_norma.py:2467",
      "norma": true
     },
     {
@@ -351,7 +351,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2408",
+     "linea": "packages/construdata/rag_multi_norma.py:2473",
      "norma": false
     },
     {
@@ -363,7 +363,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2410",
+     "linea": "packages/construdata/rag_multi_norma.py:2475",
      "norma": true
     },
     {
@@ -373,7 +373,7 @@
       "llm"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2431",
+     "linea": "packages/construdata/rag_multi_norma.py:2496",
      "norma": false
     },
     {
@@ -385,7 +385,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2435",
+     "linea": "packages/construdata/rag_multi_norma.py:2500",
      "norma": true
     },
     {
@@ -395,7 +395,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2450",
+     "linea": "packages/construdata/rag_multi_norma.py:2515",
      "norma": false
     },
     {
@@ -407,7 +407,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2461",
+     "linea": "packages/construdata/rag_multi_norma.py:2526",
      "norma": true
     },
     {
@@ -419,7 +419,7 @@
       "red"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2463",
+     "linea": "packages/construdata/rag_multi_norma.py:2528",
      "norma": false
     },
     {
@@ -429,7 +429,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2471",
+     "linea": "packages/construdata/rag_multi_norma.py:2536",
      "norma": false
     },
     {
@@ -439,7 +439,7 @@
       "llm"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2482",
+     "linea": "packages/construdata/rag_multi_norma.py:2547",
      "norma": false
     },
     {
@@ -451,7 +451,7 @@
       "efecto"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2545",
+     "linea": "packages/construdata/rag_multi_norma.py:2610",
      "norma": false
     },
     {
@@ -463,7 +463,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2549",
+     "linea": "packages/construdata/rag_multi_norma.py:2614",
      "norma": true
     },
     {
@@ -494,7 +494,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1418",
+     "linea": "packages/construdata/rag_multi_norma.py:1445",
      "norma": false
     },
     {
@@ -504,7 +504,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1422",
+     "linea": "packages/construdata/rag_multi_norma.py:1449",
      "norma": false
     },
     {
@@ -515,7 +515,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2267",
+     "linea": "packages/construdata/rag_multi_norma.py:2332",
      "norma": false
     },
     {
@@ -525,7 +525,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2272",
+     "linea": "packages/construdata/rag_multi_norma.py:2337",
      "norma": false
     },
     {
@@ -536,7 +536,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2275",
+     "linea": "packages/construdata/rag_multi_norma.py:2340",
      "norma": false
     },
     {
@@ -547,7 +547,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2282",
+     "linea": "packages/construdata/rag_multi_norma.py:2347",
      "norma": false
     },
     {
@@ -557,7 +557,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2284",
+     "linea": "packages/construdata/rag_multi_norma.py:2349",
      "norma": false
     },
     {
@@ -567,7 +567,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2287",
+     "linea": "packages/construdata/rag_multi_norma.py:2352",
      "norma": false
     },
     {
@@ -577,7 +577,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2292",
+     "linea": "packages/construdata/rag_multi_norma.py:2357",
      "norma": false
     },
     {
@@ -587,7 +587,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2297",
+     "linea": "packages/construdata/rag_multi_norma.py:2362",
      "norma": false
     },
     {
@@ -598,7 +598,7 @@
       "cache"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2302",
+     "linea": "packages/construdata/rag_multi_norma.py:2367",
      "norma": false
     },
     {
@@ -608,7 +608,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:3163",
+     "linea": "packages/construdata/rag_multi_norma.py:3228",
      "norma": false
     },
     {
@@ -618,7 +618,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:3172",
+     "linea": "packages/construdata/rag_multi_norma.py:3237",
      "norma": false
     },
     {
@@ -628,7 +628,7 @@
       "llm"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:3176",
+     "linea": "packages/construdata/rag_multi_norma.py:3241",
      "norma": false
     },
     {
@@ -640,7 +640,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2973",
+     "linea": "packages/construdata/rag_multi_norma.py:3038",
      "norma": true
     },
     {
@@ -671,7 +671,7 @@
    "clase": "endpoint",
    "familia": "rag",
    "funcion": "apps/api/main.py::ask_norma",
-   "pasos": 42,
+   "pasos": 43,
    "puntual": false,
    "candidata": true,
    "etiquetas": [
@@ -721,7 +721,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2402",
+     "linea": "packages/construdata/rag_multi_norma.py:2467",
      "norma": true
     },
     {
@@ -731,7 +731,7 @@
       "cache"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:393",
+     "linea": "packages/construdata/rag_multi_norma.py:403",
      "norma": false
     },
     {
@@ -741,7 +741,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:399",
+     "linea": "packages/construdata/rag_multi_norma.py:409",
      "norma": false
     },
     {
@@ -751,7 +751,7 @@
       "cache"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:422",
+     "linea": "packages/construdata/rag_multi_norma.py:432",
      "norma": false
     },
     {
@@ -763,7 +763,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2410",
+     "linea": "packages/construdata/rag_multi_norma.py:2475",
      "norma": true
     },
     {
@@ -773,7 +773,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:166",
+     "linea": "packages/construdata/rag_multi_norma.py:168",
      "norma": false
     },
     {
@@ -783,7 +783,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:185",
+     "linea": "packages/construdata/rag_multi_norma.py:187",
      "norma": false
     },
     {
@@ -793,7 +793,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -803,7 +803,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -813,7 +813,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -823,7 +823,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -833,7 +833,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -843,7 +843,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -853,7 +853,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2450",
+     "linea": "packages/construdata/rag_multi_norma.py:2515",
      "norma": false
     },
     {
@@ -895,7 +895,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2267",
+     "linea": "packages/construdata/rag_multi_norma.py:2332",
      "norma": false
     },
     {
@@ -905,7 +905,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2272",
+     "linea": "packages/construdata/rag_multi_norma.py:2337",
      "norma": false
     },
     {
@@ -966,7 +966,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2284",
+     "linea": "packages/construdata/rag_multi_norma.py:2349",
      "norma": false
     },
     {
@@ -976,7 +976,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2287",
+     "linea": "packages/construdata/rag_multi_norma.py:2352",
      "norma": false
     },
     {
@@ -986,7 +986,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2292",
+     "linea": "packages/construdata/rag_multi_norma.py:2357",
      "norma": false
     },
     {
@@ -1036,7 +1036,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2471",
+     "linea": "packages/construdata/rag_multi_norma.py:2536",
      "norma": false
     },
     {
@@ -1046,7 +1046,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:166",
+     "linea": "packages/construdata/rag_multi_norma.py:168",
      "norma": false
     },
     {
@@ -1056,7 +1056,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:185",
+     "linea": "packages/construdata/rag_multi_norma.py:187",
      "norma": false
     },
     {
@@ -1066,7 +1066,7 @@
       "cache"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:439",
+     "linea": "packages/construdata/rag_multi_norma.py:450",
      "norma": false
     },
     {
@@ -1077,7 +1077,18 @@
       "efecto"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:441",
+     "linea": "packages/construdata/rag_multi_norma.py:452",
+     "norma": false
+    },
+    {
+     "paso": "packages/construdata/rag_multi_norma.py::_purgar_cache_vencida",
+     "tipo": "efecto",
+     "tipos": [
+      "bd",
+      "efecto"
+     ],
+     "via": "local",
+     "linea": "packages/construdata/rag_multi_norma.py:461",
      "norma": false
     },
     {
@@ -1089,7 +1100,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2549",
+     "linea": "packages/construdata/rag_multi_norma.py:2614",
      "norma": true
     },
     {
@@ -4439,7 +4450,7 @@
    "clase": "pipeline",
    "familia": "scripts/evaluacion",
    "funcion": "scripts/evaluacion/lote_nuevas_preguntas_2026-09-29.py::main",
-   "pasos": 93,
+   "pasos": 94,
    "puntual": true,
    "candidata": false,
    "etiquetas": [
@@ -4459,7 +4470,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2402",
+     "linea": "packages/construdata/rag_multi_norma.py:2467",
      "norma": true
     },
     {
@@ -4469,7 +4480,7 @@
       "cache"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:393",
+     "linea": "packages/construdata/rag_multi_norma.py:403",
      "norma": false
     },
     {
@@ -4479,7 +4490,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:399",
+     "linea": "packages/construdata/rag_multi_norma.py:409",
      "norma": false
     },
     {
@@ -4489,7 +4500,7 @@
       "cache"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:422",
+     "linea": "packages/construdata/rag_multi_norma.py:432",
      "norma": false
     },
     {
@@ -4501,7 +4512,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2410",
+     "linea": "packages/construdata/rag_multi_norma.py:2475",
      "norma": true
     },
     {
@@ -4511,7 +4522,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:166",
+     "linea": "packages/construdata/rag_multi_norma.py:168",
      "norma": false
     },
     {
@@ -4521,7 +4532,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:185",
+     "linea": "packages/construdata/rag_multi_norma.py:187",
      "norma": false
     },
     {
@@ -4531,7 +4542,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -4541,7 +4552,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -4551,7 +4562,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -4561,7 +4572,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -4571,7 +4582,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -4581,7 +4592,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -4591,7 +4602,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2450",
+     "linea": "packages/construdata/rag_multi_norma.py:2515",
      "norma": false
     },
     {
@@ -4633,7 +4644,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2267",
+     "linea": "packages/construdata/rag_multi_norma.py:2332",
      "norma": false
     },
     {
@@ -4643,7 +4654,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2272",
+     "linea": "packages/construdata/rag_multi_norma.py:2337",
      "norma": false
     },
     {
@@ -4704,7 +4715,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2284",
+     "linea": "packages/construdata/rag_multi_norma.py:2349",
      "norma": false
     },
     {
@@ -4714,7 +4725,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2287",
+     "linea": "packages/construdata/rag_multi_norma.py:2352",
      "norma": false
     },
     {
@@ -4724,7 +4735,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2292",
+     "linea": "packages/construdata/rag_multi_norma.py:2357",
      "norma": false
     },
     {
@@ -4774,7 +4785,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2471",
+     "linea": "packages/construdata/rag_multi_norma.py:2536",
      "norma": false
     },
     {
@@ -4784,7 +4795,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:166",
+     "linea": "packages/construdata/rag_multi_norma.py:168",
      "norma": false
     },
     {
@@ -4794,7 +4805,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:185",
+     "linea": "packages/construdata/rag_multi_norma.py:187",
      "norma": false
     },
     {
@@ -4804,7 +4815,7 @@
       "cache"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:439",
+     "linea": "packages/construdata/rag_multi_norma.py:450",
      "norma": false
     },
     {
@@ -4815,7 +4826,18 @@
       "efecto"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:441",
+     "linea": "packages/construdata/rag_multi_norma.py:452",
+     "norma": false
+    },
+    {
+     "paso": "packages/construdata/rag_multi_norma.py::_purgar_cache_vencida",
+     "tipo": "efecto",
+     "tipos": [
+      "bd",
+      "efecto"
+     ],
+     "via": "local",
+     "linea": "packages/construdata/rag_multi_norma.py:461",
      "norma": false
     },
     {
@@ -4827,7 +4849,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2549",
+     "linea": "packages/construdata/rag_multi_norma.py:2614",
      "norma": true
     },
     {
@@ -4839,7 +4861,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2957",
+     "linea": "packages/construdata/rag_multi_norma.py:3022",
      "norma": true
     },
     {
@@ -4870,7 +4892,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -4880,7 +4902,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -4890,7 +4912,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2850",
+     "linea": "packages/construdata/rag_multi_norma.py:2915",
      "norma": false
     },
     {
@@ -4900,7 +4922,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2857",
+     "linea": "packages/construdata/rag_multi_norma.py:2922",
      "norma": false
     },
     {
@@ -4912,7 +4934,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2858",
+     "linea": "packages/construdata/rag_multi_norma.py:2923",
      "norma": true
     },
     {
@@ -4922,7 +4944,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2867",
+     "linea": "packages/construdata/rag_multi_norma.py:2932",
      "norma": false
     },
     {
@@ -4932,7 +4954,7 @@
       "llm"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2890",
+     "linea": "packages/construdata/rag_multi_norma.py:2955",
      "norma": false
     },
     {
@@ -4942,7 +4964,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2934",
+     "linea": "packages/construdata/rag_multi_norma.py:2999",
      "norma": false
     },
     {
@@ -4952,7 +4974,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1634",
+     "linea": "packages/construdata/rag_multi_norma.py:1661",
      "norma": false
     },
     {
@@ -4962,7 +4984,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1641",
+     "linea": "packages/construdata/rag_multi_norma.py:1668",
      "norma": false
     },
     {
@@ -4972,7 +4994,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1688",
+     "linea": "packages/construdata/rag_multi_norma.py:1715",
      "norma": false
     },
     {
@@ -4982,7 +5004,7 @@
       "llm"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1694",
+     "linea": "packages/construdata/rag_multi_norma.py:1721",
      "norma": false
     },
     {
@@ -5032,7 +5054,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:3039",
+     "linea": "packages/construdata/rag_multi_norma.py:3104",
      "norma": false
     },
     {
@@ -5042,7 +5064,7 @@
       "llm"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:3043",
+     "linea": "packages/construdata/rag_multi_norma.py:3108",
      "norma": false
     },
     {
@@ -5052,7 +5074,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -5062,7 +5084,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -5072,7 +5094,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -5082,7 +5104,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -5092,7 +5114,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -5102,7 +5124,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -5114,7 +5136,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2402",
+     "linea": "packages/construdata/rag_multi_norma.py:2467",
      "norma": true
     },
     {
@@ -5125,7 +5147,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2408",
+     "linea": "packages/construdata/rag_multi_norma.py:2473",
      "norma": false
     },
     {
@@ -5137,7 +5159,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2410",
+     "linea": "packages/construdata/rag_multi_norma.py:2475",
      "norma": true
     },
     {
@@ -5147,7 +5169,7 @@
       "llm"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2431",
+     "linea": "packages/construdata/rag_multi_norma.py:2496",
      "norma": false
     },
     {
@@ -5159,7 +5181,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2435",
+     "linea": "packages/construdata/rag_multi_norma.py:2500",
      "norma": true
     },
     {
@@ -5169,7 +5191,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2450",
+     "linea": "packages/construdata/rag_multi_norma.py:2515",
      "norma": false
     },
     {
@@ -5181,7 +5203,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2461",
+     "linea": "packages/construdata/rag_multi_norma.py:2526",
      "norma": true
     },
     {
@@ -5193,7 +5215,7 @@
       "red"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2463",
+     "linea": "packages/construdata/rag_multi_norma.py:2528",
      "norma": false
     },
     {
@@ -5203,7 +5225,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2471",
+     "linea": "packages/construdata/rag_multi_norma.py:2536",
      "norma": false
     },
     {
@@ -5213,7 +5235,7 @@
       "llm"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2482",
+     "linea": "packages/construdata/rag_multi_norma.py:2547",
      "norma": false
     },
     {
@@ -5225,7 +5247,7 @@
       "efecto"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2545",
+     "linea": "packages/construdata/rag_multi_norma.py:2610",
      "norma": false
     },
     {
@@ -5237,7 +5259,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2549",
+     "linea": "packages/construdata/rag_multi_norma.py:2614",
      "norma": true
     },
     {
@@ -5268,7 +5290,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1418",
+     "linea": "packages/construdata/rag_multi_norma.py:1445",
      "norma": false
     },
     {
@@ -5278,7 +5300,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1422",
+     "linea": "packages/construdata/rag_multi_norma.py:1449",
      "norma": false
     },
     {
@@ -5289,7 +5311,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2267",
+     "linea": "packages/construdata/rag_multi_norma.py:2332",
      "norma": false
     },
     {
@@ -5299,7 +5321,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2272",
+     "linea": "packages/construdata/rag_multi_norma.py:2337",
      "norma": false
     },
     {
@@ -5310,7 +5332,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2275",
+     "linea": "packages/construdata/rag_multi_norma.py:2340",
      "norma": false
     },
     {
@@ -5321,7 +5343,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2282",
+     "linea": "packages/construdata/rag_multi_norma.py:2347",
      "norma": false
     },
     {
@@ -5331,7 +5353,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2284",
+     "linea": "packages/construdata/rag_multi_norma.py:2349",
      "norma": false
     },
     {
@@ -5341,7 +5363,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2287",
+     "linea": "packages/construdata/rag_multi_norma.py:2352",
      "norma": false
     },
     {
@@ -5351,7 +5373,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2292",
+     "linea": "packages/construdata/rag_multi_norma.py:2357",
      "norma": false
     },
     {
@@ -5361,7 +5383,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2297",
+     "linea": "packages/construdata/rag_multi_norma.py:2362",
      "norma": false
     },
     {
@@ -5372,7 +5394,7 @@
       "cache"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2302",
+     "linea": "packages/construdata/rag_multi_norma.py:2367",
      "norma": false
     },
     {
@@ -5382,7 +5404,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:3163",
+     "linea": "packages/construdata/rag_multi_norma.py:3228",
      "norma": false
     },
     {
@@ -5392,7 +5414,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:3172",
+     "linea": "packages/construdata/rag_multi_norma.py:3237",
      "norma": false
     },
     {
@@ -5402,7 +5424,7 @@
       "llm"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:3176",
+     "linea": "packages/construdata/rag_multi_norma.py:3241",
      "norma": false
     },
     {
@@ -5414,7 +5436,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2973",
+     "linea": "packages/construdata/rag_multi_norma.py:3038",
      "norma": true
     }
    ]
@@ -5424,7 +5446,7 @@
    "clase": "pipeline",
    "familia": "scripts/evaluacion",
    "funcion": "scripts/evaluacion/reintentar_lote_2026-09-29.py::main",
-   "pasos": 93,
+   "pasos": 94,
    "puntual": true,
    "candidata": false,
    "etiquetas": [
@@ -5444,7 +5466,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2402",
+     "linea": "packages/construdata/rag_multi_norma.py:2467",
      "norma": true
     },
     {
@@ -5454,7 +5476,7 @@
       "cache"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:393",
+     "linea": "packages/construdata/rag_multi_norma.py:403",
      "norma": false
     },
     {
@@ -5464,7 +5486,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:399",
+     "linea": "packages/construdata/rag_multi_norma.py:409",
      "norma": false
     },
     {
@@ -5474,7 +5496,7 @@
       "cache"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:422",
+     "linea": "packages/construdata/rag_multi_norma.py:432",
      "norma": false
     },
     {
@@ -5486,7 +5508,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2410",
+     "linea": "packages/construdata/rag_multi_norma.py:2475",
      "norma": true
     },
     {
@@ -5496,7 +5518,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:166",
+     "linea": "packages/construdata/rag_multi_norma.py:168",
      "norma": false
     },
     {
@@ -5506,7 +5528,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:185",
+     "linea": "packages/construdata/rag_multi_norma.py:187",
      "norma": false
     },
     {
@@ -5516,7 +5538,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -5526,7 +5548,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -5536,7 +5558,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -5546,7 +5568,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -5556,7 +5578,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -5566,7 +5588,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -5576,7 +5598,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2450",
+     "linea": "packages/construdata/rag_multi_norma.py:2515",
      "norma": false
     },
     {
@@ -5618,7 +5640,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2267",
+     "linea": "packages/construdata/rag_multi_norma.py:2332",
      "norma": false
     },
     {
@@ -5628,7 +5650,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2272",
+     "linea": "packages/construdata/rag_multi_norma.py:2337",
      "norma": false
     },
     {
@@ -5689,7 +5711,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2284",
+     "linea": "packages/construdata/rag_multi_norma.py:2349",
      "norma": false
     },
     {
@@ -5699,7 +5721,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2287",
+     "linea": "packages/construdata/rag_multi_norma.py:2352",
      "norma": false
     },
     {
@@ -5709,7 +5731,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2292",
+     "linea": "packages/construdata/rag_multi_norma.py:2357",
      "norma": false
     },
     {
@@ -5759,7 +5781,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2471",
+     "linea": "packages/construdata/rag_multi_norma.py:2536",
      "norma": false
     },
     {
@@ -5769,7 +5791,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:166",
+     "linea": "packages/construdata/rag_multi_norma.py:168",
      "norma": false
     },
     {
@@ -5779,7 +5801,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:185",
+     "linea": "packages/construdata/rag_multi_norma.py:187",
      "norma": false
     },
     {
@@ -5789,7 +5811,7 @@
       "cache"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:439",
+     "linea": "packages/construdata/rag_multi_norma.py:450",
      "norma": false
     },
     {
@@ -5800,7 +5822,18 @@
       "efecto"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:441",
+     "linea": "packages/construdata/rag_multi_norma.py:452",
+     "norma": false
+    },
+    {
+     "paso": "packages/construdata/rag_multi_norma.py::_purgar_cache_vencida",
+     "tipo": "efecto",
+     "tipos": [
+      "bd",
+      "efecto"
+     ],
+     "via": "local",
+     "linea": "packages/construdata/rag_multi_norma.py:461",
      "norma": false
     },
     {
@@ -5812,7 +5845,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2549",
+     "linea": "packages/construdata/rag_multi_norma.py:2614",
      "norma": true
     },
     {
@@ -5824,7 +5857,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2957",
+     "linea": "packages/construdata/rag_multi_norma.py:3022",
      "norma": true
     },
     {
@@ -5855,7 +5888,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -5865,7 +5898,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -5875,7 +5908,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2850",
+     "linea": "packages/construdata/rag_multi_norma.py:2915",
      "norma": false
     },
     {
@@ -5885,7 +5918,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2857",
+     "linea": "packages/construdata/rag_multi_norma.py:2922",
      "norma": false
     },
     {
@@ -5897,7 +5930,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2858",
+     "linea": "packages/construdata/rag_multi_norma.py:2923",
      "norma": true
     },
     {
@@ -5907,7 +5940,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2867",
+     "linea": "packages/construdata/rag_multi_norma.py:2932",
      "norma": false
     },
     {
@@ -5917,7 +5950,7 @@
       "llm"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2890",
+     "linea": "packages/construdata/rag_multi_norma.py:2955",
      "norma": false
     },
     {
@@ -5927,7 +5960,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2934",
+     "linea": "packages/construdata/rag_multi_norma.py:2999",
      "norma": false
     },
     {
@@ -5937,7 +5970,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1634",
+     "linea": "packages/construdata/rag_multi_norma.py:1661",
      "norma": false
     },
     {
@@ -5947,7 +5980,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1641",
+     "linea": "packages/construdata/rag_multi_norma.py:1668",
      "norma": false
     },
     {
@@ -5957,7 +5990,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1688",
+     "linea": "packages/construdata/rag_multi_norma.py:1715",
      "norma": false
     },
     {
@@ -5967,7 +6000,7 @@
       "llm"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1694",
+     "linea": "packages/construdata/rag_multi_norma.py:1721",
      "norma": false
     },
     {
@@ -6017,7 +6050,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:3039",
+     "linea": "packages/construdata/rag_multi_norma.py:3104",
      "norma": false
     },
     {
@@ -6027,7 +6060,7 @@
       "llm"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:3043",
+     "linea": "packages/construdata/rag_multi_norma.py:3108",
      "norma": false
     },
     {
@@ -6037,7 +6070,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -6047,7 +6080,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -6057,7 +6090,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -6067,7 +6100,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -6077,7 +6110,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -6087,7 +6120,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -6099,7 +6132,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2402",
+     "linea": "packages/construdata/rag_multi_norma.py:2467",
      "norma": true
     },
     {
@@ -6110,7 +6143,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2408",
+     "linea": "packages/construdata/rag_multi_norma.py:2473",
      "norma": false
     },
     {
@@ -6122,7 +6155,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2410",
+     "linea": "packages/construdata/rag_multi_norma.py:2475",
      "norma": true
     },
     {
@@ -6132,7 +6165,7 @@
       "llm"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2431",
+     "linea": "packages/construdata/rag_multi_norma.py:2496",
      "norma": false
     },
     {
@@ -6144,7 +6177,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2435",
+     "linea": "packages/construdata/rag_multi_norma.py:2500",
      "norma": true
     },
     {
@@ -6154,7 +6187,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2450",
+     "linea": "packages/construdata/rag_multi_norma.py:2515",
      "norma": false
     },
     {
@@ -6166,7 +6199,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2461",
+     "linea": "packages/construdata/rag_multi_norma.py:2526",
      "norma": true
     },
     {
@@ -6178,7 +6211,7 @@
       "red"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2463",
+     "linea": "packages/construdata/rag_multi_norma.py:2528",
      "norma": false
     },
     {
@@ -6188,7 +6221,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2471",
+     "linea": "packages/construdata/rag_multi_norma.py:2536",
      "norma": false
     },
     {
@@ -6198,7 +6231,7 @@
       "llm"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2482",
+     "linea": "packages/construdata/rag_multi_norma.py:2547",
      "norma": false
     },
     {
@@ -6210,7 +6243,7 @@
       "efecto"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2545",
+     "linea": "packages/construdata/rag_multi_norma.py:2610",
      "norma": false
     },
     {
@@ -6222,7 +6255,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2549",
+     "linea": "packages/construdata/rag_multi_norma.py:2614",
      "norma": true
     },
     {
@@ -6253,7 +6286,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1418",
+     "linea": "packages/construdata/rag_multi_norma.py:1445",
      "norma": false
     },
     {
@@ -6263,7 +6296,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1422",
+     "linea": "packages/construdata/rag_multi_norma.py:1449",
      "norma": false
     },
     {
@@ -6274,7 +6307,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2267",
+     "linea": "packages/construdata/rag_multi_norma.py:2332",
      "norma": false
     },
     {
@@ -6284,7 +6317,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2272",
+     "linea": "packages/construdata/rag_multi_norma.py:2337",
      "norma": false
     },
     {
@@ -6295,7 +6328,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2275",
+     "linea": "packages/construdata/rag_multi_norma.py:2340",
      "norma": false
     },
     {
@@ -6306,7 +6339,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2282",
+     "linea": "packages/construdata/rag_multi_norma.py:2347",
      "norma": false
     },
     {
@@ -6316,7 +6349,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2284",
+     "linea": "packages/construdata/rag_multi_norma.py:2349",
      "norma": false
     },
     {
@@ -6326,7 +6359,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2287",
+     "linea": "packages/construdata/rag_multi_norma.py:2352",
      "norma": false
     },
     {
@@ -6336,7 +6369,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2292",
+     "linea": "packages/construdata/rag_multi_norma.py:2357",
      "norma": false
     },
     {
@@ -6346,7 +6379,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2297",
+     "linea": "packages/construdata/rag_multi_norma.py:2362",
      "norma": false
     },
     {
@@ -6357,7 +6390,7 @@
       "cache"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2302",
+     "linea": "packages/construdata/rag_multi_norma.py:2367",
      "norma": false
     },
     {
@@ -6367,7 +6400,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:3163",
+     "linea": "packages/construdata/rag_multi_norma.py:3228",
      "norma": false
     },
     {
@@ -6377,7 +6410,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:3172",
+     "linea": "packages/construdata/rag_multi_norma.py:3237",
      "norma": false
     },
     {
@@ -6387,7 +6420,7 @@
       "llm"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:3176",
+     "linea": "packages/construdata/rag_multi_norma.py:3241",
      "norma": false
     },
     {
@@ -6399,7 +6432,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2973",
+     "linea": "packages/construdata/rag_multi_norma.py:3038",
      "norma": true
     }
    ]
@@ -6409,7 +6442,7 @@
    "clase": "pipeline",
    "familia": "scripts/evaluacion",
    "funcion": "scripts/evaluacion/comparar_groq_vs_gemini_vertex.py::main",
-   "pasos": 39,
+   "pasos": 40,
    "puntual": false,
    "candidata": true,
    "etiquetas": [
@@ -6429,7 +6462,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2402",
+     "linea": "packages/construdata/rag_multi_norma.py:2467",
      "norma": true
     },
     {
@@ -6439,7 +6472,7 @@
       "cache"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:393",
+     "linea": "packages/construdata/rag_multi_norma.py:403",
      "norma": false
     },
     {
@@ -6449,7 +6482,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:399",
+     "linea": "packages/construdata/rag_multi_norma.py:409",
      "norma": false
     },
     {
@@ -6459,7 +6492,7 @@
       "cache"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:422",
+     "linea": "packages/construdata/rag_multi_norma.py:432",
      "norma": false
     },
     {
@@ -6471,7 +6504,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2410",
+     "linea": "packages/construdata/rag_multi_norma.py:2475",
      "norma": true
     },
     {
@@ -6481,7 +6514,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:166",
+     "linea": "packages/construdata/rag_multi_norma.py:168",
      "norma": false
     },
     {
@@ -6491,7 +6524,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:185",
+     "linea": "packages/construdata/rag_multi_norma.py:187",
      "norma": false
     },
     {
@@ -6501,7 +6534,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -6511,7 +6544,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -6521,7 +6554,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -6531,7 +6564,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -6541,7 +6574,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -6551,7 +6584,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -6561,7 +6594,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2450",
+     "linea": "packages/construdata/rag_multi_norma.py:2515",
      "norma": false
     },
     {
@@ -6603,7 +6636,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2267",
+     "linea": "packages/construdata/rag_multi_norma.py:2332",
      "norma": false
     },
     {
@@ -6613,7 +6646,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2272",
+     "linea": "packages/construdata/rag_multi_norma.py:2337",
      "norma": false
     },
     {
@@ -6674,7 +6707,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2284",
+     "linea": "packages/construdata/rag_multi_norma.py:2349",
      "norma": false
     },
     {
@@ -6684,7 +6717,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2287",
+     "linea": "packages/construdata/rag_multi_norma.py:2352",
      "norma": false
     },
     {
@@ -6694,7 +6727,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2292",
+     "linea": "packages/construdata/rag_multi_norma.py:2357",
      "norma": false
     },
     {
@@ -6744,7 +6777,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2471",
+     "linea": "packages/construdata/rag_multi_norma.py:2536",
      "norma": false
     },
     {
@@ -6754,7 +6787,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:166",
+     "linea": "packages/construdata/rag_multi_norma.py:168",
      "norma": false
     },
     {
@@ -6764,7 +6797,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:185",
+     "linea": "packages/construdata/rag_multi_norma.py:187",
      "norma": false
     },
     {
@@ -6774,7 +6807,7 @@
       "cache"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:439",
+     "linea": "packages/construdata/rag_multi_norma.py:450",
      "norma": false
     },
     {
@@ -6785,7 +6818,18 @@
       "efecto"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:441",
+     "linea": "packages/construdata/rag_multi_norma.py:452",
+     "norma": false
+    },
+    {
+     "paso": "packages/construdata/rag_multi_norma.py::_purgar_cache_vencida",
+     "tipo": "efecto",
+     "tipos": [
+      "bd",
+      "efecto"
+     ],
+     "via": "local",
+     "linea": "packages/construdata/rag_multi_norma.py:461",
      "norma": false
     },
     {
@@ -6797,7 +6841,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2549",
+     "linea": "packages/construdata/rag_multi_norma.py:2614",
      "norma": true
     },
     {
@@ -6807,7 +6851,7 @@
       "llm"
      ],
      "via": "local",
-     "linea": "scripts/evaluacion/comparar_groq_vs_gemini_vertex.py:173",
+     "linea": "scripts/evaluacion/comparar_groq_vs_gemini_vertex.py:175",
      "norma": false
     },
     {
@@ -6817,7 +6861,7 @@
       "efecto"
      ],
      "via": "externo",
-     "linea": "scripts/evaluacion/comparar_groq_vs_gemini_vertex.py:214",
+     "linea": "scripts/evaluacion/comparar_groq_vs_gemini_vertex.py:216",
      "norma": false
     }
    ]
@@ -6827,7 +6871,7 @@
    "clase": "pipeline",
    "familia": "scripts/evaluacion",
    "funcion": "scripts/evaluacion/comparar_groq_vs_ollama_local.py::main",
-   "pasos": 39,
+   "pasos": 40,
    "puntual": false,
    "candidata": true,
    "etiquetas": [
@@ -6847,7 +6891,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2402",
+     "linea": "packages/construdata/rag_multi_norma.py:2467",
      "norma": true
     },
     {
@@ -6857,7 +6901,7 @@
       "cache"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:393",
+     "linea": "packages/construdata/rag_multi_norma.py:403",
      "norma": false
     },
     {
@@ -6867,7 +6911,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:399",
+     "linea": "packages/construdata/rag_multi_norma.py:409",
      "norma": false
     },
     {
@@ -6877,7 +6921,7 @@
       "cache"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:422",
+     "linea": "packages/construdata/rag_multi_norma.py:432",
      "norma": false
     },
     {
@@ -6889,7 +6933,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2410",
+     "linea": "packages/construdata/rag_multi_norma.py:2475",
      "norma": true
     },
     {
@@ -6899,7 +6943,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:166",
+     "linea": "packages/construdata/rag_multi_norma.py:168",
      "norma": false
     },
     {
@@ -6909,7 +6953,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:185",
+     "linea": "packages/construdata/rag_multi_norma.py:187",
      "norma": false
     },
     {
@@ -6919,7 +6963,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -6929,7 +6973,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -6939,7 +6983,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -6949,7 +6993,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -6959,7 +7003,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -6969,7 +7013,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -6979,7 +7023,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2450",
+     "linea": "packages/construdata/rag_multi_norma.py:2515",
      "norma": false
     },
     {
@@ -7021,7 +7065,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2267",
+     "linea": "packages/construdata/rag_multi_norma.py:2332",
      "norma": false
     },
     {
@@ -7031,7 +7075,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2272",
+     "linea": "packages/construdata/rag_multi_norma.py:2337",
      "norma": false
     },
     {
@@ -7092,7 +7136,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2284",
+     "linea": "packages/construdata/rag_multi_norma.py:2349",
      "norma": false
     },
     {
@@ -7102,7 +7146,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2287",
+     "linea": "packages/construdata/rag_multi_norma.py:2352",
      "norma": false
     },
     {
@@ -7112,7 +7156,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2292",
+     "linea": "packages/construdata/rag_multi_norma.py:2357",
      "norma": false
     },
     {
@@ -7162,7 +7206,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2471",
+     "linea": "packages/construdata/rag_multi_norma.py:2536",
      "norma": false
     },
     {
@@ -7172,7 +7216,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:166",
+     "linea": "packages/construdata/rag_multi_norma.py:168",
      "norma": false
     },
     {
@@ -7182,7 +7226,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:185",
+     "linea": "packages/construdata/rag_multi_norma.py:187",
      "norma": false
     },
     {
@@ -7192,7 +7236,7 @@
       "cache"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:439",
+     "linea": "packages/construdata/rag_multi_norma.py:450",
      "norma": false
     },
     {
@@ -7203,7 +7247,18 @@
       "efecto"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:441",
+     "linea": "packages/construdata/rag_multi_norma.py:452",
+     "norma": false
+    },
+    {
+     "paso": "packages/construdata/rag_multi_norma.py::_purgar_cache_vencida",
+     "tipo": "efecto",
+     "tipos": [
+      "bd",
+      "efecto"
+     ],
+     "via": "local",
+     "linea": "packages/construdata/rag_multi_norma.py:461",
      "norma": false
     },
     {
@@ -7215,7 +7270,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2549",
+     "linea": "packages/construdata/rag_multi_norma.py:2614",
      "norma": true
     },
     {
@@ -7225,7 +7280,7 @@
       "llm"
      ],
      "via": "local",
-     "linea": "scripts/evaluacion/comparar_groq_vs_ollama_local.py:142",
+     "linea": "scripts/evaluacion/comparar_groq_vs_ollama_local.py:144",
      "norma": false
     },
     {
@@ -7235,7 +7290,7 @@
       "efecto"
      ],
      "via": "externo",
-     "linea": "scripts/evaluacion/comparar_groq_vs_ollama_local.py:183",
+     "linea": "scripts/evaluacion/comparar_groq_vs_ollama_local.py:185",
      "norma": false
     }
    ]
@@ -7245,7 +7300,7 @@
    "clase": "pipeline",
    "familia": "scripts/evaluacion",
    "funcion": "scripts/evaluacion/_verificar_113_nuevas_ask.py::main",
-   "pasos": 38,
+   "pasos": 39,
    "puntual": true,
    "candidata": false,
    "etiquetas": [
@@ -7265,7 +7320,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2402",
+     "linea": "packages/construdata/rag_multi_norma.py:2467",
      "norma": true
     },
     {
@@ -7275,7 +7330,7 @@
       "cache"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:393",
+     "linea": "packages/construdata/rag_multi_norma.py:403",
      "norma": false
     },
     {
@@ -7285,7 +7340,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:399",
+     "linea": "packages/construdata/rag_multi_norma.py:409",
      "norma": false
     },
     {
@@ -7295,7 +7350,7 @@
       "cache"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:422",
+     "linea": "packages/construdata/rag_multi_norma.py:432",
      "norma": false
     },
     {
@@ -7307,7 +7362,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2410",
+     "linea": "packages/construdata/rag_multi_norma.py:2475",
      "norma": true
     },
     {
@@ -7317,7 +7372,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:166",
+     "linea": "packages/construdata/rag_multi_norma.py:168",
      "norma": false
     },
     {
@@ -7327,7 +7382,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:185",
+     "linea": "packages/construdata/rag_multi_norma.py:187",
      "norma": false
     },
     {
@@ -7337,7 +7392,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -7347,7 +7402,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -7357,7 +7412,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -7367,7 +7422,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -7377,7 +7432,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -7387,7 +7442,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -7397,7 +7452,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2450",
+     "linea": "packages/construdata/rag_multi_norma.py:2515",
      "norma": false
     },
     {
@@ -7439,7 +7494,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2267",
+     "linea": "packages/construdata/rag_multi_norma.py:2332",
      "norma": false
     },
     {
@@ -7449,7 +7504,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2272",
+     "linea": "packages/construdata/rag_multi_norma.py:2337",
      "norma": false
     },
     {
@@ -7510,7 +7565,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2284",
+     "linea": "packages/construdata/rag_multi_norma.py:2349",
      "norma": false
     },
     {
@@ -7520,7 +7575,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2287",
+     "linea": "packages/construdata/rag_multi_norma.py:2352",
      "norma": false
     },
     {
@@ -7530,7 +7585,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2292",
+     "linea": "packages/construdata/rag_multi_norma.py:2357",
      "norma": false
     },
     {
@@ -7580,7 +7635,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2471",
+     "linea": "packages/construdata/rag_multi_norma.py:2536",
      "norma": false
     },
     {
@@ -7590,7 +7645,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:166",
+     "linea": "packages/construdata/rag_multi_norma.py:168",
      "norma": false
     },
     {
@@ -7600,7 +7655,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:185",
+     "linea": "packages/construdata/rag_multi_norma.py:187",
      "norma": false
     },
     {
@@ -7610,7 +7665,7 @@
       "cache"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:439",
+     "linea": "packages/construdata/rag_multi_norma.py:450",
      "norma": false
     },
     {
@@ -7621,7 +7676,18 @@
       "efecto"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:441",
+     "linea": "packages/construdata/rag_multi_norma.py:452",
+     "norma": false
+    },
+    {
+     "paso": "packages/construdata/rag_multi_norma.py::_purgar_cache_vencida",
+     "tipo": "efecto",
+     "tipos": [
+      "bd",
+      "efecto"
+     ],
+     "via": "local",
+     "linea": "packages/construdata/rag_multi_norma.py:461",
      "norma": false
     },
     {
@@ -7633,7 +7699,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2549",
+     "linea": "packages/construdata/rag_multi_norma.py:2614",
      "norma": true
     },
     {
@@ -7653,7 +7719,7 @@
    "clase": "pipeline",
    "familia": "scripts/evaluacion",
    "funcion": "scripts/evaluacion/ragas_52preguntas.py::main",
-   "pasos": 26,
+   "pasos": 27,
    "puntual": false,
    "candidata": true,
    "etiquetas": [
@@ -7673,7 +7739,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2402",
+     "linea": "packages/construdata/rag_multi_norma.py:2467",
      "norma": true
     },
     {
@@ -7683,7 +7749,7 @@
       "cache"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:393",
+     "linea": "packages/construdata/rag_multi_norma.py:403",
      "norma": false
     },
     {
@@ -7693,7 +7759,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:399",
+     "linea": "packages/construdata/rag_multi_norma.py:409",
      "norma": false
     },
     {
@@ -7703,7 +7769,7 @@
       "cache"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:422",
+     "linea": "packages/construdata/rag_multi_norma.py:432",
      "norma": false
     },
     {
@@ -7715,7 +7781,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2410",
+     "linea": "packages/construdata/rag_multi_norma.py:2475",
      "norma": true
     },
     {
@@ -7725,7 +7791,7 @@
       "llm"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2431",
+     "linea": "packages/construdata/rag_multi_norma.py:2496",
      "norma": false
     },
     {
@@ -7737,7 +7803,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2435",
+     "linea": "packages/construdata/rag_multi_norma.py:2500",
      "norma": true
     },
     {
@@ -7747,7 +7813,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2450",
+     "linea": "packages/construdata/rag_multi_norma.py:2515",
      "norma": false
     },
     {
@@ -7779,7 +7845,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2267",
+     "linea": "packages/construdata/rag_multi_norma.py:2332",
      "norma": false
     },
     {
@@ -7789,7 +7855,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2272",
+     "linea": "packages/construdata/rag_multi_norma.py:2337",
      "norma": false
     },
     {
@@ -7800,7 +7866,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2275",
+     "linea": "packages/construdata/rag_multi_norma.py:2340",
      "norma": false
     },
     {
@@ -7811,7 +7877,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2282",
+     "linea": "packages/construdata/rag_multi_norma.py:2347",
      "norma": false
     },
     {
@@ -7821,7 +7887,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2284",
+     "linea": "packages/construdata/rag_multi_norma.py:2349",
      "norma": false
     },
     {
@@ -7831,7 +7897,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2287",
+     "linea": "packages/construdata/rag_multi_norma.py:2352",
      "norma": false
     },
     {
@@ -7841,7 +7907,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2292",
+     "linea": "packages/construdata/rag_multi_norma.py:2357",
      "norma": false
     },
     {
@@ -7851,7 +7917,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2297",
+     "linea": "packages/construdata/rag_multi_norma.py:2362",
      "norma": false
     },
     {
@@ -7862,7 +7928,7 @@
       "cache"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2302",
+     "linea": "packages/construdata/rag_multi_norma.py:2367",
      "norma": false
     },
     {
@@ -7872,7 +7938,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2471",
+     "linea": "packages/construdata/rag_multi_norma.py:2536",
      "norma": false
     },
     {
@@ -7882,7 +7948,7 @@
       "llm"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2482",
+     "linea": "packages/construdata/rag_multi_norma.py:2547",
      "norma": false
     },
     {
@@ -7892,7 +7958,7 @@
       "cache"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:439",
+     "linea": "packages/construdata/rag_multi_norma.py:450",
      "norma": false
     },
     {
@@ -7903,7 +7969,18 @@
       "efecto"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:441",
+     "linea": "packages/construdata/rag_multi_norma.py:452",
+     "norma": false
+    },
+    {
+     "paso": "packages/construdata/rag_multi_norma.py::_purgar_cache_vencida",
+     "tipo": "efecto",
+     "tipos": [
+      "bd",
+      "efecto"
+     ],
+     "via": "local",
+     "linea": "packages/construdata/rag_multi_norma.py:461",
      "norma": false
     },
     {
@@ -7915,7 +7992,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2549",
+     "linea": "packages/construdata/rag_multi_norma.py:2614",
      "norma": true
     },
     {
@@ -7925,7 +8002,7 @@
       "efecto"
      ],
      "via": "externo",
-     "linea": "scripts/evaluacion/ragas_52preguntas.py:124",
+     "linea": "scripts/evaluacion/ragas_52preguntas.py:126",
      "norma": false
     },
     {
@@ -7935,7 +8012,7 @@
       "efecto"
      ],
      "via": "externo",
-     "linea": "scripts/evaluacion/ragas_52preguntas.py:170",
+     "linea": "scripts/evaluacion/ragas_52preguntas.py:172",
      "norma": false
     }
    ]
@@ -7945,7 +8022,7 @@
    "clase": "pipeline",
    "familia": "scripts/evaluacion",
    "funcion": "scripts/evaluacion/ragas_baseline_nsr10.py::main",
-   "pasos": 26,
+   "pasos": 27,
    "puntual": false,
    "candidata": true,
    "etiquetas": [
@@ -7965,7 +8042,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2402",
+     "linea": "packages/construdata/rag_multi_norma.py:2467",
      "norma": true
     },
     {
@@ -7975,7 +8052,7 @@
       "cache"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:393",
+     "linea": "packages/construdata/rag_multi_norma.py:403",
      "norma": false
     },
     {
@@ -7985,7 +8062,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:399",
+     "linea": "packages/construdata/rag_multi_norma.py:409",
      "norma": false
     },
     {
@@ -7995,7 +8072,7 @@
       "cache"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:422",
+     "linea": "packages/construdata/rag_multi_norma.py:432",
      "norma": false
     },
     {
@@ -8007,7 +8084,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2410",
+     "linea": "packages/construdata/rag_multi_norma.py:2475",
      "norma": true
     },
     {
@@ -8017,7 +8094,7 @@
       "llm"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2431",
+     "linea": "packages/construdata/rag_multi_norma.py:2496",
      "norma": false
     },
     {
@@ -8029,7 +8106,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2435",
+     "linea": "packages/construdata/rag_multi_norma.py:2500",
      "norma": true
     },
     {
@@ -8039,7 +8116,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2450",
+     "linea": "packages/construdata/rag_multi_norma.py:2515",
      "norma": false
     },
     {
@@ -8071,7 +8148,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2267",
+     "linea": "packages/construdata/rag_multi_norma.py:2332",
      "norma": false
     },
     {
@@ -8081,7 +8158,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2272",
+     "linea": "packages/construdata/rag_multi_norma.py:2337",
      "norma": false
     },
     {
@@ -8092,7 +8169,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2275",
+     "linea": "packages/construdata/rag_multi_norma.py:2340",
      "norma": false
     },
     {
@@ -8103,7 +8180,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2282",
+     "linea": "packages/construdata/rag_multi_norma.py:2347",
      "norma": false
     },
     {
@@ -8113,7 +8190,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2284",
+     "linea": "packages/construdata/rag_multi_norma.py:2349",
      "norma": false
     },
     {
@@ -8123,7 +8200,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2287",
+     "linea": "packages/construdata/rag_multi_norma.py:2352",
      "norma": false
     },
     {
@@ -8133,7 +8210,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2292",
+     "linea": "packages/construdata/rag_multi_norma.py:2357",
      "norma": false
     },
     {
@@ -8143,7 +8220,7 @@
       "red"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2297",
+     "linea": "packages/construdata/rag_multi_norma.py:2362",
      "norma": false
     },
     {
@@ -8154,7 +8231,7 @@
       "cache"
      ],
      "via": "import",
-     "linea": "packages/construdata/rag_multi_norma.py:2302",
+     "linea": "packages/construdata/rag_multi_norma.py:2367",
      "norma": false
     },
     {
@@ -8164,7 +8241,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2471",
+     "linea": "packages/construdata/rag_multi_norma.py:2536",
      "norma": false
     },
     {
@@ -8174,7 +8251,7 @@
       "llm"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2482",
+     "linea": "packages/construdata/rag_multi_norma.py:2547",
      "norma": false
     },
     {
@@ -8184,7 +8261,7 @@
       "cache"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:439",
+     "linea": "packages/construdata/rag_multi_norma.py:450",
      "norma": false
     },
     {
@@ -8195,7 +8272,18 @@
       "efecto"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:441",
+     "linea": "packages/construdata/rag_multi_norma.py:452",
+     "norma": false
+    },
+    {
+     "paso": "packages/construdata/rag_multi_norma.py::_purgar_cache_vencida",
+     "tipo": "efecto",
+     "tipos": [
+      "bd",
+      "efecto"
+     ],
+     "via": "local",
+     "linea": "packages/construdata/rag_multi_norma.py:461",
      "norma": false
     },
     {
@@ -8207,7 +8295,7 @@
       "embeddings"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:2549",
+     "linea": "packages/construdata/rag_multi_norma.py:2614",
      "norma": true
     },
     {
@@ -8217,7 +8305,7 @@
       "efecto"
      ],
      "via": "externo",
-     "linea": "scripts/evaluacion/ragas_baseline_nsr10.py:107",
+     "linea": "scripts/evaluacion/ragas_baseline_nsr10.py:109",
      "norma": false
     },
     {
@@ -8227,7 +8315,7 @@
       "efecto"
      ],
      "via": "externo",
-     "linea": "scripts/evaluacion/ragas_baseline_nsr10.py:134",
+     "linea": "scripts/evaluacion/ragas_baseline_nsr10.py:136",
      "norma": false
     }
    ]
@@ -9100,7 +9188,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1634",
+     "linea": "packages/construdata/rag_multi_norma.py:1661",
      "norma": false
     },
     {
@@ -9110,7 +9198,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1418",
+     "linea": "packages/construdata/rag_multi_norma.py:1445",
      "norma": false
     },
     {
@@ -9120,7 +9208,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1422",
+     "linea": "packages/construdata/rag_multi_norma.py:1449",
      "norma": false
     },
     {
@@ -9130,7 +9218,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1688",
+     "linea": "packages/construdata/rag_multi_norma.py:1715",
      "norma": false
     },
     {
@@ -9140,7 +9228,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:166",
+     "linea": "packages/construdata/rag_multi_norma.py:168",
      "norma": false
     },
     {
@@ -9150,7 +9238,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:185",
+     "linea": "packages/construdata/rag_multi_norma.py:187",
      "norma": false
     },
     {
@@ -9160,7 +9248,7 @@
       "efecto"
      ],
      "via": "externo",
-     "linea": "scripts/evaluacion/ragas_precios.py:107",
+     "linea": "scripts/evaluacion/ragas_precios.py:109",
      "norma": false
     },
     {
@@ -9170,7 +9258,7 @@
       "efecto"
      ],
      "via": "externo",
-     "linea": "scripts/evaluacion/ragas_precios.py:150",
+     "linea": "scripts/evaluacion/ragas_precios.py:152",
      "norma": false
     }
    ]
@@ -9197,7 +9285,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1634",
+     "linea": "packages/construdata/rag_multi_norma.py:1661",
      "norma": false
     },
     {
@@ -9207,7 +9295,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1418",
+     "linea": "packages/construdata/rag_multi_norma.py:1445",
      "norma": false
     },
     {
@@ -9217,7 +9305,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1422",
+     "linea": "packages/construdata/rag_multi_norma.py:1449",
      "norma": false
     },
     {
@@ -9227,7 +9315,7 @@
       "bd"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1688",
+     "linea": "packages/construdata/rag_multi_norma.py:1715",
      "norma": false
     },
     {
@@ -9237,7 +9325,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:166",
+     "linea": "packages/construdata/rag_multi_norma.py:168",
      "norma": false
     },
     {
@@ -9247,7 +9335,7 @@
       "llm"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:185",
+     "linea": "packages/construdata/rag_multi_norma.py:187",
      "norma": false
     },
     {
@@ -9257,7 +9345,7 @@
       "efecto"
      ],
      "via": "externo",
-     "linea": "scripts/evaluacion/ragas_precios_post_fix.py:107",
+     "linea": "scripts/evaluacion/ragas_precios_post_fix.py:109",
      "norma": false
     },
     {
@@ -9267,7 +9355,7 @@
       "efecto"
      ],
      "via": "externo",
-     "linea": "scripts/evaluacion/ragas_precios_post_fix.py:150",
+     "linea": "scripts/evaluacion/ragas_precios_post_fix.py:152",
      "norma": false
     }
    ]
@@ -12105,7 +12193,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -12115,7 +12203,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -14622,7 +14710,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -14632,7 +14720,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -14679,7 +14767,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -14689,7 +14777,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -18552,7 +18640,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -18562,7 +18650,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -18666,7 +18754,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -18676,7 +18764,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -18808,62 +18896,6 @@
      ],
      "via": "externo",
      "linea": "scripts/macro/extraer_xm_energia.py:66",
-     "norma": false
-    }
-   ]
-  },
-  {
-   "entrada": "scripts/precios/p2_recomendador_apu.py",
-   "clase": "pipeline",
-   "familia": "scripts/precios",
-   "funcion": "scripts/precios/p2_recomendador_apu.py::main",
-   "pasos": 4,
-   "puntual": false,
-   "candidata": true,
-   "etiquetas": [
-    "con_efectos",
-    "dependiente_de_datos"
-   ],
-   "cache_existente": false,
-   "secuencia": [
-    {
-     "paso": "scripts/satelite/_datos_caribe.py::_sb",
-     "tipo": "bd",
-     "tipos": [
-      "bd"
-     ],
-     "via": "import",
-     "linea": "scripts/precios/p2_recomendador_apu.py:27",
-     "norma": false
-    },
-    {
-     "paso": "sb.table().select().eq().eq().range().execute",
-     "tipo": "bd",
-     "tipos": [
-      "bd"
-     ],
-     "via": "externo",
-     "linea": "scripts/precios/p2_recomendador_apu.py:32",
-     "norma": false
-    },
-    {
-     "paso": "f.write_text",
-     "tipo": "efecto",
-     "tipos": [
-      "efecto"
-     ],
-     "via": "externo",
-     "linea": "scripts/precios/p2_recomendador_apu.py:39",
-     "norma": false
-    },
-    {
-     "paso": "?.write_text",
-     "tipo": "efecto",
-     "tipos": [
-      "efecto"
-     ],
-     "via": "externo",
-     "linea": "scripts/precios/p2_recomendador_apu.py:178",
      "norma": false
     }
    ]
@@ -23198,7 +23230,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -23208,7 +23240,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -23244,7 +23276,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -23254,7 +23286,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -23550,52 +23582,6 @@
    ]
   },
   {
-   "entrada": "scripts/precios/p2a_control_sin_variantes.py",
-   "clase": "pipeline",
-   "familia": "scripts/precios",
-   "funcion": "scripts/precios/p2a_control_sin_variantes.py::main",
-   "pasos": 3,
-   "puntual": false,
-   "candidata": false,
-   "etiquetas": [
-    "con_efectos",
-    "dependiente_de_datos"
-   ],
-   "cache_existente": false,
-   "secuencia": [
-    {
-     "paso": "scripts/satelite/_datos_caribe.py::_sb",
-     "tipo": "bd",
-     "tipos": [
-      "bd"
-     ],
-     "via": "import",
-     "linea": "scripts/precios/p2_recomendador_apu.py:27",
-     "norma": false
-    },
-    {
-     "paso": "sb.table().select().eq().eq().range().execute",
-     "tipo": "bd",
-     "tipos": [
-      "bd"
-     ],
-     "via": "externo",
-     "linea": "scripts/precios/p2_recomendador_apu.py:32",
-     "norma": false
-    },
-    {
-     "paso": "f.write_text",
-     "tipo": "efecto",
-     "tipos": [
-      "efecto"
-     ],
-     "via": "externo",
-     "linea": "scripts/precios/p2_recomendador_apu.py:39",
-     "norma": false
-    }
-   ]
-  },
-  {
    "entrada": "scripts/precios/periodo_retorno_alcantarilla.py",
    "clase": "pipeline",
    "familia": "scripts/precios",
@@ -23662,7 +23648,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -23672,7 +23658,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -23708,7 +23694,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -23718,7 +23704,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     },
     {
@@ -23729,6 +23715,52 @@
      ],
      "via": "externo",
      "linea": "scripts/regional/relieve_distrito_peru.py:59",
+     "norma": false
+    }
+   ]
+  },
+  {
+   "entrada": "scripts/respaldo/respaldar_tabla.py",
+   "clase": "pipeline",
+   "familia": "scripts/respaldo",
+   "funcion": "scripts/respaldo/respaldar_tabla.py::main",
+   "pasos": 3,
+   "puntual": false,
+   "candidata": false,
+   "etiquetas": [
+    "con_efectos",
+    "dependiente_de_datos"
+   ],
+   "cache_existente": false,
+   "secuencia": [
+    {
+     "paso": "scripts/respaldo/respaldar_tabla.py::_cliente",
+     "tipo": "red",
+     "tipos": [
+      "red"
+     ],
+     "via": "local",
+     "linea": "scripts/respaldo/respaldar_tabla.py:45",
+     "norma": false
+    },
+    {
+     "paso": "cli.get",
+     "tipo": "red",
+     "tipos": [
+      "red"
+     ],
+     "via": "externo",
+     "linea": "scripts/respaldo/respaldar_tabla.py:57",
+     "norma": false
+    },
+    {
+     "paso": "?.write_text",
+     "tipo": "efecto",
+     "tipos": [
+      "efecto"
+     ],
+     "via": "externo",
+     "linea": "scripts/respaldo/respaldar_tabla.py:80",
      "norma": false
     }
    ]
@@ -25067,7 +25099,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -25077,7 +25109,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     }
    ]
@@ -25102,7 +25134,7 @@
       "cache"
      ],
      "via": "local",
-     "linea": "packages/construdata/rag_multi_norma.py:1740",
+     "linea": "packages/construdata/rag_multi_norma.py:1767",
      "norma": false
     },
     {
@@ -25112,7 +25144,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "packages/construdata/rag_multi_norma.py:1741",
+     "linea": "packages/construdata/rag_multi_norma.py:1768",
      "norma": false
     }
    ]
@@ -25183,6 +25215,41 @@
      ],
      "via": "externo",
      "linea": "scripts/precios/p1_precios_atipicos.py:101",
+     "norma": false
+    }
+   ]
+  },
+  {
+   "entrada": "scripts/precios/p2_recomendador_apu.py",
+   "clase": "pipeline",
+   "familia": "scripts/precios",
+   "funcion": "scripts/precios/p2_recomendador_apu.py::main",
+   "pasos": 2,
+   "puntual": false,
+   "candidata": false,
+   "etiquetas": [
+    "con_efectos"
+   ],
+   "cache_existente": false,
+   "secuencia": [
+    {
+     "paso": "scripts/precios/p2_recomendador_apu.py::cargar",
+     "tipo": "efecto",
+     "tipos": [
+      "efecto"
+     ],
+     "via": "local",
+     "linea": "scripts/precios/p2_recomendador_apu.py:171",
+     "norma": false
+    },
+    {
+     "paso": "?.write_text",
+     "tipo": "efecto",
+     "tipos": [
+      "efecto"
+     ],
+     "via": "externo",
+     "linea": "scripts/precios/p2_recomendador_apu.py:176",
      "norma": false
     }
    ]
@@ -25743,7 +25810,7 @@
       "bd"
      ],
      "via": "externo",
-     "linea": "scripts/ingesta/invias_apu/cargar_invias_apu.py:456",
+     "linea": "scripts/ingesta/invias_apu/cargar_invias_apu.py:468",
      "norma": false
     }
    ]
@@ -26194,6 +26261,31 @@
      ],
      "via": "externo",
      "linea": "scripts/precios/evaluar_precios_atipicos.py:82",
+     "norma": false
+    }
+   ]
+  },
+  {
+   "entrada": "scripts/precios/p2a_control_sin_variantes.py",
+   "clase": "pipeline",
+   "familia": "scripts/precios",
+   "funcion": "scripts/precios/p2a_control_sin_variantes.py::main",
+   "pasos": 1,
+   "puntual": false,
+   "candidata": false,
+   "etiquetas": [
+    "con_efectos"
+   ],
+   "cache_existente": false,
+   "secuencia": [
+    {
+     "paso": "scripts/precios/p2_recomendador_apu.py::cargar",
+     "tipo": "efecto",
+     "tipos": [
+      "efecto"
+     ],
+     "via": "import",
+     "linea": "scripts/precios/p2a_control_sin_variantes.py:39",
      "norma": false
     }
    ]
