@@ -335,6 +335,18 @@ RAG_CACHE_DISABLED = os.getenv("RAG_CACHE_DISABLED", "false").lower() == "true"
 
 _ESPACIOS_MULTIPLES = re.compile(r"\s+")
 
+# Nivel 1 en memoria del proceso (2026-11-16, descarga de Supabase para seguir en el plan gratuito): Supabase queda como
+# nivel 2, compartido entre instancias y sobreviviente a reinicios. Un acierto de nivel 1 no viaja a Supabase; un acierto
+# de nivel 2 hace UNA lectura (antes eran dos: lectura + UPDATE del contador `hits`, que era el 34 % de las operaciones
+# sobre la tabla) y sube la entrada al nivel 1. La entrada del nivel 1 guarda su `expira_en` de Supabase: nunca se sirve
+# algo que en Supabase ya expiró. El contador de aciertos vive en memoria (uso_cache_hoy).
+RAG_CACHE_L1_HORAS = float(os.getenv("RAG_CACHE_L1_HORAS", "6"))
+try:
+    from cache import TTLCache as _TTLCache          # apps/api/cache.py (en la API está en sys.path)
+    _cache_l1 = _TTLCache(ttl_seconds=RAG_CACHE_L1_HORAS * 3600, max_size=int(os.getenv("RAG_CACHE_L1_MAX", "2000")))
+except ImportError:                                  # scripts sueltos sin la API: solo nivel 2, como antes
+    _cache_l1 = None
+
 
 def _normalizar_pregunta_cache(question: str) -> str:
     return _ESPACIOS_MULTIPLES.sub(" ", question.strip().lower())
@@ -344,18 +356,18 @@ def _hash_cache(ruta: str, pregunta_normalizada: str) -> str:
     return hashlib.sha256(f"{ruta}|{pregunta_normalizada}".encode("utf-8")).hexdigest()
 
 
-_uso_cache_hoy = {"fecha": None, "hits": 0, "misses": 0}
+_uso_cache_hoy = {"fecha": None, "hits": 0, "misses": 0, "hits_l1": 0, "hits_l2": 0}
 
 
-def _registrar_cache(hit: bool) -> None:
+def _registrar_cache(hit: bool, nivel: Optional[int] = None) -> None:
     import datetime
 
     hoy = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
     if _uso_cache_hoy["fecha"] != hoy:
-        _uso_cache_hoy["fecha"] = hoy
-        _uso_cache_hoy["hits"] = 0
-        _uso_cache_hoy["misses"] = 0
+        _uso_cache_hoy.update(fecha=hoy, hits=0, misses=0, hits_l1=0, hits_l2=0)
     _uso_cache_hoy["hits" if hit else "misses"] += 1
+    if hit and nivel in (1, 2):
+        _uso_cache_hoy[f"hits_l{nivel}"] += 1
 
 
 def uso_cache_hoy() -> dict:
@@ -376,10 +388,16 @@ def _buscar_en_cache(ruta: str, question: str) -> Optional[dict]:
 
     pregunta_normalizada = _normalizar_pregunta_cache(question)
     cache_id = _hash_cache(ruta, pregunta_normalizada)
+    ahora = datetime.datetime.now(datetime.timezone.utc)
+    if _cache_l1 is not None:
+        en_l1 = _cache_l1.get(cache_id)
+        if en_l1 is not None and en_l1[1] > ahora:
+            _registrar_cache(hit=True, nivel=1)
+            return {**en_l1[0], "desde_cache": True}
     try:
         res = (
             sb.table("rag_cache_respuestas")
-            .select("respuesta, expira_en, hits")
+            .select("respuesta, expira_en")
             .eq("id", cache_id)
             .limit(1)
             .execute()
@@ -395,21 +413,14 @@ def _buscar_en_cache(ruta: str, question: str) -> Optional[dict]:
 
     fila = res.data[0]
     expira_en = datetime.datetime.fromisoformat(fila["expira_en"].replace("Z", "+00:00"))
-    if expira_en < datetime.datetime.now(datetime.timezone.utc):
+    if expira_en < ahora:
         _registrar_cache(hit=False)
         return None
 
-    try:
-        sb.table("rag_cache_respuestas").update({
-            "hits": fila["hits"] + 1,
-            "ultimo_hit_en": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-        }).eq("id", cache_id).execute()
-    except Exception as e:
-        # Contador de hits es solo observabilidad -- si falla el update no
-        # vale la pena descartar la respuesta cacheada que sí se recuperó.
-        log.warning(f"Caché de respuestas: no se pudo actualizar contador de hits: {e}")
-
-    _registrar_cache(hit=True)
+    # Sin UPDATE del contador `hits` (escritura por cada acierto): el conteo queda en memoria (uso_cache_hoy).
+    if _cache_l1 is not None:
+        _cache_l1.set(cache_id, (fila["respuesta"], expira_en))
+    _registrar_cache(hit=True, nivel=2)
     return {**fila["respuesta"], "desde_cache": True}
 
 
@@ -424,6 +435,8 @@ def _guardar_en_cache(ruta: str, question: str, respuesta: dict) -> None:
     pregunta_normalizada = _normalizar_pregunta_cache(question)
     cache_id = _hash_cache(ruta, pregunta_normalizada)
     expira_en = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=RAG_CACHE_TTL_DIAS)
+    if _cache_l1 is not None:
+        _cache_l1.set(cache_id, (respuesta, expira_en))
     try:
         sb.table("rag_cache_respuestas").upsert({
             "id": cache_id,

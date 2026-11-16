@@ -118,7 +118,7 @@ class RegistroEfectos:
         with self._lock:
             return self._datos.get(llave)
 
-    def registrar(self, llave: str, a: Artefacto) -> Artefacto:
+    def registrar(self, llave: str, a: Artefacto, flujo: str = "") -> Artefacto:
         """Registra si no existe; si otro hilo ya lo hizo, devuelve el existente (gana el primero)."""
         with self._lock:
             return self._datos.setdefault(llave, a)
@@ -228,7 +228,7 @@ class Flujo:
                 out.reutilizados.append(nombre)
                 continue
             a = self._artefacto(paso, id_, h_in, ids_in, paso.fn(params, {d: arts[d] for d in paso.entradas}))
-            arts[nombre] = self.registro_efectos.registrar(llave, a)
+            arts[nombre] = self.registro_efectos.registrar(llave, a, flujo=self.nombre)
             out.ejecutados.append(nombre)
         with self._lock_commit:                    # commit: solo con el flujo completo
             self.ultima_completa = {n: a.id for n, a in arts.items()}
