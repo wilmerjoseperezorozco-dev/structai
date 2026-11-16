@@ -65,7 +65,7 @@
     },
     {
       "id": "orquestador", "tipo": "motor", "estado": "implementado", "declaracion": "completa",
-      "endpoints": ["POST /orquestador/portico-integral"],
+      "endpoints": ["POST /orquestador/portico-integral", "POST /orquestador/portico-pareto"],
       "entradas": [
         {"magnitud": "carga_muerta_kn_m", "acceso": "endpoint", "evidencia": "packages/orquestador/src/contrato_api.py::carga_muerta_kn_m"},
         {"magnitud": "carga_viva_kn_m", "acceso": "endpoint", "evidencia": "packages/orquestador/src/contrato_api.py::carga_viva_kn_m"},
@@ -232,18 +232,29 @@
       ]
     },
     {
-      "id": "futuro-optimizador-portico", "tipo": "motor", "estado": "planificado", "declaracion": "completa",
-      "endpoints": [],
+      "id": "optimizador-portico", "tipo": "motor", "estado": "implementado", "declaracion": "completa",
+      "endpoints": ["POST /orquestador/portico-pareto"],
       "entradas": [
-        {"magnitud": "costo_directo_cop", "acceso": "paquete", "evidencia": "docs/investigacion/L1_OPTIMIZACION_ESTRUCTURAL_COSTO_SEGURIDAD_CARBONO.md::Frontera exacta por enumeración"},
-        {"magnitud": "masa_acero_kg", "acceso": "paquete", "evidencia": "docs/investigacion/L1_OPTIMIZACION_ESTRUCTURAL_COSTO_SEGURIDAD_CARBONO.md::Frontera exacta por enumeración"},
-        {"magnitud": "volumen_concreto_m3", "acceso": "paquete", "evidencia": "docs/investigacion/L1_OPTIMIZACION_ESTRUCTURAL_COSTO_SEGURIDAD_CARBONO.md::Frontera exacta por enumeración"},
-        {"magnitud": "co2e_kg", "acceso": "paquete", "evidencia": "docs/investigacion/L1_OPTIMIZACION_ESTRUCTURAL_COSTO_SEGURIDAD_CARBONO.md::Frontera exacta por enumeración"},
-        {"magnitud": "deriva_relativa", "acceso": "paquete", "evidencia": "docs/investigacion/L1_OPTIMIZACION_ESTRUCTURAL_COSTO_SEGURIDAD_CARBONO.md::Frontera exacta por enumeración"},
-        {"magnitud": "razon_demanda_capacidad", "acceso": "paquete", "evidencia": "docs/investigacion/L1_OPTIMIZACION_ESTRUCTURAL_COSTO_SEGURIDAD_CARBONO.md::Frontera exacta por enumeración"}
+        {"magnitud": "carga_muerta_kn_m", "acceso": "endpoint", "evidencia": "packages/orquestador/src/contrato_api.py::carga_muerta_kn_m"},
+        {"magnitud": "carga_viva_kn_m", "acceso": "endpoint", "evidencia": "packages/orquestador/src/contrato_api.py::carga_viva_kn_m"},
+        {"magnitud": "municipio_codigo_dane", "acceso": "endpoint", "evidencia": "packages/orquestador/src/contrato_api.py::codigo_dane"},
+        {"magnitud": "perfil_suelo_clase", "acceso": "endpoint", "evidencia": "packages/orquestador/src/contrato_api.py::perfil_suelo"},
+        {"magnitud": "grupo_uso", "acceso": "endpoint", "evidencia": "packages/orquestador/src/contrato_api.py::grupo_uso"},
+        {"magnitud": "costo_directo_cop", "acceso": "paquete", "evidencia": "packages/orquestador/src/optimizador_pareto.py::_di.diseno_integral"},
+        {"magnitud": "masa_acero_kg", "acceso": "paquete", "evidencia": "packages/orquestador/src/optimizador_pareto.py::_cc.cantidades_columna"},
+        {"magnitud": "volumen_concreto_m3", "acceso": "paquete", "evidencia": "packages/orquestador/src/optimizador_pareto.py::_cc.cantidades_viga"},
+        {"magnitud": "co2e_kg", "acceso": "paquete", "evidencia": "packages/orquestador/src/optimizador_pareto.py::_cc.costo_co2"},
+        {"magnitud": "deriva_relativa", "acceso": "paquete", "evidencia": "packages/orquestador/src/optimizador_pareto.py::o.deriva"},
+        {"magnitud": "razon_demanda_capacidad", "acceso": "paquete", "evidencia": "packages/orquestador/src/optimizador_pareto.py::v.razon"}
       ],
       "salidas": [
-        {"magnitud": "frontera_pareto", "acceso": "paquete", "evidencia": "docs/investigacion/L1_OPTIMIZACION_ESTRUCTURAL_COSTO_SEGURIDAD_CARBONO.md::Frontera exacta por enumeración"}
+        {"magnitud": "frontera_pareto", "acceso": "endpoint", "evidencia": "packages/orquestador/src/contrato_api.py::\"frontera\""},
+        {"magnitud": "costo_directo_cop", "acceso": "endpoint", "evidencia": "packages/orquestador/src/optimizador_pareto.py::\"costo_directo_cop\""},
+        {"magnitud": "masa_acero_kg", "acceso": "endpoint", "evidencia": "packages/orquestador/src/optimizador_pareto.py::\"masa_acero_kg\""},
+        {"magnitud": "volumen_concreto_m3", "acceso": "endpoint", "evidencia": "packages/orquestador/src/optimizador_pareto.py::\"volumen_concreto_m3\""},
+        {"magnitud": "co2e_kg", "acceso": "endpoint", "evidencia": "packages/orquestador/src/optimizador_pareto.py::\"co2e_kg\""},
+        {"magnitud": "deriva_relativa", "acceso": "endpoint", "evidencia": "packages/orquestador/src/optimizador_pareto.py::\"deriva_relativa\""},
+        {"magnitud": "razon_demanda_capacidad", "acceso": "endpoint", "evidencia": "packages/orquestador/src/optimizador_pareto.py::\"razon_dc_max\""}
       ]
     },
     {

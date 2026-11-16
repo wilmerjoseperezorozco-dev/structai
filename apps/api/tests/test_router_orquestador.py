@@ -52,3 +52,27 @@ def test_sin_solucion_es_422_con_la_norma(cliente):
     r = cliente.post("/orquestador/portico-integral", json={**SOL, "carga_muerta_kn_m": 400.0, "carga_viva_kn_m": 200.0,
                                                           "b_mm": [250.0], "h_mm": [500.0], "columnas_mm": [300.0]})
     assert r.status_code == 422 and "NSR-10" in r.text
+
+
+SOL_PARETO = {**{k: v for k, v in SOL.items() if k != "calidad_concreto"}, "calidades_concreto": ["3000", "4000"],
+              "h_mm": [500.0, 600.0, 700.0]}
+
+
+def test_portico_pareto_responde_con_el_contrato_y_los_cuatro_puntos(cliente):
+    r = cliente.post("/orquestador/portico-pareto", json=SOL_PARETO)
+    assert r.status_code == 200, r.text
+    j = r.json()
+    v = j["valor"]
+    assert set(v["puntos"]) == {"min_costo", "min_co2e", "mayor_holgura", "compromiso"}
+    assert v["en_frontera"] >= 1 and len(v["frontera"]) == min(v["en_frontera"], 200)
+    assert all(p["paridad_escalar"] < 1e-6 and p["razon_dc_max"] <= 1.0 for p in v["puntos"].values())
+    for campo in ("unidad_si", "ecuacion", "referencia_normativa", "supuestos", "en_borde_dominio", "aviso_responsabilidad_profesional"):
+        assert campo in j and j[campo] not in (None, "")
+
+
+def test_portico_pareto_calidad_invalida_y_sin_solucion_son_422(cliente):
+    assert cliente.post("/orquestador/portico-pareto", json={**SOL_PARETO, "calidades_concreto": ["9999"]}).status_code == 422
+    assert cliente.post("/orquestador/portico-pareto", json={**SOL_PARETO, "calidades_concreto": []}).status_code == 422
+    r = cliente.post("/orquestador/portico-pareto", json={**SOL_PARETO, "carga_muerta_kn_m": 400.0, "carga_viva_kn_m": 200.0,
+                                                        "b_mm": [250.0], "h_mm": [500.0], "columnas_mm": [300.0]})
+    assert r.status_code == 422 and "NSR-10" in r.text
