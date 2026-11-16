@@ -2,11 +2,11 @@
 
 Generado por `scripts/inventario/cadenas_ejecucion.py`; no editar a mano. Análisis **estático** (AST + imports): dice qué pasos hay y de qué tipo, **no cuánto tardan**. El orden de trabajo lo da latencia × frecuencia medidas (fase 1, paso 2), nunca este conteo solo. Ver el docstring para la definición de paso, tipo y etiqueta.
 
-- Código analizado: 694 módulos, 2,826 funciones (sin pruebas).
-- Puntos de entrada: 100 endpoints y 373 pipelines fuera de línea.
+- Código analizado: 697 módulos, 2,852 funciones (sin pruebas).
+- Puntos de entrada: 100 endpoints y 375 pipelines fuera de línea.
 - **Candidatas a flujo atómico (≥ 4 pasos secuenciales): 100** (13 endpoints, 87 pipelines).
 - Cadenas futuras con ≥ 4 motores que pasan por un motor planificado o bloqueado: **36** (solo nodos declarados en `docs/coherencia_motores.json`).
-- Resolución de los pasos: externo 1260, import 151, local 391, por_nombre 55 (`por_nombre` = función única en el repo con ese nombre; revisar si un paso parece fuera de lugar).
+- Resolución de los pasos: externo 1264, import 151, local 403, por_nombre 55 (`por_nombre` = función única en el repo con ese nombre; revisar si un paso parece fuera de lugar).
 
 ## Etiquetas de las candidatas
 
@@ -25,7 +25,7 @@ Con caché ya existente en la secuencia: 14 de 100.
 
 | Familia | Cadenas | Candidatas | Con LLM | Con efectos |
 |---|---|---|---|---|
-| scripts/ingesta | 224 | 33 | 0 | 218 |
+| scripts/ingesta | 225 | 33 | 0 | 219 |
 | motor | 84 | 5 | 0 | 1 |
 | scripts/satelite | 48 | 19 | 0 | 44 |
 | scripts/evaluacion | 27 | 10 | 9 | 20 |
@@ -43,16 +43,16 @@ Con caché ya existente en la secuencia: 14 de 100.
 | sistema | 2 | 1 | 0 | 0 |
 | scripts/excavacion | 2 | 2 | 0 | 2 |
 | scripts/clima | 2 | 1 | 0 | 2 |
+| scripts/medicion | 2 | 0 | 0 | 1 |
 | scripts/surrogate_zapata | 2 | 0 | 0 | 2 |
 | vision | 1 | 0 | 0 | 0 |
-| scripts/medicion | 1 | 0 | 0 | 1 |
 
 ## Endpoints candidatos (los que ve el usuario)
 
 | Entrada | Pasos | Etiquetas | Caché | Secuencia |
 |---|---|---|---|---|
-| `POST /consultar` | 60 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | sí | _uso_sb.table().select().eq().maybe_single().execute[bd] → _uso_sb.table().select().eq().gte().execute[bd] → _cache_consultar.get[cache] → _informe_sitio_directo[bd] → embed_query[cache] → _centroides[embeddings] → embed_query[cache] → sb.rpc().execute[bd] → buscar_precios_apu[bd] → buscar_precios_invias_vias[bd] → search[bd] → _format_precio_context[bd] → … (+48) |
-| `POST /ask` | 39 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | sí | _uso_sb.table().select().eq().maybe_single().execute[bd] → _uso_sb.table().select().eq().gte().execute[bd] → _cache_ask.get[cache] → _informe_sitio_directo[bd] → sb.table().select().eq().limit().execute[bd] → sb.table().update().eq().execute[efecto] → _con_plugins[bd] → groq_client.chat.completions.create[llm] → openai_client.chat.completions.create[llm] → embed_query[cache] → sb.rpc().execute[bd] → embed_query[cache] → … (+27) |
+| `POST /consultar` | 61 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | sí | _uso_sb.table().select().eq().maybe_single().execute[bd] → _uso_sb.table().select().eq().gte().execute[bd] → _cache_consultar.get[cache] → _informe_sitio_directo[bd] → embed_query[cache] → _centroides[embeddings] → embed_query[cache] → sb.rpc().execute[bd] → buscar_precios_apu[bd] → buscar_precios_invias_vias[bd] → search[bd] → _format_precio_context[bd] → … (+49) |
+| `POST /ask` | 40 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | sí | _uso_sb.table().select().eq().maybe_single().execute[bd] → _uso_sb.table().select().eq().gte().execute[bd] → _cache_ask.get[cache] → _informe_sitio_directo[bd] → sb.table().select().eq().limit().execute[bd] → sb.table().update().eq().execute[efecto] → _con_plugins[bd] → groq_client.chat.completions.create[llm] → openai_client.chat.completions.create[llm] → embed_query[cache] → sb.rpc().execute[bd] → embed_query[cache] → … (+28) |
 | `POST /orquestador/portico-pareto` | 24 | dependiente_de_norma | no | _capacidad[motor] → _ctx_sismico[motor] → _tabla_secciones[motor] → _lote_vectorizado[motor] → disenar[motor] → _costo_nivel[motor] → demanda_columnas[motor] → _mn_viga[motor] → disenar_columna[motor] → costo_columnas[motor] → _verificar_optimo[motor] → cantidades_portico[motor] → … (+12) |
 | `POST /orquestador/portico-integral` | 23 | dependiente_de_norma | no | _capacidad[motor] → _ctx_sismico[motor] → _tabla_secciones[motor] → _modelo[motor] → construir_plantilla[motor] → alturas_nivel_m[motor] → pesos_nivel_kn[motor] → parametros_espectro[motor] → fuerzas_vectorizadas[motor] → analizar_lote[motor] → disenar[motor] → _costo_nivel[motor] → … (+11) |
 | `GET /aquai/hidrologia/caudal-ideam` | 9 | dependiente_de_datos | sí | _get[red] → resolver_departamento[red] → _CACHE_DEPARTAMENTOS.get[cache] → httpx.Client[red] → client.get[red] → httpx.Client[red] → client.get[red] → httpx.Client[red] → client.get[red] |
@@ -67,14 +67,14 @@ Con caché ya existente en la secuencia: 14 de 100.
 
 ## Pipelines recurrentes candidatos (fuera de línea)
 
-87 pipelines recurrentes llegan al umbral; 160 scripts puntuales (prefijo `_`, fecha en el nombre, fix/parche/reintento) no cuentan como candidatos. Los 25 más largos:
+87 pipelines recurrentes llegan al umbral; 161 scripts puntuales (prefijo `_`, fecha en el nombre, fix/parche/reintento) no cuentan como candidatos. Los 25 más largos:
 
 | Entrada | Pasos | Etiquetas | Secuencia |
 |---|---|---|---|
-| `scripts/evaluacion/comparar_groq_vs_gemini_vertex.py` | 36 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | _informe_sitio_directo[bd] → sb.table().select().eq().limit().execute[bd] → sb.table().update().eq().execute[efecto] → _con_plugins[bd] → groq_client.chat.completions.create[llm] → openai_client.chat.completions.create[llm] → embed_query[cache] → … (+29) |
-| `scripts/evaluacion/comparar_groq_vs_ollama_local.py` | 36 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | _informe_sitio_directo[bd] → sb.table().select().eq().limit().execute[bd] → sb.table().update().eq().execute[efecto] → _con_plugins[bd] → groq_client.chat.completions.create[llm] → openai_client.chat.completions.create[llm] → embed_query[cache] → … (+29) |
-| `scripts/evaluacion/ragas_52preguntas.py` | 23 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | _informe_sitio_directo[bd] → sb.table().select().eq().limit().execute[bd] → sb.table().update().eq().execute[efecto] → _con_plugins[bd] → _descomponer_pregunta[llm] → _recuperar_candidatos_normativa[bd] → _rerank_chunks[cache] → … (+16) |
-| `scripts/evaluacion/ragas_baseline_nsr10.py` | 23 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | _informe_sitio_directo[bd] → sb.table().select().eq().limit().execute[bd] → sb.table().update().eq().execute[efecto] → _con_plugins[bd] → _descomponer_pregunta[llm] → _recuperar_candidatos_normativa[bd] → _rerank_chunks[cache] → … (+16) |
+| `scripts/evaluacion/comparar_groq_vs_gemini_vertex.py` | 37 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | _informe_sitio_directo[bd] → sb.table().select().eq().limit().execute[bd] → sb.table().update().eq().execute[efecto] → _con_plugins[bd] → groq_client.chat.completions.create[llm] → openai_client.chat.completions.create[llm] → embed_query[cache] → … (+30) |
+| `scripts/evaluacion/comparar_groq_vs_ollama_local.py` | 37 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | _informe_sitio_directo[bd] → sb.table().select().eq().limit().execute[bd] → sb.table().update().eq().execute[efecto] → _con_plugins[bd] → groq_client.chat.completions.create[llm] → openai_client.chat.completions.create[llm] → embed_query[cache] → … (+30) |
+| `scripts/evaluacion/ragas_52preguntas.py` | 24 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | _informe_sitio_directo[bd] → sb.table().select().eq().limit().execute[bd] → sb.table().update().eq().execute[efecto] → _con_plugins[bd] → _descomponer_pregunta[llm] → _recuperar_candidatos_normativa[bd] → _rerank_chunks[cache] → … (+17) |
+| `scripts/evaluacion/ragas_baseline_nsr10.py` | 24 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | _informe_sitio_directo[bd] → sb.table().select().eq().limit().execute[bd] → sb.table().update().eq().execute[efecto] → _con_plugins[bd] → _descomponer_pregunta[llm] → _recuperar_candidatos_normativa[bd] → _rerank_chunks[cache] → … (+17) |
 | `scripts/excavacion/comparar_alternativas_sintetico.py` | 21 | con_efectos, dependiente_de_norma | factor_seguridad_requerido[motor] → angulo_maximo_seguro[motor] → perfil_talud[motor] → costo_riesgo_geotecnico[motor] → intensidad_energetica[motor] → indice_eficiencia_geometrica[motor] → perfil_talud[motor] → … (+14) |
 | `scripts/precios/agregados_canteras.py` | 13 | con_efectos, dependiente_de_datos | httpx.Client[red] → client.get[red] → requests.get[red] → CACHE_ANM.write_text[efecto] → httpx.Client[red] → client.get[red] → httpx.Client[red] → … (+6) |
 | `scripts/precios/geografia_precios_invias.py` | 12 | con_efectos, dependiente_de_datos | create_client[bd] → sb.table().select().range().execute[bd] → f.write_text[efecto] → sb.table().select().range().execute[bd] → f.write_text[efecto] → sb.table().select().range().execute[bd] → f.write_text[efecto] → … (+5) |
@@ -164,4 +164,4 @@ Un motor futuro que aparece en muchas cadenas desbloquea más flujos al implemen
 
 ## Cadenas cortas (< 4 pasos)
 
-373 cadenas no llegan al umbral. No se descartan: una de 3 pasos con un LLM puede pesar más que una de 6 en CPU. Están completas en el JSON.
+375 cadenas no llegan al umbral. No se descartan: una de 3 pasos con un LLM puede pesar más que una de 6 en CPU. Están completas en el JSON.

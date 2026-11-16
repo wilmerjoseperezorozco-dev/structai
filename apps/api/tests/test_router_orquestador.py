@@ -76,3 +76,34 @@ def test_portico_pareto_calidad_invalida_y_sin_solucion_son_422(cliente):
     r = cliente.post("/orquestador/portico-pareto", json={**SOL_PARETO, "carga_muerta_kn_m": 400.0, "carga_viva_kn_m": 200.0,
                                                         "b_mm": [250.0], "h_mm": [500.0], "columnas_mm": [300.0]})
     assert r.status_code == 422 and "NSR-10" in r.text
+
+
+# --- Flujo atómico (#221, fase 2): la caché no cambia ni un byte de la respuesta ---------------------------------------------
+
+def test_acierto_de_cache_devuelve_exactamente_la_misma_respuesta(cliente):
+    import routers.orquestador_api as api
+    from orquestador.contrato_api import disenar_integral_contrato, SolicitudDisenoIntegral
+    api.CACHE_PORTICO._datos.clear()
+    sin_cache = SolicitudDisenoIntegral.model_validate(SOL)
+    directo = disenar_integral_contrato(sin_cache).model_dump(mode="json")
+    a0 = api.CACHE_PORTICO.aciertos
+    r1 = cliente.post("/orquestador/portico-integral", json=SOL)
+    r2 = cliente.post("/orquestador/portico-integral", json=dict(reversed(list(SOL.items()))))   # otro orden de claves
+    assert r1.status_code == r2.status_code == 200
+    assert r1.content == r2.content and r1.json() == directo                 # sin caché, con caché y fuera del flujo: idénticos
+    assert api.CACHE_PORTICO.aciertos == a0 + 1
+
+
+def test_un_422_no_se_cachea(cliente):
+    import routers.orquestador_api as api
+    api.CACHE_PORTICO._datos.clear()
+    malo = {**SOL, "carga_muerta_kn_m": 400.0, "carga_viva_kn_m": 200.0, "b_mm": [250.0], "h_mm": [500.0], "columnas_mm": [300.0]}
+    assert cliente.post("/orquestador/portico-integral", json=malo).status_code == 422
+    assert len(api.CACHE_PORTICO) == 0
+
+
+def test_la_llave_cubre_el_codigo_de_los_motores_y_los_datos_de_norma():
+    import routers.orquestador_api as api
+    assert len(api.VERSION_MOTORES) == len(api.VERSION_NORMA) == 64 and api.VERSION_MOTORES != api.VERSION_NORMA
+    assert api.FLUJO_INTEGRAL.norma_version == api.VERSION_NORMA
+    assert all(p.version == api.VERSION_MOTORES for f in (api.FLUJO_INTEGRAL, api.FLUJO_PARETO) for p in f._pasos.values())
