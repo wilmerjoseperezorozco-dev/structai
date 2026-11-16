@@ -106,12 +106,16 @@ def clasificar(modo: str, resp: str, variantes: list[str], mapa: dict, contiene)
     return "se_abstiene" if RX_ABSTENCION.search(resp) else "otra_respuesta"
 
 
+MAX_ERRORES_SEGUIDOS = 5
+
+
 def correr(modelo: str, modos: list[str], maximo: int | None = None, salida_nombre: str | None = None) -> None:
     salida = AQUI / "resultados" / (salida_nombre or f"sabotaje_{modelo.replace(':', '_')}.jsonl")
     hechos = {json.loads(l)["clave"] for l in salida.read_text(encoding="utf-8").splitlines()} if salida.exists() else set()
     casos = cb.cargar_casos("nsr10")[:maximo] if maximo else cb.cargar_casos("nsr10")
     total = len(casos) * len(modos)
     k = 0
+    errores_seguidos = 0
     for modo in modos:
         for c in casos:
             k += 1
@@ -144,10 +148,18 @@ def correr(modelo: str, modos: list[str], maximo: int | None = None, salida_nomb
                 raise cb.OllamaCaido(f"{c['id']}: conexión inestable")
             fila["cambios_en_contexto"] = estado["cambios"]
             fila["falsos"] = estado["mapa"]
+            if "error" in fila:
+                # Antes de mirar los cambios: si falló la recuperación (p. ej. sin internet hacia Supabase) no hubo
+                # contexto que sabotear, y eso NO es "no_aplica". No se guarda en el caché para que la próxima corrida
+                # lo repita (la noche del 2026-11-15 un corte de internet dejó 182 casos así).
+                print(f"[{k}/{total}] {modo:8s} {c['id'][:42]:42s} {'error (no se guarda)':26s} {fila['error'][:60]}", flush=True)
+                errores_seguidos += 1
+                if errores_seguidos >= MAX_ERRORES_SEGUIDOS:
+                    raise RuntimeError(f"{errores_seguidos} errores seguidos (¿sin red?); se detiene para no gastar la noche")
+                continue
+            errores_seguidos = 0
             if estado["cambios"] == 0:
                 fila["resultado"] = "no_aplica"
-            elif "error" in fila:
-                fila["resultado"] = "error"
             else:
                 fila["resultado"] = clasificar(modo, resp, c["variantes"], estado["mapa"], c["contiene"])
             fila["segundos_total"] = round(time.time() - t, 1)
