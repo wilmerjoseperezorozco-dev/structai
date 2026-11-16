@@ -162,7 +162,8 @@ class _Llamadas(ast.NodeVisitor):
                 self.visit(f.value)
             break
         texto = _texto(n.func)
-        if re.search(r"(run_in_threadpool|to_thread|\.submit|run_in_executor)$", texto) and n.args:
+        # Llamadas diferidas: la función va como argumento. `_por_flujo` es el flujo atómico de la API (#221, fase 2).
+        if re.search(r"(run_in_threadpool|to_thread|\.submit|run_in_executor|_por_flujo)$", texto) and n.args:
             destino = n.args[1] if texto.endswith("run_in_executor") and len(n.args) > 1 else n.args[0]
             if isinstance(destino, (ast.Name, ast.Attribute)):
                 self.salida.append((_texto(destino), n.lineno, self._except > 0))

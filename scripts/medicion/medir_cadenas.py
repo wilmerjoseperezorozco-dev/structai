@@ -208,8 +208,8 @@ def renderizar(r: dict) -> str:
           "## Pendiente", "",
           "- `/consultar`, `/ask` y `/amenaza-sismica`: necesitan Supabase, el LLM y el SGC. Se medirán en el nocturno con el modelo local "
           "(#172/#178) y lectura controlada, nunca contra la cuota de producción.",
-          "- Fase 2: encapsular como flujo atómico y repetir esta medición; meta preregistrada ≥ 30 % menos p95 con aciertos de caché y "
-          "cero diferencias de resultado.", ""]
+          "- Fase 2 (flujo atómico): hecha para el pórtico, ver `docs/FLUJO_ATOMICO.md`. Falta repetirla en `/consultar` y `/ask` "
+          "cuando se midan en el nocturno.", ""]
     return "\n".join(L)
 
 

@@ -170,3 +170,40 @@ def test_espaciamiento_de_confinamiento_cumple_ash_en_des():
         assert d.s_fuera <= 150.0 and d.s_fuera >= d.s_conf
         ash = next(v for v in d.verificaciones if v.nombre.startswith("Ash"))
         assert ash.cumple
+
+
+# --- #221 fase 2: la ruta vectorizada de ΣMnc/(1,2·ΣMnb) es la misma, bit a bit, que el recorrido nudo por nudo ------------
+
+def _demanda_con_nudos(rng, n_nudos, n_comb, con_nan=False):
+    nudos = []
+    for k in range(n_nudos):
+        p_inf = rng.uniform(-300.0, 2500.0, n_comb)
+        p_sup = None if k % 3 == 2 else rng.uniform(-200.0, 1800.0, n_comb)
+        nudos.append((k % 2 == 0, p_inf, p_sup))
+    if con_nan:
+        nudos[-1] = (nudos[-1][0], np.full(n_comb, 1e7), nudos[-1][2])         # Pu > Po: Mn no existe
+    P = np.concatenate([x[1] for x in nudos])
+    return DemandaColumna(P=P, M_ns=np.zeros((P.size, 2)), M_s=np.zeros((P.size, 2)), V=1.0, V_sismo=0.0, delta_s=1.0,
+                          k_lu_max_m=3.0, lu_min_m=2.6, lu_max_m=2.6, beta_dns=0.6, nudos=tuple(nudos))
+
+
+@pytest.mark.parametrize("semilla", range(6))
+def test_scwb_vectorizado_identico_al_recorrido_por_nudo(semilla):
+    from src.columna import _scwb, _scwb_por_nudo
+    rng = np.random.default_rng(semilla)
+    dem = _demanda_con_nudos(rng, n_nudos=int(rng.integers(1, 9)), n_comb=int(rng.integers(1, 7)))
+    cv = curva(500.0, 500.0, 4, "6", "3", 40.0, 21.0, 420.0)
+    cv_sup = curva(450.0, 450.0, 3, "6", "3", 40.0, 21.0, 420.0)
+    for mnb_int, mnb_ext in [(250.0, 180.0), (0.0, 90.0), (1e3, 0.0), (37.5, 37.5)]:
+        for sup in (None, cv_sup):
+            assert _scwb(cv, dem, mnb_int, mnb_ext, sup) == _scwb_por_nudo(cv, dem, mnb_int, mnb_ext, sup)
+
+
+def test_scwb_vectorizado_nan_y_sin_nudos():
+    from src.columna import _scwb, _scwb_por_nudo
+    cv = curva(500.0, 500.0, 4, "6", "3", 40.0, 21.0, 420.0)
+    dem = _demanda_con_nudos(np.random.default_rng(1), 4, 3, con_nan=True)
+    assert math.isnan(_scwb(cv, dem, 200.0, 150.0)) and math.isnan(_scwb_por_nudo(cv, dem, 200.0, 150.0))
+    vacia = _demanda_con_nudos(np.random.default_rng(2), 1, 2)
+    vacia = DemandaColumna(**{**vacia.__dict__, "nudos": ()})
+    assert vacia.nudos_concatenados is None and _scwb(cv, vacia, 1.0, 1.0) == math.inf

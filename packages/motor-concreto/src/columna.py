@@ -27,7 +27,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
-from functools import lru_cache
+from functools import cached_property, lru_cache
 from typing import Optional
 
 import numpy as np
@@ -180,6 +180,28 @@ class DemandaColumna:
     nudos: tuple                  # ((interior: bool, p_inf (nE,), p_sup (nE,) | None), ...)
     P_sismo: Optional[np.ndarray] = None    # Pu de las combinaciones con E (para Ve); None = todas
 
+    @cached_property
+    def nudos_concatenados(self) -> Optional[tuple]:
+        """Los Pu de todos los nudos en un solo arreglo, para evaluar ΣMnc con una interpolación por curva en vez de una por
+        nudo (#221: `_scwb` era el 60 % del diseño de columna). None si no hay nudos o si la forma no permite concatenar.
+        Se calcula una vez por demanda: el diseño integral evalúa la misma demanda con varias vigas candidatas."""
+        if not self.nudos:
+            return None
+        inf = [np.asarray(pi, dtype=float).ravel() for _, pi, _ in self.nudos]
+        largos = np.array([x.size for x in inf])
+        if (largos == 0).any():
+            return None
+        inicios = np.concatenate([[0], np.cumsum(largos)[:-1]])
+        con_sup = [k for k, (_, _, ps) in enumerate(self.nudos) if ps is not None]
+        sup = [np.asarray(self.nudos[k][2], dtype=float).ravel() for k in con_sup]
+        if any(x.size != largos[k] for x, k in zip(sup, con_sup)):
+            return None
+        pos_sup = (np.concatenate([np.arange(inicios[k], inicios[k] + largos[k]) for k in con_sup]) if con_sup
+                   else np.zeros(0, dtype=int))
+        p_sup = np.concatenate(sup) if sup else np.zeros(0)
+        interior = np.array([bool(i) for i, _, _ in self.nudos])
+        return np.concatenate(inf), inicios, pos_sup, p_sup, interior
+
 
 @dataclass(frozen=True)
 class DisenoColumna:
@@ -263,7 +285,30 @@ def _geometria(h: float, b: float, nivel: str) -> Optional[list[Verificacion]]:
 
 
 def _scwb(cv: Curva, dem: DemandaColumna, mnb_int: float, mnb_ext: float, cv_sup: Optional[Curva] = None) -> float:
-    """Menor cociente ΣMnc/(1,2·ΣMnb) sobre todos los nudos y combinaciones con sismo; NaN si algún Mn no existe."""
+    """Menor cociente ΣMnc/(1,2·ΣMnb) sobre todos los nudos y combinaciones con sismo; NaN si algún Mn no existe.
+
+    Ruta vectorizada: el mismo valor, bit a bit, que el recorrido nudo por nudo (`_scwb_por_nudo`). La interpolación es
+    elemento a elemento y dividir entre un ΣMnb positivo es monótono, así que min(aᵢ)/d = min(aᵢ/d)."""
+    v = dem.nudos_concatenados
+    if v is None:
+        return _scwb_por_nudo(cv, dem, mnb_int, mnb_ext, cv_sup)
+    p_inf, inicios, pos_sup, p_sup, interior = v
+    mc = mn_arr(cv, p_inf)
+    if p_sup.size:
+        mc[pos_sup] = mc[pos_sup] + mn_arr(cv_sup if cv_sup is not None else cv, p_sup)
+    if np.isnan(mc).any():
+        return math.nan
+    minimos = np.minimum.reduceat(mc, inicios)
+    peor = math.inf
+    if interior.any():
+        peor = min(peor, float(minimos[interior].min()) / (RATIO_NUDO * max(mnb_int, 1e-9)))
+    if not interior.all():
+        peor = min(peor, float(minimos[~interior].min()) / (RATIO_NUDO * max(mnb_ext, 1e-9)))
+    return peor
+
+
+def _scwb_por_nudo(cv: Curva, dem: DemandaColumna, mnb_int: float, mnb_ext: float, cv_sup: Optional[Curva] = None) -> float:
+    """Recorrido nudo por nudo (referencia de `_scwb` y ruta para nudos que no se pueden concatenar)."""
     peor = math.inf
     for interior, p_inf, p_sup in dem.nudos:
         mc = mn_arr(cv, p_inf)
