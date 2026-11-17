@@ -68,7 +68,23 @@ def licuacion(url: str, token: str) -> str:
     return f"CSR = {csr:.6f}, CRR = {crr:.6f}, FS = {fs:.6f} (Youd et al. 2001)"
 
 
-MOTORES = {"redes": redes, "geotecnia": geotecnia, "licuacion": licuacion}
+def lagunas(url: str, token: str) -> str:
+    # Q = 1000 m³/d, DBO5 300 mg/L, CF 1e7 → 1000 NMP/100 mL a 25 °C: anaerobia 3 m, facultativa 1,5 m, maduración 1 m.
+    j = _post(url, "/aquai/saneamiento/lagunas", dict(
+        caudal_medio_m3_dia=1000.0, poblacion_equivalente=5000, dbo5_afluente_mg_l=300.0,
+        coliformes_afluente_nmp_100ml=1e7, coliformes_objetivo_nmp_100ml=1000.0, temperatura_agua_c=25.0,
+        incluir_anaerobia=True, profundidad_anaerobia_m=3.0, profundidad_facultativa_m=1.5, profundidad_maduracion_m=1.0,
+        borde_libre_m=0.4, alta_turbulencia_atmosferica=False, tasa_acumulacion_lodos_m3_hab_ano=0.04,
+        area_disponible_m2=None, cuerpo_receptor="rio"), token)
+    kt = 2.6 * 1.19 ** 5                               # Marais (1974) a 25 °C
+    n_fac = 1e7 / ((1 + kt * 1.0) * (1 + kt * 5.0))    # θa = 1 d y θf = 5 d (mínimos de la Res. 0330, arts. 196 y 197)
+    n_final = n_fac / (1 + kt * 3.0) ** 2              # 2 lagunas de maduración en el mínimo de 3 d (área mínima)
+    _cerca(j["valor"]["coliformes_efluente_nmp_100ml"], n_final, "coliformes")
+    assert j["valor"]["n_lagunas_maduracion"] == 2, j["valor"]["n_lagunas_maduracion"]
+    return f"2 lagunas de maduración, CF = {n_final:.4f} NMP/100 mL (Marais, mezcla completa)"
+
+
+MOTORES = {"redes": redes, "geotecnia": geotecnia, "licuacion": licuacion, "lagunas": lagunas}
 
 
 def main() -> int:

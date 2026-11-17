@@ -11,6 +11,7 @@ Generado por `scripts/inventario/registro_motores.py`; no editar a mano. Criteri
 | Motor (router) | Paquete | 1 | 2 | 3 | 4 | Pruebas paquete / router | CI | Endpoints |
 |---|---|---|---|---|---|---|---|---|
 | `analisis` | `motor-analisis` | ? | ? | sí | ? | 18 / 3 | sí | POST /analisis/portico |
+| `aquai` | `motor-aquai` | ? | ? | no | ? | 89 / 5 | sí | POST /aquai/poblacion, POST /aquai/caudales, POST /aquai/hidraulica, POST /aquai/hidrologia, POST /aquai/verificar/res0330, GET /aquai/hidrologia/estaciones-ideam, GET /aquai/hidrologia/precipitacion-ideam, GET /aquai/hidrologia/caudal-ideam, POST /aquai/hidraulica/manning, POST /aquai/hidraulica/ariete, POST /aquai/hidraulica/bombeo, POST /aquai/saneamiento/ptap, POST /aquai/saneamiento/ptar, POST /aquai/saneamiento/lagunas, POST /aquai/tarifas/calcular, POST /aquai/sui/reporte, POST /aquai/reporte/memoria |
 | `concreto` | `motor-concreto` | ? | ? | sí | ? | 287 / 5 | sí | POST /concreto/zapata, POST /concreto/talud |
 | `geotecnia` | `motor-geotecnia` | sí | sí | sí | sí | 88 / 5 | sí | POST /geotecnia/asentamiento, POST /geotecnia/portante |
 | `licuacion` | `motor-licuacion` | ? | ? | sí | sí | 53 / 7 | sí | POST /licuacion/spt |
@@ -20,6 +21,9 @@ Generado por `scripts/inventario/registro_motores.py`; no editar a mano. Criteri
 El conteo de pruebas son funciones `test_*`; una prueba parametrizada cuenta una vez.
 
 ## Evidencia atestada
+
+### `aquai`
+- condición 3: sin límite de tasa o sin 422 explícito en POST /aquai/verificar/res0330, GET /aquai/hidrologia/estaciones-ideam, GET /aquai/hidrologia/precipitacion-ideam, GET /aquai/hidrologia/caudal-ideam, POST /aquai/reporte/memoria
 
 ### `geotecnia`
 - condicion 1: docs/REGLAS_MOTORES_DE_CALCULO.md declara que motor-geotecnia cumple 1–3 en su primer corte. Atestación heredada de ese documento; no re-verificada en esta revisión.
