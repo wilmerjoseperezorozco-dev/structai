@@ -40,6 +40,14 @@
         "fecha": "2026-11-16",
         "evidencia": "POST /licuacion/spt: CSR 0,214100, CRR 0,160058 y FS 0,747313 en la primera subcapa, idénticos a Seed-Idriss / Youd et al. (2001) a mano. Llamada real autenticada contra la revisión en producción con infra/gcp/llamadas_reales.py (tolerancia relativa 1e-9)."
       }
+    },
+    "aquai": {
+      "condicion_4": {
+        "valor": true,
+        "revision": "structai-api-00017-yom",
+        "fecha": "2026-11-16",
+        "evidencia": "POST /aquai/saneamiento/lagunas: 2 lagunas de maduración y CF = 112,6745 NMP/100 mL, idénticos a Marais (mezcla completa) a mano. Llamada real autenticada contra la revisión en producción con infra/gcp/llamadas_reales.py (tolerancia relativa 1e-9). Cubre solo el sistema lagunar (#236); los demás endpoints de aquai no tienen llamada real propia."
+      }
     }
   }
 }
