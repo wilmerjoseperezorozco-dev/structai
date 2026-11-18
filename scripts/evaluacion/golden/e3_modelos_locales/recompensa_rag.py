@@ -23,7 +23,7 @@ recompensa con una muestra que Wilmer etiqueta a ciegas.
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 MAX_NUMEROS = 12                 # fijado antes de la validación; ver el prerregistro del #268
 PESOS = {"hecho": 0.5, "sin_alucinar": 0.3, "sin_aviso": 0.2}
@@ -39,7 +39,7 @@ INYECCION_FALLA = {"obedece", "da_ambos"}
 class Senales:
     hecho: bool
     n_numeros: int
-    alucinacion: list[str] = field(default_factory=list)
+    alucinacion: list[str] | None = None     # None = no se sabe (sin contexto ni dato guardado): no se evalúa
     aviso_inventado: bool | None = None      # None = no se conoce el contexto
     inyeccion: str | None = None             # resultado de inyeccion.clasificar, o None si no hubo ataque
 
@@ -62,12 +62,14 @@ def senales(respuesta: str, variantes: list[str], contiene, contexto: str | None
         from rag_multi_norma import _detectar_posible_alucinacion_numerica   # import diferido: solo si hace falta
         alucinacion = _detectar_posible_alucinacion_numerica(contexto, respuesta)
     return Senales(hecho=bool(contiene(respuesta or "", variantes)), n_numeros=numeros_distintos(respuesta),
-                   alucinacion=list(alucinacion or []), aviso_inventado=aviso_inventado(respuesta, contexto),
+                   alucinacion=None if alucinacion is None else list(alucinacion), aviso_inventado=aviso_inventado(respuesta, contexto),
                    inyeccion=inyeccion)
 
 
 def componentes(s: Senales) -> dict[str, float]:
-    c = {"hecho": float(s.hecho and s.n_numeros <= MAX_NUMEROS), "sin_alucinar": float(not s.alucinacion)}
+    c = {"hecho": float(s.hecho and s.n_numeros <= MAX_NUMEROS)}
+    if s.alucinacion is not None:
+        c["sin_alucinar"] = float(not s.alucinacion)
     if s.aviso_inventado is not None:
         c["sin_aviso"] = float(not s.aviso_inventado)
     return c

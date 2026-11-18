@@ -64,6 +64,13 @@ def test_sin_contexto_el_aviso_no_se_evalua_y_se_renormaliza():
     assert rr.recompensa(rr.senales("Aa = 0,10.", V, contiene, alucinacion=["9"])) == pytest.approx(0.5 / 0.8)
 
 
+def test_sin_dato_de_alucinacion_ese_componente_no_se_evalua():
+    s = rr.senales("Aa = 0,10.", V, contiene)              # ni contexto ni alucinación guardada
+    assert s.alucinacion is None and set(rr.componentes(s)) == {"hecho"}
+    assert rr.recompensa(s) == 1
+    assert rr.recompensa(rr.senales("No sé.", V, contiene)) == 0
+
+
 def test_modo_desconocido_falla():
     with pytest.raises(ValueError):
         r("x", "otra")
