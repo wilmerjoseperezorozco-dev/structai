@@ -420,3 +420,58 @@ Mejora del límite de la sección 11: "la cercanía geográfica no garantiza con
   - 2022 (La Niña) está dentro del período del predictor;
   - el panel cubre 21 departamentos.
 - **Lo que ya vi antes de este protocolo:** el total nacional de puentes averiados por tipo de evento 2019-2024 (71 % hídricos). No vi ningún resultado por municipio en 2023-2024.
+
+
+## 28. H5 (#273): asimetría entre la amenaza sísmica normativa y el daño estructural empírico. Definido ANTES de calcular el índice de daño (2026-11-18)
+
+**Pregunta:** el Aa de la NSR-10 (Apéndice A-4), ¿ordena a los municipios según el daño estructural que reporta la UNGRD en 2019-2024 una vez descontados el relieve, la población y la capacidad de reporte?
+
+- **Unidad:** los 994 municipios del panel de H3 que tienen Aa en la tabla A-4.
+- **Conteo previo** (`--conteo`, sin calcular el daño):
+  - por zona: Alta 495, Intermedia 401 y Baja 98;
+  - Aa entre 0,05 y 0,50, mediana 0,20;
+  - **ρ(Aa, pendiente p90) = 0,53.** Esto confirma la confusión que sugirió H3 (AUC de Aa 0,61) y justifica controlar la pendiente.
+- **Índice de daño D**, fijo y sin ajuste. Es la media de los rangos percentiles de tres componentes:
+  - **V:** viviendas destruidas + averiadas por 100 mil habitantes;
+  - **R:** vías averiadas por 100 km²;
+  - **P:** puentes vehiculares + peatonales averiados por 100 km².
+
+  Usa todos los eventos de la UNGRD 2019-2024.
+- **Mecanismos de evento:**
+  - hídrico: inundación, creciente súbita y avenida torrencial;
+  - remoción en masa;
+  - sísmico: todo evento que contenga "SISMO" o "TERREMOTO";
+  - otros.
+- **Confirmatorios** (IC95 % por bootstrap de bloques por departamento, 2.000 réplicas, semilla 2735):
+  - **A1 (principal):** ρ parcial(Aa, D | log población, P_A, pendiente p90). El veredicto depende de dónde quede el IC:
+
+    | Si el IC95… | Veredicto |
+    |---|---|
+    | queda dentro de (−0,20; 0,20) | **ASIMETRÍA** |
+    | queda por encima de 0,20 | **ALINEADAS** |
+    | queda por debajo de −0,20 | **INVERSA** |
+    | en otro caso | **NO CONCLUYENTE** |
+
+    El umbral de 0,20 lo fijo yo, es arbitrario y queda declarado así.
+  - **A2:** fracción del daño total (viviendas + vías + puentes) por mecanismo, con IC.
+- **Descriptivo:**
+  - A0: ρ bruto(Aa, D);
+  - A3: tabla de zona NSR-10 contra el tercil de D, con los casos "zona Alta con daño bajo" y "zona Baja con daño alto";
+  - ρ bruto de cada componente con Aa;
+  - ρ parcial por región (si hay ≥ 30 municipios).
+- **Lectura fijada de antemano:**
+  - La NSR-10 zonifica una amenaza de baja frecuencia (sismo con período de retorno de 475 años). Seis años de reportes no pueden medirla.
+  - Una ASIMETRÍA significa que **la normativa sísmica no captura el riesgo dominante contemporáneo**. **No** significa que la zonificación sísmica esté equivocada, ni que deba cambiarse.
+  - Un resultado ALINEADAS podría venir de confusión residual: por ejemplo, de la región andina o de la densidad de vías.
+- **Limitaciones declaradas:**
+  - la UNGRD mide reportes y no inventaria lo expuesto;
+  - las viviendas se normalizan por población, no por el número de viviendas;
+  - el período 2019-2024 no tuvo un sismo destructivo mayor en el panel, así que el mecanismo sísmico será pequeño casi por construcción;
+  - el análisis es municipal (falacia ecológica);
+  - el panel cubre 21 departamentos;
+  - el Aa toma pocos valores distintos (empates en los rangos).
+- **Lo que ya vi:**
+  - el total nacional de puentes averiados por tipo de evento (71 % hídricos);
+  - el AUC de Aa para los puentes 2023-2024 de H3 (0,61).
+
+  No vi el índice D ni su relación con el Aa.

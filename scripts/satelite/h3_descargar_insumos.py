@@ -32,9 +32,9 @@ def main() -> None:
     env = dotenv_values(ENV)
     sb = create_client(env["SUPABASE_URL"], env["SUPABASE_SERVICE_KEY"])
     datos = {
-        "ungrd": _paginar(sb, "ungrd_emergencias", "fecha,evento,codigo_municipio,puentes_vehiculares,puentes_peatonales"),
+        "ungrd": _paginar(sb, "ungrd_emergencias", "fecha,evento,codigo_municipio,puentes_vehiculares,puentes_peatonales,viviendas_destruidas,viviendas_averiadas,vias_averiadas"),
         "estaciones": _paginar(sb, "ideam_estaciones_caudal", "codigo,latitud,longitud"),
-        "a4": _paginar(sb, "nsr10_apendice_a4_municipios", "codigo,aa"),
+        "a4": _paginar(sb, "nsr10_apendice_a4_municipios", "codigo,aa,zona"),
         "centroides": [{"codigo": m["codigo_municipio"], "lat": m["latitud"], "lon": m["longitud"]}
                        for m in divipola._cargar_cache()],
     }
