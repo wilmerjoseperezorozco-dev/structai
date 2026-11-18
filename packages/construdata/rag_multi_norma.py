@@ -1983,13 +1983,13 @@ INSTRUCCIONES:
    original sin esa advertencia.
 7. Cuando corresponda a APU, indica que la trazabilidad normativa ya está
    embebida en el motor APU.
-8. Menciona la advertencia "⚠️ NORMA DEROGADA/MODIFICADA" ÚNICAMENTE si esa
-   frase exacta aparece en el contexto proporcionado (headers de fragmentos
-   marcados así). NUNCA la uses como forma genérica de expresar duda,
-   desactualización o incertidumbre sobre un tema — es una advertencia
-   legal específica, no una muletilla. Si la frase aparece, adviértelo al
-   inicio de tu respuesta y menciona la norma vigente que la reemplaza si
-   se indica.
+8. Vigencia: algunos fragmentos traen bajo su encabezado "[norma — sección]"
+   una línea de aviso de vigencia (empieza con el símbolo ⚠️). Solo si un
+   fragmento que usas la trae, adviértelo al inicio de tu respuesta,
+   copiando el estado que indica esa línea y la norma que la reemplaza si
+   se indica. Si ningún fragmento trae esa línea, la norma está vigente: no
+   hables de derogación, modificación ni vigencia, y no agregues avisos de
+   ese tipo como forma de expresar duda.
 9. NUNCA agregues una cita "de respaldo" a una norma/sección que sí aparece
    en el contexto pero afirmando que dice algo que su texto NO dice
    literalmente. Citar un identificador real con contenido inventado es
@@ -2060,7 +2060,32 @@ def _generar_respuesta(contexto: str, question: str, system_prompt: Optional[str
         {"role": "system", "content": prompt},
         {"role": "user", "content": f"CONTEXTO NORMATIVO:\n{contexto}\n\nPREGUNTA: {question}"}
     ]
-    return _llamar_llm_con_respaldo(messages, max_tokens_groq=700)
+    return _quitar_aviso_vigencia_sin_respaldo(_llamar_llm_con_respaldo(messages, max_tokens_groq=700), contexto)
+
+
+# Aviso de vigencia que _format_chunk_context() pone bajo el encabezado de un fragmento no vigente
+# ("⚠️ NORMA DEROGADA TOTAL — reemplazada por ...", "⚠️ NORMA MODIFICADA", ...).
+_RX_AVISO_EN_CONTEXTO = re.compile(r"^⚠️\s*NORMA\s+(DEROGADA|MODIFICADA|DESCONOCIDO)", re.MULTILINE)
+# Avisos de derogación/modificación que el modelo escribe por su cuenta. Hallazgo #261 (2026-11-17): con la regla
+# anterior, que citaba la frase literal "⚠️ NORMA DEROGADA/MODIFICADA", qwen2.5:7b la copiaba en el 43 % de sus
+# respuestas sobre la NSR-10 (91 de 214), aunque ningún fragmento de la NSR-10 está marcado como no vigente.
+_RX_AVISO_EN_RESPUESTA = re.compile(r"NORMA\s+(DEROGADA|MODIFICADA)|DEROGADA\s*/\s*MODIFICADA", re.IGNORECASE)
+
+
+def _quitar_aviso_vigencia_sin_respaldo(respuesta: str, contexto: str) -> str:
+    """Guarda determinista: si ningún fragmento del contexto trae aviso de vigencia, quita los párrafos de la respuesta
+    que anuncian una norma derogada o modificada. Un aviso legal que no está en las fuentes es una alucinación, aunque
+    el modelo lo presente como precaución. Si el contexto sí trae el aviso, la respuesta no se toca."""
+    if not respuesta or _RX_AVISO_EN_CONTEXTO.search(contexto or ""):
+        return respuesta
+    parrafos = respuesta.split("\n")
+    quedan = [p for p in parrafos if not _RX_AVISO_EN_RESPUESTA.search(p)]
+    if len(quedan) == len(parrafos):
+        return respuesta
+    log.info("Aviso de vigencia sin respaldo en el contexto: se quitó de la respuesta (%d línea(s)).",
+             len(parrafos) - len(quedan))
+    return re.sub(r"\n{3,}", "\n\n", "\n".join(quedan)).strip()
+
 
 # Palabras que indican que la pregunta busca algo vigente AHORA, no un
 # hecho normativo permanente -- evita meter noticias en cada pregunta de
@@ -2813,8 +2838,9 @@ INSTRUCCIONES (aplican siempre, sin excepción):
    correspondiente de [Norma]" — nunca inventes un número de cita.
 3. Si el contexto no cubre la pregunta, dilo con naturalidad y sugiere qué
    consultar — sin inventar valores ni fórmulas de esa norma.
-4. Menciona "⚠️ NORMA DEROGADA/MODIFICADA" únicamente si esa frase exacta
-   aparece en el contexto — nunca como forma genérica de expresar duda.
+4. Vigencia: solo si un fragmento que usas trae bajo su encabezado una línea
+   de aviso de vigencia (empieza con ⚠️), adviértelo copiando el estado que
+   indica. Si ninguno la trae, no hables de derogación ni de vigencia.
 5. Cuando la pregunta sea amplia y tenga sentido, cierra con UNA sugerencia
    breve de hacia dónde profundizar (nunca en cada respuesta, solo cuando
    agregue valor real).
