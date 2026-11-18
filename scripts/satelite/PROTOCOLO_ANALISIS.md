@@ -381,3 +381,42 @@ Mejora del límite de la sección 11: "la cercanía geográfica no garantiza con
 - **Descriptivo:** tasa de eventos por cuartil del índice; AUC por región natural (solo reporta si hay ≥ 30 municipios y ambos resultados en Y1); sensibilidad excluyendo 2022 (año con 3-4 veces los eventos normales); sensibilidad excluyendo municipios con población > 500 mil.
 - **Qué NO se concluirá:** que el mapa del SGC es «correcto» o «incorrecto»; solo si ordena los municipios como los eventos reportados.
 - **Limitaciones declaradas de antemano:** la UNGRD mide reportes, no eventos (sesgo hacia municipios grandes o con mayor capacidad); análisis municipal, no por punto (falacia ecológica; un municipio con 5 % del área en amenaza alta puede tener todos sus eventos ahí); el mapa del SGC es un modelo posiblemente alimentado con pendiente; seis años de eventos con el 2022 atípico; el panel cubre 21 departamentos, no todo el país; no se corrige por autocorrelación espacial más allá del bootstrap por departamento.
+
+
+## 27. H3 (#273): índice de riesgo de socavación y continuidad vial. Definido ANTES de leer el resultado (2026-11-18)
+
+**Pregunta:** un índice fijo, construido solo con información anterior a 2023, ¿ordena a los municipios según los puentes averiados por eventos hídricos en 2023-2024? ¿Aporta algo más que el historial de daños?
+
+- **Unidad:** los 1.000 municipios de 21 departamentos de `v1_panel.csv` que tienen DEM y centroide DIVIPOLA.
+- **Conteo previo** (`--conteo`, sin leer 2023-2024):
+  - 961 municipios tienen una estación IDEAM con GEV estable a ≤ 50 km;
+  - hay 445 estaciones útiles;
+  - 181 municipios tuvieron puentes averiados por eventos hídricos en 2019-2022;
+  - correlaciones entre componentes: H–T 0,00, H–S 0,13 y T–S 0,32.
+- **Eventos hídricos:** `INUNDACION`, `CRECIENTE SUBITA` y `AVENIDA TORRENCIAL` de la UNGRD.
+- **Resultado:** Y = 1 si el municipio tuvo ≥ 1 puente vehicular averiado por eventos hídricos en 2023-2024. Y2 = esos puentes por 100 km².
+  - **Regla de potencia:** si hay menos de 30 positivos, se suman los puentes peatonales. Se reporta cuál salida se usó.
+- **Índice fijo**, sin ajuste ni pesos estimados. Es la media de los rangos percentiles de tres componentes:
+  - **H:** log(1 + puentes vehiculares averiados por eventos hídricos en 2019-2022);
+  - **T:** Q10/Q2 de la GEV (§21) de la estación IDEAM más cercana con |ξ| ≤ 0,5. Si no hay estación a ≤ 50 km se imputa el rango neutro 0,5;
+  - **S:** pendiente p90 del DEM municipal.
+- **Confirmatorios** (IC95 % por bootstrap de bloques por departamento, 2.000 réplicas, semilla 273):
+  - **C1:** AUC(índice → Y) con IC que excluya 0,5. Umbral de "útil": AUC puntual ≥ 0,65 (arbitrario, el mismo del §26).
+  - **C2 (valor añadido):** AUC(índice) − AUC(H solo) > 0, con IC que excluya 0. Si falla: "el historial basta; la hidrología y el relieve no agregan".
+  - **C3:** ρ parcial(índice, Y2 | log población, P_A) > 0, con IC que excluya 0. Si falla: "lo que ordena es el reporte, no el peligro".
+- **Descriptivo:**
+  - AUC de cada componente;
+  - sensibilidad solo con municipios con estación a ≤ 50 km;
+  - AUC por región (si hay ≥ 30 municipios y ambos valores de Y);
+  - **AUC de Aa (NSR-10 A-4) para Y**, como enlace con H5. Lo esperado es cercano a 0,5, porque el sismo no es el mecanismo.
+- **Qué NO se concluirá:**
+  - que los puentes fallaron por socavación local, porque la UNGRD no registra el mecanismo;
+  - que el índice sirve para diseñar un puente: es para priorizar.
+- **Limitaciones declaradas:**
+  - la UNGRD mide reportes y no inventaria puentes (no hay denominador de puentes expuestos);
+  - Q10/Q2 es de la estación más cercana, no de la cuenca del puente;
+  - el máximo IDEAM es horario y no el pico instantáneo (§21);
+  - solo son dos años de resultado;
+  - 2022 (La Niña) está dentro del período del predictor;
+  - el panel cubre 21 departamentos.
+- **Lo que ya vi antes de este protocolo:** el total nacional de puentes averiados por tipo de evento 2019-2024 (71 % hídricos). No vi ningún resultado por municipio en 2023-2024.
