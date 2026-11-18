@@ -475,3 +475,42 @@ Mejora del límite de la sección 11: "la cercanía geográfica no garantiza con
   - el AUC de Aa para los puentes 2023-2024 de H3 (0,61).
 
   No vi el índice D ni su relación con el Aa.
+
+## 29. H4 (#273): subestimación del inventario de movimientos en masa al consultar por cabecera municipal. Definido ANTES de contar SIMMA en la malla (2026-11-18)
+
+**Pregunta:** si un sitio se consulta por su coordenada GPS (radio de 15 km alrededor del punto) en vez de por la cabecera de su municipio, ¿cambia de forma material el número de movimientos en masa inventariados por el SGC (SIMMA) que se le asignan? ¿Y en qué fracción del territorio la consulta por cabecera **subestima**?
+
+- **Datos:**
+  - SIMMA, `Inventario_de_movimientos_en_masa/FeatureServer/0`: 6.826 puntos, **sin fecha ni magnitud**;
+  - polígonos municipales ANH/IGAC (`ANH_ENTIDADES_TERRIT/MapServer/1`, simplificados a 0,0003°);
+  - cabeceras DIVIPOLA;
+  - UNGRD 2019-2024 (eventos que contienen "MASA").
+- **Unidad:** los 1.000 municipios del panel de H3 (21 departamentos).
+- **Conteo previo** (`--conteo`, solo geometría, sin SIMMA):
+  - los 1.000 tienen polígono y malla de ≥ 5 nodos (1 con malla de 1 km);
+  - 129.603 nodos (≈ 518.000 km², cuadra con el área del panel, 516.700 km²);
+  - nodos por municipio p10/p50/p90: 18 / 63 / 284;
+  - distancia mediana nodo-cabecera p10/p50/p90: 4,0 / 7,9 / 20,3 km.
+- **Método, fijo:**
+  - malla regular de 2 km dentro de cada polígono (1 km si quedan < 5 nodos); cada nodo es "un sitio consultado por GPS" y pesa lo mismo (equivale a área);
+  - N(g) = puntos SIMMA a ≤ 15 km del nodo; N(c) = lo mismo desde la cabecera;
+  - CV municipal = desviación estándar / media de N(g) (definido si la media > 0);
+  - un nodo está **subestimado** si N(g) ≥ 2 · máx(N(c), 1), y **sobreestimado** si N(c) > 0 y N(g) ≤ N(c)/2.
+- **Confirmatorios** (IC95 % por bootstrap de bloques por departamento, 2.000 réplicas, semilla 2736):
+  - **C1:** mediana del CV municipal. **HETEROGÉNEO** si el IC queda por encima de 0,30; **HOMOGÉNEO** si queda por debajo; si no, NO CONCLUYENTE.
+  - **C2 (principal):** fracción del área (nodos) subestimada, entre los municipios con algún SIMMA cerca de la malla o de la cabecera. **SUBESTIMACIÓN MATERIAL** si el IC queda por encima de 0,10; **DESPRECIABLE** si queda por debajo de 0,05; si no, NO CONCLUYENTE.
+  - Los umbrales 0,30 y 0,10 los fijo yo; son arbitrarios y quedan declarados.
+- **Secundario S1** (el "frente al historial de emergencias"): ρ de Spearman entre los eventos UNGRD de movimiento en masa 2019-2024 del municipio y N(c), la media de N(g) y el máximo de N(g); diferencia ρ(media) − ρ(cabecera) con IC; ρ(CV, UNGRD).
+- **Descriptivo:** fracción sobreestimada; municipios con N(c) = 0 que tienen SIMMA en parte de su territorio; percentiles del CV; razón máximo/cabecera; por región y por tercil de pendiente p90; los 10 municipios más subestimados.
+- **Sensibilidad:** radio de 5 km.
+- **Lectura fijada de antemano:**
+  - Un resultado HETEROGÉNEO / SUBESTIMACIÓN MATERIAL muestra que **la cabecera no representa el inventario de su municipio**: dos lotes del mismo municipio pueden tener contextos de ladera muy distintos, y la consulta por cabecera los iguala.
+  - **No** demuestra que el GPS **prediga** mejor los eventos futuros: SIMMA no tiene fecha, así que no hay prueba temporal. Eso queda pendiente hasta tener un inventario fechado.
+  - S1 es municipal: la UNGRD reporta por municipio, no por punto. Que la media de la malla se asocie más que la cabecera con la UNGRD es coherente con la hipótesis, pero en parte es por construcción (ambas son agregados municipales).
+- **Limitaciones declaradas:**
+  - SIMMA tiene sesgo de acceso y de cartografía: hay más puntos donde se ha estudiado, no necesariamente donde hay más amenaza;
+  - un radio de 15 km suaviza y **reduce** la heterogeneidad (es conservador para C1 y C2); a 5 km se verá más;
+  - los nodos cerca del borde cuentan SIMMA de municipios vecinos (es lo que vería un usuario con GPS);
+  - la malla trata igual zonas habitadas y despobladas;
+  - polígonos simplificados.
+- **Lo que ya vi:** el número total de puntos SIMMA (6.826) y la geometría de la malla. No he contado SIMMA alrededor de ningún nodo ni de ninguna cabecera en este análisis. Del trabajo anterior conozco que la capa de amenaza SIMMA 1:25k cubre solo 59 municipios (§ otro inventario, no este).
