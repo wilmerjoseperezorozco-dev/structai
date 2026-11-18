@@ -8,6 +8,9 @@ Diseño preregistrado en docs/evaluacion/PREREGISTRO_INDICE_LOCAL.md (fijado ant
   la misma temperatura y la misma descomposición en caché que producción.
 - Calificación: la misma de las baterías (_contiene_alguna con las variantes del caso; en motores, además el dominio).
 - Groq: solo GROQ_API_KEY_EVAL. Se detiene limpio al agotar la cuota diaria y retoma el día siguiente.
+- Desviación declarada (2026-11-18): si Groq rechaza un prompt por tamaño (HTTP 413, mayor que el límite de 8.000
+  tokens/min de la clave), esa generación se registra como NO aprobada con error "413" y se sigue. Antes el 413
+  tumbaba la corrida y, por el orden fijo, la detenía todos los días en la misma pregunta.
 
 Las respuestas crudas (pueden citar texto del corpus) quedan en resultados/fase2_respuestas.jsonl, que NO se versiona.
 Uso: python scripts/evaluacion/indice_local/fase2_generacion.py [--max-preguntas N]
@@ -19,6 +22,7 @@ import json
 import random
 import sys
 import time
+import urllib.error
 from collections import deque
 from pathlib import Path
 
@@ -35,6 +39,10 @@ TPM_SEGURO = 7000                                  # límite de la clave: 8.000 
 
 class Cuota(Exception):
     pass
+
+
+class Excede(Exception):
+    """Groq devolvió 413: el prompt supera el límite por minuto de la clave de evaluación."""
 
 
 def main() -> int:
@@ -96,6 +104,10 @@ def main() -> int:
             if "cuota diaria" in str(e):
                 raise Cuota() from None
             raise
+        except urllib.error.HTTPError as e:
+            if e.code == 413:
+                raise Excede(previsto) from None
+            raise
         t = uso.get("total_tokens", previsto)
         ventana.append((time.time(), t)); uso_total["tokens"] += t
         if max_tokens_groq == 250:
@@ -117,11 +129,22 @@ def main() -> int:
                 for modo in pendientes:
                     rmn.RAG_INDICE_LOCAL = modo == "local"
                     t0, tok0 = time.time(), uso_total["tokens"]
-                    if f["bateria"] == "nsr10":
-                        r = rmn.ask(f["pregunta"]); dominio_ok = None
-                    else:
-                        r = rmn.ask_delegado(f["pregunta"], top_k=4)
-                        dominio_ok = r.get("dominio") == variantes[f["id"]][1]
+                    try:
+                        if f["bateria"] == "nsr10":
+                            r = rmn.ask(f["pregunta"]); dominio_ok = None
+                        else:
+                            r = rmn.ask_delegado(f["pregunta"], top_k=4)
+                            dominio_ok = r.get("dominio") == variantes[f["id"]][1]
+                    except Excede as e:
+                        out.write(json.dumps({"id": f["id"], "bateria": f["bateria"], "modo": modo, "aprueba": False,
+                                              "contiene_hecho": False, "dominio_ok": None, "error": "413",
+                                              "tokens_previstos": e.args[0], "tokens": 0,
+                                              "segundos": round(time.time() - t0, 1), "modelo": rmn.GROQ_MODEL,
+                                              "fecha": time.strftime("%Y-%m-%d %H:%M"), "respuesta": ""},
+                                             ensure_ascii=False) + "\n")
+                        out.flush()
+                        print(f"{f['id'][:55]:55} {modo:5} 413 (prompt ≈{e.args[0]} tok > límite de la clave)", flush=True)
+                        continue
                     esperadas = variantes[f["id"]][0]
                     contiene = (tn if f["bateria"] == "nsr10" else tm)._contiene_alguna(r["respuesta"], esperadas)
                     out.write(json.dumps({"id": f["id"], "bateria": f["bateria"], "modo": modo,

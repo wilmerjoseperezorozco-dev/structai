@@ -55,3 +55,7 @@ proporción de respuestas que contienen el hecho verificado?
 - La cuota diaria de la clave (unos 200.000 tokens, ~6.000 por respuesta) da para ~15 pares por día. Si la clave vence
   antes de cubrir toda la población, se analiza la muestra aleatoria cubierta y se declara su tamaño.
 - Las baterías las escribió el equipo, así que no son una muestra del uso real.
+
+## Desviación declarada (2026-11-18)
+
+El 18-11 la corrida se detuvo con HTTP 413: Groq rechazó un prompt por tamaño (≈ 11.800 tokens estimados, más que el límite de 8.000 tokens/min de la clave de evaluación). Como el orden es fijo, la corrida se habría detenido todos los días en la misma pregunta. Desde esta fecha, una generación rechazada con 413 se registra como **no aprobada** (`"error": "413"`) y se sigue con la siguiente. En el análisis se reportan aparte cuántas generaciones fueron 413 y en qué modo, y se da el resultado con y sin ellas. La decisión se tomó sin ver la respuesta de esa pregunta (no existe: Groq no la generó).
