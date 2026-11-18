@@ -9,8 +9,8 @@ Fricción y punta se evalúan por separado, cada una con su factor de seguridad 
   Punta:                   Qp,adm = qp,ult·Ap / F_SICP  F_SICP de la Tabla H.4.7-1
 
 La NSR-10 no da fórmula de resistencia por punta. En arcilla se usa qp,ult = 9·Su (Skempton, 1951). En suelo drenado
-la resistencia por punta debe venir del estudio geotécnico; la fórmula del CCP-14 §10.7/10.8 queda para después de
-ingerir esa sección (próximamente). La roca (H.4.7-4) queda fuera hasta verificar la ecuación con el PDF oficial.
+la resistencia por punta debe venir del estudio geotécnico; con SPT, el camino del CCP-14 (Meyerhof y método β) está en
+`arena_spt.py`. La roca (H.4.7-4) queda fuera hasta verificar la ecuación con el PDF oficial.
 """
 from __future__ import annotations
 
@@ -180,7 +180,7 @@ def capacidad_individual(estratos: Sequence[Estrato], pilote: Pilote, *, nivel_f
     else:
         if ep.qp_ult_kpa is None or not (ep.qp_ult_kpa > 0):
             _falla("Punta en suelo drenado: la NSR-10 no da fórmula; ingrese qp_ult_kpa del estudio geotécnico "
-                   "(la formulación del CCP-14 §10.7/10.8 está próximamente)")
+                   "(con SPT use arena_spt.capacidad_spt, CCP-14 §10.7.3.8.6g / §10.8.3.5.2)")
         qp_unit = ep.qp_ult_kpa
     qp_ult = qp_unit * pilote.area_punta_m2
     qp_adm = qp_ult / fs_punta
