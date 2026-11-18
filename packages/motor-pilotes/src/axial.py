@@ -139,6 +139,33 @@ def _tramos(estratos: Sequence[Estrato], nivel_freatico_m: Optional[float], hast
     return out
 
 
+def fuste_tramo_nsr(e: Estrato, perimetro_m: float, z0: float, z1: float, s0: float, s1: float,
+                    combinacion: Combinacion) -> dict:
+    """Fricción última de un tramo con σ'v lineal (H.4.7-2 / H.4.7-3) y su factor de seguridad (Tabla H.2.4-1)."""
+    if e.comportamiento == "no_drenado":
+        fsl = exigir(combinacion, FS_FRICCION_NO_DRENADO, "NSR-10 H.2.4.2 y Tabla H.2.4-1 (FSBUM)",
+                     "Combinación con Su (no se permite en análisis seudo-estático)")
+        a = alfa_nsr10(e.su_kpa)
+        tau_l = a * e.su_kpa
+    else:
+        fsl = exigir(combinacion, FS_FRICCION_DRENADO, "NSR-10 Tabla H.2.4-1 (FSBM)", "Combinación de carga")
+        a = None
+        tau_l = FACTOR_TAU_L * (e.c_kpa + e.k_lateral * 0.5 * (s0 + s1) * math.tan(math.radians(e.phi_deg)))
+    return {"metodo": "α NSR-10 H.4.7-3" if a is not None else "K·σ'v·tanφ' NSR-10 H.4.7-2", "z0_m": z0, "z1_m": z1,
+            "sigma_v_ef_medio_kpa": 0.5 * (s0 + s1), "alfa": a, "tau_l_kpa": tau_l, "fs_friccion": fsl,
+            "qs_ult_kn": tau_l * perimetro_m * (z1 - z0)}
+
+
+def punta_unitaria_nsr(ep: Estrato) -> float:
+    """qp,ult (kPa): 9·Su en arcilla; en suelo drenado, el valor del estudio geotécnico."""
+    if ep.comportamiento == "no_drenado":
+        return NC_PUNTA_ARCILLA * ep.su_kpa
+    if ep.qp_ult_kpa is None or not (ep.qp_ult_kpa > 0):
+        _falla("Punta en suelo drenado: la NSR-10 no da fórmula; ingrese qp_ult_kpa del estudio geotécnico "
+               "(con SPT use arena_spt.capacidad_spt, CCP-14 §10.7.3.8.6g / §10.8.3.5.2)")
+    return ep.qp_ult_kpa
+
+
 def capacidad_individual(estratos: Sequence[Estrato], pilote: Pilote, *, nivel_freatico_m: Optional[float],
                          combinacion: Combinacion) -> dict:
     """Capacidad última y admisible a compresión (kN) de un pilote individual."""
@@ -157,31 +184,14 @@ def capacidad_individual(estratos: Sequence[Estrato], pilote: Pilote, *, nivel_f
     qs_ult = qs_adm = 0.0
     detalle = []
     for i, z0, z1, s0, s1 in tramos:
-        e, dz = estratos[i], z1 - z0
-        if e.comportamiento == "no_drenado":
-            fsl = exigir(combinacion, FS_FRICCION_NO_DRENADO, "NSR-10 H.2.4.2 y Tabla H.2.4-1 (FSBUM)",
-                         "Combinación con Su (no se permite en análisis seudo-estático)")
-            a = alfa_nsr10(e.su_kpa)
-            tau_l = a * e.su_kpa
-        else:
-            fsl = exigir(combinacion, FS_FRICCION_DRENADO, "NSR-10 Tabla H.2.4-1 (FSBM)", "Combinación de carga")
-            a = None
-            tau_l = FACTOR_TAU_L * (e.c_kpa + e.k_lateral * 0.5 * (s0 + s1) * math.tan(math.radians(e.phi_deg)))
-        q = tau_l * p * dz
-        qs_ult += q
-        qs_adm += q / fsl
-        detalle.append({"estrato": i, "z0_m": z0, "z1_m": z1, "sigma_v_ef_medio_kpa": 0.5 * (s0 + s1),
-                        "alfa": a, "tau_l_kpa": tau_l, "fs_friccion": fsl, "qs_ult_kn": q})
+        d = fuste_tramo_nsr(estratos[i], p, z0, z1, s0, s1, combinacion)
+        qs_ult += d["qs_ult_kn"]
+        qs_adm += d["qs_ult_kn"] / d["fs_friccion"]
+        detalle.append({"estrato": i, **d})
 
     i_punta = tramos[-1][0]
     ep = estratos[i_punta]
-    if ep.comportamiento == "no_drenado":
-        qp_unit = NC_PUNTA_ARCILLA * ep.su_kpa
-    else:
-        if ep.qp_ult_kpa is None or not (ep.qp_ult_kpa > 0):
-            _falla("Punta en suelo drenado: la NSR-10 no da fórmula; ingrese qp_ult_kpa del estudio geotécnico "
-                   "(con SPT use arena_spt.capacidad_spt, CCP-14 §10.7.3.8.6g / §10.8.3.5.2)")
-        qp_unit = ep.qp_ult_kpa
+    qp_unit = punta_unitaria_nsr(ep)
     qp_ult = qp_unit * pilote.area_punta_m2
     qp_adm = qp_ult / fs_punta
 

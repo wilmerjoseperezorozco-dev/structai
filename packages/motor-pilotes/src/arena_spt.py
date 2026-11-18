@@ -91,6 +91,39 @@ def _validar(estratos: Sequence[EstratoSPT], pilote: Pilote) -> None:
         _falla("Se requiere longitud > ancho > 0")
 
 
+def fuste_tramo_spt(e: EstratoSPT, pilote: Pilote, z0: float, z1: float, s0: float, s1: float) -> list[dict]:
+    """Fricción última de un tramo con σ'v lineal, integrada en subtramos de ≤ 0.5 m (CN y β no son lineales)."""
+    out = []
+    n = max(1, math.ceil((z1 - z0) / SUBTRAMO_M - 1e-9))
+    for k in range(n):
+        a, b = z0 + (z1 - z0) * k / n, z0 + (z1 - z0) * (k + 1) / n
+        zm = 0.5 * (a + b)
+        sm = s0 + (s1 - s0) * (zm - z0) / (z1 - z0)
+        if pilote.tipo == "hincado":
+            n1 = cn_ccp14(sm) * e.n60
+            q_unit, coef = 1.9 * n1, {"metodo": "Meyerhof SPT CCP-14 10.7.3.8.6g-2", "n1_60": n1}  # 0.0019·N1_60 MPa
+        else:
+            beta = beta_ccp14(zm, e.n60, e.suelo)
+            q_unit, coef = min(QS_MAX_BETA_KPA, beta * sm), {"metodo": "β CCP-14 10.8.3.5.2b", "beta": beta}
+        out.append({"z0_m": a, "z1_m": b, "sigma_v_ef_kpa": sm, "qs_kpa": q_unit,
+                    "qs_ult_kn": q_unit * pilote.perimetro_m * (b - a), **coef})
+    return out
+
+
+def punta_spt(ep: EstratoSPT, pilote: Pilote, s_punta_kpa: float, db_m: float) -> tuple[float, dict]:
+    """qp,ult (kPa) en el estrato granular de apoyo; db_m es la penetración del pilote en ese estrato."""
+    if pilote.tipo == "hincado":
+        n1p = cn_ccp14(s_punta_kpa) * ep.n60
+        q_lim = (300.0 if ep.suelo == "limo_no_plastico" else 400.0) * n1p
+        qp_unit = min(38.0 * n1p * db_m / pilote.ancho_m, q_lim)       # 0.038·N1_60·Db/D MPa
+        return qp_unit, {"metodo_punta": "Meyerhof (CCP-14 10.7.3.8.6g-1)", "n1_60_punta": n1p, "db_m": db_m,
+                         "q_limite_kpa": q_lim, "limitada": qp_unit >= q_lim}
+    if ep.n60 > N60_MAX_EXCAVADO:
+        _falla(f"N60 = {ep.n60} > 50 en la punta: geomaterial intermedio (CCP-14 §10.8.3.5.4), próximamente")
+    qp_unit = min(57.0 * ep.n60, QP_MAX_EXCAVADO_KPA)                  # 0.057·N60 MPa
+    return qp_unit, {"metodo_punta": "CCP-14 10.8.3.5.2c-1", "limitada": qp_unit >= QP_MAX_EXCAVADO_KPA}
+
+
 def capacidad_spt(estratos: Sequence[EstratoSPT], pilote: Pilote, *, nivel_freatico_m: Optional[float],
                   combinacion: Combinacion) -> dict:
     """Capacidad última y admisible a compresión (kN) de un pilote individual en suelo granular con SPT."""
@@ -104,38 +137,14 @@ def capacidad_spt(estratos: Sequence[EstratoSPT], pilote: Pilote, *, nivel_freat
 
     qs_ult, detalle = 0.0, []
     for i, z0, z1, s0, s1 in tramos:
-        e = estratos[i]
-        n = max(1, math.ceil((z1 - z0) / SUBTRAMO_M - 1e-9))
-        for k in range(n):
-            a, b = z0 + (z1 - z0) * k / n, z0 + (z1 - z0) * (k + 1) / n
-            zm = 0.5 * (a + b)
-            sm = s0 + (s1 - s0) * (zm - z0) / (z1 - z0)   # σ'v es lineal dentro del tramo
-            if pilote.tipo == "hincado":
-                n1 = cn_ccp14(sm) * e.n60
-                q_unit, coef = 1.9 * n1, {"n1_60": n1}     # 0.0019·N1_60 MPa = 1.9·N1_60 kPa
-            else:
-                beta = beta_ccp14(zm, e.n60, e.suelo)
-                q_unit, coef = min(QS_MAX_BETA_KPA, beta * sm), {"beta": beta}
-            q = q_unit * p * (b - a)
-            qs_ult += q
-            detalle.append({"estrato": i, "z0_m": a, "z1_m": b, "sigma_v_ef_kpa": sm, "qs_kpa": q_unit,
-                            "qs_ult_kn": q, **coef})
+        for d in fuste_tramo_spt(estratos[i], pilote, z0, z1, s0, s1):
+            qs_ult += d["qs_ult_kn"]
+            detalle.append({"estrato": i, **d})
 
     i_punta, _, _, _, s_punta = tramos[-1]
     ep = estratos[i_punta]
     z_techo = sum(e.espesor_m for e in estratos[:i_punta])
-    if pilote.tipo == "hincado":
-        n1p = cn_ccp14(s_punta) * ep.n60
-        db = L - z_techo                                    # penetración en el estrato de apoyo
-        q_lim = (300.0 if ep.suelo == "limo_no_plastico" else 400.0) * n1p
-        qp_unit = min(38.0 * n1p * db / D, q_lim)          # 0.038·N1_60·Db/D MPa = 38·… kPa
-        punta = {"metodo_punta": "Meyerhof (CCP-14 10.7.3.8.6g-1)", "n1_60_punta": n1p, "db_m": db,
-                 "q_limite_kpa": q_lim, "limitada": qp_unit >= q_lim}
-    else:
-        if ep.n60 > N60_MAX_EXCAVADO:
-            _falla(f"N60 = {ep.n60} > 50 en la punta: geomaterial intermedio (CCP-14 §10.8.3.5.4), próximamente")
-        qp_unit = min(57.0 * ep.n60, QP_MAX_EXCAVADO_KPA)  # 0.057·N60 MPa = 57·N60 kPa
-        punta = {"metodo_punta": "CCP-14 10.8.3.5.2c-1", "limitada": qp_unit >= QP_MAX_EXCAVADO_KPA}
+    qp_unit, punta = punta_spt(ep, pilote, s_punta, L - z_techo)
     qp_ult = qp_unit * pilote.area_punta_m2
 
     return {"metodo_fuste": ("Meyerhof SPT (CCP-14 10.7.3.8.6g-2)" if pilote.tipo == "hincado"

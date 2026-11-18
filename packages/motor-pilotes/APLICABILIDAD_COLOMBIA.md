@@ -7,11 +7,11 @@ Estado al 2026-11-18. Cruza los métodos del motor con los datos colombianos que
 | Camino | Norma | Validación | Estado |
 |---|---|---|---|
 | Arcilla: fricción α·Su y punta 9·Su | NSR-10 H.4.7-3 (punta: Skempton) | CYCU λ = 1,48 [1,24; 1,78], n = 71. El Dorado λ = 1,39, n = 5 | Conservador, con COV 0,58 |
-| Arena, hincado: Meyerhof SPT | CCP-14 10.7.3.8.6g | Prerregistro listo; sin correr | Implementado |
-| Arena o grava, excavado: β y 0,057·N60 | CCP-14 10.8.3.5.2 | Prerregistro listo; sin correr | Implementado |
+| Arena, hincado: Meyerhof SPT | CCP-14 10.7.3.8.6g | CYCU λ = 0,97 [0,76; 1,22], n = 65 | Calibrado en promedio, COV 0,66 |
+| Arena o grava, excavado: β y 0,057·N60 | CCP-14 10.8.3.5.2 | CYCU λ = 0,90 [0,68; 1,18], n = 16 (7 sitios) | No concluyente |
 | Arena: Nordlund/Thurman | CCP-14 10.7.3.8.6f | — | Próximamente (hay que digitalizar las figuras f-1 a f-9) |
 | Geomaterial intermedio (N60 > 50) y roca | CCP-14 10.8.3.5.4 y NSR-10 H.4.7-4 | — | Próximamente |
-| Perfil mixto arcilla + arena en un mismo pilote | — | — | **Falta** (ver 4.2) |
+| Perfil mixto arcilla + arena en un mismo pilote | Cada estrato con su método | Equivalencia exacta con los caminos puros y cálculo a mano | Implementado (`mixto.py`, también en el contrato) |
 
 ## 2. Qué datos colombianos tiene StructAI y para qué sirven
 
@@ -57,9 +57,18 @@ Estado al 2026-11-18. Cruza los métodos del motor con los datos colombianos que
   - 10.8.3.5.2c-1: está impresa "Para 0,057N60 ≤ 50, qp = 1,2N60". Lo correcto es qp = 0,057·N60 MPa para N60 ≤ 50, con tope de 3 MPa.
   - Vale la pena reportarlas al INVIAS. Si un diseñador copia la versión impresa, puede sobreestimar la punta varias veces.
 
-### 4.2 Perfil mixto
+### 4.2 Perfil mixto (implementado el 2026-11-18)
 
-El siguiente paso de mayor valor para Colombia es calcular capas de arcilla con α y capas de arena con SPT en el mismo pilote. Hoy son dos funciones separadas (`axial.capacidad_individual` y `arena_spt.capacidad_spt`).
+`mixto.capacidad_mixta` evalúa cada estrato con su método y su factor de seguridad:
+- arcilla con α·Su;
+- suelo drenado con K;
+- suelo granular con SPT.
+
+La punta sale del estrato de apoyo. En Meyerhof, Db cuenta solo la penetración dentro del estrato granular. El grupo y el contrato ya usan esta función.
+
+**Pendiente:** validación con datos de perfil estratificado. La CYCU trae un solo estrato por prueba, así que no sirve para esto.
+
+**Precaución vigente:** en arena, con los FS de la NSR-10, el 14 % de las pruebas CYCU quedó con la capacidad medida por debajo de la admisible. El contrato lo advierte.
 
 ### 4.3 Licuación
 

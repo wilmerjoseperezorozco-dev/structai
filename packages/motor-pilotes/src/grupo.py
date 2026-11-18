@@ -16,7 +16,8 @@ from typing import Optional, Sequence
 
 from contrato_motor import exigir
 
-from .axial import FS_FRICCION_NO_DRENADO, FS_PUNTA, Combinacion, Estrato, Pilote, _falla, _tramos, capacidad_individual
+from .axial import FS_FRICCION_NO_DRENADO, FS_PUNTA, Combinacion, Estrato, Pilote, _falla, _tramos
+from .mixto import capacidad_mixta
 
 SEPARACION_MIN_REL = 2.5   # s/D usual en la práctica; por debajo se marca borde de dominio (no es de la NSR-10)
 
@@ -42,7 +43,7 @@ def nc_skempton(prof_m: float, b_m: float, l_m: float) -> float:
 def capacidad_bloque_arcilla(estratos: Sequence[Estrato], pilote: Pilote, *, filas: int, columnas: int,
                              separacion_m: float, nivel_freatico_m: Optional[float], combinacion: Combinacion) -> dict:
     tramos = _tramos(estratos, nivel_freatico_m, pilote.longitud_m)
-    if any(estratos[i].comportamiento != "no_drenado" for i, *_ in tramos):
+    if any(getattr(estratos[i], "comportamiento", None) != "no_drenado" for i, *_ in tramos):
         _falla("Falla en bloque implementada solo en arcilla no drenada en toda la longitud y en la punta; "
                "en suelo drenado está próximamente")
     fsl = exigir(combinacion, FS_FRICCION_NO_DRENADO, "NSR-10 H.2.4.2 y Tabla H.2.4-1 (FSBUM)",
@@ -66,7 +67,7 @@ def capacidad_grupo(estratos: Sequence[Estrato], pilote: Pilote, *, filas: int, 
     ingeniero. En arcilla, Converse-Labarre suele quedar por debajo del bloque y lo vuelve irrelevante."""
     if eficiencia not in METODOS_EFICIENCIA:
         _falla(f"Método de eficiencia '{eficiencia}' no reconocido; válidos: {', '.join(METODOS_EFICIENCIA)}")
-    ind = capacidad_individual(estratos, pilote, nivel_freatico_m=nivel_freatico_m, combinacion=combinacion)
+    ind = capacidad_mixta(estratos, pilote, nivel_freatico_m=nivel_freatico_m, combinacion=combinacion)
     n = filas * columnas
     e = eficiencia_converse_labarre(filas, columnas, separacion_m, pilote.ancho_m) if eficiencia == "converse_labarre" else None
     modos_adm = {"suma_individuales": n * ind["q_adm_kn"]}

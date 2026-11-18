@@ -14,6 +14,7 @@ if _RUTA not in sys.path:
 
 from contrato_motor import ResultadoMotor  # noqa: E402
 
+from .arena_spt import EstratoSPT  # noqa: E402
 from .axial import Estrato, Pilote  # noqa: E402
 from .grupo import SEPARACION_MIN_REL, capacidad_grupo  # noqa: E402
 
@@ -27,12 +28,26 @@ class EstratoEntrada(BaseModel):
     espesor_m: float = Field(..., gt=0)
     gamma_kn_m3: float = Field(..., gt=0, le=30)
     gamma_sat_kn_m3: Optional[float] = Field(default=None, gt=0, le=30)
-    comportamiento: Literal["drenado", "no_drenado"]
+    comportamiento: Literal["drenado", "no_drenado", "granular_spt"]
     su_kpa: Optional[float] = Field(default=None, gt=0, le=1000)
     c_kpa: Optional[float] = Field(default=None, ge=0, le=500)
     phi_deg: Optional[float] = Field(default=None, gt=0, lt=50)
     k_lateral: Optional[float] = Field(default=None, gt=0, le=5)
     qp_ult_kpa: Optional[float] = Field(default=None, gt=0, le=50000)
+    n60: Optional[float] = Field(default=None, gt=0, le=100, description="granular_spt: N corregido al 60 % de energía")
+    suelo_spt: Optional[Literal["arena", "limo_no_plastico", "grava"]] = None
+
+    @model_validator(mode="after")
+    def _spt(self):
+        if self.comportamiento == "granular_spt" and (self.n60 is None or self.suelo_spt is None):
+            raise ValueError("Estrato granular_spt: faltan n60 y suelo_spt (CCP-14 §10.7.3.8.6g / §10.8.3.5.2).")
+        return self
+
+    def a_motor(self):
+        if self.comportamiento == "granular_spt":
+            return EstratoSPT(espesor_m=self.espesor_m, gamma_kn_m3=self.gamma_kn_m3,
+                              gamma_sat_kn_m3=self.gamma_sat_kn_m3, n60=self.n60, suelo=self.suelo_spt)
+        return Estrato(**self.model_dump(exclude={"n60", "suelo_spt"}))
 
 
 class SolicitudPilotes(BaseModel):
@@ -58,7 +73,7 @@ class SolicitudPilotes(BaseModel):
 
 
 def pilotes_contrato(s: SolicitudPilotes) -> ResultadoMotor:
-    estratos = [Estrato(**e.model_dump()) for e in s.estratos]
+    estratos = [e.a_motor() for e in s.estratos]
     pilote = Pilote(seccion=s.seccion, ancho_m=s.ancho_m, longitud_m=s.longitud_m, tipo=s.tipo)
     g = capacidad_grupo(estratos, pilote, filas=s.filas, columnas=s.columnas, separacion_m=s.separacion_m or 0.0,
                         nivel_freatico_m=s.nivel_freatico_m, combinacion=s.combinacion,
@@ -80,6 +95,10 @@ def pilotes_contrato(s: SolicitudPilotes) -> ResultadoMotor:
     if g["separacion_relativa"] is not None and g["separacion_relativa"] < SEPARACION_MIN_REL:
         borde = True
         advertencias.append(f"Separación s/D = {g['separacion_relativa']:.2f} < {SEPARACION_MIN_REL:g} (práctica usual).")
+    if any(e.comportamiento == "granular_spt" for e in s.estratos):
+        advertencias.append("Estratos granulares con SPT (CCP-14): en la validación CYCU (#118, n = 81) el método queda "
+                            "calibrado en promedio (λ = 0,96) pero con COV 0,63; con los FS de la NSR-10, en el 14 % de "
+                            "las pruebas la capacidad medida quedó por debajo de la admisible. Se recomienda prueba de carga.")
     if g["bloque"] is not None and "no_evaluado" in g["bloque"]:
         advertencias.append("La falla en bloque (H.4.4.1 b-2) no se evaluó porque hay estratos drenados: próximamente.")
 
@@ -88,12 +107,15 @@ def pilotes_contrato(s: SolicitudPilotes) -> ResultadoMotor:
         "Fricción y punta con factores de seguridad separados (H.4.4.1): F_SL = F_SB de la Tabla H.2.4-1 y F_SICP de la Tabla H.4.7-1, valores mínimos de diseño.",
         "En arcilla con Su se usa FSBUM (H.2.4.2), que no se permite en análisis seudo-estático: con sismo hay que analizar en esfuerzos efectivos.",
         "τL = 2/3·τF en suelo drenado (H.4.7-2) y τL = α·Su en arcilla (H.4.7-3); K del fuste lo da el estudio geotécnico.",
-        "Punta en arcilla qp = 9·Su (Skempton, 1951); en suelo drenado qp viene del estudio geotécnico (CCP-14 §10.7/10.8 próximamente).",
+        "Punta en arcilla qp = 9·Su (Skempton, 1951); en suelo drenado con K, qp viene del estudio geotécnico; en estratos granulares con SPT, CCP-14 §10.7.3.8.6g (hincado, Meyerhof) o §10.8.3.5.2 (excavado, β), con las erratas del CCP-14 corregidas.",
+        "Perfil mixto: cada estrato con su método y su factor de seguridad; en Meyerhof, Db es la penetración dentro del estrato granular de apoyo. El CCP-14 es LRFD: aquí se usan los FS de la NSR-10.",
+        "N60 lo entrega el usuario ya corregido por energía; el motor no asume la relación de energía del equipo.",
+        "Nordlund/Thurman (CCP-14 §10.7.3.8.6f) y geomateriales intermedios (N60 > 50 en excavadas): próximamente.",
         "La cabeza del pilote está en la superficie del perfil (z = 0); no se descuenta el peso propio del pilote ni del encepado.",
         "No se demuestra que los F_SB directos equivalentes cumplan la Tabla H.2.4-1 (H.4.7.1); eso queda al ingeniero.",
         f"Eficiencia de grupo: {s.eficiencia_grupo} (Converse-Labarre si se pide). El bloque en arcilla es el de Terzaghi y Peck con Nc de Skempton; la NSR-10 no fija fórmulas.",
         "No se verifican asentamientos (H.4.4.2) ni la resistencia estructural del pilote.",
-        f"Tipo '{s.tipo}': hoy solo informa; la diferencia entre hincado y excavado entra a través de K y qp del estudio.",
+        f"Tipo '{s.tipo}': en estratos con SPT elige el método del CCP-14; en estratos con K y qp la diferencia entra a través del estudio.",
         "Se reporta el perfil de entrada tal como se recibe; las correlaciones SPT → Su/φ' están próximamente.",
     ]
     if s.nivel_freatico_m is None:
@@ -105,9 +127,11 @@ def pilotes_contrato(s: SolicitudPilotes) -> ResultadoMotor:
                "modos_ult_kn": g["modos_ult_kn"], "bloque": g["bloque"]},
         unidad_si="Fuerzas en kN; esfuerzos en kPa; longitudes en m",
         ecuacion="Qadm = Σ τL·p·Δz / F_SL + qp·Ap / F_SICP; τL = 2/3(c' + K·σ'v·tanφ') o α·Su, "
-                 "α = 0.2 + 0.8·exp[0.35 − 2Su/PA] ≤ 1; grupo = mín(Σ individuales, bloque, E·Σ individuales)",
+                 "α = 0.2 + 0.8·exp[0.35 − 2Su/PA] ≤ 1; con SPT: qs = 0.0019·N1_60 MPa (hincado) o β·σ'v ≤ 0.19 MPa "
+                 "(excavado), qp = 0.038·N1_60·Db/D ≤ 0.4·N1_60 MPa o 0.057·N60 ≤ 3 MPa; "
+                 "grupo = mín(Σ individuales, bloque, E·Σ individuales)",
         referencia_normativa="NSR-10 Título H (H.4.4.1, H.4.7.1, H.4.7.2, Tablas H.4.7-1 y H.2.4-1) · Skempton (1951) · "
-                             "Terzaghi y Peck · Converse-Labarre",
+                             "CCP-14 §10.4.6.2.4, §10.7.3.8.6g y §10.8.3.5.2 · Terzaghi y Peck · Converse-Labarre",
         supuestos=supuestos,
         advertencias=advertencias,
         en_borde_dominio=bool(borde),
