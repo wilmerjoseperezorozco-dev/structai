@@ -24,8 +24,10 @@ Ninguna función lanza por fallas de red o de datos: cada fuente que falla queda
 """
 from __future__ import annotations
 
+import json
 import logging
 import math
+from pathlib import Path
 from typing import Any, Callable, Optional
 
 import httpx
@@ -210,6 +212,37 @@ def microzonificacion(sb, codigo: str) -> Optional[dict]:
                            f.get("descripcion_zona") or "")} for f in filas]}
 
 
+# ── 3b. indicador hídrico (H3/H5, #273) ───────────────────────────────────────────────────────────────────────────
+
+_INDICE_HIDRICO: Optional[dict] = None
+RUTA_INDICE_HIDRICO = Path(__file__).resolve().parent / "data" / "indice_hidrico_h3.json"
+PERCENTIL_HIDRICO_ALTO = 0.80
+
+
+def _indice_hidrico() -> dict:
+    global _INDICE_HIDRICO
+    if _INDICE_HIDRICO is None:
+        _INDICE_HIDRICO = json.loads(RUTA_INDICE_HIDRICO.read_text(encoding="utf-8"))
+    return _INDICE_HIDRICO
+
+
+def indicador_hidrico(codigo: str) -> Optional[dict]:
+    """Índice de riesgo hídrico para puentes y vías (H3) del municipio, con su respaldo. None si no está en la cobertura."""
+    d = _indice_hidrico()
+    m = d["municipios"].get(codigo)
+    if m is None:
+        return None
+    q = m["percentil"]
+    nivel = "alto" if q >= PERCENTIL_HIDRICO_ALTO else ("medio" if q >= 0.5 else "bajo")
+    return {**m, "nivel": nivel, "version": d["version"], "metodo": d["metodo"], "validacion": d["validacion"],
+            "cobertura": d["cobertura"],
+            "contexto": "En 2019-2024, el 73 % del daño estructural reportado por la UNGRD (viviendas, vías y puentes) "
+                        "fue de origen hídrico y el 0,4 % sísmico (H5, #273). El Aa de la NSR-10 no ordena ese daño una vez "
+                        "descontados relieve, población y reporte: el indicador hídrico complementa al sísmico, no lo "
+                        "reemplaza.",
+            "uso": "Priorizar inspección y estudios hidráulicos; no sirve para diseñar."}
+
+
 # ── 4. pre-diseño de la exploración ───────────────────────────────────────────────────────────────────────────────
 
 def recomendaciones(ficha: dict) -> list[dict]:
@@ -234,6 +267,13 @@ def recomendaciones(ficha: dict) -> list[dict]:
                                "por inundación o creciente en el municipio",
                     "pedir": "Si la obra es un puente o está junto a un cauce: estudio hidráulico y de socavación local "
                              "(CCP-14 Sección 2)."})
+    h = ficha.get("indicador_hidrico") or {}
+    if h.get("nivel") == "alto":
+        rec.append({"tema": "hidrico",
+                    "por_que": f"Indicador hídrico en el percentil {h['percentil']:.0%} de {h['cobertura']} (H3: AUC 0,75 "
+                               "para puentes averiados)",
+                    "pedir": "Estudio hidrológico e hidráulico del sitio (crecientes, drenaje, socavación si hay cauce) "
+                             "antes de definir cimentación y cota de implantación."})
     m = ficha.get("movimientos_masa") or {}
     if m.get("total", 0) > 0:
         rec.append({"tema": "ladera", "por_que": f"SGC SIMMA: {m['total']} movimientos en masa a {m.get('radio_km')} km",
@@ -292,8 +332,12 @@ def ficha_sitio(sb, *, lat: Optional[float] = None, lon: Optional[float] = None,
     _fuente("emergencias_ungrd", emergencias_ungrd, sb, codigo)
     _fuente("vulnerabilidad_sisben", vulnerabilidad_sisben, sb, codigo)
     _fuente("microzonificacion", microzonificacion, sb, codigo)
+    _fuente("indicador_hidrico", indicador_hidrico, codigo)
     if ficha["microzonificacion"] is None and codigo not in CIUDADES_MICROZONIFICACION:
         no_disponibles.remove("microzonificacion")          # no es una falla: el municipio no tiene estudio cargado
+    if ficha["indicador_hidrico"] is None and "indicador_hidrico" in no_disponibles and RUTA_INDICE_HIDRICO.exists():
+        no_disponibles.remove("indicador_hidrico")          # fuera de la cobertura del panel (21 departamentos)
+        ficha["indicador_hidrico"] = {"nivel": "sin_dato", "cobertura": _indice_hidrico()["cobertura"]}
     ref = punto or (municipio or {}).get("centroide")
     if ref:
         _fuente("estacion_ideam_cercana", estacion_ideam_cercana, sb, ref["lat"], ref["lon"])
@@ -307,5 +351,6 @@ def ficha_sitio(sb, *, lat: Optional[float] = None, lon: Optional[float] = None,
     return ficha
 
 
-_AVISO = ("Ficha orientativa a partir de datos públicos (SGC, NSR-10 A-4, IGAC, UNGRD, Sisbén, IDEAM). No reemplaza el "
+_AVISO = ("Ficha orientativa a partir de datos públicos (SGC, NSR-10 A-4, IGAC, UNGRD, Sisbén, IDEAM) y del indicador "
+          "hídrico de StructAI (#273). No reemplaza el "
           "estudio geotécnico exigido por la NSR-10 Título H; sirve para planear qué exploración pedir.")

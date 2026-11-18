@@ -173,3 +173,28 @@ def test_metodo_por_zona():
     assert st.metodo_por_zona("Arcillas lacustres con intercalaciones aluviales").startswith("Arcilla blanda")
     assert st.metodo_por_zona("Abanico Distal de Cali").startswith("Perfil aluvial")
     assert st.metodo_por_zona("Zona 3 T0=0.17s").startswith("Según exploración")
+
+
+def test_indicador_hidrico_alto_dispara_recomendacion(monkeypatch):
+    monkeypatch.setattr(st, "_INDICE_HIDRICO", {
+        "version": "v", "metodo": "m", "validacion": "AUC 0,75", "cobertura": "1000 municipios",
+        "municipios": {"11001": {"indice": 0.9, "percentil": 0.95, "puentes_hidricos_2019_2024": 4}}})
+    f = st.ficha_sitio(_SB(_tablas()), codigo_municipio="11001")
+    assert f["indicador_hidrico"]["nivel"] == "alto"
+    assert "sísmico" in f["indicador_hidrico"]["contexto"]
+    assert "hidrico" in [r["tema"] for r in f["recomendaciones"]]
+
+
+def test_indicador_hidrico_fuera_de_cobertura_no_es_falla(monkeypatch):
+    monkeypatch.setattr(st, "_INDICE_HIDRICO", {"version": "v", "metodo": "m", "validacion": "v",
+                                                "cobertura": "1000 municipios", "municipios": {}})
+    f = st.ficha_sitio(_SB(_tablas()), codigo_municipio="11001")
+    assert f["indicador_hidrico"]["nivel"] == "sin_dato"
+    assert "indicador_hidrico" not in f["fuentes_no_disponibles"]
+
+
+def test_indice_hidrico_real_bien_formado():
+    d = st._indice_hidrico()
+    assert len(d["municipios"]) >= 900
+    m = next(iter(d["municipios"].values()))
+    assert 0 <= m["percentil"] <= 1 and "indice" in m
