@@ -634,3 +634,44 @@ Mejora del límite de la sección 11: "la cercanía geográfica no garantiza con
   - el HAND de 90 m no ve terraplenes;
   - análisis municipal;
   - Orinoquía con 18 municipios.
+
+## §33. H8: relieve en la cabecera municipal o redondeado frente al lote (fijado el 2026-11-18, antes del análisis)
+
+**Pregunta.** La alarma de relieve validada en H2b (S ≤ 6,5 m, con S = cota DEM − mínima a ≤ 1 km) se calcula en el pozo. Pero `/sitio`:
+- por la regla de privacidad, guarda como máximo la coordenada redondeada a 0,01°;
+- muchas veces solo conoce el municipio (DIVIPOLA).
+
+¿Cuánto discrimina la alarma si se calcula en la coordenada redondeada (`r001`) o en la cabecera DIVIPOLA?
+
+**Datos.**
+- Pozos y aljibes con nivel medido del SGC, CC BY 4.0, los mismos de H2 y H2b:
+  - llanura: Meta, Guaviare, Inírida y Casanare;
+  - Quindío, que se reporta aparte.
+- DEM Copernicus GLO-90 y coordenadas DIVIPOLA de `h3_insumos.json`.
+
+**Conteo previo** (`--conteo`, sin niveles):
+- 1.190 puntos con S en las 3 ubicaciones: llanura 932 y Quindío 258, en 17 municipios. 15 puntos se pierden por el borde de tesela al redondear.
+- Distancia del punto a la cabecera: mediana 12,7 km (p10 2,1; p90 34,4).
+- Concordancia de la alarma en llanura: 0,80 entre lote y r001, y **0,41 entre lote y cabecera**.
+- En Quindío la alarma casi no se activa (1 %), así que su resultado es solo descriptivo.
+
+**Resultado.** Nivel somero: ≤ 2 m en llanura y ≤ 5 m en Quindío, los mismos umbrales de H2b.
+
+**Medidas (llanura).**
+- **C1 (redondeo).** ΔAUC = AUC(lote) − AUC(r001), con IC95 bootstrap por bloque de 0,1° (semilla 2788).
+  - EQUIVALENTE si el límite superior < 0,05.
+  - PIERDE si el límite inferior > 0.
+  - Si no, NO CONCLUYENTE.
+- **C2 (cabecera).** ΔAUC = AUC(lote) − AUC(cabecera).
+  - BASTA si el límite superior < 0,05.
+  - NO BASTA si el límite inferior > 0,05, o si el IC de AUC(cabecera) queda por debajo de 0,60.
+  - Si no, NO CONCLUYENTE.
+- **Descriptivo:** sensibilidad, especificidad, VPP y fracción de alarma en cada ubicación, y AUC según la distancia a la cabecera (≤ 5 km y > 5 km).
+
+**Lectura fijada.**
+- Si C1 es EQUIVALENTE, `/sitio` puede trabajar con 0,01° sin perder la alarma.
+- Si C2 es NO BASTA, la alarma **no** se muestra con solo el municipio. `/sitio` debe pedir el punto del lote (opt-in, redondeado) o decir que la alarma no aplica.
+
+**Limitaciones.**
+- La S de la cabecera es constante dentro del municipio. Con 17 municipios, el tamaño efectivo para C2 es pequeño.
+- Los bloques de 0,1° no coinciden con los municipios.
