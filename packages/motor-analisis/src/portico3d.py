@@ -18,6 +18,8 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 import numpy as np
+from scipy.linalg import LinAlgError, cho_factor
+from scipy.linalg.lapack import dpocon
 
 COND_MAX = 1e14
 
@@ -104,8 +106,17 @@ class Portico3D:
         self._C, self._nred, self._maestro_idx = self._restricciones()
         self._K = self._ensamblar()
         self._Kr = self._C.T @ self._K @ self._C
-        if self._nred and np.linalg.cond(self._Kr) > COND_MAX:
-            raise ValueError("Modelo inestable o mal restringido (matriz de rigidez singular)")
+        self._cond = 1.0
+        if self._nred:
+            # Cholesky + estimación LAPACK del número de condición (norma 1): O(n³/3), sin SVD
+            try:
+                c, _ = cho_factor(self._Kr)
+            except LinAlgError:
+                raise ValueError("Modelo inestable o mal restringido (matriz de rigidez no definida positiva)")
+            rcond, info = dpocon(np.triu(c), np.abs(self._Kr).sum(axis=0).max())
+            self._cond = 1.0 / rcond if rcond > 0 else float("inf")
+            if self._cond > COND_MAX:
+                raise ValueError("Modelo inestable o mal restringido (matriz de rigidez singular)")
 
     # ---- geometría y matrices -------------------------------------------------
     def longitud(self, e: Elemento3D) -> float:
@@ -247,4 +258,5 @@ class Portico3D:
         return Resultado3D(caso.nombre, u.reshape(n, 6), maes, reac, fext)
 
     def numero_condicion(self) -> float:
-        return float(np.linalg.cond(self._Kr)) if self._nred else 1.0
+        """Estimación LAPACK (dpocon) del número de condición en norma 1 de la rigidez reducida."""
+        return float(self._cond)
