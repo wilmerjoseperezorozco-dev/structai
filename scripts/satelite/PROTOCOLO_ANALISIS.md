@@ -514,3 +514,60 @@ Mejora del límite de la sección 11: "la cercanía geográfica no garantiza con
   - la malla trata igual zonas habitadas y despobladas;
   - polígonos simplificados.
 - **Lo que ya vi:** el número total de puntos SIMMA (6.826) y la geometría de la malla. No he contado SIMMA alrededor de ningún nodo ni de ninguna cabecera en este análisis. Del trabajo anterior conozco que la capa de amenaza SIMMA 1:25k cubre solo 59 municipios (§ otro inventario, no este).
+
+## 30. H2 (#273): nivel freático somero inferido por proximidad hidrológica, sin perforar. Definido ANTES de cruzar niveles con predictores (2026-11-18)
+
+**Pregunta:** ¿predice un índice construido con datos públicos (relieve del DEM, altura sobre la estación de caudal IDEAM más cercana e IGAC) dónde el nivel freático está a ≤ 2 m, medido en pozos y aljibes?
+
+- **Resultado medido:** nivel estático de los inventarios de puntos de agua del SGC (CC BY 4.0).
+  - Se eliminaron del caché los campos con datos personales (nombres, teléfonos, fotos, observaciones).
+  - Se usan solo pozos y aljibes. Manantiales y agua superficial quedan fuera.
+  - **Campo de nivel, por regla fija según su nombre:**
+
+    | Capa | Campo |
+    |---|---|
+    | Guaviare | `Nivel_E` |
+    | Meta | `I_Nivel` (si no hay, `V_Nivel`) |
+    | Inírida | mediana de `NE_Seco`, `NE_hum` y `NE_interm` |
+
+  - Valores ≤ 0 o mayores de 200 m se tratan como faltantes.
+  - **Casanare** (`PROFUNDI_4`) tiene un nombre ambiguo: solo entra como sensibilidad. **Quindío** (campos ambiguos) y **Santurbán** (sin nivel) quedan fuera.
+- **Lo que ya vi:**
+  - las distribuciones marginales de los campos candidatos, para identificar cuál es el nivel (por ejemplo, la mediana de `I_Nivel` en Meta es 2,1 m);
+  - la muestra elegible (`--conteo`).
+
+  **No he cruzado el nivel con ningún predictor.**
+- **Muestra principal:** 453 puntos con nivel (Meta 302, Guaviare 76, Inírida 75; 259 pozos y 194 aljibes) en 27 bloques de 0,1° y 6 municipios. Con Casanare: 947 puntos.
+- **Predictores, fijos:**
+  - **S:** cota DEM del punto (Copernicus GLO-90) menos la cota mínima a ≤ 1 km (3 km en sensibilidad). Es un sustituto de la altura sobre el drenaje.
+  - **E:** cota DEM menos la altitud de la estación de caudal IDEAM más cercana (≤ 30 km; mediana de distancia 10 km).
+  - **G:** IGAC del municipio: media de la fracción con drenaje deficiente (imperfecto, pobre o muy pobre) y la fracción inundable (cortas, largas o muy largas).
+  - **Índice** = media de los rangos percentiles de (−S, −E, G). Si falta un dato, entra el rango neutro 0,5.
+  - El caudal o nivel **actual** de la estación no entra: los pozos se midieron en fechas distintas y no hay serie temporal en StructAI.
+- **Confirmatorios** (IC95 % por bootstrap de bloques de 0,1°, 2.000 réplicas, semilla 2732):
+  - **C1 (principal):** AUC del índice para "nivel ≤ 2 m".
+
+    | Si el IC95… | Veredicto |
+    |---|---|
+    | queda por encima de 0,60 | **ÚTIL** |
+    | queda por debajo de 0,55 | **NO ÚTIL** |
+    | en otro caso | **NO CONCLUYENTE** |
+
+  - **C2:** ΔAUC (índice − solo S). Si el IC queda por encima de 0, la cadena completa agrega información al relieve.
+- **Secundario:**
+  - AUC de cada componente (S, S a 3 km, E, G);
+  - ρ de Spearman del índice con la profundidad;
+  - AUC por tipo (pozo, aljibe) y por capa;
+  - regla de alarma "índice en el tercio superior": sensibilidad y valor predictivo positivo.
+  - **Sensibilidad:** umbrales de 1 m y 3 m, y con Casanare.
+- **Lectura fijada de antemano:**
+  - Un resultado ÚTIL justifica una **alarma temprana** de "posible nivel freático somero: verificar con piezómetro o apique" en `/sitio`. **No** sustituye la medición.
+  - **G casi no varía dentro de la muestra:** el 92 % de los puntos está en tres municipios (Puerto López, San José del Guaviare e Inírida). Su AUC mide sobre todo diferencias entre regiones, no la capacidad del IGAC a nivel de punto. El AUC dentro de cada capa descuenta ese efecto.
+- **Limitaciones declaradas:**
+  - fechas y estaciones de medición distintas (el nivel varía entre seco y húmedo);
+  - los aljibes existen donde el agua es somera (sesgo de selección): por eso se reporta por tipo;
+  - regiones de llanura (Meta, Guaviare, Guainía), no Andes ni Caribe: no se puede generalizar;
+  - S solo se calcula dentro de la tesela del punto (efecto de borde);
+  - la estación más cercana puede estar en otro río;
+  - el DEM de 90 m es superficie, no terreno (vegetación);
+  - pocos bloques espaciales.
