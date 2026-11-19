@@ -51,7 +51,7 @@ def preparar():
 
 
 def parcial(p, x, y, ctrl):
-    return float(h3.parcial(p[x].values, p[y].values, p[ctrl].values))
+    return float(h3.parcial(p[x].values, p[y].values, [p[c].values for c in ctrl]))
 
 
 def bloque(p, fun):
