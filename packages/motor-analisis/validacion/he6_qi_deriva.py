@@ -51,7 +51,7 @@ def rect(b, h):
     return b * h, b * h**3 / 12, h * b**3 / 12, J
 
 
-def edificio(N, L, c, dv=0.0):
+def edificio(N, L, c, dv=0.0, fc_col=0.70, fc_vig=0.35):
     xs = [L * i for i in range(VANOS + 1)]
     hv = max(_redondear(L / 12), 0.30) + dv
     bv = max(0.25, _redondear(hv / 2))
@@ -68,13 +68,13 @@ def edificio(N, L, c, dv=0.0):
             apoyos.update({k: (True,) * 6 for k in fila.values()})
         else:
             for p, k in fila.items():
-                els.append(Elemento3D(prev[p], k, EC, GC, Ac, 0.70 * Ic, 0.70 * Ic, Jc))
+                els.append(Elemento3D(prev[p], k, EC, GC, Ac, fc_col * Ic, fc_col * Ic, Jc))
             for y in xs:
                 for a, b in zip(xs, xs[1:]):
-                    els.append(Elemento3D(fila[(a, y)], fila[(b, y)], EC, GC, Av, 0.35 * Iv_debil, 0.35 * Iv_fuerte, Jv))
+                    els.append(Elemento3D(fila[(a, y)], fila[(b, y)], EC, GC, Av, fc_vig * Iv_debil, fc_vig * Iv_fuerte, Jv))
             for x in xs:
                 for a, b in zip(xs, xs[1:]):
-                    els.append(Elemento3D(fila[(x, a)], fila[(x, b)], EC, GC, Av, 0.35 * Iv_debil, 0.35 * Iv_fuerte, Jv))
+                    els.append(Elemento3D(fila[(x, a)], fila[(x, b)], EC, GC, Av, fc_vig * Iv_debil, fc_vig * Iv_fuerte, Jv))
             dia.append(Diafragma(f"P{nv}", tuple(fila.values()), xs[-1] / 2, xs[-1] / 2))
         prev = fila
     lado = xs[-1]
