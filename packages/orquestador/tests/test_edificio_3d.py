@@ -1,5 +1,7 @@
 """#275 F4/F0: edificio 3D → diseño de vigas y columnas → cantidades → memoria de cálculo."""
+import dataclasses
 import json
+import math
 import os
 import sys
 
@@ -125,3 +127,59 @@ def test_validaciones_de_entrada():
         proyecto(columnas_mm=(750,) * 4)
     with pytest.raises(ValueError):
         proyecto(capacidad="ALTA")
+
+
+def test_cargas_distribuidas_y_momentos_coinciden_con_pynite():
+    """Oráculo independiente (PyNite, MIT, solo en pruebas): mismo pórtico sin diafragma, carga D distribuida en vigas y
+    peso propio de columnas. Secciones cuadradas para que la orientación local no importe."""
+    Pynite = pytest.importorskip("Pynite")
+    p = proyecto(luces_x_m=(6.0, 4.0), luces_y_m=(5.0,), alturas_piso_m=(3.0, 3.0), columnas_mm=(500, 500),
+                 vigas_mm=((400, 400), (400, 400)))
+    m = de.construir_modelo(p)
+    pt = de._p3.Portico3D(m.portico.nodos, m.portico.elementos, m.portico.apoyos)
+    r = pt.resolver(de._p3.Caso3D("D", uniformes=m.cargas_d))
+    f = Pynite.FEModel3D()
+    e0 = pt.elementos[0]
+    f.add_material("c", e0.E, e0.G, 0.2, 0.0)
+    for k, n in enumerate(pt.nodos):
+        f.add_node(f"N{k}", n.x, n.y, n.z)
+    for k in pt.apoyos:
+        f.def_support(f"N{k}", True, True, True, True, True, True)
+    for t, e in enumerate(pt.elementos):
+        assert e.Iy == pytest.approx(e.Iz)
+        f.add_section(f"S{t}", e.A, e.Iy, e.Iz, e.J)
+        f.add_member(f"M{t}", f"N{e.i}", f"N{e.j}", "c", f"S{t}")
+        w = m.cargas_d[t][2]
+        f.add_member_dist_load(f"M{t}", "FZ", w, w)
+    f.analyze_linear()
+    for k in range(len(pt.nodos)):
+        n = f.nodes[f"N{k}"]
+        ref = [n.DX["Combo 1"], n.DY["Combo 1"], n.DZ["Combo 1"], n.RX["Combo 1"], n.RY["Combo 1"], n.RZ["Combo 1"]]
+        assert np.allclose(r.u[k], ref, rtol=1e-6, atol=1e-10)
+    for t, tipo in enumerate(m.meta):
+        if tipo[0] == "col":
+            continue
+        fe, L, w = r.f_extremos[t], pt.longitud(pt.elementos[t]), m.w_viga[t][0]
+        mb = f.members[f"M{t}"]
+        xs = (0.0, 0.25, 0.5 * L, 0.8 * L, L)
+        mios = [-fe[5] + fe[1] * x - w * x**2 / 2 for x in xs]
+        comp = {c: [mb.moment(c, x) for x in xs] for c in ("My", "Mz")}
+        refs = max(comp.values(), key=lambda v: max(abs(z) for z in v))   # componente en el plano vertical
+        escala = max(abs(v) for v in mios)
+        assert escala > 10.0
+        for a, b in zip(mios, refs):
+            assert abs(a) == pytest.approx(abs(b), abs=1e-6 * escala)
+
+
+def test_optimizador_devuelve_el_mas_barato_que_cumple():
+    from src import optimizar_edificio_3d as op
+    base = proyecto(alturas_piso_m=(3.0,) * 3, columnas_mm=(1,) * 3, vigas_mm=((1, 1),) * 3, aa=0.10, av=0.10, capacidad="DMI")
+    r = op.optimizar(base)
+    assert r.mejor is not None and r.mejor.cumple
+    costos = [c["costo_cop"] for c in r.candidatos if "costo_cop" in c]
+    assert r.mejor.cantidades["costo_cop"] == pytest.approx(min(costos))
+    # una columna 50 mm menor con la misma viga no cumple (la elegida es la mínima de la bisección o falló el diseño)
+    p = r.mejor.proyecto
+    menor = dataclasses.replace(p, columnas_mm=tuple(max(300.0, c - 50) for c in p.columnas_mm))
+    if menor.columnas_mm != p.columnas_mm and menor.columnas_mm[-1] >= p.vigas_mm[0][0]:
+        assert not de.disenar_edificio(menor).cumple

@@ -89,3 +89,6 @@ apps/api/datos_indice/
 
 # Secretos y datos privados locales (claves de evaluación, tokens de prueba, APU de colegas)
 /_privado/
+
+# memorias sintéticas de #275 (regenerables con scripts/memorias_sinteticas/generar.py)
+data/memorias_sinteticas/memorias/
