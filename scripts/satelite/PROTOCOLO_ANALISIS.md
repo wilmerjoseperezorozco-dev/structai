@@ -596,3 +596,41 @@ Mejora del límite de la sección 11: "la cercanía geográfica no garantiza con
 - **Lectura fijada:**
   - VALIDADA en Casanare permite usar la regla como **alarma orientativa** en llanuras.
   - Quindío dice si sirve fuera de la llanura. Si allí falla, la alarma se limita a relieve plano (llanuras y valles aluviales) y se declara así en `/sitio`.
+
+## 32. H6 (#273): vías principales en terreno bajo (HAND) frente a vías averiadas por eventos hídricos. Definido ANTES de cruzar exposición con daño vial (2026-11-18)
+
+**Por qué así:** la versión "viviendas en zonas bajas" ya se probó en V1 (§§ V1, 2026-11-08) y no se confirmó fuera del Caribe. Lo nuevo es el resultado: **vías averiadas** de la UNGRD. Ese campo no se usó en V1 (`RESULTADOS_VIAS_HAND.md` decía "no hay validación contra daños").
+
+- **Unidad:** 729 municipios del panel con ≥ 5 km de vía principal (Andina 452, Caribe 159, Pacífica 100, Orinoquía 18; 21 departamentos).
+- **Predictor:** `expo_vial` de V1, la fracción de los km de vía troncal, primaria o secundaria (OSM, 2026-11-08) con HAND < 10 m (red de 5 km²).
+- **Resultado:** vías averiadas en eventos hídricos (inundación, creciente súbita, avenida torrencial), UNGRD, por 100 km de vía principal, en log1p.
+  - y1 cubre 2019-2024 y y2 cubre 2023-2024.
+  - La unidad de `vias_averiadas` es la que reporta la UNGRD (conteo), no km.
+- **Conteo previo** (sin cruzar con el daño):
+  - expo_vial: p10/p50/p90 = 0,02 / 0,24 / 0,76; mediana Caribe 0,56 y Andina 0,17.
+  - ρ(expo_vial, pendiente) = −0,49.
+  - **ρ(expo_vial, índice H3) = −0,38:** las vías bajas están en municipios llanos, y el índice H3 pesa la pendiente.
+- **Confirmatorios** (IC95 % por bootstrap de bloques por departamento, 2.000 réplicas, semilla 2766):
+  - **C1:** ρ parcial(expo_vial, y1 | log población, P_A, log km de vía, pendiente p90).
+
+    | Si… | Veredicto |
+    |---|---|
+    | el IC queda por encima de 0 y ρ ≥ 0,10 | **CONFIRMADA** |
+    | el IC queda por debajo de 0,10 | **REFUTADA** |
+    | en otro caso | **NO CONCLUYENTE** |
+
+  - **C2 (más allá de H3, temporal):** ρ parcial(expo_vial, y2 | índice H3 con historial 2019-2022, log población, P_A, log km de vía). **AGREGA** si el IC queda por encima de 0.
+- **Secundario:**
+  - ρ bruto;
+  - AUC para "alguna vía averiada por evento hídrico en 2023-2024", de expo_vial, del índice H3 y de la combinación de ambos;
+  - control negativo: incendios forestales (se espera ρ ≈ 0);
+  - ρ parcial por región (n ≥ 30) y por tercil de pendiente.
+- **Lectura fijada de antemano:**
+  - CONFIRMADA o AGREGA justifica mostrar en `/sitio`, para obras viales, la fracción del corredor en terreno bajo junto al índice H3. Este último está hecho para puentes y pesa la pendiente; el daño vial en llanura podría ser otro mecanismo (inundación lenta frente a creciente torrencial).
+  - REFUTADA, junto con V1, indica que el HAND municipal de 90 m no ordena el daño reportado. La información útil sería entonces local (punto o corredor), no municipal.
+- **Limitaciones declaradas:**
+  - la UNGRD reporta y no inventaria; `vias_averiadas` no distingue tipo ni longitud de vía, e incluye vías terciarias que no están en el predictor;
+  - OSM es voluntario;
+  - el HAND de 90 m no ve terraplenes;
+  - análisis municipal;
+  - Orinoquía con 18 municipios.
