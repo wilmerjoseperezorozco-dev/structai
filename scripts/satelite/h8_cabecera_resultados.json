@@ -1,0 +1,165 @@
+{
+ "protocolo": "PROTOCOLO_ANALISIS.md §33",
+ "regla": "S(1 km) <= 6.5 m",
+ "excluidos_sin_S_cabecera": 15,
+ "llanura": {
+  "n": 932,
+  "n_municipios": 8,
+  "n_bloques": 51,
+  "prevalencia": 0.5933476394849786,
+  "S": {
+   "auc": {
+    "valor": 0.7670466202579358,
+    "ic95": [
+     0.6945042564519499,
+     0.8335413220261937
+    ]
+   },
+   "regla": {
+    "sensibilidad": 0.7522603978300181,
+    "especificidad": 0.6649076517150396,
+    "vpp": 0.7661141804788214,
+    "fraccion_alarma": 0.5826180257510729
+   }
+  },
+  "S_r001": {
+   "auc": {
+    "valor": 0.7385715717100775,
+    "ic95": [
+     0.6702787020491815,
+     0.805117378546866
+    ]
+   },
+   "regla": {
+    "sensibilidad": 0.8028933092224232,
+    "especificidad": 0.6094986807387863,
+    "vpp": 0.75,
+    "fraccion_alarma": 0.6351931330472103
+   }
+  },
+  "S_cabecera": {
+   "auc": {
+    "valor": 0.4179171418074594,
+    "ic95": [
+     0.29286813808102974,
+     0.5577600802247611
+    ]
+   },
+   "regla": {
+    "sensibilidad": 0.048824593128390596,
+    "especificidad": 0.8733509234828496,
+    "vpp": 0.36,
+    "fraccion_alarma": 0.08047210300429185
+   }
+  },
+  "delta_auc_lote_menos_S_r001": {
+   "valor": 0.028475048547858317,
+   "ic95": [
+    -0.007462608822898877,
+    0.06734248814158679
+   ]
+  },
+  "delta_auc_lote_menos_S_cabecera": {
+   "valor": 0.34912947845047637,
+   "ic95": [
+    0.20678071730826972,
+    0.4918922825951591
+   ]
+  },
+  "C1_r001": "NO CONCLUYENTE",
+  "C2_cabecera": "NO BASTA",
+  "auc_cabecera_ic_inferior": 0.29286813808102974,
+  "por_distancia_cabecera": {
+   "<=5km": {
+    "n": 157,
+    "auc_lote": 0.752,
+    "auc_cabecera": 0.434
+   },
+   ">5km": {
+    "n": 775,
+    "auc_lote": 0.7483413181797572,
+    "auc_cabecera": 0.3783419227107168
+   }
+  }
+ },
+ "quindio": {
+  "n": 258,
+  "n_municipios": 9,
+  "n_bloques": 12,
+  "prevalencia": 0.13565891472868216,
+  "S": {
+   "auc": {
+    "valor": 0.5221012171684818,
+    "ic95": [
+     0.3526716650289673,
+     0.7369629158892917
+    ]
+   },
+   "regla": {
+    "sensibilidad": 0.05714285714285714,
+    "especificidad": 1.0,
+    "vpp": 1.0,
+    "fraccion_alarma": 0.007751937984496124
+   }
+  },
+  "S_r001": {
+   "auc": {
+    "valor": 0.4680973734785394,
+    "ic95": [
+     0.3000437206163013,
+     0.6875547859082412
+    ]
+   },
+   "regla": {
+    "sensibilidad": 0.08571428571428572,
+    "especificidad": 0.9955156950672646,
+    "vpp": 0.75,
+    "fraccion_alarma": 0.015503875968992248
+   }
+  },
+  "S_cabecera": {
+   "auc": {
+    "valor": 0.3953875720691864,
+    "ic95": [
+     0.2559867397922044,
+     0.576335200810295
+    ]
+   },
+   "regla": {
+    "sensibilidad": 0.0,
+    "especificidad": 1.0,
+    "vpp": null,
+    "fraccion_alarma": 0.0
+   }
+  },
+  "delta_auc_lote_menos_S_r001": {
+   "valor": 0.05400384368994238,
+   "ic95": [
+    0.026572439711608203,
+    0.09444397540470467
+   ]
+  },
+  "delta_auc_lote_menos_S_cabecera": {
+   "valor": 0.1267136450992954,
+   "ic95": [
+    -0.0018123940164728567,
+    0.26762157687797467
+   ]
+  },
+  "C1_r001": "PIERDE",
+  "C2_cabecera": "NO BASTA",
+  "auc_cabecera_ic_inferior": 0.2559867397922044,
+  "por_distancia_cabecera": {
+   "<=5km": {
+    "n": 118,
+    "auc_lote": 0.4165439371624939,
+    "auc_cabecera": 0.32670594010800197
+   },
+   ">5km": {
+    "n": 140,
+    "auc_lote": 0.6765873015873016,
+    "auc_cabecera": 0.5164399092970522
+   }
+  }
+ }
+}
