@@ -312,7 +312,7 @@ class Portico3D:
         fext = {}
         for idx, e in enumerate(self.elementos):
             f = self.k_local(e, self.longitud(e)) @ (self._T(e) @ u[self._gdl(e)])
-            fext[idx] = f + f0s.get(idx, 0.0)
+            fext[idx] = f + f0s[idx] if idx in f0s else f
         maes = {nm: (float(ur[a]), float(ur[b]), float(ur[c])) for nm, (a, b, c) in self._maestro_idx.items()}
         return Resultado3D(caso.nombre, u.reshape(n, 6), maes, reac, fext)
 
