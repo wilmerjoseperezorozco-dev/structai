@@ -9,6 +9,9 @@ Ejes locales del elemento: x del nodo i al j.
   `eje_ref` (opcional) reemplaza la referencia: y_local se toma en el plano (x, eje_ref).
 Diafragma rígido (NSR-10 A.3.6.7.2 b): los nodos del piso comparten ux, uy y rz de un nodo maestro (centro de masa):
   ux_s = ux_m − (y_s − y_m)·rz_m,  uy_s = uy_m + (x_s − x_m)·rz_m,  rz_s = rz_m.
+Diafragma semirrígido (F3, HE5): `Membrana` = losa en su plano, cuadrilátero de 4 nodos en estado plano de esfuerzos con
+modos incompatibles (QM6: Wilson 1973 / Taylor-Beresford-Wilson 1976), que representa exactamente la flexión pura en
+rectángulos. Aporta rigidez solo a ux, uy de sus nodos; la rigidez fuera del plano la dan vigas y columnas.
 Alcance: elementos prismáticos de Euler-Bernoulli, material lineal, sin segundo orden ni deformación por cortante.
 """
 from __future__ import annotations
@@ -53,6 +56,50 @@ class Diafragma:
     y_cm: float
 
 
+@dataclass(frozen=True)
+class Membrana:
+    """Losa en su plano: 4 nodos a la misma cota, en sentido antihorario en planta. E (kN/m²), nu, espesor t (m)."""
+    nodos: tuple[int, int, int, int]
+    E: float
+    nu: float
+    t: float
+
+
+def k_membrana(xy: np.ndarray, E: float, nu: float, t: float) -> np.ndarray:
+    """Rigidez 8×8 (u1, v1, …, u4, v4) del cuadrilátero QM6 con los 4 modos incompatibles condensados."""
+    D = E / (1 - nu**2) * np.array([[1, nu, 0], [nu, 1, 0], [0, 0, (1 - nu) / 2]])
+    sx = np.array([-1, 1, 1, -1], float)
+    sy = np.array([-1, -1, 1, 1], float)
+
+    def jac(xi, eta):
+        dxi = 0.25 * sx * (1 + sy * eta)
+        deta = 0.25 * sy * (1 + sx * xi)
+        return np.array([dxi @ xy[:, 0], dxi @ xy[:, 1]]), np.array([deta @ xy[:, 0], deta @ xy[:, 1]]), dxi, deta
+
+    a0, b0, _, _ = jac(0.0, 0.0)
+    J0 = np.array([a0, b0])
+    det0 = np.linalg.det(J0)
+    K = np.zeros((12, 12))
+    g = 1 / math.sqrt(3)
+    for xi in (-g, g):
+        for eta in (-g, g):
+            a, b, dxi, deta = jac(xi, eta)
+            J = np.array([a, b])
+            det = np.linalg.det(J)
+            if det <= 0:
+                raise ValueError("Membrana con nodos fuera de orden antihorario o geometría degenerada")
+            dN = np.linalg.solve(J, np.vstack([dxi, deta]))                       # (2, 4): d/dx, d/dy
+            dP = np.linalg.solve(J0, np.array([[-2 * xi, 0.0], [0.0, -2 * eta]])) * det0 / det   # modos 1−ξ², 1−η²
+            B = np.zeros((3, 12))
+            B[0, 0:8:2], B[1, 1:8:2] = dN[0], dN[1]
+            B[2, 0:8:2], B[2, 1:8:2] = dN[1], dN[0]
+            B[0, 8:10], B[2, 8:10] = dP[0], dP[1]
+            B[1, 10:12], B[2, 10:12] = dP[1], dP[0]
+            K += B.T @ D @ B * det * t
+    Kcc, Kci, Kii = K[:8, :8], K[:8, 8:], K[8:, 8:]
+    return Kcc - Kci @ np.linalg.solve(Kii, Kci.T)
+
+
 @dataclass
 class Caso3D:
     nombre: str
@@ -72,7 +119,7 @@ class Resultado3D:
 
 class Portico3D:
     def __init__(self, nodos: list[Nodo3D], elementos: list[Elemento3D], apoyos: dict[int, tuple[bool, ...]],
-                 diafragmas: list[Diafragma] | None = None):
+                 diafragmas: list[Diafragma] | None = None, membranas: list[Membrana] | None = None):
         if not apoyos:
             raise ValueError("El modelo necesita al menos un apoyo")
         self.nodos, self.elementos, self.apoyos = nodos, elementos, apoyos
@@ -86,6 +133,14 @@ class Portico3D:
                 raise ValueError("Elemento con nodos inexistentes o de longitud nula")
             if min(e.E, e.G, e.A, e.Iy, e.Iz, e.J) <= 0:
                 raise ValueError("E, G, A, Iy, Iz y J deben ser positivos")
+        self.membranas = list(membranas or [])
+        for mb in self.membranas:
+            if len(mb.nodos) != 4 or len(set(mb.nodos)) != 4 or not all(0 <= k < n for k in mb.nodos):
+                raise ValueError("Una membrana necesita 4 nodos distintos y existentes")
+            if len({round(nodos[k].z, 6) for k in mb.nodos}) != 1:
+                raise ValueError("Los nodos de una membrana deben estar a la misma cota")
+            if mb.E <= 0 or mb.t <= 0 or not 0 <= mb.nu < 0.5:
+                raise ValueError("Membrana: E y t positivos, 0 ≤ nu < 0,5")
         vistos: set[int] = set()
         nombres = set()
         for d in self.diafragmas:
@@ -182,6 +237,10 @@ class Portico3D:
             T = self._T(e)
             g = self._gdl(e)
             K[np.ix_(g, g)] += T.T @ self.k_local(e, self.longitud(e)) @ T
+        for mb in self.membranas:
+            xy = np.array([[self.nodos[k].x, self.nodos[k].y] for k in mb.nodos])
+            g = [6 * k + c for k in mb.nodos for c in (0, 1)]
+            K[np.ix_(g, g)] += k_membrana(xy, mb.E, mb.nu, mb.t)
         return K
 
     def _restricciones(self):
