@@ -571,3 +571,28 @@ Mejora del límite de la sección 11: "la cercanía geográfica no garantiza con
   - la estación más cercana puede estar en otro río;
   - el DEM de 90 m es superficie, no terreno (vegetación);
   - pocos bloques espaciales.
+
+## 31. H2b (#273): validación fuera de muestra de la regla de relieve de H2. Definido ANTES de evaluarla (2026-11-18)
+
+**Motivo:** en H2 el relieve local solo discriminó mejor que el índice (AUC 0,77), pero eso se vio **después** del análisis. Antes de usarlo en `/sitio` hay que probarlo en datos que no participaron en H2.
+
+- **Regla, fijada solo con el entrenamiento de H2** (Meta, Guaviare e Inírida; 453 puntos):
+  - **S ≤ 6,5 m → alarma** de nivel freático somero. S es la cota del DEM menos la cota mínima a ≤ 1 km.
+  - El umbral es el de Youden en el entrenamiento: sensibilidad 0,74 y especificidad 0,70.
+- **Validación principal: Casanare** (campo `PROFUNDI_4`).
+  - Se confirmó como nivel del agua porque va después del método de medición del nivel (cinta métrica, sonda eléctrica, estimado) y es menor que la profundidad del aljibe en el 100 % y que la del pozo en el 98 %.
+  - **Contaminación parcial declarada:** en H2 vi el AUC del *índice* en Casanare (0,69) y el AUC agregado con Casanare. No he visto el AUC del relieve solo en Casanare ni la regla aplicada allí.
+- **Validación secundaria: Quindío** (campo `Profundi_4`, mismo criterio de consistencia; región andina). Nunca vista.
+  - Por las distribuciones marginales, los niveles allí son profundos (p10 ≈ 4 m), así que se evalúa con un umbral de 5 m. A 2 m se reporta solo como descriptivo.
+- **Criterio** (bootstrap de bloques de 0,1°, 2.000 réplicas, semilla 27321):
+
+  | Si… | Veredicto |
+  |---|---|
+  | el IC95 del AUC del relieve queda por encima de 0,60 **y** el IC95 del VPP de la regla por encima de la prevalencia | **VALIDADA** |
+  | el IC95 del AUC queda por debajo de 0,55 | **NO VALIDADA** |
+  | en otro caso | **NO CONCLUYENTE** |
+
+- **Se reporta también:** sensibilidad, especificidad, fracción de puntos con alarma, ρ(S, profundidad) y resultados por tipo de punto (pozo, aljibe).
+- **Lectura fijada:**
+  - VALIDADA en Casanare permite usar la regla como **alarma orientativa** en llanuras.
+  - Quindío dice si sirve fuera de la llanura. Si allí falla, la alarma se limita a relieve plano (llanuras y valles aluviales) y se declara así en `/sitio`.
