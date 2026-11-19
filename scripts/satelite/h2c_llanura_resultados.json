@@ -1,0 +1,151 @@
+{
+ "protocolo": "PROTOCOLO_ANALISIS.md §34",
+ "definicion": "Hammond: frac(pendiente<8%)>0.8 y relieve 5 km<90 m",
+ "dentro_llanura": {
+  "n": 669,
+  "n_bloques": 43,
+  "prevalencia": 0.6307922272047832,
+  "auc": 0.7717299537578909,
+  "ic95": [
+   0.6667470157219209,
+   0.8526443078565727
+  ],
+  "sensibilidad": 0.7582938388625592,
+  "especificidad": 0.6396761133603239,
+  "vpp": 0.78239608801956,
+  "fraccion_alarma": 0.6113602391629297
+ },
+ "fuera_llanura": {
+  "n": 342,
+  "n_bloques": 23,
+  "prevalencia": 0.195906432748538,
+  "auc": 0.683527815468114,
+  "ic95": [
+   0.4951143648129542,
+   0.835042932767649
+  ],
+  "sensibilidad": 0.14925373134328357,
+  "especificidad": 0.9963636363636363,
+  "vpp": 0.9090909090909091,
+  "fraccion_alarma": 0.03216374269005848
+ },
+ "delta_auc_dentro_menos_fuera": {
+  "valor": 0.08820213828977685,
+  "ic95": [
+   -0.09648810926808277,
+   0.3018677915677284
+  ]
+ },
+ "C1_dentro": "VALIDA",
+ "C2_compuerta": "NO CONCLUYENTE",
+ "por_capa": {
+  "casanare": {
+   "n": 411,
+   "frac_llanura": 0.8467153284671532,
+   "dentro": {
+    "n": 348,
+    "n_bloques": 19,
+    "prevalencia": 0.7873563218390804,
+    "auc": 0.6596715328467153,
+    "ic95": [
+     0.5978221829784329,
+     0.7373963532111599
+    ],
+    "sensibilidad": 0.7664233576642335,
+    "especificidad": 0.43243243243243246,
+    "vpp": 0.8333333333333334,
+    "fraccion_alarma": 0.7241379310344828
+   },
+   "fuera": {
+    "n": 63,
+    "n_bloques": 6,
+    "prevalencia": 0.38095238095238093,
+    "auc": 0.7254273504273504,
+    "ic95": [
+     0.6310972222222222,
+     0.8376151315789467
+    ],
+    "sensibilidad": 0.25,
+    "especificidad": 1.0,
+    "vpp": 1.0,
+    "fraccion_alarma": 0.09523809523809523
+   }
+  },
+  "guaviare": {
+   "n": 76,
+   "frac_llanura": 0.7368421052631579,
+   "dentro": {
+    "n": 56,
+    "n_bloques": 6,
+    "prevalencia": 0.3392857142857143,
+    "auc": 0.7567567567567568,
+    "ic95": [
+     0.6,
+     1.0
+    ],
+    "sensibilidad": 0.7894736842105263,
+    "especificidad": 0.5405405405405406,
+    "vpp": 0.46875,
+    "fraccion_alarma": 0.5714285714285714
+   },
+   "fuera": null
+  },
+  "inirida": {
+   "n": 75,
+   "frac_llanura": 1.0,
+   "dentro": {
+    "n": 75,
+    "n_bloques": 6,
+    "prevalencia": 0.32,
+    "auc": 0.8308823529411765,
+    "ic95": [
+     0.0,
+     0.874709591769001
+    ],
+    "sensibilidad": 0.625,
+    "especificidad": 0.7843137254901961,
+    "vpp": 0.5769230769230769,
+    "fraccion_alarma": 0.3466666666666667
+   },
+   "fuera": null
+  },
+  "meta": {
+   "n": 191,
+   "frac_llanura": 0.9947643979057592,
+   "dentro": {
+    "n": 190,
+    "n_bloques": 12,
+    "prevalencia": 0.5526315789473685,
+    "auc": 0.8525490196078431,
+    "ic95": [
+     0.6935548195290432,
+     0.9229974696356273
+    ],
+    "sensibilidad": 0.7619047619047619,
+    "especificidad": 0.7764705882352941,
+    "vpp": 0.8080808080808081,
+    "fraccion_alarma": 0.5210526315789473
+   },
+   "fuera": null
+  },
+  "quindio": {
+   "n": 258,
+   "frac_llanura": 0.0,
+   "dentro": null,
+   "fuera": {
+    "n": 258,
+    "n_bloques": 12,
+    "prevalencia": 0.13565891472868216,
+    "auc": 0.5221012171684818,
+    "ic95": [
+     0.34152575181926154,
+     0.7417602443497839
+    ],
+    "sensibilidad": 0.05714285714285714,
+    "especificidad": 1.0,
+    "vpp": 1.0,
+    "fraccion_alarma": 0.007751937984496124
+   }
+  }
+ }
+}
