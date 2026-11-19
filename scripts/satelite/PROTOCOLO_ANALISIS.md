@@ -675,3 +675,43 @@ Mejora del límite de la sección 11: "la cercanía geográfica no garantiza con
 **Limitaciones.**
 - La S de la cabecera es constante dentro del municipio. Con 17 municipios, el tamaño efectivo para C2 es pequeño.
 - Los bloques de 0,1° no coinciden con los municipios.
+
+## §34. H2c: definición objetiva de "llanura" para la alarma de relieve (fijado el 2026-11-18, antes del análisis)
+
+**Pregunta.** H2b validó la alarma (S ≤ 6,5 m) en llanura (Casanare), pero no en zona andina (Quindío). `/sitio` necesita decidir, solo con el DEM y en el lote, cuándo aplica la alarma, sin usar el departamento ni la región.
+
+**Definición, tomada de la literatura y sin ajustarla con estos datos.** Clases de relieve de Hammond (1964), en una vecindad circular de 5 km de radio (Hammond usaba una ventana de unos 9,6 km de lado). Un punto es **llanura** si cumple las dos condiciones:
+- más del 80 % de la vecindad tiene pendiente < 8 %;
+- el relieve local (máximo − mínimo) es < 90 m, que corresponde a "flat plains" más "smooth plains".
+
+La pendiente se calcula con el DEM Copernicus GLO-90.
+
+**Conteo previo** (`--conteo`, sin niveles):
+- 1.011 puntos tienen la vecindad completa. Se excluyen 194 por el borde de la tesela DEM, sobre todo en Meta.
+- Fracción clasificada como llanura por capa:
+
+  | Capa | Llanura |
+  |---|---|
+  | Casanare | 0,85 |
+  | Guaviare | 0,74 |
+  | Inírida | 1,00 |
+  | Meta | 0,99 |
+  | Quindío | 0,00 |
+
+- En total, 669 puntos son llanura y 342 no. Los "no llanura" son los 258 de Quindío más 84 de piedemonte o serranía en la Orinoquía.
+
+**Medidas.** El nivel somero es ≤ 2 m, o ≤ 5 m en Quindío, como en H2b. El bootstrap es por bloque de 0,1° (semilla 2734).
+- **C1 (la alarma funciona dentro de la llanura objetiva).** VÁLIDA si el límite inferior del IC95 del AUC de S es mayor que 0,60. NO VÁLIDA si el límite superior es menor que 0,55.
+- **C2 (la compuerta separa dónde funciona).** ΔAUC = AUC dentro − AUC fuera. ÚTIL si el límite inferior del IC95 es mayor que 0.
+- **Descriptivo:**
+  - por capa;
+  - en particular, Casanare dentro frente a fuera. Esta comparación aísla el efecto de la compuerta dentro de una misma región; C2 mezcla compuerta con región, porque "fuera" es sobre todo Quindío.
+
+**Lectura fijada.**
+- Si C1 es VÁLIDA, `/sitio` usa la compuerta de Hammond: la alarma solo se muestra si el lote es llanura.
+- Fuera de la llanura, `/sitio` dice "la alarma de relieve no aplica en este terreno; mida el nivel".
+- Si C2 no es ÚTIL, la compuerta se mantiene igual por principio, porque fuera de la llanura no hay evidencia de que la alarma funcione. Se declara.
+
+**Limitaciones.**
+- Los niveles provienen solo de la Orinoquía y de Quindío. Las llanuras del Caribe (depresión momposina), del Magdalena y del Pacífico quedan **sin validar**: la compuerta las clasificaría como llanura, pero eso es una extrapolación.
+- El DSM incluye el dosel del bosque, que puede inflar el relieve local en zonas selváticas.
