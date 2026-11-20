@@ -43,8 +43,7 @@ Corrida única según [`PRERREGISTRO_F3_CONFIABILIDAD.md`](PRERREGISTRO_F3_CONFI
 ### 3. Composición del elemento crítico (descriptivo)
 
 - **Las vigas gobiernan casi siempre:** el 99,3 % en la central y el 96,9 % en la alta.
-  - En la central, la viga del **nivel 1** es la crítica en el 85 % de los edificios.
-  - En la alta, el crítico se reparte en altura: nivel 1 en 37 %, nivel 3 en 13 %, nivel 4 en 11 %…
+  - ~~En la central, la viga del nivel 1 es la crítica en el 85 % de los edificios.~~ **Corrección (2026-11-20):** era un artefacto de desempate. Con 84 % de censura, todos los elementos valen 4,5 y `min()` devuelve el primero (nivel 1). Sin empates (F3b), la crítica es la **viga del último nivel** en el 63–76 % de los edificios. Ver `RESULTADOS_F3B_SIN_CENSURA.md` §2.
 - **Las columnas casi nunca son el elemento crítico bajo gravedad** (0,7 % y 3,1 %). Su diseño lo controla el sismo, que deja reserva frente a la gravedad.
 
 ### 4. Deriva ante el sismo de diseño (descriptivo)

@@ -49,7 +49,12 @@ Pero la dispersión es enorme: el rango intercuartílico es de **3,0 unidades de
 
 - En zona baja, los edificios de 9 o más pisos superan a los de 5 o menos por +0,93 en β (central).
 - Por altura en todo el corpus, la mediana es 5,55 con 1–5 pisos, 7,16 con 6–8 y 6,41 con 9 o más.
-- **El patrón:** la viga del primer nivel de los edificios bajos y la obra pequeña típica en Colombia son el punto débil. Coincide con la F3, donde la viga del nivel 1 era la crítica en el 85 % de los edificios.
+- **Dónde está el elemento crítico** (corrección del 2026-11-20). La F3 decía «la viga del nivel 1 es la crítica en el 85 %», y era un **artefacto de desempate**: cuando todos los elementos empatan en el techo de β, `min()` devuelve el primero, que es el nivel 1.
+  - Excluyendo los edificios en el techo, la crítica es la **viga del último nivel (cubierta)**:
+    - en el **76 %** de los edificios de zona baja, 71 % en intermedia y 63 % en alta (central);
+    - en los edificios de zona baja con N ≤ 5: 102 de 116 en la cubierta, 10 en pisos intermedios y **4 en el nivel 1**.
+  - **Mecanismo plausible:** arriba la demanda sísmica es mínima, así que el refuerzo de esas vigas lo fija la gravedad, sin la sobrerresistencia sísmica de los pisos bajos.
+  - **Advertencia:** el corpus aplica en la cubierta la misma carga viva que en los entrepisos. Si la cubierta real lleva menos carga viva, el β real es mayor; si lleva tanques o equipos, menor.
 
 ### 3. La variable dominante no es el material: es el modelo de análisis
 
