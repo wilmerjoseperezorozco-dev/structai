@@ -59,7 +59,7 @@ def capacidad_mixta(estratos: Sequence[EstratoMixto], pilote: Pilote, *, nivel_f
         for d in partes:
             qs_ult += d["qs_ult_kn"]
             qs_adm += d["qs_ult_kn"] / d["fs_friccion"]
-            por_estrato[i] = por_estrato.get(i, 0.0) + d["qs_ult_kn"]
+            por_estrato[i] = por_estrato[i] + d["qs_ult_kn"] if i in por_estrato else d["qs_ult_kn"]
             detalle.append({"estrato": i, **d})
 
     i_punta, _, _, _, s_punta = tramos[-1]
