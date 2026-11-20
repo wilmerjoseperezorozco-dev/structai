@@ -75,3 +75,77 @@ def disenar_integral_contrato(s: SolicitudDisenoIntegral) -> ResultadoMotor:
         referencia_normativa="NSR-10 Título A (A.2, A.3, A.4, A.6.4) y Título C (C.10.10.5.2, C.21.6)",
         supuestos=list(informe.supuestos), en_borde_dominio=bool(en_borde),
     )
+
+
+# ---------------------------------------------------------------- Optimizador multiobjetivo (L1, #167)
+
+from .optimizador_pareto import OBJETIVOS, PUNTOS_NOMBRADOS, VERSION_PROTOCOLO, optimizar_portico  # noqa: E402
+
+_MAX_CALIDADES = 3
+_MAX_FRONTERA = 200
+_DC_BORDE = 0.95
+
+
+class SolicitudParetoPortico(BaseModel):
+    luces_m: list[float] = Field(..., min_length=1, max_length=_MAX_VANOS)
+    alturas_piso_m: list[float] = Field(..., min_length=1, max_length=_MAX_PISOS)
+    carga_muerta_kn_m: float = Field(..., ge=0)
+    carga_viva_kn_m: float = Field(..., ge=0)
+    calidades_concreto: list[str] = Field(..., min_length=1, max_length=_MAX_CALIDADES, description="f'c es variable de diseño")
+    fy_mpa: float = Field(..., gt=0)
+    recubrimiento_mm: float = Field(..., gt=0)
+    municipio: Optional[str] = None
+    departamento: Optional[str] = None
+    codigo_dane: Optional[str] = None
+    capacidad: Optional[str] = Field(default=None, description="DMI | DMO | DES; sin municipio es obligatoria")
+    perfil_suelo: str = Field(..., description="A..E (NSR-10 A.2.4)")
+    grupo_uso: str = Field(..., description="I, II, III, IV (Tabla A.2.5-1)")
+    columnas_mm: list[float] = Field(..., min_length=1, max_length=_MAX_COLUMNAS)
+    b_mm: list[float] = Field(..., min_length=1, max_length=_MAX_B)
+    h_mm: list[float] = Field(..., min_length=1, max_length=_MAX_H)
+
+
+def _fila(c) -> dict:
+    nan_a_none = lambda x: None if x != x else float(x)  # noqa: E731
+    return {"calidad_concreto": c.calidad_concreto, "fc_mpa": c.fc_mpa, "c_mm": c.c_mm, "b_mm": c.b_mm, "h_mm": c.h_mm,
+            **{k: nan_a_none(getattr(c, k)) for k in OBJETIVOS}, "razon_scwb": nan_a_none(c.razon_scwb), "q_max": nan_a_none(c.q_max)}
+
+
+def optimizar_portico_contrato(s: SolicitudParetoPortico) -> ResultadoMotor:
+    p = ProyectoPortico(
+        luces_m=tuple(s.luces_m), alturas_piso_m=tuple(s.alturas_piso_m), carga_muerta_kn_m=s.carga_muerta_kn_m,
+        carga_viva_kn_m=s.carga_viva_kn_m, calidad_concreto=s.calidades_concreto[0], fy_mpa=s.fy_mpa,
+        recubrimiento_mm=s.recubrimiento_mm, municipio=s.municipio, departamento=s.departamento, codigo_dane=s.codigo_dane,
+        capacidad=s.capacidad, perfil_suelo=s.perfil_suelo, grupo_uso=s.grupo_uso)
+    inf = optimizar_portico(p, tuple(s.calidades_concreto), columnas_mm=tuple(s.columnas_mm), grilla=(tuple(s.b_mm), tuple(s.h_mm)),
+                            verificar_escalar=True)
+    fcs = sorted({c.fc_mpa for c in inf.factibles} | {c.fc_mpa for c in inf.puntos.values()})
+
+    def borde(c) -> bool:
+        return bool(
+            c.c_mm in (min(s.columnas_mm), max(s.columnas_mm)) and len(s.columnas_mm) > 1
+            or c.b_mm in (min(s.b_mm), max(s.b_mm)) and len(s.b_mm) > 1
+            or c.h_mm in (min(s.h_mm), max(s.h_mm)) and len(s.h_mm) > 1
+            or len(s.calidades_concreto) > 1 and c.fc_mpa in (fcs[0], fcs[-1])
+            or (c.deriva_relativa == c.deriva_relativa and c.deriva_relativa >= _FRACCION_DERIVA_BORDE * DERIVA_MAX)
+            or (c.razon_scwb == c.razon_scwb and c.razon_scwb < _SCWB_BORDE)
+            or c.razon_dc_max >= _DC_BORDE)
+
+    puntos = {n: {**_fila(c), "en_borde": borde(c), "paridad_escalar": inf.paridad[n], "regla": PUNTOS_NOMBRADOS[n]}
+              for n, c in inf.puntos.items()}
+    frontera = [_fila(c) for c in inf.frontera]
+    supuestos = list(inf.supuestos)
+    if len(frontera) > _MAX_FRONTERA:
+        supuestos.append(f"La frontera tiene {len(frontera)} puntos; se entregan los {_MAX_FRONTERA} más baratos (los puntos con nombre van completos).")
+        frontera = frontera[:_MAX_FRONTERA]
+    return ResultadoMotor(
+        valor={"puntos": puntos, "frontera": frontera, "en_frontera": len(inf.frontera), "factibles": len(inf.factibles),
+               "evaluadas": inf.evaluadas, "objetivos": inf.diagnostico["objetivos"], "capacidad": inf.capacidad,
+               "version_protocolo": VERSION_PROTOCOLO},
+        unidad_si="Secciones en mm; costos en COP (APU); acero en kg; concreto en m³; CO₂e en kg (A1–A3); deriva y D/C adimensionales",
+        ecuacion="Conjunto no dominado exacto (minimización de costo, acero, concreto, CO₂e, deriva y D/C máx) por enumeración de la "
+                 "rejilla (c, b, h, f'c), sujeto a deriva Δ/hp ≤ 1,0 %, estabilidad Q, flexo-compresión, ΣMnc ≥ 1,2·ΣMnb y cortante "
+                 "por capacidad; cada punto con nombre reanalizado por la ruta escalar de referencia",
+        referencia_normativa="NSR-10 Título A (A.2, A.3, A.4, A.6.4) y Título C (C.10.10.5.2, C.21.6); CO₂e A1–A3 (EN 15804)",
+        supuestos=supuestos, en_borde_dominio=any(borde(c) for c in inf.puntos.values()),
+    )

@@ -1,0 +1,31 @@
+{
+  "endpoint": "portico-integral",
+  "rondas": 8,
+  "por_ronda": 5,
+  "variantes": {
+    "antes": {
+      "n": 40,
+      "p50_ms": 308.71,
+      "p95_ms": 386.86,
+      "p95_vs_antes": 0.0
+    },
+    "sin_cache": {
+      "n": 40,
+      "p50_ms": 215.22,
+      "p95_ms": 300.3,
+      "p95_vs_antes": -0.2238
+    },
+    "con_cache": {
+      "n": 40,
+      "p50_ms": 6.09,
+      "p95_ms": 8.37,
+      "p95_vs_antes": -0.9784
+    }
+  },
+  "respuestas_identicas": true,
+  "sha_respuesta": [
+    "662e465c338561b7320660e8b825359e49014ab3a1837b8fcac7657a9d428d23"
+  ],
+  "fecha": "2026-11-16",
+  "referencia": "origin/master 7aaa7a3"
+}
