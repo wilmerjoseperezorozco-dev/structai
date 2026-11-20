@@ -2,9 +2,9 @@
 
 Generado por `scripts/inventario/matriz_coherencia.py` desde [coherencia_motores.json](coherencia_motores.json); no editar a mano. Dos nodos se conectan cuando una magnitud que produce uno (con su unidad) es una que consume el otro. **Coherente no significa probado**: solo las cadenas de la sección «Cadenas probadas» tienen una prueba que las ejecuta.
 
-- Motores implementados: 17; con declaración completa: 9; **pendientes de declarar: 8** (`motor-aquai`, `motor-vias`, `motor-gerencia`, `motor-vulnerabilidad-vivienda`, `motor-estructural`, `motor-deformacion`, `motor-acero-frio`, `motor-topovia`). Lo no declarado no genera conexiones: no se infiere nada.
+- Motores implementados: 18; con declaración completa: 10; **pendientes de declarar: 8** (`motor-vias`, `motor-gerencia`, `motor-vulnerabilidad-vivienda`, `motor-estructural`, `motor-exploracion`, `motor-deformacion`, `motor-acero-frio`, `motor-topovia`). Lo no declarado no genera conexiones: no se infiere nada.
 - Motores futuros (planificados o bloqueados): 5. Nunca se cuentan como funcionando.
-- Magnitudes del vocabulario: 45, cada una con unidad y dominio físico.
+- Magnitudes del vocabulario: 51, cada una con unidad y dominio físico.
 
 ## Cuántas conexiones y cadenas cierran
 
@@ -61,9 +61,9 @@ Vía: **endpoint** = ambos lados son campos del contrato HTTP; **adaptador** = e
 
 ## Huecos
 
-**Magnitudes que algún nodo consume y ninguno produce** (las aporta el usuario o un estudio externo): `aceleracion_pico_g`, `angulo_friccion_deg`, `asentamiento_admisible_mm`, `carga_muerta_kn_m`, `carga_viva_kn_m`, `cohesion_kpa`, `estratos_arcilla`, `geometria_portico`, `grupo_uso`, `magnitud_momento_mw`, `modulo_balasto_kn_m3`, `municipio_codigo_dane`, `nivel_freatico_m`, `perfil_spt`, `perfil_suelo_clase`, `peso_unitario_kn_m3`, `red_hidraulica`.
+**Magnitudes que algún nodo consume y ninguno produce** (las aporta el usuario o un estudio externo): `aceleracion_pico_g`, `angulo_friccion_deg`, `asentamiento_admisible_mm`, `carga_muerta_kn_m`, `carga_viva_kn_m`, `caudal_medio_m3_dia`, `cohesion_kpa`, `coliformes_fecales_nmp_100ml`, `dbo5_afluente_mg_l`, `estratos_arcilla`, `geometria_portico`, `grupo_uso`, `magnitud_momento_mw`, `modulo_balasto_kn_m3`, `municipio_codigo_dane`, `nivel_freatico_m`, `perfil_spt`, `perfil_suelo_clase`, `peso_unitario_kn_m3`, `red_hidraulica`, `temperatura_agua_c`.
 
-**Magnitudes que algún nodo produce y ninguno consume** (hoy salen de la cadena sin uso): `asentamiento_mm`, `capacidad_pilote_kn`, `caudal_m3s`, `cortante_basal_kn`, `factor_seguridad_talud`, `frontera_pareto`, `fs_licuacion_minimo`, `golpe_ariete_pico_m`, `lpi`, `presion_m`, `q_ult_kpa`, `velocidad_ms`.
+**Magnitudes que algún nodo produce y ninguno consume** (hoy salen de la cadena sin uso): `area_espejo_lagunas_m2`, `asentamiento_mm`, `capacidad_pilote_kn`, `caudal_m3s`, `cortante_basal_kn`, `dbo5_efluente_mg_l`, `factor_seguridad_talud`, `frontera_pareto`, `fs_licuacion_minimo`, `golpe_ariete_pico_m`, `lpi`, `presion_m`, `q_ult_kpa`, `velocidad_ms`.
 
 ## Nodos
 
@@ -74,10 +74,11 @@ Vía: **endpoint** = ambos lados son campos del contrato HTTP; **adaptador** = e
 | `motor-acero-frio` | motor | implementado | **?** pendiente | 0 | 0 | no |
 | `motor-analisis` | motor | implementado | completa | 5 | 2 | sí |
 | `motor-apu` | motor | implementado | completa | 2 | 1 | no |
-| `motor-aquai` | motor | implementado | **?** pendiente | 0 | 0 | no |
+| `motor-aquai` | motor | implementado | completa | 4 | 2 | no |
 | `motor-concreto` | motor | implementado | completa | 10 | 7 | sí |
 | `motor-deformacion` | motor | implementado | **?** pendiente | 0 | 0 | no |
 | `motor-estructural` | motor | implementado | **?** pendiente | 0 | 0 | no |
+| `motor-exploracion` | motor | implementado | **?** pendiente | 0 | 0 | no |
 | `motor-geopot` | motor | implementado | completa | 1 | 2 | no |
 | `motor-geotecnia` | motor | implementado | completa | 6 | 4 | no |
 | `motor-gerencia` | motor | implementado | **?** pendiente | 0 | 0 | no |

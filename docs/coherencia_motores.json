@@ -39,6 +39,12 @@
     "razon_demanda_capacidad": {"unidad": "-", "dominio": "no_negativo"},
     "red_hidraulica": {"unidad": "-", "dominio": "compuesto"},
     "caudal_m3s": {"unidad": "m3/s", "dominio": "real"},
+    "caudal_medio_m3_dia": {"unidad": "m3/d", "dominio": "positivo"},
+    "dbo5_afluente_mg_l": {"unidad": "mg/L", "dominio": "positivo"},
+    "coliformes_fecales_nmp_100ml": {"unidad": "NMP/100 mL", "dominio": "positivo"},
+    "temperatura_agua_c": {"unidad": "°C", "dominio": "real", "max": 40},
+    "area_espejo_lagunas_m2": {"unidad": "m2", "dominio": "positivo"},
+    "dbo5_efluente_mg_l": {"unidad": "mg/L", "dominio": "no_negativo"},
     "presion_m": {"unidad": "m", "dominio": "real"},
     "velocidad_ms": {"unidad": "m/s", "dominio": "no_negativo"},
     "golpe_ariete_pico_m": {"unidad": "m", "dominio": "no_negativo"},
@@ -174,11 +180,25 @@
         {"magnitud": "coef_velocidad_av", "acceso": "paquete", "evidencia": "packages/motor-geopot/src/a4.py::def buscar"}
       ]
     },
-    {"id": "motor-aquai", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
+    {
+      "id": "motor-aquai", "tipo": "motor", "estado": "implementado", "declaracion": "completa",
+      "endpoints": ["GET /aquai/hidrologia/caudal-ideam", "GET /aquai/hidrologia/estaciones-ideam", "GET /aquai/hidrologia/precipitacion-ideam", "POST /aquai/caudales", "POST /aquai/hidraulica", "POST /aquai/hidraulica/ariete", "POST /aquai/hidraulica/bombeo", "POST /aquai/hidraulica/manning", "POST /aquai/hidrologia", "POST /aquai/poblacion", "POST /aquai/reporte/memoria", "POST /aquai/saneamiento/lagunas", "POST /aquai/saneamiento/ptap", "POST /aquai/saneamiento/ptar", "POST /aquai/sui/reporte", "POST /aquai/tarifas/calcular", "POST /aquai/verificar/res0330"],
+      "entradas": [
+        {"magnitud": "caudal_medio_m3_dia", "acceso": "endpoint", "evidencia": "packages/motor-aquai/src/lagunas.py::caudal_medio_m3_dia: float"},
+        {"magnitud": "dbo5_afluente_mg_l", "acceso": "endpoint", "evidencia": "packages/motor-aquai/src/lagunas.py::dbo5_afluente_mg_l: float"},
+        {"magnitud": "coliformes_fecales_nmp_100ml", "acceso": "endpoint", "evidencia": "packages/motor-aquai/src/lagunas.py::coliformes_afluente_nmp_100ml: float"},
+        {"magnitud": "temperatura_agua_c", "acceso": "endpoint", "evidencia": "packages/motor-aquai/src/lagunas.py::temperatura_agua_c: float"}
+      ],
+      "salidas": [
+        {"magnitud": "area_espejo_lagunas_m2", "acceso": "endpoint", "evidencia": "packages/motor-aquai/src/lagunas.py::\"area_espejo_total_m2\""},
+        {"magnitud": "dbo5_efluente_mg_l", "acceso": "endpoint", "evidencia": "packages/motor-aquai/src/lagunas.py::\"dbo5_efluente_mg_l\""}
+      ]
+    },
     {"id": "motor-vias", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
     {"id": "motor-gerencia", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
     {"id": "motor-vulnerabilidad-vivienda", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
     {"id": "motor-estructural", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
+    {"id": "motor-exploracion", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
     {"id": "motor-deformacion", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
     {"id": "motor-acero-frio", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
     {"id": "motor-topovia", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},

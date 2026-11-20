@@ -1,5 +1,5 @@
 /**
- * AquAI — especificación de los 11 módulos RAS 2000
+ * AquAI — especificación de los módulos (Res. 0330 de 2017, que reemplazó al RAS 2000)
  * Formularios data-driven: cada módulo declara sus campos una sola vez y
  * `AquAIPanel` los renderiza genéricamente (evita 11 formularios casi
  * idénticos copy-pasteados).
@@ -14,6 +14,7 @@ import {
   calcularBombeo,
   calcularPTAP,
   calcularPTAR,
+  calcularLagunas,
   calcularTarifa,
   generarReporteSUI,
 } from "@/lib/aquai-api";
@@ -132,8 +133,13 @@ const TECNOLOGIA_PTAR: FieldOption[] = [
 const CUERPO_RECEPTOR: FieldOption[] = [
   { value: "rio", label: "Río" },
   { value: "quebrada", label: "Quebrada" },
-  { value: "lago", label: "Lago" },
-  { value: "suelo", label: "Suelo (infiltración)" },
+  { value: "lago", label: "Lago o embalse" },
+];
+// Sin "suelo": la Res. 0631/2015 no aplica a vertimientos al suelo (art. 1, parágrafo); la API responde 422.
+
+const SI_NO: FieldOption[] = [
+  { value: "si", label: "Sí" },
+  { value: "no", label: "No" },
 ];
 
 const TIPO_PRESTADOR: FieldOption[] = [
@@ -304,7 +310,7 @@ export const AQUAI_MODULES: ModuleSpec[] = [
     label: "9. PTAR",
     grupo: "Saneamiento",
     descripcion: "Dimensionamiento de planta de tratamiento de aguas residuales y balance de lodos.",
-    normaRef: "RAS 2000 Título E · Res. 0631/2015",
+    normaRef: "Res. 0330/2017 arts. 164-197 · Res. 0631/2015 art. 8",
     submit: calcularPTAR,
     fields: [
       { key: "poblacion_diseno", label: "Población de diseño", type: "number", default: 13784 },
@@ -315,7 +321,35 @@ export const AQUAI_MODULES: ModuleSpec[] = [
       { key: "tecnologia", label: "Tecnología", type: "select", options: TECNOLOGIA_PTAR, default: "uasb" },
       { key: "nivel_complejidad", label: "Nivel de complejidad", type: "select", options: NIVEL_COMPLEJIDAD, default: "medio_alto" },
       { key: "tipo_cuerpo_receptor", label: "Cuerpo receptor", type: "select", options: CUERPO_RECEPTOR, default: "rio" },
+      { key: "temperatura_agua_c", label: "Temperatura del agua residual (°C)", type: "number", default: 25, required: false, help: "Obligatoria para UASB (tabla 31) y laguna." },
+      { key: "profundidad_laguna_m", label: "Profundidad laguna facultativa (m)", type: "number", step: 0.1, required: false, help: "Obligatoria para laguna: 1,5 a 2,5 m (art. 197)." },
+      { key: "factor_pico", label: "Factor pico Qmax/Qmed", type: "number", step: 0.1, required: false, help: "Si se da, se verifica la velocidad del UASB a caudal máximo." },
       { key: "eficiencia_requerida_dbo_pct", label: "Eficiencia mínima remoción DBO (%)", type: "number", required: false, help: "Si se omite, se calcula desde la Res. 0631/2015." },
+    ],
+  },
+  {
+    id: "lagunas",
+    label: "9b. Lagunas de estabilización",
+    grupo: "Saneamiento",
+    descripcion: "Sistema lagunar en serie (anaerobia, facultativa y maduración) con el número y tamaño de lagunas de maduración de área mínima, balance de lodos y verificación de vertimiento.",
+    normaRef: "Res. 0330/2017 arts. 196-200 y 216 · Res. 0631/2015 art. 8",
+    submit: calcularLagunas,
+    fields: [
+      { key: "caudal_medio_m3_dia", label: "Caudal medio (m³/día)", type: "number", default: 2765 },
+      { key: "poblacion_equivalente", label: "Población equivalente", type: "number", default: 13784 },
+      { key: "dbo5_afluente_mg_l", label: "DBO₅ afluente (mg/L)", type: "number", default: 250 },
+      { key: "coliformes_afluente_nmp_100ml", label: "Coliformes fecales afluente (NMP/100 mL)", type: "number", default: 10000000 },
+      { key: "coliformes_objetivo_nmp_100ml", label: "Coliformes objetivo (NMP/100 mL)", type: "number", default: 1000, help: "Lo fija la autoridad ambiental o el reúso." },
+      { key: "temperatura_agua_c", label: "Temperatura del agua, mes más frío (°C)", type: "number", default: 25 },
+      { key: "incluir_anaerobia", label: "Incluir laguna anaerobia", type: "select", options: SI_NO, default: "si" },
+      { key: "profundidad_anaerobia_m", label: "Profundidad anaerobia (m)", type: "number", step: 0.1, default: 3, required: false, help: "2,5 a 5 m (art. 196)." },
+      { key: "profundidad_facultativa_m", label: "Profundidad facultativa (m)", type: "number", step: 0.1, default: 1.5, help: "1,5 a 2,5 m (art. 197)." },
+      { key: "profundidad_maduracion_m", label: "Profundidad maduración (m)", type: "number", step: 0.05, default: 1, help: "0,9 a 1 m (art. 198)." },
+      { key: "borde_libre_m", label: "Borde libre (m)", type: "number", step: 0.05, default: 0.4, help: "0,3 a 0,5 m; 0,51 a 0,8 m con alta turbulencia (art. 199)." },
+      { key: "alta_turbulencia_atmosferica", label: "Alta turbulencia atmosférica", type: "select", options: SI_NO, default: "no" },
+      { key: "tasa_acumulacion_lodos_m3_hab_ano", label: "Acumulación de lodos (m³/hab·año)", type: "number", step: 0.01, default: 0.04, help: "Mara (2003): 0,04 en lagunas anaerobias." },
+      { key: "area_disponible_m2", label: "Espejo de agua disponible (m²)", type: "number", required: false, help: "Si se omite, no se restringe el área." },
+      { key: "cuerpo_receptor", label: "Cuerpo receptor", type: "select", options: CUERPO_RECEPTOR, default: "rio" },
     ],
   },
   {

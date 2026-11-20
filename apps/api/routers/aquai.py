@@ -233,20 +233,29 @@ def endpoint_bombeo(request: Request, req: motor_aquai.BombeoRequest, user: Auth
         raise HTTPException(status_code=422, detail=str(e))
 
 
-@router.post("/saneamiento/ptap", response_model=motor_aquai.PTAPResponse, summary="Dimensionar PTAP")
+@router.post("/saneamiento/ptap", summary="Dimensionar PTAP (contrato ResultadoMotor; detalle en `valor`)")
 @limiter.limit("30/minute")
 def endpoint_ptap(request: Request, req: motor_aquai.PTAPRequest, user: AuthenticatedUser = Depends(get_current_user)):
     try:
-        return motor_aquai.calcular_ptap(req)
+        return motor_aquai.ptap_contrato(req)
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e))
 
 
-@router.post("/saneamiento/ptar", response_model=motor_aquai.PTARResponse, summary="Dimensionar PTAR")
+@router.post("/saneamiento/ptar", summary="Dimensionar PTAR (contrato ResultadoMotor; detalle en `valor`)")
 @limiter.limit("30/minute")
 def endpoint_ptar(request: Request, req: motor_aquai.PTARRequest, user: AuthenticatedUser = Depends(get_current_user)):
     try:
-        return motor_aquai.calcular_ptar(req)
+        return motor_aquai.ptar_contrato(req)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+
+
+@router.post("/saneamiento/lagunas", summary="Sistema lagunar en serie: anaerobia, facultativa y maduración óptimas (Res. 0330)")
+@limiter.limit("20/minute")
+def endpoint_lagunas(request: Request, req: motor_aquai.SolicitudLagunas, user: AuthenticatedUser = Depends(get_current_user)):
+    try:
+        return motor_aquai.lagunas_contrato(req)
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e))
 

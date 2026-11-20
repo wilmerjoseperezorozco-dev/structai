@@ -62,7 +62,7 @@ for ruta in /health /proyecto/salud /orquestador/salud /analisis/salud /concreto
 done
 if [ "${SIN_INDICE_RAG:-}" != "1" ]; then
   # /health?deep=true carga el índice (una vez) y dice si quedó activo; si no, la revisión usaría las RPC en silencio.
-  if curl -s --max-time 120 "$URL_CAND/health?deep=true" | python -c "import sys,json; e=json.load(sys.stdin)['indice_rag_local']; print('  indice_rag_local ->', e); assert e.get('activo'), e"; then :; else
+  if curl -s --max-time 120 "$URL_CAND/health?deep=true" | python -c "import sys,json; e=json.load(sys.stdin)['dependencias']['indice_rag_local']; print('  indice_rag_local ->', e); assert e.get('activo'), e"; then :; else
     echo "  El índice RAG local no quedó activo en la revisión candidata."; fallo=1
   fi
 fi

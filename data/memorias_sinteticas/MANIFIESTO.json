@@ -1,0 +1,80 @@
+{
+ "issue": 275,
+ "fase": "F1",
+ "muestreo": "Sobol scramble",
+ "semilla": 275,
+ "n_objetivo": 2048,
+ "dims": 12,
+ "rangos_SUPUESTOS": {
+  "N": [
+   3,
+   12
+  ],
+  "vanos_x": [
+   2,
+   5
+  ],
+  "vanos_y": [
+   2,
+   4
+  ],
+  "Lx_m": [
+   4.0,
+   8.0
+  ],
+  "Ly_m": [
+   4.0,
+   8.0
+  ],
+  "hp_m": [
+   2.7,
+   3.5
+  ],
+  "Aa": [
+   0.05,
+   0.4
+  ],
+  "Av_sobre_Aa": [
+   0.75,
+   1.25
+  ],
+  "perfil": [
+   "C",
+   "D",
+   "E"
+  ],
+  "uso": [
+   "residencial",
+   "oficinas",
+   "educativo"
+  ],
+  "D_kpa": [
+   5.0,
+   8.0
+  ],
+  "fc_mpa": [
+   21.0,
+   28.0,
+   35.0
+  ]
+ },
+ "usos": {
+  "residencial": [
+   1.8,
+   "I"
+  ],
+  "oficinas": [
+   2.0,
+   "I"
+  ],
+  "educativo": [
+   2.0,
+   "III"
+  ]
+ },
+ "capacidad": "mínima permitida por la zona (A.2.3, Tabla A.3-3)",
+ "optimizador": "orquestador.optimizar_edificio_3d",
+ "commit": "4fd8000",
+ "actualizado": "2026-11-19T18:10:39",
+ "advertencia": "Malla sin ponderación por inventario; diseños óptimos de una rejilla declarada, no diseños de ingenieros."
+}

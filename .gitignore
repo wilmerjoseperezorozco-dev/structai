@@ -86,3 +86,10 @@ data/transporte/_cache/
 # Instantánea del corpus RAG para la búsqueda en memoria (scripts/rag/construir_indice_local.py): lleva el texto de
 # las normas, que no va a un repositorio público. SÍ viaja en la imagen: ver .gcloudignore.
 apps/api/datos_indice/
+
+# Secretos y datos privados locales (claves de evaluación, tokens de prueba, APU de colegas)
+/_privado/
+
+# memorias sintéticas de #275 (regenerables con scripts/memorias_sinteticas/generar.py)
+data/memorias_sinteticas/memorias/
+data/memorias_sinteticas/f2/*.txt
