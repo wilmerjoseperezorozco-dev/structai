@@ -16,7 +16,7 @@ Vigente desde el 9 de noviembre de 2026. Aplica a los 12 motores existentes y a 
 
 | Motor | Regla 1 | Regla 2 | Pendiente principal |
 |---|---|---|---|
-| motor-aquai | Corregido (material, IDF, TR) | No | Contrato en funciones públicas; IDF oficiales |
+| motor-aquai | Corregido (material, IDF, TR; PTAP, PTAR y lagunas en #236) | Parcial: PTAP, PTAR y lagunas (#236) | Contrato en el resto de funciones públicas; IDF oficiales; tablas 7–13, 29 y 36 de la Res. 0330 (no están en el corpus) |
 | motor-geopot | Corregido (zona sísmica, 2 sitios) | No | Constructores con zona por defecto `"ALTA"`; sísmica municipal |
 | motor-vias | Corregido (ancho de carril) | No | Drenaje "bueno" asumido en el diseño asfáltico; `.get(edad, 0.0)` en NTC 121 (falla conservadora, sin mensaje de "no ensayado") |
 | motor-topovia | Corregido (AASHTO-93) | Parcial: `sn_flexible_con_contrato` | Resto de funciones públicas |
@@ -33,7 +33,7 @@ Un motor nuevo entra al registro (y solo entonces se conecta al DAG de `packages
 3. Salida con `ResultadoMotor`, endpoint con fallo explícito (ValueError→422) y límites de tasa.
 4. Desplegado en Cloud Run y verificado con una llamada real contra la revisión en producción.
 
-El DAG se conecta cuando haya acumulados diez motores que cumplan las cuatro. Estado: ninguno cumple aún la condición 4 de forma verificada; `motor-geotecnia` cumple 1–3 en su primer corte.
+El DAG se conecta cuando haya acumulados diez motores que cumplan las cuatro. Estado (2026-11-16): `redes`, `geotecnia` y `licuacion` cumplen la condición 4, verificada con llamadas reales contra `structai-api-00015-hot` (`infra/gcp/llamadas_reales.py`); el detalle por motor está en `docs/REGISTRO_MOTORES.md`.
 
 ## Hoja de ruta en issues (9 de noviembre de 2026)
 

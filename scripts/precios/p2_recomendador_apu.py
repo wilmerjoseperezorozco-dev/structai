@@ -24,17 +24,15 @@ def cargar() -> pd.DataFrame:
     f = AQUI / "_cache" / "p2_lineas_referencia.json"
     if f.exists():
         return pd.DataFrame(json.loads(f.read_text(encoding="utf-8")))
-    sb = dc._sb()
-    # provincia con más actividades distintas
+    # invias_actividad_insumos salió de Supabase el 2026-11-16 (plan gratuito): se lee del respaldo verificado.
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "respaldo"))
+    from leer_respaldo import filas as _filas_respaldo
     prov = PROVINCIA_REF   # elegida con SQL: una de las provincias con las 526 actividades
-    filas, ini = [], 0
-    while True:
-        p = (sb.table("invias_actividad_insumos").select("numeral,insumo_codigo,tipo_insumo,cantidad_o_rendimiento,valor_unitario_linea")
-             .eq("periodo", "2026-1").eq("provincia_codigo", prov).range(ini, ini + 999).execute().data or [])
-        filas += p
-        if len(p) < 1000:
-            break
-        ini += 1000
+    cols = ("numeral", "insumo_codigo", "tipo_insumo", "cantidad_o_rendimiento", "valor_unitario_linea")
+    filas = [{k: f.get(k) for k in cols} for f in _filas_respaldo("invias_actividad_insumos", periodo="2026-1", provincia_codigo=prov)]
+    for f in filas:                                       # numeric viene como texto exacto: a número, como lo daba PostgREST
+        for k in ("cantidad_o_rendimiento", "valor_unitario_linea"):
+            f[k] = float(f[k]) if f[k] is not None else None
     d = pd.DataFrame(filas).dropna(subset=["numeral", "insumo_codigo"]); d["provincia_ref"] = prov
     f.parent.mkdir(exist_ok=True); f.write_text(d.to_json(orient="records", force_ascii=False), encoding="utf-8")
     return d

@@ -16,11 +16,17 @@ Fuente: mismo bucket S3 público sin autenticación que ideam_client.py
 (datos.ideam.gov.co/s3-estacionesideam, verificado en vivo 2026-08-22).
 
 Uso: python cargar_caudal_historico.py
+
+2026-11-16: ideam_caudal_historico salió de Supabase para seguir en el plan gratuito (respaldo verificado en
+scripts/respaldo/). Por defecto las filas se escriben a un JSONL.gz local; a Supabase solo con
+IDEAM_HISTORICO_A_SUPABASE=true, sabiendo que vuelve a ocupar ~50 MB. La API solo lee ideam_caudal_estadisticas_mes.
 """
 from __future__ import annotations
 
 import csv
+import gzip
 import io
+import json
 import os
 import sys
 import time
@@ -147,11 +153,18 @@ def main():
             # Upsert por lotes de 500 -- algunas estaciones tienen 700+
             # meses de historia (60 años), no vale la pena mandarlo todo en
             # una sola llamada.
-            for j in range(0, len(filas_hist), 500):
-                lote = filas_hist[j:j + 500]
-                sb.table("ideam_caudal_historico").upsert(
-                    lote, on_conflict="codigo_estacion,fecha"
-                ).execute()
+            if os.environ.get("IDEAM_HISTORICO_A_SUPABASE", "").lower() == "true":
+                for j in range(0, len(filas_hist), 500):
+                    lote = filas_hist[j:j + 500]
+                    sb.table("ideam_caudal_historico").upsert(
+                        lote, on_conflict="codigo_estacion,fecha"
+                    ).execute()
+            else:
+                destino = Path(os.environ.get("STRUCTAI_RESPALDOS", Path.home() / "structai-respaldos")) / "ideam_caudal_historico_carga.jsonl.gz"
+                destino.parent.mkdir(parents=True, exist_ok=True)
+                with gzip.open(destino, "at", encoding="utf-8") as gz:
+                    for fila in filas_hist:
+                        gz.write(json.dumps(fila, ensure_ascii=False) + chr(10))
             total_filas_historicas += len(filas_hist)
             con_datos += 1
 
