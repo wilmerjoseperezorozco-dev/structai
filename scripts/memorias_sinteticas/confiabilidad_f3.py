@@ -10,11 +10,15 @@ Salida: data/memorias_sinteticas/f3/{beta_por_edificio.csv, resultados_f3.json}
 """
 from __future__ import annotations
 
+import os
+
+for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS"):   # antes de importar numpy: 1 hilo por proceso
+    os.environ[_v] = "1"
+
 import argparse
 import csv
 import json
 import math
-import os
 import sys
 import time
 from multiprocessing import Pool
@@ -30,6 +34,7 @@ BETA_CENSURA = 4.5                     # 0 fallas en 10⁶ → Pf < 3·10⁻⁶ 
 FC_GRID = np.linspace(0.45, 2.0, 11)   # multiplicadores de f'c nominal para la rejilla de curvas de columna
 FY_GRID = np.linspace(0.85, 1.45, 6)
 N_P = 400                              # puntos de la tabla Mn(P) por nodo (f'c, fy)
+BLOQUE = 1 << 16
 
 # (λ, V) por variable; "baja" = menos incertidumbre (más favorable), "alta" = más
 VARIANTES = {
@@ -130,19 +135,27 @@ def _mn_col_vec(col_mod, d, rec, fc_nom, fy_nom, fc, fy, P):
     ug = np.linspace(0.0, 1.0, N_P)                       # u = P / P₀(f'c, fy): la frontera P₀ queda fija en u = 1
     tab = np.array([[np.nan_to_num(col_mod.mn_arr(cv, ug * cv.po), nan=0.0) for cv in fila] for fila in curvas])
     ast = col_mod.SeccionColumna(d.h, d.b, d.n_cara, d.dia, d.estribo, rec).ast
-    po = (0.85 * fc * (d.h * d.b - ast) + fy * ast) / 1e3
-    u = P / po
-    fi = np.clip(np.interp(fc, fcg, np.arange(len(fcg))), 0, len(fcg) - 1 - 1e-9)
-    fj = np.clip(np.interp(fy, fyg, np.arange(len(fyg))), 0, len(fyg) - 1 - 1e-9)
-    fk = np.clip(u * (N_P - 1), 0, N_P - 1 - 1e-9)
-    i0, j0, k0 = fi.astype(int), fj.astype(int), fk.astype(int)
-    ti, tj, tk = fi - i0, fj - j0, fk - k0
-    out = np.zeros(len(P))
-    for di, wi in ((0, 1 - ti), (1, ti)):
-        for dj, wj in ((0, 1 - tj), (1, tj)):
-            for dk, wk in ((0, 1 - tk), (1, tk)):
-                out += wi * wj * wk * tab[i0 + di, j0 + dj, k0 + dk]
-    return np.where(u >= 1.0, 0.0, out)
+    plano = tab.ravel()
+    sj, si = N_P, len(fyg) * N_P
+    out = np.empty(len(P))
+    for a in range(0, len(P), BLOQUE):                    # por bloques: los índices aleatorios caben en caché
+        z = slice(a, a + BLOQUE)
+        po = (0.85 * fc[z] * (d.h * d.b - ast) + fy[z] * ast) / 1e3
+        u = P[z] / po
+        fi = np.clip(np.interp(fc[z], fcg, np.arange(len(fcg))), 0, len(fcg) - 1 - 1e-9)
+        fj = np.clip(np.interp(fy[z], fyg, np.arange(len(fyg))), 0, len(fyg) - 1 - 1e-9)
+        fk = np.clip(u * (N_P - 1), 0, N_P - 1 - 1e-9)
+        i0, j0, k0 = fi.astype(np.int64), fj.astype(np.int64), fk.astype(np.int64)
+        ti, tj, tk = fi - i0, fj - j0, fk - k0
+        base = i0 * si + j0 * sj + k0
+        acc = np.zeros(len(u))
+        for di, wi in ((0, 1 - ti), (1, ti)):
+            for dj, wj in ((0, 1 - tj), (1, tj)):
+                w = wi * wj
+                b0 = base + di * si + dj * sj
+                acc += w * ((1 - tk) * plano[b0] + tk * plano[b0 + 1])
+        out[z] = np.where(u >= 1.0, 0.0, acc)
+    return out
 
 
 def _iniciar():
@@ -220,6 +233,25 @@ def evaluar(c: dict) -> dict:
     return sal
 
 
+CAMPOS = (["id", "estado", "motivo", "N", "zona", "perfil", "uso", "grupo_uso", "fc_mpa", "aa", "capacidad"]
+          + [f"{c}_{v}" for v in VARIANTES for c in ("beta", "censurado", "critico", "n_elementos")]
+          + ["uso_deriva_diseno", "P_deriva_excede", "Sa_Tmodelo_sobre_Sa_diseno", "gobierna_CuTa"])
+
+
+def _leer(ruta: Path) -> list[dict]:
+    """Filas del CSV con sus tipos (el resumen opera sobre números y booleanos)."""
+    filas = []
+    with ruta.open(encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            for k, v in list(r.items()):
+                if k.startswith(("beta_", "P_deriva", "Sa_T", "uso_deriva")) and v not in ("", None):
+                    r[k] = float(v)
+                elif k.startswith(("censurado_", "gobierna_")):
+                    r[k] = v == "True"
+            filas.append(r)
+    return sorted(filas, key=lambda r: int(r["id"]))
+
+
 def _bootstrap_mediana(a, b=None, reps=2000, semilla=SEMILLA):
     rng = np.random.default_rng(semilla)
     a = np.asarray(a, float)
@@ -279,7 +311,8 @@ def resumir(filas: list[dict]) -> dict:
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--piloto", type=int, default=0, help="solo los primeros k edificios ok (verificar que corre)")
-    ap.add_argument("--hilos", type=int, default=8)
+    ap.add_argument("--hilos", type=int, default=6)
+    ap.add_argument("--hasta", default=None, help="HH:MM: se detiene a esa hora (reanudable)")
     ap.add_argument("--salida", default=str(RAIZ / "data" / "memorias_sinteticas" / "f3"))
     a = ap.parse_args()
     sys.stdout.reconfigure(encoding="utf-8")
@@ -289,18 +322,29 @@ def main():
         casos = casos[:a.piloto]
     out = Path(a.salida if not a.piloto else Path(a.salida) / "piloto")
     out.mkdir(parents=True, exist_ok=True)
-    t0, filas = time.time(), []
-    with Pool(a.hilos, initializer=_iniciar) as pool:
-        for k, fila in enumerate(pool.imap_unordered(evaluar, casos, chunksize=1), 1):
-            filas.append(fila)
-            if k % 25 == 0 or a.piloto:
-                print(f"{k}/{len(casos)} en {time.time() - t0:.0f} s", flush=True)
-    filas.sort(key=lambda r: int(r["id"]))
-    campos = sorted({k for f in filas for k in f}, key=lambda k: (k not in ("id", "estado"), k))
-    with (out / "beta_por_edificio.csv").open("w", encoding="utf-8", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=campos)
-        w.writeheader()
-        w.writerows(filas)
+    ruta = out / "beta_por_edificio.csv"
+    hechos = set()
+    if ruta.exists():                                      # reanudable: cada edificio se escribe al terminar
+        with ruta.open(encoding="utf-8") as f:
+            hechos = {r["id"] for r in csv.DictReader(f)}
+    pendientes = [c for c in casos if c["id"] not in hechos]
+    print(f"{len(hechos)} hechos, {len(pendientes)} pendientes, {a.hilos} procesos", flush=True)
+    t0 = time.time()
+    if pendientes:
+        with Pool(a.hilos, initializer=_iniciar) as pool, ruta.open("a", encoding="utf-8", newline="") as f:
+            w = csv.DictWriter(f, fieldnames=CAMPOS, extrasaction="ignore")
+            if not hechos:
+                w.writeheader()
+            for k, fila in enumerate(pool.imap_unordered(evaluar, pendientes, chunksize=1), 1):
+                w.writerow(fila)
+                f.flush()
+                if k % 25 == 0 or a.piloto:
+                    print(f"{k}/{len(pendientes)} en {time.time() - t0:.0f} s", flush=True)
+                if a.hasta and time.strftime("%H:%M") >= a.hasta:
+                    print("hora límite: se detiene (reanudable)", flush=True)
+                    pool.terminate()
+                    return
+    filas = _leer(ruta)
     if a.piloto:
         print(f"piloto: {len(filas)} edificios en {time.time() - t0:.0f} s; estados {[f['estado'] for f in filas]}")
         return
