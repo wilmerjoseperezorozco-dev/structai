@@ -1,8 +1,9 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { HardHat, Loader2, MailCheck, Eye, EyeOff } from "lucide-react";
+import { HardHat, Loader2, MailCheck, Eye, EyeOff, Check } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { mensajeErrorAuth, requisitosPassword, sugerirCorreo } from "@/lib/auth-errores";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
@@ -65,7 +66,7 @@ function LoginContent() {
         }
       }
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Error de autenticación");
+      setError(mensajeErrorAuth(err));
     } finally {
       setLoading(false);
     }
@@ -117,6 +118,15 @@ function LoginContent() {
                 placeholder="ingeniero@email.com"
                 className="w-full bg-concrete-900 border border-concrete-700 rounded-xl px-3 py-3 text-sm text-white placeholder:text-concrete-600 outline-none focus:border-brand-500 transition"
               />
+              {sugerirCorreo(email) && (
+                <button
+                  type="button"
+                  onClick={() => setEmail(sugerirCorreo(email) as string)}
+                  className="mt-1.5 text-xs text-brand-300 hover:text-brand-200 underline-offset-2 hover:underline"
+                >
+                  ¿Quisiste decir <b>{sugerirCorreo(email)}</b>?
+                </button>
+              )}
             </div>
             <div>
               <label className="text-xs text-concrete-400 font-medium block mb-1.5">
@@ -142,6 +152,16 @@ function LoginContent() {
                   {mostrarPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
+              {mode === "registro" && (
+                <ul className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1" aria-label="Requisitos de la contraseña">
+                  {requisitosPassword(password).map((r) => (
+                    <li key={r.texto} className={`flex items-center gap-1.5 text-[11px] ${r.ok ? "text-brand-300" : "text-concrete-500"}`}>
+                      <Check size={11} className={r.ok ? "opacity-100" : "opacity-30"} />
+                      {r.texto}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
 
             {error && (

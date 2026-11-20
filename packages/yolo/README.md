@@ -1,10 +1,9 @@
 # motor-yolo — Detección de elementos estructurales en obra
 
 Retoma la idea original de StructAI: tomar una foto en obra y que el sistema
-identifique elementos automáticamente. `apps/api/main.py` ya tiene el código
-de inferencia real (`_load_onnx_model`, `_detect_onnx`) escrito y correcto —
-formato de salida YOLOv8/v11 ONNX, decodificación de cajas, NMS, umbral de
-confianza. Lo único que falta es el modelo entrenado. Esta carpeta es el
+identifique elementos automáticamente. `apps/api/main.py` ya tiene la inferencia
+real (`_load_onnx_model`, `_detect_onnx`), con el pre y posproceso en
+`src/decodificar.py` (RF-DETR desde #217; YOLO heredado aún se lee). Lo único que falta es el modelo entrenado. Esta carpeta es el
 pipeline completo para producirlo.
 
 ## Estado (2026-07-31)
@@ -78,33 +77,45 @@ automáticamente las imágenes ya etiquetadas).
 
 Clases y teclas: `1` acero_refuerzo · `2` viga · `3` columna · `4` muro ·
 `5` formaleta · `6` tuberia · `7` trabajador — deben coincidir exactamente
-con `dataset/data.yaml` (ya vienen correctas, no tocar el orden).
+con `dataset/data.yaml` y con `CLASES` en `train_rfdetr.py` (no tocar el orden).
 
 Tiempo estimado para las 41 fotos restantes: 30–50 minutos.
 
+## Licencia: por qué RF-DETR y no Ultralytics (issue #217)
+
+Hasta #217 el entrenamiento usaba `ultralytics` (YOLOv11), que es **AGPL-3.0**: el código y también los modelos
+entrenados con él quedan bajo AGPL, incompatible con un SaaS de código cerrado salvo licencia Enterprise. Se migró a
+**RF-DETR** (Roboflow, **Apache-2.0** en los tamaños Nano, Small y Medium; XL/2XL tienen otra licencia y no se usan).
+`train.py` se eliminó y los pesos `yolo11n.pt` (nunca estuvieron en git) ya no se usan. `scripts/inventario/verificar_licencias.py` corre en el CI y
+falla si `ultralytics` (u otro paquete AGPL vetado) vuelve a aparecer en un `requirements*.txt` o `pyproject.toml`.
+
 ## Cómo entrenar (después de etiquetar)
+
+El dataset etiquetado **no está en git** (las fotos son de obra real). Se copia a `packages/yolo/dataset/` con la
+estructura YOLO de siempre (`images/{train,val}` + `labels/{train,val}`, la que escribe `etiquetar.py`).
 
 ```bash
 cd packages/yolo
-pip install ultralytics  # ya está en apps/api/requirements.txt, aquí es para entrenar local
-python train.py
+pip install "rfdetr[onnx]==1.12.1"
+python train_rfdetr.py --solo-convertir      # revisa dataset_coco/ antes de gastar GPU
+python train_rfdetr.py --tamano nano --epocas 60
 ```
 
-`train.py` hace fine-tuning desde pesos COCO preentrenados (`yolo11n.pt`,
-ya está en esta carpeta) — no entrena desde cero, así que converge rápido
-incluso con dataset pequeño y sin GPU (más lento en CPU, pero viable: minutos,
-no horas). Al terminar exporta automáticamente a ONNX en
-`packages/yolo/model.onnx`.
+`train_rfdetr.py`:
+1. convierte las etiquetas YOLO a COCO (`dataset_coco/{train,valid}/_annotations.coco.json`, categorías contiguas
+   0..6 en el orden de `CLASES_MODELO`; una prueba verifica que ese orden coincide con `apps/api/main.py`);
+2. hace fine-tuning desde pesos COCO preentrenados;
+3. exporta `model.onnx` y escribe `model.json` (arquitectura, clases, fecha, tamaño del dataset), del que `/detect`
+   toma el campo `modelo_version`.
 
-**Este entrenamiento se corre en tu máquina local, nunca en el servidor de producción (Google Cloud Run desde 2026-09-01, antes DigitalOcean)** —
-`ultralytics`/`torch` para entrenar es pesado; el servidor de producción
-solo necesita el archivo `.onnx` final (unos 6-12 MB), que se hornea en la
-imagen Docker igual que el modelo de embeddings.
+RF-DETR es un transformer: en CPU el fine-tuning es lento. Lo práctico es **Colab o Kaggle con GPU** (Nano cabe en
+una T4). **Nunca se entrena en el servidor de producción**: producción solo carga el `.onnx` con `onnxruntime`.
 
-Antes de desplegar: verificar con `onnxruntime` localmente que la forma del
-tensor de salida de YOLOv11 exportado sigue siendo `[1, 4+nc, N]` (misma
-convención que YOLOv8, pero se debe comprobar con el modelo real exportado,
-no asumir).
+Antes de desplegar: correr el `.onnx` con `onnxruntime` en local y confirmar que expone las salidas `dets` [1, Q, 4]
+y `labels` [1, Q, C]. El decodificador (`src/decodificar.py`, solo numpy, con pruebas en `tests/`) replica el
+posproceso oficial de RF-DETR: sigmoide por clase, top-k sobre (consulta, clase), umbral y sin NMS. Descarta la
+última ranura ("sin objeto"). Un `model.onnx` YOLO viejo (una sola salida `[1, 4+nc, N]`) se sigue leyendo con NMS
+por compatibilidad, pero no se entrenan modelos nuevos con Ultralytics.
 
 ## Cómo se conecta al backend
 

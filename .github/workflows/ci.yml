@@ -78,6 +78,38 @@ jobs:
       - run: npm run lint
       - run: npx tsc --noEmit
 
+  # ── 1b. E2E del chat (apps/web, issue #190) ─────────────────
+  # Playwright contra `next dev` con la API SIMULADA (e2e/soporte.ts): el
+  # navegador aborta toda petición que no sea al servidor local o al backend
+  # falso, así que no toca producción, Supabase ni un LLM y no necesita
+  # secretos. Seguro para PRs de forks.
+  e2e-web:
+    name: 🎭 E2E chat (web)
+    # Fijo, no ubuntu-latest: este ya es 26.04 y Playwright 1.56.1 no tiene
+    # navegadores para esa versión ("does not support chromium on
+    # ubuntu26.04-x64"). Subir a ubuntu-latest junto con Playwright.
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: apps/web/package-lock.json
+      - run: npm install -g npm@11
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-trazas
+          path: apps/web/test-results/
+          retention-days: 7
+
   # ── 2. Auditoría de dependencias (apps/web) ─────────────────
   # No bloquea el pipeline a propósito. Actualizado 2026-08-26 (repaso
   # general de la app) — la nota anterior, del 2026-07-13, ya estaba
@@ -161,10 +193,10 @@ jobs:
         # solo. Su test de validación real contra un PDF de NSR-10 se
         # auto-salta en CI (@pytest.mark.skipif) porque ese PDF es fuente
         # gitignored, no viaja con el checkout.
-        paquete: [motor-apu, motor-deformacion, motor-aquai, motor-geopot, motor-vulnerabilidad-vivienda, motor-vias, motor-gerencia, motor-estructural, motor-acero-frio, motor-topovia, motor-analisis, motor-geotecnia, motor-licuacion, motor-redes, motor-concreto, orquestador, contrato-motor, dag-proyecto, eval-stats, rag-audit-kit]
+        paquete: [motor-apu, motor-deformacion, motor-aquai, motor-geopot, motor-vulnerabilidad-vivienda, motor-vias, motor-gerencia, motor-estructural, motor-acero-frio, motor-topovia, motor-analisis, motor-geotecnia, motor-licuacion, motor-exploracion, motor-redes, motor-concreto, orquestador, contrato-motor, dag-proyecto, eval-stats, rag-audit-kit, cartografia, yolo]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with: { python-version: '${{ env.PYTHON_VERSION }}' }
       - name: Instalar dependencias
         working-directory: packages/${{ matrix.paquete }}
@@ -198,12 +230,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with: { python-version: '${{ env.PYTHON_VERSION }}' }
       - name: Verificar que el registro coincide con el código
         run: python scripts/inventario/registro_motores.py --verificar
       - name: Verificar la matriz de coherencia (evidencias vigentes, ningún motor sin declarar)
         run: python scripts/inventario/matriz_coherencia.py --verificar
+      - name: Ninguna dependencia AGPL vetada (ultralytics, PyMuPDF…; #217/#219)
+        run: python scripts/inventario/verificar_licencias.py
+      - name: Inventario de cadenas de ejecución al día (#221, informativo)
+        continue-on-error: true
+        run: |
+          python scripts/inventario/cadenas_ejecucion.py --verificar
+          sed -n '/^- Código/,/^- Resolución/p' docs/CADENAS_EJECUCION.md >> "$GITHUB_STEP_SUMMARY"
 
   # ── 4b. Cobertura de ingesta — idea 6 del roadmap (2026-09-16) ─────
   # No re-extrae del PDF fuente (gitignored, no viaja con el checkout) --
@@ -222,7 +261,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with: { python-version: '${{ env.PYTHON_VERSION }}' }
       - name: Instalar dependencias
         run: pip install supabase python-dotenv
@@ -238,7 +277,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with: { python-version: '${{ env.PYTHON_VERSION }}' }
       - name: Instalar dependencias
         working-directory: apps/api
@@ -257,7 +296,7 @@ jobs:
       # revisar este paso). Se cachea entre corridas para que esto solo
       # pese la primera vez.
       - name: Cachear modelos (HF — embeddings + reranker)
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cache/huggingface
           key: hf-embeddings-minilm-l12-v2_reranker-mmarco-mminilmv2-l12-h384-v1
@@ -265,9 +304,18 @@ jobs:
         run: |
           python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')"
           python -c "from sentence_transformers import CrossEncoder; CrossEncoder('cross-encoder/mmarco-mMiniLMv2-L12-H384-v1')"
-      - name: Correr pytest
+      # Issue #178 (2026-11-11, decisión del dueño del proyecto): las 142
+      # pruebas que llaman a un LLM real (marcador `llm`: regresión NSR-10,
+      # regresión de motores y desglose de actividad) ya no corren en GitHub.
+      # Cada corrida costaba ~USD 0,13 con OpenAI y hubo días con más de 90
+      # push a master: el crédito se agotaba y con él el respaldo de
+      # producción. Tampoco pueden usar la cuota de Groq de producción (#53).
+      # Ahora las corre solo el proceso nocturno local con Ollama
+      # (STRUCTAI_LLM_LOCAL, ver apps/api/tests/conftest.py); el modelo local
+      # nunca va a producción. El resto de las pruebas de la API sigue aquí.
+      - name: Correr pytest (sin las pruebas que llaman a un LLM)
         working-directory: apps/api
-        run: pytest -v
+        run: pytest -v -m "not llm"
         env:
           SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}

@@ -11,8 +11,10 @@
         "evidencia": "Dos revisiones adversarias (solver permanente; bombas, válvulas y periodo extendido) corregidas en el commit 3160c9a; pruebas en packages/motor-redes/tests/test_revision2.py."
       },
       "condicion_4": {
-        "valor": false,
-        "evidencia": "Sin desplegar: la imagen de Cloud Run es anterior a geotecnia, licuación y redes."
+        "valor": true,
+        "revision": "structai-api-00015-hot",
+        "fecha": "2026-11-16",
+        "evidencia": "POST /redes/permanente: carga en N = 93,571884 m, idéntica a Hazen-Williams a mano (1 km, D=0,3 m, C=130, Q=0,1 m³/s). Llamada real autenticada contra la revisión en producción con infra/gcp/llamadas_reales.py (tolerancia relativa 1e-9)."
       }
     },
     "geotecnia": {
@@ -25,14 +27,26 @@
         "evidencia": "Mismo documento (cumple 1–3). Atestación heredada; no re-verificada en esta revisión."
       },
       "condicion_4": {
-        "valor": false,
-        "evidencia": "Sin desplegar según el estado de la sesión del 2026-11-09 (la imagen de Cloud Run es anterior a este motor); confirmar con infra/gcp/desplegar.sh."
+        "valor": true,
+        "revision": "structai-api-00015-hot",
+        "fecha": "2026-11-16",
+        "evidencia": "POST /geotecnia/asentamiento: Δσ 2:1 = 21,4286 kPa y S = 50,5925 mm, idénticos a Terzaghi NC a mano. Llamada real autenticada contra la revisión en producción con infra/gcp/llamadas_reales.py (tolerancia relativa 1e-9)."
       }
     },
     "licuacion": {
       "condicion_4": {
-        "valor": false,
-        "evidencia": "Sin desplegar según el estado de la sesión del 2026-11-09 (la imagen de Cloud Run es anterior a este motor); confirmar con infra/gcp/desplegar.sh."
+        "valor": true,
+        "revision": "structai-api-00015-hot",
+        "fecha": "2026-11-16",
+        "evidencia": "POST /licuacion/spt: CSR 0,214100, CRR 0,160058 y FS 0,747313 en la primera subcapa, idénticos a Seed-Idriss / Youd et al. (2001) a mano. Llamada real autenticada contra la revisión en producción con infra/gcp/llamadas_reales.py (tolerancia relativa 1e-9)."
+      }
+    },
+    "aquai": {
+      "condicion_4": {
+        "valor": true,
+        "revision": "structai-api-00017-yom",
+        "fecha": "2026-11-16",
+        "evidencia": "POST /aquai/saneamiento/lagunas: 2 lagunas de maduración y CF = 112,6745 NMP/100 mL, idénticos a Marais (mezcla completa) a mano. Llamada real autenticada contra la revisión en producción con infra/gcp/llamadas_reales.py (tolerancia relativa 1e-9). Cubre solo el sistema lagunar (#236); los demás endpoints de aquai no tienen llamada real propia."
       }
     }
   }

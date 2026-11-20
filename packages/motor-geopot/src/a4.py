@@ -1,8 +1,8 @@
 """NSR-10 Apéndice A-4: Aa, Av, Ae, Ad por municipio (datos locales, sin conexión).
 
 Fuente: data/nsr10_a4_municipios.json, generado por scripts/ingesta/nsr10/generar_snapshot_a4.py
-(texto original Decreto 926 de 2010 + 29 modificaciones del Decreto 092 de 2011; idéntico a la tabla
-nsr10_apendice_a4_municipios de Supabase: 1.117 municipios). Posteriores sin verificar.
+(texto original Decreto 926 de 2010 + 29 modificaciones del Decreto 092 de 2011 + Supía por el Decreto 1711 de 2021;
+idéntico a la tabla nsr10_apendice_a4_municipios de Supabase: 1.117 municipios). Guamal sin resolver (#189).
 
 Zonas (A.2.3): Baja = Aa y Av ≤ 0,10; Alta = Aa o Av > 0,20; Intermedia = el resto.
 Módulo autónomo (solo biblioteca estándar) para poder cargarse desde otros paquetes.

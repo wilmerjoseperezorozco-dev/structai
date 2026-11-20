@@ -34,6 +34,8 @@ from .ariete import calcular_ariete
 from .bombeo import calcular_bombeo
 from .ptap import calcular_ptap
 from .ptar import calcular_ptar
+from .lagunas import SolicitudLagunas, disenar_lagunas
+from .contrato_saneamiento import ptap_contrato, ptar_contrato, lagunas_contrato
 from .tarifario import calcular_tarifa
 from .sui_reporte import generar_reporte_sui
 
@@ -59,4 +61,5 @@ __all__ = [
     "calcular_hidrologia", "calcular_manning", "calcular_ariete",
     "calcular_bombeo", "calcular_ptap", "calcular_ptar",
     "calcular_tarifa", "generar_reporte_sui",
+    "SolicitudLagunas", "disenar_lagunas", "ptap_contrato", "ptar_contrato", "lagunas_contrato",
 ]
