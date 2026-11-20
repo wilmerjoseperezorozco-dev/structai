@@ -1,0 +1,276 @@
+{
+ "prerregistro": "docs/memoria_calculo/PRERREGISTRO_F3_CONFIABILIDAD.md",
+ "n_edificios": 1348,
+ "n_ok": 1348,
+ "no_reproduce": [],
+ "N_MC": 1000000,
+ "beta_censura": 4.5,
+ "variantes": {
+  "central": {
+   "fc": [
+    1.2,
+    0.15
+   ],
+   "fy": [
+    1.13,
+    0.05
+   ],
+   "D": [
+    1.05,
+    0.1
+   ],
+   "L": [
+    1.0,
+    0.18
+   ],
+   "thR_flex": [
+    1.02,
+    0.06
+   ],
+   "thR_col": [
+    1.0,
+    0.08
+   ],
+   "thS": [
+    1.0,
+    0.1
+   ]
+  },
+  "baja": {
+   "fc": [
+    1.3,
+    0.1
+   ],
+   "fy": [
+    1.15,
+    0.03
+   ],
+   "D": [
+    1.03,
+    0.08
+   ],
+   "L": [
+    0.95,
+    0.15
+   ],
+   "thR_flex": [
+    1.05,
+    0.05
+   ],
+   "thR_col": [
+    1.02,
+    0.06
+   ],
+   "thS": [
+    1.0,
+    0.08
+   ]
+  },
+  "alta": {
+   "fc": [
+    1.1,
+    0.2
+   ],
+   "fy": [
+    1.1,
+    0.08
+   ],
+   "D": [
+    1.08,
+    0.12
+   ],
+   "L": [
+    1.05,
+    0.25
+   ],
+   "thR_flex": [
+    1.0,
+    0.1
+   ],
+   "thR_col": [
+    0.98,
+    0.12
+   ],
+   "thS": [
+    1.0,
+    0.15
+   ]
+  }
+ },
+ "hipotesis": {
+  "central": {
+   "mediana_beta": 4.5,
+   "censurados": 1134,
+   "frac_beta_menor_3": 0.000741839762611276,
+   "frac_beta_menor_3_8": 0.064540059347181,
+   "H-F3a": {
+    "mediana": 4.5,
+    "ic95": [
+     4.5,
+     4.5
+    ],
+    "cumple": true
+   },
+   "H-F3b": {
+    "diferencia_alta_menos_baja": 0.0,
+    "ic95": [
+     0.0,
+     0.0
+    ],
+    "n": [
+     589,
+     358
+    ],
+    "cumple": false
+   },
+   "H-F3c": {
+    "diferencia_bajos_menos_altos": 0.0,
+    "ic95": [
+     -0.08279999999999976,
+     0.0
+    ],
+    "n": [
+     120,
+     126
+    ],
+    "cumple": false
+   },
+   "critico_columna_frac": 0.00741839762611276,
+   "mediana_por_zona": {
+    "baja": 4.5,
+    "intermedia": 4.5,
+    "alta": 4.5
+   },
+   "mediana_por_perfil": {
+    "C": 4.5,
+    "D": 4.5,
+    "E": 4.5
+   },
+   "mediana_por_fc": {
+    "21.0": 4.5,
+    "28.0": 4.5,
+    "35.0": 4.5
+   }
+  },
+  "baja": {
+   "mediana_beta": 4.5,
+   "censurados": 1345,
+   "frac_beta_menor_3": 0.0,
+   "frac_beta_menor_3_8": 0.0,
+   "H-F3a": {
+    "mediana": 4.5,
+    "ic95": [
+     4.5,
+     4.5
+    ],
+    "cumple": true
+   },
+   "H-F3b": {
+    "diferencia_alta_menos_baja": 0.0,
+    "ic95": [
+     0.0,
+     0.0
+    ],
+    "n": [
+     589,
+     358
+    ],
+    "cumple": false
+   },
+   "H-F3c": {
+    "diferencia_bajos_menos_altos": 0.0,
+    "ic95": [
+     0.0,
+     0.0
+    ],
+    "n": [
+     120,
+     126
+    ],
+    "cumple": false
+   },
+   "critico_columna_frac": 0.0,
+   "mediana_por_zona": {
+    "baja": 4.5,
+    "intermedia": 4.5,
+    "alta": 4.5
+   },
+   "mediana_por_perfil": {
+    "C": 4.5,
+    "D": 4.5,
+    "E": 4.5
+   },
+   "mediana_por_fc": {
+    "21.0": 4.5,
+    "28.0": 4.5,
+    "35.0": 4.5
+   }
+  },
+  "alta": {
+   "mediana_beta": 3.8117,
+   "censurados": 468,
+   "frac_beta_menor_3": 0.24851632047477745,
+   "frac_beta_menor_3_8": 0.4992581602373887,
+   "H-F3a": {
+    "mediana": 3.8117,
+    "ic95": [
+     3.7092,
+     3.9108
+    ],
+    "cumple": true
+   },
+   "H-F3b": {
+    "diferencia_alta_menos_baja": 1.3063500000000001,
+    "ic95": [
+     1.1926999999999999,
+     1.4515000000000002
+    ],
+    "n": [
+     589,
+     358
+    ],
+    "cumple": true
+   },
+   "H-F3c": {
+    "diferencia_bajos_menos_altos": -0.6164499999999999,
+    "ic95": [
+     -0.91616625,
+     -0.3385475000000006
+    ],
+    "n": [
+     120,
+     126
+    ],
+    "cumple": false
+   },
+   "critico_columna_frac": 0.03115727002967359,
+   "mediana_por_zona": {
+    "baja": 3.19365,
+    "intermedia": 3.5089,
+    "alta": 4.5
+   },
+   "mediana_por_perfil": {
+    "C": 3.46665,
+    "D": 3.9832,
+    "E": 4.3776
+   },
+   "mediana_por_fc": {
+    "21.0": 3.9056,
+    "28.0": 3.73475,
+    "35.0": 3.7878
+   }
+  }
+ },
+ "veredicto": {
+  "H-F3a": "CONFIRMADA",
+  "H-F3b": "REFUTADA",
+  "H-F3c": "REFUTADA"
+ },
+ "deriva": {
+  "mediana_P_excede": 0.41612,
+  "frac_P_excede_mayor_10": 0.8086053412462908,
+  "frac_gobierna_CuTa": 0.8553412462908012,
+  "mediana_Sa_Tmodelo_sobre_Sa_diseno_si_CuTa": 0.9209
+ },
+ "segundos": 3198.5
+}
