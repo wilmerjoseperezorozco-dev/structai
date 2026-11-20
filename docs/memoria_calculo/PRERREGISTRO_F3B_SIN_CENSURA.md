@@ -41,6 +41,23 @@ Todo se importa de `confiabilidad_f3.py`, sin copiarlo.
 - **Q2, precisión:** los elementos «imprecisos» deben ser ≤ 1 %.
 - **Si Q1 o Q2 fallan,** las hipótesis **no se evalúan**. Se reporta el fallo del método y se corrige con otro prerregistro.
 
+## Enmienda del 2026-11-20, tras el piloto y antes de la corrida completa
+
+El piloto (24 edificios, solo puertas de calidad; las hipótesis no se calcularon) dio:
+- **Q1:** cumple, con mediana |Δβ| = 0,022.
+- **Q2:** **falla**, con un 8,2 % de elementos imprecisos.
+
+**Causa:**
+- En las columnas con poco momento, la falla es por P ≥ P₀.
+- Ahí la g de la F3 salta a −1, sin gradiente, y FORM se queda en u = 0.
+- El muestreo centrado en el origen no encuentra fallas.
+
+**Cambios (el dominio de falla es idéntico al de la F3, solo cambia la forma de g):**
+1. **Columnas:** g = min(1 − (Mx + My)/Mn(P), 1 − P/P₀), con P₀ en forma cerrada. Cuando Mn ≤ 0, g = (1 − P/P₀) − 1 < 0.
+2. **FORM divergente** (‖u‖ > 8 sin converger): antes de reportar β > 8 se corre un Monte Carlo directo de resguardo con N_IS muestras. Si encuentra fallas, se usa ese β, con su CoV.
+
+**Piloto repetido:** Q1 cumple (mediana 0,022, p95 0,043) y Q2 cumple (0,05 %). Las puertas, las hipótesis y los criterios **no cambian**.
+
 ## Hipótesis (una sola evaluación; regla de variantes igual que en la F3)
 
 β = β₅₀ del elemento crítico (el mínimo sobre vigas y columnas). IC95 bootstrap con semilla 2753 y 2.000 réplicas.

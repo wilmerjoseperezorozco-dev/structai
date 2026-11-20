@@ -127,15 +127,24 @@ def _columnas_criticas(m, F, piso: int):
     return [por_p] if por_m is por_p else [por_p, por_m]
 
 
-def _mn_col_vec(col_mod, d, rec, fc_nom, fy_nom, fc, fy, P):
-    """Mn nominal(P) por interpolación bilineal en la rejilla (f'c, fy); 0 fuera de rango (P > P₀ → falla)."""
+def _tabla_col(col_mod, d, rec, fc_nom, fy_nom):
+    """Tabla Mn nominal en la rejilla (f'c, fy, u = P/P₀). Se construye una vez por diseño de columna."""
     fcg, fyg = fc_nom * FC_GRID, fy_nom * FY_GRID
     curvas = [[col_mod.curva(d.h, d.b, d.n_cara, d.dia, d.estribo, rec, float(round(a, 4)), float(round(bb, 4)),
                              con_phi=False) for bb in fyg] for a in fcg]
     ug = np.linspace(0.0, 1.0, N_P)                       # u = P / P₀(f'c, fy): la frontera P₀ queda fija en u = 1
     tab = np.array([[np.nan_to_num(col_mod.mn_arr(cv, ug * cv.po), nan=0.0) for cv in fila] for fila in curvas])
     ast = col_mod.SeccionColumna(d.h, d.b, d.n_cara, d.dia, d.estribo, rec).ast
-    plano = tab.ravel()
+    return fcg, fyg, tab.ravel(), ast, d
+
+
+def _mn_col_vec(col_mod, d, rec, fc_nom, fy_nom, fc, fy, P):
+    """Mn nominal(P) por interpolación trilineal en la rejilla (f'c, fy, u); 0 fuera de rango (P > P₀ → falla)."""
+    return _interp_col(_tabla_col(col_mod, d, rec, fc_nom, fy_nom), fc, fy, P)
+
+
+def _interp_col(tabla, fc, fy, P):
+    fcg, fyg, plano, ast, d = tabla
     sj, si = N_P, len(fyg) * N_P
     out = np.empty(len(P))
     for a in range(0, len(P), BLOQUE):                    # por bloques: los índices aleatorios caben en caché
