@@ -63,6 +63,18 @@ export const calcularPTAP = (payload: Record<string, unknown>) =>
 export const calcularPTAR = (payload: Record<string, unknown>) =>
   post<Record<string, unknown>>("/aquai/saneamiento/ptar", payload);
 
+/** Sistema lagunar (#236): el formulario usa selects "si"/"no"; la API exige booleanos y null explícitos. */
+export const calcularLagunas = (payload: Record<string, unknown>) => {
+  const conAnaerobia = payload.incluir_anaerobia === "si";
+  return post<Record<string, unknown>>("/aquai/saneamiento/lagunas", {
+    ...payload,
+    incluir_anaerobia: conAnaerobia,
+    alta_turbulencia_atmosferica: payload.alta_turbulencia_atmosferica === "si",
+    profundidad_anaerobia_m: conAnaerobia ? (payload.profundidad_anaerobia_m ?? null) : null,
+    area_disponible_m2: payload.area_disponible_m2 ?? null,
+  });
+};
+
 export const calcularTarifa = (payload: Record<string, unknown>) =>
   post<Record<string, unknown>>("/aquai/tarifas/calcular", payload);
 

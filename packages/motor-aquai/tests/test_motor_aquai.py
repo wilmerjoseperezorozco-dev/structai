@@ -318,15 +318,16 @@ def test_bombeo_altitud_alta_reduce_npsh_y_advierte():
 # ─── ptap.py ──────────────────────────────────────────────────────────────────
 
 def test_ptap_dosis_coagulante_tabla_alumbre():
-    req = PTAPRequest(caudal_diseno_ls=50, turbidez_cruda_ntu=30, coagulante=CoagulanteType.ALUMBRE)
+    req = PTAPRequest(caudal_diseno_ls=50, turbidez_cruda_ntu=30, color_crudo_uc=15, ph_crudo=7.0, temperatura_c=20,
+                      coagulante=CoagulanteType.ALUMBRE)
     resp = calcular_ptap(req)
     assert resp.dosis_coagulante_mg_l == 28.0   # tabla DOSIS_ALUMBRE, tramo (10,50], factor alumbre=1.0
     assert len(resp.unidades) == 5              # coagulación, floculación, sedimentación, filtración, desinfección
-    assert resp.cumple_res2115 is True
+    assert resp.cumple_res2115 is None   # #236: un diseño no demuestra calidad; antes se afirmaba True
 
 
 def test_ptap_ph_fuera_de_rango_advierte():
-    req = PTAPRequest(caudal_diseno_ls=50, turbidez_cruda_ntu=30, ph_crudo=5.0)
+    req = PTAPRequest(caudal_diseno_ls=50, turbidez_cruda_ntu=30, color_crudo_uc=15, ph_crudo=5.0, temperatura_c=20)
     resp = calcular_ptap(req)
     assert any("pH crudo" in a for a in resp.advertencias)
 
@@ -337,19 +338,19 @@ def test_ptar_caudal_es_acueducto_por_factor_retorno():
     req = PTARRequest(
         poblacion_diseno=5_000, caudal_acueducto_ls=50, factor_retorno=0.8,
         dbo5_cruda_mg_l=250, tecnologia=TecnologiaPTAR.UASB,
-        tipo_cuerpo_receptor=TipoCuerpoReceptor.RIO,
+        tipo_cuerpo_receptor=TipoCuerpoReceptor.RIO, temperatura_agua_c=24.0,
     )
     resp = calcular_ptar(req)
     assert resp.caudal_ar_ls == pytest.approx(50 * 0.8)
     # UASB: eficiencia DBO fija en 70% -> efluente = cruda * 0.30
     assert resp.dbo_efluente_mg_l == pytest.approx(250 * 0.30, rel=1e-6)
-    assert resp.limite_res0631_dbo == 90.0   # LIMITES_RES0631["rio"]["DBO5"]
+    assert resp.limite_res0631_dbo == 90.0   # Res. 0631 art. 8, carga ≤ 3.000 kg/d
 
 
 def test_ptar_estima_dbo_per_capita_si_no_se_provee():
     req = PTARRequest(
         poblacion_diseno=5_000, caudal_acueducto_ls=50, factor_retorno=0.8,
-        tecnologia=TecnologiaPTAR.UASB,
+        tecnologia=TecnologiaPTAR.UASB, tipo_cuerpo_receptor=TipoCuerpoReceptor.RIO, temperatura_agua_c=24.0,
     )
     resp = calcular_ptar(req)
     assert resp.dbo5_cruda_mg_l > 0

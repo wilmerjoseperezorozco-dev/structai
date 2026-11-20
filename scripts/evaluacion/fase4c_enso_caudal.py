@@ -168,6 +168,15 @@ def _paginar(tabla: str, columnas: str, filtro=None) -> list[dict]:
     return filas
 
 
+def _historico_local(columnas=("codigo_estacion", "fecha", "caudal_m3s")) -> list[dict]:
+    """ideam_caudal_historico salio de Supabase el 2026-11-16 (plan gratuito): se lee del respaldo verificado (sha256)."""
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "respaldo"))
+    from leer_respaldo import filas
+    # el respaldo guarda los numeros como texto decimal exacto; la REST los entregaba como float
+    return [{c: (float(f[c]) if c == "caudal_m3s" and f[c] is not None else f[c]) for c in columnas}
+            for f in filas("ideam_caudal_historico")]
+
+
 def main() -> None:
     print("=== Cargando estadisticas mensuales por estacion (baseline real, ya calculado) ===")
     stats_filas = _paginar(
@@ -182,7 +191,7 @@ def main() -> None:
     print(f"Estadisticas usables (con p10/p90 reales): {len(stats)} de {len(stats_filas)}")
 
     print("\n=== Cargando historico completo de caudal (352.022 filas, esto tarda) ===")
-    historico = _paginar("ideam_caudal_historico", "codigo_estacion,fecha,caudal_m3s")
+    historico = _historico_local()
     print(f"Filas historicas cargadas: {len(historico)}")
 
     print("\n=== Indice ONI oficial NOAA (ERSSTv6) cargado: ===")

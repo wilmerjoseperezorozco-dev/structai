@@ -8,10 +8,10 @@ import pytest
 from src import a4
 
 
-def test_snapshot_tiene_1117_municipios_y_29_modificados_por_decreto_092():
+def test_snapshot_tiene_1117_municipios_y_30_modificados_por_decretos_posteriores():
     filas = a4._datos()["municipios"]
     assert len(filas) == 1117
-    assert sum(1 for f in filas if f["modificado_por"]) == 29
+    assert sum(1 for f in filas if f["modificado_por"]) == 30          # 29 del Decreto 092/2011 + Supía (1711/2021)
 
 
 def test_barranquilla_y_tubara_son_zona_baja_con_dmi():
@@ -53,3 +53,17 @@ def test_nombre_ambiguo_exige_departamento_o_codigo():
 def test_municipio_inexistente():
     with pytest.raises(a4.MunicipioNoEncontrado):
         a4.buscar("Atlantis")
+
+
+def test_supia_tiene_el_aa_del_decreto_1711_de_2021():
+    """#189: el anexo técnico del Decreto 1711 de 2021 (pág. 4 del PDF oficial de MinVivienda) cambia Supía (17777)
+    de Aa 0,15 a 0,25. El valor de 2010 era además incoherente con su zona «Alta» (A.2.3: Aa o Av > 0,20 da Alta por Av)."""
+    f = a4.buscar(codigo="17777")
+    assert (f["aa"], f["av"], f["ae"], f["ad"], f["zona"]) == (0.25, 0.30, 0.20, 0.10, "Alta")
+    assert "1711" in f["modificado_por"]
+    assert a4.zona_por_coeficientes(f["aa"], f["av"]) == f["zona"]
+
+
+def test_los_29_del_decreto_092_siguen_aplicados():
+    filas = a4._datos()["municipios"]
+    assert sum(1 for x in filas if x["modificado_por"] and "092" in x["modificado_por"]) == 29

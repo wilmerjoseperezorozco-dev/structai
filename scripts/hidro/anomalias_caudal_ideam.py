@@ -24,15 +24,13 @@ def cargar() -> pd.DataFrame:
     f.parent.mkdir(exist_ok=True)
     if f.exists():
         return pd.read_pickle(f)
-    sb, filas, ini = dc._sb(), [], 0
-    while True:
-        p = sb.table("ideam_caudal_historico").select("codigo_estacion,fecha,caudal_m3s").order("id").range(ini, ini + 999).execute().data or []
-        filas += p
-        if len(p) < 1000:
-            break
-        ini += 1000
-        if ini % 50000 == 0:
-            print(f"  descargadas {ini}", flush=True)
+    # ideam_caudal_historico salio de Supabase el 2026-11-16 (plan gratuito): se lee del respaldo verificado (sha256),
+    # que viene ordenado por id como la paginacion anterior.
+    sys.path.insert(0, str(AQUI.parents[0] / "respaldo"))
+    from leer_respaldo import filas as filas_respaldo
+    filas = [{"codigo_estacion": r["codigo_estacion"], "fecha": r["fecha"],
+              "caudal_m3s": None if r["caudal_m3s"] is None else float(r["caudal_m3s"])}   # texto exacto -> float, como la REST
+             for r in filas_respaldo("ideam_caudal_historico")]
     d = pd.DataFrame(filas); d.to_pickle(f); return d
 
 
