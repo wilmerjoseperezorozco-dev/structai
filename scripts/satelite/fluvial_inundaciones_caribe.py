@@ -40,21 +40,18 @@ def cargar_estaciones_y_caudales(meses: list[str]):
         if len(pag) < 1000:
             break
         ini += 1000
-    cods = [e["codigo"] for e in est]
+    cods = set(e["codigo"] for e in est)
     q = defaultdict(dict)
-    for k in range(0, len(cods), 80):
-        ini = 0
-        while True:
-            pag = (sb.table("ideam_caudal_historico").select("codigo_estacion,fecha,caudal_m3s")
-                   .in_("codigo_estacion", cods[k:k + 80]).gte("fecha", "2019-01-01").lte("fecha", "2024-12-31")
-                   .range(ini, ini + 999).execute().data or [])
-            for r in pag:
-                m = str(r["fecha"])[:7]
-                if m in meses and r["caudal_m3s"] is not None:
-                    q[r["codigo_estacion"]][m] = float(r["caudal_m3s"])
-            if len(pag) < 1000:
-                break
-            ini += 1000
+    # ideam_caudal_historico salio de Supabase el 2026-11-16 (plan gratuito): se lee del respaldo verificado (sha256),
+    # con los mismos filtros que la consulta anterior (estaciones del recuadro, 2019-01-01 a 2024-12-31).
+    sys.path.insert(0, str(AQUI.parents[0] / "respaldo"))
+    from leer_respaldo import filas as filas_respaldo
+    for r in filas_respaldo("ideam_caudal_historico"):
+        if r["codigo_estacion"] not in cods or not ("2019-01-01" <= str(r["fecha"]) <= "2024-12-31"):
+            continue
+        m = str(r["fecha"])[:7]
+        if m in meses and r["caudal_m3s"] is not None:
+            q[r["codigo_estacion"]][m] = float(r["caudal_m3s"])
     return est, q
 
 

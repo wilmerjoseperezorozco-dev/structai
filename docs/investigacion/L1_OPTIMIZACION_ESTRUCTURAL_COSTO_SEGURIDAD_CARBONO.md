@@ -87,3 +87,14 @@ Por caso y por línea base: costo, masa de acero y de concreto, CO₂e, deriva, 
 ## 9. ¿Llegará a ser un motor?
 
 No automáticamente. Según el criterio de [`CLASIFICACION_HIPOTESIS_Y_MOTORES_2026-11.md`](../CLASIFICACION_HIPOTESIS_Y_MOTORES_2026-11.md), una hipótesis es evidencia, no un motor. La Fase 1 sí produce funciones reutilizables (cantidades, CO₂e, razones) que irían como motor con contrato `ResultadoMotor`; el resultado de H1 se publica como hallazgo, con su límite, tanto si se cumple como si no.
+
+## 10. Estado de implementación (16 de noviembre de 2026)
+
+Construido el **motor** (herramienta), no el experimento:
+
+- `packages/orquestador/src/optimizador_pareto.py`: Fase 1 (cantidades de acero y concreto, CO₂e A1–A3 y razón demanda/capacidad máxima de cada candidato factible de `diseno_integral`) y la parte de método de la Fase 2 (frontera exacta por enumeración sobre c × b × h × f'c, sin barrido de pesos).
+- Puntos con nombre, fijados en el código antes de cualquier corrida (`PUNTOS_NOMBRADOS`, versión `L1-fase0-2026-11-16`): mínimo costo (= B1), mínimo CO₂e, mayor holgura (menor D/C) y compromiso (Chebyshev al ideal, objetivos normalizados al rango de la frontera, pesos iguales). Cada uno se reanaliza con la ruta escalar de referencia.
+- Contrato `ResultadoMotor` y endpoint `POST /orquestador/portico-pareto` (422 con la norma, 3 solicitudes/minuto, rejilla acotada).
+- Pruebas contra cálculo a mano (cantidades de un pórtico sintético, CO₂e del acero, frontera de un conjunto conocido), igualdad min-costo = B1, monotonicidad y fallo explícito.
+
+Sigue abierto, y bloquea cualquier corrida de H1: congelar *Δc* y *δ*, la matriz de casos, la regla de B0, las distribuciones de la Fase 3, el ejemplo publicado para la retro-validación y ratificar la regla del punto «compromiso». Falta también la revisión adversaria independiente (regla 7 de `docs/REGLAS_MOTORES_DE_CALCULO.md`).

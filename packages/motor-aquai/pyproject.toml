@@ -5,11 +5,14 @@ build-backend = "hatchling.build"
 [project]
 name = "motor-aquai"
 version = "0.1.0"
-description = "Cálculos de acueducto y alcantarillado — RAS 2000 / Resolución 0330-2017 (11 módulos: población, caudales, redes, tratamiento PTAP/PTAR, tarifas CRA)"
+description = "Cálculos de acueducto y alcantarillado — Resolución 0330 de 2017 (reemplazó al RAS 2000) (11 módulos: población, caudales, redes, tratamiento PTAP/PTAR, tarifas CRA)"
 requires-python = ">=3.11"
 dependencies = [
     "pydantic>=2.9.2",
     "reportlab>=4.0.0",
+    # scipy: verificador independiente del óptimo de las lagunas de maduración en las pruebas (#236);
+    # la API ya la instala (apps/api/requirements.txt), así que no agrega peso en producción.
+    "scipy>=1.11",
 ]
 
 [project.optional-dependencies]

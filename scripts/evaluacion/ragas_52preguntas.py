@@ -27,6 +27,8 @@ explícitamente como confound real (no se ocultan):
 
 Ejecutar: C:\\ragas_venv\\Scripts\\python.exe ragas_52preguntas.py
 """
+import os as _os_cache  # noqa: E402
+_os_cache.environ.setdefault("RAG_CACHE_DISABLED", "true")  # mide el pipeline, no respuestas guardadas (ver ci.yml)
 import json
 import os
 import sys

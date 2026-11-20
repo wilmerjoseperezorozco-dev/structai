@@ -57,7 +57,7 @@ Versiones tomadas de `apps/api/requirements.txt` y `apps/web/package.json`; lice
 | Web | Next.js 15 · React 18 · TypeScript 5 · Tailwind 3 · next-pwa · react-markdown | PWA para ingenieros y maestros de obra |
 | Observabilidad | sentry-sdk · `@sentry/nextjs` · `/health` y `/data-status` públicos | Errores y estado en vivo |
 | Infraestructura | Google Cloud Run · Cloud Build · GitHub Actions | Despliegue manual verificado y CI |
-| Opcional, desactivado por defecto | ultralytics (**AGPL-3.0**) · opencv-python · ifcopenshell (LGPL) | BIM y visión (InfraCortex); su licencia exige revisión antes de ofrecerlo como servicio |
+| Opcional, desactivado por defecto | onnxruntime · opencv-python-headless · ifcopenshell (LGPL) | BIM y visión (InfraCortex). El detector se entrena con RF-DETR (Apache-2.0); Ultralytics (AGPL-3.0) se retiró en #217 y el CI lo veta |
 
 ## Visibilidad e impacto
 

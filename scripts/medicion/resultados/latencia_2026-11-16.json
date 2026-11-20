@@ -1,0 +1,380 @@
+{
+ "fecha": "2026-11-16T10:18:41",
+ "maquina": "Windows AMD64",
+ "python": "3.12.10",
+ "escenarios": {
+  "portico-integral": {
+   "entrada": "POST /orquestador/portico-integral",
+   "etiquetas": [
+    "dependiente_de_norma"
+   ],
+   "pasos_instrumentados": [
+    "packages/orquestador/src/diseno_portico.py::_capacidad",
+    "packages/orquestador/src/diseno_portico.py::_ctx_sismico",
+    "packages/orquestador/src/diseno_integral.py::_tabla_secciones",
+    "packages/orquestador/src/diseno_portico.py::_modelo",
+    "packages/orquestador/src/grilla_vectorizada.py::construir_plantilla",
+    "packages/orquestador/src/sismo_portico.py::alturas_nivel_m",
+    "packages/orquestador/src/sismo_portico.py::pesos_nivel_kn",
+    "packages/orquestador/src/sismo_portico.py::parametros_espectro",
+    "packages/orquestador/src/sismo_portico.py::fuerzas_vectorizadas",
+    "packages/orquestador/src/grilla_vectorizada.py::analizar_lote",
+    "packages/motor-concreto/src/diseno_viga.py::disenar",
+    "packages/orquestador/src/diseno_portico.py::_costo_nivel",
+    "packages/orquestador/src/grilla_vectorizada.py::_combos",
+    "packages/orquestador/src/diseno_integral.py::_ks",
+    "packages/motor-concreto/src/diseno_viga.py::_d",
+    "packages/motor-concreto/src/diseno_viga.py::_mn_nominal",
+    "packages/motor-concreto/src/columna.py::disenar_columna",
+    "packages/orquestador/src/diseno_integral.py::costo_columnas",
+    "packages/orquestador/src/diseno_portico.py::_basal_escalar",
+    "packages/orquestador/src/diseno_portico.py::_analizar",
+    "packages/orquestador/src/diseno_portico.py::_demanda",
+    "packages/orquestador/src/diseno_portico.py::_lote_vectorizado",
+    "packages/orquestador/src/diseno_portico.py::_derivar_basal"
+   ],
+   "pasos_no_instrumentables": [],
+   "sustituidos": [],
+   "peticiones": {
+    "n": 10,
+    "tasa_error": 0.0,
+    "p50_ms": 543.175,
+    "p95_ms": 596.4
+   },
+   "peticiones_instrumentadas": {
+    "n": 10,
+    "tasa_error": 0.0,
+    "p50_ms": 552.516,
+    "p95_ms": 654.067
+   },
+   "sobrecosto_instrumentacion": 0.017,
+   "pasos": [
+    {
+     "paso": "packages/motor-concreto/src/columna.py::disenar_columna",
+     "llamadas": 990,
+     "llamadas_por_peticion": 99.0,
+     "tasa_error": 0.0,
+     "p50_ms": 3.864,
+     "p95_ms": 6.253,
+     "propio_p50_ms": 3.864,
+     "propio_p95_ms": 6.253,
+     "propio_total_por_peticion_ms": 410.765
+    },
+    {
+     "paso": "packages/motor-concreto/src/diseno_viga.py::disenar",
+     "llamadas": 330,
+     "llamadas_por_peticion": 33.0,
+     "tasa_error": 0.0,
+     "p50_ms": 0.874,
+     "p95_ms": 1.455,
+     "propio_p50_ms": 0.722,
+     "propio_p95_ms": 1.217,
+     "propio_total_por_peticion_ms": 35.501
+    },
+    {
+     "paso": "packages/orquestador/src/grilla_vectorizada.py::analizar_lote",
+     "llamadas": 40,
+     "llamadas_por_peticion": 4.0,
+     "tasa_error": 0.0,
+     "p50_ms": 9.941,
+     "p95_ms": 13.186,
+     "propio_p50_ms": 9.928,
+     "propio_p95_ms": 13.171,
+     "propio_total_por_peticion_ms": 35.004
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_portico.py::_costo_nivel",
+     "llamadas": 2900,
+     "llamadas_por_peticion": 290.0,
+     "tasa_error": 0.0,
+     "p50_ms": 0.067,
+     "p95_ms": 0.197,
+     "propio_p50_ms": 0.067,
+     "propio_p95_ms": 0.197,
+     "propio_total_por_peticion_ms": 25.966
+    },
+    {
+     "paso": "packages/motor-concreto/src/diseno_viga.py::_mn_nominal",
+     "llamadas": 45100,
+     "llamadas_por_peticion": 4510.0,
+     "tasa_error": 0.0,
+     "p50_ms": 0.001,
+     "p95_ms": 0.002,
+     "propio_p50_ms": 0.001,
+     "propio_p95_ms": 0.002,
+     "propio_total_por_peticion_ms": 5.563
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_portico.py::_analizar",
+     "llamadas": 10,
+     "llamadas_por_peticion": 1.0,
+     "tasa_error": 0.0,
+     "p50_ms": 4.512,
+     "p95_ms": 5.224,
+     "propio_p50_ms": 3.971,
+     "propio_p95_ms": 4.733,
+     "propio_total_por_peticion_ms": 3.855
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_portico.py::_modelo",
+     "llamadas": 50,
+     "llamadas_por_peticion": 5.0,
+     "tasa_error": 0.0,
+     "p50_ms": 0.605,
+     "p95_ms": 0.92,
+     "propio_p50_ms": 0.605,
+     "propio_p95_ms": 0.92,
+     "propio_total_por_peticion_ms": 3.219
+    },
+    {
+     "paso": "packages/orquestador/src/grilla_vectorizada.py::construir_plantilla",
+     "llamadas": 40,
+     "llamadas_por_peticion": 4.0,
+     "tasa_error": 0.0,
+     "p50_ms": 0.601,
+     "p95_ms": 1.166,
+     "propio_p50_ms": 0.601,
+     "propio_p95_ms": 1.166,
+     "propio_total_por_peticion_ms": 2.777
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_integral.py::costo_columnas",
+     "llamadas": 8730,
+     "llamadas_por_peticion": 873.0,
+     "tasa_error": 0.0,
+     "p50_ms": 0.002,
+     "p95_ms": 0.007,
+     "propio_p50_ms": 0.002,
+     "propio_p95_ms": 0.007,
+     "propio_total_por_peticion_ms": 2.515
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_portico.py::_demanda",
+     "llamadas": 10,
+     "llamadas_por_peticion": 1.0,
+     "tasa_error": 0.0,
+     "p50_ms": 1.461,
+     "p95_ms": 2.529,
+     "propio_p50_ms": 1.461,
+     "propio_p95_ms": 2.529,
+     "propio_total_por_peticion_ms": 1.616
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_integral.py::_ks",
+     "llamadas": 330,
+     "llamadas_por_peticion": 33.0,
+     "tasa_error": 0.0,
+     "p50_ms": 0.024,
+     "p95_ms": 0.038,
+     "propio_p50_ms": 0.024,
+     "propio_p95_ms": 0.038,
+     "propio_total_por_peticion_ms": 0.868
+    },
+    {
+     "paso": "packages/orquestador/src/grilla_vectorizada.py::_combos",
+     "llamadas": 370,
+     "llamadas_por_peticion": 37.0,
+     "tasa_error": 0.0,
+     "p50_ms": 0.018,
+     "p95_ms": 0.03,
+     "propio_p50_ms": 0.018,
+     "propio_p95_ms": 0.03,
+     "propio_total_por_peticion_ms": 0.807
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_portico.py::_capacidad",
+     "llamadas": 10,
+     "llamadas_por_peticion": 1.0,
+     "tasa_error": 0.0,
+     "p50_ms": 0.69,
+     "p95_ms": 0.982,
+     "propio_p50_ms": 0.69,
+     "propio_p95_ms": 0.982,
+     "propio_total_por_peticion_ms": 0.719
+    },
+    {
+     "paso": "packages/motor-concreto/src/diseno_viga.py::_d",
+     "llamadas": 4290,
+     "llamadas_por_peticion": 429.0,
+     "tasa_error": 0.0,
+     "p50_ms": 0.001,
+     "p95_ms": 0.002,
+     "propio_p50_ms": 0.001,
+     "propio_p95_ms": 0.002,
+     "propio_total_por_peticion_ms": 0.349
+    },
+    {
+     "paso": "packages/orquestador/src/sismo_portico.py::pesos_nivel_kn",
+     "llamadas": 50,
+     "llamadas_por_peticion": 5.0,
+     "tasa_error": 0.0,
+     "p50_ms": 0.05,
+     "p95_ms": 0.086,
+     "propio_p50_ms": 0.05,
+     "propio_p95_ms": 0.086,
+     "propio_total_por_peticion_ms": 0.271
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_portico.py::_lote_vectorizado",
+     "llamadas": 40,
+     "llamadas_por_peticion": 4.0,
+     "tasa_error": 0.0,
+     "p50_ms": 11.549,
+     "p95_ms": 15.078,
+     "propio_p50_ms": 0.049,
+     "propio_p95_ms": 0.071,
+     "propio_total_por_peticion_ms": 0.21
+    },
+    {
+     "paso": "packages/orquestador/src/sismo_portico.py::parametros_espectro",
+     "llamadas": 40,
+     "llamadas_por_peticion": 4.0,
+     "tasa_error": 0.0,
+     "p50_ms": 0.045,
+     "p95_ms": 0.067,
+     "propio_p50_ms": 0.045,
+     "propio_p95_ms": 0.067,
+     "propio_total_por_peticion_ms": 0.198
+    },
+    {
+     "paso": "packages/orquestador/src/sismo_portico.py::fuerzas_vectorizadas",
+     "llamadas": 40,
+     "llamadas_por_peticion": 4.0,
+     "tasa_error": 0.0,
+     "p50_ms": 0.037,
+     "p95_ms": 0.066,
+     "propio_p50_ms": 0.037,
+     "propio_p95_ms": 0.066,
+     "propio_total_por_peticion_ms": 0.162
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_integral.py::_tabla_secciones",
+     "llamadas": 10,
+     "llamadas_por_peticion": 1.0,
+     "tasa_error": 0.0,
+     "p50_ms": 0.129,
+     "p95_ms": 0.181,
+     "propio_p50_ms": 0.129,
+     "propio_p95_ms": 0.181,
+     "propio_total_por_peticion_ms": 0.137
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_portico.py::_basal_escalar",
+     "llamadas": 10,
+     "llamadas_por_peticion": 1.0,
+     "tasa_error": 0.0,
+     "p50_ms": 0.091,
+     "p95_ms": 0.151,
+     "propio_p50_ms": 0.051,
+     "propio_p95_ms": 0.076,
+     "propio_total_por_peticion_ms": 0.055
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_portico.py::_derivar_basal",
+     "llamadas": 10,
+     "llamadas_por_peticion": 1.0,
+     "tasa_error": 0.0,
+     "p50_ms": 0.056,
+     "p95_ms": 0.064,
+     "propio_p50_ms": 0.056,
+     "propio_p95_ms": 0.064,
+     "propio_total_por_peticion_ms": 0.055
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_portico.py::_ctx_sismico",
+     "llamadas": 10,
+     "llamadas_por_peticion": 1.0,
+     "tasa_error": 0.0,
+     "p50_ms": 0.011,
+     "p95_ms": 0.016,
+     "propio_p50_ms": 0.011,
+     "propio_p95_ms": 0.016,
+     "propio_total_por_peticion_ms": 0.012
+    },
+    {
+     "paso": "packages/orquestador/src/sismo_portico.py::alturas_nivel_m",
+     "llamadas": 50,
+     "llamadas_por_peticion": 5.0,
+     "tasa_error": 0.0,
+     "p50_ms": 0.002,
+     "p95_ms": 0.004,
+     "propio_p50_ms": 0.002,
+     "propio_p95_ms": 0.004,
+     "propio_total_por_peticion_ms": 0.01
+    }
+   ],
+   "no_atribuido_ms": 21.882
+  },
+  "apu-lote": {
+   "entrada": "POST /apu/calculate-batch",
+   "etiquetas": [
+    "con_efectos",
+    "dependiente_de_norma",
+    "dependiente_de_datos"
+   ],
+   "pasos_instrumentados": [
+    "packages/motor-apu/src/catalogue.py::get_apu",
+    "packages/motor-apu/src/cantidades.py::calcular_apu_dinamico",
+    "apps/api/main.py::registrar_apu_calculos_lote"
+   ],
+   "pasos_no_instrumentables": [
+    "_uso_sb.table().select().eq().maybe_single().execute",
+    "_uso_sb.table().select().eq().gte().execute"
+   ],
+   "sustituidos": [
+    "get_current_user (auth)",
+    "_cupo_apu_mes_restante (lectura BD)",
+    "registrar_apu_calculos_lote (escritura BD)"
+   ],
+   "peticiones": {
+    "n": 10,
+    "tasa_error": 0.0,
+    "p50_ms": 93.312,
+    "p95_ms": 99.661
+   },
+   "peticiones_instrumentadas": {
+    "n": 10,
+    "tasa_error": 0.0,
+    "p50_ms": 91.147,
+    "p95_ms": 99.169
+   },
+   "sobrecosto_instrumentacion": -0.023,
+   "pasos": [
+    {
+     "paso": "packages/motor-apu/src/catalogue.py::get_apu",
+     "llamadas": 100,
+     "llamadas_por_peticion": 10.0,
+     "tasa_error": 0.0,
+     "p50_ms": 1.875,
+     "p95_ms": 5.409,
+     "propio_p50_ms": 1.875,
+     "propio_p95_ms": 5.409,
+     "propio_total_por_peticion_ms": 25.984
+    },
+    {
+     "paso": "packages/motor-apu/src/cantidades.py::calcular_apu_dinamico",
+     "llamadas": 100,
+     "llamadas_por_peticion": 10.0,
+     "tasa_error": 0.0,
+     "p50_ms": 2.394,
+     "p95_ms": 3.12,
+     "propio_p50_ms": 2.394,
+     "propio_p95_ms": 3.12,
+     "propio_total_por_peticion_ms": 25.591
+    },
+    {
+     "paso": "apps/api/main.py::registrar_apu_calculos_lote",
+     "llamadas": 10,
+     "llamadas_por_peticion": 1.0,
+     "tasa_error": 0.0,
+     "p50_ms": 0.001,
+     "p95_ms": 0.001,
+     "propio_p50_ms": 0.001,
+     "propio_p95_ms": 0.001,
+     "propio_total_por_peticion_ms": 0.001
+    }
+   ],
+   "no_atribuido_ms": 39.571
+  }
+ }
+}
