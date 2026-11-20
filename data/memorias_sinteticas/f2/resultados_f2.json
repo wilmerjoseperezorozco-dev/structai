@@ -1,0 +1,123 @@
+{
+ "prerregistro": "docs/memoria_calculo/PRERREGISTRO_F2_SUBROGADOS.md",
+ "n_corpus": 2048,
+ "n_error": 0,
+ "n_usado": 2048,
+ "n_entrenamiento": 1480,
+ "n_calibracion": 261,
+ "n_reservado": 307,
+ "tasa_factible": 0.658203125,
+ "factibilidad": {
+  "exactitud_balanceada": 0.9197016031878418,
+  "exactitud": 0.9283387622149837,
+  "factible_falso": 12,
+  "inviable_falso": 10,
+  "criterio": "exactitud balanceada > 0,90",
+  "cumple": true
+ },
+ "regresiones": {
+  "y_costo_cop_m2": {
+   "MAPE": 0.04643153553086584,
+   "R2": 0.942554538150101,
+   "q_conforme_log": 0.09903175868844727,
+   "cobertura_90": 0.9040404040404041,
+   "MAPE_lineal": 0.07839037821269797,
+   "IC95_mejora_sobre_lineal": [
+    0.023502224372031165,
+    0.04045988738605296
+   ],
+   "MAPE_mediana_zona_N": 0.1467663549108357,
+   "cumple": true
+  },
+  "y_acero_kg_m2": {
+   "MAPE": 0.058183955915306965,
+   "R2": 0.9121902770375719,
+   "q_conforme_log": 0.11576806231542491,
+   "cobertura_90": 0.9090909090909091,
+   "MAPE_lineal": 0.09993397102907366,
+   "IC95_mejora_sobre_lineal": [
+    0.03229634472815231,
+    0.05126925174910712
+   ]
+  },
+  "y_concreto_m3_m2": {
+   "MAPE": 0.05648826083965495,
+   "R2": 0.9329054791386807,
+   "q_conforme_log": 0.11065590637698541,
+   "cobertura_90": 0.8737373737373737,
+   "MAPE_lineal": 0.0823091966889247,
+   "IC95_mejora_sobre_lineal": [
+    0.01570806596547812,
+    0.03594114731489127
+   ]
+  },
+  "y_co2_kg_m2": {
+   "MAPE": 0.05286988799138559,
+   "R2": 0.9352805815647857,
+   "q_conforme_log": 0.11021124933632098,
+   "cobertura_90": 0.8939393939393939,
+   "MAPE_lineal": 0.08146261592974957,
+   "IC95_mejora_sobre_lineal": [
+    0.01916295671901483,
+    0.038243439885541276
+   ]
+  },
+  "y_T_modelo_x_s": {
+   "MAPE": 0.04200606597219759,
+   "R2": 0.9737607295916954,
+   "q_conforme_log": 0.09540848176828026,
+   "cobertura_90": 0.9090909090909091
+  },
+  "c_inferior_mm": {
+   "MAPE": 0.07874758183360683,
+   "R2": 0.7462567997220209,
+   "q_conforme_log": 99.79007059332912,
+   "cobertura_90": 0.9090909090909091,
+   "error_medio_pasos_50mm": 0.9680560900967241
+  },
+  "c_superior_mm": {
+   "MAPE": 0.07708807266975698,
+   "R2": 0.7067058500874004,
+   "q_conforme_log": 82.42089859433833,
+   "cobertura_90": 0.8787878787878788,
+   "error_medio_pasos_50mm": 0.8342176723181091
+  },
+  "h_viga_mm": {
+   "MAPE": 0.0511329616712594,
+   "R2": 0.8708347708333914,
+   "q_conforme_log": 57.759986872662694,
+   "cobertura_90": 0.8383838383838383,
+   "error_medio_pasos_50mm": 0.6709170021694218
+  }
+ },
+ "extrapolacion": {
+  "Aa<=0.30 -> Aa>=0.35": {
+   "n_test": 202,
+   "MAPE_costo": 0.0638635596515203
+  },
+  "N<=10 -> N>=11": {
+   "n_test": 173,
+   "MAPE_costo": 0.05484159634705751
+  }
+ },
+ "guardia": {
+  "n": 198,
+  "origenes": {
+   "directo": 112,
+   "reparado": 67,
+   "exacto": 19
+  },
+  "directo_o_reparado": 0.9040404040404041,
+  "ic95_wilson": [
+   0.854995205493456,
+   0.9377056054394737
+  ],
+  "inseguros_entregados": 0,
+  "brecha_costo_mediana": 0.021817426150485986,
+  "brecha_costo_p90": 0.08076145960295246,
+  "sin_solucion_predichos_factibles": 12,
+  "segundos": 204.2806360721588,
+  "criterio": "directo + reparado >= 0,80",
+  "cumple": true
+ }
+}

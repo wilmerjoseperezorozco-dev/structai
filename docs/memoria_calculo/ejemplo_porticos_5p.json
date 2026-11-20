@@ -1,0 +1,1973 @@
+{
+ "esquema": "structai.memoria_calculo/0.1",
+ "generado": "2026-11-19T00:00:00+00:00",
+ "motor": "orquestador.diseno_edificio_3d/0.1",
+ "aviso": "Resultado de apoyo al diseño: no sustituye el criterio, la verificación ni la firma de un ingeniero matriculado responsable del proyecto (Ley 400 de 1997; NSR-10, Título A).",
+ "proyecto": {
+  "nombre": "Ejemplo: pórticos DES de 5 pisos (Barranquilla, perfil D)",
+  "tipologia": "porticos_concreto_3d",
+  "uso": "residencial",
+  "divipola": "08001",
+  "sistema": "pórticos de concreto resistentes a momentos DES"
+ },
+ "datos_entrada": [
+  {
+   "concepto": "Uso de la edificación / grupo de uso",
+   "valor": "residencial / I",
+   "unidad": "",
+   "referencia": "A.2.5.1",
+   "estado": "ENTRADA",
+   "ecuacion": ""
+  },
+  {
+   "concepto": "Municipio (DIVIPOLA)",
+   "valor": "08001",
+   "unidad": "",
+   "referencia": "",
+   "estado": "ENTRADA",
+   "ecuacion": ""
+  },
+  {
+   "concepto": "Aa / Av",
+   "valor": "0.25 / 0.25",
+   "unidad": "",
+   "referencia": "A.2.3, Apéndice A-4",
+   "estado": "ENTRADA",
+   "ecuacion": ""
+  },
+  {
+   "concepto": "Perfil de suelo",
+   "valor": "D",
+   "unidad": "",
+   "referencia": "A.2.4 (del estudio geotécnico)",
+   "estado": "ENTRADA",
+   "ecuacion": ""
+  },
+  {
+   "concepto": "Fa / Fv",
+   "valor": "1.3 / 1.9",
+   "unidad": "",
+   "referencia": "Tablas A.2.4-3 y A.2.4-4",
+   "estado": "NSR-10 (leído)",
+   "ecuacion": ""
+  },
+  {
+   "concepto": "Coeficiente de importancia I",
+   "valor": 1.0,
+   "unidad": "",
+   "referencia": "Tabla A.2.5-1",
+   "estado": "NSR-10 (leído)",
+   "ecuacion": ""
+  },
+  {
+   "concepto": "Sistema estructural / capacidad de disipación",
+   "valor": "pórticos de concreto DES",
+   "unidad": "",
+   "referencia": "Tabla A.3-3",
+   "estado": "ENTRADA",
+   "ecuacion": ""
+  },
+  {
+   "concepto": "f'c / fy",
+   "valor": "28 / 420",
+   "unidad": "MPa",
+   "referencia": "",
+   "estado": "ENTRADA",
+   "ecuacion": ""
+  },
+  {
+   "concepto": "Ec",
+   "valor": 24870.062324007155,
+   "unidad": "MPa",
+   "referencia": "C.8.5.1",
+   "estado": "NSR-10 (leído)",
+   "ecuacion": "Ec = 4700·√f'c"
+  },
+  {
+   "concepto": "Planta",
+   "valor": "luces X [6.0, 6.0, 6.0] m; luces Y [5.0, 5.0] m",
+   "unidad": "",
+   "referencia": "",
+   "estado": "ENTRADA",
+   "ecuacion": ""
+  },
+  {
+   "concepto": "Alturas de piso",
+   "valor": [
+    3.0,
+    3.0,
+    3.0,
+    3.0,
+    3.0
+   ],
+   "unidad": "m",
+   "referencia": "",
+   "estado": "ENTRADA",
+   "ecuacion": ""
+  },
+  {
+   "concepto": "Columnas por piso (cuadradas)",
+   "valor": [
+    750,
+    750,
+    750,
+    750,
+    750
+   ],
+   "unidad": "mm",
+   "referencia": "",
+   "estado": "ENTRADA",
+   "ecuacion": ""
+  },
+  {
+   "concepto": "Vigas por nivel (b×h)",
+   "valor": [
+    "400×650",
+    "400×650",
+    "400×650",
+    "400×650",
+    "400×650"
+   ],
+   "unidad": "mm",
+   "referencia": "",
+   "estado": "ENTRADA",
+   "ecuacion": ""
+  },
+  {
+   "concepto": "Recubrimiento libre",
+   "valor": 40.0,
+   "unidad": "mm",
+   "referencia": "C.7.7.1",
+   "estado": "ENTRADA",
+   "ecuacion": ""
+  }
+ ],
+ "cargas": [
+  {
+   "concepto": "Carga muerta sobre la losa (losa + acabados + muros)",
+   "valor": 6.0,
+   "unidad": "kN/m²",
+   "referencia": "B.3",
+   "estado": "ENTRADA",
+   "ecuacion": ""
+  },
+  {
+   "concepto": "Carga viva",
+   "valor": 1.8,
+   "unidad": "kN/m²",
+   "referencia": "Tabla B.4.2.1-1",
+   "estado": "ENTRADA",
+   "ecuacion": ""
+  },
+  {
+   "concepto": "Peso propio de vigas y columnas",
+   "valor": 24.0,
+   "unidad": "kN/m³",
+   "referencia": "B.3",
+   "estado": "HIPÓTESIS",
+   "ecuacion": ""
+  },
+  {
+   "concepto": "Reparto de la losa a las vigas",
+   "valor": "líneas de rotura a 45°, uniforme equivalente con la misma resultante",
+   "unidad": "",
+   "referencia": "",
+   "estado": "HIPÓTESIS",
+   "ecuacion": ""
+  },
+  {
+   "concepto": "Peso sísmico total W (D + peso propio)",
+   "valor": 10519.8,
+   "unidad": "kN",
+   "referencia": "A.4.2",
+   "estado": "CALCULADO",
+   "ecuacion": ""
+  },
+  {
+   "concepto": "Combinaciones",
+   "valor": "66: 1.4D; 1.2D+1.6L; 1.2D+1.0L±E; 0.9D±E",
+   "unidad": "",
+   "referencia": "B.2.4.2",
+   "estado": "NSR-10 (leído)",
+   "ecuacion": ""
+  },
+  {
+   "concepto": "Efectos ortogonales",
+   "valor": "E = 100 % en una dirección + 30 % en la perpendicular",
+   "unidad": "",
+   "referencia": "A.3.6.3",
+   "estado": "NSR-10 (leído)",
+   "ecuacion": ""
+  },
+  {
+   "concepto": "Torsión accidental",
+   "valor": "±5 % de la dimensión perpendicular, amplificada por Ax",
+   "unidad": "",
+   "referencia": "A.3.6.7.1, A.3.6-2",
+   "estado": "NSR-10 (leído)",
+   "ecuacion": ""
+  }
+ ],
+ "modelacion": [
+  {
+   "concepto": "Modelo",
+   "valor": "pórtico 3D, 72 nodos, 145 elementos, diafragma rígido por nivel",
+   "unidad": "",
+   "referencia": "A.3.6.7.2, A.5.2.1.1",
+   "estado": "HIPÓTESIS",
+   "ecuacion": ""
+  },
+  {
+   "concepto": "Inercias fisuradas",
+   "valor": "columnas 0,70·Ig; vigas 0,35·Ig",
+   "unidad": "",
+   "referencia": "C.10.10.4.1",
+   "estado": "NSR-10 (leído)",
+   "ecuacion": ""
+  },
+  {
+   "concepto": "Ta",
+   "valor": 0.5377494700767866,
+   "unidad": "s",
+   "referencia": "A.4.2-3",
+   "estado": "NSR-10 (leído)",
+   "ecuacion": "Ta = Ct·h^α"
+  },
+  {
+   "concepto": "Cu·Ta",
+   "valor": 0.645299364092144,
+   "unidad": "s",
+   "referencia": "A.4.2-2",
+   "estado": "NSR-10 (leído)",
+   "ecuacion": "Cu = 1,75 − 1,2·Av·Fv ≥ 1,2"
+  },
+  {
+   "concepto": "T modal dirección X",
+   "valor": 0.6408180526768906,
+   "unidad": "s",
+   "referencia": "A.4.2.1 (modal3d)",
+   "estado": "CALCULADO",
+   "ecuacion": ""
+  },
+  {
+   "concepto": "T usado en X",
+   "valor": 0.6408180526768906,
+   "unidad": "s",
+   "referencia": "A.4.2.1",
+   "estado": "NSR-10 (leído)",
+   "ecuacion": "T = mín(T_modelo, Cu·Ta)"
+  },
+  {
+   "concepto": "Sa en X",
+   "valor": 0.8124999999999999,
+   "unidad": "g",
+   "referencia": "A.2.6-1",
+   "estado": "NSR-10 (leído)",
+   "ecuacion": ""
+  },
+  {
+   "concepto": "Vs en X",
+   "valor": 8547.337499999998,
+   "unidad": "kN",
+   "referencia": "A.4.3-1",
+   "estado": "CALCULADO",
+   "ecuacion": "Vs = Sa·g·M"
+  },
+  {
+   "concepto": "T modal dirección Y",
+   "valor": 0.6290412500062399,
+   "unidad": "s",
+   "referencia": "A.4.2.1 (modal3d)",
+   "estado": "CALCULADO",
+   "ecuacion": ""
+  },
+  {
+   "concepto": "T usado en Y",
+   "valor": 0.6290412500062399,
+   "unidad": "s",
+   "referencia": "A.4.2.1",
+   "estado": "NSR-10 (leído)",
+   "ecuacion": "T = mín(T_modelo, Cu·Ta)"
+  },
+  {
+   "concepto": "Sa en Y",
+   "valor": 0.8124999999999999,
+   "unidad": "g",
+   "referencia": "A.2.6-1",
+   "estado": "NSR-10 (leído)",
+   "ecuacion": ""
+  },
+  {
+   "concepto": "Vs en Y",
+   "valor": 8547.337499999998,
+   "unidad": "kN",
+   "referencia": "A.4.3-1",
+   "estado": "CALCULADO",
+   "ecuacion": "Vs = Sa·g·M"
+  },
+  {
+   "concepto": "R",
+   "valor": 7.0,
+   "unidad": "",
+   "referencia": "A.3.3-1, Tabla A.3-3",
+   "estado": "NSR-10 (leído)",
+   "ecuacion": "R = φa·φp·φr·R0 (φ = 1,0)"
+  },
+  {
+   "concepto": "Deriva máxima / límite",
+   "valor": 0.8409735165889122,
+   "unidad": "",
+   "referencia": "A.6.4.1, A.6.4.1.1",
+   "estado": "CALCULADO",
+   "ecuacion": "0,7·Δ/hpi ≤ 1,0 %"
+  },
+  {
+   "concepto": "Irregularidad torsional",
+   "valor": "ninguna (δmax/δprom = 1.116)",
+   "unidad": "",
+   "referencia": "Tabla A.3-6",
+   "estado": "CALCULADO",
+   "ecuacion": ""
+  },
+  {
+   "concepto": "Qi máximo",
+   "valor": 0.013694341405206284,
+   "unidad": "",
+   "referencia": "A.6.2-2",
+   "estado": "CALCULADO",
+   "ecuacion": "Qi = Pi·Δcm/(Vi·hpi)"
+  }
+ ],
+ "resultados_analisis": {
+  "cumple_deriva": true,
+  "deriva_por_piso": [
+   {
+    "piso": "P1",
+    "uso": 0.3971647632626367,
+    "Qi": 0.008058484031774737,
+    "deriva_relativa": 0.003971647632626367
+   },
+   {
+    "piso": "P2",
+    "uso": 0.7939643955830599,
+    "Qi": 0.013694341405206284,
+    "deriva_relativa": 0.007939643955830598
+   },
+   {
+    "piso": "P3",
+    "uso": 0.8409735165889122,
+    "Qi": 0.012582918932457457,
+    "deriva_relativa": 0.008409735165889122
+   },
+   {
+    "piso": "P4",
+    "uso": 0.7132091877490795,
+    "Qi": 0.009411196697442715,
+    "deriva_relativa": 0.007132091877490795
+   },
+   {
+    "piso": "P5",
+    "uso": 0.5262293027350955,
+    "Qi": 0.006216015702925347,
+    "deriva_relativa": 0.005262293027350955
+   }
+  ],
+  "periodos_modales_s": [
+   0.6408180526768906,
+   0.6290412500062399,
+   0.4360102710043693,
+   0.1778260595542422,
+   0.17539847320371618,
+   0.12518999169947612
+  ],
+  "Vs_kn": {
+   "x": 8547.337499999998,
+   "y": 8547.337499999998
+  },
+  "fallas": []
+ },
+ "diseno": [
+  {
+   "grupo": "Vigas del nivel 1",
+   "tipo": "viga",
+   "cantidad": 17,
+   "seccion": "400×650 mm",
+   "refuerzo": {
+    "superior": "4#5",
+    "inferior": "4#5",
+    "estribos": "#3 c/125 mm (confinamiento) y c/275 mm (centro)"
+   },
+   "verificaciones": [
+    {
+     "nombre": "Ancho b ≥ mín(0,3h; 250 mm)",
+     "demanda": 195.0,
+     "capacidad": 400.0,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.5.1.3",
+     "nota": ""
+    },
+    {
+     "nombre": "Ancho b ≤ c2 + 2·mín(c2; 0,75·c1)",
+     "demanda": 400.0,
+     "capacidad": 1875.0,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.5.1.4",
+     "nota": "demanda=b, capacidad=bmax"
+    },
+    {
+     "nombre": "Flexión superior φMn ≥ Mu",
+     "demanda": 154.5235289009629,
+     "capacidad": 172.6341285040329,
+     "unidad": "kN·m",
+     "cumple": true,
+     "referencia": "C.10.2 / C.9.3.2.1",
+     "nota": ""
+    },
+    {
+     "nombre": "εt ≥ 0,005 (superior)",
+     "demanda": 0.005,
+     "capacidad": 0.04012297548658779,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10.3.4",
+     "nota": ""
+    },
+    {
+     "nombre": "ρ ≥ ρmín (superior)",
+     "demanda": 0.003333333333333333,
+     "capacidad": 0.0033508819456334305,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10.5.1",
+     "nota": ""
+    },
+    {
+     "nombre": "ρ ≤ 0,025 (superior)",
+     "demanda": 0.0033508819456334305,
+     "capacidad": 0.025,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.21.3.4.3 / C.21.5.2.1",
+     "nota": ""
+    },
+    {
+     "nombre": "Flexión inferior φMn ≥ Mu",
+     "demanda": 98.84304103495084,
+     "capacidad": 172.6341285040329,
+     "unidad": "kN·m",
+     "cumple": true,
+     "referencia": "C.10.2 / C.9.3.2.1",
+     "nota": ""
+    },
+    {
+     "nombre": "εt ≥ 0,005 (inferior)",
+     "demanda": 0.005,
+     "capacidad": 0.04012297548658779,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10.3.4",
+     "nota": ""
+    },
+    {
+     "nombre": "ρ ≥ ρmín (inferior)",
+     "demanda": 0.003333333333333333,
+     "capacidad": 0.0033508819456334305,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10.5.1",
+     "nota": ""
+    },
+    {
+     "nombre": "ρ ≤ 0,025 (inferior)",
+     "demanda": 0.0033508819456334305,
+     "capacidad": 0.025,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.21.3.4.3 / C.21.5.2.1",
+     "nota": ""
+    },
+    {
+     "nombre": "≥ 2 barras continuas arriba y abajo",
+     "demanda": 2.0,
+     "capacidad": 4.0,
+     "unidad": "barras",
+     "cumple": true,
+     "referencia": "C.21.3.4.3 / C.21.5.2.1",
+     "nota": ""
+    },
+    {
+     "nombre": "Luz libre ln ≥ 4d",
+     "demanda": 2.3701999999999996,
+     "capacidad": 4.25,
+     "unidad": "m",
+     "cumple": true,
+     "referencia": "C.21.5.1.2",
+     "nota": ""
+    },
+    {
+     "nombre": "Mn⁺ ≥ 0.50·Mn⁻ en la cara",
+     "demanda": 95.90784916890716,
+     "capacidad": 191.81569833781433,
+     "unidad": "kN·m",
+     "cumple": true,
+     "referencia": "C.21.5.2.2",
+     "nota": ""
+    },
+    {
+     "nombre": "Mn en cualquier sección ≥ 0.25·Mn,máx",
+     "demanda": 47.95392458445358,
+     "capacidad": 191.81569833781433,
+     "unidad": "kN·m",
+     "cumple": true,
+     "referencia": "C.21.5.2.2",
+     "nota": ""
+    },
+    {
+     "nombre": "s confinamiento ≤ mín(d/4; 8db; 24dest; 300) en 2h",
+     "demanda": 125.0,
+     "capacidad": 127.2,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.5.3.2 / C.21.3.4.6",
+     "nota": ""
+    },
+    {
+     "nombre": "Cortante por capacidad φ(Vc+Vs) ≥ Ve (zona de confinamiento)",
+     "demanda": 183.66658282328177,
+     "capacidad": 211.68624090768586,
+     "unidad": "kN",
+     "cumple": true,
+     "referencia": "C.21.5.4.1/.2",
+     "nota": "Mpr=1,25fy con φ=1,0 (verificado en la notación C.2); φ cortante=0,75 (C.9.3.2.3)"
+    },
+    {
+     "nombre": "Cortante zona central φ(Vc+Vs) ≥ Vu",
+     "demanda": 139.80718282328178,
+     "capacidad": 256.1304924102776,
+     "unidad": "kN",
+     "cumple": true,
+     "referencia": "C.11.2.1.1 / C.11.4.7.2",
+     "nota": ""
+    },
+    {
+     "nombre": "s zona central ≤ d/2",
+     "demanda": 275.0,
+     "capacidad": 296.275,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.3.4.8 / C.11.4.5.1",
+     "nota": ""
+    }
+   ],
+   "demandas": {
+    "luz_libre_m": 4.25,
+    "M_neg_apoyo": 154.5235289009629,
+    "M_pos_apoyo": 98.84304103495084,
+    "M_pos_vano": 92.91915551511038,
+    "V_max": 122.79378198519457,
+    "V_gravedad": 88.73273060839595,
+    "w_grav": 33.738,
+    "V_centro": 78.93438198519456
+   }
+  },
+  {
+   "grupo": "Vigas del nivel 2",
+   "tipo": "viga",
+   "cantidad": 17,
+   "seccion": "400×650 mm",
+   "refuerzo": {
+    "superior": "5#5",
+    "inferior": "4#5",
+    "estribos": "#3 c/125 mm (confinamiento) y c/275 mm (centro)"
+   },
+   "verificaciones": [
+    {
+     "nombre": "Ancho b ≥ mín(0,3h; 250 mm)",
+     "demanda": 195.0,
+     "capacidad": 400.0,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.5.1.3",
+     "nota": ""
+    },
+    {
+     "nombre": "Ancho b ≤ c2 + 2·mín(c2; 0,75·c1)",
+     "demanda": 400.0,
+     "capacidad": 1875.0,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.5.1.4",
+     "nota": "demanda=b, capacidad=bmax"
+    },
+    {
+     "nombre": "Flexión superior φMn ≥ Mu",
+     "demanda": 181.17471309542833,
+     "capacidad": 214.1489990245264,
+     "unidad": "kN·m",
+     "cumple": true,
+     "referencia": "C.10.2 / C.9.3.2.1",
+     "nota": ""
+    },
+    {
+     "nombre": "εt ≥ 0,005 (superior)",
+     "demanda": 0.005,
+     "capacidad": 0.031498380389270234,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10.3.4",
+     "nota": ""
+    },
+    {
+     "nombre": "ρ ≥ ρmín (superior)",
+     "demanda": 0.003333333333333333,
+     "capacidad": 0.004188602432041788,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10.5.1",
+     "nota": ""
+    },
+    {
+     "nombre": "ρ ≤ 0,025 (superior)",
+     "demanda": 0.004188602432041788,
+     "capacidad": 0.025,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.21.3.4.3 / C.21.5.2.1",
+     "nota": ""
+    },
+    {
+     "nombre": "Flexión inferior φMn ≥ Mu",
+     "demanda": 127.06767256315052,
+     "capacidad": 172.6341285040329,
+     "unidad": "kN·m",
+     "cumple": true,
+     "referencia": "C.10.2 / C.9.3.2.1",
+     "nota": ""
+    },
+    {
+     "nombre": "εt ≥ 0,005 (inferior)",
+     "demanda": 0.005,
+     "capacidad": 0.04012297548658779,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10.3.4",
+     "nota": ""
+    },
+    {
+     "nombre": "ρ ≥ ρmín (inferior)",
+     "demanda": 0.003333333333333333,
+     "capacidad": 0.0033508819456334305,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10.5.1",
+     "nota": ""
+    },
+    {
+     "nombre": "ρ ≤ 0,025 (inferior)",
+     "demanda": 0.0033508819456334305,
+     "capacidad": 0.025,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.21.3.4.3 / C.21.5.2.1",
+     "nota": ""
+    },
+    {
+     "nombre": "≥ 2 barras continuas arriba y abajo",
+     "demanda": 2.0,
+     "capacidad": 4.0,
+     "unidad": "barras",
+     "cumple": true,
+     "referencia": "C.21.3.4.3 / C.21.5.2.1",
+     "nota": ""
+    },
+    {
+     "nombre": "Luz libre ln ≥ 4d",
+     "demanda": 2.3701999999999996,
+     "capacidad": 4.25,
+     "unidad": "m",
+     "cumple": true,
+     "referencia": "C.21.5.1.2",
+     "nota": ""
+    },
+    {
+     "nombre": "Mn⁺ ≥ 0.50·Mn⁻ en la cara",
+     "demanda": 118.97166612473688,
+     "capacidad": 191.81569833781433,
+     "unidad": "kN·m",
+     "cumple": true,
+     "referencia": "C.21.5.2.2",
+     "nota": ""
+    },
+    {
+     "nombre": "Mn en cualquier sección ≥ 0.25·Mn,máx",
+     "demanda": 59.48583306236844,
+     "capacidad": 191.81569833781433,
+     "unidad": "kN·m",
+     "cumple": true,
+     "referencia": "C.21.5.2.2",
+     "nota": ""
+    },
+    {
+     "nombre": "s confinamiento ≤ mín(d/4; 8db; 24dest; 300) en 2h",
+     "demanda": 125.0,
+     "capacidad": 127.2,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.5.3.2 / C.21.3.4.6",
+     "nota": ""
+    },
+    {
+     "nombre": "Cortante por capacidad φ(Vc+Vs) ≥ Ve (zona de confinamiento)",
+     "demanda": 196.9918190317824,
+     "capacidad": 211.68624090768586,
+     "unidad": "kN",
+     "cumple": true,
+     "referencia": "C.21.5.4.1/.2",
+     "nota": "Mpr=1,25fy con φ=1,0 (verificado en la notación C.2); φ cortante=0,75 (C.9.3.2.3)"
+    },
+    {
+     "nombre": "Cortante zona central φ(Vc+Vs) ≥ Vu",
+     "demanda": 153.1324190317824,
+     "capacidad": 256.1304924102776,
+     "unidad": "kN",
+     "cumple": true,
+     "referencia": "C.11.2.1.1 / C.11.4.7.2",
+     "nota": ""
+    },
+    {
+     "nombre": "s zona central ≤ d/2",
+     "demanda": 275.0,
+     "capacidad": 296.275,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.3.4.8 / C.11.4.5.1",
+     "nota": ""
+    }
+   ],
+   "demandas": {
+    "luz_libre_m": 4.25,
+    "M_neg_apoyo": 181.17471309542833,
+    "M_pos_apoyo": 127.06767256315052,
+    "M_pos_vano": 118.3267557122854,
+    "V_max": 132.4715668680825,
+    "V_gravedad": 89.18807430912801,
+    "w_grav": 33.738,
+    "V_centro": 88.6121668680825
+   }
+  },
+  {
+   "grupo": "Vigas del nivel 3",
+   "tipo": "viga",
+   "cantidad": 17,
+   "seccion": "400×650 mm",
+   "refuerzo": {
+    "superior": "5#5",
+    "inferior": "4#5",
+    "estribos": "#3 c/125 mm (confinamiento) y c/275 mm (centro)"
+   },
+   "verificaciones": [
+    {
+     "nombre": "Ancho b ≥ mín(0,3h; 250 mm)",
+     "demanda": 195.0,
+     "capacidad": 400.0,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.5.1.3",
+     "nota": ""
+    },
+    {
+     "nombre": "Ancho b ≤ c2 + 2·mín(c2; 0,75·c1)",
+     "demanda": 400.0,
+     "capacidad": 1875.0,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.5.1.4",
+     "nota": "demanda=b, capacidad=bmax"
+    },
+    {
+     "nombre": "Flexión superior φMn ≥ Mu",
+     "demanda": 173.41669573121186,
+     "capacidad": 214.1489990245264,
+     "unidad": "kN·m",
+     "cumple": true,
+     "referencia": "C.10.2 / C.9.3.2.1",
+     "nota": ""
+    },
+    {
+     "nombre": "εt ≥ 0,005 (superior)",
+     "demanda": 0.005,
+     "capacidad": 0.031498380389270234,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10.3.4",
+     "nota": ""
+    },
+    {
+     "nombre": "ρ ≥ ρmín (superior)",
+     "demanda": 0.003333333333333333,
+     "capacidad": 0.004188602432041788,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10.5.1",
+     "nota": ""
+    },
+    {
+     "nombre": "ρ ≤ 0,025 (superior)",
+     "demanda": 0.004188602432041788,
+     "capacidad": 0.025,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.21.3.4.3 / C.21.5.2.1",
+     "nota": ""
+    },
+    {
+     "nombre": "Flexión inferior φMn ≥ Mu",
+     "demanda": 115.35490243708348,
+     "capacidad": 172.6341285040329,
+     "unidad": "kN·m",
+     "cumple": true,
+     "referencia": "C.10.2 / C.9.3.2.1",
+     "nota": ""
+    },
+    {
+     "nombre": "εt ≥ 0,005 (inferior)",
+     "demanda": 0.005,
+     "capacidad": 0.04012297548658779,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10.3.4",
+     "nota": ""
+    },
+    {
+     "nombre": "ρ ≥ ρmín (inferior)",
+     "demanda": 0.003333333333333333,
+     "capacidad": 0.0033508819456334305,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10.5.1",
+     "nota": ""
+    },
+    {
+     "nombre": "ρ ≤ 0,025 (inferior)",
+     "demanda": 0.0033508819456334305,
+     "capacidad": 0.025,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.21.3.4.3 / C.21.5.2.1",
+     "nota": ""
+    },
+    {
+     "nombre": "≥ 2 barras continuas arriba y abajo",
+     "demanda": 2.0,
+     "capacidad": 4.0,
+     "unidad": "barras",
+     "cumple": true,
+     "referencia": "C.21.3.4.3 / C.21.5.2.1",
+     "nota": ""
+    },
+    {
+     "nombre": "Luz libre ln ≥ 4d",
+     "demanda": 2.3701999999999996,
+     "capacidad": 4.25,
+     "unidad": "m",
+     "cumple": true,
+     "referencia": "C.21.5.1.2",
+     "nota": ""
+    },
+    {
+     "nombre": "Mn⁺ ≥ 0.50·Mn⁻ en la cara",
+     "demanda": 118.97166612473688,
+     "capacidad": 191.81569833781433,
+     "unidad": "kN·m",
+     "cumple": true,
+     "referencia": "C.21.5.2.2",
+     "nota": ""
+    },
+    {
+     "nombre": "Mn en cualquier sección ≥ 0.25·Mn,máx",
+     "demanda": 59.48583306236844,
+     "capacidad": 191.81569833781433,
+     "unidad": "kN·m",
+     "cumple": true,
+     "referencia": "C.21.5.2.2",
+     "nota": ""
+    },
+    {
+     "nombre": "s confinamiento ≤ mín(d/4; 8db; 24dest; 300) en 2h",
+     "demanda": 125.0,
+     "capacidad": 127.2,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.5.3.2 / C.21.3.4.6",
+     "nota": ""
+    },
+    {
+     "nombre": "Cortante por capacidad φ(Vc+Vs) ≥ Ve (zona de confinamiento)",
+     "demanda": 196.9918190317824,
+     "capacidad": 211.68624090768586,
+     "unidad": "kN",
+     "cumple": true,
+     "referencia": "C.21.5.4.1/.2",
+     "nota": "Mpr=1,25fy con φ=1,0 (verificado en la notación C.2); φ cortante=0,75 (C.9.3.2.3)"
+    },
+    {
+     "nombre": "Cortante zona central φ(Vc+Vs) ≥ Vu",
+     "demanda": 153.1324190317824,
+     "capacidad": 256.1304924102776,
+     "unidad": "kN",
+     "cumple": true,
+     "referencia": "C.11.2.1.1 / C.11.4.7.2",
+     "nota": ""
+    },
+    {
+     "nombre": "s zona central ≤ d/2",
+     "demanda": 275.0,
+     "capacidad": 296.275,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.3.4.8 / C.11.4.5.1",
+     "nota": ""
+    }
+   ],
+   "demandas": {
+    "luz_libre_m": 4.25,
+    "M_neg_apoyo": 173.41669573121186,
+    "M_pos_apoyo": 115.35490243708348,
+    "M_pos_vano": 107.54351898856851,
+    "V_max": 129.58281710807495,
+    "V_gravedad": 89.46697991490348,
+    "w_grav": 33.738,
+    "V_centro": 85.72341710807495
+   }
+  },
+  {
+   "grupo": "Vigas del nivel 4",
+   "tipo": "viga",
+   "cantidad": 17,
+   "seccion": "400×650 mm",
+   "refuerzo": {
+    "superior": "4#5",
+    "inferior": "4#5",
+    "estribos": "#3 c/125 mm (confinamiento) y c/275 mm (centro)"
+   },
+   "verificaciones": [
+    {
+     "nombre": "Ancho b ≥ mín(0,3h; 250 mm)",
+     "demanda": 195.0,
+     "capacidad": 400.0,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.5.1.3",
+     "nota": ""
+    },
+    {
+     "nombre": "Ancho b ≤ c2 + 2·mín(c2; 0,75·c1)",
+     "demanda": 400.0,
+     "capacidad": 1875.0,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.5.1.4",
+     "nota": "demanda=b, capacidad=bmax"
+    },
+    {
+     "nombre": "Flexión superior φMn ≥ Mu",
+     "demanda": 151.4510923498405,
+     "capacidad": 172.6341285040329,
+     "unidad": "kN·m",
+     "cumple": true,
+     "referencia": "C.10.2 / C.9.3.2.1",
+     "nota": ""
+    },
+    {
+     "nombre": "εt ≥ 0,005 (superior)",
+     "demanda": 0.005,
+     "capacidad": 0.04012297548658779,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10.3.4",
+     "nota": ""
+    },
+    {
+     "nombre": "ρ ≥ ρmín (superior)",
+     "demanda": 0.003333333333333333,
+     "capacidad": 0.0033508819456334305,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10.5.1",
+     "nota": ""
+    },
+    {
+     "nombre": "ρ ≤ 0,025 (superior)",
+     "demanda": 0.0033508819456334305,
+     "capacidad": 0.025,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.21.3.4.3 / C.21.5.2.1",
+     "nota": ""
+    },
+    {
+     "nombre": "Flexión inferior φMn ≥ Mu",
+     "demanda": 86.54674493917815,
+     "capacidad": 172.6341285040329,
+     "unidad": "kN·m",
+     "cumple": true,
+     "referencia": "C.10.2 / C.9.3.2.1",
+     "nota": ""
+    },
+    {
+     "nombre": "εt ≥ 0,005 (inferior)",
+     "demanda": 0.005,
+     "capacidad": 0.04012297548658779,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10.3.4",
+     "nota": ""
+    },
+    {
+     "nombre": "ρ ≥ ρmín (inferior)",
+     "demanda": 0.003333333333333333,
+     "capacidad": 0.0033508819456334305,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10.5.1",
+     "nota": ""
+    },
+    {
+     "nombre": "ρ ≤ 0,025 (inferior)",
+     "demanda": 0.0033508819456334305,
+     "capacidad": 0.025,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.21.3.4.3 / C.21.5.2.1",
+     "nota": ""
+    },
+    {
+     "nombre": "≥ 2 barras continuas arriba y abajo",
+     "demanda": 2.0,
+     "capacidad": 4.0,
+     "unidad": "barras",
+     "cumple": true,
+     "referencia": "C.21.3.4.3 / C.21.5.2.1",
+     "nota": ""
+    },
+    {
+     "nombre": "Luz libre ln ≥ 4d",
+     "demanda": 2.3701999999999996,
+     "capacidad": 4.25,
+     "unidad": "m",
+     "cumple": true,
+     "referencia": "C.21.5.1.2",
+     "nota": ""
+    },
+    {
+     "nombre": "Mn⁺ ≥ 0.50·Mn⁻ en la cara",
+     "demanda": 95.90784916890716,
+     "capacidad": 191.81569833781433,
+     "unidad": "kN·m",
+     "cumple": true,
+     "referencia": "C.21.5.2.2",
+     "nota": ""
+    },
+    {
+     "nombre": "Mn en cualquier sección ≥ 0.25·Mn,máx",
+     "demanda": 47.95392458445358,
+     "capacidad": 191.81569833781433,
+     "unidad": "kN·m",
+     "cumple": true,
+     "referencia": "C.21.5.2.2",
+     "nota": ""
+    },
+    {
+     "nombre": "s confinamiento ≤ mín(d/4; 8db; 24dest; 300) en 2h",
+     "demanda": 125.0,
+     "capacidad": 127.2,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.5.3.2 / C.21.3.4.6",
+     "nota": ""
+    },
+    {
+     "nombre": "Cortante por capacidad φ(Vc+Vs) ≥ Ve (zona de confinamiento)",
+     "demanda": 183.66658282328177,
+     "capacidad": 211.68624090768586,
+     "unidad": "kN",
+     "cumple": true,
+     "referencia": "C.21.5.4.1/.2",
+     "nota": "Mpr=1,25fy con φ=1,0 (verificado en la notación C.2); φ cortante=0,75 (C.9.3.2.3)"
+    },
+    {
+     "nombre": "Cortante zona central φ(Vc+Vs) ≥ Vu",
+     "demanda": 139.80718282328178,
+     "capacidad": 256.1304924102776,
+     "unidad": "kN",
+     "cumple": true,
+     "referencia": "C.11.2.1.1 / C.11.4.7.2",
+     "nota": ""
+    },
+    {
+     "nombre": "s zona central ≤ d/2",
+     "demanda": 275.0,
+     "capacidad": 296.275,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.3.4.8 / C.11.4.5.1",
+     "nota": ""
+    }
+   ],
+   "demandas": {
+    "luz_libre_m": 4.25,
+    "M_neg_apoyo": 151.4510923498405,
+    "M_pos_apoyo": 86.54674493917815,
+    "M_pos_vano": 81.6327078866182,
+    "V_max": 121.22585093633764,
+    "V_gravedad": 90.1136128055722,
+    "w_grav": 33.738,
+    "V_centro": 77.36645093633763
+   }
+  },
+  {
+   "grupo": "Vigas del nivel 5",
+   "tipo": "viga",
+   "cantidad": 17,
+   "seccion": "400×650 mm",
+   "refuerzo": {
+    "superior": "4#5",
+    "inferior": "4#5",
+    "estribos": "#3 c/125 mm (confinamiento) y c/275 mm (centro)"
+   },
+   "verificaciones": [
+    {
+     "nombre": "Ancho b ≥ mín(0,3h; 250 mm)",
+     "demanda": 195.0,
+     "capacidad": 400.0,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.5.1.3",
+     "nota": ""
+    },
+    {
+     "nombre": "Ancho b ≤ c2 + 2·mín(c2; 0,75·c1)",
+     "demanda": 400.0,
+     "capacidad": 1875.0,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.5.1.4",
+     "nota": "demanda=b, capacidad=bmax"
+    },
+    {
+     "nombre": "Flexión superior φMn ≥ Mu",
+     "demanda": 123.948120130319,
+     "capacidad": 172.6341285040329,
+     "unidad": "kN·m",
+     "cumple": true,
+     "referencia": "C.10.2 / C.9.3.2.1",
+     "nota": ""
+    },
+    {
+     "nombre": "εt ≥ 0,005 (superior)",
+     "demanda": 0.005,
+     "capacidad": 0.04012297548658779,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10.3.4",
+     "nota": ""
+    },
+    {
+     "nombre": "ρ ≥ ρmín (superior)",
+     "demanda": 0.003333333333333333,
+     "capacidad": 0.0033508819456334305,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10.5.1",
+     "nota": ""
+    },
+    {
+     "nombre": "ρ ≤ 0,025 (superior)",
+     "demanda": 0.0033508819456334305,
+     "capacidad": 0.025,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.21.3.4.3 / C.21.5.2.1",
+     "nota": ""
+    },
+    {
+     "nombre": "Flexión inferior φMn ≥ Mu",
+     "demanda": 60.48513495627355,
+     "capacidad": 172.6341285040329,
+     "unidad": "kN·m",
+     "cumple": true,
+     "referencia": "C.10.2 / C.9.3.2.1",
+     "nota": ""
+    },
+    {
+     "nombre": "εt ≥ 0,005 (inferior)",
+     "demanda": 0.005,
+     "capacidad": 0.04012297548658779,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10.3.4",
+     "nota": ""
+    },
+    {
+     "nombre": "ρ ≥ ρmín (inferior)",
+     "demanda": 0.003333333333333333,
+     "capacidad": 0.0033508819456334305,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10.5.1",
+     "nota": ""
+    },
+    {
+     "nombre": "ρ ≤ 0,025 (inferior)",
+     "demanda": 0.0033508819456334305,
+     "capacidad": 0.025,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.21.3.4.3 / C.21.5.2.1",
+     "nota": ""
+    },
+    {
+     "nombre": "≥ 2 barras continuas arriba y abajo",
+     "demanda": 2.0,
+     "capacidad": 4.0,
+     "unidad": "barras",
+     "cumple": true,
+     "referencia": "C.21.3.4.3 / C.21.5.2.1",
+     "nota": ""
+    },
+    {
+     "nombre": "Luz libre ln ≥ 4d",
+     "demanda": 2.3701999999999996,
+     "capacidad": 4.25,
+     "unidad": "m",
+     "cumple": true,
+     "referencia": "C.21.5.1.2",
+     "nota": ""
+    },
+    {
+     "nombre": "Mn⁺ ≥ 0.50·Mn⁻ en la cara",
+     "demanda": 95.90784916890716,
+     "capacidad": 191.81569833781433,
+     "unidad": "kN·m",
+     "cumple": true,
+     "referencia": "C.21.5.2.2",
+     "nota": ""
+    },
+    {
+     "nombre": "Mn en cualquier sección ≥ 0.25·Mn,máx",
+     "demanda": 47.95392458445358,
+     "capacidad": 191.81569833781433,
+     "unidad": "kN·m",
+     "cumple": true,
+     "referencia": "C.21.5.2.2",
+     "nota": ""
+    },
+    {
+     "nombre": "s confinamiento ≤ mín(d/4; 8db; 24dest; 300) en 2h",
+     "demanda": 125.0,
+     "capacidad": 127.2,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.5.3.2 / C.21.3.4.6",
+     "nota": ""
+    },
+    {
+     "nombre": "Cortante por capacidad φ(Vc+Vs) ≥ Ve (zona de confinamiento)",
+     "demanda": 183.66658282328177,
+     "capacidad": 211.68624090768586,
+     "unidad": "kN",
+     "cumple": true,
+     "referencia": "C.21.5.4.1/.2",
+     "nota": "Mpr=1,25fy con φ=1,0 (verificado en la notación C.2); φ cortante=0,75 (C.9.3.2.3)"
+    },
+    {
+     "nombre": "Cortante zona central φ(Vc+Vs) ≥ Vu",
+     "demanda": 139.80718282328178,
+     "capacidad": 256.1304924102776,
+     "unidad": "kN",
+     "cumple": true,
+     "referencia": "C.11.2.1.1 / C.11.4.7.2",
+     "nota": ""
+    },
+    {
+     "nombre": "s zona central ≤ d/2",
+     "demanda": 275.0,
+     "capacidad": 296.275,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.3.4.8 / C.11.4.5.1",
+     "nota": ""
+    }
+   ],
+   "demandas": {
+    "luz_libre_m": 4.25,
+    "M_neg_apoyo": 123.948120130319,
+    "M_pos_apoyo": 55.53094053424938,
+    "M_pos_vano": 60.48513495627355,
+    "V_max": 111.06696750359127,
+    "V_gravedad": 88.81718204004166,
+    "w_grav": 33.738,
+    "V_centro": 67.20756750359126
+   }
+  },
+  {
+   "grupo": "Columnas del piso 1",
+   "tipo": "columna",
+   "cantidad": 12,
+   "seccion": "750×750 mm",
+   "refuerzo": {
+    "longitudinal": "20#6 (6 por cara)",
+    "estribos": "#3 c/100 mm en ℓo = 750 mm y c/100 mm fuera"
+   },
+   "verificaciones": [
+    {
+     "nombre": "Dimensión menor ≥ 300 mm",
+     "demanda": 300.0,
+     "capacidad": 750.0,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.6.1.1",
+     "nota": ""
+    },
+    {
+     "nombre": "Relación menor/mayor ≥ 0,4",
+     "demanda": 0.4,
+     "capacidad": 1.0,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.21.6.1.2",
+     "nota": ""
+    },
+    {
+     "nombre": "Flexo-compresión φMn(Pu) ≥ Mu (todas las combinaciones y columnas)",
+     "demanda": 0.48754456968776105,
+     "capacidad": 1.0,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10.3 / C.9.3.2.2",
+     "nota": "demanda/capacidad máxima; Mu incluye magnificación"
+    },
+    {
+     "nombre": "Cuantía 1 % ≤ ρ ≤ 4 %",
+     "demanda": 0.010187417030720824,
+     "capacidad": 0.04,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.21.6.3.1",
+     "nota": ""
+    },
+    {
+     "nombre": "Esbeltez kℓu/r (magnificada si > 22)",
+     "demanda": 33.92005702453963,
+     "capacidad": 100.0,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10-6",
+     "nota": "magnificación C.10.10.6/.7 verificada; k lo aporta el llamador (nomograma no está en el corpus)"
+    },
+    {
+     "nombre": "ΣMnc ≥ 1,2·ΣMnb (columna fuerte–viga débil)",
+     "demanda": 1.0,
+     "capacidad": 4.0955915154467535,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.21.6.2.2",
+     "nota": "capacidad/demanda mínima sobre todos los nudos y sentidos; sin aporte de losa"
+    },
+    {
+     "nombre": "s en ℓo ≤ so",
+     "demanda": 100.0,
+     "capacidad": 114.60000000000001,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.6.4.3 / C-21-5",
+     "nota": ""
+    },
+    {
+     "nombre": "Ash,prov ≥ Ash,req",
+     "demanda": 425.2931054797182,
+     "capacidad": 396.3,
+     "unidad": "mm²",
+     "cumple": true,
+     "referencia": "C.21-7/-8",
+     "nota": ""
+    },
+    {
+     "nombre": "s fuera de ℓo",
+     "demanda": 100.0,
+     "capacidad": 114.60000000000001,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.6.4.5",
+     "nota": ""
+    },
+    {
+     "nombre": "Cortante φ(Vc+Vs) ≥ Ve",
+     "demanda": 1224.1298727949381,
+     "capacidad": 1275.2679117060056,
+     "unidad": "kN",
+     "cumple": true,
+     "referencia": "C.21.6.5.1/.2",
+     "nota": "Mpr=1,25fy y φ=1,0 verificados (notación C.2)"
+    },
+    {
+     "nombre": "Flexión biaxial: Mux/φMn + Muy/φMn ≤ 1 (contorno lineal)",
+     "demanda": 0.6429651750084971,
+     "capacidad": 1.0,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "HIPÓTESIS (contorno de carga con α = 1, conservador)",
+     "nota": ""
+    }
+   ],
+   "demandas": {
+    "P_max_kn": 2143.6828635055094,
+    "V_kn": 133.35102620418144,
+    "delta_s": 1.0,
+    "k_lu_m": 7.632012830521417,
+    "mnb_int": 383.63139667562865,
+    "mnb_ext": 191.81569833781433,
+    "Q": 0.009648673491828326
+   }
+  },
+  {
+   "grupo": "Columnas del piso 2",
+   "tipo": "columna",
+   "cantidad": 12,
+   "seccion": "750×750 mm",
+   "refuerzo": {
+    "longitudinal": "20#6 (6 por cara)",
+    "estribos": "#3 c/100 mm en ℓo = 750 mm y c/100 mm fuera"
+   },
+   "verificaciones": [
+    {
+     "nombre": "Dimensión menor ≥ 300 mm",
+     "demanda": 300.0,
+     "capacidad": 750.0,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.6.1.1",
+     "nota": ""
+    },
+    {
+     "nombre": "Relación menor/mayor ≥ 0,4",
+     "demanda": 0.4,
+     "capacidad": 1.0,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.21.6.1.2",
+     "nota": ""
+    },
+    {
+     "nombre": "Flexo-compresión φMn(Pu) ≥ Mu (todas las combinaciones y columnas)",
+     "demanda": 0.32677625315465975,
+     "capacidad": 1.0,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10.3 / C.9.3.2.2",
+     "nota": "demanda/capacidad máxima; Mu incluye magnificación"
+    },
+    {
+     "nombre": "Cuantía 1 % ≤ ρ ≤ 4 %",
+     "demanda": 0.010187417030720824,
+     "capacidad": 0.04,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.21.6.3.1",
+     "nota": ""
+    },
+    {
+     "nombre": "Esbeltez kℓu/r (magnificada si > 22)",
+     "demanda": 46.09143670028133,
+     "capacidad": 100.0,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10-6",
+     "nota": "magnificación C.10.10.6/.7 verificada; k lo aporta el llamador (nomograma no está en el corpus)"
+    },
+    {
+     "nombre": "ΣMnc ≥ 1,2·ΣMnb (columna fuerte–viga débil)",
+     "demanda": 1.0,
+     "capacidad": 3.5396956515615106,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.21.6.2.2",
+     "nota": "capacidad/demanda mínima sobre todos los nudos y sentidos; sin aporte de losa"
+    },
+    {
+     "nombre": "s en ℓo ≤ so",
+     "demanda": 100.0,
+     "capacidad": 114.60000000000001,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.6.4.3 / C-21-5",
+     "nota": ""
+    },
+    {
+     "nombre": "Ash,prov ≥ Ash,req",
+     "demanda": 425.2931054797182,
+     "capacidad": 396.3,
+     "unidad": "mm²",
+     "cumple": true,
+     "referencia": "C.21-7/-8",
+     "nota": ""
+    },
+    {
+     "nombre": "s fuera de ℓo",
+     "demanda": 100.0,
+     "capacidad": 114.60000000000001,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.6.4.5",
+     "nota": ""
+    },
+    {
+     "nombre": "Cortante φ(Vc+Vs) ≥ Ve",
+     "demanda": 1155.7778573026876,
+     "capacidad": 1275.2679117060056,
+     "unidad": "kN",
+     "cumple": true,
+     "referencia": "C.21.6.5.1/.2",
+     "nota": "Mpr=1,25fy y φ=1,0 verificados (notación C.2)"
+    },
+    {
+     "nombre": "Flexión biaxial: Mux/φMn + Muy/φMn ≤ 1 (contorno lineal)",
+     "demanda": 0.42624345017082443,
+     "capacidad": 1.0,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "HIPÓTESIS (contorno de carga con α = 1, conservador)",
+     "nota": ""
+    }
+   ],
+   "demandas": {
+    "P_max_kn": 1711.03056033367,
+    "V_kn": 143.48699742838346,
+    "delta_s": 1.0,
+    "k_lu_m": 10.370573257563299,
+    "mnb_int": 429.75903058728807,
+    "mnb_ext": 237.94333224947377,
+    "Q": 0.016479125617294393
+   }
+  },
+  {
+   "grupo": "Columnas del piso 3",
+   "tipo": "columna",
+   "cantidad": 12,
+   "seccion": "750×750 mm",
+   "refuerzo": {
+    "longitudinal": "20#6 (6 por cara)",
+    "estribos": "#3 c/100 mm en ℓo = 750 mm y c/100 mm fuera"
+   },
+   "verificaciones": [
+    {
+     "nombre": "Dimensión menor ≥ 300 mm",
+     "demanda": 300.0,
+     "capacidad": 750.0,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.6.1.1",
+     "nota": ""
+    },
+    {
+     "nombre": "Relación menor/mayor ≥ 0,4",
+     "demanda": 0.4,
+     "capacidad": 1.0,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.21.6.1.2",
+     "nota": ""
+    },
+    {
+     "nombre": "Flexo-compresión φMn(Pu) ≥ Mu (todas las combinaciones y columnas)",
+     "demanda": 0.26594427296332357,
+     "capacidad": 1.0,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10.3 / C.9.3.2.2",
+     "nota": "demanda/capacidad máxima; Mu incluye magnificación"
+    },
+    {
+     "nombre": "Cuantía 1 % ≤ ρ ≤ 4 %",
+     "demanda": 0.010187417030720824,
+     "capacidad": 0.04,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.21.6.3.1",
+     "nota": ""
+    },
+    {
+     "nombre": "Esbeltez kℓu/r (magnificada si > 22)",
+     "demanda": 46.09143670028133,
+     "capacidad": 100.0,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10-6",
+     "nota": "magnificación C.10.10.6/.7 verificada; k lo aporta el llamador (nomograma no está en el corpus)"
+    },
+    {
+     "nombre": "ΣMnc ≥ 1,2·ΣMnb (columna fuerte–viga débil)",
+     "demanda": 1.0,
+     "capacidad": 3.4219202435296374,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.21.6.2.2",
+     "nota": "capacidad/demanda mínima sobre todos los nudos y sentidos; sin aporte de losa"
+    },
+    {
+     "nombre": "s en ℓo ≤ so",
+     "demanda": 100.0,
+     "capacidad": 114.60000000000001,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.6.4.3 / C-21-5",
+     "nota": ""
+    },
+    {
+     "nombre": "Ash,prov ≥ Ash,req",
+     "demanda": 425.2931054797182,
+     "capacidad": 396.3,
+     "unidad": "mm²",
+     "cumple": true,
+     "referencia": "C.21-7/-8",
+     "nota": ""
+    },
+    {
+     "nombre": "s fuera de ℓo",
+     "demanda": 100.0,
+     "capacidad": 114.60000000000001,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.6.4.5",
+     "nota": ""
+    },
+    {
+     "nombre": "Cortante φ(Vc+Vs) ≥ Ve",
+     "demanda": 1082.6551527068232,
+     "capacidad": 1275.2679117060056,
+     "unidad": "kN",
+     "cumple": true,
+     "referencia": "C.21.6.5.1/.2",
+     "nota": "Mpr=1,25fy y φ=1,0 verificados (notación C.2)"
+    },
+    {
+     "nombre": "Flexión biaxial: Mux/φMn + Muy/φMn ≤ 1 (contorno lineal)",
+     "demanda": 0.3523474289723593,
+     "capacidad": 1.0,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "HIPÓTESIS (contorno de carga con α = 1, conservador)",
+     "nota": ""
+    }
+   ],
+   "demandas": {
+    "P_max_kn": 1281.810668130941,
+    "V_kn": 128.712841677277,
+    "delta_s": 1.0,
+    "k_lu_m": 10.370573257563299,
+    "mnb_int": 429.75903058728807,
+    "mnb_ext": 237.94333224947377,
+    "Q": 0.015269686965393088
+   }
+  },
+  {
+   "grupo": "Columnas del piso 4",
+   "tipo": "columna",
+   "cantidad": 12,
+   "seccion": "750×750 mm",
+   "refuerzo": {
+    "longitudinal": "20#6 (6 por cara)",
+    "estribos": "#3 c/100 mm en ℓo = 750 mm y c/100 mm fuera"
+   },
+   "verificaciones": [
+    {
+     "nombre": "Dimensión menor ≥ 300 mm",
+     "demanda": 300.0,
+     "capacidad": 750.0,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.6.1.1",
+     "nota": ""
+    },
+    {
+     "nombre": "Relación menor/mayor ≥ 0,4",
+     "demanda": 0.4,
+     "capacidad": 1.0,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.21.6.1.2",
+     "nota": ""
+    },
+    {
+     "nombre": "Flexo-compresión φMn(Pu) ≥ Mu (todas las combinaciones y columnas)",
+     "demanda": 0.25352189056959906,
+     "capacidad": 1.0,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10.3 / C.9.3.2.2",
+     "nota": "demanda/capacidad máxima; Mu incluye magnificación"
+    },
+    {
+     "nombre": "Cuantía 1 % ≤ ρ ≤ 4 %",
+     "demanda": 0.010187417030720824,
+     "capacidad": 0.04,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.21.6.3.1",
+     "nota": ""
+    },
+    {
+     "nombre": "Esbeltez kℓu/r (magnificada si > 22)",
+     "demanda": 46.09143670028133,
+     "capacidad": 100.0,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10-6",
+     "nota": "magnificación C.10.10.6/.7 verificada; k lo aporta el llamador (nomograma no está en el corpus)"
+    },
+    {
+     "nombre": "ΣMnc ≥ 1,2·ΣMnb (columna fuerte–viga débil)",
+     "demanda": 1.0,
+     "capacidad": 3.684005330025297,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.21.6.2.2",
+     "nota": "capacidad/demanda mínima sobre todos los nudos y sentidos; sin aporte de losa"
+    },
+    {
+     "nombre": "s en ℓo ≤ so",
+     "demanda": 100.0,
+     "capacidad": 114.60000000000001,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.6.4.3 / C-21-5",
+     "nota": ""
+    },
+    {
+     "nombre": "Ash,prov ≥ Ash,req",
+     "demanda": 425.2931054797182,
+     "capacidad": 396.3,
+     "unidad": "mm²",
+     "cumple": true,
+     "referencia": "C.21-7/-8",
+     "nota": ""
+    },
+    {
+     "nombre": "s fuera de ℓo",
+     "demanda": 100.0,
+     "capacidad": 114.60000000000001,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.6.4.5",
+     "nota": ""
+    },
+    {
+     "nombre": "Cortante φ(Vc+Vs) ≥ Ve",
+     "demanda": 999.0735278692136,
+     "capacidad": 1275.2679117060056,
+     "unidad": "kN",
+     "cumple": true,
+     "referencia": "C.21.6.5.1/.2",
+     "nota": "Mpr=1,25fy y φ=1,0 verificados (notación C.2)"
+    },
+    {
+     "nombre": "Flexión biaxial: Mux/φMn + Muy/φMn ≤ 1 (contorno lineal)",
+     "demanda": 0.336714979424682,
+     "capacidad": 1.0,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "HIPÓTESIS (contorno de carga con α = 1, conservador)",
+     "nota": ""
+    }
+   ],
+   "demandas": {
+    "P_max_kn": 854.1549518248792,
+    "V_kn": 95.96719820955502,
+    "delta_s": 1.0,
+    "k_lu_m": 10.370573257563299,
+    "mnb_int": 383.63139667562865,
+    "mnb_ext": 191.81569833781433,
+    "Q": 0.011617125001328334
+   }
+  },
+  {
+   "grupo": "Columnas del piso 5",
+   "tipo": "columna",
+   "cantidad": 12,
+   "seccion": "750×750 mm",
+   "refuerzo": {
+    "longitudinal": "20#6 (6 por cara)",
+    "estribos": "#3 c/100 mm en ℓo = 750 mm y c/100 mm fuera"
+   },
+   "verificaciones": [
+    {
+     "nombre": "Dimensión menor ≥ 300 mm",
+     "demanda": 300.0,
+     "capacidad": 750.0,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.6.1.1",
+     "nota": ""
+    },
+    {
+     "nombre": "Relación menor/mayor ≥ 0,4",
+     "demanda": 0.4,
+     "capacidad": 1.0,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.21.6.1.2",
+     "nota": ""
+    },
+    {
+     "nombre": "Flexo-compresión φMn(Pu) ≥ Mu (todas las combinaciones y columnas)",
+     "demanda": 0.21552014402372632,
+     "capacidad": 1.0,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10.3 / C.9.3.2.2",
+     "nota": "demanda/capacidad máxima; Mu incluye magnificación"
+    },
+    {
+     "nombre": "Cuantía 1 % ≤ ρ ≤ 4 %",
+     "demanda": 0.010187417030720824,
+     "capacidad": 0.04,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.21.6.3.1",
+     "nota": ""
+    },
+    {
+     "nombre": "Esbeltez kℓu/r (magnificada si > 22)",
+     "demanda": 40.19210622525312,
+     "capacidad": 100.0,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.10-6",
+     "nota": "magnificación C.10.10.6/.7 verificada; k lo aporta el llamador (nomograma no está en el corpus)"
+    },
+    {
+     "nombre": "ΣMnc ≥ 1,2·ΣMnb (columna fuerte–viga débil)",
+     "demanda": 1.0,
+     "capacidad": 1.8022417449712258,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "C.21.6.2.2",
+     "nota": "capacidad/demanda mínima sobre todos los nudos y sentidos; sin aporte de losa"
+    },
+    {
+     "nombre": "s en ℓo ≤ so",
+     "demanda": 100.0,
+     "capacidad": 114.60000000000001,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.6.4.3 / C-21-5",
+     "nota": ""
+    },
+    {
+     "nombre": "Ash,prov ≥ Ash,req",
+     "demanda": 425.2931054797182,
+     "capacidad": 396.3,
+     "unidad": "mm²",
+     "cumple": true,
+     "referencia": "C.21-7/-8",
+     "nota": ""
+    },
+    {
+     "nombre": "s fuera de ℓo",
+     "demanda": 100.0,
+     "capacidad": 114.60000000000001,
+     "unidad": "mm",
+     "cumple": true,
+     "referencia": "C.21.6.4.5",
+     "nota": ""
+    },
+    {
+     "nombre": "Cortante φ(Vc+Vs) ≥ Ve",
+     "demanda": 912.3749082868717,
+     "capacidad": 1275.2679117060056,
+     "unidad": "kN",
+     "cumple": true,
+     "referencia": "C.21.6.5.1/.2",
+     "nota": "Mpr=1,25fy y φ=1,0 verificados (notación C.2)"
+    },
+    {
+     "nombre": "Flexión biaxial: Mux/φMn + Muy/φMn ≤ 1 (contorno lineal)",
+     "demanda": 0.36355522525503414,
+     "capacidad": 1.0,
+     "unidad": "-",
+     "cumple": true,
+     "referencia": "HIPÓTESIS (contorno de carga con α = 1, conservador)",
+     "nota": ""
+    }
+   ],
+   "demandas": {
+    "P_max_kn": 429.02092099486015,
+    "V_kn": 68.02923015573748,
+    "delta_s": 1.0,
+    "k_lu_m": 9.043223900681953,
+    "mnb_int": 383.63139667562865,
+    "mnb_ext": 191.81569833781433,
+    "Q": 0.008090405093901524
+   }
+  }
+ ],
+ "cantidades": {
+  "concreto_m3": 206.875,
+  "acero_kg": 19946.047846460388,
+  "encofrado_m2": 1230.6249999999998,
+  "costo_cop": 281872488.36065704,
+  "co2_kg": 125120.27482840269,
+  "area_construida_m2": 900.0,
+  "fuente_precios": "motor-concreto.Economia (línea base 2026-11; solo vigas y columnas, costo directo)",
+  "fecha_precios": null,
+  "por_m2": {
+   "concreto_m3_m2": 0.2298611111111111,
+   "acero_kg_m2": 22.162275384955986,
+   "costo_cop_m2": 313191.6537340634,
+   "co2_kg_m2": 139.0225275871141
+  }
+ },
+ "no_verifica": [
+  "Nudos viga-columna (C.21.7): cortante en el nudo y anclaje de barras.",
+  "Losas, escaleras, cimentación, muros y elementos no estructurales.",
+  "Viento (Título B.6), empuje de tierras, cargas de construcción y cargas verticales sísmicas (A.3.6.13).",
+  "Patrones alternados de carga viva: la carga viva se aplica completa en todos los vanos.",
+  "Efectos P-Δ explícitos: solo se evalúa Qi (A.6.2.3) y la magnificación δs de C.10.10.7.",
+  "Empalmes, longitudes de desarrollo y despiece real (las cantidades subestiman el acero entre 5 y 15 %).",
+  "Deflexiones de vigas por cargas de servicio (C.9.5).",
+  "Irregularidades en planta y altura (A.3.3) más allá de la torsional: se usa φa = φp = φr = 1,0.",
+  "Flexión biaxial con superficie de interacción exacta: se usa el contorno lineal (conservador)."
+ ],
+ "advertencias": [],
+ "caracteristicas": {
+  "n_pisos": 5,
+  "n_vanos_x": 3,
+  "n_vanos_y": 2,
+  "luz_x_media_m": 6.0,
+  "luz_y_media_m": 5.0,
+  "altura_total_m": 15.0,
+  "aa": 0.25,
+  "av": 0.25,
+  "perfil": "D",
+  "grupo_uso": "I",
+  "capacidad": "DES",
+  "fc_mpa": 28.0,
+  "D_kpa": 6.0,
+  "L_kpa": 1.8,
+  "columna_base_mm": 750,
+  "viga_h_base_mm": 650,
+  "T_modelo_x_s": 0.6408180526768906,
+  "T_x_s": 0.6408180526768906,
+  "Vs_W": 0.8124999999999999,
+  "uso_deriva": 0.8409735165889122,
+  "Qi_max": 0.013694341405206284,
+  "cumple": true,
+  "acero_kg_m2": 22.162275384955986,
+  "concreto_m3_m2": 0.2298611111111111,
+  "costo_cop_m2": 313191.6537340634,
+  "co2_kg_m2": 139.0225275871141
+ },
+ "cumple": true
+}
