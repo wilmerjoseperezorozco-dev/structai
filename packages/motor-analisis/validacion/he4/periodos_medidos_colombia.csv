@@ -1,0 +1,16 @@
+fuente,ciudad,edificio,sistema,altura_m,direccion,T_efdd_s,T_ssi_s,T_modelo_etabs_s,modelo_incluye_no_estructurales,verificado
+torres_ayala_2022,Bucaramanga,ANDES 22,combinado DES,50.94,X,0.746,0.744,1.68,no,si
+torres_ayala_2022,Bucaramanga,BELLAGIO,combinado DES,48.65,Y,0.824,0.824,1.85,no,si
+torres_ayala_2022,Bucaramanga,METROPOLITAN BUSINESS,combinado DES,65.90,X,1.328,1.322,2.68,no,si
+torres_ayala_2022,Bucaramanga,TORRE GAUDI,combinado DES,46.75,X,1.167,0.834,2.18,no,si
+torres_ayala_2022,Bucaramanga,NEVADO TOWER,combinado DES,44.95,Y,0.847,0.847,2.15,no,si
+torres_ayala_2022,Bucaramanga,SOTTO SKY DECK,combinado DES,74.15,X,1.189,1.107,2.08,no,si
+torres_ayala_2022,Bucaramanga,ZERATTO P.H,combinado DES,64.00,X,1.276,1.481,2.32,no,si
+torres_ayala_2022,Bucaramanga,TORRE DE LA CONCORDIA,combinado DES,29.70,Y,0.470,0.471,1.21,no,si
+torres_ayala_2022,Bucaramanga,TORRE GIRARDOT,combinado DES,46.80,X,0.957,0.953,1.79,no,si
+torres_ayala_2022,Bucaramanga,GIRARDOT 628,combinado DES,52.90,Y,1.082,1.136,1.95,no,si
+torres_ayala_2022,Bucaramanga,KAOBA,combinado DES,31.35,X,0.482,0.480,0.91,no,si
+torres_ayala_2022,Bucaramanga,AQUA TOWER,combinado DES,108.30,Y,2.268,0.584,4.81,no,si
+torres_ayala_2022,Bucaramanga,PRADO BLANCO,combinado DES,21.00,Y,0.249,0.249,0.41,no,si
+torres_ayala_2022,Bucaramanga,ANDES 41,combinado DES,45.28,X,1.090,1.070,1.89,no,si
+torres_ayala_2022,Bucaramanga,ALMA MATER,combinado DES,33.00,Y,0.460,0.461,0.74,no,si
