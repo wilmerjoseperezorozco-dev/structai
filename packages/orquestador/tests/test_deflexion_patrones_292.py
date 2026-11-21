@@ -1,4 +1,5 @@
 """#292: deflexiones de servicio (C.9.5) y disposición de la carga viva (C.8.11.2) en el edificio 3D."""
+import dataclasses
 import math
 import os
 import sys
@@ -14,7 +15,7 @@ from src import diseno_edificio_3d as de
 def proyecto(**kw):
     base = dict(luces_x_m=(6.0, 6.0, 6.0), luces_y_m=(5.0, 5.0), alturas_piso_m=(3.0,) * 3, columnas_mm=(500,) * 3,
                 vigas_mm=((350, 500),) * 3, carga_muerta_kpa=6.0, carga_viva_kpa=1.8, aa=0.10, av=0.10, perfil_suelo="D",
-                capacidad="DMI")
+                capacidad="DMI", u_max_gravedad=1.0, margen_en="todo")   # línea base explícita: sin margen
     base.update(kw)
     return de.ProyectoEdificio3D(**base)
 
@@ -136,3 +137,15 @@ def test_margen_solo_en_vigas_no_toca_la_demanda_de_columnas():
     assert any("columnas sin margen" in str(ln.valor) for ln in av.memoria.cargas)
     with pytest.raises(ValueError):
         proyecto(margen_en="cubierta")
+
+
+def test_margen_por_defecto_292a():
+    # adoptado con el prerregistro 292-A: 0,90 solo en vigas en zona baja; sin margen en zona intermedia o alta
+    baja = de.ProyectoEdificio3D(luces_x_m=(6.0,), luces_y_m=(5.0,), alturas_piso_m=(3.0,), columnas_mm=(400,),
+                                 vigas_mm=((300, 450),), carga_muerta_kpa=6.0, carga_viva_kpa=1.8, aa=0.10, av=0.10,
+                                 perfil_suelo="D", capacidad="DMI")
+    assert baja.u_max_gravedad == pytest.approx(0.90) and baja.margen_en == "vigas"
+    alta = dataclasses.replace(baja, aa=0.25, av=0.25, capacidad="DES", u_max_gravedad=None)
+    assert alta.u_max_gravedad == 1.0
+    explicito = dataclasses.replace(baja, u_max_gravedad=1.0)
+    assert explicito.u_max_gravedad == 1.0

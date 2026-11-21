@@ -93,8 +93,10 @@ class ProyectoEdificio3D:
     uso: str = "residencial"
     divipola: Optional[str] = None                     # código de municipio; nunca coordenadas
     divisiones_fragiles: bool = True                   # mampostería ligada a las vigas → límite ℓ/480 (Tabla C.9.5(b))
-    u_max_gravedad: float = 1.0                        # criterio StructAI (#292), NO de la NSR-10: φRn ≥ U_gravedad / u_max
-    margen_en: str = "todo"                            # "todo" (vigas y columnas) o "vigas" (variante A de #292)
+    # Criterio StructAI (#292), NO de la NSR-10: φRn ≥ U_gravedad / u_max. None = valor por defecto adoptado con el
+    # experimento prerregistrado 292-A: 0,90 solo en vigas en zona baja (Aa y Av ≤ 0,10); 1,0 (sin margen) en el resto.
+    u_max_gravedad: Optional[float] = None
+    margen_en: str = "vigas"                           # "vigas" (adoptado, 292-A) o "todo" (vigas y columnas; NO ADOPTAR)
 
     def __post_init__(self):
         n = len(self.alturas_piso_m)
@@ -111,15 +113,17 @@ class ProyectoEdificio3D:
             raise ValueError("capacidad: DES, DMO o DMI")
         if self.margen_en not in ("todo", "vigas"):
             raise ValueError("margen_en: 'todo' o 'vigas'")
+        if self.u_max_gravedad is None:
+            object.__setattr__(self, "u_max_gravedad", u_max_recomendado(self))
         if not 0.5 <= self.u_max_gravedad <= 1.0:
             raise ValueError("u_max_gravedad entre 0,5 y 1,0 (1,0 = límite de la NSR-10, sin margen)")
 
 
-U_MAX_ZONA_BAJA = 0.90                                 # propuesta de #292; se adopta solo con el experimento prerregistrado
+U_MAX_ZONA_BAJA = 0.90       # adoptado 2026-11-21 (RESULTADOS_292A_MARGEN_VIGAS.md), solo en vigas
 
 
-def u_max_recomendado(p: ProyectoEdificio3D) -> float:
-    """Margen de utilización bajo gravedad que propone #292: zona de amenaza sísmica baja (Aa y Av ≤ 0,10, A.2.3)."""
+def u_max_recomendado(p) -> float:
+    """Margen de utilización bajo gravedad de #292: zona de amenaza sísmica baja (Aa y Av ≤ 0,10, A.2.3)."""
     return U_MAX_ZONA_BAJA if p.aa <= 0.10 and p.av <= 0.10 else 1.0
 
 

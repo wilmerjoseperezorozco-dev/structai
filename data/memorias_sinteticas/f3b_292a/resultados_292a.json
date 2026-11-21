@@ -1,0 +1,54 @@
+{
+ "prerregistro": "docs/memoria_calculo/PRERREGISTRO_292A_MARGEN_VIGAS.md",
+ "n_pares": 358,
+ "n_ok": 358,
+ "control_reproduce": {
+  "n": 5,
+  "identicos": true
+ },
+ "no_cumple": [],
+ "Q2": {
+  "frac": 0.006760270410816433,
+  "cumple": true
+ },
+ "H-292A-1": {
+  "n_debiles": 39,
+  "mediana_delta": 0.6492000000000004,
+  "ic95": [
+   0.4985999999999997,
+   1.1352999999999995
+  ],
+  "cumple": true
+ },
+ "H-292A-2": {
+  "p10_control": 3.7628,
+  "p10_A": 4.05792,
+  "delta": 0.29512000000000027,
+  "ic95": [
+   0.1236689999999999,
+   0.41772924999999916
+  ],
+  "cumple": true
+ },
+ "C-292A": {
+  "mediana": 0.0,
+  "p90": 0.00221251837006751,
+  "max": 0.033236035097533145,
+  "frac_sin_cambio": 0.8519553072625698,
+  "cumple": true
+ },
+ "R-292A": {
+  "no_cumplen": 0,
+  "cumple": true
+ },
+ "descriptivo": {
+  "frac_beta_igual": 0.8715083798882681,
+  "frac_debiles_que_cambian": 0.9230769230769231,
+  "alta_frac_menor_3_8": {
+   "control": 0.7067039106145251,
+   "A": 0.6983240223463687
+  }
+ },
+ "decision": "ADOPTAR por defecto en zona baja: margen 0,90 solo en vigas",
+ "segundos": 800.8
+}

@@ -1,12 +1,12 @@
 {
  "umbral": 4,
  "profundidad": 3,
- "modulos": 706,
- "funciones": 2948,
+ "modulos": 728,
+ "funciones": 3107,
  "resolucion": {
-  "externo": 1287,
-  "import": 148,
-  "local": 413,
+  "externo": 1297,
+  "import": 170,
+  "local": 437,
   "por_nombre": 97
  },
  "cadenas": [
@@ -6690,6 +6690,505 @@
      "via": "local",
      "linea": "packages/construdata/rag_multi_norma.py:3102",
      "norma": true
+    }
+   ]
+  },
+  {
+   "entrada": "scripts/memorias_sinteticas/entrenar_f2.py",
+   "clase": "pipeline",
+   "familia": "scripts/memorias_sinteticas",
+   "funcion": "scripts/memorias_sinteticas/entrenar_f2.py::main",
+   "pasos": 48,
+   "puntual": false,
+   "candidata": true,
+   "etiquetas": [
+    "con_efectos",
+    "dependiente_de_norma"
+   ],
+   "cache_existente": false,
+   "secuencia": [
+    {
+     "paso": "packages/orquestador/src/optimizar_edificio_3d.py::_secciones",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "scripts/memorias_sinteticas/entrenar_f2.py:115",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_edificio_3d.py::_rect",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:193",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_edificio_3d.py::_area_45",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:204",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-analisis/src/modal3d.py::modos",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:250",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_edificio_3d.py::_periodos_dir",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:251",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-analisis/src/sismo3d.py::analizar_fhe",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:580",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_edificio_3d.py::_derivas_piso",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:584",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_edificio_3d.py::_resolver_casos",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:589",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_edificio_3d.py::combinaciones",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:590",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_edificio_3d.py::_patrones_viva",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:591",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_edificio_3d.py::_resolver_patrones",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:592",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_edificio_3d.py::_extender_combinaciones",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:593",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_edificio_3d.py::_demanda_vigas",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:608",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-concreto/src/diseno_viga.py::disenar",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:609",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-concreto/src/diseno_viga.py::_d",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:430",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_edificio_3d.py::_icr",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:436",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_edificio_3d.py::_q_casos",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:448",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_edificio_3d.py::_ie",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:455",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_edificio_3d.py::_flecha_rel",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:455",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_edificio_3d.py::_ie",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:456",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_edificio_3d.py::_flecha_rel",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:456",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-concreto/src/diseno_viga.py::_d",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:430",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_edificio_3d.py::_icr",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:436",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_edificio_3d.py::_q_casos",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:448",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_edificio_3d.py::_ie",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:455",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_edificio_3d.py::_flecha_rel",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:455",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_edificio_3d.py::_ie",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:456",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_edificio_3d.py::_flecha_rel",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:456",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-concreto/src/diseno_viga.py::contar_estribos",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:390",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-concreto/src/cantidades_costo.py::cantidades_viga",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:391",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-concreto/src/cantidades_costo.py::costo_co2",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:624",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-concreto/src/diseno_viga.py::contar_estribos",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:390",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-concreto/src/cantidades_costo.py::cantidades_viga",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:391",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_edificio_3d.py::_demanda_columnas",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:635",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-concreto/src/diseno_viga.py::_d",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:396",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-concreto/src/diseno_viga.py::_mn_nominal",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:398",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-concreto/src/columna.py::disenar_columna",
+     "tipo": "motor",
+     "tipos": [
+      "cache",
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:644",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-concreto/src/columna.py::curva",
+     "tipo": "motor",
+     "tipos": [
+      "cache",
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:565",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-concreto/src/columna.py::momentos_diseno",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:566",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-concreto/src/columna.py::phi_mn_arr",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:570",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-concreto/src/cantidades_costo.py::cantidades_columna",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:650",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-concreto/src/cantidades_costo.py::costo_co2",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:651",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-concreto/src/cantidades_costo.py::cantidades_columna",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:660",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-concreto/src/columna.py::curva",
+     "tipo": "motor",
+     "tipos": [
+      "cache",
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:664",
+     "norma": true
+    },
+    {
+     "paso": "packages/motor-concreto/src/cantidades_costo.py::costo_co2",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "import",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:666",
+     "norma": true
+    },
+    {
+     "paso": "packages/orquestador/src/diseno_edificio_3d.py::memoria",
+     "tipo": "motor",
+     "tipos": [
+      "motor"
+     ],
+     "via": "local",
+     "linea": "packages/orquestador/src/diseno_edificio_3d.py:672",
+     "norma": true
+    },
+    {
+     "paso": "g.to_csv",
+     "tipo": "efecto",
+     "tipos": [
+      "efecto"
+     ],
+     "via": "externo",
+     "linea": "scripts/memorias_sinteticas/entrenar_f2.py:206",
+     "norma": false
+    },
+    {
+     "paso": "?.write_text",
+     "tipo": "efecto",
+     "tipos": [
+      "efecto"
+     ],
+     "via": "externo",
+     "linea": "scripts/memorias_sinteticas/entrenar_f2.py:207",
+     "norma": false
     }
    ]
   },
@@ -25743,6 +26242,146 @@
      ],
      "via": "externo",
      "linea": "scripts/ingesta/verificar_cobertura_baseline.py:64",
+     "norma": false
+    }
+   ]
+  },
+  {
+   "entrada": "scripts/memorias_sinteticas/confiabilidad_f3.py",
+   "clase": "pipeline",
+   "familia": "scripts/memorias_sinteticas",
+   "funcion": "scripts/memorias_sinteticas/confiabilidad_f3.py::main",
+   "pasos": 2,
+   "puntual": false,
+   "candidata": false,
+   "etiquetas": [
+    "con_efectos"
+   ],
+   "cache_existente": false,
+   "secuencia": [
+    {
+     "paso": "w.writerow",
+     "tipo": "efecto",
+     "tipos": [
+      "efecto"
+     ],
+     "via": "externo",
+     "linea": "scripts/memorias_sinteticas/confiabilidad_f3.py:348",
+     "norma": false
+    },
+    {
+     "paso": "?.write_text",
+     "tipo": "efecto",
+     "tipos": [
+      "efecto"
+     ],
+     "via": "externo",
+     "linea": "scripts/memorias_sinteticas/confiabilidad_f3.py:362",
+     "norma": false
+    }
+   ]
+  },
+  {
+   "entrada": "scripts/memorias_sinteticas/confiabilidad_f3b.py",
+   "clase": "pipeline",
+   "familia": "scripts/memorias_sinteticas",
+   "funcion": "scripts/memorias_sinteticas/confiabilidad_f3b.py::main",
+   "pasos": 2,
+   "puntual": false,
+   "candidata": false,
+   "etiquetas": [
+    "con_efectos"
+   ],
+   "cache_existente": false,
+   "secuencia": [
+    {
+     "paso": "w.writerow",
+     "tipo": "efecto",
+     "tipos": [
+      "efecto"
+     ],
+     "via": "externo",
+     "linea": "scripts/memorias_sinteticas/confiabilidad_f3b.py:324",
+     "norma": false
+    },
+    {
+     "paso": "?.write_text",
+     "tipo": "efecto",
+     "tipos": [
+      "efecto"
+     ],
+     "via": "externo",
+     "linea": "scripts/memorias_sinteticas/confiabilidad_f3b.py:339",
+     "norma": false
+    }
+   ]
+  },
+  {
+   "entrada": "scripts/memorias_sinteticas/generar.py",
+   "clase": "pipeline",
+   "familia": "scripts/memorias_sinteticas",
+   "funcion": "scripts/memorias_sinteticas/generar.py::main",
+   "pasos": 2,
+   "puntual": false,
+   "candidata": false,
+   "etiquetas": [
+    "con_efectos"
+   ],
+   "cache_existente": false,
+   "secuencia": [
+    {
+     "paso": "?.write_text",
+     "tipo": "efecto",
+     "tipos": [
+      "efecto"
+     ],
+     "via": "externo",
+     "linea": "scripts/memorias_sinteticas/generar.py:102",
+     "norma": false
+    },
+    {
+     "paso": "w.writerow",
+     "tipo": "efecto",
+     "tipos": [
+      "efecto"
+     ],
+     "via": "externo",
+     "linea": "scripts/memorias_sinteticas/generar.py:126",
+     "norma": false
+    }
+   ]
+  },
+  {
+   "entrada": "scripts/memorias_sinteticas/reserva_292.py",
+   "clase": "pipeline",
+   "familia": "scripts/memorias_sinteticas",
+   "funcion": "scripts/memorias_sinteticas/reserva_292.py::main",
+   "pasos": 2,
+   "puntual": false,
+   "candidata": false,
+   "etiquetas": [
+    "con_efectos"
+   ],
+   "cache_existente": false,
+   "secuencia": [
+    {
+     "paso": "w.writerow",
+     "tipo": "efecto",
+     "tipos": [
+      "efecto"
+     ],
+     "via": "externo",
+     "linea": "scripts/memorias_sinteticas/reserva_292.py:189",
+     "norma": false
+    },
+    {
+     "paso": "?.write_text",
+     "tipo": "efecto",
+     "tipos": [
+      "efecto"
+     ],
+     "via": "externo",
+     "linea": "scripts/memorias_sinteticas/reserva_292.py:209",
      "norma": false
     }
    ]
