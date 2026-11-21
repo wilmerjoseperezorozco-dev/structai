@@ -2010,13 +2010,24 @@ INSTRUCCIONES:
 {_CONTEXTO_COLOMBIA_COMPARTIDO}"""
 
 
+_ETIQUETA_VIGENCIA = {
+    "derogada_total": "NORMA DEROGADA",
+    "derogada_parcial": "NORMA DEROGADA PARCIALMENTE",
+    "modificada": "NORMA MODIFICADA",
+    # El registro no confirma la vigencia: NO es una derogación y no autoriza a afirmar que lo es (antes salía
+    # "⚠️ NORMA DESCONOCIDO", que se leía como una norma muerta).
+    "desconocido": "VIGENCIA NO CONFIRMADA EN EL REGISTRO",
+}
+
+
 def _format_chunk_context(c: ChunkResult) -> str:
     """Antepone una advertencia visible cuando el chunk viene de una norma
     derogada/modificada (normas_registro.estado_vigencia vía search_knowledge) —
     así el LLM no puede citar texto muerto sin saber que lo es."""
     header = f"[{c.norma} — {c.seccion}]"
     if not c.vigente:
-        aviso = f"⚠️ NORMA {(c.estado_vigencia or 'desconocido').upper().replace('_', ' ')}"
+        est = c.estado_vigencia or "desconocido"
+        aviso = "⚠️ " + _ETIQUETA_VIGENCIA.get(est, f"NORMA {est.upper().replace('_', ' ')}")
         if c.derogada_por:
             aviso += f" — reemplazada por {c.derogada_por}"
         header = f"{header}\n{aviso}"
@@ -2065,7 +2076,7 @@ def _generar_respuesta(contexto: str, question: str, system_prompt: Optional[str
 
 # Aviso de vigencia que _format_chunk_context() pone bajo el encabezado de un fragmento no vigente
 # ("⚠️ NORMA DEROGADA TOTAL — reemplazada por ...", "⚠️ NORMA MODIFICADA", ...).
-_RX_AVISO_EN_CONTEXTO = re.compile(r"^⚠️\s*NORMA\s+(DEROGADA|MODIFICADA|DESCONOCIDO)", re.MULTILINE)
+_RX_AVISO_EN_CONTEXTO = re.compile(r"^⚠️\s*NORMA\s+(DEROGADA|MODIFICADA)", re.MULTILINE)   # "no confirmada" no cuenta
 # Avisos de derogación/modificación que el modelo escribe por su cuenta. Hallazgo #261 (2026-11-17): con la regla
 # anterior, que citaba la frase literal "⚠️ NORMA DEROGADA/MODIFICADA", qwen2.5:7b la copiaba en el 43 % de sus
 # respuestas sobre la NSR-10 (91 de 214), aunque ningún fragmento de la NSR-10 está marcado como no vigente.

@@ -92,3 +92,26 @@ def test_las_reglas_no_contienen_la_frase_literal_que_el_modelo_imitaba():
 def test_generar_respuesta_aplica_la_guarda(monkeypatch):
     monkeypatch.setattr(r, "_llamar_llm_con_respaldo", lambda messages, max_tokens_groq=700: RESPUESTA_CON_AVISO_INVENTADO)
     assert r._generar_respuesta(_contexto(VIGENTE), "¿φt?") == "Según F.4.3, el coeficiente es φt = 0,75."
+
+
+DESCONOCIDA = ChunkResult(chunk_id="4", norma="Resolución 803 de 2009", seccion="Art. 2", contenido="...", score=1.0,
+                          estado_vigencia="desconocido")
+
+
+def test_vigencia_desconocida_no_se_anuncia_como_derogada():
+    ctx = _format_chunk_context(DESCONOCIDA)
+    assert "VIGENCIA NO CONFIRMADA" in ctx
+    assert "DEROGADA" not in ctx and "DESCONOCIDO" not in ctx
+
+
+def test_vigencia_desconocida_no_autoriza_un_aviso_de_derogacion():
+    ctx = _format_chunk_context(DESCONOCIDA)
+    resp = "La Resolución 803 establece X.\n⚠️ NORMA DEROGADA: verifique su vigencia."
+    assert "DEROGADA" not in _quitar_aviso_vigencia_sin_respaldo(resp, ctx)
+
+
+def test_etiquetas_de_derogacion_legibles():
+    assert "⚠️ NORMA DEROGADA — reemplazada por Resolución 0330 de 2017" in _format_chunk_context(DEROGADA)
+    parcial = ChunkResult(chunk_id="5", norma="Res. 319 de 2022", seccion="1", contenido="...", score=1.0,
+                          estado_vigencia="derogada_parcial")
+    assert "⚠️ NORMA DEROGADA PARCIALMENTE" in _format_chunk_context(parcial)
