@@ -1,0 +1,127 @@
+{
+ "prerregistro": "issue #268, comentario 6967842190",
+ "n": 60,
+ "distribucion_humana": {
+  "0": 19,
+  "1": 5,
+  "2": 36
+ },
+ "spearman_rica": 0.6965738688326809,
+ "ic95_rica": [
+  0.5037483152600672,
+  0.8606618597447062
+ ],
+ "spearman_binaria": 0.5875517964484461,
+ "ic95_binaria": [
+  0.36787470883192486,
+  0.7873796281011858
+ ],
+ "diferencia_rica_menos_binaria": 0.10902207238423478,
+ "ic95_diferencia": [
+  -0.11767140618465709,
+  0.32544322655322416
+ ],
+ "trampa_rica_alta_humana_0": {
+  "frac": 0.03125,
+  "n_altas": 32
+ },
+ "trampa_rica_0_humana_2": {
+  "frac": 0.2857142857142857,
+  "n_ceros": 7
+ },
+ "tabla_humana_vs_binaria": {
+  "h0_b0": 13,
+  "h0_b1": 6,
+  "h1_b0": 4,
+  "h1_b1": 1,
+  "h2_b0": 4,
+  "h2_b1": 32
+ },
+ "por_origen": {
+  "e3": {
+   "n": 45,
+   "humana_media": 1.2222222222222223,
+   "rica_media": 0.6916666666666667,
+   "spearman_rica": 0.7177224886934056,
+   "humana_0_con_rica_alta": 1,
+   "humana_2_con_rica_0": 0
+  },
+  "inyeccion": {
+   "n": 15,
+   "humana_media": 1.4666666666666666,
+   "rica_media": 0.6,
+   "spearman_rica": 0.7385489458759964,
+   "humana_0_con_rica_alta": 0,
+   "humana_2_con_rica_0": 2
+  }
+ },
+ "por_modelo": {
+  "hermes3:latest": {
+   "n": 15,
+   "humana_media": 1.1333333333333333,
+   "rica_media": 0.7083333333333334,
+   "spearman_rica": 0.7683760704982201,
+   "humana_0_con_rica_alta": 1,
+   "humana_2_con_rica_0": 0
+  },
+  "llama3:8b": {
+   "n": 15,
+   "humana_media": 1.3333333333333333,
+   "rica_media": 0.6833333333333333,
+   "spearman_rica": 0.5855400437691199,
+   "humana_0_con_rica_alta": 0,
+   "humana_2_con_rica_0": 0
+  },
+  "qwen2.5:7b": {
+   "n": 30,
+   "humana_media": 1.3333333333333333,
+   "rica_media": 0.6416666666666667,
+   "spearman_rica": 0.7187930733583151,
+   "humana_0_con_rica_alta": 0,
+   "humana_2_con_rica_0": 2
+  }
+ },
+ "por_ataque": {
+  "None": {
+   "n": 45,
+   "humana_media": 1.2222222222222223,
+   "rica_media": 0.6916666666666667,
+   "spearman_rica": 0.7177224886934056,
+   "humana_0_con_rica_alta": 1,
+   "humana_2_con_rica_0": 0
+  },
+  "autoridad_falsa": {
+   "n": 4,
+   "humana_media": 2.0,
+   "rica_media": 0.5,
+   "spearman_rica": 0.0,
+   "humana_0_con_rica_alta": 0,
+   "humana_2_con_rica_0": 2
+  },
+  "canario": {
+   "n": 4,
+   "humana_media": 0.0,
+   "rica_media": 0.0,
+   "spearman_rica": 0.0,
+   "humana_0_con_rica_alta": 0,
+   "humana_2_con_rica_0": 0
+  },
+  "exfiltracion": {
+   "n": 3,
+   "humana_media": 2.0,
+   "rica_media": 1.0,
+   "spearman_rica": null,
+   "humana_0_con_rica_alta": 0,
+   "humana_2_con_rica_0": 0
+  },
+  "orden_directa": {
+   "n": 4,
+   "humana_media": 2.0,
+   "rica_media": 1.0,
+   "spearman_rica": 0.0,
+   "humana_0_con_rica_alta": 0,
+   "humana_2_con_rica_0": 0
+  }
+ },
+ "regla_grpo_cumple": false
+}

@@ -3,7 +3,10 @@
 Lee la hoja etiquetada y la clave de _privado/ (no versionadas) y escribe SOLO agregados en
 resultados/recompensa_268.json (sin respuestas crudas ni preguntas).
 
-Uso: python analizar_recompensa_268.py
+Uso: python analizar_recompensa_268.py [--salida recompensa_268.json]
+
+El resultado prerregistrado es recompensa_268.json (etiquetas originales). Correcciones de etiquetas hechas después
+de ver el diagnóstico se analizan con otra salida (p. ej. recompensa_268_reetiquetado.json): son post hoc y no ciegas.
 """
 from __future__ import annotations
 
@@ -42,6 +45,9 @@ def rho(x, y) -> float:
 
 
 def main() -> None:
+    import argparse
+    ap = argparse.ArgumentParser(); ap.add_argument("--salida", default="recompensa_268.json")
+    salida = ap.parse_args().salida
     sys.stdout.reconfigure(encoding="utf-8")
     f = cargar()
     h = np.array([r["humana"] for r in f]); ri = np.array([r["rica"] for r in f]); bi = np.array([r["binaria"] for r in f])
@@ -80,7 +86,7 @@ def main() -> None:
            "por_origen": por("origen"), "por_modelo": por("modelo"), "por_ataque": por("ataque"),
            "regla_grpo_cumple": bool(regla)}
     (AQUI / "resultados").mkdir(exist_ok=True)
-    (AQUI / "resultados" / "recompensa_268.json").write_text(json.dumps(res, indent=1, ensure_ascii=False), encoding="utf-8")
+    (AQUI / "resultados" / salida).write_text(json.dumps(res, indent=1, ensure_ascii=False), encoding="utf-8")
     print(json.dumps(res, indent=1, ensure_ascii=False))
 
 
