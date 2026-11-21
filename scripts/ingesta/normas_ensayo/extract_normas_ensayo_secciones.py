@@ -24,12 +24,12 @@ INVIAS" mezclada con el cuerpo), mientras PyMuPDF con get_text() por
 defecto preserva el orden real de lectura. Verificado manualmente antes de
 confiar en el patrón (ver scratchpad de la sesión 2026-07-14).
 
-Uso: python scripts/ingesta/normas_ensayo/extract_normas_ensayo_secciones.py
+Uso: python -I scripts/ingesta/normas_ensayo/extract_normas_ensayo_secciones.py  (antes: pdf_a_texto.py)
 """
 import re
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[3]
 RAW_DIR = ROOT / "scripts" / "_normas_ensayo_raw_drive_dump"
 OUT_DIR = ROOT / "packages" / "construdata" / "normativa_raw" / "vias"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -43,7 +43,33 @@ SECCIONES = {
         "raw_file": "seccion_300.txt",
         "titulo_completo": "Sección 300 — Cemento (Normas de Ensayo de Materiales para Carreteras, INVIAS 2012)",
     },
+    # #295: secciones que faltaban (títulos según la Introducción, I.2.1, del mismo manual 2012)
+    "seccion_100": {
+        "raw_file": "seccion_100.txt",
+        "titulo_completo": "Sección 100 — Suelos (Normas de Ensayo de Materiales para Carreteras, INVIAS 2012)",
+    },
+    "seccion_400": {
+        "raw_file": "seccion_400.txt",
+        "titulo_completo": "Sección 400 — Concreto hidráulico (Normas de Ensayo de Materiales para Carreteras, INVIAS 2012)",
+    },
+    "seccion_600": {
+        "raw_file": "seccion_600.txt",
+        "titulo_completo": "Sección 600 — Estabilización de suelos (Normas de Ensayo de Materiales para Carreteras, INVIAS 2012)",
+    },
+    # el manual reparte 700 y 800 en dos PDF; cada uno se procesa aparte para que la secuencia ascendente no se rompa
+    "seccion_700_800_a": {
+        "raw_file": "seccion_700_800_a.txt",
+        "titulo_completo": "Secciones 700 y 800 — Materiales y mezclas asfálticas y prospección de pavimentos, primera parte (INVIAS 2012)",
+    },
+    "seccion_700_800_b": {
+        "raw_file": "seccion_700_800_b.txt",
+        "titulo_completo": "Secciones 700 y 800 — Materiales y mezclas asfálticas y prospección de pavimentos, segunda parte (INVIAS 2012, mod. 2013-11-15)",
+    },
 }
+
+# Normas con versión posterior ya registrada (Res. 2451 de 2022: INV-E-631-22, INV-E-632-22, INV-E-826-22).
+# Si aparecen en la edición 2012 no se extraen: la versión vigente es la de 2022 y ya está en motor_chunks.
+NORMAS_CON_VERSION_POSTERIOR = {"631", "632", "826"}
 
 NORMA_BOUNDARY_RE = re.compile(r'INV\.?\s*E\s*[–—-]\s*(\d{3})\s*[–—-]\s*(\d{2})')
 CLAUSE_RE = re.compile(
@@ -101,6 +127,9 @@ def split_normas(text: str, codigo_seccion: str) -> list[dict]:
     all_chunks = []
     for i, (start, norma_num) in enumerate(boundaries):
         end = boundaries[i + 1][0] if i + 1 < len(boundaries) else len(text)
+        if norma_num in NORMAS_CON_VERSION_POSTERIOR:
+            print(f"    INV E-{norma_num}: omitida (versión 2022 vigente ya registrada)")
+            continue
         body = text[start:end]
         chunks = split_clauses(body, norma_num)
         if not chunks:
@@ -116,7 +145,7 @@ def write_chunk_file(codigo: str, titulo_completo: str, chunks: list[dict]) -> N
         '{',
         '"metadata": {',
         f'"norma": "{titulo_completo}", "titulo_completo": "{titulo_completo}",',
-        '"fuente": "INVIAS — Normas de Ensayo de Materiales para Carreteras, edición 2012 (reemplaza Resolución 3290 de 2007)",',
+        '"fuente": "INVIAS — Normas de Ensayo de Materiales para Carreteras, edición 2012, adoptada por la Resolución 1375 de 2014 (reemplaza la Resolución 3290 de 2007)",',
         '"fecha_extraccion": "2026-07-14"',
         '},',
         '"chunks": [',
