@@ -103,3 +103,23 @@ def test_divisiones_no_fragiles_relajan_el_limite():
     nf = de.disenar_edificio(proyecto(divisiones_fragiles=False)).vigas[0]["diseno"].verificaciones
     cap = lambda vs: next(v.capacidad for v in vs if v.nombre.startswith("Deflexión después"))  # noqa: E731
     assert cap(nf) == pytest.approx(2 * cap(fr))
+
+
+def test_margen_de_gravedad_escala_solo_la_demanda_de_gravedad():
+    base = de.disenar_edificio(proyecto())
+    con = de.disenar_edificio(proyecto(u_max_gravedad=0.9))
+    assert base.cumple and con.cumple
+    # la envolvente sube, pero nunca más que 1/0,9 (las combinaciones con sismo no se escalan)
+    m0, m1 = base.vigas[-1]["demanda"]["M_pos_vano"], con.vigas[-1]["demanda"]["M_pos_vano"]
+    assert m0 < m1 <= m0 / 0.9 + 1e-9
+    v0, v1 = base.vigas[-1]["demanda"]["V_gravedad"], con.vigas[-1]["demanda"]["V_gravedad"]
+    assert v1 == pytest.approx(v0)                                  # Ve por capacidad usa la gravedad sin mayorar
+    assert con.cantidades["costo_cop"] >= base.cantidades["costo_cop"]
+    assert any("u_máx = 0.9" in str(ln.valor) for ln in con.memoria.cargas)
+
+
+def test_u_max_recomendado_solo_en_zona_baja():
+    assert de.u_max_recomendado(proyecto()) == de.U_MAX_ZONA_BAJA
+    assert de.u_max_recomendado(proyecto(aa=0.25, av=0.25)) == 1.0
+    with pytest.raises(ValueError):
+        proyecto(u_max_gravedad=1.2)

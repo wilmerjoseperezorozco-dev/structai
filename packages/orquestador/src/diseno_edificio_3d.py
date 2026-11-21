@@ -93,6 +93,7 @@ class ProyectoEdificio3D:
     uso: str = "residencial"
     divipola: Optional[str] = None                     # código de municipio; nunca coordenadas
     divisiones_fragiles: bool = True                   # mampostería ligada a las vigas → límite ℓ/480 (Tabla C.9.5(b))
+    u_max_gravedad: float = 1.0                        # criterio StructAI (#292), NO de la NSR-10: φRn ≥ U_gravedad / u_max
 
     def __post_init__(self):
         n = len(self.alturas_piso_m)
@@ -107,6 +108,16 @@ class ProyectoEdificio3D:
                 raise ValueError("Secciones positivas")
         if self.capacidad not in ("DES", "DMO", "DMI"):
             raise ValueError("capacidad: DES, DMO o DMI")
+        if not 0.5 <= self.u_max_gravedad <= 1.0:
+            raise ValueError("u_max_gravedad entre 0,5 y 1,0 (1,0 = límite de la NSR-10, sin margen)")
+
+
+U_MAX_ZONA_BAJA = 0.90                                 # propuesta de #292; se adopta solo con el experimento prerregistrado
+
+
+def u_max_recomendado(p: ProyectoEdificio3D) -> float:
+    """Margen de utilización bajo gravedad que propone #292: zona de amenaza sísmica baja (Aa y Av ≤ 0,10, A.2.3)."""
+    return U_MAX_ZONA_BAJA if p.aa <= 0.10 and p.av <= 0.10 else 1.0
 
 
 @dataclass
@@ -573,6 +584,9 @@ def disenar_edificio(p: ProyectoEdificio3D) -> InformeEdificio3D:
     pats = _patrones_viva(m)                                         # C.8.11.2
     F = np.concatenate([F, _resolver_patrones(m, pats)]) if pats else F
     nombres, C, es_e = _extender_combinaciones(nombres, C, es_e, pats)
+    if p.u_max_gravedad < 1.0:                                       # margen solo donde gobierna la gravedad (#292)
+        C = C.copy()
+        C[~es_e] /= p.u_max_gravedad
     mat = _vg.Materiales(fc=p.fc_mpa, fy=p.fy_mpa, fyt=p.fy_mpa)
     rec = p.recubrimiento_mm
     n = len(p.alturas_piso_m)
@@ -703,6 +717,10 @@ def memoria(inf: InformeEdificio3D, m: Modelo, nombres_comb: list[str]):
           valor=f"Ie (C.9-8), λΔ = ξ/(1+50ρ') con ξ = {XI_LARGO_PLAZO:g}; L sostenida = {PSI_SOSTENIDA:g}·L; "
                 f"divisiones {'frágiles (ℓ/480)' if p.divisiones_fragiles else 'no frágiles (ℓ/240)'}",
           referencia="C.9.5.2, Tabla C.9.5(b)", estado="HIPÓTESIS"),
+        L(concepto="Margen de utilización bajo gravedad (criterio StructAI, no exigido por la NSR-10)",
+          valor="sin margen (límite de la NSR-10)" if p.u_max_gravedad >= 1.0 else
+          f"combinaciones de gravedad divididas por u_máx = {p.u_max_gravedad:g} (φRn ≥ U/{p.u_max_gravedad:g})",
+          referencia="#292", estado="HIPÓTESIS"),
         L(concepto="Efectos ortogonales", valor="E = 100 % en una dirección + 30 % en la perpendicular", referencia="A.3.6.3", estado="NSR-10 (leído)"),
         L(concepto="Torsión accidental", valor="±5 % de la dimensión perpendicular, amplificada por Ax", referencia="A.3.6.7.1, A.3.6-2", estado="NSR-10 (leído)"),
     ]
