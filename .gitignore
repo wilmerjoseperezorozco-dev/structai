@@ -93,3 +93,5 @@ apps/api/datos_indice/
 # memorias sintéticas de #275 (regenerables con scripts/memorias_sinteticas/generar.py)
 data/memorias_sinteticas/memorias/
 data/memorias_sinteticas/f2/*.txt
+data/memorias_sinteticas/f3/piloto/
+data/memorias_sinteticas/f3b/piloto/
