@@ -94,6 +94,7 @@ class ProyectoEdificio3D:
     divipola: Optional[str] = None                     # código de municipio; nunca coordenadas
     divisiones_fragiles: bool = True                   # mampostería ligada a las vigas → límite ℓ/480 (Tabla C.9.5(b))
     u_max_gravedad: float = 1.0                        # criterio StructAI (#292), NO de la NSR-10: φRn ≥ U_gravedad / u_max
+    margen_en: str = "todo"                            # "todo" (vigas y columnas) o "vigas" (variante A de #292)
 
     def __post_init__(self):
         n = len(self.alturas_piso_m)
@@ -108,6 +109,8 @@ class ProyectoEdificio3D:
                 raise ValueError("Secciones positivas")
         if self.capacidad not in ("DES", "DMO", "DMI"):
             raise ValueError("capacidad: DES, DMO o DMI")
+        if self.margen_en not in ("todo", "vigas"):
+            raise ValueError("margen_en: 'todo' o 'vigas'")
         if not 0.5 <= self.u_max_gravedad <= 1.0:
             raise ValueError("u_max_gravedad entre 0,5 y 1,0 (1,0 = límite de la NSR-10, sin margen)")
 
@@ -584,9 +587,12 @@ def disenar_edificio(p: ProyectoEdificio3D) -> InformeEdificio3D:
     pats = _patrones_viva(m)                                         # C.8.11.2
     F = np.concatenate([F, _resolver_patrones(m, pats)]) if pats else F
     nombres, C, es_e = _extender_combinaciones(nombres, C, es_e, pats)
+    C_vigas = C
     if p.u_max_gravedad < 1.0:                                       # margen solo donde gobierna la gravedad (#292)
-        C = C.copy()
-        C[~es_e] /= p.u_max_gravedad
+        C_vigas = C.copy()
+        C_vigas[~es_e] /= p.u_max_gravedad
+        if p.margen_en == "todo":
+            C = C_vigas
     mat = _vg.Materiales(fc=p.fc_mpa, fy=p.fy_mpa, fyt=p.fy_mpa)
     rec = p.recubrimiento_mm
     n = len(p.alturas_piso_m)
@@ -595,7 +601,7 @@ def disenar_edificio(p: ProyectoEdificio3D) -> InformeEdificio3D:
     for nivel in range(1, n + 1):
         b, h = p.vigas_mm[nivel - 1]
         c = p.columnas_mm[nivel - 1]
-        dem, vigas = _demanda_vigas(p, m, F, C, nivel, pats)
+        dem, vigas = _demanda_vigas(p, m, F, C_vigas, nivel, pats)
         cand0 = _dv.disenar(b, h, dem, p.capacidad, mat, recubrimiento=rec, columna_c1=c, columna_c2=c)
         cand = []
         for d in cand0:                                              # C.9.5: el refuerzo cambia Icr, se filtra por candidato
@@ -719,7 +725,8 @@ def memoria(inf: InformeEdificio3D, m: Modelo, nombres_comb: list[str]):
           referencia="C.9.5.2, Tabla C.9.5(b)", estado="HIPÓTESIS"),
         L(concepto="Margen de utilización bajo gravedad (criterio StructAI, no exigido por la NSR-10)",
           valor="sin margen (límite de la NSR-10)" if p.u_max_gravedad >= 1.0 else
-          f"combinaciones de gravedad divididas por u_máx = {p.u_max_gravedad:g} (φRn ≥ U/{p.u_max_gravedad:g})",
+          f"combinaciones de gravedad divididas por u_máx = {p.u_max_gravedad:g} (φRn ≥ U/{p.u_max_gravedad:g}) en "
+          f"{'vigas y columnas' if p.margen_en == 'todo' else 'vigas (columnas sin margen)'}",
           referencia="#292", estado="HIPÓTESIS"),
         L(concepto="Efectos ortogonales", valor="E = 100 % en una dirección + 30 % en la perpendicular", referencia="A.3.6.3", estado="NSR-10 (leído)"),
         L(concepto="Torsión accidental", valor="±5 % de la dimensión perpendicular, amplificada por Ax", referencia="A.3.6.7.1, A.3.6-2", estado="NSR-10 (leído)"),

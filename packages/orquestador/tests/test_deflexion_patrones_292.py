@@ -123,3 +123,16 @@ def test_u_max_recomendado_solo_en_zona_baja():
     assert de.u_max_recomendado(proyecto(aa=0.25, av=0.25)) == 1.0
     with pytest.raises(ValueError):
         proyecto(u_max_gravedad=1.2)
+
+
+def test_margen_solo_en_vigas_no_toca_la_demanda_de_columnas():
+    base = de.disenar_edificio(proyecto())
+    av = de.disenar_edificio(proyecto(u_max_gravedad=0.9, margen_en="vigas"))
+    todo = de.disenar_edificio(proyecto(u_max_gravedad=0.9))
+    assert av.vigas[-1]["demanda"] == todo.vigas[-1]["demanda"]
+    p0 = base.columnas[0]["demanda"]["P_max_kn"]
+    assert av.columnas[0]["demanda"]["P_max_kn"] == pytest.approx(p0)
+    assert todo.columnas[0]["demanda"]["P_max_kn"] > p0
+    assert any("columnas sin margen" in str(ln.valor) for ln in av.memoria.cargas)
+    with pytest.raises(ValueError):
+        proyecto(margen_en="cubierta")

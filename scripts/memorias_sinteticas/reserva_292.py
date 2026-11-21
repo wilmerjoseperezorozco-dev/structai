@@ -30,11 +30,14 @@ import confiabilidad_f3b as f3b  # noqa: E402
 RAIZ = f3.RAIZ
 SEMILLA = f3.SEMILLA
 BRAZOS = {"control": 1.0, "u090": 0.90}
+BRAZOS_A = {"vigas090": (0.90, "vigas")}          # #292-A (PRERREGISTRO_292A_MARGEN_VIGAS.md)
+N_CONTROL_CHK = 5
 _proyecto_base = f3._proyecto
 
 
 def _proyecto_u(de, c):
-    return dataclasses.replace(_proyecto_base(de, c), u_max_gravedad=float(c["u_max"]))
+    return dataclasses.replace(_proyecto_base(de, c), u_max_gravedad=float(c["u_max"]),
+                               margen_en=c["margen_en"] if "margen_en" in c else "todo")
 
 
 f3._proyecto = _proyecto_u                       # f3b.evaluar lo llama por el módulo: también en los procesos hijos
@@ -50,6 +53,51 @@ def evaluar(c: dict) -> dict:
 
 
 CAMPOS = ["brazo", "u_max", "costo_cop", "cumple", "fallas"] + list(f3b.CAMPOS)
+
+
+def _boot_mediana(d, reps):
+    return float(np.median(d)), [float(np.percentile([np.median(d[r]) for r in reps], q)) for q in (2.5, 97.5)]
+
+
+def resumir_a(filas_a: list[dict], filas_ctrl: list[dict]) -> dict:
+    ctrl = {f["id"]: f for f in filas_ctrl if f["brazo"] == "control"}
+    chk = [f for f in filas_a if f["brazo"] == "control_chk"]
+    iguales = all(all(f[f"beta_{v}"] == ctrl[f["id"]][f"beta_{v}"] for v in f3b.VARIANTES) for f in chk)
+    tr = {f["id"]: f for f in filas_a if f["brazo"] == "vigas090"}
+    ids = sorted(set(tr) & set(ctrl), key=int)
+    no_cumple = [i for i in ids if tr[i]["cumple"] != "True" or tr[i]["estado"] != "ok"]
+    ok = [i for i in ids if i not in no_cumple and ctrl[i]["estado"] == "ok"]
+    out = {"prerregistro": "docs/memoria_calculo/PRERREGISTRO_292A_MARGEN_VIGAS.md", "n_pares": len(ids), "n_ok": len(ok),
+           "control_reproduce": {"n": len(chk), "identicos": iguales},
+           "no_cumple": [(i, tr[i]["fallas"]) for i in no_cumple]}
+    impr = sum(int(tr[i][f"imprecisos_{v}"]) for i in ok for v in f3b.VARIANTES)
+    nel = sum(int(tr[i]["n_elementos"]) * len(f3b.VARIANTES) for i in ok)
+    out["Q2"] = {"frac": impr / max(1, nel), "cumple": impr / max(1, nel) <= 0.01}
+    rng = np.random.default_rng(SEMILLA)
+    c0 = np.array([float(ctrl[i]["beta_central"]) for i in ok])
+    c1 = np.array([float(tr[i]["beta_central"]) for i in ok])
+    debil = c0 < 3.8
+    d = (c1 - c0)[debil]
+    reps_d = [rng.integers(0, len(d), len(d)) for _ in range(2000)]
+    est, ic = _boot_mediana(d, reps_d)
+    out["H-292A-1"] = {"n_debiles": int(debil.sum()), "mediana_delta": est, "ic95": ic, "cumple": est >= 0.3 and ic[0] > 0}
+    reps = [rng.integers(0, len(ok), len(ok)) for _ in range(2000)]
+    est = _p10(c1) - _p10(c0)
+    bs = [_p10(c1[r]) - _p10(c0[r]) for r in reps]
+    ic = [float(np.percentile(bs, 2.5)), float(np.percentile(bs, 97.5))]
+    out["H-292A-2"] = {"p10_control": _p10(c0), "p10_A": _p10(c1), "delta": est, "ic95": ic, "cumple": est > 0 and ic[0] > 0}
+    sc = np.array([float(tr[i]["costo_cop"]) / float(ctrl[i]["costo_cop"]) - 1 for i in ok])
+    out["C-292A"] = {"mediana": float(np.median(sc)), "p90": float(np.percentile(sc, 90)), "max": float(sc.max()),
+                     "frac_sin_cambio": float((np.abs(sc) < 1e-9).mean())}
+    out["C-292A"]["cumple"] = out["C-292A"]["mediana"] <= 0.03 and out["C-292A"]["p90"] <= 0.06
+    out["R-292A"] = {"no_cumplen": len(no_cumple), "cumple": not no_cumple}
+    out["descriptivo"] = {"frac_beta_igual": float((np.abs(c1 - c0) < 1e-3).mean()),
+                          "frac_debiles_que_cambian": float((np.abs(d) > 1e-3).mean()) if len(d) else None,
+                          "alta_frac_menor_3_8": {"control": float((np.array([float(ctrl[i]["beta_alta"]) for i in ok]) < 3.8).mean()),
+                                                  "A": float((np.array([float(tr[i]["beta_alta"]) for i in ok]) < 3.8).mean())}}
+    adopta = all(out[k]["cumple"] for k in ("H-292A-1", "C-292A", "R-292A", "Q2")) and iguales
+    out["decision"] = "ADOPTAR por defecto en zona baja: margen 0,90 solo en vigas" if adopta else "NO ADOPTAR (queda como opción)"
+    return out
 
 
 def _p10(a):
@@ -107,14 +155,21 @@ def main():
     ap.add_argument("--piloto", type=int, default=0)
     ap.add_argument("--hilos", type=int, default=6)
     ap.add_argument("--hasta", default=None)
-    ap.add_argument("--salida", default=str(RAIZ / "data" / "memorias_sinteticas" / "f3b_292"))
+    ap.add_argument("--experimento", choices=("base", "A"), default="base")
+    ap.add_argument("--salida", default=None)
     a = ap.parse_args()
     sys.stdout.reconfigure(encoding="utf-8")
+    dir_base = RAIZ / "data" / "memorias_sinteticas" / "f3b_292"
+    a.salida = a.salida or str(dir_base if a.experimento == "base" else RAIZ / "data" / "memorias_sinteticas" / "f3b_292a")
     with (RAIZ / "data" / "memorias_sinteticas" / "corpus.csv").open(encoding="utf-8") as f:
         casos = [r for r in csv.DictReader(f) if r["estado"] == "ok" and r["zona"] == "baja"]
     if a.piloto:
         casos = casos[:a.piloto]
-    trabajos = [{**c, "brazo": b, "u_max": u} for c in casos for b, u in BRAZOS.items()]
+    if a.experimento == "base":
+        trabajos = [{**c, "brazo": b, "u_max": u} for c in casos for b, u in BRAZOS.items()]
+    else:
+        trabajos = [{**c, "brazo": b, "u_max": u, "margen_en": me} for c in casos for b, (u, me) in BRAZOS_A.items()]
+        trabajos += [{**c, "brazo": "control_chk", "u_max": 1.0} for c in casos[:N_CONTROL_CHK]]
     out = Path(a.salida if not a.piloto else Path(a.salida) / "piloto")
     out.mkdir(parents=True, exist_ok=True)
     ruta = out / "brazos.csv"
@@ -145,9 +200,13 @@ def main():
         print(json.dumps({"piloto": len(filas), "estados": [(r["brazo"], r["estado"], r["cumple"]) for r in filas]},
                          ensure_ascii=False))
         return
-    res = resumir(filas)
+    if a.experimento == "base":
+        res, nombre = resumir(filas), "resultados_292.json"
+    else:
+        with (dir_base / "brazos.csv").open(encoding="utf-8") as f:
+            res, nombre = resumir_a(filas, list(csv.DictReader(f))), "resultados_292a.json"
     res["segundos"] = round(time.time() - t0, 1)
-    (out / "resultados_292.json").write_text(json.dumps(res, ensure_ascii=False, indent=1), encoding="utf-8")
+    (out / nombre).write_text(json.dumps(res, ensure_ascii=False, indent=1), encoding="utf-8")
     print(json.dumps({k: res[k] for k in ("decision", "Q2")}, ensure_ascii=False))
 
 
