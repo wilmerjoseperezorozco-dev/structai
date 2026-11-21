@@ -31,6 +31,7 @@ import ideam_client
 import ideam_deforestacion_client
 import microzonificacion_local
 import precio_vigencia
+import vigencia_evidencia
 import noticias_colombia
 import pais_zonificacion
 import plugins_chat
@@ -2020,16 +2021,34 @@ _ETIQUETA_VIGENCIA = {
 }
 
 
+def aviso_vigencia(c: ChunkResult) -> Optional[str]:
+    """Aviso de vigencia del fragmento con los parámetros de evidencia de vigencia_evidencia.py, o None si está vigente."""
+    if c.vigente:
+        return None
+    est = vigencia_evidencia.estado_publicable(c.estado_vigencia, c.derogada_por, c.alcance_derogacion)
+    reemplazo = vigencia_evidencia.con_respaldo(c.derogada_por)
+    if est == "derogada_total":
+        return "⚠️ NORMA DEROGADA" + (f" — reemplazada por {str(c.derogada_por).strip()}" if reemplazo else "")
+    if est == "derogada_parcial":
+        aviso = f"⚠️ NORMA DEROGADA PARCIALMENTE — alcance: {str(c.alcance_derogacion).strip()}"
+        return aviso + (f"; reemplazo: {str(c.derogada_por).strip()}" if reemplazo else "")
+    if est == "modificada":
+        if vigencia_evidencia.con_respaldo(c.alcance_derogacion):     # el alcance ya dice por qué acto y qué cambió
+            return f"⚠️ NORMA MODIFICADA — {str(c.alcance_derogacion).strip()}"
+        return ("⚠️ NORMA MODIFICADA" + (f" por {str(c.derogada_por).strip()}" if reemplazo else "")
+                + " — sigue vigente en lo no modificado")
+    if c.estado_vigencia not in (None, "desconocido"):
+        log.warning("%s marcada %r sin respaldo en el registro: el aviso se degrada a 'no confirmada'",
+                    c.norma, c.estado_vigencia)
+    return "⚠️ " + _ETIQUETA_VIGENCIA["desconocido"]
+
+
 def _format_chunk_context(c: ChunkResult) -> str:
-    """Antepone una advertencia visible cuando el chunk viene de una norma
-    derogada/modificada (normas_registro.estado_vigencia vía search_knowledge) —
-    así el LLM no puede citar texto muerto sin saber que lo es."""
+    """Antepone una advertencia visible cuando el chunk viene de una norma no vigente según el registro
+    (normas_registro.estado_vigencia vía search_knowledge), solo con el respaldo que fija aviso_vigencia()."""
     header = f"[{c.norma} — {c.seccion}]"
-    if not c.vigente:
-        est = c.estado_vigencia or "desconocido"
-        aviso = "⚠️ " + _ETIQUETA_VIGENCIA.get(est, f"NORMA {est.upper().replace('_', ' ')}")
-        if c.derogada_por:
-            aviso += f" — reemplazada por {c.derogada_por}"
+    aviso = aviso_vigencia(c)
+    if aviso:
         header = f"{header}\n{aviso}"
     if referencia_internacional.es_referencia_internacional(c.norma):
         header = f"{header}\n{referencia_internacional.AVISO_CONTEXTO}"
@@ -2676,7 +2695,8 @@ def ask(question: str, norma_hint: Optional[str] = None, top_k: int = TOP_K_DEFA
         "fuentes": fuentes,
         "chunks_usados": len(chunks),
         "advertencias_vigencia": [
-            {"norma": c.norma, "seccion": c.seccion, "estado_vigencia": c.estado_vigencia, "derogada_por": c.derogada_por}
+            {"norma": c.norma, "seccion": c.seccion, "estado_vigencia": c.estado_vigencia, "derogada_por": c.derogada_por,
+             "aviso": aviso_vigencia(c)}
             for c in chunks if not c.vigente
         ],
         # Contenido real de los chunks recuperados (no solo norma/sección
@@ -3369,7 +3389,8 @@ def _ask_delegado_interno(question: str, motores: list[str], top_k: int) -> dict
         "fuentes": fuentes,
         "chunks_usados": len(chunks) + len(precios_invias),
         "advertencias_vigencia": [
-            {"norma": c.norma, "seccion": c.seccion, "estado_vigencia": c.estado_vigencia, "derogada_por": c.derogada_por}
+            {"norma": c.norma, "seccion": c.seccion, "estado_vigencia": c.estado_vigencia, "derogada_por": c.derogada_por,
+             "aviso": aviso_vigencia(c)}
             for c in chunks if not c.vigente
         ],
     }

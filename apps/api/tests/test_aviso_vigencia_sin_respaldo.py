@@ -114,4 +114,7 @@ def test_etiquetas_de_derogacion_legibles():
     assert "⚠️ NORMA DEROGADA — reemplazada por Resolución 0330 de 2017" in _format_chunk_context(DEROGADA)
     parcial = ChunkResult(chunk_id="5", norma="Res. 319 de 2022", seccion="1", contenido="...", score=1.0,
                           estado_vigencia="derogada_parcial")
-    assert "⚠️ NORMA DEROGADA PARCIALMENTE" in _format_chunk_context(parcial)
+    # sin alcance en el registro no se sabe qué parte perdió vigencia: no se afirma la derogación (parámetros de evidencia)
+    assert "DEROGADA" not in _format_chunk_context(parcial)
+    parcial.alcance_derogacion = "Capítulo 2 (supervisión técnica)"
+    assert "⚠️ NORMA DEROGADA PARCIALMENTE — alcance: Capítulo 2" in _format_chunk_context(parcial)

@@ -32,7 +32,8 @@ class FakeSB:
 
 REGISTRO = [
     {"codigo": "LEY-80-1993", "nombre_completo": "Ley 80 de 1993 — Estatuto General de Contratación", "estado_vigencia": "vigente", "alcance_derogacion": None, "notas_vigencia": None, "fecha_expedicion": "1993-10-28"},
-    {"codigo": "RES-0424-2001", "nombre_completo": "Resolución 0424 de 2001", "estado_vigencia": "derogada_total", "alcance_derogacion": "Derogada.", "notas_vigencia": None, "fecha_expedicion": "2001-01-01"},
+    {"codigo": "RES-0424-2001", "nombre_completo": "Resolución 0424 de 2001", "estado_vigencia": "derogada_total", "alcance_derogacion": "Derogada por la Resolución 0330 de 2017.", "notas_vigencia": None, "fecha_expedicion": "2001-01-01"},
+    {"codigo": "RES-319-2022", "nombre_completo": "Resolución 319 de 2022", "estado_vigencia": "derogada_parcial", "alcance_derogacion": None, "notas_vigencia": "Modificada por la Resolución 970/2024.", "fecha_expedicion": "2022-01-01"},
     {"codigo": "RES-2743-2026", "nombre_completo": "Resolución 2743 de 2026 (INVIAS) — asunto sin confirmar", "estado_vigencia": "desconocido", "alcance_derogacion": None, "notas_vigencia": None, "fecha_expedicion": None},
     {"codigo": "NSR10-TITULO-A", "nombre_completo": "NSR-10 — Título A", "estado_vigencia": "vigente", "alcance_derogacion": None, "notas_vigencia": None, "fecha_expedicion": None},
     {"codigo": "NSR10-TITULO-B", "nombre_completo": "NSR-10 — Título B", "estado_vigencia": "vigente", "alcance_derogacion": None, "notas_vigencia": None, "fecha_expedicion": None},
@@ -113,8 +114,14 @@ def test_vigencia_ley_y_estado():
 
 
 def test_vigencia_derogada_y_desconocida():
-    assert "derogada total" in pc.ejecutar_vigencia("¿está vigente la resolución 424 de 2001?", FakeSB(REGISTRO, MODS)).markdown
+    assert "estado **derogada**" in pc.ejecutar_vigencia("¿está vigente la resolución 424 de 2001?", FakeSB(REGISTRO, MODS)).markdown
     assert "no confirmado" in pc.ejecutar_vigencia("¿rige la resolución 2743 de 2026?", FakeSB(REGISTRO, MODS)).markdown
+
+
+def test_vigencia_derogacion_sin_respaldo_no_se_afirma():
+    # marcada derogada_parcial sin alcance en el registro (caso real de la Res. 319 de 2022): no se dice "derogada"
+    md = pc.ejecutar_vigencia("¿está vigente la resolución 319 de 2022?", FakeSB(REGISTRO, MODS)).markdown
+    assert "no confirmado" in md and "**derogada" not in md
 
 
 def test_vigencia_nsr10_cadena_con_verificacion():
