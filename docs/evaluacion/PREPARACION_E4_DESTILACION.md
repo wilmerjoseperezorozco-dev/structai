@@ -18,7 +18,7 @@ Familias abiertas de Qwen con un modelo de 7–9B, verificadas el 2026-11-21:
 | **Qwen2.5-7B-Instruct** | Apache 2.0 | Ya es la línea base de E3 (`qwen2.5_7b.jsonl`, sabotaje, inyección y recompensa #268), así que el antes/después es pareado con datos que ya existen. Unsloth tiene la versión de 4 bits lista. Está probado en T4 | Es de 2024 |
 | **Qwen3.5-9B** (marzo de 2026) | Apache 2.0 | Más reciente y multimodal, con 262K de contexto | Según Artificial Analysis supera a gpt-oss-120b en su índice: **destilar de un maestro más débil que el alumno no tiene sentido científico**. El modo de razonamiento viene activo por defecto. No hay línea base en E3. Con 9B es más justo en un T4 |
 
-**Recomendación: Qwen2.5-7B-Instruct.** Si se quiere Qwen3.5-9B, la pregunta cambia de "destilar" a "adaptar al dominio con datos verificados", y hay que medir primero si el maestro le gana al alumno en nuestras baterías.
+**Decisión (Wilmer, 2026-11-21): Qwen2.5-7B-Instruct.** Si más adelante se quiere Qwen3.5-9B, la pregunta cambia de "destilar" a "adaptar al dominio con datos verificados", y hay que medir primero si el maestro le gana al alumno en nuestras baterías.
 
 Nota: #272 busca modelos no chinos con licencia comercial. Qwen es Apache 2.0 y cumple la regla de licencias; la procedencia es otra discusión que conviene dejar escrita.
 
@@ -56,7 +56,41 @@ En los motores la respuesta correcta no la da Groq: la calcula el motor (`Result
 
 Una respuesta del maestro se acepta solo si contiene el valor del motor dentro de su tolerancia. Así se cubren 16 paquetes `packages/motor-*` sin depender del RAG y con verificación exacta.
 
-### 2.3 Datos que NO entran al entrenamiento
+**Aclaración:** los motores no son *machine learning*. Son cálculo determinista: la norma y la física programadas en Python. Por eso sirven de verificador: su resultado no es una predicción.
+
+Solo cuatro motores tienen corpus RAG propio: vías, gerencia, AquAI y GeoPot (este último con ~12 fichas de laboratorio). Los demás nunca lo tuvieron.
+
+El ML de verdad está en otros lugares:
+- el enrutador K6;
+- los subrogados F2 (#275);
+- el pronóstico de precios (#247–#253);
+- el laboratorio digital del concreto (#116).
+
+### 2.4 Laboratorio sin el texto de las NTC
+
+El hueco de las NTC se cubre sin copiar texto de ICONTEC, con tres fuentes:
+
+1. **Calculadoras deterministas que ya existen** en `motor-geopot`:
+   - `lab_suelos`: USCS, AASHTO, límites de Atterberg, Proctor, CBR, granulometría (D10, D30, D60, Cu, Cc), espesor de pavimento;
+   - `lab_concreto`: resistencia de cilindros, estadística por edad, proyección a 28 días, conformidad;
+   - `lab_agregados`: densidad SSS, absorción, módulo de finura, verificación de requisitos.
+
+   Con entradas aleatorias dentro de rango, el motor da la respuesta exacta, y el maestro solo la explica.
+2. **Normas de ensayo INVIAS (INV E)**, que son públicas y equivalentes en muchos casos a las NTC. La sección 200 (agregados, 1.145 chunks) y la 300 (cemento) ya están. Faltan la 100 (suelos), la 400 (concreto) y la 700 (asfaltos).
+3. **ML del laboratorio (#116):** predicción de la resistencia con datos abiertos (UCI de Yeh, CC BY 4.0; los de Mendeley, cuya licencia hay que revisar) y calibración local. Son ejemplos con la incertidumbre explícita, no con un valor único.
+
+### 2.5 Completar los dominios delgados (antes de generar)
+
+| Dominio | Hoy | Fuentes públicas candidatas (cada descarga se aprueba antes) |
+|---|---|---|
+| Agua | 320 | Res. 799 de 2021 (modifica la 0330); Decreto 1077 de 2015 (agua y saneamiento); resoluciones CRA vigentes |
+| Ordenamiento | 106 | Ley 388 de 1997; Decreto 1077 de 2015 (ordenamiento y estudios de riesgo, que incorporó el 1807 de 2014); Ley 1523 de 2012 |
+| Laboratorio | 294 cortos | INV E secciones 100, 400 y 700; especificaciones generales de construcción INVIAS |
+| Motores sin RAG | 0 | No hace falta corpus: el motor es el verificador (§2.2) |
+
+**Meta:** que cada dominio que se quiera afirmar tenga al menos ~300 chunks vigentes, o un motor determinista, antes de generar preguntas.
+
+### 2.6 Datos que NO entran al entrenamiento
 
 | Excluido | Por qué |
 |---|---|
@@ -111,7 +145,26 @@ En StructAI el umbral **no puede ser un juez LLM ni la recompensa rica de #268**
 | **Gratuito** (el de la clave eval) | 1.000 solicitudes/día, **8.000 tokens/min**, ~200K tokens/día. Los límites son por organización, y hoy se comparten con la fase 2 diaria de #236 | **No.** Con ~4K tokens por llamada salen ~50 llamadas al día. 2.000 preguntas × 4 muestras serían más de 150 días |
 | **Developer** (pago por uso, con límite de gasto) | ~250K tokens/min, sin tope diario. Precio aproximado US$ 0,15 por millón de entrada y US$ 0,60 por millón de salida, con caché de entrada a US$ 0,075 | **Sí.** 2.000 × 4 × (3,5K entrada + 0,6K salida) ≈ 28M entrada + 4,8M salida ≈ **US$ 7**. Con el prompt del sistema en caché, menos. Verificar el precio en la consola antes |
 
-**Decisión del usuario:** pasar a Developer con un límite de gasto, por ejemplo US$ 15, o reducir k y el contexto y aceptar meses de generación. Es una compra: la hace el usuario en la consola de Groq. Para bajar costo, la API Batch de Groq tiene descuento y sirve, porque la generación no es interactiva.
+**Decisión (2026-11-21): solo el plan gratuito.** Wilmer nunca ha podido contratar el plan pago de Groq porque aparece sin disponibilidad. Las alternativas gratuitas tampoco resuelven:
+- **Cerebras** cerró su plan gratuito abierto en 2026 y solo da US$ 5 de prueba.
+- **OpenRouter** permite unas 50 solicitudes al día en sus modelos gratuitos, y gpt-oss-120b gratis ya no aparece de forma estable.
+
+Por eso el diseño se ajusta para caber en ~200K tokens al día:
+
+| Medida | Efecto |
+|---|---|
+| **Ejemplos de motor sin RAG:** el prompt lleva el `ResultadoMotor` en JSON, no fragmentos de norma (~500 tokens de entrada y ~300 de salida) | ~250 llamadas al día |
+| **Ejemplos RAG compactos:** system de ~500 tokens + 5 fragmentos de ~250 tokens (~1,8K de entrada y ~400 de salida) | ~90 llamadas al día |
+| **Rechazo secuencial en vez de k = 4 fijo:** una muestra; si falla una compuerta, una segunda; máximo 3 | ~1,3 llamadas por ejemplo si el maestro aprueba ~75 % |
+| **Prompt del sistema idéntico en todas las llamadas** | Groq no cuenta los tokens en caché contra el límite |
+| **Cola diaria con prioridad:** #236 fase 2 primero, E4 después; se para antes del tope y se reanuda al día siguiente sin repetir | No rompe la evaluación que ya corre |
+
+**Estimación:**
+- 700 ejemplos de motor × 1,3 × 0,8K ≈ 0,7M tokens;
+- 800 ejemplos RAG × 1,3 × 2,2K ≈ 2,3M tokens;
+- total **≈ 3M tokens**, unos **15 días** con la clave entera, o **~30 días** compartida con #236.
+
+Es viable sin pagar. El rechazo secuencial reemplaza al k = 4 de la §3: la regla de aprobación por pregunta se mide sobre los intentos que se hagan, con un máximo de 3.
 
 ### 4.2 Kaggle
 
@@ -171,9 +224,12 @@ El alumno se adopta como modelo del CI y del nocturno, no de producción, si:
 
 ## 6. Lista de pendientes antes del prerregistro
 
-- [ ] El usuario elige el alumno (recomendado: Qwen2.5-7B-Instruct).
-- [ ] El usuario decide el plan de Groq: Developer con límite de gasto, o el gratuito con menos datos.
+- [x] Alumno: Qwen2.5-7B-Instruct (Wilmer, 2026-11-21).
+- [x] Groq: solo el plan gratuito, con cola diaria (§4.1).
+- [x] Umbrales U1–U7 aprobados por Wilmer (2026-11-21).
 - [ ] El usuario crea el token de Kaggle y lo guarda en `kaggle.json`.
+- [ ] Completar los dominios delgados (§2.5): cada descarga se aprueba por separado.
+- [ ] Generador de ejemplos de laboratorio con `lab_suelos`, `lab_concreto` y `lab_agregados` (§2.4).
 - [ ] Reemplazar el clasificador de abstención de #261, porque U6 depende de él.
 - [ ] Guía de etiquetado v2 de #268 (obedecer una inyección o dar el valor falso junto al real vale 0) y nueva muestra ciega, si se quiere usar la recompensa rica como filtro adicional.
 - [ ] `generar_dataset_e4.py`: armar preguntas por dominio, el contexto RAFT y los motores con semilla.
