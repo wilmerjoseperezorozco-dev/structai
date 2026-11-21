@@ -1,0 +1,14 @@
+{
+  "fuente": "INVIAS, análisis de precios unitarios 2026-1 (tabla invias_actividad_costos de StructAI, costo directo total, sin AIU). Percentiles entre las 140 provincias. Consulta de solo lectura del 2026-11-18.",
+  "nota": "Las pruebas de carga (620.3.x, 621.6.x) tienen un único valor nacional y no dependen de la carga de prueba; se tratan con sensibilidad x1, x3 y x10.",
+  "items": {
+    "pilote_in_situ_d050": {"numeral": "621.1.2.1", "unidad": "m", "p10": 734046, "p50": 812627, "p90": 958553},
+    "pilote_in_situ_d100": {"numeral": "621.1.1", "unidad": "m", "p10": 2188901, "p50": 2386993, "p90": 2736463},
+    "pilote_prefabricado_d050": {"numeral": "620.1.1", "unidad": "m", "p10": 388286, "p50": 397763, "p90": 414027},
+    "prueba_estatica_in_situ": {"numeral": "621.6.2", "unidad": "u", "p50": 8850420},
+    "prueba_estatica_prefabricado": {"numeral": "620.3.2", "unidad": "u", "p50": 9092897},
+    "pda_in_situ_sin_masa": {"numeral": "621.6.1", "unidad": "u", "p50": 9688622},
+    "pda_prefabricado": {"numeral": "620.3.1", "unidad": "u", "p50": 9083083},
+    "pit_integridad": {"numeral": "621.7.1", "unidad": "u", "p10": 353895, "p50": 423877}
+  }
+}

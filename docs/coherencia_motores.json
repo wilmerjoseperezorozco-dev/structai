@@ -199,6 +199,7 @@
     {"id": "motor-vulnerabilidad-vivienda", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
     {"id": "motor-estructural", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
     {"id": "motor-exploracion", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
+    {"id": "motor-pilotes", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
     {"id": "motor-deformacion", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
     {"id": "motor-acero-frio", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
     {"id": "motor-topovia", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
