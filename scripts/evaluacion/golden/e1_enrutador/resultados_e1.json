@@ -1,0 +1,1206 @@
+{
+ "n_total": 96,
+ "excluidos_por_fuga": [],
+ "n_dev": 38,
+ "n_test": 58,
+ "tau": 0.55,
+ "delta": 0.18,
+ "delta_v5": 0.18,
+ "split": {
+  "dev": {
+   "V0_keyword": {
+    "n": 38,
+    "estricto": {
+     "k": 12,
+     "p": 0.3157894736842105,
+     "ic95": [
+      0.19084603675596182,
+      0.4745575989060954
+     ]
+    },
+    "aceptable": {
+     "k": 27,
+     "p": 0.7105263157894737,
+     "ic95": [
+      0.5524286232424794,
+      0.8299672217151693
+     ]
+    },
+    "callejon_falso": {
+     "k": 0,
+     "p": 0.0,
+     "ic95": [
+      0.0,
+      0.09180986822558396
+     ]
+    },
+    "aceptable_ic95_cluster": [
+     0.5294117647058824,
+     0.85
+    ],
+    "por_estrato": {
+     "S1_sismica_municipio": {
+      "n": 12,
+      "estricto": 0.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     },
+     "S2_directa": {
+      "n": 5,
+      "estricto": 0.8,
+      "aceptable": 0.8,
+      "callejon_falso": 0
+     },
+     "S3_coloquial": {
+      "n": 6,
+      "estricto": 0.0,
+      "aceptable": 0.0,
+      "callejon_falso": 0
+     },
+     "S4_sinonimo": {
+      "n": 7,
+      "estricto": 0.42857142857142855,
+      "aceptable": 0.8571428571428571,
+      "callejon_falso": 0
+     },
+     "S5_negacion": {
+      "n": 3,
+      "estricto": 0.0,
+      "aceptable": 0.0,
+      "callejon_falso": 0
+     },
+     "S6_confusor_sismico": {
+      "n": 3,
+      "estricto": 1.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     },
+     "S7_general": {
+      "n": 2,
+      "estricto": 1.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     }
+    }
+   },
+   "V1_produccion": {
+    "n": 38,
+    "estricto": {
+     "k": 22,
+     "p": 0.5789473684210527,
+     "ic95": [
+      0.42192345343670545,
+      0.7214749884224129
+     ]
+    },
+    "aceptable": {
+     "k": 24,
+     "p": 0.631578947368421,
+     "ic95": [
+      0.4728395955700901,
+      0.7661578075284403
+     ]
+    },
+    "callejon_falso": {
+     "k": 6,
+     "p": 0.15789473684210525,
+     "ic95": [
+      0.07443863415158927,
+      0.3041681177922313
+     ]
+    },
+    "aceptable_ic95_cluster": [
+     0.46875,
+     0.78125
+    ],
+    "por_estrato": {
+     "S1_sismica_municipio": {
+      "n": 12,
+      "estricto": 0.6666666666666666,
+      "aceptable": 0.75,
+      "callejon_falso": 2
+     },
+     "S2_directa": {
+      "n": 5,
+      "estricto": 0.8,
+      "aceptable": 0.8,
+      "callejon_falso": 0
+     },
+     "S3_coloquial": {
+      "n": 6,
+      "estricto": 0.8333333333333334,
+      "aceptable": 0.8333333333333334,
+      "callejon_falso": 1
+     },
+     "S4_sinonimo": {
+      "n": 7,
+      "estricto": 0.5714285714285714,
+      "aceptable": 0.7142857142857143,
+      "callejon_falso": 0
+     },
+     "S5_negacion": {
+      "n": 3,
+      "estricto": 0.0,
+      "aceptable": 0.0,
+      "callejon_falso": 0
+     },
+     "S6_confusor_sismico": {
+      "n": 3,
+      "estricto": 0.3333333333333333,
+      "aceptable": 0.3333333333333333,
+      "callejon_falso": 2
+     },
+     "S7_general": {
+      "n": 2,
+      "estricto": 0.0,
+      "aceptable": 0.0,
+      "callejon_falso": 1
+     }
+    }
+   },
+   "V2_umbral_tau0.55": {
+    "n": 38,
+    "estricto": {
+     "k": 13,
+     "p": 0.34210526315789475,
+     "ic95": [
+      0.2121241517995941,
+      0.5010789644821692
+     ]
+    },
+    "aceptable": {
+     "k": 27,
+     "p": 0.7105263157894737,
+     "ic95": [
+      0.5524286232424794,
+      0.8299672217151693
+     ]
+    },
+    "callejon_falso": {
+     "k": 3,
+     "p": 0.07894736842105263,
+     "ic95": [
+      0.02721459550698771,
+      0.20799371457771457
+     ]
+    },
+    "aceptable_ic95_cluster": [
+     0.5294117647058824,
+     0.85
+    ],
+    "por_estrato": {
+     "S1_sismica_municipio": {
+      "n": 12,
+      "estricto": 0.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     },
+     "S2_directa": {
+      "n": 5,
+      "estricto": 0.8,
+      "aceptable": 0.8,
+      "callejon_falso": 0
+     },
+     "S3_coloquial": {
+      "n": 6,
+      "estricto": 0.6666666666666666,
+      "aceptable": 0.6666666666666666,
+      "callejon_falso": 1
+     },
+     "S4_sinonimo": {
+      "n": 7,
+      "estricto": 0.42857142857142855,
+      "aceptable": 0.7142857142857143,
+      "callejon_falso": 0
+     },
+     "S5_negacion": {
+      "n": 3,
+      "estricto": 0.0,
+      "aceptable": 0.0,
+      "callejon_falso": 0
+     },
+     "S6_confusor_sismico": {
+      "n": 3,
+      "estricto": 0.6666666666666666,
+      "aceptable": 0.6666666666666666,
+      "callejon_falso": 1
+     },
+     "S7_general": {
+      "n": 2,
+      "estricto": 0.0,
+      "aceptable": 0.0,
+      "callejon_falso": 1
+     }
+    }
+   },
+   "V3_margen_delta0.18": {
+    "n": 38,
+    "estricto": {
+     "k": 18,
+     "p": 0.47368421052631576,
+     "ic95": [
+      0.3247902332252607,
+      0.6274102861550332
+     ]
+    },
+    "aceptable": {
+     "k": 32,
+     "p": 0.8421052631578947,
+     "ic95": [
+      0.6958318822077686,
+      0.9255613658484106
+     ]
+    },
+    "callejon_falso": {
+     "k": 1,
+     "p": 0.02631578947368421,
+     "ic95": [
+      0.004660587685768769,
+      0.13494876115952129
+     ]
+    },
+    "aceptable_ic95_cluster": [
+     0.7058823529411765,
+     0.95
+    ],
+    "por_estrato": {
+     "S1_sismica_municipio": {
+      "n": 12,
+      "estricto": 0.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     },
+     "S2_directa": {
+      "n": 5,
+      "estricto": 0.8,
+      "aceptable": 0.8,
+      "callejon_falso": 0
+     },
+     "S3_coloquial": {
+      "n": 6,
+      "estricto": 0.6666666666666666,
+      "aceptable": 0.6666666666666666,
+      "callejon_falso": 1
+     },
+     "S4_sinonimo": {
+      "n": 7,
+      "estricto": 0.7142857142857143,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     },
+     "S5_negacion": {
+      "n": 3,
+      "estricto": 0.0,
+      "aceptable": 0.0,
+      "callejon_falso": 0
+     },
+     "S6_confusor_sismico": {
+      "n": 3,
+      "estricto": 1.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     },
+     "S7_general": {
+      "n": 2,
+      "estricto": 1.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     }
+    }
+   },
+   "V4_regla_sismica": {
+    "n": 38,
+    "estricto": {
+     "k": 28,
+     "p": 0.7368421052631579,
+     "ic95": [
+      0.5799115381253364,
+      0.8502837874520186
+     ]
+    },
+    "aceptable": {
+     "k": 28,
+     "p": 0.7368421052631579,
+     "ic95": [
+      0.5799115381253364,
+      0.8502837874520186
+     ]
+    },
+    "callejon_falso": {
+     "k": 4,
+     "p": 0.10526315789473684,
+     "ic95": [
+      0.04170257347553523,
+      0.2413052172288731
+     ]
+    },
+    "aceptable_ic95_cluster": [
+     0.5588235294117647,
+     0.8695652173913043
+    ],
+    "por_estrato": {
+     "S1_sismica_municipio": {
+      "n": 12,
+      "estricto": 1.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     },
+     "S2_directa": {
+      "n": 5,
+      "estricto": 0.8,
+      "aceptable": 0.8,
+      "callejon_falso": 0
+     },
+     "S3_coloquial": {
+      "n": 6,
+      "estricto": 0.8333333333333334,
+      "aceptable": 0.8333333333333334,
+      "callejon_falso": 1
+     },
+     "S4_sinonimo": {
+      "n": 7,
+      "estricto": 0.8571428571428571,
+      "aceptable": 0.8571428571428571,
+      "callejon_falso": 0
+     },
+     "S5_negacion": {
+      "n": 3,
+      "estricto": 0.0,
+      "aceptable": 0.0,
+      "callejon_falso": 0
+     },
+     "S6_confusor_sismico": {
+      "n": 3,
+      "estricto": 0.3333333333333333,
+      "aceptable": 0.3333333333333333,
+      "callejon_falso": 2
+     },
+     "S7_general": {
+      "n": 2,
+      "estricto": 0.0,
+      "aceptable": 0.0,
+      "callejon_falso": 1
+     }
+    }
+   },
+   "V5_regla+margen_delta0.18": {
+    "n": 38,
+    "estricto": {
+     "k": 31,
+     "p": 0.8157894736842105,
+     "ic95": [
+      0.665811419288686,
+      0.9077823481477872
+     ]
+    },
+    "aceptable": {
+     "k": 32,
+     "p": 0.8421052631578947,
+     "ic95": [
+      0.6958318822077686,
+      0.9255613658484106
+     ]
+    },
+    "callejon_falso": {
+     "k": 1,
+     "p": 0.02631578947368421,
+     "ic95": [
+      0.004660587685768769,
+      0.13494876115952129
+     ]
+    },
+    "aceptable_ic95_cluster": [
+     0.7058823529411765,
+     0.95
+    ],
+    "por_estrato": {
+     "S1_sismica_municipio": {
+      "n": 12,
+      "estricto": 0.9166666666666666,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     },
+     "S2_directa": {
+      "n": 5,
+      "estricto": 0.8,
+      "aceptable": 0.8,
+      "callejon_falso": 0
+     },
+     "S3_coloquial": {
+      "n": 6,
+      "estricto": 0.6666666666666666,
+      "aceptable": 0.6666666666666666,
+      "callejon_falso": 1
+     },
+     "S4_sinonimo": {
+      "n": 7,
+      "estricto": 1.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     },
+     "S5_negacion": {
+      "n": 3,
+      "estricto": 0.0,
+      "aceptable": 0.0,
+      "callejon_falso": 0
+     },
+     "S6_confusor_sismico": {
+      "n": 3,
+      "estricto": 1.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     },
+     "S7_general": {
+      "n": 2,
+      "estricto": 1.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     }
+    }
+   }
+  },
+  "test": {
+   "V0_keyword": {
+    "n": 58,
+    "estricto": {
+     "k": 28,
+     "p": 0.4827586206896552,
+     "ic95": [
+      0.35928185424055,
+      0.6083773821659053
+     ]
+    },
+    "aceptable": {
+     "k": 49,
+     "p": 0.8448275862068966,
+     "ic95": [
+      0.730660191401075,
+      0.9161550804698196
+     ]
+    },
+    "callejon_falso": {
+     "k": 0,
+     "p": 0.0,
+     "ic95": [
+      0.0,
+      0.062117855787202914
+     ]
+    },
+    "aceptable_ic95_cluster": [
+     0.7407407407407407,
+     0.9333333333333333
+    ],
+    "por_estrato": {
+     "S1_sismica_municipio": {
+      "n": 18,
+      "estricto": 0.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     },
+     "S2_directa": {
+      "n": 15,
+      "estricto": 1.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     },
+     "S3_coloquial": {
+      "n": 10,
+      "estricto": 0.4,
+      "aceptable": 0.4,
+      "callejon_falso": 0
+     },
+     "S4_sinonimo": {
+      "n": 3,
+      "estricto": 0.3333333333333333,
+      "aceptable": 0.3333333333333333,
+      "callejon_falso": 0
+     },
+     "S5_negacion": {
+      "n": 3,
+      "estricto": 0.3333333333333333,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     },
+     "S6_confusor_sismico": {
+      "n": 5,
+      "estricto": 0.6,
+      "aceptable": 0.8,
+      "callejon_falso": 0
+     },
+     "S7_general": {
+      "n": 4,
+      "estricto": 1.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     }
+    }
+   },
+   "V1_produccion": {
+    "n": 58,
+    "estricto": {
+     "k": 32,
+     "p": 0.5517241379310345,
+     "ic95": [
+      0.42452083125844636,
+      0.6725014595221879
+     ]
+    },
+    "aceptable": {
+     "k": 41,
+     "p": 0.7068965517241379,
+     "ic95": [
+      0.5798709910321587,
+      0.808218172090378
+     ]
+    },
+    "callejon_falso": {
+     "k": 6,
+     "p": 0.10344827586206896,
+     "ic95": [
+      0.048281407423628964,
+      0.2078810299248423
+     ]
+    },
+    "aceptable_ic95_cluster": [
+     0.5833333333333334,
+     0.8225806451612904
+    ],
+    "por_estrato": {
+     "S1_sismica_municipio": {
+      "n": 18,
+      "estricto": 0.16666666666666666,
+      "aceptable": 0.6666666666666666,
+      "callejon_falso": 4
+     },
+     "S2_directa": {
+      "n": 15,
+      "estricto": 1.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     },
+     "S3_coloquial": {
+      "n": 10,
+      "estricto": 0.6,
+      "aceptable": 0.6,
+      "callejon_falso": 0
+     },
+     "S4_sinonimo": {
+      "n": 3,
+      "estricto": 1.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     },
+     "S5_negacion": {
+      "n": 3,
+      "estricto": 0.3333333333333333,
+      "aceptable": 0.3333333333333333,
+      "callejon_falso": 2
+     },
+     "S6_confusor_sismico": {
+      "n": 5,
+      "estricto": 0.2,
+      "aceptable": 0.2,
+      "callejon_falso": 0
+     },
+     "S7_general": {
+      "n": 4,
+      "estricto": 0.75,
+      "aceptable": 0.75,
+      "callejon_falso": 0
+     }
+    }
+   },
+   "V2_umbral_tau0.55": {
+    "n": 58,
+    "estricto": {
+     "k": 31,
+     "p": 0.5344827586206896,
+     "ic95": [
+      0.408001750439952,
+      0.6566797767471373
+     ]
+    },
+    "aceptable": {
+     "k": 50,
+     "p": 0.8620689655172413,
+     "ic95": [
+      0.7507409056616206,
+      0.9284151298028187
+     ]
+    },
+    "callejon_falso": {
+     "k": 2,
+     "p": 0.034482758620689655,
+     "ic95": [
+      0.00950792833116542,
+      0.11729145464312693
+     ]
+    },
+    "aceptable_ic95_cluster": [
+     0.7592592592592593,
+     0.9482758620689655
+    ],
+    "por_estrato": {
+     "S1_sismica_municipio": {
+      "n": 18,
+      "estricto": 0.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     },
+     "S2_directa": {
+      "n": 15,
+      "estricto": 1.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     },
+     "S3_coloquial": {
+      "n": 10,
+      "estricto": 0.5,
+      "aceptable": 0.5,
+      "callejon_falso": 0
+     },
+     "S4_sinonimo": {
+      "n": 3,
+      "estricto": 1.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     },
+     "S5_negacion": {
+      "n": 3,
+      "estricto": 0.3333333333333333,
+      "aceptable": 0.3333333333333333,
+      "callejon_falso": 2
+     },
+     "S6_confusor_sismico": {
+      "n": 5,
+      "estricto": 0.6,
+      "aceptable": 0.8,
+      "callejon_falso": 0
+     },
+     "S7_general": {
+      "n": 4,
+      "estricto": 1.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     }
+    }
+   },
+   "V3_margen_delta0.18": {
+    "n": 58,
+    "estricto": {
+     "k": 33,
+     "p": 0.5689655172413793,
+     "ic95": [
+      0.44118104569962735,
+      0.6881820086745515
+     ]
+    },
+    "aceptable": {
+     "k": 50,
+     "p": 0.8620689655172413,
+     "ic95": [
+      0.7507409056616206,
+      0.9284151298028187
+     ]
+    },
+    "callejon_falso": {
+     "k": 2,
+     "p": 0.034482758620689655,
+     "ic95": [
+      0.00950792833116542,
+      0.11729145464312693
+     ]
+    },
+    "aceptable_ic95_cluster": [
+     0.7666666666666667,
+     0.9464285714285714
+    ],
+    "por_estrato": {
+     "S1_sismica_municipio": {
+      "n": 18,
+      "estricto": 0.0,
+      "aceptable": 0.9444444444444444,
+      "callejon_falso": 0
+     },
+     "S2_directa": {
+      "n": 15,
+      "estricto": 1.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     },
+     "S3_coloquial": {
+      "n": 10,
+      "estricto": 0.8,
+      "aceptable": 0.8,
+      "callejon_falso": 0
+     },
+     "S4_sinonimo": {
+      "n": 3,
+      "estricto": 0.6666666666666666,
+      "aceptable": 0.6666666666666666,
+      "callejon_falso": 0
+     },
+     "S5_negacion": {
+      "n": 3,
+      "estricto": 0.3333333333333333,
+      "aceptable": 0.3333333333333333,
+      "callejon_falso": 2
+     },
+     "S6_confusor_sismico": {
+      "n": 5,
+      "estricto": 0.6,
+      "aceptable": 0.6,
+      "callejon_falso": 0
+     },
+     "S7_general": {
+      "n": 4,
+      "estricto": 1.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     }
+    }
+   },
+   "V4_regla_sismica": {
+    "n": 58,
+    "estricto": {
+     "k": 48,
+     "p": 0.8275862068965517,
+     "ic95": [
+      0.7109174349067378,
+      0.903557073370612
+     ]
+    },
+    "aceptable": {
+     "k": 48,
+     "p": 0.8275862068965517,
+     "ic95": [
+      0.7109174349067378,
+      0.903557073370612
+     ]
+    },
+    "callejon_falso": {
+     "k": 0,
+     "p": 0.0,
+     "ic95": [
+      0.0,
+      0.062117855787202914
+     ]
+    },
+    "aceptable_ic95_cluster": [
+     0.7142857142857143,
+     0.9193548387096774
+    ],
+    "por_estrato": {
+     "S1_sismica_municipio": {
+      "n": 18,
+      "estricto": 0.9444444444444444,
+      "aceptable": 0.9444444444444444,
+      "callejon_falso": 0
+     },
+     "S2_directa": {
+      "n": 15,
+      "estricto": 1.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     },
+     "S3_coloquial": {
+      "n": 10,
+      "estricto": 0.6,
+      "aceptable": 0.6,
+      "callejon_falso": 0
+     },
+     "S4_sinonimo": {
+      "n": 3,
+      "estricto": 1.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     },
+     "S5_negacion": {
+      "n": 3,
+      "estricto": 1.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     },
+     "S6_confusor_sismico": {
+      "n": 5,
+      "estricto": 0.2,
+      "aceptable": 0.2,
+      "callejon_falso": 0
+     },
+     "S7_general": {
+      "n": 4,
+      "estricto": 0.75,
+      "aceptable": 0.75,
+      "callejon_falso": 0
+     }
+    }
+   },
+   "V5_regla+margen_delta0.18": {
+    "n": 58,
+    "estricto": {
+     "k": 52,
+     "p": 0.896551724137931,
+     "ic95": [
+      0.7921189700751577,
+      0.951718592576371
+     ]
+    },
+    "aceptable": {
+     "k": 52,
+     "p": 0.896551724137931,
+     "ic95": [
+      0.7921189700751577,
+      0.951718592576371
+     ]
+    },
+    "callejon_falso": {
+     "k": 0,
+     "p": 0.0,
+     "ic95": [
+      0.0,
+      0.062117855787202914
+     ]
+    },
+    "aceptable_ic95_cluster": [
+     0.8103448275862069,
+     0.9666666666666667
+    ],
+    "por_estrato": {
+     "S1_sismica_municipio": {
+      "n": 18,
+      "estricto": 0.9444444444444444,
+      "aceptable": 0.9444444444444444,
+      "callejon_falso": 0
+     },
+     "S2_directa": {
+      "n": 15,
+      "estricto": 1.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     },
+     "S3_coloquial": {
+      "n": 10,
+      "estricto": 0.8,
+      "aceptable": 0.8,
+      "callejon_falso": 0
+     },
+     "S4_sinonimo": {
+      "n": 3,
+      "estricto": 0.6666666666666666,
+      "aceptable": 0.6666666666666666,
+      "callejon_falso": 0
+     },
+     "S5_negacion": {
+      "n": 3,
+      "estricto": 1.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     },
+     "S6_confusor_sismico": {
+      "n": 5,
+      "estricto": 0.6,
+      "aceptable": 0.6,
+      "callejon_falso": 0
+     },
+     "S7_general": {
+      "n": 4,
+      "estricto": 1.0,
+      "aceptable": 1.0,
+      "callejon_falso": 0
+     }
+    }
+   }
+  }
+ },
+ "mcnemar_vs_V1_test": [
+  {
+   "variante": "V0_keyword",
+   "n_pares": 58,
+   "n11": 35,
+   "n10_solo_a": 6,
+   "n01_solo_b": 14,
+   "n00": 3,
+   "prop_a": 0.7068965517241379,
+   "prop_b": 0.8448275862068966,
+   "razon_momios": 2.3333333333333335,
+   "razon_momios_haldane": 2.230769230769231,
+   "diff_prop": 0.13793103448275867,
+   "p": 0.11531829833984375,
+   "rm_ic_inf": 0.842335906191008,
+   "rm_ic_sup": 7.408194968120436,
+   "p_holm": 0.11531829833984375
+  },
+  {
+   "variante": "V2_umbral_tau0.55",
+   "n_pares": 58,
+   "n11": 39,
+   "n10_solo_a": 2,
+   "n01_solo_b": 11,
+   "n00": 6,
+   "prop_a": 0.7068965517241379,
+   "prop_b": 0.8620689655172413,
+   "razon_momios": 5.5,
+   "razon_momios_haldane": 4.6,
+   "diff_prop": 0.15517241379310343,
+   "p": 0.0224609375,
+   "rm_ic_inf": 1.2003601494738305,
+   "rm_ic_sup": 51.06524070956489,
+   "p_holm": 0.046875
+  },
+  {
+   "variante": "V3_margen_delta0.18",
+   "n_pares": 58,
+   "n11": 40,
+   "n10_solo_a": 1,
+   "n01_solo_b": 10,
+   "n00": 7,
+   "prop_a": 0.7068965517241379,
+   "prop_b": 0.8620689655172413,
+   "razon_momios": 10.0,
+   "razon_momios_haldane": 7.0,
+   "diff_prop": 0.15517241379310343,
+   "p": 0.01171875,
+   "rm_ic_inf": 1.4225984812825672,
+   "rm_ic_sup": 433.97698405863036,
+   "p_holm": 0.046875
+  },
+  {
+   "variante": "V4_regla_sismica",
+   "n_pares": 58,
+   "n11": 41,
+   "n10_solo_a": 0,
+   "n01_solo_b": 7,
+   "n00": 10,
+   "prop_a": 0.7068965517241379,
+   "prop_b": 0.8275862068965517,
+   "razon_momios": Infinity,
+   "razon_momios_haldane": 15.0,
+   "diff_prop": 0.12068965517241381,
+   "p": 0.015625,
+   "rm_ic_inf": 1.4413085188349697,
+   "rm_ic_sup": Infinity,
+   "p_holm": 0.046875
+  },
+  {
+   "variante": "V5_regla+margen_delta0.18",
+   "n_pares": 58,
+   "n11": 40,
+   "n10_solo_a": 1,
+   "n01_solo_b": 12,
+   "n00": 5,
+   "prop_a": 0.7068965517241379,
+   "prop_b": 0.896551724137931,
+   "razon_momios": 12.0,
+   "razon_momios_haldane": 8.333333333333334,
+   "diff_prop": 0.18965517241379315,
+   "p": 0.00341796875,
+   "rm_ic_inf": 1.7754846471679993,
+   "rm_ic_sup": 512.9727349608395,
+   "p_holm": 0.01708984375
+  }
+ ],
+ "confusion_V1": {
+  "geopot -> vulnerabilidad_vivienda": 9,
+  "geopot -> vias": 4,
+  "normativa_general -> ecuador_nec_se_ds": 4,
+  "normativa_general -> vulnerabilidad_vivienda": 3,
+  "geopot -> apu_precios": 2,
+  "geopot -> gerencia": 1,
+  "aquai -> geopot": 1,
+  "vulnerabilidad_vivienda -> vias": 1,
+  "normativa_general -> apu_precios": 1,
+  "gerencia -> vias": 1,
+  "normativa_general -> peru_e030": 1,
+  "normativa_general -> geopot": 1,
+  "normativa_general -> vias": 1,
+  "normativa_general -> gerencia": 1
+ },
+ "fallos_V1": [
+  {
+   "id": "E1-001",
+   "pregunta": "¿Cuál es la amenaza sísmica (Aa/Av) de Riohacha?",
+   "esperado": "geopot",
+   "obtenido": "vulnerabilidad_vivienda"
+  },
+  {
+   "id": "E1-002",
+   "pregunta": "¿Cuál es la amenaza sísmica (Aa/Av) de Girardot?",
+   "esperado": "geopot",
+   "obtenido": "vulnerabilidad_vivienda"
+  },
+  {
+   "id": "E1-007",
+   "pregunta": "zona de amenaza sísmica de Ibagué",
+   "esperado": "geopot",
+   "obtenido": "vulnerabilidad_vivienda"
+  },
+  {
+   "id": "E1-008",
+   "pregunta": "zona de amenaza sísmica de Santa Marta",
+   "esperado": "geopot",
+   "obtenido": "vulnerabilidad_vivienda"
+  },
+  {
+   "id": "E1-014",
+   "pregunta": "voy a construir en Cartagena, que tan sismica es la zona",
+   "esperado": "geopot",
+   "obtenido": "apu_precios"
+  },
+  {
+   "id": "E1-018",
+   "pregunta": "En Florencia la amenaza sismica es alta, intermedia o baja?",
+   "esperado": "geopot",
+   "obtenido": "vulnerabilidad_vivienda"
+  },
+  {
+   "id": "E1-019",
+   "pregunta": "En Ipiales la amenaza sismica es alta, intermedia o baja?",
+   "esperado": "geopot",
+   "obtenido": "vulnerabilidad_vivienda"
+  },
+  {
+   "id": "E1-023",
+   "pregunta": "necesito el coeficiente Aa para un proyecto en Pasto",
+   "esperado": "geopot",
+   "obtenido": "gerencia"
+  },
+  {
+   "id": "E1-028",
+   "pregunta": "parámetros sísmicos de Manizales para el espectro de diseño",
+   "esperado": "geopot",
+   "obtenido": "vias"
+  },
+  {
+   "id": "E1-031",
+   "pregunta": "¿Cómo se diseña un tanque de almacenamiento de agua potable según el RAS?",
+   "esperado": "aquai",
+   "obtenido": "geopot"
+  },
+  {
+   "id": "E1-052",
+   "pregunta": "¿la tierra de mi lote aguanta una casa de tres pisos?",
+   "esperado": "geopot",
+   "obtenido": "vulnerabilidad_vivienda"
+  },
+  {
+   "id": "E1-053",
+   "pregunta": "el concreto que me llegó a la obra parece muy aguado, cómo lo verifico",
+   "esperado": "geopot",
+   "obtenido": "vias"
+  },
+  {
+   "id": "E1-061",
+   "pregunta": "mi casa es de dos pisos y tiene grietas en los muros, ¿resiste un sismo?",
+   "esperado": "vulnerabilidad_vivienda",
+   "obtenido": "vias"
+  },
+  {
+   "id": "E1-062",
+   "pregunta": "¿qué tan gruesa debe ser una columna de un edificio de cinco pisos en Colombia?",
+   "esperado": "normativa_general",
+   "obtenido": "ecuador_nec_se_ds"
+  },
+  {
+   "id": "E1-063",
+   "pregunta": "¿los obreros tienen que usar arnés para trabajar en el techo?",
+   "esperado": "normativa_general",
+   "obtenido": "apu_precios"
+  },
+  {
+   "id": "E1-067",
+   "pregunta": "coeficiente de aceleración horizontal pico efectiva en Cali",
+   "esperado": "geopot",
+   "obtenido": "vias"
+  },
+  {
+   "id": "E1-075",
+   "pregunta": "¿cómo se llama la norma colombiana de sismorresistencia y qué cubre?",
+   "esperado": "normativa_general",
+   "obtenido": "ecuador_nec_se_ds"
+  },
+  {
+   "id": "E1-077",
+   "pregunta": "no es sobre mi casa, quiero la zona de amenaza sísmica de Sincelejo",
+   "esperado": "geopot",
+   "obtenido": "vulnerabilidad_vivienda"
+  },
+  {
+   "id": "E1-078",
+   "pregunta": "no necesito el costo del concreto, sino cómo se verifica su resistencia en laboratorio",
+   "esperado": "geopot",
+   "obtenido": "apu_precios"
+  },
+  {
+   "id": "E1-079",
+   "pregunta": "sin hablar de pavimentos, ¿qué es el valor ganado en gerencia de obra?",
+   "esperado": "gerencia",
+   "obtenido": "vias"
+  },
+  {
+   "id": "E1-080",
+   "pregunta": "no me interesa la norma de Perú, sino la colombiana para diseño sísmico de edificios",
+   "esperado": "normativa_general",
+   "obtenido": "peru_e030"
+  },
+  {
+   "id": "E1-081",
+   "pregunta": "no quiero evaluar la vulnerabilidad de la vivienda, solo saber el Aa de Montería",
+   "esperado": "geopot",
+   "obtenido": "vulnerabilidad_vivienda"
+  },
+  {
+   "id": "E1-083",
+   "pregunta": "¿cómo se calcula el cortante basal sísmico de un edificio?",
+   "esperado": "normativa_general",
+   "obtenido": "vulnerabilidad_vivienda"
+  },
+  {
+   "id": "E1-084",
+   "pregunta": "¿cuál es el coeficiente de capacidad de disipación de energía R0 para pórticos de concreto DES?",
+   "esperado": "normativa_general",
+   "obtenido": "geopot"
+  },
+  {
+   "id": "E1-085",
+   "pregunta": "¿qué es el espectro elástico de aceleraciones de diseño?",
+   "esperado": "normativa_general",
+   "obtenido": "vias"
+  },
+  {
+   "id": "E1-087",
+   "pregunta": "¿un hospital tiene un coeficiente de importancia mayor en el diseño sísmico?",
+   "esperado": "normativa_general",
+   "obtenido": "gerencia"
+  },
+  {
+   "id": "E1-088",
+   "pregunta": "licuación de suelos durante un sismo, cómo se evalúa",
+   "esperado": "geopot",
+   "obtenido": "vias"
+  },
+  {
+   "id": "E1-089",
+   "pregunta": "¿qué pasó con el sismo de esta semana y qué norma aplica a la reconstrucción?",
+   "esperado": "normativa_general",
+   "obtenido": "vulnerabilidad_vivienda"
+  },
+  {
+   "id": "E1-093",
+   "pregunta": "¿quién debe firmar los planos estructurales en Colombia?",
+   "esperado": "normativa_general",
+   "obtenido": "ecuador_nec_se_ds"
+  },
+  {
+   "id": "E1-094",
+   "pregunta": "hola, ¿qué puedes hacer?",
+   "esperado": "normativa_general",
+   "obtenido": "ecuador_nec_se_ds"
+  },
+  {
+   "id": "E1-095",
+   "pregunta": "¿qué norma regula las escaleras de evacuación en edificios?",
+   "esperado": "normativa_general",
+   "obtenido": "vulnerabilidad_vivienda"
+  }
+ ]
+}

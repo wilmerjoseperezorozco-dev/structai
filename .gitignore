@@ -83,6 +83,9 @@ data/laboratorio_concreto/_cache/
 
 data/transporte/_cache/
 
+# Consultas reales para aprendizaje activo (pueden contener datos de usuarios, issue #169)
+scripts/evaluacion/golden/**/_privado/
+
 # Instantánea del corpus RAG para la búsqueda en memoria (scripts/rag/construir_indice_local.py): lleva el texto de
 # las normas, que no va a un repositorio público. SÍ viaja en la imagen: ver .gcloudignore.
 apps/api/datos_indice/

@@ -2820,14 +2820,145 @@ def aviso_responsabilidad_para_dominio(dominio: str) -> Optional[str]:
 # ─── AGENTE DELEGADOR — endpoint /consultar ──────────────────────────────────
 MOTOR_LABEL = {
     "aquai": "AquAI (acueducto, alcantarillado y saneamiento — RAS 2000)",
-    "geopot": "GeoPot (sísmica NSR-10 y laboratorio de suelos/concreto/agregados)",
+    "geopot": "GeoPot (sísmica NSR-10, geotecnia, laboratorio de suelos/concreto/agregados y POT)",
     "vulnerabilidad_vivienda": "Vulnerabilidad Vivienda (checklist AIS, Título E NSR-10, vivienda de mampostería 1-2 pisos)",
-    "vias": "motor-vías (diseño geométrico, pavimentos, mantenimiento vial — INVIAS)",
-    "gerencia": "motor-gerencia (EVM y predicción de proyectos)",
+    "vias": "motor-vías (diseño geométrico, pavimentos, puentes CCP-14, túneles y normas de ensayo INVIAS)",
+    "gerencia": "motor-gerencia (EVM, contratación pública, interventoría y sistemas de gestión ISO)",
     "apu_precios": "Precios de construcción (Barranquilla/Atlántico + INVIAS nacional, 140 provincias)",
     "peru_e030": "Norma E.030 — Diseño Sismorresistente (Perú)",
     "ecuador_nec_se_ds": "NEC-SE-DS — Peligro Sísmico, Diseño Sismo Resistente (Ecuador)",
 }
+
+# Dónde vive realmente el contenido de cada dominio. Contrato verificado en
+# apps/api/tests/test_integridad_dominios.py: todo dominio enrutable debe
+# declarar aquí al menos una fuente, y cada fuente debe tener filas reales.
+# Bug que lo motivó (issue #169, 2026-11-10): vulnerabilidad_vivienda solo
+# buscaba en motor_chunks (0 filas) mientras 426 chunks propios (AIS 2004,
+# AIS 410-23, Build Change, NSR-10 Título E y A.10) vivían en nsr10_chunks;
+# toda pregunta del dominio terminaba en "no tiene contenido cargado".
+#   ("motor_chunks", motor)                   -> search(..., motor_filter=motor)
+#   ("motor_chunks_normas", (motor, (n1,...))) -> motor_chunks de OTRO motor, solo esas normas
+#   ("ntc_normas", (n1, ...))                 -> search() global filtrado por norma de ntc_chunks
+#   ("nsr10_prefijos", (p1, ...))             -> search() global filtrado por prefijo de chunk_id
+#   ("rama_propia", nombre)                   -> el dominio tiene su propia rama en _ask_delegado_interno
+#
+# Alineación de taxonomía (issue #169, E1c): un fragmento puede servir a más
+# de un dominio sin moverlo en la base. El laboratorio de materiales vive en
+# motor_chunks[vias] (Normas de Ensayo INVIAS, 1.208 chunks) y en ntc_chunks,
+# pero conceptualmente es de geopot, que solo tenía una ficha por ensayo. La
+# geotecnia (NSR-10 Título H) y la zonificación sísmica (A.2) también son de
+# geopot; siguen siendo además de normativa_general.
+FUENTES_DOMINIO: dict[str, list[tuple[str, object]]] = {
+    # NTC 1500 (código colombiano de fontanería) vive completo en ntc_chunks;
+    # en motor_chunks[aquai] solo hay su ficha (inventario del issue #170).
+    "aquai": [("motor_chunks", "aquai"), ("ntc_normas", ("NTC 1500",))],
+    "geopot": [
+        ("motor_chunks", "geopot"),
+        ("motor_chunks_normas", ("vias", ("Normas de Ensayo — Sección 200", "Normas de Ensayo — Sección 300"))),
+        ("ntc_normas", ("NTC 121", "NTC 174", "NTC 396", "NTC 454", "NTC 673")),
+        ("nsr10_prefijos", ("NSR10-H-", "NSR10-A-A_2")),
+    ],
+    "vulnerabilidad_vivienda": [
+        ("nsr10_prefijos", ("AIS2004-", "AIS410-23-", "BUILDCHANGE-", "NSR10-E-", "NSR10-A-A_10")),
+        ("rama_propia", "checklist_ais_motor_vulnerabilidad_vivienda"),
+    ],
+    "vias": [("motor_chunks", "vias")],
+    "gerencia": [("motor_chunks", "gerencia")],
+    "apu_precios": [("rama_propia", "ask_precios")],
+    "peru_e030": [("rama_propia", "search_peru_e030")],
+    "ecuador_nec_se_ds": [("rama_propia", "search_ecuador_nec_se_ds")],
+}
+
+
+def _prefijos_nsr10(motor: str) -> tuple[str, ...]:
+    for tipo, valor in FUENTES_DOMINIO.get(motor, []):
+        if tipo == "nsr10_prefijos":
+            return valor  # type: ignore[return-value]
+    return ()
+
+
+def _buscar_por_prefijos(question: str, prefijos: tuple[str, ...], top_k: int) -> list[ChunkResult]:
+    """search() global (nsr10 + ntc + motor) con un pool más grande, quedándose
+    solo con los chunks cuyo id empieza por alguno de los prefijos del dominio.
+    No se agrega un RPC nuevo: misma búsqueda híbrida RRF de siempre."""
+    candidatos = search(question, top_k=top_k * 4)
+    return [c for c in candidatos if str(c.chunk_id).startswith(prefijos)][:top_k]
+
+
+def _tiene_fuentes_compartidas(motor: str) -> bool:
+    """True si el dominio declara algo más que su propio motor_chunks. Los que
+    no, siguen exactamente el camino de búsqueda de siempre."""
+    return any(t in ("motor_chunks_normas", "ntc_normas", "nsr10_prefijos") for t, _ in FUENTES_DOMINIO.get(motor, []))
+
+
+def _norma_empieza(norma: str, prefijos: tuple[str, ...]) -> bool:
+    # "NTC 77" no debe calzar "NTC 774": se exige fin de código tras el prefijo.
+    return any(norma == p or norma.startswith(p) and not norma[len(p)].isdigit() for p in prefijos)
+
+
+def _recuperar_fuentes_dominio(question: str, motor: str, top_k: int) -> list[ChunkResult]:
+    """Una lista por fuente declarada en FUENTES_DOMINIO, intercaladas por rango
+    (1.º de cada fuente, luego 2.º...), sin duplicados y con tope top_k. Se
+    intercala por rango y no por score porque cada fuente sale de una llamada
+    RRF distinta. La búsqueda global se hace una sola vez y se reusa para las
+    fuentes ntc_normas y nsr10_prefijos."""
+    globales: Optional[list[ChunkResult]] = None
+    listas: list[list[ChunkResult]] = []
+    for tipo, valor in FUENTES_DOMINIO.get(motor, []):
+        if tipo == "motor_chunks":
+            listas.append(search(question, top_k=top_k, motor_filter=valor))
+        elif tipo == "motor_chunks_normas":
+            otro, normas = valor  # type: ignore[misc]
+            listas.append([c for c in search(question, top_k=top_k * 3, motor_filter=otro)
+                           if _norma_empieza(c.norma, normas)][:top_k])
+        elif tipo in ("ntc_normas", "nsr10_prefijos"):
+            if globales is None:
+                globales = search(question, top_k=top_k * 4)
+            if tipo == "ntc_normas":
+                listas.append([c for c in globales if str(c.chunk_id).isdigit() and _norma_empieza(c.norma, valor)][:top_k])
+            else:
+                listas.append([c for c in globales if str(c.chunk_id).startswith(valor)][:top_k])
+    vistos, salida = set(), []
+    for rango in range(max((len(l) for l in listas), default=0)):
+        for l in listas:
+            if rango < len(l):
+                clave = (str(l[rango].chunk_id), l[rango].norma)
+                if clave not in vistos:
+                    vistos.add(clave)
+                    salida.append(l[rango])
+    return salida[:top_k]
+
+
+@lru_cache(maxsize=1)
+def _bloque_checklist_ais() -> str:
+    """Los 15 criterios del checklist AIS (2004) tal como los usa el motor
+    determinístico, para que el chat explique QUÉ observar sin inventar
+    criterios. Se carga con importlib igual que apps/api/routers/
+    vulnerabilidad_vivienda.py, para no chocar con el nombre genérico 'src'.
+    Si el motor no está disponible devuelve '' y el chat sigue solo con RAG."""
+    try:
+        import importlib.util as ilu
+        import sys
+        from pathlib import Path
+        init = Path(__file__).resolve().parents[1] / "motor-vulnerabilidad-vivienda" / "src" / "__init__.py"
+        mod = sys.modules.get("motor_vulnerabilidad_vivienda")
+        if mod is None:
+            spec = ilu.spec_from_file_location("motor_vulnerabilidad_vivienda", init,
+                                               submodule_search_locations=[str(init.parent)])
+            mod = ilu.module_from_spec(spec)
+            sys.modules["motor_vulnerabilidad_vivienda"] = mod
+            spec.loader.exec_module(mod)
+        from motor_vulnerabilidad_vivienda import checklist as ck
+    except Exception as e:  # noqa: BLE001
+        log.warning(f"Checklist AIS no disponible para el chat: {e}")
+        return ""
+    lineas = ["CHECKLIST AIS 2004 (Capítulo II) — 15 criterios, cada uno se califica BAJA / MEDIA / ALTA.",
+              "Peso por aspecto: " + ", ".join(f"{ck.ASPECTO_LABEL[a]} {int(ck.PESO_ASPECTO[a] * 100)} %" for a in ck.ASPECTOS_ORDEN),
+              "La clasificación final la calcula el endpoint /vulnerabilidad-vivienda/evaluar, no el chat."]
+    for c in ck.CRITERIOS:
+        lineas.append(f"- [{ck.ASPECTO_LABEL[c.aspecto]}] {c.nombre}\n"
+                      f"    BAJA: {c.descripcion_baja}\n    MEDIA: {c.descripcion_media}\n    ALTA: {c.descripcion_alta}")
+    return "\n".join(lineas)
 
 
 # ─── PROMPTS ESPECIALIZADOS POR MOTOR ────────────────────────────────────────
@@ -3242,8 +3373,17 @@ def _ask_delegado_interno(question: str, motores: list[str], top_k: int) -> dict
             chunks_global = search(question, top_k=top_k, motor_filter=motor)
             seen_ids = {c.chunk_id for c in chunks_norma}
             chunks = chunks_norma + [c for c in chunks_global if c.chunk_id not in seen_ids]
+        elif _tiene_fuentes_compartidas(motor):
+            # Dominios con fuentes en más de una tabla o motor (FUENTES_DOMINIO).
+            chunks = _recuperar_fuentes_dominio(question, motor, top_k)
         else:
             chunks = search(question, top_k=top_k, motor_filter=motor)
+        # Dominios cuyo corpus vive en nsr10_chunks y no en motor_chunks
+        # (ver FUENTES_DOMINIO): se busca ahí en vez de abstenerse.
+        prefijos = _prefijos_nsr10(motor)
+        if prefijos and not chunks:
+            chunks = _buscar_por_prefijos(question, prefijos, top_k)
+        checklist_ais = _bloque_checklist_ais() if motor == "vulnerabilidad_vivienda" else ""
         # Para vias, un precio INVIAS encontrado también cuenta como "sí hay
         # contenido" -- calculado aquí (antes del early-return de abajo) para
         # no descartar la pregunta solo porque motor_chunks no tuvo match,
@@ -3251,7 +3391,7 @@ def _ask_delegado_interno(question: str, motores: list[str], top_k: int) -> dict
         precios_invias_disponibilidad = (
             motor == "vias" and _score_motores(question).get("apu_precios", 0) > 0
         )
-        if not chunks and not precios_invias_disponibilidad:
+        if not chunks and not precios_invias_disponibilidad and not checklist_ais:
             # El dominio se detectó pero aún no tiene chunks cargados —
             # no fabricar respuesta, avisar y devolver dominio vacío en vez
             # de responder con contexto de otro dominio.
@@ -3287,7 +3427,7 @@ def _ask_delegado_interno(question: str, motores: list[str], top_k: int) -> dict
     # siempre. Ver sgc_amenaza_sismica.py para el detalle.
     sgc_registro = (
         sgc_amenaza_sismica.detectar_municipio_en_texto(question)
-        if motor in ("geopot", "aquai")
+        if motor in ("geopot", "aquai", "vulnerabilidad_vivienda")
         else None
     )
 
@@ -3303,7 +3443,7 @@ def _ask_delegado_interno(question: str, motores: list[str], top_k: int) -> dict
         if motor == "vias" and _score_motores(question).get("apu_precios", 0) > 0
         else []
     )
-    if not chunks and not precios_invias:
+    if not chunks and not precios_invias and not checklist_ais:
         # precios_invias_disponibilidad predijo que había precio (evitó el
         # early-return de arriba), pero la RPC no encontró match real -- caer
         # al mismo mensaje honesto de "no hay contenido" en vez de llamar al
@@ -3329,6 +3469,8 @@ def _ask_delegado_interno(question: str, motores: list[str], top_k: int) -> dict
             _format_precio_context(p) for p in precios_invias
         )
         contexto = f"{bloque_precios}\n\n---\n\n{contexto}" if contexto else bloque_precios
+    if checklist_ais:
+        contexto = f"{checklist_ais}\n\n---\n\n{contexto}" if contexto else checklist_ais
 
     # Mismo enriquecimiento de noticias que ask() -- faltaba aquí (bug real
     # encontrado 2026-08-20 con Groq en vivo: una pregunta de geopot con
@@ -3360,6 +3502,10 @@ def _ask_delegado_interno(question: str, motores: list[str], top_k: int) -> dict
             }
             for p in precios_invias
         ] + fuentes
+    if checklist_ais:
+        fuente_ais = "Checklist AIS 2004 Cap. II (motor-vulnerabilidad-vivienda)"
+        normas_citadas = [fuente_ais] + normas_citadas
+        fuentes = [{"norma": fuente_ais, "seccion": "15 criterios", "score": 1.0}] + fuentes
 
     return {
         "dominio": motor,
