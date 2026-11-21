@@ -1,0 +1,376 @@
+{
+ "protocolo": "PROTOCOLO_ANALISIS.md §29",
+ "n_simma": 6826,
+ "radio_km": 15.0,
+ "paso_km": 2.0,
+ "principal_15km": {
+  "n_municipios_malla": 1000,
+  "n_con_simma": 885,
+  "n_con_cv": 885,
+  "C1_mediana_cv": {
+   "valor": 0.4910022559391401,
+   "ic95": [
+    0.4229853383323579,
+    0.6319043027252804
+   ],
+   "veredicto": "HETEROGÉNEO"
+  },
+  "C2_fraccion_area_subestimada": {
+   "valor": 0.09674467375244268,
+   "ic95": [
+    0.0706757677549759,
+    0.12326767650865861
+   ],
+   "veredicto": "NO CONCLUYENTE"
+  },
+  "D_fraccion_area_sobreestimada": 0.3035603641389829,
+  "D_cabecera_cero": {
+   "municipios": 104,
+   "con_algun_nodo_simma": 104,
+   "con_10pct_area_simma_ge2": 42
+  },
+  "D_cv_percentiles_10_50_90": [
+   0.13043101377254437,
+   0.4910022559391401,
+   1.8012976873036854
+  ],
+  "D_max_sobre_cabecera_mediana": 1.6,
+  "S1_spearman_ungrd_mm": {
+   "n_cab": {
+    "rho": 0.4767532179356358,
+    "ic95": [
+     0.30298970562454414,
+     0.6695822460359921
+    ]
+   },
+   "media": {
+    "rho": 0.48183983454579904,
+    "ic95": [
+     0.2998067118593027,
+     0.6707791704620253
+    ]
+   },
+   "max": {
+    "rho": 0.4905341814118197,
+    "ic95": [
+     0.32933496243831994,
+     0.6656323795536557
+    ]
+   }
+  },
+  "S1_diferencia_media_menos_cab": {
+   "valor": 0.0050866166101632415,
+   "ic95": [
+    -0.0175312909066901,
+    0.021736043573792024
+   ]
+  },
+  "S1_spearman_cv_ungrd_mm": -0.1876412814409529,
+  "D_por_region": {
+   "Andina": {
+    "n": 628,
+    "mediana_cv": 0.41191515181074306,
+    "frac_sub": 0.10336520504967506
+   },
+   "Caribe": {
+    "n": 195,
+    "mediana_cv": 1.3725589213192515,
+    "frac_sub": 0.12114285714285715
+   },
+   "Orinoquia": {
+    "n": 29,
+    "mediana_cv": 1.7437327338472295,
+    "frac_sub": 0.027649769585253458
+   },
+   "Pacifica": {
+    "n": 148,
+    "mediana_cv": 0.45535712643098114,
+    "frac_sub": 0.08722709122024581
+   }
+  },
+  "D_por_tercil_pendiente": {
+   "baja": {
+    "n": 334,
+    "mediana_cv": 0.7796522365486998,
+    "frac_sub": 0.08118024295492385
+   },
+   "media": {
+    "n": 333,
+    "mediana_cv": 0.4094400078514725,
+    "frac_sub": 0.1219715459253527
+   },
+   "alta": {
+    "n": 333,
+    "mediana_cv": 0.42390672973837445,
+    "frac_sub": 0.08792735317572609
+   }
+  },
+  "D_top10_subestimados": [
+   {
+    "codigo": "17446",
+    "municipio": "Marulanda",
+    "n_cab": 2,
+    "max": 16,
+    "fs": 0.839,
+    "nodos": 93
+   },
+   {
+    "codigo": "73770",
+    "municipio": "Suárez",
+    "n_cab": 1,
+    "max": 5,
+    "fs": 0.83,
+    "nodos": 47
+   },
+   {
+    "codigo": "73443",
+    "municipio": "Mariquita",
+    "n_cab": 1,
+    "max": 8,
+    "fs": 0.819,
+    "nodos": 72
+   },
+   {
+    "codigo": "05044",
+    "municipio": "Anzá",
+    "n_cab": 1,
+    "max": 16,
+    "fs": 0.785,
+    "nodos": 65
+   },
+   {
+    "codigo": "68720",
+    "municipio": "Santa Helena Del Opón",
+    "n_cab": 1,
+    "max": 7,
+    "fs": 0.769,
+    "nodos": 91
+   },
+   {
+    "codigo": "25580",
+    "municipio": "Pulí",
+    "n_cab": 1,
+    "max": 19,
+    "fs": 0.766,
+    "nodos": 47
+   },
+   {
+    "codigo": "20383",
+    "municipio": "La Gloria",
+    "n_cab": 0,
+    "max": 9,
+    "fs": 0.764,
+    "nodos": 203
+   },
+   {
+    "codigo": "25513",
+    "municipio": "Pacho",
+    "n_cab": 1,
+    "max": 5,
+    "fs": 0.762,
+    "nodos": 101
+   },
+   {
+    "codigo": "73483",
+    "municipio": "Natagaima",
+    "n_cab": 0,
+    "max": 24,
+    "fs": 0.753,
+    "nodos": 215
+   },
+   {
+    "codigo": "25488",
+    "municipio": "Nilo",
+    "n_cab": 0,
+    "max": 15,
+    "fs": 0.741,
+    "nodos": 58
+   }
+  ]
+ },
+ "sensibilidad_5km": {
+  "n_municipios_malla": 1000,
+  "n_con_simma": 764,
+  "n_con_cv": 764,
+  "C1_mediana_cv": {
+   "valor": 1.3752889527543066,
+   "ic95": [
+    1.25118617083483,
+    1.5898865461887495
+   ],
+   "veredicto": "HETEROGÉNEO"
+  },
+  "C2_fraccion_area_subestimada": {
+   "valor": 0.06789838337182448,
+   "ic95": [
+    0.05304251933062479,
+    0.08307064296689695
+   ],
+   "veredicto": "NO CONCLUYENTE"
+  },
+  "D_fraccion_area_sobreestimada": 0.38492246783239853,
+  "D_cabecera_cero": {
+   "municipios": 250,
+   "con_algun_nodo_simma": 250,
+   "con_10pct_area_simma_ge2": 86
+  },
+  "D_cv_percentiles_10_50_90": [
+   0.5862069139150251,
+   1.3752889527543066,
+   3.783490794476985
+  ],
+  "D_max_sobre_cabecera_mediana": 2.0,
+  "S1_spearman_ungrd_mm": {
+   "n_cab": {
+    "rho": 0.40999158734668967,
+    "ic95": [
+     0.2771556918423949,
+     0.5826549047283922
+    ]
+   },
+   "media": {
+    "rho": 0.4788695461356919,
+    "ic95": [
+     0.3314446792230276,
+     0.663647817720674
+    ]
+   },
+   "max": {
+    "rho": 0.4950420491419243,
+    "ic95": [
+     0.35339430442081005,
+     0.6527277985327137
+    ]
+   }
+  },
+  "S1_diferencia_media_menos_cab": {
+   "valor": 0.06887795878900221,
+   "ic95": [
+    0.025040868684502286,
+    0.10830345009045816
+   ]
+  },
+  "S1_spearman_cv_ungrd_mm": -0.1475318715369447,
+  "D_por_region": {
+   "Andina": {
+    "n": 628,
+    "mediana_cv": 1.261182699432238,
+    "frac_sub": 0.07452946560025467
+   },
+   "Caribe": {
+    "n": 195,
+    "mediana_cv": 2.9323396660269454,
+    "frac_sub": 0.04107443989400145
+   },
+   "Orinoquia": {
+    "n": 29,
+    "mediana_cv": 3.3007879775344877,
+    "frac_sub": 0.027097253155159613
+   },
+   "Pacifica": {
+    "n": 148,
+    "mediana_cv": 1.3410271844616055,
+    "frac_sub": 0.09554498811162558
+   }
+  },
+  "D_por_tercil_pendiente": {
+   "baja": {
+    "n": 334,
+    "mediana_cv": 2.067729476893554,
+    "frac_sub": 0.03451101802950282
+   },
+   "media": {
+    "n": 333,
+    "mediana_cv": 1.3284223283101426,
+    "frac_sub": 0.08588095832293487
+   },
+   "alta": {
+    "n": 333,
+    "mediana_cv": 1.2593943535944285,
+    "frac_sub": 0.07214846924952588
+   }
+  },
+  "D_top10_subestimados": [
+   {
+    "codigo": "17777",
+    "municipio": "Supia",
+    "n_cab": 1,
+    "max": 8,
+    "fs": 0.733,
+    "nodos": 30
+   },
+   {
+    "codigo": "17524",
+    "municipio": "Palestina",
+    "n_cab": 1,
+    "max": 5,
+    "fs": 0.63,
+    "nodos": 27
+   },
+   {
+    "codigo": "15172",
+    "municipio": "Chinavita",
+    "n_cab": 4,
+    "max": 17,
+    "fs": 0.6,
+    "nodos": 35
+   },
+   {
+    "codigo": "68522",
+    "municipio": "Palmar",
+    "n_cab": 1,
+    "max": 2,
+    "fs": 0.6,
+    "nodos": 5
+   },
+   {
+    "codigo": "15466",
+    "municipio": "Monguí",
+    "n_cab": 1,
+    "max": 4,
+    "fs": 0.588,
+    "nodos": 17
+   },
+   {
+    "codigo": "68705",
+    "municipio": "Santa Bárbara",
+    "n_cab": 1,
+    "max": 7,
+    "fs": 0.58,
+    "nodos": 50
+   },
+   {
+    "codigo": "54520",
+    "municipio": "Pamplonita",
+    "n_cab": 2,
+    "max": 13,
+    "fs": 0.575,
+    "nodos": 40
+   },
+   {
+    "codigo": "41016",
+    "municipio": "Aipe",
+    "n_cab": 0,
+    "max": 11,
+    "fs": 0.555,
+    "nodos": 200
+   },
+   {
+    "codigo": "17877",
+    "municipio": "Viterbo",
+    "n_cab": 1,
+    "max": 6,
+    "fs": 0.548,
+    "nodos": 31
+   },
+   {
+    "codigo": "66088",
+    "municipio": "Belén De Umbría",
+    "n_cab": 1,
+    "max": 6,
+    "fs": 0.523,
+    "nodos": 44
+   }
+  ]
+ }
+}
