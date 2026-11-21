@@ -1,0 +1,123 @@
+{
+ "prerregistro": "docs/memoria_calculo/PRERREGISTRO_292_RESERVA_ZONA_BAJA.md",
+ "n_pares": 358,
+ "n_ok": 343,
+ "u090_no_cumple": [
+  [
+   "141",
+   "Columnas del piso 1 (750 mm): ningún refuerzo cumple flexo-compresión biaxial, columna fuerte–viga débil y C.21 (0 cumplen uniaxial)"
+  ],
+  [
+   "202",
+   "Columnas del piso 1 (700 mm): ningún refuerzo cumple flexo-compresión biaxial, columna fuerte–viga débil y C.21 (0 cumplen uniaxial)"
+  ],
+  [
+   "342",
+   "Columnas del piso 1 (650 mm): ningún refuerzo cumple flexo-compresión biaxial, columna fuerte–viga débil y C.21 (0 cumplen uniaxial)"
+  ],
+  [
+   "530",
+   "Columnas del piso 1 (750 mm): ningún refuerzo cumple flexo-compresión biaxial, columna fuerte–viga débil y C.21 (0 cumplen uniaxial)"
+  ],
+  [
+   "597",
+   "Columnas del piso 1 (750 mm): ningún refuerzo cumple flexo-compresión biaxial, columna fuerte–viga débil y C.21 (0 cumplen uniaxial)"
+  ],
+  [
+   "781",
+   "Columnas del piso 1 (700 mm): ningún refuerzo cumple flexo-compresión biaxial, columna fuerte–viga débil y C.21 (0 cumplen uniaxial)"
+  ],
+  [
+   "898",
+   "Columnas del piso 1 (750 mm): ningún refuerzo cumple flexo-compresión biaxial, columna fuerte–viga débil y C.21 (0 cumplen uniaxial)"
+  ],
+  [
+   "929",
+   "Columnas del piso 1 (600 mm): ningún refuerzo cumple flexo-compresión biaxial, columna fuerte–viga débil y C.21 (0 cumplen uniaxial)"
+  ],
+  [
+   "1278",
+   "Columnas del piso 1 (650 mm): ningún refuerzo cumple flexo-compresión biaxial, columna fuerte–viga débil y C.21 (0 cumplen uniaxial)"
+  ],
+  [
+   "1317",
+   "Columnas del piso 1 (650 mm): ningún refuerzo cumple flexo-compresión biaxial, columna fuerte–viga débil y C.21 (0 cumplen uniaxial)"
+  ],
+  [
+   "1357",
+   "Columnas del piso 1 (700 mm): ningún refuerzo cumple flexo-compresión biaxial, columna fuerte–viga débil y C.21 (0 cumplen uniaxial)"
+  ],
+  [
+   "1417",
+   "Columnas del piso 1 (700 mm): ningún refuerzo cumple flexo-compresión biaxial, columna fuerte–viga débil y C.21 (0 cumplen uniaxial)"
+  ],
+  [
+   "1845",
+   "Columnas del piso 1 (800 mm): ningún refuerzo cumple flexo-compresión biaxial, columna fuerte–viga débil y C.21 (0 cumplen uniaxial)"
+  ],
+  [
+   "1978",
+   "Columnas del piso 1 (750 mm): ningún refuerzo cumple flexo-compresión biaxial, columna fuerte–viga débil y C.21 (0 cumplen uniaxial)"
+  ],
+  [
+   "2026",
+   "Columnas del piso 1 (800 mm): ningún refuerzo cumple flexo-compresión biaxial, columna fuerte–viga débil y C.21 (0 cumplen uniaxial)"
+  ]
+ ],
+ "Q2": {
+  "imprecisos": 253,
+  "elementos": 57720,
+  "frac": 0.004383229383229383,
+  "cumple": true
+ },
+ "H-292a": {
+  "p10_control": 3.7858400000000003,
+  "p10_u090": 4.05762,
+  "delta": 0.2717799999999997,
+  "ic95": [
+   0.10077599999999945,
+   0.38840699999999984
+  ],
+  "cumple": false
+ },
+ "H-292b": {
+  "frac_control": 0.6997084548104956,
+  "frac_u090": 0.6909620991253644,
+  "delta": 0.008746355685131157,
+  "ic95": [
+   0.0,
+   0.020408163265306034
+  ],
+  "cumple": false
+ },
+ "C-292": {
+  "mediana": 0.0,
+  "p90": 0.0052180427936527884,
+  "max": 0.033236035097533145,
+  "frac_sin_cambio": 0.8309037900874635,
+  "cumple": true
+ },
+ "descriptivo": {
+  "mediana_central": {
+   "control": 5.2374,
+   "u090": 5.2611
+  },
+  "delta_beta_central": {
+   "p10": 0.0,
+   "mediana": 0.0,
+   "p90": 0.24608000000000022
+  },
+  "frac_beta_igual": 0.8746355685131195,
+  "por_N": {
+   "1-5": 0.0,
+   "6-8": 0.0,
+   "9+": 0.0
+  },
+  "critico_control": {
+   "viga": 329,
+   "columna": 14
+  }
+ },
+ "decision": "NO ADOPTAR",
+ "segundos": 1077.9
+}

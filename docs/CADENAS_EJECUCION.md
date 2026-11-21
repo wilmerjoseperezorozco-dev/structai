@@ -2,24 +2,24 @@
 
 Generado por `scripts/inventario/cadenas_ejecucion.py`; no editar a mano. Análisis **estático** (AST + imports): dice qué pasos hay y de qué tipo, **no cuánto tardan**. El orden de trabajo lo da latencia × frecuencia medidas (fase 1, paso 2), nunca este conteo solo. Ver el docstring para la definición de paso, tipo y etiqueta.
 
-- Código analizado: 706 módulos, 2,948 funciones (sin pruebas).
-- Puntos de entrada: 101 endpoints y 379 pipelines fuera de línea.
-- **Candidatas a flujo atómico (≥ 4 pasos secuenciales): 103** (13 endpoints, 90 pipelines).
+- Código analizado: 728 módulos, 3,107 funciones (sin pruebas).
+- Puntos de entrada: 101 endpoints y 384 pipelines fuera de línea.
+- **Candidatas a flujo atómico (≥ 4 pasos secuenciales): 104** (13 endpoints, 91 pipelines).
 - Cadenas futuras con ≥ 4 motores que pasan por un motor planificado o bloqueado: **36** (solo nodos declarados en `docs/coherencia_motores.json`).
-- Resolución de los pasos: externo 1287, import 148, local 413, por_nombre 97 (`por_nombre` = función única en el repo con ese nombre; revisar si un paso parece fuera de lugar).
+- Resolución de los pasos: externo 1297, import 170, local 437, por_nombre 97 (`por_nombre` = función única en el repo con ese nombre; revisar si un paso parece fuera de lugar).
 
 ## Etiquetas de las candidatas
 
 | Etiqueta | Candidatas | Qué permite |
 |---|---|---|
-| `con_efectos` | 94 | llave de idempotencia (no caché) |
+| `con_efectos` | 95 | llave de idempotencia (no caché) |
 | `con_LLM` | 7 | caché por hash de prompt + modelo + contexto, con aviso |
-| `dependiente_de_norma` | 23 | caché con la versión de la norma en la llave (#193) |
+| `dependiente_de_norma` | 24 | caché con la versión de la norma en la llave (#193) |
 | `dependiente_de_datos` | 97 | caché con la versión/fecha del dato (catálogo, tabla) en la llave |
 | `pura` | 1 | caché directa |
 | `sin_clasificar` | 0 | revisar a mano |
 
-Con caché ya existente en la secuencia: 18 de 103.
+Con caché ya existente en la secuencia: 18 de 104.
 
 ## Por familia
 
@@ -36,6 +36,7 @@ Con caché ya existente en la secuencia: 18 de 103.
 | scripts/inventario | 7 | 1 | 0 | 6 |
 | orquestador | 5 | 2 | 0 | 0 |
 | precios | 5 | 3 | 0 | 3 |
+| scripts/memorias_sinteticas | 5 | 1 | 0 | 5 |
 | scripts/secop | 4 | 3 | 0 | 4 |
 | scripts/macro | 4 | 2 | 0 | 3 |
 | rag | 3 | 2 | 2 | 2 |
@@ -69,10 +70,11 @@ Con caché ya existente en la secuencia: 18 de 103.
 
 ## Pipelines recurrentes candidatos (fuera de línea)
 
-90 pipelines recurrentes llegan al umbral; 161 scripts puntuales (prefijo `_`, fecha en el nombre, fix/parche/reintento) no cuentan como candidatos. Los 25 más largos:
+91 pipelines recurrentes llegan al umbral; 161 scripts puntuales (prefijo `_`, fecha en el nombre, fix/parche/reintento) no cuentan como candidatos. Los 25 más largos:
 
 | Entrada | Pasos | Etiquetas | Secuencia |
 |---|---|---|---|
+| `scripts/memorias_sinteticas/entrenar_f2.py` | 48 | con_efectos, dependiente_de_norma | _secciones[motor] → _rect[motor] → _area_45[motor] → modos[motor] → _periodos_dir[motor] → analizar_fhe[motor] → _derivas_piso[motor] → … (+41) |
 | `scripts/evaluacion/comparar_groq_vs_gemini_vertex.py` | 43 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | _informe_sitio_directo[bd] → _cache_l1.get[cache] → sb.table().select().eq().limit().execute[bd] → _cache_l1.set[cache] → _con_plugins[bd] → groq_client.chat.completions.create[llm] → openai_client.chat.completions.create[llm] → … (+36) |
 | `scripts/evaluacion/comparar_groq_vs_ollama_local.py` | 43 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | _informe_sitio_directo[bd] → _cache_l1.get[cache] → sb.table().select().eq().limit().execute[bd] → _cache_l1.set[cache] → _con_plugins[bd] → groq_client.chat.completions.create[llm] → openai_client.chat.completions.create[llm] → … (+36) |
 | `scripts/evaluacion/ragas_52preguntas.py` | 27 | con_efectos, con_LLM, dependiente_de_norma, dependiente_de_datos | _informe_sitio_directo[bd] → _cache_l1.get[cache] → sb.table().select().eq().limit().execute[bd] → _cache_l1.set[cache] → _con_plugins[bd] → _descomponer_pregunta[llm] → _recuperar_candidatos_normativa[bd] → … (+20) |
@@ -97,7 +99,6 @@ Con caché ya existente en la secuencia: 18 de 103.
 | `scripts/ingesta/apu_barranquilla/enriquecer_ubicacion_proveedores_rues.py` | 6 | con_efectos, dependiente_de_datos | create_client[bd] → sb.table().select().is_().execute[bd] → sb.table().select().range().execute[bd] → httpx.Client[red] → _buscar_en_rues[red] → sb.table().update().eq().execute[efecto] |
 | `scripts/ingesta/normativa_general/ingest_decreto_1072_sgsst.py` | 6 | con_efectos, dependiente_de_datos | create_client[bd] → sb.table().select().eq().execute[bd] → sb.table().insert().execute[efecto] → model.encode[embeddings] → sb.table().delete().eq().execute[efecto] → sb.table().insert().execute[efecto] |
 | `scripts/ingesta/normativa_general/ingest_normativa.py` | 6 | con_efectos, dependiente_de_datos | create_client[bd] → model.encode[embeddings] → sb.table().upsert().execute[efecto] → model.encode[embeddings] → sb.table().delete().eq().execute[efecto] → sb.table().insert().execute[efecto] |
-| `scripts/ingesta/sisben_vulnerabilidad/cargar_vulnerabilidad_vivienda.py` | 6 | con_efectos, dependiente_de_datos | create_client[bd] → httpx.Client[red] → _agregado_por_municipio[red] → httpx.Client[red] → client.get[red] → sb.table().upsert().execute[efecto] |
 
 | Carpeta | Pipelines candidatos | Con efectos | Con LLM |
 |---|---|---|---|
@@ -111,6 +112,7 @@ Con caché ya existente en la secuencia: 18 de 103.
 | `scripts/excavacion` | 2 | 2 | 0 |
 | `scripts/macro` | 2 | 2 | 0 |
 | `scripts/regional` | 2 | 2 | 0 |
+| `scripts/memorias_sinteticas` | 1 | 1 | 0 |
 | `scripts/rag` | 1 | 1 | 0 |
 | `scripts/clima` | 1 | 1 | 0 |
 | `scripts/inventario` | 1 | 1 | 0 |
@@ -168,4 +170,4 @@ Un motor futuro que aparece en muchas cadenas desbloquea más flujos al implemen
 
 ## Cadenas cortas (< 4 pasos)
 
-377 cadenas no llegan al umbral. No se descartan: una de 3 pasos con un LLM puede pesar más que una de 6 en CPU. Están completas en el JSON.
+381 cadenas no llegan al umbral. No se descartan: una de 3 pasos con un LLM puede pesar más que una de 6 en CPU. Están completas en el JSON.

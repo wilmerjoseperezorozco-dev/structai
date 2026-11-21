@@ -15,7 +15,7 @@ Generado por `scripts/inventario/registro_motores.py`; no editar a mano. Criteri
 | `concreto` | `motor-concreto` | ? | ? | sí | ? | 287 / 5 | sí | POST /concreto/zapata, POST /concreto/talud |
 | `geotecnia` | `motor-geotecnia` | sí | sí | sí | sí | 88 / 5 | sí | POST /geotecnia/asentamiento, POST /geotecnia/portante |
 | `licuacion` | `motor-licuacion` | ? | ? | sí | sí | 53 / 7 | sí | POST /licuacion/spt |
-| `orquestador_api` | `orquestador` | ? | ? | sí | ? | 98 / 9 | sí | POST /orquestador/portico-integral, POST /orquestador/portico-pareto |
+| `orquestador_api` | `orquestador` | ? | ? | sí | ? | 111 / 9 | sí | POST /orquestador/portico-integral, POST /orquestador/portico-pareto |
 | `redes` | `motor-redes` | sí | sí | sí | sí | 105 / 11 | sí | POST /redes/permanente, POST /redes/periodo, POST /redes/ariete |
 
 El conteo de pruebas son funciones `test_*`; una prueba parametrizada cuenta una vez.
