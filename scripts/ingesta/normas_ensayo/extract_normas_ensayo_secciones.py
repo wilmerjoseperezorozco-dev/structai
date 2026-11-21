@@ -37,32 +37,39 @@ OUT_DIR.mkdir(parents=True, exist_ok=True)
 SECCIONES = {
     "seccion_200": {
         "raw_file": "seccion_200.txt",
+        "rango": (200, 299),
         "titulo_completo": "Sección 200 — Agregados Pétreos (Normas de Ensayo de Materiales para Carreteras, INVIAS 2012)",
     },
     "seccion_300": {
         "raw_file": "seccion_300.txt",
+        "rango": (300, 399),
         "titulo_completo": "Sección 300 — Cemento (Normas de Ensayo de Materiales para Carreteras, INVIAS 2012)",
     },
     # #295: secciones que faltaban (títulos según la Introducción, I.2.1, del mismo manual 2012)
     "seccion_100": {
         "raw_file": "seccion_100.txt",
+        "rango": (100, 199),
         "titulo_completo": "Sección 100 — Suelos (Normas de Ensayo de Materiales para Carreteras, INVIAS 2012)",
     },
     "seccion_400": {
         "raw_file": "seccion_400.txt",
+        "rango": (400, 499),
         "titulo_completo": "Sección 400 — Concreto hidráulico (Normas de Ensayo de Materiales para Carreteras, INVIAS 2012)",
     },
     "seccion_600": {
         "raw_file": "seccion_600.txt",
+        "rango": (600, 699),
         "titulo_completo": "Sección 600 — Estabilización de suelos (Normas de Ensayo de Materiales para Carreteras, INVIAS 2012)",
     },
     # el manual reparte 700 y 800 en dos PDF; cada uno se procesa aparte para que la secuencia ascendente no se rompa
     "seccion_700_800_a": {
         "raw_file": "seccion_700_800_a.txt",
+        "rango": (700, 899),
         "titulo_completo": "Secciones 700 y 800 — Materiales y mezclas asfálticas y prospección de pavimentos, primera parte (INVIAS 2012)",
     },
     "seccion_700_800_b": {
         "raw_file": "seccion_700_800_b.txt",
+        "rango": (700, 899),
         "titulo_completo": "Secciones 700 y 800 — Materiales y mezclas asfálticas y prospección de pavimentos, segunda parte (INVIAS 2012, mod. 2013-11-15)",
     },
 }
@@ -77,15 +84,37 @@ CLAUSE_RE = re.compile(
 )
 
 
-def find_norma_boundaries(text: str) -> list[tuple[int, str]]:
+# Líneas de encabezado/pie de página del manual 2012: no son contenido de la norma.
+_RUIDO_PAGINA = re.compile(
+    r'^[ \t]*(?:NORMAS Y ESPECIFICACIONES 2012 INVIAS|Instituto Nacional de V[ií]as|'
+    r'Normas de Ensayo de Materiales para Carreteras|Secci[oó]n \d00\s*[–—-][^\n]*|'
+    r'Secciones 700 y 800\s*[–—-][^\n]*|I\.N\.V\. E\s*-\s*\d{3}|E\s*-\s*\d{3}|E \d{3}\s*-\s*\d+)[ \t]*$',
+    re.I | re.M)
+MAX_PALABRAS = 150  # ~200 tokens del modelo de embeddings; cada parte repite el encabezado de la cláusula
+
+
+def limpiar_paginas(text: str) -> str:
+    """Quita los encabezados y pies que se repiten en cada página (antes contaminaban los chunks)."""
+    return _RUIDO_PAGINA.sub("", text)
+
+
+def _partir(texto: str) -> list[str]:
+    palabras = texto.split()
+    return [" ".join(palabras[i:i + MAX_PALABRAS]) for i in range(0, len(palabras), MAX_PALABRAS)] or [""]
+
+
+def find_norma_boundaries(text: str, rango: tuple[int, int] = (0, 999)) -> list[tuple[int, str]]:
     """Devuelve [(posición_inicio, numero_norma), ...] en orden, quedándose
     solo con la primera aparición real de cada número siguiendo la
-    secuencia ascendente (filtra referencias cruzadas hacia atrás)."""
+    secuencia ascendente (filtra referencias cruzadas hacia atrás).
+    Solo acepta números dentro del rango de la sección: una referencia hacia
+    adelante a otra sección (p. ej. «INV E-823» en la Introducción que abre el
+    PDF de la Sección 100, o «INV E-805» dentro de la 600) rompería la secuencia."""
     boundaries = []
     last_num = 0
     for m in NORMA_BOUNDARY_RE.finditer(text):
         num = int(m.group(1))
-        if num > last_num:
+        if rango[0] <= num <= rango[1] and num > last_num:
             boundaries.append((m.start(), m.group(1)))
             last_num = num
     return boundaries
@@ -100,30 +129,40 @@ def split_clauses(body: str, norma_num: str) -> list[dict]:
         content_start = m.end()
         content_end = matches[i + 1].start() if i + 1 < len(matches) else len(body)
         content = body[content_start:content_end].strip()
-        content = re.sub(r'\n{2,}', ' ', content)
-        content = re.sub(r'[ \t]+', ' ', content)
+        content = re.sub(r'-\n(?=[a-záéíóúñ])', '', content)  # palabra partida por guion al final de línea
+        content = re.sub(r'\s+', ' ', content).strip()          # un salto de línea del PDF es un espacio
 
         if len(content) < 30:
             continue
 
+        # Un numeral como «1.4 Este método ... Para» no es un título: es la primera línea del párrafo.
+        # Solo los encabezados en mayúsculas («5 PROCEDIMIENTO») se separan con punto.
+        es_encabezado = titulo.upper() == titulo
+        rotulo = titulo if es_encabezado else titulo[:80]
+
         counters[num] = counters.get(num, 0) + 1
         suffix = f"-{counters[num]}" if counters[num] > 1 else ""
-        chunk_id = f"INVE{norma_num}-{num.replace('.', '_')}{suffix}"
-
-        embedding_ready = f"INV E-{norma_num} {num} {titulo}. {content}"
-        embedding_ready = re.sub(r'\s+', ' ', embedding_ready).strip()
-
-        chunks.append({
-            "chunk_id": chunk_id,
-            "seccion_origen": f"INV E-{norma_num} — {num} {titulo}",
-            "titulo": titulo[:250],
-            "embedding_ready": embedding_ready,
-        })
+        cuerpo = content if es_encabezado else f"{m.group(2).strip()} {content}"
+        partes = _partir(cuerpo)
+        for k, parte in enumerate(partes, 1):
+            etiqueta = f" (parte {k}/{len(partes)})" if len(partes) > 1 else ""
+            chunk_id = f"INVE{norma_num}-{num.replace('.', '_')}{suffix}" + (f"-p{k}" if len(partes) > 1 else "")
+            if es_encabezado:
+                embedding_ready = f"INV E-{norma_num} {num} {titulo}{etiqueta}. {parte}"
+            else:
+                embedding_ready = f"INV E-{norma_num} {num}{etiqueta} {parte}"
+            embedding_ready = re.sub(r'\s+', ' ', embedding_ready).strip()
+            chunks.append({
+                "chunk_id": chunk_id,
+                "seccion_origen": f"INV E-{norma_num} — {num} {rotulo}{etiqueta}",
+                "titulo": rotulo[:250],
+                "embedding_ready": embedding_ready,
+            })
     return chunks
 
 
-def split_normas(text: str, codigo_seccion: str) -> list[dict]:
-    boundaries = find_norma_boundaries(text)
+def split_normas(text: str, codigo_seccion: str, rango: tuple[int, int] = (0, 999)) -> list[dict]:
+    boundaries = find_norma_boundaries(text, rango)
     all_chunks = []
     for i, (start, norma_num) in enumerate(boundaries):
         end = boundaries[i + 1][0] if i + 1 < len(boundaries) else len(text)
@@ -175,10 +214,10 @@ def main():
         if not raw_path.exists():
             print(f"  ADVERTENCIA: {raw_path} no existe, se omite {codigo}")
             continue
-        text = raw_path.read_text(encoding="utf-8")
-        boundaries = find_norma_boundaries(text)
-        print(f"  {codigo}: {len(boundaries)} normas individuales detectadas ({', '.join(n for _, n in boundaries[:5])}...)")
-        chunks = split_normas(text, codigo)
+        text = limpiar_paginas(raw_path.read_text(encoding="utf-8"))
+        boundaries = find_norma_boundaries(text, meta["rango"])
+        print(f"  {codigo}: {len(boundaries)} normas individuales detectadas ({', '.join(n for _, n in boundaries[:5])}...{boundaries[-1][1] if boundaries else ''})")
+        chunks = split_normas(text, codigo, meta["rango"])
         write_chunk_file(codigo, meta["titulo_completo"], chunks)
         total += len(chunks)
     print(f"\nTotal chunks Secciones de Normas de Ensayo: {total}")
