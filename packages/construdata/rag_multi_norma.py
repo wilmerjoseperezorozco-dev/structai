@@ -2033,6 +2033,8 @@ def aviso_vigencia(c: ChunkResult) -> Optional[str]:
         aviso = f"⚠️ NORMA DEROGADA PARCIALMENTE — alcance: {str(c.alcance_derogacion).strip()}"
         return aviso + (f"; reemplazo: {str(c.derogada_por).strip()}" if reemplazo else "")
     if est == "modificada":
+        if vigencia_evidencia.con_respaldo(c.alcance_derogacion):     # el alcance ya dice por qué acto y qué cambió
+            return f"⚠️ NORMA MODIFICADA — {str(c.alcance_derogacion).strip()}"
         return ("⚠️ NORMA MODIFICADA" + (f" por {str(c.derogada_por).strip()}" if reemplazo else "")
                 + " — sigue vigente en lo no modificado")
     if c.estado_vigencia not in (None, "desconocido"):

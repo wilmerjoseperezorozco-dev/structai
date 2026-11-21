@@ -65,3 +65,10 @@ def test_guarda_quita_derogacion_inventada_cuando_el_aviso_se_degrada():
     contexto = rmn._format_chunk_context(chunk("derogada_total"))
     resp = "El valor es 1,5 h.\n\nOjo: NORMA DEROGADA, consulte la vigente."
     assert "DEROGADA" not in rmn._quitar_aviso_vigencia_sin_respaldo(resp, contexto)
+
+
+def test_modificada_con_alcance_muestra_el_acto():
+    # caso real tras la migración 20261121150000: Res. 319 de 2022
+    a = rmn.aviso_vigencia(chunk("modificada", alcance="Modificada por la Resolución 970 de 2024 (adiciona el "
+                                                       "Capítulo 2, supervisión); sigue vigente en lo no modificado"))
+    assert a.startswith("⚠️ NORMA MODIFICADA — Modificada por la Resolución 970 de 2024") and "DEROGADA" not in a
