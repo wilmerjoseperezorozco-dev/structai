@@ -1,9 +1,8 @@
 """
 Ancho efectivo de elementos planos en compresión, metodo de Winter --
 NSR-10 F.4.2.2 (elementos rigidizados) y F.4.2.3.1 (no rigidizados),
-equivalente a AISI S100 SS B2.1/B3.1. Issue #81 -- primer paso de la
-cadena de calculo de acero formado en frio (988 chunks en el corpus,
-~210 subsecciones solo en F.4 -- ver el issue para el mapa completo).
+Issue #81. Base de la cadena de calculo de acero formado en frio:
+lo usan elementos.py, flexion.py y miembros.py.
 
 Formulas verbatim (verificadas contra nsr10_chunks, ids
 NSR10-F-F_4_2_2_1_a_2_anchos_efectivos_rigidizados_huecos_* y
@@ -20,15 +19,14 @@ longitudinal); k = 0.43 para no rigidizados (F.4.2.3.1 remite a la misma
 formula con este unico cambio).
 
 E = 203000 MPa: valor que el propio Capitulo F.4 fija para el acero
-formado en frio (F.4.4.6.1.3). Corregido el 2026-11-22: el MVP inicial
-usaba 200000 MPa, que es el de otros capitulos, no el de F.4.
+formado en frio (F.4.4.6.1.3). Corregido el 2026-11-22: la primera
+version usaba 200000 MPa, que es el de otros capitulos, no el de F.4.
 mu = 0.3: F.4.3.3.2.1. Ambos son parametros sobreescribibles.
 
 Alcance deliberado de este modulo: SOLO el calculo de ancho efectivo
 dado un esfuerzo f conocido. El proceso real de diseno es iterativo (f
 depende de la seccion efectiva, que depende de f) -- esa iteracion vive
-en los modulos de flexion/compresion que se construyan sobre este,
-fuera del alcance de este primer paso (ver issue #81)."""
+en flexion.py (seccion efectiva por brentq) y miembros.py (Ae con Fn)."""
 from __future__ import annotations
 
 import math

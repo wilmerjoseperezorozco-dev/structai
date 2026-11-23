@@ -24,7 +24,7 @@ El contrato lo advierte en cada salida:
 
 ## Decisiones y hallazgos
 
-- **E = 203 000 MPa**, el valor que F.4 fija (F.4.4.6.1.3). El MVP anterior usaba 200 000 MPa.
+- **E = 203 000 MPa**, el valor que F.4 fija (F.4.4.6.1.3). La primera versión usaba 200 000 MPa.
 - **G = E/(2(1+μ))**, porque el corpus no fija G para F.4.
 - **Propiedades por el método lineal con esquinas rectas.** El radio de doblez no se modela, así que los anchos planos son la dimensión externa − 2t.
 - **Erratas del corpus documentadas en `src/elementos.py`:**

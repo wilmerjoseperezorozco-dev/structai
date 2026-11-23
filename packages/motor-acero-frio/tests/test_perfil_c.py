@@ -51,7 +51,7 @@ def _perfil(**kw):
 # ── Módulo de elasticidad de F.4 ──────────────────────────────────────────────────────────────────────────
 
 def test_modulo_elasticidad_es_el_de_f4():
-    """F.4.4.6.1.3 fija E = 203 000 MPa para acero formado en frío (el MVP usaba 200 000)."""
+    """F.4.4.6.1.3 fija E = 203 000 MPa para acero formado en frío (la primera versión usaba 200 000)."""
     assert E_ACERO_MPA == 203000.0
 
 
