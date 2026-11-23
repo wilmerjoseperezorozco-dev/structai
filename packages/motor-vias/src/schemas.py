@@ -62,6 +62,15 @@ class PavimentosRequest(BaseModel):
     espesor_base: Optional[float] = Field(None, description="cm")
     modulo_subbase: Optional[float] = Field(None, description="MPa")
     modulo_base: Optional[float] = Field(None, description="MPa")
+    espesor_rodadura: Optional[float] = Field(None, gt=0, description="cm; si no se da, el mínimo por tránsito")
+    # Pavimento rígido (ecuación AASHTO-93): k y S'c son obligatorios para concreto; el motor no los supone (#106)
+    modulo_reaccion_k: Optional[float] = Field(None, gt=0, description="k efectivo sobre el soporte de la losa, MPa/m")
+    modulo_rotura_concreto: Optional[float] = Field(None, gt=0, description="S'c a 28 días, MPa")
+    modulo_elastico_concreto: Optional[float] = Field(None, gt=0, description="Ec, MPa (por defecto 27 580)")
+    coeficiente_transferencia_j: float = Field(3.2, gt=0, description="J de AASHTO-93 (3,2 con dovelas)")
+    coeficiente_drenaje_cd: float = Field(1.0, gt=0, description="Cd de AASHTO-93")
+    confiabilidad: Optional[float] = Field(None, ge=50, lt=100, description="R, % (por defecto según el tipo de vía)")
+    serviciabilidad_final: float = Field(2.5, gt=0, lt=4.5, description="pt (p0 = 4,5)")
 
 
 # ── Mantenimiento ────────────────────────────────────────────────────────────

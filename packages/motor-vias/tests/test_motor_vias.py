@@ -4,6 +4,7 @@ Mismo patrón que motor-aquai y motor-geopot: cada aserción verifica contra
 la tabla/fórmula real del módulo (o recalcula independientemente), no
 contra un número supuesto.
 """
+import math
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
@@ -239,16 +240,22 @@ def test_diseno_asfaltico_sn_real_cumple_requerido():
     assert r.cumple is True
 
 
-def test_diseno_concreto_espesor_formula_sn_sobre_039():
+def test_diseno_concreto_usa_la_ecuacion_aashto93_y_no_sn_sobre_039():
+    """#106: la losa sale de la ecuación AASHTO-93 de rígidos (techo a 1 cm), no de SN/0,39."""
+    from src import rigido_aashto93 as rig
     disenador = _disenador_pavimentos()
     params = ParametrosPavimento(
         tipo_pavimento=TipoPavimento.CONCRETO, tipo_via=TipoViaP.PRIMARIA,
         tpd=8000, esals_millones=10.0, cbr_subrasante=8, espesor_base=15, espesor_subbase=15,
+        modulo_reaccion_k=60.0, modulo_rotura_concreto=4.2,
     )
     r = disenador.disenar(params)
-    sn_requerido = disenador._calcular_sn(10.0, 8)
-    d_concreto_esperado = round((sn_requerido / 0.39) / 2.5) * 2.5
-    assert r.espesor_rodadura == pytest.approx(max(d_concreto_esperado, 15.0))
+    exacto = rig.espesor_losa(10.0, k_MPa_m=60.0, Sc_MPa=4.2, confiabilidad_pct=90.0, So=0.35).D_cm
+    assert r.espesor_rodadura == math.ceil(exacto) and r.espesor_rodadura >= exacto
+    assert r.espesor_rodadura != pytest.approx(round(5.0 / 0.39 / 2.5) * 2.5)
+    assert r.numero_estructural == 0.0 and r.cumple is True
+    adm = next(x for x in r.restricciones if x["nombre"].startswith("ESAL admisibles"))
+    assert adm["cumple"] is True
 
 
 def test_cbr_bajo_minimo_genera_error():
@@ -677,7 +684,8 @@ def test_sn_real_coincide_con_calculo_independiente_en_pulgadas_y_cubre_el_reque
     requerido = d._calcular_sn(esal, cbr)
     assert r.numero_estructural == pytest.approx(_sn_independiente_en_pulgadas(r), abs=1e-6)
     assert r.numero_estructural >= requerido            # el redondeo de la subbase es hacia arriba: nunca queda por debajo
-    assert r.numero_estructural < requerido + 0.35      # y no se sobredimensiona de forma gratuita
+    if r.espesor_subbase > 15.0:                        # si la subbase no está en su mínimo, no se sobredimensiona de forma gratuita
+        assert r.numero_estructural < requerido + 0.35
     assert r.cumple is True
 
 
@@ -702,11 +710,41 @@ def test_rodadura_y_base_fijadas_por_el_ingeniero_se_respetan_y_cubren_el_sn():
     assert r.numero_estructural >= d._calcular_sn(5.0, 8) and r.cumple is True
 
 
-def test_diseno_rigido_advierte_que_la_conversion_sn_a_losa_no_esta_verificada():
+def test_diseno_rigido_sin_k_ni_modulo_de_rotura_no_inventa_la_losa():
+    """k y S'c los exige la ecuación AASHTO-93: sin ellos el motor no calcula la losa ni declara «cumple»."""
     d = _disenador_pavimentos()
     r = d.disenar(ParametrosPavimento(tipo_pavimento=TipoPavimento.CONCRETO, tipo_via=TipoViaP.PRIMARIA, tpd=8000, esals_millones=10.0, cbr_subrasante=8.0,
                                       espesor_base=15.0, espesor_subbase=15.0))
-    assert any("no está verificada" in s for s in r.sugerencias)
+    assert r.cumple is False and r.espesor_rodadura == 0.0
+    assert "modulo_reaccion_k" in r.mensaje and "modulo_rotura_concreto" in r.mensaje
+
+
+def test_todo_diseno_de_pavimento_avisa_que_requiere_validacion():
+    d = _disenador_pavimentos()
+    r = d.disenar(ParametrosPavimento(tipo_pavimento=TipoPavimento.ASFALTICO, tipo_via=TipoViaP.PRIMARIA, tpd=5000, esals_millones=5.0, cbr_subrasante=8.0))
+    assert any("ingeniero de pavimentos" in s for s in r.sugerencias)
+    assert "según el Manual de Pavimentos INVIAS" not in r.mensaje
+
+
+@pytest.mark.parametrize("esal,minimo", [(0.1, 5.0), (0.15, 5.0), (0.3, 7.5), (0.5, 7.5), (1.0, 8.0), (2.0, 8.0),
+                                         (5.0, 9.0), (7.0, 9.0), (20.0, 10.5)])
+def test_rodadura_minima_por_transito(esal, minimo):
+    """#106: INVIAS bajos volúmenes (50/75 mm) hasta 0,5 millones; AASHTO-93 (3,0/3,5/4,0 in, techo a 0,5 cm) encima."""
+    from src.pavimentos import espesor_minimo_rodadura_asfaltica
+    assert espesor_minimo_rodadura_asfaltica(esal)[0] == minimo
+    for pulg, cm in ((3.0, 8.0), (3.5, 9.0), (4.0, 10.5)):          # el redondeo nunca queda bajo el valor en pulgadas
+        assert cm >= pulg * 2.54 and cm - pulg * 2.54 < 0.5
+    d = _disenador_pavimentos()
+    r = d.disenar(ParametrosPavimento(tipo_pavimento=TipoPavimento.ASFALTICO, tipo_via=TipoViaP.SECUNDARIA, tpd=1000, esals_millones=esal, cbr_subrasante=8.0))
+    assert r.espesor_rodadura == minimo and r.espesor_base >= 15.0
+
+
+def test_rodadura_fijada_bajo_el_minimo_por_transito_se_eleva_y_el_redondeo_no_la_baja():
+    d = _disenador_pavimentos()
+    r = d.disenar(ParametrosPavimento(tipo_pavimento=TipoPavimento.ASFALTICO, tipo_via=TipoViaP.PRIMARIA, tpd=5000, esals_millones=10.0, cbr_subrasante=12.0,
+                                      espesor_rodadura=6.0, espesor_base=16.0))
+    assert r.espesor_rodadura == 10.5            # antes: round(6/2,5)·2,5 = 5 cm, por debajo de cualquier mínimo
+    assert r.espesor_base == 17.5                # techo a 2,5 cm, nunca hacia abajo
 
 
 def test_ancho_carril_tipo_sin_minimo_en_el_manual_lanza_valueerror_con_norma():
