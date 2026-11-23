@@ -13,7 +13,15 @@ Carga GeoPot, Vías y Gerencia. AquAI usa scripts/ingesta/ras2000/ingest_ras2000
 extrae texto oficial real (Resolución 1096 de 2000) en vez de chunks
 redactados a mano.
 
-Uso: python scripts/ingesta/motores/ingest_motor_chunks.py
+Uso:
+  python scripts/ingesta/motores/ingest_motor_chunks.py            # simula (solo lee)
+  python scripts/ingesta/motores/ingest_motor_chunks.py --aplicar  # escribe
+  python scripts/ingesta/motores/ingest_motor_chunks.py --motor vias --aplicar
+
+Reemplaza únicamente las filas de `motor_chunks` cuya `seccion` coincide con un
+chunk de este archivo. Antes borraba todo `motor = X`, lo que en 'vias' se
+llevaba los Manuales de Pavimentos INVIAS y las secciones INV E 2012 cargadas
+por otros scripts.
 """
 from __future__ import annotations
 
@@ -622,46 +630,131 @@ GERENCIA_CHUNKS: list[dict] = [
 ]
 
 
-def main():
-    from sentence_transformers import SentenceTransformer
-    from supabase import create_client
+TABLA = "motor_chunks"
+MOTORES = {"geopot": GEOPOT_CHUNKS, "vias": VIAS_CHUNKS, "gerencia": GERENCIA_CHUNKS}
+_PAGINA = 1000
+_LOTE_BORRADO = 200
 
-    supabase_url = os.environ["SUPABASE_URL"]
-    supabase_key = os.environ["SUPABASE_SERVICE_KEY"]
-    sb = create_client(supabase_url, supabase_key)
 
-    os.environ.setdefault("HF_HUB_OFFLINE", "1")
-    print("Cargando modelo de embeddings local...")
-    model = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
+def secciones_del_script(chunks: list[dict]) -> set[str]:
+    """Secciones que este script escribe para un motor. Deben ser únicas: son
+    la llave con la que se reconoce qué filas son "nuestras" al reemplazar."""
+    secciones = [c["seccion"] for c in chunks]
+    repetidas = sorted({s for s in secciones if secciones.count(s) > 1})
+    if repetidas:
+        raise ValueError(f"secciones repetidas en el script: {repetidas}")
+    return set(secciones)
+
+
+def filas_del_motor(sb, motor: str) -> list[dict]:
+    """Todas las filas (id, seccion) del motor, paginadas. Solo lectura.
+
+    El filtro por sección se hace aquí en Python y no con `.in_()` en
+    PostgREST: las secciones llevan comas, puntos y paréntesis, que rompen el
+    filtro `in.(...)` si no se escapan."""
+    filas: list[dict] = []
+    ini = 0
+    while True:
+        r = (sb.table(TABLA).select("id,seccion").eq("motor", motor)
+             .order("id").range(ini, ini + _PAGINA - 1).execute().data)
+        filas += r
+        ini += _PAGINA
+        if len(r) < _PAGINA:
+            return filas
+
+
+def planificar(sb, motor: str, chunks: list[dict]) -> dict:
+    """Qué haría el script con un motor, sin escribir nada.
+
+    Solo se reemplazan las filas cuya `seccion` está en la lista de chunks de
+    este archivo. El resto del motor (Manuales de Pavimentos INVIAS, secciones
+    INV E 2012 del PR #298, lo que otro script haya cargado) se conserva."""
+    propias = secciones_del_script(chunks)
+    filas = filas_del_motor(sb, motor)
+    ids_a_borrar = [f["id"] for f in filas if f["seccion"] in propias]
+    return {
+        "motor": motor,
+        "filas_motor": len(filas),
+        "ids_a_borrar": ids_a_borrar,
+        "conservadas": len(filas) - len(ids_a_borrar),
+        "a_insertar": len(chunks),
+    }
+
+
+def imprimir_plan(plan: dict) -> None:
+    print(
+        f"[{plan['motor']}] filas actuales del motor: {plan['filas_motor']} | "
+        f"se borrarían {len(plan['ids_a_borrar'])} (secciones de este script) | "
+        f"se conservan {plan['conservadas']} (cargadas por otros scripts) | "
+        f"se insertarían {plan['a_insertar']}"
+    )
+
+
+def aplicar(sb, model, plan: dict, chunks: list[dict]) -> None:
+    """Inserta primero y borra después, solo por id: si la inserción falla,
+    los chunks previos siguen en la tabla. Nunca borra por `motor` a secas."""
+    motor = plan["motor"]
+    textos = [f"{c['titulo']}. {c['contenido']}" for c in chunks]
+    embeddings = model.encode(textos, normalize_embeddings=True).tolist()
+    rows = [
+        {
+            "motor": motor,
+            "seccion": c["seccion"],
+            "titulo": c["titulo"],
+            "contenido": c["contenido"],
+            "norma_ref": c["norma_ref"],
+            "embedding": emb,
+        }
+        for c, emb in zip(chunks, embeddings)
+    ]
+    sb.table(TABLA).insert(rows).execute()
+    print(f"[{motor}] insertados {len(rows)} chunks")
+
+    ids = plan["ids_a_borrar"]
+    for i in range(0, len(ids), _LOTE_BORRADO):
+        sb.table(TABLA).delete().in_("id", ids[i:i + _LOTE_BORRADO]).execute()
+    print(f"[{motor}] borrados {len(ids)} chunks previos de este script; "
+          f"{plan['conservadas']} de otros scripts intactos")
+
+
+def _argumentos(argv: list[str] | None):
+    import argparse
+
+    ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    ap.add_argument("--aplicar", action="store_true",
+                    help="escribe en Supabase; sin este flag solo simula (lectura)")
+    ap.add_argument("--motor", choices=sorted(MOTORES), action="append",
+                    help="limita a uno o más motores (por defecto, todos)")
+    return ap.parse_args(argv)
+
+
+def main(argv: list[str] | None = None, sb=None, model=None):
+    args = _argumentos(argv)
+    motores = args.motor or list(MOTORES)
+
+    if sb is None:
+        from supabase import create_client
+        sb = create_client(os.environ["SUPABASE_URL"], os.environ["SUPABASE_SERVICE_KEY"])
 
     # AquAI se carga aparte con scripts/ingesta/ras2000/ingest_ras2000.py (corpus real RAS 2000)
-    todos = [("geopot", GEOPOT_CHUNKS), ("vias", VIAS_CHUNKS), ("gerencia", GERENCIA_CHUNKS)]
+    planes = [(planificar(sb, m, MOTORES[m]), MOTORES[m]) for m in motores if MOTORES[m]]
+    for plan, _ in planes:
+        imprimir_plan(plan)
 
-    for motor, chunks in todos:
-        if not chunks:
-            continue
+    if not args.aplicar:
+        print("Simulación: no se escribió nada. Repetir con --aplicar para ejecutar.")
+        return planes
 
-        borrado = sb.table("motor_chunks").delete().eq("motor", motor).execute()
-        print(f"[{motor}] limpiados {len(borrado.data)} chunks previos")
+    if model is None:
+        from sentence_transformers import SentenceTransformer
+        os.environ.setdefault("HF_HUB_OFFLINE", "1")
+        print("Cargando modelo de embeddings local...")
+        model = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
 
-        textos = [f"{c['titulo']}. {c['contenido']}" for c in chunks]
-        embeddings = model.encode(textos, normalize_embeddings=True).tolist()
-
-        rows = [
-            {
-                "motor": motor,
-                "seccion": c["seccion"],
-                "titulo": c["titulo"],
-                "contenido": c["contenido"],
-                "norma_ref": c["norma_ref"],
-                "embedding": emb,
-            }
-            for c, emb in zip(chunks, embeddings)
-        ]
-        sb.table("motor_chunks").insert(rows).execute()
-        print(f"[{motor}] insertados {len(rows)} chunks")
-
+    for plan, chunks in planes:
+        aplicar(sb, model, plan, chunks)
     print("Listo.")
+    return planes
 
 
 if __name__ == "__main__":
