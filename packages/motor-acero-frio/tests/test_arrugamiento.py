@@ -1,5 +1,5 @@
-"""Pruebas de arrugamiento del alma (#81). Los coeficientes de estas pruebas son ficticios, elegidos para evaluar a
-mano: NO son valores de la Tabla F.4.3.3-2."""
+"""Pruebas de arrugamiento del alma (#81). FICTICIOS son coeficientes para evaluar a mano (no son de la norma); la
+Tabla F.4.3.3-2 se prueba contra valores leídos de la NSR-10 impresa, pág. F-344."""
 import math
 import os
 import sys
@@ -12,6 +12,7 @@ import pytest
 from src.arrugamiento import (
     TABLA_F_4_3_3_2,
     CoeficientesArrugamiento,
+    coeficientes_tabla,
     alfa_voladizo,
     arrugamiento_alma,
     interaccion_flexion_arrugamiento,
@@ -66,16 +67,36 @@ def test_coeficientes_exigen_fila_citada():
         CoeficientesArrugamiento(**{**FICTICIOS, "phi_w": 1.2})
 
 
-def test_la_tabla_no_trae_valores_de_memoria():
-    """Hasta transcribirla de la norma impresa, la tabla debe seguir vacía (no se aceptan coeficientes de memoria)."""
-    assert TABLA_F_4_3_3_2 == {}
+def test_tabla_f_4_3_3_2_transcrita():
+    """12 filas: sujeta+rigidizada (4), no sujeta+rigidizada (4), no sujeta+no rigidizada (4). Puntos de control
+    leídos de la pág. F-344 de la NSR-10 impresa."""
+    assert len(TABLA_F_4_3_3_2) == 12
+    assert TABLA_F_4_3_3_2[("sujeta", "rigidizada", "una_aleta", "extremo")] == (4.0, 0.14, 0.35, 0.02, 0.85, 9.0)
+    assert TABLA_F_4_3_3_2[("sujeta", "rigidizada", "dos_aletas", "extremo")] == (7.5, 0.08, 0.12, 0.048, 0.85, 12.0)
+    assert TABLA_F_4_3_3_2[("no_sujeta", "rigidizada", "dos_aletas", "interior")] == (24.0, 0.52, 0.15, 0.001, 0.80, 3.0)
+    assert TABLA_F_4_3_3_2[("no_sujeta", "no_rigidizada", "dos_aletas", "extremo")] == (2.0, 0.11, 0.37, 0.01, 0.75, 1.0)
+    for C, CR, CN, Ch, phi, rt in TABLA_F_4_3_3_2.values():
+        assert C > 0 and 0 < phi <= 0.90 and rt >= 1 and 0 <= Ch < 0.06
+
+
+def test_tabla_sin_fila_para_no_rigidizada_sujeta():
+    with pytest.raises(ValueError, match="no hay fila"):
+        coeficientes_tabla("sujeta", "no_rigidizada", "una_aleta", "extremo")
+    assert "Tabla F.4.3.3-2" in coeficientes_tabla("sujeta", "rigidizada", "una_aleta", "interior").fila
 
 
 def test_contrato_arrugamiento():
     pf = PerfilC(H_mm=229.0, B_mm=63.5, D_mm=19.0, t_mm=1.5, Fy_MPa=345.0, Fu_MPa=450.0)
-    r = arrugamiento_perfil_c(pf, 5.0, 75.0, 3.0, FICTICIOS, Mu_kNm=4.0)
+    r = arrugamiento_perfil_c(pf, 5.0, 75.0, 3.0, apoyo="sujeta", carga="una_aleta", posicion="extremo", Mu_kNm=4.0)
     assert set(r.valor["razones"]) == {"arrugamiento", "flexion_seccion", "interaccion_F.4.3.3-61"}
     assert r.valor["cumple"] is all(v <= 1 for v in r.valor["razones"].values())
-    assert any("ficticia" in s for s in r.supuestos)
-    with pytest.raises(ValueError, match="incompletos"):
-        arrugamiento_perfil_c(pf, 5.0, 75.0, 3.0, {"C": 4.0})
+    # Valor a mano con la fila (sujeta, rigidizada, una aleta, extremo): h = 229 − 3 = 226, t = 1,5.
+    h, t = 226.0, 1.5
+    pn = 4 * t * t * 345 * (1 - 0.14 * (3 / t) ** 0.5) * (1 + 0.35 * (75 / t) ** 0.5) * (1 - 0.02 * (h / t) ** 0.5)
+    assert r.valor["Pn_kN"] == pytest.approx(pn / 1e3, rel=1e-12) and r.valor["phi_w"] == 0.85
+    # C sin pestaña sujeta al apoyo: la tabla no tiene fila → falla explícito.
+    sin = PerfilC(H_mm=150.0, B_mm=50.0, D_mm=0.0, t_mm=1.5, Fy_MPa=345.0, Fu_MPa=450.0)
+    with pytest.raises(ValueError, match="no hay fila"):
+        arrugamiento_perfil_c(sin, 5.0, 75.0, 1.0, apoyo="sujeta", carga="una_aleta", posicion="extremo")
+    with pytest.raises(ValueError, match="voladizo"):
+        arrugamiento_perfil_c(pf, 5.0, 75.0, 3.0, apoyo="sujeta", carga="dos_aletas", posicion="extremo", Lo_mm=150.0)

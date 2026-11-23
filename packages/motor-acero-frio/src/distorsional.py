@@ -7,16 +7,21 @@ Propiedades de la aleta comprimida más su pestaña, en el sistema de la norma: 
 hacia la punta de la aleta e y positivo hacia abajo, es decir, hacia donde apunta la pestaña. Se calculan con el mismo
 método lineal de seccion.py sobre la poligonal [unión → esquina → punta de la pestaña].
 
-Lecturas del corpus documentadas (se prueban contra las formas cerradas del comentario de AISI S100 para la pestaña
-simple, que es una referencia independiente):
-- F.4.3.3-42 escribe «ho²» dentro de K̃φfg. Dimensional y físicamente el término es hx², parte del momento polar de la
-  aleta respecto a la unión aleta-alma. Con ho² (la altura del alma) K̃φfg crecería con la altura de la viga, algo que la
-  aleta no «ve». Se usa hx².
-- yo se toma como y_unión − y_centroide de la aleta (= −d²/(2(b+d)) en la pestaña simple). Para la aleta con pestaña,
-  la unión y el centro de cortante de la aleta están a la misma altura, así que coincide con la definición de AISI
-  (centroide → centro de cortante).
-- F.4.3.3-41 da kφwe = E·t³/(12(1−μ²)·ho) en flexión. Se usa tal cual: es menor que el término principal de la
-  expresión de AISI S100-07 (3·E·t³/(12(1−μ²)·ho)), así que el resultado queda del lado seguro.
+Fuente: NSR-10 impresa (Minvivienda / AIS, 2010), págs. F-338, F-339, F-354 y F-355, cotejada el 2026-11-22. El
+corpus del proyecto tenía cuatro diferencias con la norma impresa; aquí manda la impresa:
+- F.4.3.3-41: kφwe = E·t³/(12(1−μ²))·[3/ho + (π/L)²·19ho/60 + (π/L)⁴·ho³/240]. El corpus la truncó a E·t³/(12(1−μ²)ho).
+- F.4.3.3-39: Lcr = [4π⁴ho(1−μ²)/t³·(Ixf(xo−hx)² + Cwf − (Ixyf²/Iyf)(xo−hx)²) + π⁴ho⁴/720]^¼. El corpus decía 6π⁴
+  (el 6 es de compresión, F.4.3.4-24).
+- F.4.3.3-38: en flexión β es un factor de gradiente de momento, 1,0 ≤ 1 + 0,4(L/Lm)^0,7·(1 + M1/M2)^0,7 ≤ 1,3, que
+  puede tomarse 1,0. El corpus le ponía la expresión (Lm/Lcr)^ln(Lm/Lcr) del método simplificado (a).
+- F.4.3.4-21: en compresión, Fd no lleva β. El corpus se lo agregaba.
+- F.4.3.3-42: la impresa trae hx², como el corpus debía decir (el corpus decía «ho²»).
+
+Errata de traducción de la norma impresa, documentada: define xo como «unión → centroide» y hx como «centroide →
+centro de cortante», al revés que AISI S100-07 (de donde vienen las ecuaciones). Con las definiciones impresas, el brazo
+(xo − hx) de una pestaña simple sería bd/(b+d) en vez de b y la aleta casi no aportaría rigidez. Se usan las de AISI,
+que reproducen sus formas cerradas: hx = x_unión − x_centroide, xo = x_cc − x_centroide, yo = y_cc − y_centroide
+(= y_unión − y_centroide en la pestaña simple, como define la impresa).
 """
 from __future__ import annotations
 
@@ -72,12 +77,14 @@ def _kphi_fg(a: PropiedadesAleta, L: float) -> float:
     return (math.pi / L) ** 2 * (a.Af * (d * d * r * r - 2 * a.yo * d * r + a.hx ** 2 + a.yo ** 2) + a.Ixf + a.Iyf)
 
 
-def factor_beta(Lm: float, Lcr: float) -> float:
-    """F.4.3.3-34 / F.4.3.4-18: 1 si Lm ≥ Lcr; (Lm/Lcr)^ln(Lm/Lcr) si Lm < Lcr."""
-    if Lm >= Lcr:
+def factor_beta_flexion(L: float, Lm: float, M1_sobre_M2: float | None) -> float:
+    """F.4.3.3-38: 1,0 ≤ 1 + 0,4·(L/Lm)^0,7·(1 + M1/M2)^0,7 ≤ 1,3. M1/M2 > 0 en curvatura sencilla y < 0 en doble.
+    Sin M1/M2 se toma 1,0, el valor conservador que la norma permite."""
+    if M1_sobre_M2 is None:
         return 1.0
-    r = Lm / Lcr
-    return r ** math.log(r)
+    if not (math.isfinite(M1_sobre_M2) and -1.0 <= M1_sobre_M2 <= 1.0):
+        raise ValueError(f"M1/M2 = {M1_sobre_M2} fuera de [−1, 1] (F.4.3.3-38).")
+    return min(1.3, max(1.0, 1 + 0.4 * (L / Lm) ** 0.7 * (1 + M1_sobre_M2) ** 0.7))
 
 
 @dataclass(frozen=True)
@@ -106,7 +113,8 @@ def _validar(Lm: float, kphi: float, Fy: float) -> None:
 
 
 def distorsional_flexion_c(g: GeometriaC, Fy: float, Lm: float, kphi: float = 0.0,
-                           E: float = E_ACERO_MPA, mu: float = MU_ACERO) -> ResultadoDistorsional:
+                           E: float = E_ACERO_MPA, mu: float = MU_ACERO,
+                           M1_sobre_M2: float | None = None) -> ResultadoDistorsional:
     """Mn distorsional de una C en flexión alrededor del eje fuerte con la aleta superior comprimida.
 
     Fd por F.4.3.3-37 a -43 (método b); Mn por F.4.3.3-28/-29 con My = Sfy·Fy y Mcrd = Sf·Fd (sección bruta).
@@ -115,14 +123,15 @@ def distorsional_flexion_c(g: GeometriaC, Fy: float, Lm: float, kphi: float = 0.
     a = propiedades_aleta(g)
     G = E / (2 * (1 + mu))
     t, ho = g.t, g.H
-    Lcr = ((6 * math.pi ** 4 * ho * (1 - mu ** 2) / t ** 3) * _termino_rigidez_aleta(a)
-           + math.pi ** 4 * ho ** 4 / 720) ** 0.25                                        # F.4.3.3-39bis
+    Lcr = ((4 * math.pi ** 4 * ho * (1 - mu ** 2) / t ** 3) * _termino_rigidez_aleta(a)
+           + math.pi ** 4 * ho ** 4 / 720) ** 0.25                                        # F.4.3.3-39
     L = min(Lcr, Lm)
     p = g.propiedades()
     y_sup, y_inf = g.hc, 0.0                                                            # extremos del alma (línea media)
     xi = (y_sup - y_inf) / (y_sup - p.yc)                                               # (f1 − f2)/f1, sección bruta
     kfe = _kphi_fe(a, L, E, G)
-    kwe = E * t ** 3 / (12 * (1 - mu ** 2) * ho)                                        # F.4.3.3-41
+    k = math.pi / L
+    kwe = E * t ** 3 / (12 * (1 - mu ** 2)) * (3 / ho + k ** 2 * 19 * ho / 60 + k ** 4 * ho ** 3 / 240)  # F.4.3.3-41
     kfg = _kphi_fg(a, L)
     r = L / ho
     kwg = (ho * t * math.pi ** 2 / 13440) * (
@@ -130,7 +139,7 @@ def distorsional_flexion_c(g: GeometriaC, Fy: float, Lm: float, kphi: float = 0.
         / (math.pi ** 4 + 28 * math.pi ** 2 * r ** 2 + 420 * r ** 4))                  # F.4.3.3-43
     if kfg + kwg <= 0:
         raise ValueError("Rigidez geométrica no positiva: la aleta no se comprime (F.4.3.3-37).")
-    beta = factor_beta(Lm, Lcr)
+    beta = factor_beta_flexion(L, Lm, M1_sobre_M2)
     Fd = beta * (kfe + kwe + kphi) / (kfg + kwg)                                        # F.4.3.3-37
     if not Fd > 0:
         raise ValueError(f"Fd = {Fd} no positivo (F.4.3.3-37).")
@@ -163,8 +172,8 @@ def distorsional_compresion_c(g: GeometriaC, Fy: float, Lm: float, kphi: float =
     kwe = E * t ** 3 / (6 * ho * (1 - mu ** 2))                                          # F.4.3.4-22
     kfg = _kphi_fg(a, L)
     kwg = (math.pi / L) ** 2 * t * ho ** 3 / 60                                          # F.4.3.4-23
-    beta = factor_beta(Lm, Lcr)
-    Fd = beta * (kfe + kwe + kphi) / (kfg + kwg)                                         # F.4.3.4-21
+    beta = 1.0                                                                           # F.4.3.4-21 no lleva β
+    Fd = (kfe + kwe + kphi) / (kfg + kwg)                                                # F.4.3.4-21
     Ag = g.propiedades().A
     Py, Pcrd = Ag * Fy, Ag * Fd                                                          # F.4.3.4-15, -16
     lam = math.sqrt(Py / Pcrd)                                                           # F.4.3.4-14

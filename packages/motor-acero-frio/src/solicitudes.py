@@ -1,7 +1,7 @@
 """Cuerpos de las solicitudes HTTP de motor-acero-frio (#81). Cada uno llama a una función de contrato_api."""
 from __future__ import annotations
 
-from typing import Optional
+from typing import Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -32,6 +32,8 @@ class _ConLTB(_ConDistorsional):
     KyLy_mm: Optional[float] = Field(None, **_L)
     KtLt_mm: Optional[float] = Field(None, **_L)
     Cb: Optional[float] = Field(None, ge=1.0, le=5.0, allow_inf_nan=False)
+    M1_M2: Optional[float] = Field(None, ge=-1.0, le=1.0, allow_inf_nan=False,
+                                   description="β distorsional por gradiente (F.4.3.3-38); sin él, β = 1")
 
 
 class SolicitudFlexion(_ConLTB):
@@ -39,7 +41,7 @@ class SolicitudFlexion(_ConLTB):
 
     def ejecutar(self):
         return flexion_perfil_c(self.perfil, Lm_mm=self.Lm_mm, kphi_N=self.kphi_N, KyLy_mm=self.KyLy_mm,
-                                KtLt_mm=self.KtLt_mm, Cb=self.Cb,
+                                KtLt_mm=self.KtLt_mm, Cb=self.Cb, M1_M2=self.M1_M2,
                                 aleta_comprimida_arriostrada=self.aleta_comprimida_arriostrada)
 
 
@@ -50,7 +52,7 @@ class SolicitudViga(_ConLTB):
 
     def ejecutar(self):
         return verificar_viga_c(self.perfil, self.Mu_kNm, self.Vu_kN, Lm_mm=self.Lm_mm, kphi_N=self.kphi_N,
-                                KyLy_mm=self.KyLy_mm, KtLt_mm=self.KtLt_mm, Cb=self.Cb,
+                                KyLy_mm=self.KyLy_mm, KtLt_mm=self.KtLt_mm, Cb=self.Cb, M1_M2=self.M1_M2,
                                 aleta_comprimida_arriostrada=self.aleta_comprimida_arriostrada)
 
 
@@ -104,30 +106,21 @@ class SolicitudFlexotension(_ConLTB):
                                      kphi_N=self.kphi_N)
 
 
-class CoeficientesTabla(BaseModel):
-    model_config = _CFG
-    C: float = Field(..., gt=0, le=100, allow_inf_nan=False)
-    CR: float = Field(..., ge=0, le=5, allow_inf_nan=False)
-    CN: float = Field(..., ge=0, le=5, allow_inf_nan=False)
-    Ch: float = Field(..., ge=0, le=1, allow_inf_nan=False)
-    phi_w: float = Field(..., gt=0, le=1, allow_inf_nan=False)
-    R_t_max: float = Field(..., ge=0, le=50, allow_inf_nan=False)
-    fila: str = Field(..., min_length=3, max_length=200, description="Fila citada de la Tabla F.4.3.3-2")
-
-
 class SolicitudArrugamiento(BaseModel):
     model_config = _CFG
     perfil: PerfilC
     Pu_kN: float = Field(..., ge=0, le=1e4, allow_inf_nan=False)
     N_mm: float = Field(..., gt=0, le=2000, allow_inf_nan=False)
     R_mm: float = Field(..., ge=0, le=100, allow_inf_nan=False)
-    coeficientes: CoeficientesTabla
+    apoyo: Literal["sujeta", "no_sujeta"]
+    carga: Literal["una_aleta", "dos_aletas"]
+    posicion: Literal["extremo", "interior"]
     Mu_kNm: Optional[float] = Field(None, ge=0, le=1e4, allow_inf_nan=False)
     Lo_mm: Optional[float] = Field(None, **_L)
 
     def ejecutar(self):
-        return arrugamiento_perfil_c(self.perfil, self.Pu_kN, self.N_mm, self.R_mm, self.coeficientes.model_dump(),
-                                     Mu_kNm=self.Mu_kNm, Lo_mm=self.Lo_mm)
+        return arrugamiento_perfil_c(self.perfil, self.Pu_kN, self.N_mm, self.R_mm, apoyo=self.apoyo,
+                                     carga=self.carga, posicion=self.posicion, Mu_kNm=self.Mu_kNm, Lo_mm=self.Lo_mm)
 
 
 ESTADOS: dict[str, type[BaseModel]] = {

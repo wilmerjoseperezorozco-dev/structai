@@ -30,7 +30,7 @@ from src.contrato_api import (
 from src.distorsional import (
     distorsional_compresion_c,
     distorsional_flexion_c,
-    factor_beta,
+    factor_beta_flexion,
     propiedades_aleta,
 )
 from src.flexion import (
@@ -85,8 +85,7 @@ def _fd_compresion_a_mano(g, Lm, kphi=0.0):
     r = c["Ixyf"] / c["Iyf"]
     kfg = k ** 2 * (c["Af"] * (d * d * r * r - 2 * c["yo"] * d * r + c["hx"] ** 2 + c["yo"] ** 2) + c["Ixf"] + c["Iyf"])
     kwg = k ** 2 * t * ho ** 3 / 60
-    beta = 1.0 if Lm >= Lcr else (Lm / Lcr) ** math.log(Lm / Lcr)
-    return beta * (kfe + kwe + kphi) / (kfg + kwg), Lcr
+    return (kfe + kwe + kphi) / (kfg + kwg), Lcr          # F.4.3.4-21 impresa: sin β
 
 
 @pytest.mark.parametrize("Lm", [300.0, 700.0, 2000.0])
@@ -98,14 +97,15 @@ def test_fd_compresion_a_mano(Lm):
 
 
 def test_fd_flexion_a_mano_seccion_simetrica():
-    """Sección simétrica: ξweb = 2 y F.4.3.3-43 se simplifica; Lcr con el término π⁴ho⁴/720 (F.4.3.3-39bis)."""
+    """Sección simétrica: ξweb = 2 y F.4.3.3-43 se simplifica. Lcr con 4π⁴ y π⁴ho⁴/720 (F.4.3.3-39) y kφwe completa
+    (F.4.3.3-41), ambas según la NSR-10 impresa."""
     g, c = G9, _cerradas(G9)
     t, ho, d = g.t, g.H, c["xo"] - c["hx"]
     T = c["Ixf"] * d * d - c["Ixyf"] ** 2 / c["Iyf"] * d * d
-    Lcr = (6 * math.pi ** 4 * ho * (1 - MU ** 2) / t ** 3 * T + math.pi ** 4 * ho ** 4 / 720) ** 0.25
+    Lcr = (4 * math.pi ** 4 * ho * (1 - MU ** 2) / t ** 3 * T + math.pi ** 4 * ho ** 4 / 720) ** 0.25
     k, R = math.pi / Lcr, Lcr / ho
     kfe = k ** 4 * E * T + k ** 2 * G * c["Jf"]
-    kwe = E * t ** 3 / (12 * (1 - MU ** 2) * ho)
+    kwe = E * t ** 3 / (12 * (1 - MU ** 2)) * (3 / ho + k ** 2 * 19 * ho / 60 + k ** 4 * ho ** 3 / 240)
     r = c["Ixyf"] / c["Iyf"]
     kfg = k ** 2 * (c["Af"] * (d * d * r * r - 2 * c["yo"] * d * r + c["hx"] ** 2 + c["yo"] ** 2) + c["Ixf"] + c["Iyf"])
     kwg = ho * t * math.pi ** 2 / 13440 * ((-45360 + 62160) * R ** 2 + 448 * math.pi ** 2 + 50 * math.pi ** 4 / R ** 2) \
@@ -125,9 +125,18 @@ def test_kphi_fg_usa_hx_y_no_ho():
 
 # ── Propiedades físicas del distorsional ──────────────────────────────────────────────────────────────────
 
-def test_beta_valores():
-    assert factor_beta(2000, 1000) == 1.0
-    assert factor_beta(500, 1000) == pytest.approx(math.exp(math.log(0.5) ** 2), rel=1e-12)
+def test_beta_flexion_f_4_3_3_38():
+    assert factor_beta_flexion(700.0, 2000.0, None) == 1.0                  # conservador, permitido por la norma
+    assert factor_beta_flexion(700.0, 2000.0, -1.0) == 1.0                  # curvatura doble extrema: 1 + 0
+    esperado = 1 + 0.4 * (700 / 2000) ** 0.7 * 1.5 ** 0.7
+    assert factor_beta_flexion(700.0, 2000.0, 0.5) == pytest.approx(esperado, rel=1e-12)
+    assert factor_beta_flexion(2000.0, 2000.0, 1.0) == 1.3                  # tope superior
+    with pytest.raises(ValueError):
+        factor_beta_flexion(700.0, 2000.0, 1.5)
+
+
+def test_compresion_sin_beta_en_f_4_3_4_21():
+    assert distorsional_compresion_c(G9, 345, 300.0).beta == 1.0
 
 
 @pytest.mark.parametrize("fn", [distorsional_flexion_c, distorsional_compresion_c])
@@ -329,10 +338,11 @@ def test_contraste_guia_dsm_aisi_9cs25x059():
     Mcrd ≈ 0,85·My por franjas finitas (análisis racional, F.4.3.3.1.4(c)).
 
     - My: el método lineal con esquinas rectas da +3,8 %, porque la guía modela los radios de doblez. Se acepta ±5 %.
-    - Distorsional: el método (b) con la kφwe del corpus debe quedar del lado seguro frente al análisis racional."""
+    - Distorsional: con las ecuaciones de la NSR-10 impresa, Mcrd/My = 0,74. Debe quedar del lado seguro frente al
+      análisis racional (0,85) y a no más de 20 % de él. Con la kφwe truncada del corpus daba 0,45."""
     i, ksi = 25.4, 6.894757
     g, Fy = GeometriaC(9 * i, 2.5 * i, 0.773 * i, 0.059 * i), 55 * ksi
     r = distorsional_flexion_c(g, Fy, 1e5)
     my_kip_in = r.fluencia / (4448.222 * 25.4)
     assert my_kip_in == pytest.approx(126.55, rel=0.05)
-    assert r.critico / r.fluencia < 0.85
+    assert 0.68 < r.critico / r.fluencia < 0.85

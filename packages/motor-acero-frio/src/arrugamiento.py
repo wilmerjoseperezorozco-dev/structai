@@ -2,10 +2,13 @@
 
 Pn = C·t²·Fy·senθ·(1 − CR·√(R/t))·(1 + CN·√(N/t))·(1 − Ch·√(h/t)) (F.4.3.3-56).
 
-Los coeficientes C, CR, CN, Ch y φw salen de la Tabla F.4.3.3-2 (C de alma sencilla) según la condición de apoyo, la
-de la aleta y el caso de carga. El corpus del proyecto describe la tabla pero no trae sus valores. Por eso este módulo
-no trae coeficientes de memoria: los recibe como entrada, con la fila de la tabla citada. Cuando la tabla esté
-transcrita de la norma impresa, se carga en TABLA_F_4_3_3_2 y la entrada pasa a ser solo la fila.
+Los coeficientes C, CR, CN, Ch y φw salen de la Tabla F.4.3.3-2 (canales y C de alma sencilla) según la condición de
+apoyo, la de la aleta y el caso de carga. El corpus del proyecto describe la tabla pero no trae sus valores; los de
+TABLA_F_4_3_3_2 se transcribieron de la NSR-10 impresa (Minvivienda / AIS, 2010, pág. F-344) el 2026-11-22.
+
+Lectura de las celdas combinadas del límite R/t: en la impresa, algunas filas de «extremo» no traen límite propio y
+comparten la celda de la fila de «interior» del mismo grupo. Así se leen aquí, y coincide con la Tabla C3.4.1-2 de
+AISI S100-07, de donde viene la tabla.
 """
 from __future__ import annotations
 
@@ -18,8 +21,21 @@ N_T_MAX = 210.0
 N_H_MAX = 2.0
 PHI_INTERACCION = 0.90     # F.4.3.3-61
 
-# Tabla F.4.3.3-2, pendiente de transcribir de la NSR-10 impresa (fila → CoeficientesArrugamiento).
-TABLA_F_4_3_3_2: dict = {}
+# Tabla F.4.3.3-2 (NSR-10 impresa, pág. F-344): (apoyo, aleta, carga, posición) → (C, CR, CN, Ch, φw, R/t máx).
+TABLA_F_4_3_3_2: dict = {
+    ("sujeta", "rigidizada", "una_aleta", "extremo"): (4.0, 0.14, 0.35, 0.02, 0.85, 9.0),
+    ("sujeta", "rigidizada", "una_aleta", "interior"): (13.0, 0.23, 0.14, 0.01, 0.90, 5.0),
+    ("sujeta", "rigidizada", "dos_aletas", "extremo"): (7.5, 0.08, 0.12, 0.048, 0.85, 12.0),
+    ("sujeta", "rigidizada", "dos_aletas", "interior"): (20.0, 0.10, 0.08, 0.031, 0.85, 12.0),
+    ("no_sujeta", "rigidizada", "una_aleta", "extremo"): (4.0, 0.14, 0.35, 0.02, 0.80, 5.0),
+    ("no_sujeta", "rigidizada", "una_aleta", "interior"): (13.0, 0.23, 0.14, 0.01, 0.90, 5.0),
+    ("no_sujeta", "rigidizada", "dos_aletas", "extremo"): (13.0, 0.32, 0.05, 0.04, 0.90, 3.0),
+    ("no_sujeta", "rigidizada", "dos_aletas", "interior"): (24.0, 0.52, 0.15, 0.001, 0.80, 3.0),
+    ("no_sujeta", "no_rigidizada", "una_aleta", "extremo"): (4.0, 0.40, 0.60, 0.03, 0.85, 2.0),
+    ("no_sujeta", "no_rigidizada", "una_aleta", "interior"): (13.0, 0.32, 0.10, 0.01, 0.85, 1.0),
+    ("no_sujeta", "no_rigidizada", "dos_aletas", "extremo"): (2.0, 0.11, 0.37, 0.01, 0.75, 1.0),
+    ("no_sujeta", "no_rigidizada", "dos_aletas", "interior"): (13.0, 0.47, 0.25, 0.04, 0.80, 1.0),
+}
 
 
 @dataclass(frozen=True)
@@ -104,3 +120,19 @@ def interaccion_flexion_arrugamiento(Pu: float, Mu: float, Pn: float, Mnxo: floa
         if not (v > 0 and math.isfinite(v)):
             raise ValueError(f"{nombre} = {v} inválido (F.4.3.3-61).")
     return (0.91 * Pu / Pn + Mu / Mnxo) / (1.33 * PHI_INTERACCION)
+
+
+def coeficientes_tabla(apoyo: str, aleta: str, carga: str, posicion: str) -> "CoeficientesArrugamiento":
+    """Fila de la Tabla F.4.3.3-2. apoyo: «sujeta» | «no_sujeta»; aleta: «rigidizada» (incluye parcialmente
+    rigidizada) | «no_rigidizada»; carga: «una_aleta» | «dos_aletas»; posicion: «extremo» | «interior».
+
+    Las definiciones de carga y posición son las de F.4.3.3.4.1: una aleta si entre cargas opuestas hay ≥ 1,5h;
+    extremo si del borde de la carga al extremo del miembro hay ≤ 1,5h."""
+    clave = (apoyo, aleta, carga, posicion)
+    if clave not in TABLA_F_4_3_3_2:
+        validas = sorted({k[:2] for k in TABLA_F_4_3_3_2})
+        raise ValueError(f"La Tabla F.4.3.3-2 no tiene la fila {clave}. Combinaciones de apoyo y aleta con fila: "
+                         f"{validas} (no hay fila para aleta no rigidizada sujeta al apoyo).")
+    C, CR, CN, Ch, phi, rt = TABLA_F_4_3_3_2[clave]
+    return CoeficientesArrugamiento(C=C, CR=CR, CN=CN, Ch=Ch, phi_w=phi, R_t_max=rt,
+                                    fila="Tabla F.4.3.3-2: " + ", ".join(clave))

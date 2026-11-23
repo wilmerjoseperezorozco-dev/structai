@@ -22,7 +22,8 @@ Todas devuelven `ResultadoMotor` con supuestos, advertencias y `en_borde_dominio
 - **kφ**: 0 por defecto, que es el valor de la norma para una aleta sin restricción rotacional.
 - **Pandeo lateral-torsional:** o se declara `aleta_comprimida_arriostrada=True`, o se dan KyLy, KtLt y Cb. `coeficiente_cb` aplica F.4.3.3-12; Cb = 1 es conservador.
 - **Cmx** para la flexo-compresión: `coeficiente_cm` aplica F.4.3.5.2.1.
-- **Coeficientes de arrugamiento:** se pasan con la fila citada de la Tabla F.4.3.3-2 (ver abajo).
+- **Arrugamiento:** apoyo (sujeta / no sujeta), carga (una / dos aletas) y posición (extremo / interior). El motor toma la fila de la Tabla F.4.3.3-2 y deduce la condición de la aleta de la geometría.
+- **M1/M2** (opcional): β distorsional por gradiente de momento (F.4.3.3-38). Sin él, β = 1, el valor conservador.
 
 ## Lo que NO verifica todavía
 
@@ -35,20 +36,22 @@ Todas devuelven `ResultadoMotor` con supuestos, advertencias y `en_borde_dominio
 - **E = 203 000 MPa** (F.4.4.6.1.3); G = E/(2(1+μ)), porque el corpus no fija G para F.4.
 - **Propiedades por el método lineal con esquinas rectas.** Frente a la Guía DSM de AISI, My sale +3,8 % por no modelar los radios de doblez.
 - **Distorsional por el método general (b).** La disposición simplificada (a) del corpus exige 45° ≤ θ < 90° y deja fuera la pestaña a 90°.
-- **Erratas del corpus documentadas en el código:**
-  - F.4.2.2-19 se lee b2 (no b1).
-  - En F.4.2.3-1, ψ se toma como |f2/f1|.
-  - En F.4.3.3-42 (K̃φfg) el corpus dice «ho²» donde va **hx²**. Una prueba verifica que K̃φfg no depende de la altura del alma.
-- **Pendiente de cotejar con la NSR-10 impresa: F.4.3.3-41 (kφwe en flexión).** El corpus da E·t³/(12(1−μ²)ho); AISI S100-07 da E·t³/(12(1−μ²))·[3/ho + (π/L)²·19ho/60 + (π/L)⁴·ho³/240].
-  - Se usa la del corpus, que es del lado seguro, pero para 9CS2.5×059 da Mcrd/My = 0,45, frente a 0,76 con la de AISI y 0,85 por franjas finitas (Guía DSM).
-  - Todo indica que el corpus la truncó.
-- **Tabla F.4.3.3-2 (arrugamiento):** el corpus la describe pero no trae los coeficientes. El motor no los carga de memoria: los recibe con la fila citada. Cuando la tabla esté transcrita de la norma impresa, se llena `TABLA_F_4_3_3_2`.
+- **Cotejo con la NSR-10 impresa** (Minvivienda / AIS, 2010; copia local fuera del repositorio). En el distorsional manda la impresa sobre el corpus, que tenía estas diferencias:
+  - F.4.3.3-41 (kφwe en flexión): el corpus la truncó; la impresa trae E·t³/(12(1−μ²))·[3/ho + (π/L)²·19ho/60 + (π/L)⁴·ho³/240];
+  - F.4.3.3-39 (Lcr en flexión): lleva 4π⁴, no 6π⁴;
+  - F.4.3.3-38: en flexión β es un factor de gradiente de momento (1 ≤ β ≤ 1,3), no (Lm/Lcr)^ln(Lm/Lcr);
+  - F.4.3.4-21: en compresión, Fd no lleva β;
+  - F.4.3.3-42: hx², donde el corpus decía «ho²». Una prueba verifica que K̃φfg no depende de la altura del alma.
+- **Errata de traducción en la impresa:** define xo como «unión → centroide» y hx como «centroide → centro de cortante», al revés que AISI S100-07, de donde vienen las ecuaciones. Se usan las definiciones de AISI, que reproducen sus formas cerradas.
+- **Contraste con la Guía DSM de AISI §8.1 (9CS2.5×059):** Mcrd/My da 0,74 frente a 0,85 por franjas finitas (12 % del lado seguro, lo esperable del método b). Con la kφwe truncada del corpus daba 0,45.
+- **Tabla F.4.3.3-2** transcrita de la pág. F-344 (números, no texto de la norma). Las celdas combinadas del límite R/t se leen como en la Tabla C3.4.1-2 de AISI S100-07.
+- **Otras erratas del corpus:** F.4.2.2-19 se lee b2 (no b1); en F.4.2.3-1, ψ = |f2/f1|.
 - **Salto propio de la norma en cortante:** en h/t = 1,51·√(E·kv/Fy) hay un salto de 0,24 %. El contrato marca esa zona como borde de dominio.
 - **Sin pasos fijos:** la sección efectiva y Sc (a Fc) se resuelven con `brentq`, contrastados con sustitución sucesiva.
 
 ## Verificación
 
-86 pruebas del paquete y 9 del router:
+88 pruebas del paquete y 9 del router:
 
 - solución cerrada del canal;
 - formas cerradas de AISI para aleta + pestaña;

@@ -21,7 +21,7 @@ from contrato_motor import ResultadoMotor  # noqa: E402
 
 from .ancho_efectivo import E_ACERO_MPA, MU_ACERO  # noqa: E402
 from .elementos import D_W_MAX_TABLA, H_T_MAX_ALMA, W_T_MAX_ALETA_PESTANA, W_T_MAX_NO_RIGIDIZADO  # noqa: E402
-from .arrugamiento import CoeficientesArrugamiento, arrugamiento_alma, interaccion_flexion_arrugamiento  # noqa: E402
+from .arrugamiento import arrugamiento_alma, coeficientes_tabla, interaccion_flexion_arrugamiento  # noqa: E402
 from .combinada import PHI_T_COMBINADA, flexo_compresion_uniaxial, flexo_tension_uniaxial  # noqa: E402
 from .distorsional import distorsional_compresion_c, distorsional_flexion_c  # noqa: E402
 from .flexion import interaccion_flexion_cortante, resistencia_flexion_c, resistencia_ltb_c  # noqa: E402
@@ -42,10 +42,9 @@ SUPUESTOS_SECCION = [
 ]
 SUPUESTOS_DISTORSIONAL = [
     "Pandeo distorsional por el método general (b), aleta + pestaña por el método lineal (F.4.3.3.1.4(b), F.4.3.4.2(b)).",
-    "En K̃φfg (F.4.3.3-42) se usa hx² donde el corpus transcribe «ho²» (errata: el término es el momento polar de la "
-    "aleta respecto a la unión aleta-alma).",
-    "kφwe en flexión según el corpus, E·t³/(12(1−μ²)·ho) (F.4.3.3-41): es menor que la expresión de AISI S100-07, "
-    "del lado seguro. Pendiente cotejar con la NSR-10 impresa.",
+    "Ecuaciones cotejadas con la NSR-10 impresa (págs. F-338, F-339, F-354, F-355).",
+    "xo, hx y yo con las definiciones de AISI S100-07: la NSR-10 impresa intercambia las de xo y hx (errata de "
+    "traducción; con las impresas el brazo de la aleta no sería físico).",
 ]
 ADV_CONEXION = ("No se verificó la rotura en la conexión (F.4.3.2 c): depende del diseño de la conexión (F.4.5), que este "
                 "motor no cubre todavía.")
@@ -129,7 +128,8 @@ class _Flexion:
 
 
 def _flexion(perfil: PerfilC, *, Lm_mm: Optional[float], kphi_N: float, KyLy_mm: Optional[float],
-             KtLt_mm: Optional[float], Cb: Optional[float], aleta_comprimida_arriostrada: bool) -> _Flexion:
+             KtLt_mm: Optional[float], Cb: Optional[float], aleta_comprimida_arriostrada: bool,
+             M1_M2: Optional[float] = None) -> _Flexion:
     g, E, Fy = perfil.geometria(), perfil.E_MPa, perfil.Fy_MPa
     sec = resistencia_flexion_c(g, Fy, E, MU_ACERO)
     candidatos = {"seccion": (sec.phi_b * sec.Mn, sec.Mn, sec.phi_b)}
@@ -156,14 +156,14 @@ def _flexion(perfil: PerfilC, *, Lm_mm: Optional[float], kphi_N: float, KyLy_mm:
         if Lm_mm is None:
             raise ValueError("La C con pestaña exige Lm, la distancia entre restricciones al pandeo distorsional "
                              "(F.4.3.3.1.4). Sin restricciones intermedias, Lm es la luz no arriostrada.")
-        dist = distorsional_flexion_c(g, Fy, Lm_mm, kphi_N, E, MU_ACERO)
+        dist = distorsional_flexion_c(g, Fy, Lm_mm, kphi_N, E, MU_ACERO, M1_sobre_M2=M1_M2)
         candidatos["distorsional"] = (dist.phi * dist.nominal, dist.nominal, dist.phi)
         if abs(dist.lambda_d - 0.673) <= 0.02:
             borde.append("λd distorsional cerca de 0,673, frontera de F.4.3.3-28/-29.")
     else:
-        if Lm_mm is not None or kphi_N != 0.0:
+        if Lm_mm is not None or kphi_N != 0.0 or M1_M2 is not None:
             raise ValueError("La C sin pestaña no tiene rigidizador de borde: el pandeo distorsional no aplica y no se "
-                             "aceptan Lm ni kφ (F.4.3.3.1.4).")
+                             "aceptan Lm, kφ ni M1/M2 (F.4.3.3.1.4).")
         dist = None
 
     gob = min(candidatos, key=lambda k: candidatos[k][0])
@@ -173,12 +173,12 @@ def _flexion(perfil: PerfilC, *, Lm_mm: Optional[float], kphi_N: float, KyLy_mm:
 
 def flexion_perfil_c(perfil: PerfilC, *, Lm_mm: Optional[float] = None, kphi_N: float = 0.0,
                      KyLy_mm: Optional[float] = None, KtLt_mm: Optional[float] = None, Cb: Optional[float] = None,
-                     aleta_comprimida_arriostrada: bool) -> ResultadoMotor:
+                     aleta_comprimida_arriostrada: bool, M1_M2: Optional[float] = None) -> ResultadoMotor:
     """φbMn = mín(sección; lateral-torsional; distorsional). kφ en N·mm/mm/rad (= N); 0 si la aleta comprimida no
     tiene restricción rotacional (F.4.3.3.1.4)."""
     g = perfil.geometria()
     f = _flexion(perfil, Lm_mm=Lm_mm, kphi_N=kphi_N, KyLy_mm=KyLy_mm, KtLt_mm=KtLt_mm, Cb=Cb,
-                 aleta_comprimida_arriostrada=aleta_comprimida_arriostrada)
+                 aleta_comprimida_arriostrada=aleta_comprimida_arriostrada, M1_M2=M1_M2)
     borde, notas = _en_borde(g)
     s = f.seccion
     estados = {"seccion": {"phi_Mn_kNm": s.phi_b * s.Mn / 1e6, "Mn_kNm": s.Mn / 1e6, "phi_b": s.phi_b,
@@ -201,7 +201,10 @@ def flexion_perfil_c(perfil: PerfilC, *, Lm_mm: Optional[float] = None, kphi_N: 
         estados["distorsional"] = {"phi_Mn_kNm": d.phi * d.nominal / 1e6, "Mn_kNm": d.nominal / 1e6, "Fd_MPa": d.Fd,
                                    "Lcr_mm": d.Lcr, "L_mm": d.L, "beta": d.beta, "lambda_d": d.lambda_d,
                                    "rigideces": d.rigideces}
-        supuestos += SUPUESTOS_DISTORSIONAL + [f"kφ = {kphi_N} N·mm/mm/rad declarado por quien llama."]
+        supuestos += SUPUESTOS_DISTORSIONAL + [
+            f"kφ = {kphi_N} N·mm/mm/rad declarado por quien llama.",
+            "β = 1,0 (conservador, F.4.3.3-38)." if M1_M2 is None else
+            f"β por gradiente de momento con M1/M2 = {M1_M2} declarado por quien llama (F.4.3.3-38)."]
     return ResultadoMotor(
         valor={"phi_Mn_kNm": f.phi_Mn / 1e6, "Mn_kNm": f.Mn / 1e6, "phi_b": f.phi_b, "gobierna": f.gobierna,
                "Sx_bruto_mm3": s.Sx_bruto, "estados_limite": estados},
@@ -320,13 +323,14 @@ def compresion_perfil_c(perfil: PerfilC, KxLx_mm: float, KyLy_mm: float, KtLt_mm
 
 def verificar_viga_c(perfil: PerfilC, Mu_kNm: float, Vu_kN: float, *, aleta_comprimida_arriostrada: bool,
                      Lm_mm: Optional[float] = None, kphi_N: float = 0.0, KyLy_mm: Optional[float] = None,
-                     KtLt_mm: Optional[float] = None, Cb: Optional[float] = None) -> ResultadoMotor:
+                     KtLt_mm: Optional[float] = None, Cb: Optional[float] = None,
+                     M1_M2: Optional[float] = None) -> ResultadoMotor:
     """Flexión (los tres estados límite), cortante e interacción (F.4.3.3-54) para una viga de alma no reforzada.
 
     F.4.3.3-54 usa Mnxo, la resistencia de la sección (F.4.3.3.1.1); el pandeo lateral-torsional y el distorsional
     entran en la razón de flexión."""
     rf = flexion_perfil_c(perfil, Lm_mm=Lm_mm, kphi_N=kphi_N, KyLy_mm=KyLy_mm, KtLt_mm=KtLt_mm, Cb=Cb,
-                          aleta_comprimida_arriostrada=aleta_comprimida_arriostrada)
+                          aleta_comprimida_arriostrada=aleta_comprimida_arriostrada, M1_M2=M1_M2)
     rv = cortante_perfil_c(perfil)
     pm, pv = rf.valor["phi_Mn_kNm"], rv.valor["phi_Vn_kN"]
     pmxo = rf.valor["estados_limite"]["seccion"]["phi_Mn_kNm"]
@@ -409,15 +413,15 @@ def flexotension_perfil_c(perfil: PerfilC, Tu_kN: float, Mux_kNm: float, An_mm2:
     )
 
 
-def arrugamiento_perfil_c(perfil: PerfilC, Pu_kN: float, N_mm: float, R_mm: float, coeficientes: dict, *,
-                          Mu_kNm: Optional[float] = None, Lo_mm: Optional[float] = None) -> ResultadoMotor:
+def arrugamiento_perfil_c(perfil: PerfilC, Pu_kN: float, N_mm: float, R_mm: float, *, apoyo: str, carga: str,
+                          posicion: str, Mu_kNm: Optional[float] = None, Lo_mm: Optional[float] = None) -> ResultadoMotor:
     """Arrugamiento del alma bajo una carga concentrada o reacción (F.4.3.3-56/-57) y, con Mu, su interacción con la
-    flexión (F.4.3.3-61). `coeficientes` = {C, CR, CN, Ch, phi_w, R_t_max, fila} de la Tabla F.4.3.3-2."""
+    flexión (F.4.3.3-61). Los coeficientes salen de la Tabla F.4.3.3-2; la condición de la aleta se deduce de la
+    geometría (con pestaña: rigidizada; sin pestaña: no rigidizada)."""
     g = perfil.geometria()
-    try:
-        coef = CoeficientesArrugamiento(**coeficientes)
-    except TypeError as exc:
-        raise ValueError(f"Coeficientes de la Tabla F.4.3.3-2 incompletos o desconocidos: {exc}") from exc
+    coef = coeficientes_tabla(apoyo, "rigidizada" if g.con_pestana else "no_rigidizada", carga, posicion)
+    if Lo_mm is not None and (carga, posicion) != ("una_aleta", "extremo"):
+        raise ValueError("F.4.3.3-57 (voladizo Lo) solo aplica a carga de extremo sobre una aleta.")
     r = arrugamiento_alma(g.w_alma, g.t, perfil.Fy_MPa, N_mm, R_mm, coef, Lo=Lo_mm)
     phi_Pn = coef.phi_w * r.Pn
     razones = {"arrugamiento": Pu_kN * 1e3 / phi_Pn}
@@ -437,7 +441,9 @@ def arrugamiento_perfil_c(perfil: PerfilC, Pu_kN: float, N_mm: float, R_mm: floa
                  "0,91·P̄/Pn + M̄/Mnxo ≤ 1,33φ (F.4.3.3-61)",
         referencia_normativa="NSR-10 F.4.3.3.4.1, Tabla F.4.3.3-2, F.4.3.3.5.1(a)",
         supuestos=SUPUESTOS_SECCION + [
-            f"Coeficientes de la Tabla F.4.3.3-2 declarados por quien llama: {coef.fila}.",
+            f"Coeficientes de la {coef.fila} (NSR-10 impresa, pág. F-344).",
+            "Para carga interior sobre las dos aletas, el miembro se extiende ≥ 2,5h (sujeto) o ≥ 1,5h (no sujeto) "
+            "desde el borde de la carga (F.4.3.3.4.1): lo verifica quien llama.",
             "R es el radio interior real de doblez (las propiedades de sección sí usan esquinas rectas).",
             "Alma sin huecos, θ = 90°, alma sencilla no reforzada.",
         ],

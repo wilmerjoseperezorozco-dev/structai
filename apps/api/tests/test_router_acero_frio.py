@@ -92,12 +92,11 @@ def test_flexocompresion_y_flexotension(cliente):
     assert ft.status_code == 200
 
 
-def test_arrugamiento_exige_la_fila_de_la_tabla(cliente):
-    coef = dict(C=4.0, CR=0.1, CN=0.3, Ch=0.02, phi_w=0.85, R_t_max=9.0)
-    r = cliente.post("/acero-frio/perfil-c/arrugamiento",
-                     json=dict(perfil=PERFIL, Pu_kN=5.0, N_mm=75.0, R_mm=3.0, coeficientes=coef))
-    assert r.status_code == 422
-    ok = cliente.post("/acero-frio/perfil-c/arrugamiento",
-                      json=dict(perfil=PERFIL, Pu_kN=5.0, N_mm=75.0, R_mm=3.0,
-                                coeficientes={**coef, "fila": "ficticia para prueba"}))
-    assert ok.status_code == 200
+def test_arrugamiento_con_la_tabla_de_la_norma(cliente):
+    base = dict(perfil=PERFIL, Pu_kN=5.0, N_mm=75.0, R_mm=3.0, apoyo="sujeta", carga="una_aleta")
+    ok = cliente.post("/acero-frio/perfil-c/arrugamiento", json={**base, "posicion": "extremo"})
+    assert ok.status_code == 200 and "Tabla F.4.3.3-2" in ok.json()["valor"]["fila_tabla"]
+    assert cliente.post("/acero-frio/perfil-c/arrugamiento", json={**base, "posicion": "lateral"}).status_code == 422
+    sin = cliente.post("/acero-frio/perfil-c/arrugamiento",
+                       json={**base, "posicion": "extremo", "perfil": {**PERFIL, "D_mm": 0.0}})
+    assert sin.status_code == 422 and "F.4.3.3-2" in sin.json()["detail"]
