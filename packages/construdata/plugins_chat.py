@@ -25,6 +25,9 @@ from typing import Callable, Optional
 logger = logging.getLogger("plugins_chat")
 AQUI = Path(__file__).resolve().parent
 RAIZ = AQUI.parents[1]
+if str(AQUI) not in sys.path:
+    sys.path.insert(0, str(AQUI))
+import vigencia_evidencia  # noqa: E402  (parámetros de evidencia, compartidos con rag_multi_norma)
 URL_ONI = "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt"
 TTL_ONI, TTL_REGISTRO, TIMEOUT_ONI = 6 * 3600, 3600, 3
 
@@ -163,7 +166,7 @@ def _patron_norma_mod(norma: str) -> re.Pattern:
 def _cargar_registro(sb) -> tuple[list, list]:
     if time.time() - _cache_reg["t"] < TTL_REGISTRO and _cache_reg["rows"]:
         return _cache_reg["rows"], _cache_reg["mods"]
-    rows = sb.table("normas_registro").select("codigo,nombre_completo,estado_vigencia,alcance_derogacion,notas_vigencia,fecha_expedicion").execute().data or []
+    rows = sb.table("normas_registro").select("codigo,nombre_completo,estado_vigencia,derogada_por,alcance_derogacion,notas_vigencia,fecha_expedicion").execute().data or []
     mods = sb.table("normas_modificaciones").select("norma,decreto,fecha,objeto,estado_verificacion").order("fecha").execute().data or []
     _cache_reg.update({"t": time.time(), "rows": rows, "mods": mods})
     return rows, mods
@@ -178,6 +181,14 @@ def _limpiar_nota(texto: Optional[str], limite: int = 320) -> str:
     if len(t) > limite:
         t = t[:limite].rsplit(" ", 1)[0].rstrip(",;:") + "…"
     return t
+
+
+# Texto que ve el usuario para cada estado publicable (vigencia_evidencia.estado_publicable): una derogación sin
+# respaldo en el registro se muestra como "no confirmado", nunca como derogada.
+_ESTADO_PUBLICO = {None: "estado **vigente**", "derogada_total": "estado **derogada**",
+                   "derogada_parcial": "estado **derogada parcialmente**",
+                   "modificada": "estado **modificada** (sigue vigente en lo no modificado)",
+                   "desconocido": "estado **no confirmado** en el registro"}
 
 
 def ejecutar_vigencia(pregunta: str, sb) -> Optional[ResultadoPlugin]:
@@ -199,7 +210,8 @@ def ejecutar_vigencia(pregunta: str, sb) -> Optional[ResultadoPlugin]:
             lin.append(f"- **NSR-10** (registro por títulos): estado {', '.join(estados)}.")
             continue
         extra = " ".join(x for x in (_limpiar_nota(r.get("alcance_derogacion")), _limpiar_nota(r.get("notas_vigencia"))) if x)
-        est = {"desconocido": "estado **no confirmado**"}.get(r["estado_vigencia"], f"estado **{r['estado_vigencia'].replace('_', ' ')}**")
+        pub = vigencia_evidencia.estado_publicable(r.get("estado_vigencia"), r.get("derogada_por"), r.get("alcance_derogacion"))
+        est = _ESTADO_PUBLICO[pub]
         lin.append(f"- **{r['nombre_completo']}**: {est}." + (f" {extra}" if extra else ""))
     for n in normas_mod[:2]:
         cad = [m for m in mods if m["norma"] == n]; ver = sum(m["estado_verificacion"] == "texto_verificado" for m in cad)

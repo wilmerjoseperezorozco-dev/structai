@@ -41,6 +41,7 @@ Thumbs.db
 
 # ── Normativa fuente cruda (privada, no redistribuible) ───────────
 packages/construdata/normativa_raw/
+scripts/_normas_ensayo_raw_drive_dump/
 scripts/ingesta/*/raw/
 scripts/ingesta/sgsst_raw/
 scripts/ingesta/ras_audit/

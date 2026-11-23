@@ -115,20 +115,22 @@
     },
     {
       "id": "motor-geotecnia", "tipo": "motor", "estado": "implementado", "declaracion": "completa",
-      "endpoints": ["POST /geotecnia/asentamiento", "POST /geotecnia/portante"],
+      "endpoints": ["POST /geotecnia/asentamiento", "POST /geotecnia/portante", "POST /geotecnia/asentamiento-total", "POST /geotecnia/diferencial", "POST /geotecnia/multicapa", "POST /geotecnia/asentamiento-montecarlo", "POST /geotecnia/portante-excentrica"],
       "entradas": [
         {"magnitud": "cohesion_kpa", "acceso": "endpoint", "evidencia": "packages/motor-geotecnia/src/contrato_api.py::c_kpa"},
         {"magnitud": "angulo_friccion_deg", "acceso": "endpoint", "evidencia": "packages/motor-geotecnia/src/contrato_api.py::phi_deg"},
         {"magnitud": "peso_unitario_kn_m3", "acceso": "endpoint", "evidencia": "packages/motor-geotecnia/src/contrato_api.py::gamma_kn_m3"},
         {"magnitud": "nivel_freatico_m", "acceso": "endpoint", "evidencia": "packages/motor-geotecnia/src/contrato_api.py::nivel_freatico_m"},
         {"magnitud": "estratos_arcilla", "acceso": "endpoint", "evidencia": "packages/motor-geotecnia/src/contrato_api.py::class EstratoArcilla"},
-        {"magnitud": "presion_contacto_kpa", "acceso": "adaptador", "evidencia": "packages/motor-geotecnia/src/contrato_api.py::Presión neta aplicada"}
+        {"magnitud": "presion_contacto_kpa", "acceso": "adaptador", "evidencia": "packages/motor-geotecnia/src/contrato_api.py::Presión neta aplicada"},
+        {"magnitud": "asentamiento_mm", "acceso": "endpoint", "evidencia": "packages/motor-geotecnia/src/contrato_api.py::class Apoyo"}
       ],
       "salidas": [
         {"magnitud": "q_ult_kpa", "acceso": "endpoint", "evidencia": "packages/motor-geotecnia/src/contrato_api.py::q_ult_kpa"},
         {"magnitud": "q_adm_kpa", "acceso": "endpoint", "evidencia": "packages/motor-geotecnia/src/contrato_api.py::q_adm_kpa"},
         {"magnitud": "asentamiento_mm", "acceso": "endpoint", "evidencia": "packages/motor-geotecnia/src/contrato_api.py::asentamiento_total_mm"},
-        {"magnitud": "razon_demanda_capacidad", "acceso": "endpoint", "evidencia": "packages/motor-geotecnia/src/contrato_api.py::utilizacion"}
+        {"magnitud": "razon_demanda_capacidad", "acceso": "endpoint", "evidencia": "packages/motor-geotecnia/src/contrato_api.py::utilizacion"},
+        {"magnitud": "asentamiento_admisible_mm", "acceso": "endpoint", "evidencia": "packages/motor-geotecnia/src/contrato_api.py::limite_total_mm"}
       ]
     },
     {

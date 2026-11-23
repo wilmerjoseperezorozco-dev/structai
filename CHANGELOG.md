@@ -16,6 +16,7 @@ Periodo: 9–10 de noviembre de 2026. Borrador: se redacta a mano al publicar (`
 - Automatización de releases: `changelog.py` (borrador, notas, verificación) y el workflow `release.yml`, que crea el release en borrador.
 
 ### Corregido
+- **Pavimentos (#106):** la losa de concreto se calcula con la ecuación AASHTO-93 de pavimento rígido, que exige k y S'c; sustituye la conversión desde el SN, que no tenía fuente. La rodadura asfáltica mínima depende del tránsito (INVIAS bajos volúmenes y AASHTO-93), y ningún espesor se redondea ya hacia abajo. Sigue pendiente el cotejo con los catálogos INVIAS y la validación de un ingeniero de pavimentos.
 - Dependencias de CI de `motor-analisis`, `motor-concreto` y `orquestador`; ambos últimos entran en la matriz de CI.
 - Alertas altas de `js-yaml`.
 
