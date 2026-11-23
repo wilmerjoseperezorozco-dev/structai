@@ -299,31 +299,41 @@ VIAS_CHUNKS: list[dict] = [
         "norma_ref": "Método mecánico-empírico AASHTO 93 adaptado — estructura flexible",
         "contenido": (
             "El SN aportado por cada capa es SNi = ai·di·mi (ai: coeficiente estructural "
-            "1/cm, di: espesor cm, mi: coeficiente de drenaje). Coeficientes "
-            "estructurales: rodadura asfáltica a1=0.44, base granular a2=0.14, subbase "
-            "granular a3=0.11. Coeficientes de drenaje según calidad: excelente 1.20, "
-            "bueno 1.10, regular 1.00, pobre 0.90, muy pobre 0.80 (el motor asume "
-            "'bueno' por defecto para base y subbase). Espesores mínimos: rodadura "
-            "5 cm, base 15 cm, subbase 15 cm; espesores máximos recomendados: rodadura "
-            "25 cm, base 40 cm, subbase 60 cm. El diseño fija primero rodadura y base "
-            "en sus mínimos, calcula el SN restante para la subbase (SN_restante = "
-            "SN_requerido − SN1 − SN2, entonces d3 = SN_restante/(a3·m3)), y redondea "
-            "todos los espesores a múltiplos de 2.5 cm."
+            "por pulgada de espesor, di: espesor en pulgadas = cm/2.54, mi: coeficiente "
+            "de drenaje). Coeficientes estructurales: rodadura asfáltica a1=0.44, base "
+            "granular a2=0.14, subbase granular a3=0.11. Coeficientes de drenaje según "
+            "calidad: excelente 1.20, bueno 1.10, regular 1.00, pobre 0.90, muy pobre "
+            "0.80 (el motor asume 'bueno' por defecto para base y subbase). La rodadura "
+            "asfáltica mínima depende del tránsito en el carril de diseño: 5 cm hasta "
+            "150 000 ejes y 7.5 cm hasta 500 000 (Manual INVIAS de bajos volúmenes); "
+            "8 cm hasta 2 millones, 9 cm hasta 7 millones y 10.5 cm por encima "
+            "(tabla de espesores mínimos de AASHTO-93: 3.0, 3.5 y 4.0 pulgadas). La "
+            "base granular mínima es 15 cm y la subbase mínima 15 cm; máximos "
+            "recomendados: rodadura 25 cm, base 40 cm, subbase 60 cm. La subbase es la "
+            "capa variable que completa el SN y se redondea hacia arriba a 2.5 cm. Es "
+            "un diseño preliminar que debe validar un ingeniero de pavimentos."
         ),
     },
     {
         "seccion": "AASHTO 93 adaptado — Diseño de pavimento de concreto (estructura rígida)",
-        "titulo": "Espesor de losa por conversión de SN y juntas de contracción",
-        "norma_ref": "Método mecánico-empírico AASHTO 93 adaptado — estructura rígida",
+        "titulo": "Espesor de losa con la ecuación AASHTO-93 de pavimento rígido y juntas",
+        "norma_ref": "Guía AASHTO 1993 — ecuación de diseño de pavimento rígido",
         "contenido": (
-            "El espesor de la losa de concreto se estima por conversión aproximada del "
-            "número estructural: D_concreto [cm] = SN_requerido / 0.39, redondeado a "
-            "múltiplos de 2.5 cm y limitado al espesor mínimo de losa (15 cm) y máximo "
-            "recomendado (40 cm, por encima de este se sugiere refuerzo continuo o losas "
-            "postensadas). Base y subbase bajo la losa son opcionales con mínimos de "
-            "10 cm cada una (máximos 30 cm base, 50 cm subbase). Recomendación de "
-            "diseño: para toda losa se sugieren juntas de contracción cada 4-5 m con "
-            "barras de transferencia de carga."
+            "El espesor de la losa de concreto D se despeja de la ecuación de diseño de "
+            "pavimento rígido de la Guía AASHTO 1993: log10(W18) = ZR·So + "
+            "7.35·log10(D+1) − 0.06 + log10(ΔPSI/3.0)/(1 + 1.624·10^7/(D+1)^8.46) + "
+            "(4.22 − 0.32·pt)·log10[S'c·Cd·(D^0.75 − 1.132)/(215.63·J·(D^0.75 − "
+            "18.42/(Ec/k)^0.25))], con D en pulgadas, S'c y Ec en psi y k en pci. "
+            "Entradas obligatorias: k (módulo de reacción efectivo, MPa/m, por ejemplo "
+            "con el ensayo de placa INV E-168) y S'c (módulo de rotura a 28 días, MPa, "
+            "INV E-414); el motor no los supone. Por defecto: Ec = 27 580 MPa, J = 3.2 "
+            "(dovelas), Cd = 1.0, So = 0.35, p0 = 4.5, pt = 2.5 y confiabilidad según "
+            "el tipo de vía. La losa se redondea hacia arriba a 1 cm con mínimo de "
+            "15 cm. El método reemplazó una conversión aproximada desde el SN que no "
+            "tenía fuente (issue #106). Losas de 3.6 a 5.0 m de largo con relación largo/ancho entre "
+            "1 y 1.3 (Manual INVIAS de pavimentos de concreto). Es un diseño "
+            "preliminar: debe cotejarse con el catálogo del Manual INVIAS y validarlo "
+            "un ingeniero de pavimentos."
         ),
     },
     {
