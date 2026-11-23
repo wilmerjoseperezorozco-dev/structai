@@ -35,7 +35,7 @@ Vía: **endpoint** = ambos lados son campos del contrato HTTP; **adaptador** = e
 | `orquestador` | `optimizador-portico` | costo_directo_cop, deriva_relativa | paquete |
 | `motor-concreto` | `motor-geotecnia` | presion_contacto_kpa | adaptador |
 | `motor-concreto` | `optimizador-portico` | co2e_kg, costo_directo_cop, masa_acero_kg, razon_demanda_capacidad, volumen_concreto_m3 | paquete |
-| `motor-geotecnia` | `motor-concreto` | q_adm_kpa | endpoint |
+| `motor-geotecnia` | `motor-concreto` | asentamiento_admisible_mm, q_adm_kpa | endpoint |
 | `motor-geotecnia` | `optimizador-portico` | razon_demanda_capacidad | paquete |
 | `motor-apu` | `optimizador-portico` | costo_directo_cop | paquete |
 | `motor-geopot` | `orquestador` | coef_aceleracion_aa, coef_velocidad_av | paquete |
@@ -61,9 +61,9 @@ Vía: **endpoint** = ambos lados son campos del contrato HTTP; **adaptador** = e
 
 ## Huecos
 
-**Magnitudes que algún nodo consume y ninguno produce** (las aporta el usuario o un estudio externo): `aceleracion_pico_g`, `angulo_friccion_deg`, `asentamiento_admisible_mm`, `carga_muerta_kn_m`, `carga_viva_kn_m`, `caudal_medio_m3_dia`, `cohesion_kpa`, `coliformes_fecales_nmp_100ml`, `dbo5_afluente_mg_l`, `estratos_arcilla`, `geometria_portico`, `grupo_uso`, `magnitud_momento_mw`, `modulo_balasto_kn_m3`, `municipio_codigo_dane`, `nivel_freatico_m`, `perfil_spt`, `perfil_suelo_clase`, `peso_unitario_kn_m3`, `red_hidraulica`, `temperatura_agua_c`.
+**Magnitudes que algún nodo consume y ninguno produce** (las aporta el usuario o un estudio externo): `aceleracion_pico_g`, `angulo_friccion_deg`, `carga_muerta_kn_m`, `carga_viva_kn_m`, `caudal_medio_m3_dia`, `cohesion_kpa`, `coliformes_fecales_nmp_100ml`, `dbo5_afluente_mg_l`, `estratos_arcilla`, `geometria_portico`, `grupo_uso`, `magnitud_momento_mw`, `modulo_balasto_kn_m3`, `municipio_codigo_dane`, `nivel_freatico_m`, `perfil_spt`, `perfil_suelo_clase`, `peso_unitario_kn_m3`, `red_hidraulica`, `temperatura_agua_c`.
 
-**Magnitudes que algún nodo produce y ninguno consume** (hoy salen de la cadena sin uso): `area_espejo_lagunas_m2`, `asentamiento_mm`, `capacidad_pilote_kn`, `caudal_m3s`, `cortante_basal_kn`, `dbo5_efluente_mg_l`, `factor_seguridad_talud`, `frontera_pareto`, `fs_licuacion_minimo`, `golpe_ariete_pico_m`, `lpi`, `presion_m`, `q_ult_kpa`, `velocidad_ms`.
+**Magnitudes que algún nodo produce y ninguno consume** (hoy salen de la cadena sin uso): `area_espejo_lagunas_m2`, `capacidad_pilote_kn`, `caudal_m3s`, `cortante_basal_kn`, `dbo5_efluente_mg_l`, `factor_seguridad_talud`, `frontera_pareto`, `fs_licuacion_minimo`, `golpe_ariete_pico_m`, `lpi`, `presion_m`, `q_ult_kpa`, `velocidad_ms`.
 
 ## Nodos
 
@@ -80,7 +80,7 @@ Vía: **endpoint** = ambos lados son campos del contrato HTTP; **adaptador** = e
 | `motor-estructural` | motor | implementado | **?** pendiente | 0 | 0 | no |
 | `motor-exploracion` | motor | implementado | **?** pendiente | 0 | 0 | no |
 | `motor-geopot` | motor | implementado | completa | 1 | 2 | no |
-| `motor-geotecnia` | motor | implementado | completa | 6 | 4 | no |
+| `motor-geotecnia` | motor | implementado | completa | 7 | 5 | no |
 | `motor-gerencia` | motor | implementado | **?** pendiente | 0 | 0 | no |
 | `motor-licuacion` | motor | implementado | completa | 4 | 2 | no |
 | `motor-redes` | motor | implementado | completa | 1 | 4 | no |

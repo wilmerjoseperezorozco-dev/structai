@@ -59,3 +59,37 @@ def test_error_de_dominio_es_422_citando_la_norma(cliente):
 def test_agua_sin_peso_saturado_es_422(cliente):
     r = cliente.post("/geotecnia/portante", json={**PORT, "nivel_freatico_m": 1.0})
     assert r.status_code == 422 and "saturado" in r.text
+
+
+# ── Ampliación del Título H (#136) ──────────────────────────────────────────────────────────────────────────────────
+TOTAL = dict(q_kpa=100.0, B_m=2.0, L_m=2.0, es_kpa=10000.0, nu=0.3, metodo="2a1", tipo_cimentacion="aislada",
+             estratos=[{**ESTRATO, "c_alfa": 0.01}])
+DIF = dict(apoyos=[dict(x_m=0.0, asentamiento_mm=20.0), dict(x_m=6.0, asentamiento_mm=35.0)], tipo_construccion="porticos_concreto")
+MULTI = dict(capas=[dict(espesor_m=4.0, cv_m2_dia=0.01, mv_kpa_inv=1e-3, delta_sigma_kpa=100.0)], tiempos_dias=[10.0, 100.0],
+             drenaje_superior=True, drenaje_inferior=False)
+MC = dict(espesor_m=4.0, sigma0_kpa=60.0, delta_kpa=40.0, sigma_p_kpa=60.0, cr=0.05, cc_mediana=0.3, cc_cv=0.3,
+          e0_mediana=1.0, e0_cv=0.1, rho_cc_e0=0.5, n=1000, semilla=1, tipo_cimentacion="aislada")
+EXC = dict(c_kpa=10.0, phi_deg=30.0, gamma_kn_m3=18.0, B_m=2.0, L_m=3.0, Df_m=1.0, nivel_freatico_m=None, V_kn=900.0,
+           H_kn=60.0, eB_m=0.2, eL_m=0.0, factor_seguridad=3.0, condicion_carga="muerta_viva_normal")
+
+
+@pytest.mark.parametrize("ruta,cuerpo", [("/geotecnia/asentamiento-total", TOTAL), ("/geotecnia/diferencial", DIF),
+                                         ("/geotecnia/multicapa", MULTI), ("/geotecnia/asentamiento-montecarlo", MC),
+                                         ("/geotecnia/portante-excentrica", EXC)])
+def test_endpoints_nuevos_responden_con_el_contrato(cliente, ruta, cuerpo):
+    r = cliente.post(ruta, json=cuerpo)
+    assert r.status_code == 200, r.text
+    assert all(c in r.json() for c in CAMPOS)
+
+
+def test_fs_bajo_el_minimo_de_la_tabla_h471_es_422(cliente):
+    r = cliente.post("/geotecnia/portante-excentrica", json={**EXC, "factor_seguridad": 2.0})
+    assert r.status_code == 422 and "H.4.7-1" in r.json()["detail"]
+    r2 = cliente.post("/geotecnia/portante", json={**PORT, "factor_seguridad": 2.0, "condicion_carga": "muerta_viva_maxima"})
+    assert r2.status_code == 422 and "H.4.7-1" in r2.json()["detail"]
+
+
+def test_apoyos_repetidos_y_calpha_ausente_son_422(cliente):
+    r = cliente.post("/geotecnia/diferencial", json={**DIF, "apoyos": [dict(x_m=1.0, asentamiento_mm=1.0)] * 2})
+    assert r.status_code == 422 and "H.4.9-1" in r.json()["detail"]
+    assert cliente.post("/geotecnia/asentamiento-total", json={**TOTAL, "estratos": [ESTRATO]}).status_code == 422
