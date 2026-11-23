@@ -2,7 +2,7 @@
 
 Generado por `scripts/inventario/matriz_coherencia.py` desde [coherencia_motores.json](coherencia_motores.json); no editar a mano. Dos nodos se conectan cuando una magnitud que produce uno (con su unidad) es una que consume el otro. **Coherente no significa probado**: solo las cadenas de la sección «Cadenas probadas» tienen una prueba que las ejecuta.
 
-- Motores implementados: 18; con declaración completa: 10; **pendientes de declarar: 8** (`motor-vias`, `motor-gerencia`, `motor-vulnerabilidad-vivienda`, `motor-estructural`, `motor-exploracion`, `motor-deformacion`, `motor-acero-frio`, `motor-topovia`). Lo no declarado no genera conexiones: no se infiere nada.
+- Motores implementados: 19; con declaración completa: 11; **pendientes de declarar: 8** (`motor-vias`, `motor-gerencia`, `motor-vulnerabilidad-vivienda`, `motor-estructural`, `motor-exploracion`, `motor-deformacion`, `motor-acero-frio`, `motor-topovia`). Lo no declarado no genera conexiones: no se infiere nada.
 - Motores futuros (planificados o bloqueados): 5. Nunca se cuentan como funcionando.
 - Magnitudes del vocabulario: 51, cada una con unidad y dominio físico.
 
@@ -12,9 +12,9 @@ Camino simple = sin repetir nodo. «Solo implementados» no incluye ningún moto
 
 | Nodos en la cadena | Solo implementados | Adicionales con motores futuros |
 |---|---|---|
-| 2 (pares) | 12 | 13 |
-| 3 (cadenas) | 14 | 18 |
-| 4 (cadenas) | 9 | 21 |
+| 2 (pares) | 16 | 13 |
+| 3 (cadenas) | 22 | 19 |
+| 4 (cadenas) | 19 | 26 |
 
 Probadas de extremo a extremo: **1**.
 
@@ -29,6 +29,7 @@ Vía: **endpoint** = ambos lados son campos del contrato HTTP; **adaptador** = e
 | Origen | Destino | Magnitudes | Vía |
 |---|---|---|---|
 | `motor-analisis` | `motor-concreto` | reaccion_vertical_kn | adaptador |
+| `motor-analisis` | `motor-pilotes` | reaccion_vertical_kn | endpoint |
 | `orquestador` | `motor-analisis` | seccion_columna_mm, seccion_viga_mm | adaptador |
 | `orquestador` | `motor-concreto` | seccion_columna_mm | endpoint |
 | `orquestador` | `motor-apu` | seccion_columna_mm, seccion_viga_mm | paquete |
@@ -39,6 +40,9 @@ Vía: **endpoint** = ambos lados son campos del contrato HTTP; **adaptador** = e
 | `motor-geotecnia` | `optimizador-portico` | razon_demanda_capacidad | paquete |
 | `motor-apu` | `optimizador-portico` | costo_directo_cop | paquete |
 | `motor-geopot` | `orquestador` | coef_aceleracion_aa, coef_velocidad_av | paquete |
+| `motor-pilotes` | `motor-concreto` | asentamiento_admisible_mm | endpoint |
+| `motor-pilotes` | `motor-geotecnia` | asentamiento_mm | endpoint |
+| `motor-pilotes` | `optimizador-portico` | razon_demanda_capacidad | paquete |
 | `dato-factores-emision` | `motor-concreto` | factor_emision_kgco2e_kg | paquete |
 
 ## Conexiones que abrirían los motores futuros
@@ -83,6 +87,7 @@ Vía: **endpoint** = ambos lados son campos del contrato HTTP; **adaptador** = e
 | `motor-geotecnia` | motor | implementado | completa | 7 | 5 | no |
 | `motor-gerencia` | motor | implementado | **?** pendiente | 0 | 0 | no |
 | `motor-licuacion` | motor | implementado | completa | 4 | 2 | no |
+| `motor-pilotes` | motor | implementado | completa | 7 | 4 | no |
 | `motor-redes` | motor | implementado | completa | 1 | 4 | no |
 | `motor-topovia` | motor | implementado | **?** pendiente | 0 | 0 | no |
 | `motor-vias` | motor | implementado | **?** pendiente | 0 | 0 | no |
