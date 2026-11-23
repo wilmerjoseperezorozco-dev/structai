@@ -201,7 +201,25 @@
     {"id": "motor-vulnerabilidad-vivienda", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
     {"id": "motor-estructural", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
     {"id": "motor-exploracion", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
-    {"id": "motor-pilotes", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
+    {
+      "id": "motor-pilotes", "tipo": "motor", "estado": "implementado", "declaracion": "completa",
+      "endpoints": ["POST /pilotes/capacidad", "POST /pilotes/asentamiento"],
+      "entradas": [
+        {"magnitud": "reaccion_vertical_kn", "acceso": "endpoint", "evidencia": "packages/motor-pilotes/src/contrato_api.py::reaccion_vertical_kn"},
+        {"magnitud": "cohesion_kpa", "acceso": "endpoint", "evidencia": "packages/motor-pilotes/src/contrato_api.py::c_kpa"},
+        {"magnitud": "angulo_friccion_deg", "acceso": "endpoint", "evidencia": "packages/motor-pilotes/src/contrato_api.py::phi_deg"},
+        {"magnitud": "peso_unitario_kn_m3", "acceso": "endpoint", "evidencia": "packages/motor-pilotes/src/contrato_api.py::gamma_kn_m3"},
+        {"magnitud": "nivel_freatico_m", "acceso": "endpoint", "evidencia": "packages/motor-pilotes/src/contrato_api.py::nivel_freatico_m"},
+        {"magnitud": "perfil_spt", "acceso": "endpoint", "evidencia": "packages/motor-pilotes/src/contrato_api.py::n60"},
+        {"magnitud": "estratos_arcilla", "acceso": "endpoint", "evidencia": "packages/motor-pilotes/src/contrato_api.py::class EstratoCompresible"}
+      ],
+      "salidas": [
+        {"magnitud": "capacidad_pilote_kn", "acceso": "endpoint", "evidencia": "packages/motor-pilotes/src/contrato_api.py::capacidad_pilote_kn"},
+        {"magnitud": "razon_demanda_capacidad", "acceso": "endpoint", "evidencia": "packages/motor-pilotes/src/contrato_api.py::razon_demanda_capacidad"},
+        {"magnitud": "asentamiento_mm", "acceso": "endpoint", "evidencia": "packages/motor-pilotes/src/contrato_api.py::asentamiento_total_mm"},
+        {"magnitud": "asentamiento_admisible_mm", "acceso": "endpoint", "evidencia": "packages/motor-pilotes/src/contrato_api.py::limite_total_mm"}
+      ]
+    },
     {"id": "motor-deformacion", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
     {"id": "motor-acero-frio", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
     {"id": "motor-topovia", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},

@@ -15,6 +15,7 @@ if _RUTA not in sys.path:
 from contrato_motor import ResultadoMotor  # noqa: E402
 
 from .arena_spt import EstratoSPT  # noqa: E402
+from .asentamiento import CasoZapata, asentamiento_grupo  # noqa: E402
 from .axial import Estrato, Pilote  # noqa: E402
 from .grupo import SEPARACION_MIN_REL, capacidad_grupo  # noqa: E402
 
@@ -114,7 +115,7 @@ def pilotes_contrato(s: SolicitudPilotes) -> ResultadoMotor:
         "La cabeza del pilote está en la superficie del perfil (z = 0); no se descuenta el peso propio del pilote ni del encepado.",
         "No se demuestra que los F_SB directos equivalentes cumplan la Tabla H.2.4-1 (H.4.7.1); eso queda al ingeniero.",
         f"Eficiencia de grupo: {s.eficiencia_grupo} (Converse-Labarre si se pide). El bloque en arcilla es el de Terzaghi y Peck con Nc de Skempton; la NSR-10 no fija fórmulas.",
-        "No se verifican asentamientos (H.4.4.2) ni la resistencia estructural del pilote.",
+        "Los asentamientos (H.4.4.2) van en /pilotes/asentamiento; no se verifica la resistencia estructural del pilote.",
         f"Tipo '{s.tipo}': en estratos con SPT elige el método del CCP-14; en estratos con K y qp la diferencia entra a través del estudio.",
         "Se reporta el perfil de entrada tal como se recibe; las correlaciones SPT → Su/φ' están próximamente.",
     ]
@@ -132,6 +133,98 @@ def pilotes_contrato(s: SolicitudPilotes) -> ResultadoMotor:
                  "grupo = mín(Σ individuales, bloque, E·Σ individuales)",
         referencia_normativa="NSR-10 Título H (H.4.4.1, H.4.7.1, H.4.7.2, Tablas H.4.7-1 y H.2.4-1) · Skempton (1951) · "
                              "CCP-14 §10.4.6.2.4, §10.7.3.8.6g y §10.8.3.5.2 · Terzaghi y Peck · Converse-Labarre",
+        supuestos=supuestos,
+        advertencias=advertencias,
+        en_borde_dominio=bool(borde),
+    )
+
+
+# NSR-10 H.4.9.2, cotejado con la impresa (H-18); los mismos valores de motor-geotecnia
+LIMITES_ASENT_TOTAL_MM = {"aislada": 300.0, "medianera": 150.0}
+
+
+class EstratoCompresible(BaseModel):
+    z_tope_m: float = Field(..., ge=0, description="Profundidad del tope bajo la zapata equivalente")
+    espesor_m: float = Field(..., gt=0)
+    sigma0_kpa: float = Field(..., gt=0, description="Esfuerzo efectivo vertical inicial en el punto medio")
+    sigma_p_kpa: float = Field(..., gt=0, description="Presión de preconsolidación (= σ'0 si es normalmente consolidada)")
+    cc: float = Field(..., gt=0)
+    cr: float = Field(..., ge=0)
+    e0: float = Field(..., gt=0)
+
+
+class SolicitudAsentamientoPilotes(BaseModel):
+    carga_permanente_kn: float = Field(..., gt=0, description="Carga permanente de servicio sobre el grupo (§10.7.2.3.1)")
+    seccion: Literal["circular", "cuadrada"]
+    ancho_m: float = Field(..., gt=0, le=3.0)
+    longitud_m: float = Field(..., gt=0, le=80.0)
+    ep_mpa: float = Field(..., gt=0, le=250000, description="Módulo de elasticidad del pilote (sin valor por defecto)")
+    filas: int = Field(..., ge=1, le=10)
+    columnas: int = Field(..., ge=1, le=10)
+    separacion_m: Optional[float] = Field(..., gt=0, description="Entre ejes; null solo para un pilote")
+    db_m: float = Field(..., gt=0, description="Empotramiento en la capa que da el soporte (Fig. 10.7.2.3.1-1)")
+    caso_zapata_equivalente: CasoZapata
+    suelo_bajo_zapata: Literal["cohesivo", "granular_spt"]
+    estratos_compresibles: Optional[list[EstratoCompresible]] = Field(default=None, max_length=30)
+    n1_60_bajo_zapata: Optional[float] = Field(default=None, gt=0, le=100,
+                                               description="N1_60 promediado en una profundidad B bajo la zapata equivalente")
+    tipo_cimentacion: Literal["aislada", "medianera"] = Field(..., description="Límite de H.4.9.2: 30 cm o 15 cm")
+
+    @model_validator(mode="after")
+    def _coherencia(self):
+        if self.filas * self.columnas > 1 and self.separacion_m is None:
+            raise ValueError("Grupo de más de un pilote: falta separacion_m (NSR-10 H.4.4.1).")
+        if self.db_m > self.longitud_m:
+            raise ValueError("db_m no puede superar la longitud del pilote (CCP-14 Fig. 10.7.2.3.1-1).")
+        if self.suelo_bajo_zapata == "cohesivo" and not self.estratos_compresibles:
+            raise ValueError("Suelo cohesivo: faltan estratos_compresibles con Cc, Cr, e0, σ'0 y σ'p (CCP-14 §10.7.2.3.2).")
+        if self.suelo_bajo_zapata == "granular_spt" and self.n1_60_bajo_zapata is None:
+            raise ValueError("Suelo granular: falta n1_60_bajo_zapata (CCP-14 Ec. 10.7.2.3.2-1).")
+        return self
+
+
+def asentamiento_pilotes_contrato(s: SolicitudAsentamientoPilotes) -> ResultadoMotor:
+    pilote = Pilote(seccion=s.seccion, ancho_m=s.ancho_m, longitud_m=s.longitud_m, tipo="hincado")
+    r = asentamiento_grupo(
+        carga_permanente_kn=s.carga_permanente_kn, filas=s.filas, columnas=s.columnas, separacion_m=s.separacion_m,
+        ancho_m=s.ancho_m, area_m2=pilote.area_punta_m2, longitud_m=s.longitud_m, ep_mpa=s.ep_mpa, db_m=s.db_m,
+        caso=s.caso_zapata_equivalente, suelo_bajo_zapata=s.suelo_bajo_zapata,
+        estratos_cohesivos=[e.model_dump() for e in s.estratos_compresibles] if s.estratos_compresibles else None,
+        n1_60_bajo_zapata=s.n1_60_bajo_zapata)
+    total_mm = r["asentamiento_total_m"] * 1000.0
+    limite = LIMITES_ASENT_TOTAL_MM[s.tipo_cimentacion]
+    utilizacion = total_mm / limite
+    advertencias, borde = [], utilizacion >= _UTILIZACION_BORDE
+    if s.suelo_bajo_zapata == "granular_spt":
+        advertencias.append("Meyerhof (1976) con SPT tiende a sobrepredecir el asentamiento (C10.7.2.3.2).")
+        if r["detalle"]["I"] == 0.5:
+            borde = True
+            advertencias.append("I llegó al mínimo 0,5 (Ec. 10.7.2.3.2-3): empotramiento grande frente al ancho del grupo.")
+    if s.filas * s.columnas == 1:
+        advertencias.append("Pilote individual: la zapata equivalente de un solo pilote es una aproximación; el CCP-14 "
+                            "la plantea para grupos (§10.7.2.3.1).")
+    supuestos = [
+        "H.4.4.2 no fija fórmulas: se usa la zapata equivalente del CCP-14 §10.7.2.3 (Hannigan et al., 2006).",
+        "Zapata equivalente a z = (L − Db) + f·Db con f = 1 (a), 2/3 (b), 8/9 (c) o 2/3 (d) según la "
+        "Fig. 10.7.2.3.1-1; planta = perímetro exterior del grupo, sin B' = B − 2e.",
+        "Presión repartida 2V:1H bajo la zapata equivalente; q = carga permanente / área, sin peso de pilotes ni suelo.",
+        "Acortamiento elástico con la carga completa en toda la longitud: cota superior de la deformación propia.",
+        "Consolidación primaria última (no a 20 años): del lado conservador frente al límite de H.4.9.2.",
+        "No incluye fricción negativa, excentricidad, asentamiento por sismo ni consolidación secundaria (H.4.4.2 los pide: próximamente).",
+        "Los parámetros de compresibilidad (Cc, Cr, e0, σ'0, σ'p) y N1_60 los entrega el estudio geotécnico.",
+    ]
+    return ResultadoMotor(
+        valor={"asentamiento_total_mm": total_mm, "limite_total_mm": limite, "utilizacion": utilizacion,
+               "cumple": total_mm <= limite, "acortamiento_mm": r["acortamiento_m"] * 1000.0,
+               "asentamiento_suelo_mm": r["asentamiento_suelo_m"] * 1000.0,
+               "zapata_equivalente": {"B_m": r["B_m"], "L_m": r["L_m"], "z_m": r["z_zapata_equivalente_m"],
+                                      "q_kpa": r["q_kpa"]},
+               "detalle": r["detalle"]},
+        unidad_si="Asentamientos en mm; esfuerzos en kPa; longitudes en m",
+        ecuacion="S = Q·L/(n·A·Ep) + S_suelo; S_suelo = Σ Cc·H/(1+e0)·log(σ'f/σ'p) (+ Cr) bajo la zapata equivalente, "
+                 "o ρ = 30·q·I·√B / N1_60, I = 1 − 0.125·D'/B ≥ 0.5",
+        referencia_normativa="NSR-10 H.4.4.2 y H.4.9.2 · CCP-14 §10.7.2.3.1, §10.7.2.3.2 (Ec. 10.7.2.3.2-1 y -3) · "
+                             "Hannigan et al. (2006) · Meyerhof (1976)",
         supuestos=supuestos,
         advertencias=advertencias,
         en_borde_dominio=bool(borde),

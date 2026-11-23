@@ -9,6 +9,7 @@ Cada versión corresponde a un tag `vX.Y.Z` sobre `master`. Los estados cerrados
 Periodo: 9–10 de noviembre de 2026. Borrador: se redacta a mano al publicar (`python scripts/mantenimiento/changelog.py --borrador --desde cca89c0` lista los commits).
 
 ### Agregado
+- **motor-pilotes** (#118): endpoints `POST /pilotes/capacidad` y `POST /pilotes/asentamiento`. El asentamiento de grupos usa la zapata equivalente del CCP-14 §10.7.2.3 (consolidación de motor-geotecnia o Meyerhof con SPT) más el acortamiento del fuste, contra H.4.9.2.
 - **motor-redes** (#138): red mallada permanente (método del gradiente), bombas, válvulas, periodo extendido con tanques y golpe de ariete, con contrato `ResultadoMotor`, endpoint y dos revisiones adversarias.
 - **Registro de motores medidos a producción** (`docs/REGISTRO_MOTORES.md`), **matriz de madurez** por subsistema, **inventario de licencias** y cobertura de líneas medida con `pytest-cov`; todos generados y verificables por script.
 - **Vigilancia de vigencia normativa** semanal (`scripts/mantenimiento/vigencia_normas.py`) que solo avisa.
