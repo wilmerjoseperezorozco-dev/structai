@@ -92,7 +92,7 @@ def test_propiedades_brutas_contra_integracion_numerica():
 
 def test_seccion_compacta_totalmente_efectiva_se_igual_sx():
     g = GeometriaC(100, 40, 12, 2.0)
-    r = resistencia_flexion_c(g, 340, aleta_comprimida_arriostrada=True)
+    r = resistencia_flexion_c(g, 340)
     assert r.Se == pytest.approx(r.Sx_bruto, rel=1e-9)
     assert r.y_eje_neutro == pytest.approx(g.hc / 2, rel=1e-9)
 
@@ -101,7 +101,7 @@ def test_se_calculado_a_mano_solo_se_reduce_la_aleta():
     """H=100, B=80, D=22, t=1.6, Fy=250. Is ≥ Ia ⇒ R1 = 1; alma y pestaña totalmente efectivas (se verifica)."""
     H, B, D, t, Fy = 100.0, 80.0, 22.0, 1.6, 250.0
     g = GeometriaC(H, B, D, t)
-    r = resistencia_flexion_c(g, Fy, aleta_comprimida_arriostrada=True, E=E, mu=MU)
+    r = resistencia_flexion_c(g, Fy, E=E, mu=MU)
     assert r.anchos["alma"]["totalmente_efectiva"]
     assert r.anchos["pestana_comprimida"]["ds"] == pytest.approx(D - t, rel=1e-12)
     assert r.anchos["aleta_comprimida"]["R1"] == 1.0
@@ -130,13 +130,13 @@ def test_se_calculado_a_mano_solo_se_reduce_la_aleta():
 
 def test_se_sobre_sx_no_crece_con_fy():
     g = GeometriaC(203.2, 63.5, 15.9, 1.52)
-    razones = [resistencia_flexion_c(g, fy, aleta_comprimida_arriostrada=True).Se / g.propiedades().Ix for fy in
+    razones = [resistencia_flexion_c(g, fy).Se / g.propiedades().Ix for fy in
                (200, 250, 300, 345, 400, 450)]
     assert all(a >= b - 1e-12 for a, b in zip(razones, razones[1:]))
 
 
 def test_mn_crece_con_el_espesor():
-    mns = [resistencia_flexion_c(GeometriaC(150, 50, 15, t), 340, aleta_comprimida_arriostrada=True).Mn
+    mns = [resistencia_flexion_c(GeometriaC(150, 50, 15, t), 340).Mn
            for t in (1.0, 1.2, 1.5, 1.9, 2.5)]
     assert all(a < b for a, b in zip(mns, mns[1:]))
 
@@ -144,8 +144,8 @@ def test_mn_crece_con_el_espesor():
 def test_homogeneidad_dimensional():
     """Escalar todas las longitudes por 2 deja las esbelteces iguales: Se × 8, Pn × 4 (con KL × 2)."""
     g1, g2 = GeometriaC(150, 50, 15, 1.5), GeometriaC(300, 100, 30, 3.0)
-    s1 = resistencia_flexion_c(g1, 340, aleta_comprimida_arriostrada=True).Se
-    s2 = resistencia_flexion_c(g2, 340, aleta_comprimida_arriostrada=True).Se
+    s1 = resistencia_flexion_c(g1, 340).Se
+    s2 = resistencia_flexion_c(g2, 340).Se
     assert s2 == pytest.approx(8 * s1, rel=1e-7)
     p1 = resistencia_compresion_c(g1, 340, 3000, 1000, 1000).Pn
     p2 = resistencia_compresion_c(g2, 340, 6000, 2000, 2000).Pn
@@ -153,14 +153,16 @@ def test_homogeneidad_dimensional():
 
 
 def test_c_sin_pestana_usa_phi_090_y_aleta_no_rigidizada():
-    r = resistencia_flexion_c(GeometriaC(150, 50, 0, 1.5), 340, aleta_comprimida_arriostrada=True)
+    r = resistencia_flexion_c(GeometriaC(150, 50, 0, 1.5), 340)
     assert r.phi_b == 0.90
     assert "b" in r.anchos["aleta_comprimida"]
 
 
-def test_sin_arriostramiento_falla_explicito():
+def test_sin_arriostramiento_exige_datos_de_pandeo_lateral_torsional():
     with pytest.raises(ValueError, match="lateral-torsional"):
-        resistencia_flexion_c(GeometriaC(150, 50, 15, 1.5), 340, aleta_comprimida_arriostrada=False)
+        flexion_perfil_c(_perfil(), Lm_mm=1000.0, aleta_comprimida_arriostrada=False)
+    with pytest.raises(ValueError, match="no pase KyLy"):
+        flexion_perfil_c(_perfil(), Lm_mm=1000.0, KyLy_mm=1000.0, aleta_comprimida_arriostrada=True)
 
 
 def test_interaccion_flexion_cortante_a_mano():
@@ -250,21 +252,22 @@ def test_pandeo_eje_debil_a_mano():
 
 def test_contrato_resultado_motor():
     perfil = _perfil()
-    for res in (propiedades_perfil_c(perfil), flexion_perfil_c(perfil, aleta_comprimida_arriostrada=True),
+    for res in (propiedades_perfil_c(perfil), flexion_perfil_c(perfil, Lm_mm=1000.0, aleta_comprimida_arriostrada=True),
                 cortante_perfil_c(perfil), tension_perfil_c(perfil, An_mm2=350.0),
-                compresion_perfil_c(perfil, 3000, 1000, 1000),
-                verificar_viga_c(perfil, 2.0, 5.0, aleta_comprimida_arriostrada=True)):
+                compresion_perfil_c(perfil, 3000, 1000, 1000, Lm_mm=1000.0),
+                verificar_viga_c(perfil, 2.0, 5.0, Lm_mm=1000.0, aleta_comprimida_arriostrada=True)):
         assert res.referencia_normativa.startswith("NSR-10")
         assert res.aviso_responsabilidad_profesional
         assert isinstance(res.en_borde_dominio, bool)
-    assert any("distorsional" in a for a in flexion_perfil_c(perfil, aleta_comprimida_arriostrada=True).advertencias)
+    estados = flexion_perfil_c(perfil, Lm_mm=1000.0, aleta_comprimida_arriostrada=True).valor["estados_limite"]
+    assert set(estados) == {"seccion", "distorsional"}
 
 
 def test_verificar_viga_cumple_y_no_cumple():
     perfil = _perfil()
-    ok = verificar_viga_c(perfil, 1.0, 2.0, aleta_comprimida_arriostrada=True)
+    ok = verificar_viga_c(perfil, 1.0, 2.0, Lm_mm=1000.0, aleta_comprimida_arriostrada=True)
     assert ok.valor["cumple"] is True
-    malo = verificar_viga_c(perfil, 50.0, 2.0, aleta_comprimida_arriostrada=True)
+    malo = verificar_viga_c(perfil, 50.0, 2.0, Lm_mm=1000.0, aleta_comprimida_arriostrada=True)
     assert malo.valor["cumple"] is False and malo.valor["gobierna"] in ("flexion", "interaccion")
 
 
@@ -280,7 +283,7 @@ def test_en_borde_cerca_del_limite_de_aleta():
 ])
 def test_fuera_de_dominio_falla(kw, patron):
     with pytest.raises(ValueError, match=patron):
-        flexion_perfil_c(_perfil(**kw), aleta_comprimida_arriostrada=True)
+        flexion_perfil_c(_perfil(**kw), Lm_mm=1000.0, aleta_comprimida_arriostrada=True)
 
 
 def test_entradas_invalidas():
@@ -301,7 +304,7 @@ def test_eje_neutro_brentq_igual_a_sustitucion_sucesiva(dims, fy):
     otro algoritmo, sustitución sucesiva, y debe coincidir."""
     from src import flexion as fx
     g = GeometriaC(*dims)
-    r = resistencia_flexion_c(g, fy, aleta_comprimida_arriostrada=True)
+    r = resistencia_flexion_c(g, fy)
     y = g.hc / 2
     for _ in range(1000):
         y_nuevo = fx._estado(g, y, fy, E_ACERO_MPA, MU)[0]

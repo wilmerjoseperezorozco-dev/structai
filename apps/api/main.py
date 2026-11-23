@@ -578,6 +578,14 @@ except Exception as e:
     log.warning(f"✗ motor-licuacion no disponible: {e}")
 
 try:
+    from routers.acero_frio import router as acero_frio_router
+    ACERO_FRIO_AVAILABLE = True
+    log.info("✓ motor-acero-frio cargado")
+except Exception as e:
+    ACERO_FRIO_AVAILABLE = False
+    log.warning(f"✗ motor-acero-frio no disponible: {e}")
+
+try:
     from routers.redes import router as redes_router
     REDES_AVAILABLE = True
     log.info("✓ motor-redes cargado")
@@ -833,6 +841,9 @@ if GEOTECNIA_AVAILABLE:
 if LICUACION_AVAILABLE:
     app.include_router(licuacion_router)
     app.include_router(licuacion_router, prefix="/v1")
+if ACERO_FRIO_AVAILABLE:
+    app.include_router(acero_frio_router)
+    app.include_router(acero_frio_router, prefix="/v1")
 if REDES_AVAILABLE:
     app.include_router(redes_router)
     app.include_router(redes_router, prefix="/v1")

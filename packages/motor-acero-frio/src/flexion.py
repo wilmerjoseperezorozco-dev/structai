@@ -1,13 +1,15 @@
-"""Resistencia nominal a flexión de un perfil C por iniciación de la fluencia, NSR-10 F.4.3.3.1.1 Procedimiento 1.
+"""Resistencia nominal a flexión de un perfil C: sección (F.4.3.3.1.1) y pandeo lateral-torsional (F.4.3.3.1.2.1).
 
-Mn = Se·Fy (F.4.3.3-1). Flexión alrededor del eje fuerte (horizontal) con la aleta superior en compresión.
-Se se obtiene de la sección efectiva: los anchos efectivos dependen de los esfuerzos, que dependen del eje neutro
-de la sección efectiva. Ese punto fijo se resuelve con brentq sobre g(y) = y − ycg_efectivo(y) (regla 3: nada de
-iteraciones con paso fijo). La fibra que alcanza Fy es la más alejada del eje neutro efectivo.
+Sección, Procedimiento 1: Mn = Se·Fy (F.4.3.3-1). Flexión alrededor del eje fuerte (horizontal) con la aleta superior
+en compresión. Se sale de la sección efectiva; los anchos efectivos dependen de los esfuerzos, que dependen del eje
+neutro de la sección efectiva. Ese punto fijo se resuelve con brentq sobre g(y) = y − ycg_efectivo(y) (regla 3: nada
+de iteraciones con paso fijo). La fibra que alcanza Fy es la más alejada del eje neutro efectivo.
 
-Solo resistencia de la sección. NO verifica pandeo lateral-torsional (F.4.3.3.1.2) ni pandeo distorsional
-(F.4.3.3.1.4): por eso la función exige declarar que la aleta comprimida está arriostrada lateralmente de forma
-continua, y el contrato deja la advertencia del pandeo distorsional.
+Pandeo lateral-torsional: Mn = Sc·Fc (F.4.3.3-7), con Sc la sección efectiva con la fibra extrema comprimida a Fc (el
+mismo solucionador). Fe por F.4.3.3-10: en la C, la flexión alrededor del eje fuerte es flexión alrededor del eje de
+simetría.
+
+El pandeo distorsional está en distorsional.py; el contrato toma el menor de los tres estados límite.
 
 Supuestos de cálculo (se reportan en la salida):
 - método lineal y esquinas rectas (radio interior 0), ver seccion.py;
@@ -27,6 +29,9 @@ from .seccion import GeometriaC
 
 PHI_B_RIGIDIZADA = 0.95      # F.4.3.3.1.1, aleta comprimida rigidizada o parcialmente rigidizada
 PHI_B_NO_RIGIDIZADA = 0.90   # F.4.3.3.1.1, aleta comprimida no rigidizada
+PHI_B_LTB = 0.90             # F.4.3.3.1.2
+FE_SIN_LTB = 2.78            # Fe ≥ 2.78·Fy: sin pandeo lateral-torsional (F.4.3.3.1.2.1)
+FE_ELASTICO = 0.56           # Fe ≤ 0.56·Fy: Fc = Fe (F.4.3.3-9)
 
 Tramo = tuple[float, float, float, float]   # (x1, y1, x2, y2) en la línea media
 
@@ -106,10 +111,14 @@ def _seccion_efectiva(g: GeometriaC, f_ext: float, y_na: float, E: float, mu: fl
     return tramos, anchos, f_aleta
 
 
-def _estado(g: GeometriaC, y_na: float, Fy: float, E: float, mu: float):
+def _estado(g: GeometriaC, y_na: float, Fy: float, E: float, mu: float, f_comp: float | None = None):
+    """Con f_comp = None, la fibra más alejada llega a Fy (F.4.3.3-1). Con f_comp, la fibra comprimida está a f_comp
+    (Sc de F.4.3.3-7)."""
     t = g.t
     d_comp, d_tens = (g.hc + t / 2) - y_na, y_na + t / 2
-    if d_comp >= d_tens:
+    if f_comp is not None:
+        f_ext, fibra = f_comp, "compresion"
+    elif d_comp >= d_tens:
         f_ext, fibra = Fy, "compresion"
     else:
         f_ext, fibra = Fy * d_comp / d_tens, "tension"
@@ -118,20 +127,12 @@ def _estado(g: GeometriaC, y_na: float, Fy: float, E: float, mu: float):
     return ycg, Ix, fibra, d_comp, d_tens, tramos, anchos, f_aleta
 
 
-def resistencia_flexion_c(g: GeometriaC, Fy: float, *, aleta_comprimida_arriostrada: bool,
-                          E: float = E_ACERO_MPA, mu: float = MU_ACERO) -> ResultadoFlexion:
-    """Mn = Se·Fy (F.4.3.3-1) para un perfil C en flexión alrededor del eje fuerte."""
-    if aleta_comprimida_arriostrada is not True:
-        raise ValueError("Solo se calcula la resistencia de la sección (F.4.3.3.1.1). Sin arriostramiento lateral continuo "
-                         "de la aleta comprimida gobierna el pandeo lateral-torsional (F.4.3.3.1.2), que este motor "
-                         "todavía no implementa.")
-    if not (Fy > 0 and math.isfinite(Fy)):
-        raise ValueError(f"Fy = {Fy} inválido (NSR-10 F.4.1.6.1).")
+def _resolver_eje_neutro(g: GeometriaC, Fy: float, E: float, mu: float, f_comp: float | None = None):
     t, hc = g.t, g.hc
     eps = 1e-6 * hc
 
     def residuo(y: float) -> float:
-        return y - _estado(g, y, Fy, E, mu)[0]
+        return y - _estado(g, y, Fy, E, mu, f_comp)[0]
 
     lo, hi = eps, hc - t / 2 - eps     # el eje neutro debe cortar el alma por debajo de su borde comprimido
     if residuo(lo) * residuo(hi) > 0:
@@ -139,13 +140,82 @@ def resistencia_flexion_c(g: GeometriaC, Fy: float, *, aleta_comprimida_arriostr
     y_na = brentq(residuo, lo, hi, xtol=1e-9 * hc, rtol=1e-12, maxiter=200)
     if abs(residuo(y_na)) > 1e-6 * hc:
         raise ValueError("La iteración de la sección efectiva no convergió (F.4.3.3.1.1).")
-    ycg, Ix, fibra, d_comp, d_tens, tramos, anchos, f_aleta = _estado(g, y_na, Fy, E, mu)
+    return y_na, _estado(g, y_na, Fy, E, mu, f_comp)
+
+
+def resistencia_flexion_c(g: GeometriaC, Fy: float, E: float = E_ACERO_MPA, mu: float = MU_ACERO) -> ResultadoFlexion:
+    """Resistencia de la sección: Mn = Se·Fy (F.4.3.3-1), flexión alrededor del eje fuerte. No incluye el pandeo
+    lateral-torsional ni el distorsional: el contrato los combina."""
+    if not (Fy > 0 and math.isfinite(Fy)):
+        raise ValueError(f"Fy = {Fy} inválido (NSR-10 F.4.1.6.1).")
+    t, hc = g.t, g.hc
+    y_na, (ycg, Ix, fibra, d_comp, d_tens, tramos, anchos, f_aleta) = _resolver_eje_neutro(g, Fy, E, mu)
     Se = Ix / (d_comp if fibra == "compresion" else d_tens)
     pb = g.propiedades()
     Sx = pb.Ix / ((hc + t / 2) - pb.yc)
     phi = PHI_B_RIGIDIZADA if g.con_pestana else PHI_B_NO_RIGIDIZADA
     return ResultadoFlexion(Mn=Se * Fy, phi_b=phi, Se=Se, Sx_bruto=Sx, y_eje_neutro=y_na, fibra_que_fluye=fibra,
                             f_aleta=f_aleta, anchos=anchos, tramos=tramos)
+
+
+def modulo_efectivo_a_esfuerzo(g: GeometriaC, f_comp: float, E: float = E_ACERO_MPA, mu: float = MU_ACERO) -> float:
+    """Sc: módulo de la sección efectiva respecto a la fibra extrema comprimida, con esa fibra a f_comp (F.4.3.3-7)."""
+    if not (f_comp > 0 and math.isfinite(f_comp)):
+        raise ValueError(f"Esfuerzo {f_comp} inválido (F.4.3.3-7).")
+    _, (ycg, Ix, fibra, d_comp, *_resto) = _resolver_eje_neutro(g, f_comp, E, mu, f_comp)
+    return Ix / d_comp
+
+
+def coeficiente_cb(Mmax: float, MA: float, MB: float, MC: float) -> float:
+    """Cb = 12.5·Mmax/(2.5·Mmax + 3MA + 4MB + 3MC) (F.4.3.3-12), con valores absolutos. Puede tomarse 1 (conservador);
+    en voladizos con el extremo libre sin arriostrar debe ser 1."""
+    for nombre, v in (("Mmax", Mmax), ("MA", MA), ("MB", MB), ("MC", MC)):
+        if not (v >= 0 and math.isfinite(v)):
+            raise ValueError(f"{nombre} = {v} inválido: use valores absolutos (F.4.3.3-12).")
+    if Mmax <= 0 or max(MA, MB, MC) > Mmax:
+        raise ValueError("Mmax debe ser positivo y el mayor de los momentos del segmento (F.4.3.3-12).")
+    return 12.5 * Mmax / (2.5 * Mmax + 3 * MA + 4 * MB + 3 * MC)
+
+
+@dataclass(frozen=True)
+class ResultadoLTB:
+    Mn: float          # N·mm
+    phi_b: float
+    Fe: float          # MPa
+    Fc: float          # MPa
+    Sc: float          # mm³
+    Sf: float          # mm³
+    rango: str         # "sin_ltb" | "inelastico" | "elastico"
+    sigma_ey: float
+    sigma_t: float
+
+
+def resistencia_ltb_c(g: GeometriaC, Fy: float, KyLy: float, KtLt: float, Cb: float,
+                      E: float = E_ACERO_MPA, mu: float = MU_ACERO) -> ResultadoLTB:
+    """Mn = Sc·Fc (F.4.3.3-7) con Fe = Cb·ro·A·√(σey·σt)/Sf (F.4.3.3-10). G = E/(2(1+μ))."""
+    for nombre, v in (("Fy", Fy), ("KyLy", KyLy), ("KtLt", KtLt)):
+        if not (v > 0 and math.isfinite(v)):
+            raise ValueError(f"{nombre} = {v} inválido: debe ser positivo (NSR-10 F.4.3.3.1.2.1).")
+    if not (math.isfinite(Cb) and 1.0 <= Cb <= 5.0):
+        raise ValueError(f"Cb = {Cb} fuera de [1, 5]: F.4.3.3-12 no da otros valores (NSR-10 F.4.3.3.1.2.1).")
+    p = g.propiedades()
+    G = E / (2 * (1 + mu))
+    sigma_ey = math.pi ** 2 * E / (KyLy / p.ry) ** 2                                       # F.4.3.3-14
+    sigma_t = (G * p.J + math.pi ** 2 * E * p.Cw / KtLt ** 2) / (p.A * p.ro ** 2)         # F.4.3.3-15
+    Sf = p.Ix / ((g.hc + g.t / 2) - p.yc)
+    Fe = Cb * p.ro * p.A * math.sqrt(sigma_ey * sigma_t) / Sf                              # F.4.3.3-10
+    if Fe >= FE_SIN_LTB * Fy:
+        sec = resistencia_flexion_c(g, Fy, E, mu)                                          # F.4.3.3.1.1(a)
+        # La norma remite a F.4.3.3.1.1(a): vale la resistencia de la sección con su propio φb (0,95 o 0,90).
+        return ResultadoLTB(Mn=sec.Mn, phi_b=sec.phi_b, Fe=Fe, Fc=Fy, Sc=sec.Se, Sf=Sf, rango="sin_ltb",
+                            sigma_ey=sigma_ey, sigma_t=sigma_t)
+    if Fe > FE_ELASTICO * Fy:
+        Fc, rango = (10 / 9) * Fy * (1 - 10 * Fy / (36 * Fe)), "inelastico"               # F.4.3.3-8
+    else:
+        Fc, rango = Fe, "elastico"                                                         # F.4.3.3-9
+    Sc = modulo_efectivo_a_esfuerzo(g, Fc, E, mu)
+    return ResultadoLTB(Mn=Sc * Fc, phi_b=PHI_B_LTB, Fe=Fe, Fc=Fc, Sc=Sc, Sf=Sf, rango=rango,
+                        sigma_ey=sigma_ey, sigma_t=sigma_t)
 
 
 def interaccion_flexion_cortante(Mu: float, Vu: float, phi_Mnxo: float, phi_Vn: float) -> float:
