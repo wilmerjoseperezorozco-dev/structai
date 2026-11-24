@@ -39,6 +39,7 @@ X_PARAMENTO = 1e-6        # perfil_talud con 90°: el paramento vertical queda e
 class FilaClavos:
     profundidad_m: float          # de la cabeza, bajo la corona
     longitud_m: float
+    inclinacion_deg: Optional[float] = None     # None: la inclinación común de `analizar`
 
 
 @dataclass(frozen=True)
@@ -49,8 +50,28 @@ class Capacidades:
     paramento_kn: float
 
 
+@dataclass(frozen=True)
+class EstratoCosido:
+    """Estrato horizontal bajo la corona (#241): rige desde `prof_techo_m` hacia abajo hasta el techo del siguiente.
+    `adherencia_kn_m` es la adherencia admisible por metro de clavo en este estrato (π·qu·DDH / FSPO)."""
+    prof_techo_m: float
+    gamma_kn_m3: float
+    c_kpa: float
+    phi_deg: float
+    adherencia_kn_m: float
+    gamma_sat_kn_m3: Optional[float] = None
+
+
+def _validar_estratos(altura_m: float, estratos: Sequence[EstratoCosido]) -> None:
+    profs = [e.prof_techo_m for e in estratos]
+    if any(p <= 0 for p in profs) or profs != sorted(profs) or len(set(profs)) != len(profs):
+        raise ValueError("Estratos: profundidades de techo positivas, distintas y ascendentes (FHWA GEC 7, Apéndice D).")
+
+
 def refuerzos(altura_m: float, filas: Sequence[FilaClavos], inclinacion_deg: float, sh_m: float,
-              cap: Capacidades) -> tuple:
+              cap: Capacidades, estratos: Sequence[EstratoCosido] = ()) -> tuple:
+    _validar_estratos(altura_m, estratos)
+    adh_estr = tuple((altura_m - e.prof_techo_m, e.adherencia_kn_m / sh_m) for e in estratos)
     if not filas:
         raise ValueError("Se necesita al menos una fila de clavos (FHWA GEC 7).")
     out = []
@@ -58,9 +79,10 @@ def refuerzos(altura_m: float, filas: Sequence[FilaClavos], inclinacion_deg: flo
         if not 0.0 < f.profundidad_m < altura_m:
             raise ValueError(f"La cabeza del clavo a {f.profundidad_m} m debe quedar entre la corona y el pie (FHWA GEC 7).")
         out.append(EST.Refuerzo(x_cabeza=X_PARAMENTO, y_cabeza=altura_m - f.profundidad_m,
-                                inclinacion_deg=inclinacion_deg, longitud_m=f.longitud_m,
+                                inclinacion_deg=inclinacion_deg if f.inclinacion_deg is None else f.inclinacion_deg,
+                                longitud_m=f.longitud_m,
                                 t_tension_kn_m=cap.tension_kn / sh_m, adherencia_kn_m_por_m=cap.adherencia_kn_m / sh_m,
-                                t_cabeza_kn_m=cap.paramento_kn / sh_m))
+                                t_cabeza_kn_m=cap.paramento_kn / sh_m, adherencia_estratos=adh_estr))
     return tuple(out)
 
 
@@ -68,10 +90,16 @@ def analizar(*, altura_m: float, filas: Sequence[FilaClavos], inclinacion_deg: f
              gamma_kn_m3: float, c_kpa: float, phi_deg: float, gamma_sat_kn_m3: Optional[float] = None,
              prof_freatico_m: Optional[float] = None, sobrecarga_kpa: float = 0.0,
              ancho_sobrecarga_m: Optional[float] = None, kh: float = 0.0, grieta_traccion: bool = False,
-             prof_estrato_firme_m: Optional[float] = None) -> dict:
+             prof_estrato_firme_m: Optional[float] = None, estratos: Sequence[EstratoCosido] = (),
+             metodo: str = "A") -> dict:
+    """`gamma_kn_m3`, `c_kpa`, `phi_deg` y `cap.adherencia_kn_m` son los del estrato superior; `estratos` agrega los de abajo.
+    `metodo`: "A" con capacidades admisibles (por defecto, SNAP-2 y GEC 7 de 2015) o "B" con capacidades últimas divididas por
+    el FS global (modo "Ultimate" de SNAIL, GEC 7 de 2003)."""
     perfil = EST.perfil_talud(altura_m, 90.0)
     suelo = EST.SueloExc(gamma_kn_m3, c_kpa, phi_deg, gamma_sat_kn_m3)
-    refs = refuerzos(altura_m, filas, inclinacion_deg, sh_m, cap)
+    refs = refuerzos(altura_m, filas, inclinacion_deg, sh_m, cap, estratos)
+    estr = tuple(EST.EstratoExc(altura_m - e.prof_techo_m, EST.SueloExc(e.gamma_kn_m3, e.c_kpa, e.phi_deg, e.gamma_sat_kn_m3))
+                 for e in estratos)
     franja = None
     if sobrecarga_kpa > 0:
         if ancho_sobrecarga_m is None or ancho_sobrecarga_m <= 0:
@@ -80,7 +108,7 @@ def analizar(*, altura_m: float, filas: Sequence[FilaClavos], inclinacion_deg: f
     r = EST.factor_seguridad_talud(perfil, suelo, prof_freatico=prof_freatico_m, sobrecarga_kpa=sobrecarga_kpa,
                                    sobrecarga_x=franja, kh=kh, grieta_traccion=grieta_traccion,
                                    prof_estrato_firme=prof_estrato_firme_m, refuerzos=refs,
-                                   paramento_continuo=True)
+                                   paramento_continuo=True, estratos=estr, metodo_refuerzo=metodo)
     clavos = []
     for f, ref in zip(filas, refs):
         t_m, _, modo = EST.fuerza_refuerzo(ref, r.xc, r.yc, r.radio)

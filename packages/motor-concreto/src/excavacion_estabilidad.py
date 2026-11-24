@@ -11,10 +11,10 @@ Norma (leída del PDF fuente el 2026-11-09):
   iguales al 50 % de los de diseño. FSBUM (resistencia no drenada Su): 1,80 y 1,40 estáticos; con sismo no se permite. H.2.4.2 admite Su solo para taludes TEMPORALES
   en cohesivos saturados y no fisurados, y no para taludes permanentes, materiales no saturados o fisurados, ni análisis seudoestáticos.
 
-HIPÓTESIS DE INVESTIGACIÓN (no están en la norma): (1) Bishop simplificado con búsqueda de círculos (rejilla y refinamiento); (2) suelo homogéneo; (3) freática
+HIPÓTESIS DE INVESTIGACIÓN (no están en la norma): (1) Bishop simplificado con búsqueda de círculos (rejilla y refinamiento); (2) suelo homogéneo, o estratos horizontales (`estratos`, #241: peso integrado por estrato y c, φ del estrato de la base de cada dovela); (3) freática
 horizontal, con presión de poros hidrostática limitada a la superficie del terreno (sin red de flujo): si queda sobre el fondo de la excavación hay flujo y se marca `requiere_abatimiento`; (4) grieta de tracción SECA (sin empuje hidrostático: no conservador con agua alta) de
 profundidad 2c/(γ√Ka) (conservadora respecto de una grieta inexistente); (5) sobrecarga en franja uniforme sin dispersión (la parte que cae sobre la masa trasera que corta la grieta se descarta junto con ella); (5b) la superficie de falla no baja más de 1,2·H bajo el pie salvo que se dé `prof_estrato_firme` (hipótesis de estrato firme, no dato: ver `en_borde_dominio`); (6) sismo como fuerza horizontal kh·W en el
-centroide de cada dovela. No cubre falla de fondo, flujo, suelos estratificados ni superficies no circulares. No es un estudio geotécnico (H.1): los parámetros son del sitio.
+centroide de cada dovela. No cubre falla de fondo, flujo, estratos inclinados ni superficies no circulares. No es un estudio geotécnico (H.1): los parámetros son del sitio.
 """
 from __future__ import annotations
 
@@ -62,6 +62,28 @@ def reducir_cohesion(suelo: SueloExc, fraccion: float = 0.30) -> SueloExc:
     if not 0.0 <= fraccion < 1.0:
         raise ValueError("fraccion en [0, 1)")
     return replace(suelo, c_kpa=suelo.c_kpa * (1.0 - fraccion))
+
+
+@dataclass(frozen=True)
+class EstratoExc:
+    """Estrato horizontal (#241): `suelo` rige por debajo de la cota `cota_techo` (m, con el pie en y = 0) hasta el techo del
+    estrato siguiente. Sobre el techo más alto rige el suelo principal. El peso de cada dovela se integra por estratos y la
+    resistencia (c, φ) es la del estrato donde queda la base de la dovela."""
+    cota_techo: float
+    suelo: SueloExc
+
+
+def _capas(suelo: SueloExc, estratos: tuple[EstratoExc, ...]) -> list[tuple[float, float, SueloExc]]:
+    """(y_inf, y_sup, suelo) de arriba abajo, cubriendo toda la recta."""
+    techos = [e.cota_techo for e in estratos]
+    if techos != sorted(techos, reverse=True) or len(set(techos)) != len(techos):
+        raise ValueError("estratos: cotas de techo distintas y en orden descendente (de arriba abajo)")
+    capas, sup, s = [], math.inf, suelo
+    for e in estratos:
+        capas.append((e.cota_techo, sup, s))
+        sup, s = e.cota_techo, e.suelo
+    capas.append((-math.inf, sup, s))
+    return capas
 
 
 @dataclass(frozen=True)
@@ -141,12 +163,40 @@ class Refuerzo:
     t_tension_kn_m: float              # RT / (FST · SH)
     adherencia_kn_m_por_m: float       # π·qu·DDH / (FSPO · SH), por metro de longitud del clavo
     t_cabeza_kn_m: float               # mín(RFF, RFP) / (FS paramento · SH)
+    # Adherencia por estratos: ((cota_techo, adherencia), ...) en orden descendente; bajo cada cota rige su adherencia.
+    # Sobre el techo más alto rige `adherencia_kn_m_por_m`. Vacío: adherencia uniforme.
+    adherencia_estratos: tuple[tuple[float, float], ...] = ()
 
     def __post_init__(self) -> None:
         if not 0.0 <= self.inclinacion_deg < 90.0 or self.longitud_m <= 0:
             raise ValueError("refuerzo: inclinación en [0°, 90°) y longitud > 0")
         if min(self.t_tension_kn_m, self.adherencia_kn_m_por_m, self.t_cabeza_kn_m) < 0:
             raise ValueError("refuerzo: capacidades no negativas")
+        techos = [c for c, _ in self.adherencia_estratos]
+        if techos != sorted(techos, reverse=True) or len(set(techos)) != len(techos) \
+                or any(a < 0 for _, a in self.adherencia_estratos):
+            raise ValueError("refuerzo: estratos de adherencia con cotas descendentes distintas y adherencias no negativas")
+
+    def adherencia_tramo(self, s0: float, s1: float) -> float:
+        """Adherencia integrada (kN/m) entre las distancias s0 y s1 medidas desde la cabeza a lo largo del clavo."""
+        if s1 <= s0:
+            return 0.0
+        if not self.adherencia_estratos:
+            return self.adherencia_kn_m_por_m * (s1 - s0)
+        sen = math.sin(math.radians(self.inclinacion_deg))
+        cortes = [s0, s1]
+        if sen > 0:
+            cortes += [(self.y_cabeza - c) / sen for c, _ in self.adherencia_estratos]
+        cortes = sorted(s for s in set(cortes) if s0 <= s <= s1)
+        total = 0.0
+        for a, b in zip(cortes[:-1], cortes[1:]):
+            y = self.y_cabeza - 0.5 * (a + b) * sen
+            adh = self.adherencia_kn_m_por_m
+            for c, ad in self.adherencia_estratos:
+                if y < c:
+                    adh = ad
+            total += adh * (b - a)
+        return total
 
 
 def fuerza_refuerzo(r: Refuerzo, xc: float, yc: float, radio: float) -> tuple[float, float, str]:
@@ -166,17 +216,35 @@ def _cruce_refuerzo(r: Refuerzo, xc: float, yc: float, radio: float) -> tuple[fl
     s = -b + math.sqrt(b * b - (dx * dx + dy * dy - radio * radio))       # salida del círculo a lo largo del clavo
     if s >= r.longitud_m:
         return 0.0, 0.0, "no_cruza", 0.0
-    detras, delante = r.longitud_m - s, s
-    modos = {"tension": r.t_tension_kn_m, "arrancamiento": r.adherencia_kn_m_por_m * detras,
-             "paramento": r.t_cabeza_kn_m + r.adherencia_kn_m_por_m * delante}
+    modos = {"tension": r.t_tension_kn_m, "arrancamiento": r.adherencia_tramo(s, r.longitud_m),
+             "paramento": r.t_cabeza_kn_m + r.adherencia_tramo(0.0, s)}
     gobierna = min(modos, key=modos.get)
     t = modos[gobierna]
     px, py = r.x_cabeza + s * ux - xc, r.y_cabeza + s * uy - yc
     return t, px * (t * uy) - py * (t * ux), gobierna, px + xc
 
 
+def _peso_y_resistencia(yt, yb, b, y_agua, capas):
+    """Peso de cada dovela integrado por estratos y (c, tanφ) del estrato de su base."""
+    w = np.zeros_like(yt)
+    c = np.zeros_like(yt)
+    tf = np.zeros_like(yt)
+    for y_inf, y_sup, s in capas:
+        lo, hi = np.maximum(yb, y_inf), np.minimum(yt, y_sup)
+        espesor = np.maximum(hi - lo, 0.0)
+        if y_agua is None:
+            w = w + s.gamma * espesor * b
+        else:
+            bajo = np.maximum(np.minimum(hi, y_agua) - lo, 0.0) * (espesor > 0)
+            w = w + (s.gamma * (espesor - bajo) + s.gamma_saturado * bajo) * b
+        en = (yb >= y_inf) & (yb < y_sup)
+        c = np.where(en, s.c_kpa, c)
+        tf = np.where(en, math.tan(math.radians(s.phi_deg)), tf)
+    return w, c, tf
+
+
 def _fs_circulo(xc, yc, radio, perfil: Perfil, suelo: SueloExc, y_agua, q, q_x, kh, z_grieta, refuerzos=(),
-                paramento_continuo=False) -> float:
+                paramento_continuo=False, estratos: tuple[EstratoExc, ...] = (), metodo_refuerzo: str = "A") -> float:
     xs = np.linspace(xc - radio, xc + radio, N_MALLA)
     y_bot = yc - np.sqrt(np.maximum(radio**2 - (xs - xc) ** 2, 0.0))
     f = perfil.terreno(xs) - y_bot
@@ -203,7 +271,10 @@ def _fs_circulo(xc, yc, radio, perfil: Perfil, suelo: SueloExc, y_agua, q, q_x, 
     h = yt - yb
     sin_a = (xm - xc) / radio
     cos_a = np.sqrt(np.maximum(1.0 - sin_a**2, 1e-12))
-    if y_agua is None:
+    if estratos:
+        w, c_base, tan_phi = _peso_y_resistencia(yt, yb, b, y_agua, _capas(suelo, estratos))
+        u = np.zeros_like(h) if y_agua is None else GAMMA_AGUA_KN_M3 * np.maximum(np.minimum(y_agua, yt) - yb, 0.0)
+    elif y_agua is None:
         w = suelo.gamma * h * b
         u = np.zeros_like(h)
     else:
@@ -211,17 +282,24 @@ def _fs_circulo(xc, yc, radio, perfil: Perfil, suelo: SueloExc, y_agua, q, q_x, 
         abajo = np.maximum(np.minimum(yt, y_agua) - yb, 0.0)
         w = (suelo.gamma * arriba + suelo.gamma_saturado * abajo) * b
         u = GAMMA_AGUA_KN_M3 * np.maximum(np.minimum(y_agua, yt) - yb, 0.0)        # carga piezométrica limitada a la superficie del terreno
+    if not estratos:
+        c_base, tan_phi = suelo.c_kpa, math.tan(math.radians(suelo.phi_deg))
     if q > 0.0:
         w = w + q * b * ((xm >= q_x[0]) & (xm <= q_x[1]))
-    tan_phi = math.tan(math.radians(suelo.phi_deg))
     motor = float((w * sin_a).sum()) + (float((kh * w * (yc - 0.5 * (yt + yb))).sum()) / radio if kh > 0 else 0.0)
+    resiste_ref = 0.0
     if refuerzos:
         # Método A (FHWA-NHI-17-068, Ec. 12; GEC 7, Ec. 5.9): la fuerza admisible del clavo reduce el momento motor con
         # T·sin(α + θ) y su componente vertical T·sinθ se suma a la normal de la dovela que cruza, sin dividirse por FS.
+        # Método B (modo "Ultimate" de SNAIL, GEC 7 de 2003, fe de erratas 11; soporte "pasivo"): la capacidad última del
+        # clavo entra al lado resistente y se divide por el mismo FS que el suelo.
         for r in refuerzos:
             t, m, _, x_cruce = _cruce_refuerzo(r, xc, yc, radio)
             if t > 0.0:
-                motor -= m / radio
+                if metodo_refuerzo == "A":
+                    motor -= m / radio
+                else:
+                    resiste_ref += m / radio
                 j = int(np.argmin(np.abs(xm - x_cruce)))
                 w = w.copy()
                 w[j] += t * math.sin(math.radians(r.inclinacion_deg))
@@ -232,7 +310,7 @@ def _fs_circulo(xc, yc, radio, perfil: Perfil, suelo: SueloExc, y_agua, q, q_x, 
         m_alfa = cos_a + sin_a * tan_phi / fs
         if (m_alfa <= 0.2).any():
             return FS_INVALIDO
-        nuevo = float(((suelo.c_kpa * b + np.maximum(w - u * b, 0.0) * tan_phi) / m_alfa).sum()) / motor
+        nuevo = (float(((c_base * b + np.maximum(w - u * b, 0.0) * tan_phi) / m_alfa).sum()) + resiste_ref) / motor
         if abs(nuevo - fs) < 1e-7:
             fs = nuevo
             break
@@ -245,7 +323,8 @@ def _fs_circulo(xc, yc, radio, perfil: Perfil, suelo: SueloExc, y_agua, q, q_x, 
 def factor_seguridad_talud(perfil: Perfil, suelo: SueloExc, prof_freatico: float | None = None, sobrecarga_kpa: float = 0.0,
                            sobrecarga_x: tuple[float, float] | None = None, kh: float = 0.0, grieta_traccion: bool = True,
                            prof_estrato_firme: float | None = None, refuerzos: tuple[Refuerzo, ...] = (),
-                           paramento_continuo: bool = False) -> ResultadoTalud:
+                           paramento_continuo: bool = False, estratos: tuple[EstratoExc, ...] = (),
+                           metodo_refuerzo: str = "A") -> ResultadoTalud:
     """FS mínimo de Bishop simplificado. `prof_freatico`: profundidad del agua bajo la corona (m); None = sin agua. `sobrecarga_x`: (x_ini, x_fin) de la franja en el sistema del perfil.
     `prof_estrato_firme`: profundidad (m, bajo el pie) de un estrato firme que limita la superficie de falla. Si es None se ASUME 1,2·H (cota de búsqueda, no un dato
     del sitio): en φ = 0 con sismo el FS decrece sin límite al agrandar el círculo, así que el resultado depende de esa cota y `en_borde_dominio` lo señala."""
@@ -258,7 +337,12 @@ def factor_seguridad_talud(perfil: Perfil, suelo: SueloExc, prof_freatico: float
     if grieta_traccion and suelo.c_kpa > 0:
         ka = math.tan(math.radians(45.0 - suelo.phi_deg / 2.0)) ** 2
         z_grieta = min(2.0 * suelo.c_kpa / (suelo.gamma * math.sqrt(ka)), 0.9 * perfil.altura)
-    args = (perfil, suelo, y_agua, sobrecarga_kpa, sobrecarga_x or (0.0, 0.0), kh, z_grieta, tuple(refuerzos), paramento_continuo)
+    if metodo_refuerzo not in ("A", "B"):
+        raise ValueError("metodo_refuerzo: 'A' (fuerzas admisibles, reducen el motor) o 'B' (capacidades últimas, divididas por el FS)")
+    estratos = tuple(estratos)
+    _capas(suelo, estratos)            # valida el orden antes de buscar
+    args = (perfil, suelo, y_agua, sobrecarga_kpa, sobrecarga_x or (0.0, 0.0), kh, z_grieta, tuple(refuerzos), paramento_continuo,
+            estratos, metodo_refuerzo)
     s = max(perfil.altura, perfil.x_cresta)
     if prof_estrato_firme is not None and prof_estrato_firme <= 0:
         raise ValueError("prof_estrato_firme debe ser > 0")

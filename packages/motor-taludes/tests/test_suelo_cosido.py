@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 import pytest
 
-from src.suelo_cosido import EST, Capacidades, FilaClavos, analizar
+from src.suelo_cosido import EST, Capacidades, EstratoCosido, FilaClavos, analizar, refuerzos
 
 SUELO = dict(gamma_kn_m3=19.0, c_kpa=5.0, phi_deg=32.0)
 FILAS = [FilaClavos(d, 6.0) for d in (1.0, 2.5, 4.0, 5.5, 7.0)]
@@ -66,3 +66,28 @@ def test_rechazos():
         _fs(Capacidades(10, 10, 10), filas=[])
     with pytest.raises(ValueError):
         _fs(Capacidades(10, 10, 10), sobrecarga_kpa=10.0)
+
+
+def test_estrato_identico_no_cambia_y_uno_mas_resistente_sube_el_fs():
+    cap = Capacidades(150.0, 40.0, 150.0)
+    base = _fs(cap)["fs"]
+    igual = EstratoCosido(6.0, 19.0, 5.0, 32.0, 40.0)
+    assert _fs(cap, estratos=[igual])["fs"] == pytest.approx(base, rel=1e-6)
+    fuerte = EstratoCosido(6.0, 20.0, 5.0, 39.0, 60.0)
+    assert _fs(cap, estratos=[fuerte])["fs"] > base
+
+
+def test_estratos_desordenados_se_rechazan():
+    cap = Capacidades(150.0, 40.0, 150.0)
+    with pytest.raises(ValueError):
+        _fs(cap, estratos=[EstratoCosido(6.0, 20.0, 0.0, 39.0, 60.0), EstratoCosido(3.0, 20.0, 0.0, 39.0, 60.0)])
+
+
+def test_inclinacion_por_fila():
+    cap = Capacidades(150.0, 40.0, 150.0)
+    comun = _fs(cap)["fs"]
+    igual = [FilaClavos(f.profundidad_m, f.longitud_m, 15.0) for f in FILAS]
+    assert _fs(cap, filas=igual)["fs"] == pytest.approx(comun, rel=1e-9)
+    distinta = [FilaClavos(FILAS[0].profundidad_m, FILAS[0].longitud_m, 25.0)] + list(FILAS[1:])
+    refs = refuerzos(8.0, distinta, 15.0, 1.5, cap)
+    assert [r.inclinacion_deg for r in refs] == [25.0, 15.0, 15.0, 15.0, 15.0]
