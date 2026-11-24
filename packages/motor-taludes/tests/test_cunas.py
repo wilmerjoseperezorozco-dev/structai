@@ -111,3 +111,14 @@ def test_cabezas_sobre_el_paramento_inclinado():
     from src.suelo_cosido import refuerzos
     refs = refuerzos(9.5, [FilaClavos(1.0, 7.7)], 15.0, 1.5, Capacidades(118.0, 30.0, 90.0), bateria_deg=10.0)
     assert refs[0].x_cabeza == pytest.approx(8.5 * math.tan(math.radians(10.0))) and refs[0].y_cabeza == 8.5
+
+
+def test_v4_cinematica_rechaza_cunas_degeneradas_e_invertidas():
+    capas = _capas(18.0, 5.0, 34.0)
+    # cuña superior casi vertical (θ2 ≈ 87° > 45° + 17°)
+    assert fs_cunas(EST, H, capas, 2.0, 2.0, 2.3) == 1.0e3
+    # base inferior más empinada que la superior (θ1 > θ2)
+    assert fs_cunas(EST, H, capas, 1.0, 4.0, 6.0) == 1.0e3
+    # admisible: θ1 = 30°, θ2 = 55°
+    xb, yb = 2.0, 2.0 * math.tan(math.radians(30.0))
+    assert fs_cunas(EST, H, capas, xb, yb, xb + (H - yb) / math.tan(math.radians(55.0))) < 1.0e3

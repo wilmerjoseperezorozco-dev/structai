@@ -12,6 +12,7 @@ Formulación (FHWA GEC 7 de 2003, §5.8.2 y Apéndice F; FHWA-NHI-17-068, §6.2 
   delante). Método A, por defecto: T son capacidades admisibles (últimas ÷ su FS propio, como el modo FLAGT = 0 de SNAIL)
   y no se dividen por el FS global. Método B: T se divide por el FS global.
 - Sismo: fuerza horizontal kh·W hacia la excavación en cada cuña.
+- Cinemática (v4): θ1 ≤ θ2 ≤ 45° + φ/2 (φ medio de la interfaz), salvo el plano único.
 - Se descartan las soluciones con normal de base negativa (tracción en el suelo). Si el quiebre está sobre la recta del
   pie a la corona, la superficie es un plano y se resuelve como un solo bloque (la interfaz es interna).
 
@@ -28,7 +29,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 import numpy as np
-from scipy.optimize import brentq, minimize
+from scipy.optimize import brentq, minimize, minimize_scalar
 
 N_COL = 40
 FS_INVALIDO = 1.0e3
@@ -126,6 +127,12 @@ def fs_cunas(est, geo, capas, xb, yb, xe, *, y_agua=None, q=0.0, q_x=(0.0, 0.0),
     w2, c2, tf2, u2 = k2
     ch, tfi = _interfaz(capas, yb, float(perfil.terreno(xb)))
     colineal = abs(yb * xe - H * xb) <= 1e-9 * max(H * xe, 1.0)
+    if not colineal:
+        # v4 (#241), cinemática de dos bloques: la base inferior es más tendida que la superior, y la superior no es más
+        # empinada que el plano activo de Rankine, 45° + φ/2, con φ medio de la interfaz. Evita cuñas superiores
+        # degeneradas de ancho casi nulo y base casi vertical.
+        if th1 > th2 or th2 > math.radians(45.0) + 0.5 * math.atan(tfi):
+            return FS_INVALIDO
     if interfaz == "horizontal" or colineal:
         ch, tfi = 0.0, 0.0             # plano único: las fuerzas de la interfaz son internas y el FS no depende de ellas
     tx, ty = [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]
@@ -195,10 +202,25 @@ def buscar(est, geo, capas, *, y_agua=None, q=0.0, q_x=(0.0, 0.0), kh=0.0, refue
                 v = fs_cunas(est, perfil, capas, fb * xe, fy * H, xe, **kw)
                 if v < FS_INVALIDO:
                     cand.append((v, xe, fb, fy))
-    if not cand:
+    # Familia de planos únicos (quiebre colineal), que la cinemática de dos bloques no alcanza con la rejilla.
+    def plano(xe):
+        if not 0.0 < xe <= xe_max:
+            return FS_INVALIDO
+        ye = float(perfil.terreno(xe))
+        return fs_cunas(est, perfil, capas, 0.5 * xe, 0.5 * ye, xe, **kw)
+    planos = [(plano(x), x) for x in np.linspace(0.05 * H, xe_max, 120)]
+    planos = [p for p in planos if p[0] < FS_INVALIDO]
+    plano_min = None
+    if planos:
+        v0, x0 = min(planos)
+        paso = (xe_max - 0.05 * H) / 119
+        r = minimize_scalar(plano, bounds=(max(x0 - paso, 1e-6), min(x0 + paso, xe_max)), method="bounded",
+                            options={"xatol": 1e-6})
+        plano_min = (float(r.fun), float(r.x)) if r.fun < v0 else (v0, x0)
+    if not cand and plano_min is None:
         raise ValueError("no se halló ninguna cuña bilineal válida (FHWA GEC 7, §5.8.2)")
     cand.sort()
-    mejor = cand[0]
+    mejor = cand[0] if cand else (FS_INVALIDO, 0.0, 0.5, 0.5)
 
     def f(p):
         xe, fb, fy = p
@@ -210,4 +232,8 @@ def buscar(est, geo, capas, *, y_agua=None, q=0.0, q_x=(0.0, 0.0), kh=0.0, refue
         if r.fun < mejor[0]:
             mejor = (float(r.fun), *map(float, r.x))
     v, xe, fb, fy = mejor
+    if plano_min is not None and plano_min[0] < v:
+        v, xe = plano_min
+        ye = float(perfil.terreno(xe))
+        return ResultadoCunas(v, 0.5 * xe, 0.5 * ye, xe)
     return ResultadoCunas(v, fb * xe, fy * H, xe)
