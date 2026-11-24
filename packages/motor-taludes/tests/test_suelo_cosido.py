@@ -14,6 +14,7 @@ FILAS = [FilaClavos(d, 6.0) for d in (1.0, 2.5, 4.0, 5.5, 7.0)]
 
 
 def _fs(cap, filas=FILAS, **kw):
+    kw.setdefault("superficie", "circulo")
     return analizar(altura_m=8.0, filas=filas, inclinacion_deg=15.0, sh_m=1.5, cap=cap, **SUELO, **kw)
 
 
@@ -91,3 +92,12 @@ def test_inclinacion_por_fila():
     distinta = [FilaClavos(FILAS[0].profundidad_m, FILAS[0].longitud_m, 25.0)] + list(FILAS[1:])
     refs = refuerzos(8.0, distinta, 15.0, 1.5, cap)
     assert [r.inclinacion_deg for r in refs] == [25.0, 15.0, 15.0, 15.0, 15.0]
+
+
+def test_control_analitico_de_salida_por_el_paramento():
+    # Círculo crítico de la v2 en el caso 2 de GEC 7 de 2003: corta el paramento 0,6 m sobre el pie entre dos puntos de
+    # la malla. Con el control analítico (v3) se descarta; sin paramento continuo sigue siendo válido.
+    perfil = EST.perfil_talud(10.0, 90.0)
+    args = (perfil, EST.SueloExc(18.0, 0.0, 33.0), None, 0.0, (0.0, 0.0), 0.0, 0.0)
+    assert EST._fs_circulo(-4.068, 14.1, 14.1, *args, (), True) == EST.FS_INVALIDO
+    assert EST._fs_circulo(-4.068, 14.1, 14.1, *args, (), False) < EST.FS_INVALIDO

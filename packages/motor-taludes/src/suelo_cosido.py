@@ -11,6 +11,10 @@ todas por metro de frente (÷ SH). Versión 2 (#241), según la Ec. 12 de FHWA-N
 Método A, la formulación de SNAP-2 y SLIDE): la fuerza reduce el momento motor con T·sin(α + θ) y su componente vertical
 T·sinθ entra en la normal de la dovela que cruza, sin dividirse por el FS del suelo. El paramento es continuo: no se
 aceptan superficies que salgan por la cara del muro sobre el pie.
+
+Versión 3 (#241): la v2 no pasó contra GEC 7 de 2003 porque los círculos son menos críticos que las cuñas en cortes
+verticales. Ahora también se buscan dos cuñas planas por el pie con equilibrio de fuerzas (`cunas.py`, modelo de SNAIL) y
+gobierna el menor FS. El control de salida por el paramento es analítico. Sin validar hasta tener un caso independiente.
 """
 from __future__ import annotations
 
@@ -32,6 +36,7 @@ def _cargar_estabilidad():
 
 
 EST = _cargar_estabilidad()
+from . import cunas as CUNAS  # noqa: E402
 X_PARAMENTO = 1e-6        # perfil_talud con 90°: el paramento vertical queda en x ≈ 0
 
 
@@ -91,10 +96,17 @@ def analizar(*, altura_m: float, filas: Sequence[FilaClavos], inclinacion_deg: f
              prof_freatico_m: Optional[float] = None, sobrecarga_kpa: float = 0.0,
              ancho_sobrecarga_m: Optional[float] = None, kh: float = 0.0, grieta_traccion: bool = False,
              prof_estrato_firme_m: Optional[float] = None, estratos: Sequence[EstratoCosido] = (),
-             metodo: str = "A") -> dict:
+             metodo: str = "A", superficie: str = "ambas", inicio_sobrecarga_m: float = 0.0,
+             interfaz: str = "movilizada") -> dict:
     """`gamma_kn_m3`, `c_kpa`, `phi_deg` y `cap.adherencia_kn_m` son los del estrato superior; `estratos` agrega los de abajo.
     `metodo`: "A" con capacidades admisibles (por defecto, SNAP-2 y GEC 7 de 2015) o "B" con capacidades últimas divididas por
-    el FS global (modo "Ultimate" de SNAIL, GEC 7 de 2003)."""
+    el FS global.
+    `superficie` (v3): "circulo" (Bishop, también por debajo del pie), "cuna" (dos cuñas por el pie, `cunas.py`) o "ambas"
+    (por defecto: gobierna el menor FS). `inicio_sobrecarga_m`: distancia de la corona al inicio de la franja cargada."""
+    if superficie not in ("circulo", "cuna", "ambas"):
+        raise ValueError("superficie: 'circulo', 'cuna' o 'ambas' (FHWA GEC 7).")
+    if superficie != "circulo" and grieta_traccion:
+        raise ValueError("Las cuñas no modelan grieta de tracción: use superficie='circulo' (FHWA GEC 7, §5.8.2).")
     perfil = EST.perfil_talud(altura_m, 90.0)
     suelo = EST.SueloExc(gamma_kn_m3, c_kpa, phi_deg, gamma_sat_kn_m3)
     refs = refuerzos(altura_m, filas, inclinacion_deg, sh_m, cap, estratos)
@@ -104,7 +116,10 @@ def analizar(*, altura_m: float, filas: Sequence[FilaClavos], inclinacion_deg: f
     if sobrecarga_kpa > 0:
         if ancho_sobrecarga_m is None or ancho_sobrecarga_m <= 0:
             raise ValueError("Sobrecarga sin ancho de franja (FHWA GEC 7, Apéndice C).")
-        franja = (perfil.x_cresta, perfil.x_cresta + ancho_sobrecarga_m)
+        franja = (perfil.x_cresta + inicio_sobrecarga_m, perfil.x_cresta + inicio_sobrecarga_m + ancho_sobrecarga_m)
+    if superficie == "cuna":
+        return _analizar_cunas(altura_m, suelo, estr, refs, filas, sh_m, prof_freatico_m, sobrecarga_kpa, franja, kh,
+                               metodo, interfaz)
     r = EST.factor_seguridad_talud(perfil, suelo, prof_freatico=prof_freatico_m, sobrecarga_kpa=sobrecarga_kpa,
                                    sobrecarga_x=franja, kh=kh, grieta_traccion=grieta_traccion,
                                    prof_estrato_firme=prof_estrato_firme_m, refuerzos=refs,
@@ -116,8 +131,27 @@ def analizar(*, altura_m: float, filas: Sequence[FilaClavos], inclinacion_deg: f
         clavos.append({"profundidad_m": f.profundidad_m, "longitud_m": f.longitud_m, "t_kn": t_m * sh_m,
                        "gobierna": modo, "l_delante_m": lfail,
                        "l_detras_m": None if lfail is None else f.longitud_m - lfail})
-    return {"fs": r.fs, "circulo": {"xc": r.xc, "yc": r.yc, "radio": r.radio}, "clavos": clavos,
+    circ = {"fs": r.fs, "superficie": "circulo", "circulo": {"xc": r.xc, "yc": r.yc, "radio": r.radio}, "clavos": clavos,
             "en_borde_dominio": r.en_borde_dominio, "profundidad_grieta_m": r.profundidad_grieta_m}
+    if superficie == "circulo":
+        return circ
+    cun = _analizar_cunas(altura_m, suelo, estr, refs, filas, sh_m, prof_freatico_m, sobrecarga_kpa, franja, kh, metodo,
+                          interfaz)
+    gana = cun if cun["fs"] < circ["fs"] else circ
+    return {**gana, "fs_circulo": circ["fs"], "fs_cuna": cun["fs"]}
+
+
+def _analizar_cunas(altura_m, suelo, estr, refs, filas, sh_m, prof_freatico_m, q, franja, kh, metodo, interfaz) -> dict:
+    capas = EST._capas(suelo, estr)
+    y_agua = None if prof_freatico_m is None else altura_m - prof_freatico_m
+    r = CUNAS.buscar(EST, altura_m, capas, y_agua=y_agua, q=q, q_x=franja or (0.0, 0.0), kh=kh, refuerzos=refs,
+                     metodo=metodo, interfaz=interfaz)
+    clavos = []
+    for f, ref in zip(filas, refs):
+        t_m, _, modo = CUNAS.fuerza_clavo(ref, r.xb, r.yb, r.xe, altura_m)
+        clavos.append({"profundidad_m": f.profundidad_m, "longitud_m": f.longitud_m, "t_kn": t_m * sh_m, "gobierna": modo})
+    return {"fs": r.fs, "superficie": "cuna", "cuna": {"xb": r.xb, "yb": r.yb, "xe": r.xe}, "clavos": clavos,
+            "en_borde_dominio": False, "profundidad_grieta_m": 0.0}
 
 
 def _longitud_delante(ref, xc: float, yc: float, radio: float) -> Optional[float]:

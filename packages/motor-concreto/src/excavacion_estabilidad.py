@@ -259,6 +259,9 @@ def _fs_circulo(xc, yc, radio, perfil: Perfil, suelo: SueloExc, y_agua, q, q_x, 
     x_der = xs[i1] + (xs[i1 + 1] - xs[i1]) * f[i1] / (f[i1] - f[i1 + 1])
     if paramento_continuo and perfil.terreno(x_izq) > TOL_SALIDA_PIE * perfil.altura:
         return FS_INVALIDO             # sale por el paramento continuo, sobre el pie: no es un mecanismo (GEC 7, Fig. C.3)
+    if paramento_continuo and abs(xc) < radio and yc - math.sqrt(radio * radio - xc * xc) > TOL_SALIDA_PIE * perfil.altura:
+        return FS_INVALIDO             # control analítico (v3, #241): en el paramento (x = 0) el círculo debe pasar por el pie o
+                                       # debajo; el control con la malla no ve el salto del paramento vertical entre dos puntos
     b = (x_der - x_izq) / N_DOVELAS
     xm = x_izq + b * (np.arange(N_DOVELAS) + 0.5)
     yb = yc - np.sqrt(np.maximum(radio**2 - (xm - xc) ** 2, 1e-12))
