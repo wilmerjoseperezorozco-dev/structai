@@ -15,7 +15,8 @@ Formulación (FHWA GEC 7 de 2003, §5.8.2 y Apéndice F; FHWA-NHI-17-068, §6.2 
 - Se descartan las soluciones con normal de base negativa (tracción en el suelo). Si el quiebre está sobre la recta del
   pie a la corona, la superficie es un plano y se resuelve como un solo bloque (la interfaz es interna).
 
-HIPÓTESIS (no están en la norma ni en GEC 7): paramento vertical y corona horizontal; la normal de la base se reparte en
+HIPÓTESIS (no están en la norma ni en GEC 7): perfil del terreno cualquiera sobre el pie (paramento con o sin
+inclinación, talud en la corona), con el pie en (0, 0); la normal de la base se reparte en
 proporción al peso de cada columna para promediar tanφ; sin grieta de tracción; agua con presión hidrostática bajo
 una freática horizontal. No incluye la cuña triple bajo el pie de SNAIL: las superficies bajo el pie se cubren con los
 círculos de Bishop (ver `suelo_cosido.analizar`).
@@ -40,6 +41,11 @@ class ResultadoCunas:
     xb: float
     yb: float
     xe: float
+
+
+def _perfil(est, geo):
+    """Acepta la altura de un muro vertical con corona horizontal o un `Perfil` (pie en (0, 0), terreno arriba)."""
+    return est.perfil_talud(float(geo), 90.0) if isinstance(geo, (int, float)) else geo
 
 
 def _cruce_clavo(r, xb, yb, xe, H):
@@ -71,12 +77,14 @@ def fuerza_clavo(r, xb, yb, xe, H):
     return modos[g], cuna, g
 
 
-def _cuna(est, capas, x0, x1, y_base0, y_base1, H, y_agua, q, q_x):
+def _cuna(est, capas, x0, x1, y_base0, y_base1, perfil, y_agua, q, q_x):
     """Peso, C, tanφ ponderado, U y longitud de la base de una cuña limitada por x0..x1 y la base recta dada."""
     b = (x1 - x0) / N_COL
     xm = x0 + b * (np.arange(N_COL) + 0.5)
     yb = y_base0 + (y_base1 - y_base0) * (xm - x0) / (x1 - x0)
-    yt = np.full_like(xm, H)
+    yt = perfil.terreno(xm)
+    if (yt - yb <= 0.0).any():
+        return None                    # la base sale del terreno: no es un mecanismo
     w, c, tf = est._peso_y_resistencia(yt, yb, b, y_agua, capas)
     if q > 0.0:
         w = w + q * b * ((xm >= q_x[0]) & (xm <= q_x[1]))
@@ -99,16 +107,24 @@ def _interfaz(capas, xb_y0, H):
     return ch, (tf / h if h > 0 else 0.0)
 
 
-def fs_cunas(est, H, capas, xb, yb, xe, *, y_agua=None, q=0.0, q_x=(0.0, 0.0), kh=0.0, refuerzos=(),
+def fs_cunas(est, geo, capas, xb, yb, xe, *, y_agua=None, q=0.0, q_x=(0.0, 0.0), kh=0.0, refuerzos=(),
              metodo="A", interfaz="movilizada") -> float:
-    if not (0.0 < xb < xe and 0.0 <= yb < H):
+    perfil = _perfil(est, geo)
+    if not (0.0 < xb < xe):
+        return FS_INVALIDO
+    H = float(perfil.terreno(xe))         # cota de salida en la corona
+    if not 0.0 <= yb < min(H, float(perfil.terreno(xb))):
         return FS_INVALIDO
     th1, th2 = math.atan2(yb, xb), math.atan2(H - yb, xe - xb)
     if not (0.0 <= th1 < math.pi / 2 and 0.0 < th2 < math.pi / 2):
         return FS_INVALIDO
-    w1, c1, tf1, u1 = _cuna(est, capas, 0.0, xb, 0.0, yb, H, y_agua, q, q_x)
-    w2, c2, tf2, u2 = _cuna(est, capas, xb, xe, yb, H, H, y_agua, q, q_x)
-    ch, tfi = _interfaz(capas, yb, H)
+    k1 = _cuna(est, capas, 0.0, xb, 0.0, yb, perfil, y_agua, q, q_x)
+    k2 = _cuna(est, capas, xb, xe, yb, H, perfil, y_agua, q, q_x)
+    if k1 is None or k2 is None:
+        return FS_INVALIDO
+    w1, c1, tf1, u1 = k1
+    w2, c2, tf2, u2 = k2
+    ch, tfi = _interfaz(capas, yb, float(perfil.terreno(xb)))
     colineal = abs(yb * xe - H * xb) <= 1e-9 * max(H * xe, 1.0)
     if interfaz == "horizontal" or colineal:
         ch, tfi = 0.0, 0.0             # plano único: las fuerzas de la interfaz son internas y el FS no depende de ellas
@@ -163,18 +179,20 @@ def fs_cunas(est, H, capas, xb, yb, xe, *, y_agua=None, q=0.0, q_x=(0.0, 0.0), k
     return FS_INVALIDO
 
 
-def buscar(est, H, capas, *, y_agua=None, q=0.0, q_x=(0.0, 0.0), kh=0.0, refuerzos=(), metodo="A",
+def buscar(est, geo, capas, *, y_agua=None, q=0.0, q_x=(0.0, 0.0), kh=0.0, refuerzos=(), metodo="A",
            interfaz="movilizada", xe_max: Optional[float] = None) -> ResultadoCunas:
     """Busca la superficie bilineal crítica: rejilla en (xe, xb/xe, yb/H) y refinamiento con Nelder-Mead."""
+    perfil = _perfil(est, geo)
+    H = perfil.altura
     kw = dict(y_agua=y_agua, q=q, q_x=q_x, kh=kh, refuerzos=tuple(refuerzos), metodo=metodo, interfaz=interfaz)
     if xe_max is None:
         largo = max((r.longitud_m for r in refuerzos), default=H)
-        xe_max = 1.2 * largo + H
+        xe_max = perfil.x_cresta + 1.2 * largo + H
     cand = []
     for xe in np.linspace(0.1 * H, xe_max, 16):
         for fb in (0.1, 0.25, 0.4, 0.55, 0.7, 0.85, 0.95):
             for fy in (0.0, 0.1, 0.25, 0.4, 0.55, 0.7, 0.85):
-                v = fs_cunas(est, H, capas, fb * xe, fy * H, xe, **kw)
+                v = fs_cunas(est, perfil, capas, fb * xe, fy * H, xe, **kw)
                 if v < FS_INVALIDO:
                     cand.append((v, xe, fb, fy))
     if not cand:
@@ -186,7 +204,7 @@ def buscar(est, H, capas, *, y_agua=None, q=0.0, q_x=(0.0, 0.0), kh=0.0, refuerz
         xe, fb, fy = p
         if not (0.0 < fb < 1.0 and 0.0 <= fy < 0.999 and 0.0 < xe <= xe_max):
             return FS_INVALIDO
-        return fs_cunas(est, H, capas, fb * xe, fy * H, xe, **kw)
+        return fs_cunas(est, perfil, capas, fb * xe, fy * H, xe, **kw)
     for v0, xe0, fb0, fy0 in cand[:6]:
         r = minimize(f, [xe0, fb0, fy0], method="Nelder-Mead", options={"xatol": 1e-4, "fatol": 1e-7, "maxiter": 400})
         if r.fun < mejor[0]:

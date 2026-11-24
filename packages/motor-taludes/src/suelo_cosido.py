@@ -40,6 +40,23 @@ from . import cunas as CUNAS  # noqa: E402
 X_PARAMENTO = 1e-6        # perfil_talud con 90°: el paramento vertical queda en x ≈ 0
 
 
+def perfil_muro(altura_m: float, bateria_deg: float = 0.0, talud_corona_deg: float = 0.0,
+                ancho_talud_corona_m: float = 0.0):
+    """Perfil con el pie en (0, 0): paramento inclinado `bateria_deg` respecto de la vertical (hacia el terreno) y, sobre
+    la corona, un talud de `talud_corona_deg` en un ancho horizontal `ancho_talud_corona_m`, luego horizontal."""
+    if not 0.0 <= bateria_deg < 45.0 or not 0.0 <= talud_corona_deg < 60.0 or ancho_talud_corona_m < 0:
+        raise ValueError("Geometría del muro: batería en [0°, 45°), talud en la corona en [0°, 60°) y ancho ≥ 0 (FHWA GEC 7).")
+    if bateria_deg == 0.0 and (talud_corona_deg == 0.0 or ancho_talud_corona_m == 0.0):
+        return EST.perfil_talud(altura_m, 90.0)
+    xc = max(altura_m * math.tan(math.radians(bateria_deg)), X_PARAMENTO)
+    pts = [(0.0, 0.0), (xc, altura_m)]
+    if talud_corona_deg > 0.0 and ancho_talud_corona_m > 0.0:
+        pts.append((xc + ancho_talud_corona_m, altura_m + ancho_talud_corona_m * math.tan(math.radians(talud_corona_deg))))
+    ext = 100.0 * altura_m
+    pts = [(-ext, 0.0)] + pts + [(pts[-1][0] + ext, pts[-1][1])]
+    return EST.Perfil(tuple(x for x, _ in pts), tuple(y for _, y in pts), altura_m, xc)
+
+
 @dataclass(frozen=True)
 class FilaClavos:
     profundidad_m: float          # de la cabeza, bajo la corona
@@ -74,7 +91,7 @@ def _validar_estratos(altura_m: float, estratos: Sequence[EstratoCosido]) -> Non
 
 
 def refuerzos(altura_m: float, filas: Sequence[FilaClavos], inclinacion_deg: float, sh_m: float,
-              cap: Capacidades, estratos: Sequence[EstratoCosido] = ()) -> tuple:
+              cap: Capacidades, estratos: Sequence[EstratoCosido] = (), bateria_deg: float = 0.0) -> tuple:
     _validar_estratos(altura_m, estratos)
     adh_estr = tuple((altura_m - e.prof_techo_m, e.adherencia_kn_m / sh_m) for e in estratos)
     if not filas:
@@ -83,7 +100,8 @@ def refuerzos(altura_m: float, filas: Sequence[FilaClavos], inclinacion_deg: flo
     for f in filas:
         if not 0.0 < f.profundidad_m < altura_m:
             raise ValueError(f"La cabeza del clavo a {f.profundidad_m} m debe quedar entre la corona y el pie (FHWA GEC 7).")
-        out.append(EST.Refuerzo(x_cabeza=X_PARAMENTO, y_cabeza=altura_m - f.profundidad_m,
+        yc = altura_m - f.profundidad_m
+        out.append(EST.Refuerzo(x_cabeza=max(yc * math.tan(math.radians(bateria_deg)), X_PARAMENTO), y_cabeza=yc,
                                 inclinacion_deg=inclinacion_deg if f.inclinacion_deg is None else f.inclinacion_deg,
                                 longitud_m=f.longitud_m,
                                 t_tension_kn_m=cap.tension_kn / sh_m, adherencia_kn_m_por_m=cap.adherencia_kn_m / sh_m,
@@ -97,7 +115,8 @@ def analizar(*, altura_m: float, filas: Sequence[FilaClavos], inclinacion_deg: f
              ancho_sobrecarga_m: Optional[float] = None, kh: float = 0.0, grieta_traccion: bool = False,
              prof_estrato_firme_m: Optional[float] = None, estratos: Sequence[EstratoCosido] = (),
              metodo: str = "A", superficie: str = "ambas", inicio_sobrecarga_m: float = 0.0,
-             interfaz: str = "movilizada") -> dict:
+             interfaz: str = "movilizada", bateria_deg: float = 0.0, talud_corona_deg: float = 0.0,
+             ancho_talud_corona_m: float = 0.0) -> dict:
     """`gamma_kn_m3`, `c_kpa`, `phi_deg` y `cap.adherencia_kn_m` son los del estrato superior; `estratos` agrega los de abajo.
     `metodo`: "A" con capacidades admisibles (por defecto, SNAP-2 y GEC 7 de 2015) o "B" con capacidades últimas divididas por
     el FS global.
@@ -107,9 +126,9 @@ def analizar(*, altura_m: float, filas: Sequence[FilaClavos], inclinacion_deg: f
         raise ValueError("superficie: 'circulo', 'cuna' o 'ambas' (FHWA GEC 7).")
     if superficie != "circulo" and grieta_traccion:
         raise ValueError("Las cuñas no modelan grieta de tracción: use superficie='circulo' (FHWA GEC 7, §5.8.2).")
-    perfil = EST.perfil_talud(altura_m, 90.0)
+    perfil = perfil_muro(altura_m, bateria_deg, talud_corona_deg, ancho_talud_corona_m)
     suelo = EST.SueloExc(gamma_kn_m3, c_kpa, phi_deg, gamma_sat_kn_m3)
-    refs = refuerzos(altura_m, filas, inclinacion_deg, sh_m, cap, estratos)
+    refs = refuerzos(altura_m, filas, inclinacion_deg, sh_m, cap, estratos, bateria_deg)
     estr = tuple(EST.EstratoExc(altura_m - e.prof_techo_m, EST.SueloExc(e.gamma_kn_m3, e.c_kpa, e.phi_deg, e.gamma_sat_kn_m3))
                  for e in estratos)
     franja = None
@@ -118,7 +137,7 @@ def analizar(*, altura_m: float, filas: Sequence[FilaClavos], inclinacion_deg: f
             raise ValueError("Sobrecarga sin ancho de franja (FHWA GEC 7, Apéndice C).")
         franja = (perfil.x_cresta + inicio_sobrecarga_m, perfil.x_cresta + inicio_sobrecarga_m + ancho_sobrecarga_m)
     if superficie == "cuna":
-        return _analizar_cunas(altura_m, suelo, estr, refs, filas, sh_m, prof_freatico_m, sobrecarga_kpa, franja, kh,
+        return _analizar_cunas(perfil, suelo, estr, refs, filas, sh_m, prof_freatico_m, sobrecarga_kpa, franja, kh,
                                metodo, interfaz)
     r = EST.factor_seguridad_talud(perfil, suelo, prof_freatico=prof_freatico_m, sobrecarga_kpa=sobrecarga_kpa,
                                    sobrecarga_x=franja, kh=kh, grieta_traccion=grieta_traccion,
@@ -135,20 +154,21 @@ def analizar(*, altura_m: float, filas: Sequence[FilaClavos], inclinacion_deg: f
             "en_borde_dominio": r.en_borde_dominio, "profundidad_grieta_m": r.profundidad_grieta_m}
     if superficie == "circulo":
         return circ
-    cun = _analizar_cunas(altura_m, suelo, estr, refs, filas, sh_m, prof_freatico_m, sobrecarga_kpa, franja, kh, metodo,
+    cun = _analizar_cunas(perfil, suelo, estr, refs, filas, sh_m, prof_freatico_m, sobrecarga_kpa, franja, kh, metodo,
                           interfaz)
     gana = cun if cun["fs"] < circ["fs"] else circ
     return {**gana, "fs_circulo": circ["fs"], "fs_cuna": cun["fs"]}
 
 
-def _analizar_cunas(altura_m, suelo, estr, refs, filas, sh_m, prof_freatico_m, q, franja, kh, metodo, interfaz) -> dict:
+def _analizar_cunas(perfil, suelo, estr, refs, filas, sh_m, prof_freatico_m, q, franja, kh, metodo, interfaz) -> dict:
+    altura_m = perfil.altura
     capas = EST._capas(suelo, estr)
     y_agua = None if prof_freatico_m is None else altura_m - prof_freatico_m
-    r = CUNAS.buscar(EST, altura_m, capas, y_agua=y_agua, q=q, q_x=franja or (0.0, 0.0), kh=kh, refuerzos=refs,
+    r = CUNAS.buscar(EST, perfil, capas, y_agua=y_agua, q=q, q_x=franja or (0.0, 0.0), kh=kh, refuerzos=refs,
                      metodo=metodo, interfaz=interfaz)
     clavos = []
     for f, ref in zip(filas, refs):
-        t_m, _, modo = CUNAS.fuerza_clavo(ref, r.xb, r.yb, r.xe, altura_m)
+        t_m, _, modo = CUNAS.fuerza_clavo(ref, r.xb, r.yb, r.xe, float(perfil.terreno(r.xe)))
         clavos.append({"profundidad_m": f.profundidad_m, "longitud_m": f.longitud_m, "t_kn": t_m * sh_m, "gobierna": modo})
     return {"fs": r.fs, "superficie": "cuna", "cuna": {"xb": r.xb, "yb": r.yb, "xe": r.xe}, "clavos": clavos,
             "en_borde_dominio": False, "profundidad_grieta_m": 0.0}

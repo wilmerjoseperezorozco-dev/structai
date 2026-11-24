@@ -84,3 +84,30 @@ def test_analizar_con_cunas_mas_capacidad_mas_fs_y_gobierna_el_menor():
 
 def test_sismo_baja_el_fs():
     assert buscar(EST, H, _capas(), kh=0.15).fs < buscar(EST, H, _capas()).fs
+
+
+def test_perfil_muro_y_plano_con_bateria_a_mano():
+    from src.suelo_cosido import perfil_muro
+    p = perfil_muro(9.5, 10.0, 20.0, 6.0)
+    xc = 9.5 * math.tan(math.radians(10.0))
+    assert p.x_cresta == pytest.approx(xc) and float(p.terreno(xc + 6.0)) == pytest.approx(9.5 + 6.0 * math.tan(math.radians(20)))
+    assert float(p.terreno(xc + 50.0)) == pytest.approx(9.5 + 6.0 * math.tan(math.radians(20)))
+    # Paramento con batería y corona horizontal: plano del pie a (xe, H), área = H·(xe − xc)/2.
+    q = perfil_muro(H, 10.0)
+    xc, xe, g, c, phi = H * math.tan(math.radians(10.0)), 5.0, 18.0, 10.0, 30.0
+    th, w = math.atan2(H, xe), 0.5 * g * H * (xe - H * math.tan(math.radians(10.0)))
+    esperado = (c * math.hypot(xe, H) + w * math.cos(th) * math.tan(math.radians(phi))) / (w * math.sin(th))
+    assert fs_cunas(EST, q, _capas(g, c, phi), 0.4 * xe, 0.4 * H, xe) == pytest.approx(esperado, rel=1e-3)
+
+
+def test_base_que_sale_del_terreno_se_descarta():
+    from src.suelo_cosido import perfil_muro
+    q = perfil_muro(H, 30.0)
+    # quiebre por encima del paramento inclinado: la base inferior sale por la cara
+    assert fs_cunas(EST, q, _capas(), 0.5, 5.0, 6.0) == 1.0e3
+
+
+def test_cabezas_sobre_el_paramento_inclinado():
+    from src.suelo_cosido import refuerzos
+    refs = refuerzos(9.5, [FilaClavos(1.0, 7.7)], 15.0, 1.5, Capacidades(118.0, 30.0, 90.0), bateria_deg=10.0)
+    assert refs[0].x_cabeza == pytest.approx(8.5 * math.tan(math.radians(10.0))) and refs[0].y_cabeza == 8.5
