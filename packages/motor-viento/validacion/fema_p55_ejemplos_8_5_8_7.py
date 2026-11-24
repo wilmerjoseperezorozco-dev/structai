@@ -39,8 +39,9 @@ MPH = 0.44704
 TOL_H1, TOL_H2 = 0.05, 0.10
 
 # ---- se llenan con los resultados del libro después del prerregistro
-LIBRO_8_7: dict = {}   # {"cubierta_1": psf, ..., "muro_5": psf, "_theta": θ de la figura usada}
-LIBRO_8_5: dict = {}   # {θ (grados): levantamiento neto ASD en plf}
+LIBRO_8_7: dict = {"cubierta_1": 34.7, "cubierta_2": 58.2, "cubierta_3": 87.5, "muro_4": 37.6, "muro_5": 46.4,
+                   "_theta": 5.0, "_theta_muro": 20.0}   # Tabla 8-8, 150 mph; cubierta con Fig. 30.4-2A, muros sin reducción
+LIBRO_8_5: dict = {20.0: 424.0}   # Tabla 8-6 y Ej. 8.5: luz 24 ft, 150 mph, θ = 20°
 
 
 def ejemplo_8_7() -> dict:
@@ -51,7 +52,7 @@ def ejemplo_8_7() -> dict:
     for z in ("1", "2", "3"):
         out[f"cubierta_{z}"] = b6.presiones_netas(q, b6.gcp_cubierta(z, a, theta), 0.18)[1] / PSF
     for z in ("4", "5"):
-        out[f"muro_{z}"] = b6.presiones_netas(q, b6.gcp_muro(z, a, theta_deg=theta), 0.18)[1] / PSF
+        out[f"muro_{z}"] = b6.presiones_netas(q, b6.gcp_muro(z, a, theta_deg=LIBRO_8_7.get("_theta_muro", theta)), 0.18)[1] / PSF
     return out
 
 
@@ -71,7 +72,9 @@ def main() -> None:
     sal = {"8.7": {}, "8.5": {}}
     m87 = ejemplo_8_7()
     for k, v in m87.items():
-        sal["8.7"][k] = _cmp(v, LIBRO_8_7[k], TOL_H1) if k in LIBRO_8_7 else {"motor": round(v, 2)}
+        if k.startswith("_"):
+            continue
+        sal["8.7"][k] = _cmp(abs(v), LIBRO_8_7[k], TOL_H1)  # post hoc: el libro tabula la succión en magnitud if k in LIBRO_8_7 else {"motor": round(v, 2)}
     tetas = sorted(set(LIBRO_8_5) | {0.0, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0})
     for t in tetas:
         m = ejemplo_8_5(t)
