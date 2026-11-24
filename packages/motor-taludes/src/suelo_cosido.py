@@ -7,8 +7,10 @@ al que se le pasan los clavos como refuerzos. En cada círculo, la fuerza de un 
   arrancamiento detrás     rPO·LP / FSPO            (LP: longitud detrás de la superficie de falla)
   paramento + delante      R_paramento / FS + rPO·(L − LP) / FSPO
 
-todas por metro de frente (÷ SH). Esa fuerza reduce el momento motor sin dividirse por el FS del suelo (GEC 7, Ec. 5.9).
-No se incluye el aumento de la normal en la base de las dovelas por la componente del clavo.
+todas por metro de frente (÷ SH). Versión 2 (#241), según la Ec. 12 de FHWA-NHI-17-068 (Bishop simplificado con el
+Método A, la formulación de SNAP-2 y SLIDE): la fuerza reduce el momento motor con T·sin(α + θ) y su componente vertical
+T·sinθ entra en la normal de la dovela que cruza, sin dividirse por el FS del suelo. El paramento es continuo: no se
+aceptan superficies que salgan por la cara del muro sobre el pie.
 """
 from __future__ import annotations
 
@@ -77,7 +79,8 @@ def analizar(*, altura_m: float, filas: Sequence[FilaClavos], inclinacion_deg: f
         franja = (perfil.x_cresta, perfil.x_cresta + ancho_sobrecarga_m)
     r = EST.factor_seguridad_talud(perfil, suelo, prof_freatico=prof_freatico_m, sobrecarga_kpa=sobrecarga_kpa,
                                    sobrecarga_x=franja, kh=kh, grieta_traccion=grieta_traccion,
-                                   prof_estrato_firme=prof_estrato_firme_m, refuerzos=refs)
+                                   prof_estrato_firme=prof_estrato_firme_m, refuerzos=refs,
+                                   paramento_continuo=True)
     clavos = []
     for f, ref in zip(filas, refs):
         t_m, _, modo = EST.fuerza_refuerzo(ref, r.xc, r.yc, r.radio)
