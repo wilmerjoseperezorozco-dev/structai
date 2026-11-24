@@ -128,7 +128,48 @@ class ResultadoTalud:
     en_borde_dominio: bool = False          # el óptimo toca la cota de radio o de profundidad: el FS depende de esa cota (ver prof_estrato_firme)
 
 
-def _fs_circulo(xc, yc, radio, perfil: Perfil, suelo: SueloExc, y_agua, q, q_x, kh, z_grieta) -> float:
+@dataclass(frozen=True)
+class Refuerzo:
+    """Clavo o anclaje pasivo por metro de frente (#241). La cabeza está en el paramento y el elemento entra al terreno
+    hacia la derecha (+x) con inclinación `inclinacion_deg` bajo la horizontal. Las capacidades ya son admisibles (divididas
+    por su FS) y por metro de frente (divididas por la separación horizontal)."""
+    x_cabeza: float
+    y_cabeza: float
+    inclinacion_deg: float
+    longitud_m: float
+    t_tension_kn_m: float              # RT / (FST · SH)
+    adherencia_kn_m_por_m: float       # π·qu·DDH / (FSPO · SH), por metro de longitud del clavo
+    t_cabeza_kn_m: float               # mín(RFF, RFP) / (FS paramento · SH)
+
+    def __post_init__(self) -> None:
+        if not 0.0 <= self.inclinacion_deg < 90.0 or self.longitud_m <= 0:
+            raise ValueError("refuerzo: inclinación en [0°, 90°) y longitud > 0")
+        if min(self.t_tension_kn_m, self.adherencia_kn_m_por_m, self.t_cabeza_kn_m) < 0:
+            raise ValueError("refuerzo: capacidades no negativas")
+
+
+def fuerza_refuerzo(r: Refuerzo, xc: float, yc: float, radio: float) -> tuple[float, float, str]:
+    """Fuerza movilizable (kN/m) donde el clavo cruza el círculo y su momento resistente respecto al centro (kN·m/m).
+    T = mín(tensión, adherencia detrás de la superficie, cabeza + adherencia delante) (GEC 7, Ec. 5.2).
+    Si el clavo no cruza el círculo no aporta."""
+    ux, uy = math.cos(math.radians(r.inclinacion_deg)), -math.sin(math.radians(r.inclinacion_deg))
+    dx, dy = r.x_cabeza - xc, r.y_cabeza - yc
+    if dx * dx + dy * dy >= radio * radio:
+        return 0.0, 0.0, "fuera"                 # la cabeza no está dentro de la masa deslizante
+    b = dx * ux + dy * uy
+    s = -b + math.sqrt(b * b - (dx * dx + dy * dy - radio * radio))       # salida del círculo a lo largo del clavo
+    if s >= r.longitud_m:
+        return 0.0, 0.0, "no_cruza"
+    detras, delante = r.longitud_m - s, s
+    modos = {"tension": r.t_tension_kn_m, "arrancamiento": r.adherencia_kn_m_por_m * detras,
+             "paramento": r.t_cabeza_kn_m + r.adherencia_kn_m_por_m * delante}
+    gobierna = min(modos, key=modos.get)
+    t = modos[gobierna]
+    px, py = r.x_cabeza + s * ux - xc, r.y_cabeza + s * uy - yc
+    return t, px * (t * uy) - py * (t * ux), gobierna
+
+
+def _fs_circulo(xc, yc, radio, perfil: Perfil, suelo: SueloExc, y_agua, q, q_x, kh, z_grieta, refuerzos=()) -> float:
     xs = np.linspace(xc - radio, xc + radio, N_MALLA)
     y_bot = yc - np.sqrt(np.maximum(radio**2 - (xs - xc) ** 2, 0.0))
     f = perfil.terreno(xs) - y_bot
@@ -165,6 +206,10 @@ def _fs_circulo(xc, yc, radio, perfil: Perfil, suelo: SueloExc, y_agua, q, q_x, 
         w = w + q * b * ((xm >= q_x[0]) & (xm <= q_x[1]))
     tan_phi = math.tan(math.radians(suelo.phi_deg))
     motor = float((w * sin_a).sum()) + (float((kh * w * (yc - 0.5 * (yt + yb))).sum()) / radio if kh > 0 else 0.0)
+    if refuerzos:
+        # Los clavos reducen el momento motor con su fuerza admisible, sin dividirla por FS (GEC 7, Ec. 5.9);
+        # no se incluye su efecto sobre la normal en la base de las dovelas.
+        motor -= sum(fuerza_refuerzo(r, xc, yc, radio)[1] for r in refuerzos) / radio
     if motor <= 1e-9:
         return FS_INVALIDO
     fs = 1.0
@@ -184,7 +229,7 @@ def _fs_circulo(xc, yc, radio, perfil: Perfil, suelo: SueloExc, y_agua, q, q_x, 
 
 def factor_seguridad_talud(perfil: Perfil, suelo: SueloExc, prof_freatico: float | None = None, sobrecarga_kpa: float = 0.0,
                            sobrecarga_x: tuple[float, float] | None = None, kh: float = 0.0, grieta_traccion: bool = True,
-                           prof_estrato_firme: float | None = None) -> ResultadoTalud:
+                           prof_estrato_firme: float | None = None, refuerzos: tuple[Refuerzo, ...] = ()) -> ResultadoTalud:
     """FS mínimo de Bishop simplificado. `prof_freatico`: profundidad del agua bajo la corona (m); None = sin agua. `sobrecarga_x`: (x_ini, x_fin) de la franja en el sistema del perfil.
     `prof_estrato_firme`: profundidad (m, bajo el pie) de un estrato firme que limita la superficie de falla. Si es None se ASUME 1,2·H (cota de búsqueda, no un dato
     del sitio): en φ = 0 con sismo el FS decrece sin límite al agrandar el círculo, así que el resultado depende de esa cota y `en_borde_dominio` lo señala."""
@@ -197,7 +242,7 @@ def factor_seguridad_talud(perfil: Perfil, suelo: SueloExc, prof_freatico: float
     if grieta_traccion and suelo.c_kpa > 0:
         ka = math.tan(math.radians(45.0 - suelo.phi_deg / 2.0)) ** 2
         z_grieta = min(2.0 * suelo.c_kpa / (suelo.gamma * math.sqrt(ka)), 0.9 * perfil.altura)
-    args = (perfil, suelo, y_agua, sobrecarga_kpa, sobrecarga_x or (0.0, 0.0), kh, z_grieta)
+    args = (perfil, suelo, y_agua, sobrecarga_kpa, sobrecarga_x or (0.0, 0.0), kh, z_grieta, tuple(refuerzos))
     s = max(perfil.altura, perfil.x_cresta)
     if prof_estrato_firme is not None and prof_estrato_firme <= 0:
         raise ValueError("prof_estrato_firme debe ser > 0")
