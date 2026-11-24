@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import importlib.util
 import math
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional, Sequence
@@ -23,6 +24,7 @@ def _cargar_estabilidad():
     ruta = Path(__file__).resolve().parents[2] / "motor-concreto" / "src" / "excavacion_estabilidad.py"
     spec = importlib.util.spec_from_file_location("motor_concreto_excavacion_estabilidad", ruta)
     mod = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = mod          # dataclasses con anotaciones diferidas buscan el módulo aquí
     spec.loader.exec_module(mod)
     return mod
 
