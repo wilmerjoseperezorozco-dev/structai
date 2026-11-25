@@ -92,6 +92,7 @@ class VientoB6:
     kzt: float = 1.0                   # factor topográfico (B.6.5.7), dato
     cerramiento: str = "cerrado"       # B.6.5.9 → GCpi (Fig. B.6.5-2)
     amortiguamiento: float = 0.02      # β para Gf (B.6.5.8.2) si n1 < 1 Hz: HIPÓTESIS declarada (NSR-10 no lo fija)
+    casos_parciales: bool = True       # casos 2–4 de la Fig. B.6.5-6 (B.6.5.12.3, obligatorios); False solo para medir (#322)
 
     def __post_init__(self):
         if self.v_m_s <= 0 or self.kzt <= 0:
@@ -536,7 +537,8 @@ def _casos_viento_general(p, m: Modelo, sis: Optional[dict]):
             casos.append((nom, _p3.Caso3D(nom, maestros=maes, uniformes=unif), ws))
     rx, ry = por_dir["x"], por_dir["y"]
     succion = max(max(w.values()) for _, _, w in casos) if techo else 0.0
-    casos += _casos_viento_parciales(rx["fuerzas_kn"], ry["fuerzas_kn"], lx, ly)
+    if v.casos_parciales:
+        casos += _casos_viento_parciales(rx["fuerzas_kn"], ry["fuerzas_kn"], lx, ly)
     info = {"evaluado": True, "metodo": "general", "V_m_s": v.v_m_s, "exposicion": v.exposicion,
             "Kz": _b6.kz(h, v.exposicion, caso=2), "Kzt": v.kzt, "Kd": _b6.KD_EDIFICIOS, "I": imp, "qh_kpa": rx["qh_kpa"],
             "GCpi": gcpi, "h_m": h, "amortiguamiento": v.amortiguamiento,
@@ -544,7 +546,7 @@ def _casos_viento_general(p, m: Modelo, sis: Optional[dict]):
             "Cp_muros": {"x": rx["Cp"], "y": ry["Cp"]},
             "fuerzas_kn": {"x": rx["fuerzas_kn"], "y": ry["fuerzas_kn"]},
             "cortante_basal_kn": {"x": rx["cortante_basal_kn"], "y": ry["cortante_basal_kn"]},
-            "succion_max_vigas_kn_m": succion, "casos_fig_b656": (1, 2, 3, 4), "excentricidad_rel": EXC_VIENTO}
+            "succion_max_vigas_kn_m": succion, "casos_fig_b656": (1, 2, 3, 4) if v.casos_parciales else (1,), "excentricidad_rel": EXC_VIENTO}
     return casos, info
 
 
@@ -1014,7 +1016,10 @@ def memoria(inf: InformeEdificio3D, m: Modelo, nombres_comb: list[str]):
             L(concepto="Combinaciones con viento", valor="1.2D+1.0L+1.6W; 0.9D+1.6W; 1.2D+1.6L+0.8W (L de cubierta como Lr)",
               referencia="B.2.4-4, B.2.4-6, B.2.4-3", estado="NSR-10 (leído)"),
         ]
-        if vw.get("metodo") == "general":
+        if vw.get("metodo") == "general" and vw["casos_fig_b656"] == (1,):
+            cargas.append(L(concepto="Casos de carga de viento (Fig. B.6.5-6)", valor="solo caso 1 (medición; NO cumple B.6.5.12.3)",
+                            referencia="B.6.5.12.3", estado="HIPÓTESIS"))
+        elif vw.get("metodo") == "general":
             cargas.append(L(concepto="Casos de carga de viento (Fig. B.6.5-6)",
                             valor="1: presión completa por eje; 2: 0,75·P con M_T = 0,75·F·e; 3: 0,75·P en X y Y a la vez; "
                                   "4: 0,563·P en X y Y con M_T = 0,563(Fx·ex + Fy·ey); e = ±0,15·B; todos los signos",

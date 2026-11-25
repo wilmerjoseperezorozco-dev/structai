@@ -193,3 +193,10 @@ def test_casos_torsionales_aparecen_en_la_memoria():
     r = de.disenar_edificio(p)
     txt = " ".join(str(l.concepto) + " " + str(l.valor) for l in r.memoria.cargas)
     assert "Fig. B.6.5-6" in txt and "0,563" in txt and "e_R no se calcula" in txt
+
+
+def test_sin_casos_parciales_queda_solo_el_caso_1():                  # opción de medición de #322
+    from dataclasses import replace
+    p = replace(alto(), viento=replace(VIENTO, casos_parciales=False))
+    casos, info = de._casos_viento(p, de.construir_modelo(p))
+    assert len(casos) == 8 and info["casos_fig_b656"] == (1,)
