@@ -392,6 +392,12 @@ def combinaciones() -> tuple[list[str], np.ndarray, np.ndarray]:
 
 
 # ---------------------------------------------------------------------------------------------------- viento
+H_ADVERTENCIA_VIENTO = 20.0
+ADVERTENCIA_VIENTO_ALTO = ("Viento no evaluado en un edificio de más de 20 m en zona sísmica baja: en el corpus de #242 el "
+                           "viento B.6 cambió el refuerzo del 9 % de estos edificios con V = 36 m/s y exposición D, y el 4 % "
+                           "dejó de cumplir. Declare VientoB6 con la V de la Fig. B.6.4-1 del sitio (#320, #321).")
+
+
 def _casos_viento(p, m: Modelo, sis: Optional[dict] = None):
     """Casos W de B.6 (Método 2, edificios bajos, Fig. B.6.5-7 con θ = 0 por cubierta plana): viento en ±X y ±Y, cada
     uno con GCpi = ±valor. Por caso: fuerza lateral por nivel (zonas 1−4 y 1E−4E sobre el ancho, altura aferente) en el
@@ -782,6 +788,8 @@ def disenar_edificio(p: ProyectoEdificio3D) -> InformeEdificio3D:
     F = np.concatenate([F, _resolver_patrones(m, pats)]) if pats else F
     nombres, C, es_e = _extender_combinaciones(nombres, C, es_e, pats)
     es_w, qw, i_w = np.zeros(len(C), dtype=bool), {}, None
+    if p.viento is None and sum(p.alturas_piso_m) > H_ADVERTENCIA_VIENTO and p.aa <= 0.10 and p.av <= 0.10:
+        inf.advertencias.append(ADVERTENCIA_VIENTO_ALTO)             # #321 opción (c), fase 1
     if p.viento is not None:                                         # B.6 (#292)
         cw, inf.viento = _casos_viento(p, m, sis)
         if cw:

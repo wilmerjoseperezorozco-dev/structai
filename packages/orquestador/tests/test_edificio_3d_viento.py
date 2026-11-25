@@ -161,3 +161,10 @@ def test_cubierta_liviana_con_viento_advierte_y_no_baja_la_demanda():
     assert con.vigas[-1]["demanda"]["M_neg_apoyo"] >= sin.vigas[-1]["demanda"]["M_neg_apoyo"] - 1e-9
     with pytest.raises(ValueError):
         proyecto(carga_muerta_cubierta_kpa=-1.0)
+
+
+def test_advierte_si_falta_viento_en_edificio_alto_de_zona_baja():     # #321 (c)
+    n = 7                                                             # h = 21 m
+    p = proyecto(alturas_piso_m=(3.0,) * n, columnas_mm=(400,) * n, vigas_mm=((300, 450),) * n)
+    assert de.ADVERTENCIA_VIENTO_ALTO in de.disenar_edificio(p).advertencias
+    assert de.ADVERTENCIA_VIENTO_ALTO not in de.disenar_edificio(proyecto()).advertencias
