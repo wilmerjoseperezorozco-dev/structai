@@ -33,3 +33,21 @@
 - El nodo maestro está en el centro geométrico de la planta.
 - **Sigue pendiente:** los casos torsionales de **edificios bajos** (Fig. B.6.5-7, nota 5), parte 2 de #322. Siguen declarados como no verificados en la memoria.
 - La misma población de #242, con una pregunta distinta. No es una validación contra la realidad: mide la sensibilidad del diseño a una obligación de la norma.
+
+---
+
+## Parte 2: casos torsionales de edificios bajos (Fig. B.6.5-7, nota 5)
+
+- **Prerregistro:** [`PRERREGISTRO_322B_TORSION_BAJOS.md`](PRERREGISTRO_322B_TORSION_BAJOS.md), publicado antes de correr.
+- **Corrida:** 344 diseños (86 × 4 brazos), 0 errores.
+
+| Id | Resultado | Predicción | Veredicto |
+|---|---|---|---|
+| T0b | c1 reproduce #292-W: 86/86 en W28C y W36D (en el JSON, la clave se llama `T0_reproduce_242`, pero la referencia es `f1_292w`) | 86/86 | **se cumple** |
+| **T1b** | W36D: 0/86 cambian refuerzo, IC95 [0; 4,3 %] | 0 | **se cumple** |
+| T2b | 0 dejan de cumplir | 0 | **se cumple** |
+| T4b | W28C: 0/86 | 0 | **se cumple** |
+
+**Lectura:** en edificios bajos de concreto con losa, los casos torsionales son obligatorios pero no cambian el diseño. Es coherente con #292-W, donde el viento no gobierna ninguno. Si importarán, será en estructuras livianas, que no se evalúan aquí.
+
+Con esto, el #322 queda implementado en las dos partes. Falta el PR.
