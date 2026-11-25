@@ -27,7 +27,7 @@ from src.cubierta_liviana import separacion_maxima, succion  # noqa: E402
 
 FT, IN, MPH, LB = 0.3048, 0.0254, 0.44704, 4.4482216e-3   # m, m, m/s, kN
 LIBRO_SIN_REDONDEO: dict = {}   # {16: in, 24: in}, se llena después del prerregistro
-LIBRO_ADOPTADA: dict = {}
+LIBRO_ADOPTADA: dict = {16: 4.0, 24: 3.0}   # Ej. 9.1: "specify 4-in." y "3-in." (zona 3 de alero, no zona 2)
 
 
 def motor() -> dict:
