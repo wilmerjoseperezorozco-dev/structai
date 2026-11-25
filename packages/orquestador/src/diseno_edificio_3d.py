@@ -78,8 +78,8 @@ NO_VERIFICA = (
 # se usa 1,00 (HIPÓTESIS conservadora: el 0,87 corresponde a la categoría de bajo riesgo de ASCE 7, no a ocupación normal).
 IMPORTANCIA_VIENTO = {"I": 1.00, "II": 1.00, "III": 1.15, "IV": 1.15}
 NO_VERIFICA_VIENTO = (
-    "Viento: solo Método 2. Edificios bajos con la Fig. B.6.5-7 (cubierta plana θ = 0), sin sus casos torsionales "
-    "(nota 5), zonas de borde E en ambos extremos a la vez (conservador), zona de cada panel por su centroide; sin componentes y "
+    "Viento: solo Método 2. Edificios bajos con la Fig. B.6.5-7 (cubierta plana θ = 0) y sus casos torsionales "
+    "(nota 5; el 25 % de las zonas T se aplica a la presión neta, también en la cubierta), zonas de borde E en ambos extremos a la vez (conservador), zona de cada panel por su centroide; sin componentes y "
     "revestimientos de la cubierta ni anclajes de cubiertas livianas. Demás alturas: método general con los casos 1–4 "
     "de la Fig. B.6.5-6, sin la excentricidad e_R de estructuras flexibles (B.6.5-19). Empuje de tierras, cargas de construcción y "
     "cargas verticales sísmicas (A.3.6.13).")
@@ -421,41 +421,72 @@ def _casos_viento(p, m: Modelo, sis: Optional[dict] = None):
     f_int = _b6.gcpf("1", 0.0) - _b6.gcpf("4", 0.0)
     f_bor = _b6.gcpf("1E", 0.0) - _b6.gcpf("4E", 0.0)
     casos = []
+    torsion = v.casos_parciales and not (n == 1 and h <= 9.0)          # nota 5 (excepción: un nivel con h ≤ 9 m)
     for dirn, sg in (("x", 1), ("x", -1), ("y", 1), ("y", -1)):
         largo, ancho = (lx, ly) if dirn == "x" else (ly, lx)
         lim2 = min(0.5 * largo, 2.5 * h)                             # nota 8 (θ = 0: altura del alero = h)
+        for esq in ((None, 0, 1) if torsion else (None,)):
+            # esq None: patrón básico con 2a en ambos extremos (HIPÓTESIS conservadora). esq 0/1: caso torsional de la
+            # nota 5 con la esquina de referencia en t = 0 o t = ancho: borde E solo junto a ella y zonas T (25 %) en la
+            # mitad lejana (u > B/2).
+            def u_de(t, esq=esq, ancho=ancho):
+                return t if esq == 0 else ancho - t
 
-        def zona(xc, yc, dirn=dirn, sg=sg, largo=largo, ancho=ancho, lim2=lim2):
-            s, t = (xc, yc) if dirn == "x" else (yc, xc)
-            dist = s if sg > 0 else largo - s
-            return ("2" if dist <= lim2 else "3") + ("E" if (t <= 2 * a or t >= ancho - 2 * a) else "")
+            def zona(xc, yc, dirn=dirn, sg=sg, largo=largo, ancho=ancho, lim2=lim2, esq=esq, u_de=u_de):
+                s_, t = (xc, yc) if dirn == "x" else (yc, xc)
+                dist = s_ if sg > 0 else largo - s_
+                z = "2" if dist <= lim2 else "3"
+                if esq is None:
+                    return z + ("E" if (t <= 2 * a or t >= ancho - 2 * a) else ""), 1.0
+                u = u_de(t)
+                return (z + "E", 1.0) if u <= 2 * a else (z, F_TORSION_BAJOS if u > ancho / 2 else 1.0)
 
-        be = min(4 * a, ancho)                                       # 2a en cada extremo (HIPÓTESIS: ambos a la vez)
-        f_alt = qh * (f_bor * be + f_int * (ancho - be))             # kN por metro de altura
-        maes = {}
-        for nv in range(1, n + 1):
-            ht = p.alturas_piso_m[nv - 1] / 2 + (p.alturas_piso_m[nv] / 2 if nv < n else 0.0)
-            fz = sg * f_alt * ht
-            maes[f"P{nv}"] = (fz, 0.0, 0.0) if dirn == "x" else (0.0, fz, 0.0)
-        for si in (1, -1):
-            def w_panel(ii, jj, si=si, zona=zona):
-                xc, yc = (m.xs[ii] + m.xs[ii + 1]) / 2, (m.ys[jj] + m.ys[jj + 1]) / 2
-                return -qh * (_b6.gcpf(zona(xc, yc), 0.0) - si * gcpi)  # + hacia arriba
-            ws, unif = {}, {}
-            for k, (tipo, _nv, i, j) in techo.items():
-                if tipo == "vx":
-                    L = p.luces_x_m[i]
-                    w = sum(w_panel(i, jj) * _area_45(L, p.luces_y_m[jj]) for jj in (j - 1, j) if 0 <= jj < len(p.luces_y_m)) / L
-                else:
-                    L = p.luces_y_m[j]
-                    w = sum(w_panel(ii, j) * _area_45(L, p.luces_x_m[ii]) for ii in (i - 1, i) if 0 <= ii < len(p.luces_x_m)) / L
-                ws[k], unif[k] = w, (0.0, 0.0, w)
-            nom = f"W{dirn}{'+' if sg > 0 else '-'},GCpi{'+' if si > 0 else '-'}"
-            casos.append((nom, _p3.Caso3D(nom, maestros=maes, uniformes=unif), ws))
+            if esq is None:
+                be = min(4 * a, ancho)                               # 2a en cada extremo (HIPÓTESIS: ambos a la vez)
+                f_alt, mz_alt = qh * (f_bor * be + f_int * (ancho - be)), 0.0
+            else:
+                tramos = _tramos_torsion_bajos(ancho, a, f_bor, f_int)
+                f_alt = qh * sum(f * (u1 - u0) for u0, u1, f in tramos)
+                u_c = qh * sum(f * (u1 - u0) * (u0 + u1) / 2 for u0, u1, f in tramos) / f_alt
+                t_c = u_c if esq == 0 else ancho - u_c
+                # Mz de la resultante sg·f_alt aplicada en t_c, respecto al centro de la planta (nodo maestro)
+                mz_alt = sg * f_alt * (-(t_c - ancho / 2) if dirn == "x" else (t_c - ancho / 2))
+            maes = {}
+            for nv in range(1, n + 1):
+                ht = p.alturas_piso_m[nv - 1] / 2 + (p.alturas_piso_m[nv] / 2 if nv < n else 0.0)
+                fz = sg * f_alt * ht
+                maes[f"P{nv}"] = (fz, 0.0, mz_alt * ht) if dirn == "x" else (0.0, fz, mz_alt * ht)
+            for si in (1, -1):
+                def w_panel(ii, jj, si=si, zona=zona):
+                    xc, yc = (m.xs[ii] + m.xs[ii + 1]) / 2, (m.ys[jj] + m.ys[jj + 1]) / 2
+                    z, fac = zona(xc, yc)
+                    return -qh * fac * (_b6.gcpf(z, 0.0) - si * gcpi)   # + hacia arriba
+                ws, unif = {}, {}
+                for k, (tipo, _nv, i, j) in techo.items():
+                    if tipo == "vx":
+                        L = p.luces_x_m[i]
+                        w = sum(w_panel(i, jj) * _area_45(L, p.luces_y_m[jj]) for jj in (j - 1, j) if 0 <= jj < len(p.luces_y_m)) / L
+                    else:
+                        L = p.luces_y_m[j]
+                        w = sum(w_panel(ii, j) * _area_45(L, p.luces_x_m[ii]) for ii in (i - 1, i) if 0 <= ii < len(p.luces_x_m)) / L
+                    ws[k], unif[k] = w, (0.0, 0.0, w)
+                nom = f"W{dirn}{'+' if sg > 0 else '-'}{'' if esq is None else f',T{esq}'},GCpi{'+' if si > 0 else '-'}"
+                casos.append((nom, _p3.Caso3D(nom, maestros=maes, uniformes=unif), ws))
     info = {"evaluado": True, "V_m_s": v.v_m_s, "exposicion": v.exposicion, "Kz": kz, "Kzt": v.kzt, "Kd": _b6.KD_EDIFICIOS,
-            "I": imp, "qh_kpa": qh, "a_m": a, "GCpi": gcpi, "h_m": h,
+            "I": imp, "qh_kpa": qh, "a_m": a, "GCpi": gcpi, "h_m": h, "torsion_bajos": torsion,
             "succion_max_vigas_kn_m": max(max(w.values()) for _, _, w in casos) if techo else 0.0}
     return casos, info
+
+
+F_TORSION_BAJOS = 0.25    # Fig. B.6.5-7, nota 5: zonas 1T–4T al 25 % de la presión total de diseño
+
+
+def _tramos_torsion_bajos(ancho, a, f_bor, f_int):
+    """Tramos (u0, u1, coeficiente neto barlovento − sotavento) a lo ancho, medidos desde la esquina de referencia, para
+    los casos torsionales de la Fig. B.6.5-7: 1E−4E hasta 2a, 1−4 hasta B/2 y 0,25·(1T−4T) en la mitad lejana."""
+    e1 = min(2 * a, ancho)
+    m_ = max(ancho / 2, e1)
+    return [t for t in ((0.0, e1, f_bor), (e1, m_, f_int), (m_, ancho, F_TORSION_BAJOS * f_int)) if t[1] > t[0]]
 
 
 EXC_VIENTO = 0.15          # Fig. B.6.5-6: e = ±0,15·B, medida desde el centro geométrico de la cara
@@ -1011,7 +1042,9 @@ def memoria(inf: InformeEdificio3D, m: Modelo, nombres_comb: list[str]):
                referencia="B.6.5.12.2.1, Fig. B.6.5-3, B.6.5.8", estado="NSR-10 (leído)")
              if vw.get("metodo") == "general" else
              L(concepto="Viento sobre el sistema principal", valor=f"edificio bajo, GCpf de la Fig. B.6.5-7 (θ = 0), a = {vw['a_m']:.2f} m, "
-              f"GCpi = ±{vw['GCpi']:g}; ±X y ±Y; succión de cubierta en vigas hasta {vw['succion_max_vigas_kn_m']:.2f} kN/m",
+              f"GCpi = ±{vw['GCpi']:g}; ±X y ±Y"
+              f"{' más casos torsionales (nota 5: zonas T al 25 % en la mitad lejana de la esquina de referencia)' if vw.get('torsion_bajos') else ' sin casos torsionales (nota 5: excepción de un nivel con h ≤ 9 m)'}"
+              f"; succión de cubierta en vigas hasta {vw['succion_max_vigas_kn_m']:.2f} kN/m",
               referencia="B.6.5.12.2.2, Fig. B.6.5-7, Fig. B.6.5-2", estado="NSR-10 (leído)")),
             L(concepto="Combinaciones con viento", valor="1.2D+1.0L+1.6W; 0.9D+1.6W; 1.2D+1.6L+0.8W (L de cubierta como Lr)",
               referencia="B.2.4-4, B.2.4-6, B.2.4-3", estado="NSR-10 (leído)"),

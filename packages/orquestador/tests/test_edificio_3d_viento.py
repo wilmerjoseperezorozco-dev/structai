@@ -25,7 +25,7 @@ def test_casos_conservan_la_presion_de_cubierta_y_el_cortante():
     p = proyecto(viento=VIENTO)
     m = de.construir_modelo(p)
     casos, info = de._casos_viento(p, m)
-    assert info["evaluado"] and len(casos) == 8
+    assert info["evaluado"] and len(casos) == 8 + 16 and info["torsion_bajos"]
     qh = info["qh_kpa"]
     assert qh == pytest.approx(de._b6.qz(36.0, de._b6.kz(6.0, "D"), 1.0, 0.85, 1.0) / 1000)
     nom, caso, ws = casos[0]                                          # W x+, GCpi+
@@ -200,3 +200,30 @@ def test_sin_casos_parciales_queda_solo_el_caso_1():                  # opción 
     p = replace(alto(), viento=replace(VIENTO, casos_parciales=False))
     casos, info = de._casos_viento(p, de.construir_modelo(p))
     assert len(casos) == 8 and info["casos_fig_b656"] == (1,)
+
+
+def test_casos_torsionales_de_edificios_bajos_a_mano():               # #322 parte 2: Fig. B.6.5-7, nota 5
+    p = proyecto(viento=VIENTO)                                       # planta 10 × 10 m, 2 niveles de 3 m
+    casos, info = de._casos_viento(p, de.construir_modelo(p))
+    c = {n: k for n, k, _w in casos}
+    qh, a = info["qh_kpa"], info["a_m"]
+    fb = de._b6.gcpf("1E", 0.0) - de._b6.gcpf("4E", 0.0)
+    fi = de._b6.gcpf("1", 0.0) - de._b6.gcpf("4", 0.0)
+    # esquina de referencia en y = 0: 1E−4E en [0, 2a], 1−4 en [2a, 5], 0,25·(1−4) en [5, 10]
+    tr = [(0.0, 2 * a, fb), (2 * a, 5.0, fi), (5.0, 10.0, 0.25 * fi)]
+    f = qh * sum(k * (u1 - u0) for u0, u1, k in tr)
+    yc = qh * sum(k * (u1 - u0) * (u0 + u1) / 2 for u0, u1, k in tr) / f
+    ht = 3.0                                                          # nivel 1: 1,5 + 1,5 m
+    fx, fy, mz = c["Wx+,T0,GCpi+"].maestros["P1"]
+    assert fx == pytest.approx(f * ht) and fy == 0.0 and mz == pytest.approx(-f * ht * (yc - 5.0))
+    assert yc < 5.0 and mz > 0                                        # la resultante se corre hacia la esquina de referencia
+    assert c["Wx+,T1,GCpi+"].maestros["P1"][2] == pytest.approx(-mz)  # esquina opuesta: torsor opuesto
+    # cubierta: el panel lejano (y entre 5 y 10, x entre 0 y 5) lleva 25 % de la presión neta de la zona 2
+    _n, _k, ws_t = next(t for t in casos if t[0] == "Wx+,T0,GCpi+")
+    assert sum(ws_t.values()) < sum(next(t for t in casos if t[0] == "Wx+,GCpi+")[2].values())
+
+
+def test_un_nivel_bajo_9_m_no_lleva_casos_torsionales():               # excepción de la nota 5
+    p = proyecto(alturas_piso_m=(4.0,), columnas_mm=(300,), vigas_mm=((300, 400),), viento=VIENTO)
+    casos, info = de._casos_viento(p, de.construir_modelo(p))
+    assert len(casos) == 8 and not info["torsion_bajos"]

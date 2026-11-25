@@ -4,8 +4,11 @@
 Brazos por edificio: W28C y W36D, cada uno con solo el caso 1 (c1) y con los casos 1–4 (c14). Mismo código, solo
 cambia VientoB6.casos_parciales.
 
-Uso:  python -I scripts/memorias_sinteticas/viento_322.py [--piloto 2] [--hilos 6] [--hasta 22:45]
-Salida: data/memorias_sinteticas/f1_322/{brazos.csv, resultados_322.json}
+Con --bajos (parte 2): los edificios bajos de #292-W y los casos torsionales de la Fig. B.6.5-7 (nota 5); la
+referencia de T0 es f1_292w. Ver docs/memoria_calculo/PRERREGISTRO_322B_TORSION_BAJOS.md.
+
+Uso:  python -I scripts/memorias_sinteticas/viento_322.py [--bajos] [--piloto 2] [--hilos 6] [--hasta 22:45]
+Salida: data/memorias_sinteticas/f1_322{,b}/{brazos.csv, resultados_322.json}
 """
 from __future__ import annotations
 
@@ -45,7 +48,10 @@ def evaluar(t: dict) -> dict:
         inf = de.disenar_edificio(p)
     except Exception as ex:                                            # noqa: BLE001
         return {**fila, "estado": f"error: {type(ex).__name__}: {ex}"[:200], "segundos": round(time.time() - t0, 1)}
-    if tuple(inf.viento.get("casos_fig_b656", ())) != ((1, 2, 3, 4) if parc else (1,)):
+    vw = inf.viento
+    esperado_ok = (vw.get("torsion_bajos") == (parc and not (int(t["N"]) == 1 and fila["h_m"] <= 9.0))
+                   if "torsion_bajos" in vw else tuple(vw.get("casos_fig_b656", ())) == ((1, 2, 3, 4) if parc else (1,)))
+    if not esperado_ok:
         return {**fila, "estado": "error: casos de viento inesperados", "segundos": round(time.time() - t0, 1)}
     return fila | {"estado": "ok", "cumple": inf.cumple, "fallas": " | ".join(inf.fallas)[:300],
                    "costo_cop": inf.cantidades["costo_cop"], "firma": v242._firma(inf),
@@ -57,11 +63,12 @@ def _si(x) -> bool:
     return str(x) == "True"
 
 
-def resumir(filas: list[dict]) -> dict:
+def resumir(filas: list[dict], ref: str = "f1_242") -> dict:
     por = {b: {f["id"]: f for f in filas if f["brazo"] == b} for b in BRAZOS}
-    with (RAIZ / "data" / "memorias_sinteticas" / "f1_242" / "brazos.csv").open(encoding="utf-8") as f:
+    with (RAIZ / "data" / "memorias_sinteticas" / ref / "brazos.csv").open(encoding="utf-8") as f:
         ant = {(r["brazo"], r["id"]): r for r in csv.DictReader(f)}
-    out = {"prerregistro": "docs/memoria_calculo/PRERREGISTRO_322_VIENTO_TORSIONAL.md"}
+    out = {"prerregistro": "docs/memoria_calculo/" + ("PRERREGISTRO_322_VIENTO_TORSIONAL.md" if ref == "f1_242"
+                                                      else "PRERREGISTRO_322B_TORSION_BAJOS.md"), "referencia_T0": ref}
     for vb in ("W28C", "W36D"):
         c1, c14 = por[f"{vb}_c1"], por[f"{vb}_c14"]
         ids = sorted(set(c1) & set(c14), key=int)
@@ -96,15 +103,16 @@ def main():
     ap.add_argument("--piloto", type=int, default=0)
     ap.add_argument("--hilos", type=int, default=6)
     ap.add_argument("--hasta", default=None)
+    ap.add_argument("--bajos", action="store_true")
     a = ap.parse_args()
     sys.stdout.reconfigure(encoding="utf-8")
     with (RAIZ / "data" / "memorias_sinteticas" / "corpus.csv").open(encoding="utf-8") as f:
-        casos = [r for r in csv.DictReader(f) if r["estado"] == "ok" and r["zona"] == "baja" and not v242.bajo(r)]
+        casos = [r for r in csv.DictReader(f) if r["estado"] == "ok" and r["zona"] == "baja" and v242.bajo(r) == a.bajos]
     print(f"{len(casos)} edificios", flush=True)
     if a.piloto:
         casos = casos[:a.piloto]
     trabajos = [{**c, "brazo": b} for c in casos for b in BRAZOS]
-    out = RAIZ / "data" / "memorias_sinteticas" / "f1_322" / ("piloto" if a.piloto else "")
+    out = RAIZ / "data" / "memorias_sinteticas" / ("f1_322b" if a.bajos else "f1_322") / ("piloto" if a.piloto else "")
     out.mkdir(parents=True, exist_ok=True)
     ruta = out / "brazos.csv"
     hechos = set()
@@ -129,7 +137,7 @@ def main():
                     pool.terminate()
                     return
     with ruta.open(encoding="utf-8") as f:
-        res = resumir(list(csv.DictReader(f)))
+        res = resumir(list(csv.DictReader(f)), "f1_292w" if a.bajos else "f1_242")
     res["segundos"] = round(time.time() - t0, 1)
     (out / "resultados_322.json").write_text(json.dumps(res, ensure_ascii=False, indent=1), encoding="utf-8")
     print(json.dumps({b: {k: v for k, v in res[b].items() if k != "errores"} for b in ("W28C", "W36D")}, ensure_ascii=False))
