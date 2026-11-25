@@ -290,3 +290,21 @@ def fuerzas_por_nivel(v_m_s: float, exposicion: str, alturas_piso_m, B: float, L
         fuerzas.append((barl * g["G"] * cw - qh * g["G"] * cl) * B * (z1 - z0))
     return {"fuerzas_kn": fuerzas, "cortante_basal_kn": sum(fuerzas), "qh_kpa": qh, "G": g["G"], "rafaga": g,
             "Cp": (cw, cl)}
+
+
+def cp_cubierta_general(dist_m: float, h: float, L: float) -> float:
+    """Cp de succión de cubierta plana (θ < 10°) de la Fig. B.6.5-3, en función de la distancia al borde de barlovento.
+    h/L ≤ 0,5: 0–h/2 y h/2–h −0,9; h–2h −0,5; > 2h −0,3. h/L ≥ 1,0: 0–h/2 −1,3 (sin reducción por área, conservador);
+    > h/2 −0,7. Interpolación lineal en h/L entre 0,5 y 1,0. Solo el valor de succión (el −0,18 alterno no gobierna
+    el levantamiento)."""
+    if dist_m < 0 or h <= 0 or L <= 0:
+        raise ValueError("distancia no negativa; h y L positivas")
+    bajo = -0.9 if dist_m <= h else (-0.5 if dist_m <= 2 * h else -0.3)
+    alto = -1.3 if dist_m <= h / 2 else -0.7
+    r = h / L
+    if r <= 0.5:
+        return bajo
+    if r >= 1.0:
+        return alto
+    t = (r - 0.5) / 0.5
+    return bajo + t * (alto - bajo)

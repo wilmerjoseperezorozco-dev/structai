@@ -82,11 +82,45 @@ def test_memoria_declara_el_viento(con_y_sin):
     assert any(s.startswith("Viento (Título B.6)") for s in sin.memoria.no_verifica)
 
 
-def test_edificio_alto_no_se_evalua():
-    p = proyecto(alturas_piso_m=(3.0,) * 4, columnas_mm=(350,) * 4, vigas_mm=((300, 400),) * 4, viento=VIENTO)
+def alto(n=4, **kw):
+    return proyecto(alturas_piso_m=(3.0,) * n, columnas_mm=(350,) * n, vigas_mm=((300, 400),) * n, viento=VIENTO, **kw)
+
+
+def test_edificio_alto_usa_el_metodo_general():                       # #242: h = 12 m > 10 m (menor dimensión)
+    p = alto()
     m = de.construir_modelo(p)
-    casos, info = de._casos_viento(p, m)                              # h = 12 m > 10 m (menor dimensión)
-    assert casos == [] and not info["evaluado"]
+    casos, info = de._casos_viento(p, m)
+    assert info["evaluado"] and info["metodo"] == "general" and len(casos) == 8
+    r = de._b6.fuerzas_por_nivel(36.0, "D", (3.0,) * 4, 10.0, 10.0)
+    _n, caso, _w = casos[0]
+    assert [caso.maestros[f"P{k}"][0] for k in range(1, 5)] == pytest.approx(r["fuerzas_kn"])
+    assert info["rafaga"]["x"] == "rígida"                            # sin sis: n1 desconocido → rígido
+
+
+def test_metodo_general_succion_de_cubierta_a_mano():
+    p = alto()
+    m = de.construir_modelo(p)
+    casos, info = de._casos_viento(p, m)
+    _n, _c, ws = casos[0]                                             # W x+, GCpi+
+    total = sum(w * m.portico.longitud(m.portico.elementos[k]) for k, w in ws.items())
+    qh, g = info["qh_kpa"], info["G"]["x"]
+    esperado = sum(-qh * (g * de._b6.cp_cubierta_general(xc, 12.0, 10.0) - 0.18) * 25.0 for xc in (2.5, 7.5) for _ in range(2))
+    assert total == pytest.approx(esperado, rel=1e-9)
+
+
+def test_metodo_general_con_periodo_flexible_sube_g():
+    p = alto()
+    m = de.construir_modelo(p)
+    _c, rig = de._casos_viento(p, m)
+    _c, flex = de._casos_viento(p, m, {"x": {"T_modelo_s": 2.0}, "y": {"T_modelo_s": 2.0}})
+    assert flex["rafaga"]["x"] == "flexible" and flex["G"]["x"] > rig["G"]["x"]
+    assert flex["cortante_basal_kn"]["x"] > rig["cortante_basal_kn"]["x"]
+
+
+def test_diseno_alto_con_viento_y_memoria():
+    inf = de.disenar_edificio(alto())
+    assert inf.viento["evaluado"] and inf.viento["metodo"] == "general"
+    assert not any("queda para #242" in a for a in inf.advertencias)
 
 
 def test_entradas_invalidas():

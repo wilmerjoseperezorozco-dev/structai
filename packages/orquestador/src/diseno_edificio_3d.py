@@ -90,10 +90,13 @@ class VientoB6:
     exposicion: str = "C"              # B.6.5.6
     kzt: float = 1.0                   # factor topográfico (B.6.5.7), dato
     cerramiento: str = "cerrado"       # B.6.5.9 → GCpi (Fig. B.6.5-2)
+    amortiguamiento: float = 0.02      # β para Gf (B.6.5.8.2) si n1 < 1 Hz: HIPÓTESIS declarada (NSR-10 no lo fija)
 
     def __post_init__(self):
         if self.v_m_s <= 0 or self.kzt <= 0:
             raise ValueError("V y Kzt deben ser positivos")
+        if not 0 < self.amortiguamiento < 0.2:
+            raise ValueError("amortiguamiento como fracción del crítico (0 < β < 0,2)")
         if self.exposicion not in _b6.EXPOSICION:
             raise ValueError("exposición: B, C o D")
         if self.cerramiento not in _b6.GCPI:
@@ -389,7 +392,7 @@ def combinaciones() -> tuple[list[str], np.ndarray, np.ndarray]:
 
 
 # ---------------------------------------------------------------------------------------------------- viento
-def _casos_viento(p, m: Modelo):
+def _casos_viento(p, m: Modelo, sis: Optional[dict] = None):
     """Casos W de B.6 (Método 2, edificios bajos, Fig. B.6.5-7 con θ = 0 por cubierta plana): viento en ±X y ±Y, cada
     uno con GCpi = ±valor. Por caso: fuerza lateral por nivel (zonas 1−4 y 1E−4E sobre el ancho, altura aferente) en el
     centro del diafragma y succión de la cubierta (zonas 2/3 y 2E/3E, nota 8) repartida a las vigas del último nivel por
@@ -398,8 +401,7 @@ def _casos_viento(p, m: Modelo):
     h = float(sum(p.alturas_piso_m))
     lx, ly = m.xs[-1], m.ys[-1]
     if h > 18.0 or h > min(lx, ly):
-        return [], {"evaluado": False, "motivo": f"Viento no evaluado: h = {h:.1f} m fuera de 'edificio bajo' (h ≤ 18 m y "
-                                                  f"h ≤ {min(lx, ly):.1f} m, Fig. B.6.5-7); queda para #242"}
+        return _casos_viento_general(p, m, sis)
     imp = IMPORTANCIA_VIENTO[p.grupo_uso]
     kz = _b6.kz(h, v.exposicion, caso=1)
     qh = _b6.qz(v.v_m_s, kz, v.kzt, _b6.KD_EDIFICIOS, imp) / 1000.0                # kN/m²
@@ -444,6 +446,58 @@ def _casos_viento(p, m: Modelo):
             casos.append((nom, _p3.Caso3D(nom, maestros=maes, uniformes=unif), ws))
     info = {"evaluado": True, "V_m_s": v.v_m_s, "exposicion": v.exposicion, "Kz": kz, "Kzt": v.kzt, "Kd": _b6.KD_EDIFICIOS,
             "I": imp, "qh_kpa": qh, "a_m": a, "GCpi": gcpi, "h_m": h,
+            "succion_max_vigas_kn_m": max(max(w.values()) for _, _, w in casos) if techo else 0.0}
+    return casos, info
+
+
+def _casos_viento_general(p, m: Modelo, sis: Optional[dict]):
+    """Casos W del SPRFV de cualquier altura (B.6.5.12.2.1, #242): p = q·G·Cp − qi·GCpi. Muros: barlovento qz·G·0,8
+    (Kz caso 2, integrado en la altura aferente) y sotavento qh·G·Cp(L/B), aplicados en el centro del diafragma (la
+    presión interna se cancela en la resultante lateral). G rígido o Gf flexible con n1 = 1/T_modelo de la dirección
+    (B.6.5.8). Cubierta plana: qh·(G·Cp(distancia al borde de barlovento) − ±GCpi) repartida por líneas a 45°.
+    Sin los casos 2–4 de carga parcial y torsional (Fig. B.6.5-6). Mismo formato de salida que _casos_viento."""
+    v = p.viento
+    h = float(sum(p.alturas_piso_m))
+    lx, ly = m.xs[-1], m.ys[-1]
+    imp = IMPORTANCIA_VIENTO[p.grupo_uso]
+    gcpi = _b6.GCPI[v.cerramiento]
+    n = len(p.alturas_piso_m)
+    techo = {k: t for k, t in enumerate(m.meta) if t[0] in ("vx", "vy") and t[1] == n}
+    casos, por_dir = [], {}
+    for dirn, sg in (("x", 1), ("x", -1), ("y", 1), ("y", -1)):
+        largo, ancho = (lx, ly) if dirn == "x" else (ly, lx)
+        t_mod = sis[dirn]["T_modelo_s"] if sis else None
+        r = _b6.fuerzas_por_nivel(v.v_m_s, v.exposicion, p.alturas_piso_m, ancho, largo, kzt=v.kzt, importancia=imp,
+                                  n1_hz=(1.0 / t_mod) if t_mod else None, amortiguamiento=v.amortiguamiento)
+        por_dir[dirn] = r
+        qh, g = r["qh_kpa"], r["G"]
+        maes = {f"P{nv}": ((sg * f, 0.0, 0.0) if dirn == "x" else (0.0, sg * f, 0.0))
+                for nv, f in enumerate(r["fuerzas_kn"], 1)}
+        for si in (1, -1):
+            def w_panel(ii, jj, si=si, dirn=dirn, sg=sg, largo=largo, qh=qh, g=g):
+                xc, yc = (m.xs[ii] + m.xs[ii + 1]) / 2, (m.ys[jj] + m.ys[jj + 1]) / 2
+                s_ = xc if dirn == "x" else yc
+                dist = s_ if sg > 0 else largo - s_
+                return -qh * (g * _b6.cp_cubierta_general(dist, h, largo) - si * gcpi)   # + hacia arriba
+            ws, unif = {}, {}
+            for k, (tipo, _nv, i, j) in techo.items():
+                if tipo == "vx":
+                    L = p.luces_x_m[i]
+                    w = sum(w_panel(i, jj) * _area_45(L, p.luces_y_m[jj]) for jj in (j - 1, j) if 0 <= jj < len(p.luces_y_m)) / L
+                else:
+                    L = p.luces_y_m[j]
+                    w = sum(w_panel(ii, j) * _area_45(L, p.luces_x_m[ii]) for ii in (i - 1, i) if 0 <= ii < len(p.luces_x_m)) / L
+                ws[k], unif[k] = w, (0.0, 0.0, w)
+            nom = f"W{dirn}{'+' if sg > 0 else '-'},GCpi{'+' if si > 0 else '-'}"
+            casos.append((nom, _p3.Caso3D(nom, maestros=maes, uniformes=unif), ws))
+    rx, ry = por_dir["x"], por_dir["y"]
+    info = {"evaluado": True, "metodo": "general", "V_m_s": v.v_m_s, "exposicion": v.exposicion,
+            "Kz": _b6.kz(h, v.exposicion, caso=2), "Kzt": v.kzt, "Kd": _b6.KD_EDIFICIOS, "I": imp, "qh_kpa": rx["qh_kpa"],
+            "GCpi": gcpi, "h_m": h, "amortiguamiento": v.amortiguamiento,
+            "G": {"x": rx["G"], "y": ry["G"]}, "rafaga": {"x": rx["rafaga"]["tipo"], "y": ry["rafaga"]["tipo"]},
+            "Cp_muros": {"x": rx["Cp"], "y": ry["Cp"]},
+            "fuerzas_kn": {"x": rx["fuerzas_kn"], "y": ry["fuerzas_kn"]},
+            "cortante_basal_kn": {"x": rx["cortante_basal_kn"], "y": ry["cortante_basal_kn"]},
             "succion_max_vigas_kn_m": max(max(w.values()) for _, _, w in casos) if techo else 0.0}
     return casos, info
 
@@ -729,7 +783,7 @@ def disenar_edificio(p: ProyectoEdificio3D) -> InformeEdificio3D:
     nombres, C, es_e = _extender_combinaciones(nombres, C, es_e, pats)
     es_w, qw, i_w = np.zeros(len(C), dtype=bool), {}, None
     if p.viento is not None:                                         # B.6 (#292)
-        cw, inf.viento = _casos_viento(p, m)
+        cw, inf.viento = _casos_viento(p, m, sis)
         if cw:
             i_w, ne = F.shape[0], len(m.portico.elementos)
             Fw = []
@@ -892,18 +946,29 @@ def memoria(inf: InformeEdificio3D, m: Modelo, nombres_comb: list[str]):
     if vw and vw.get("evaluado"):
         cargas += [
             L(concepto="Velocidad básica de viento V", valor=vw["V_m_s"], unidad="m/s", referencia="Fig. B.6.4-1 (declarada por el usuario)", estado="ENTRADA"),
-            L(concepto="Exposición / Kz (caso 1) / Kzt / Kd", valor=f"{vw['exposicion']} / {vw['Kz']:.3f} / {vw['Kzt']:g} / {vw['Kd']:g}",
+            L(concepto=f"Exposición / Kz (caso {2 if vw.get('metodo') == 'general' else 1}) / Kzt / Kd",
+              valor=f"{vw['exposicion']} / {vw['Kz']:.3f} / {vw['Kzt']:g} / {vw['Kd']:g}",
               referencia="B.6.5.6, Tablas B.6.5-2, -3 y -4, B.6.5.7", estado="NSR-10 (leído)"),
             L(concepto="Factor de importancia de viento I", valor=vw["I"], referencia="Tabla B.6.5-1",
               estado="HIPÓTESIS" if p.grupo_uso == "I" else "NSR-10 (leído)"),
             L(concepto="Presión por velocidad qh", valor=vw["qh_kpa"], unidad="kN/m²", ecuacion="qh = 0,613·Kz·Kzt·Kd·V²·I",
               referencia="B.6.5-13", estado="CALCULADO"),
-            L(concepto="Viento sobre el sistema principal", valor=f"edificio bajo, GCpf de la Fig. B.6.5-7 (θ = 0), a = {vw['a_m']:.2f} m, "
+            (L(concepto="Viento sobre el sistema principal",
+               valor=f"método general (cualquier altura): Cp muros X {vw['Cp_muros']['x'][0]:g}/{vw['Cp_muros']['x'][1]:.2f}, "
+               f"Y {vw['Cp_muros']['y'][0]:g}/{vw['Cp_muros']['y'][1]:.2f}; G X {vw['G']['x']:.3f} ({vw['rafaga']['x']}), "
+               f"Y {vw['G']['y']:.3f} ({vw['rafaga']['y']}); GCpi = ±{vw['GCpi']:g}; ±X y ±Y sin casos torsionales; "
+               f"succión de cubierta en vigas hasta {vw['succion_max_vigas_kn_m']:.2f} kN/m",
+               referencia="B.6.5.12.2.1, Fig. B.6.5-3, B.6.5.8", estado="NSR-10 (leído)")
+             if vw.get("metodo") == "general" else
+             L(concepto="Viento sobre el sistema principal", valor=f"edificio bajo, GCpf de la Fig. B.6.5-7 (θ = 0), a = {vw['a_m']:.2f} m, "
               f"GCpi = ±{vw['GCpi']:g}; ±X y ±Y; succión de cubierta en vigas hasta {vw['succion_max_vigas_kn_m']:.2f} kN/m",
-              referencia="B.6.5.12.2.2, Fig. B.6.5-7, Fig. B.6.5-2", estado="NSR-10 (leído)"),
+              referencia="B.6.5.12.2.2, Fig. B.6.5-7, Fig. B.6.5-2", estado="NSR-10 (leído)")),
             L(concepto="Combinaciones con viento", valor="1.2D+1.0L+1.6W; 0.9D+1.6W; 1.2D+1.6L+0.8W (L de cubierta como Lr)",
               referencia="B.2.4-4, B.2.4-6, B.2.4-3", estado="NSR-10 (leído)"),
         ]
+        if vw.get("metodo") == "general" and "flexible" in vw["rafaga"].values():
+            cargas.append(L(concepto="Amortiguamiento para Gf (n1 < 1 Hz)", valor=vw["amortiguamiento"],
+                            referencia="B.6.5.8.2 (NSR-10 no fija β)", estado="HIPÓTESIS"))
     elif vw:
         cargas.append(L(concepto="Viento", valor=vw["motivo"], referencia="B.6", estado="HIPÓTESIS"))
     model = [

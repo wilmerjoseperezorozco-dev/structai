@@ -135,3 +135,12 @@ def test_fuerzas_por_nivel_crecen_con_la_altura_y_suman():
 def test_superlinealidad_del_viento_con_h():
     v = [b6.fuerzas_por_nivel(30.0, "C", (3.0,) * n, 20.0, 20.0)["cortante_basal_kn"] for n in (4, 8, 16)]
     assert v[1] / v[0] > 2.0 and v[2] / v[1] > 2.0
+
+
+def test_cp_cubierta_general():
+    assert b6.cp_cubierta_general(1.0, 10.0, 40.0) == -0.9
+    assert b6.cp_cubierta_general(15.0, 10.0, 40.0) == -0.5
+    assert b6.cp_cubierta_general(25.0, 10.0, 40.0) == -0.3
+    assert b6.cp_cubierta_general(1.0, 30.0, 20.0) == -1.3
+    assert b6.cp_cubierta_general(16.0, 30.0, 20.0) == -0.7
+    assert b6.cp_cubierta_general(1.0, 15.0, 20.0) == pytest.approx(-0.9 + 0.5 * (-0.4))
