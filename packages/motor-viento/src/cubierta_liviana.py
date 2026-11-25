@@ -1,6 +1,10 @@
 """Cubierta liviana (lámina sobre correas apoyadas en vigas) bajo succión de viento, componentes y revestimientos
 (NSR-10 B.6.5.12.4, Figs. B.6.5-8B a 8D), v1 (#292).
 
+ESTADO: SIN VALIDAR. La validación prerregistrada contra FEMA P-55 Ej. 9.1 NO PASÓ por la regla de selección de zona
+(ver validacion/RESULTADOS_FEMA_P55_9_1.md); la aritmética coincide solo post hoc. No usar para decisiones de diseño
+sin revisión independiente de un ingeniero.
+
 Por zona de cubierta (1, 2, 3 y aleros) verifica, con 0,9D + 1,6W (B.2.4-6) por defecto:
   1. fijación lámina–correa: Tu = (1,6·|p| − 0,9·peso)·A_trib ≤ φRn_fijación, con A_trib = s_correas · s_fijaciones
      (el área efectiva de una fijación es su área aferente);
@@ -20,6 +24,8 @@ import math
 from dataclasses import dataclass
 
 from . import b6
+
+ESTADO_VALIDACION = "SIN VALIDAR (Ej. 9.1 de FEMA P-55: NO PASA por la regla de zona)"
 
 
 @dataclass(frozen=True)
