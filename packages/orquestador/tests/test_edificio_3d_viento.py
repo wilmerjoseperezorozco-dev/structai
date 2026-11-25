@@ -94,3 +94,36 @@ def test_entradas_invalidas():
         de.VientoB6(v_m_s=0.0)
     with pytest.raises(ValueError):
         de.VientoB6(v_m_s=28.0, exposicion="A")
+
+
+# ---------------------------------------------------------------- cubierta liviana
+def test_cubierta_liviana_cambia_solo_el_ultimo_nivel():
+    base = de.construir_modelo(proyecto())
+    liv = de.construir_modelo(proyecto(carga_muerta_cubierta_kpa=0.3, carga_viva_cubierta_kpa=0.5))
+    pp = de.GAMMA_CONCRETO * 0.3 * 0.4
+    for k, t in enumerate(liv.meta):
+        if t[0] in ("vx", "vy"):
+            wD, wL = liv.w_viga[k]
+            wD0, wL0 = base.w_viga[k]
+            if t[1] == 2:
+                assert (wD - pp) == pytest.approx((wD0 - pp) * 0.3 / 1.0) and wL == pytest.approx(wL0 * 0.5 / 0.5)
+            else:
+                assert (wD, wL) == (wD0, wL0)
+    assert liv.pesos[0] == pytest.approx(base.pesos[0])
+    assert base.pesos[1] - liv.pesos[1] == pytest.approx(0.7 * 100.0)
+
+
+def test_cubierta_igual_a_entrepiso_no_cambia_el_diseno():
+    a = de.disenar_edificio(proyecto())
+    b = de.disenar_edificio(proyecto(carga_muerta_cubierta_kpa=1.0, carga_viva_cubierta_kpa=0.5))
+    assert [v["demanda"] for v in a.vigas] == [v["demanda"] for v in b.vigas]
+
+
+def test_cubierta_liviana_con_viento_advierte_y_no_baja_la_demanda():
+    p = proyecto(carga_muerta_cubierta_kpa=0.3, carga_viva_cubierta_kpa=0.5)
+    sin = de.disenar_edificio(p)
+    con = de.disenar_edificio(proyecto(carga_muerta_cubierta_kpa=0.3, carga_viva_cubierta_kpa=0.5, viento=VIENTO))
+    assert any("Cubierta liviana" in a for a in con.advertencias)
+    assert con.vigas[-1]["demanda"]["M_neg_apoyo"] >= sin.vigas[-1]["demanda"]["M_neg_apoyo"] - 1e-9
+    with pytest.raises(ValueError):
+        proyecto(carga_muerta_cubierta_kpa=-1.0)

@@ -126,6 +126,9 @@ class ProyectoEdificio3D:
     u_max_gravedad: Optional[float] = None
     margen_en: str = "vigas"                           # "vigas" (adoptado, 292-A) o "todo" (vigas y columnas; NO ADOPTAR)
     viento: Optional[VientoB6] = None                  # None: viento no evaluado (queda en NO_VERIFICA)
+    # Cubierta liviana (#292): D y L del último nivel (sin vigas ni columnas). None = las mismas de los entrepisos.
+    carga_muerta_cubierta_kpa: Optional[float] = None
+    carga_viva_cubierta_kpa: Optional[float] = None
 
     def __post_init__(self):
         n = len(self.alturas_piso_m)
@@ -135,6 +138,8 @@ class ProyectoEdificio3D:
             raise ValueError("Se necesita al menos un vano positivo en cada dirección")
         if min(self.alturas_piso_m) <= 0 or self.carga_muerta_kpa < 0 or self.carga_viva_kpa < 0:
             raise ValueError("Alturas positivas y cargas no negativas")
+        if min(x for x in (self.carga_muerta_cubierta_kpa, self.carga_viva_cubierta_kpa, 0.0) if x is not None) < 0:
+            raise ValueError("Cargas de cubierta no negativas")
         for (b, h), c in zip(self.vigas_mm, self.columnas_mm):
             if min(b, h, c) <= 0:
                 raise ValueError("Secciones positivas")
@@ -149,6 +154,18 @@ class ProyectoEdificio3D:
 
 
 U_MAX_ZONA_BAJA = 0.90       # adoptado 2026-11-21 (RESULTADOS_292A_MARGEN_VIGAS.md), solo en vigas
+
+
+def cargas_nivel(p, nivel: int) -> tuple[float, float]:
+    """(D, L) en kN/m² sobre las vigas del nivel (1..n): la cubierta puede ser liviana."""
+    if nivel == len(p.alturas_piso_m):
+        return (p.carga_muerta_kpa if p.carga_muerta_cubierta_kpa is None else p.carga_muerta_cubierta_kpa,
+                p.carga_viva_kpa if p.carga_viva_cubierta_kpa is None else p.carga_viva_cubierta_kpa)
+    return p.carga_muerta_kpa, p.carga_viva_kpa
+
+
+def cubierta_liviana(p) -> bool:
+    return p.carga_muerta_cubierta_kpa is not None and p.carga_muerta_cubierta_kpa < p.carga_muerta_kpa
 
 
 def u_max_recomendado(p) -> float:
@@ -228,11 +245,12 @@ def construir_modelo(p: ProyectoEdificio3D) -> Modelo:
             b, h = (v / 1000 for v in p.vigas_mm[piso])
             Av, Ivf, Ivd, Jv = _rect(b, h)
             pp = GAMMA_CONCRETO * Av
+            qD, qL = cargas_nivel(p, nv)
             for j in range(len(ys)):
                 for i in range(len(xs) - 1):
                     a = p.luces_x_m[i]
                     area = sum(_area_45(a, p.luces_y_m[jj]) for jj in (j - 1, j) if 0 <= jj < len(p.luces_y_m))
-                    wD, wL = p.carga_muerta_kpa * area / a + pp, p.carga_viva_kpa * area / a
+                    wD, wL = qD * area / a + pp, qL * area / a
                     k = len(els)
                     els.append(_p3.Elemento3D(fila[(i, j)], fila[(i + 1, j)], ec, gc, Av, FI_VIGA * Ivd, FI_VIGA * Ivf, Jv))
                     meta.append(("vx", nv, i, j))
@@ -241,7 +259,7 @@ def construir_modelo(p: ProyectoEdificio3D) -> Modelo:
                 for j in range(len(ys) - 1):
                     a = p.luces_y_m[j]
                     area = sum(_area_45(a, p.luces_x_m[ii]) for ii in (i - 1, i) if 0 <= ii < len(p.luces_x_m))
-                    wD, wL = p.carga_muerta_kpa * area / a + pp, p.carga_viva_kpa * area / a
+                    wD, wL = qD * area / a + pp, qL * area / a
                     k = len(els)
                     els.append(_p3.Elemento3D(fila[(i, j)], fila[(i, j + 1)], ec, gc, Av, FI_VIGA * Ivd, FI_VIGA * Ivf, Jv))
                     meta.append(("vy", nv, i, j))
@@ -257,9 +275,10 @@ def construir_modelo(p: ProyectoEdificio3D) -> Modelo:
     for piso in range(n):
         b, h = (v / 1000 for v in p.vigas_mm[piso])
         col = lambda s: GAMMA_CONCRETO * (p.columnas_mm[s] / 1000) ** 2 * p.alturas_piso_m[s] * nnod  # noqa: E731
-        w = p.carga_muerta_kpa * area + GAMMA_CONCRETO * b * h * long_vigas + 0.5 * col(piso) + (0.5 * col(piso + 1) if piso + 1 < n else 0.0)
+        qD, qL = cargas_nivel(p, piso + 1)
+        w = qD * area + GAMMA_CONCRETO * b * h * long_vigas + 0.5 * col(piso) + (0.5 * col(piso + 1) if piso + 1 < n else 0.0)
         pesos.append(w)
-        pisos.append(_s3.Piso(f"P{piso + 1}", p.alturas_piso_m[piso], lx, ly, w + p.carga_viva_kpa * area))
+        pisos.append(_s3.Piso(f"P{piso + 1}", p.alturas_piso_m[piso], lx, ly, w + qL * area))
     mod = _p3.Portico3D(nodos, els, apoyos, dia)
     return Modelo(mod, xs, ys, meta, pisos, pesos, cd, cl, wv)
 
@@ -697,6 +716,10 @@ def disenar_edificio(p: ProyectoEdificio3D) -> InformeEdificio3D:
                                      "cumple": der["cumple_deriva"], "por_piso": _derivas_piso(der, m)})
     if not der["cumple_deriva"]:
         inf.fallas.append(f"Deriva: usa el {100 * der['uso_max_limite']:.0f} % del límite (A.6.4); aumente secciones")
+    if cubierta_liviana(p):
+        inf.advertencias.append("Cubierta liviana: el modelo mantiene diafragma rígido en el último nivel (A.3.6.7.2); sin losa "
+                                "el diafragma es flexible y la distribución lateral real puede diferir. Las correas, el "
+                                "entramado y sus anclajes a las vigas no se verifican.")
     if der["Qi_max"] > _s3.Q_PDELTA:
         inf.advertencias.append(f"Qi máx = {der['Qi_max']:.3f} > 0,10: A.6.2.3 exige considerar P-Δ (HE6: ocurre en edificios altos con Aa ≤ 0,15)")
     F, res = _resolver_casos(p, m, sis, der["Ax"])
@@ -843,6 +866,9 @@ def memoria(inf: InformeEdificio3D, m: Modelo, nombres_comb: list[str]):
     cargas = [
         L(concepto="Carga muerta sobre la losa (losa + acabados + muros)", valor=p.carga_muerta_kpa, unidad="kN/m²", referencia="B.3", estado="ENTRADA"),
         L(concepto="Carga viva", valor=p.carga_viva_kpa, unidad="kN/m²", referencia="Tabla B.4.2.1-1", estado="ENTRADA"),
+        *([L(concepto="Carga muerta / viva de la cubierta (último nivel)", valor=f"{cargas_nivel(p, n)[0]:g} / {cargas_nivel(p, n)[1]:g}",
+             unidad="kN/m²", referencia="B.3, Tabla B.4.2.1-2", estado="ENTRADA")]
+          if (p.carga_muerta_cubierta_kpa is not None or p.carga_viva_cubierta_kpa is not None) else []),
         L(concepto="Peso propio de vigas y columnas", valor=GAMMA_CONCRETO, unidad="kN/m³", referencia="B.3", estado="HIPÓTESIS"),
         L(concepto="Reparto de la losa a las vigas", valor="líneas de rotura a 45°, uniforme equivalente con la misma resultante", estado="HIPÓTESIS"),
         L(concepto="Peso sísmico total W (D + peso propio)", valor=s["W_kn"], unidad="kN", referencia="A.4.2", estado="CALCULADO"),
