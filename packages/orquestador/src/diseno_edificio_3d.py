@@ -78,9 +78,10 @@ NO_VERIFICA = (
 # se usa 1,00 (HIPÓTESIS conservadora: el 0,87 corresponde a la categoría de bajo riesgo de ASCE 7, no a ocupación normal).
 IMPORTANCIA_VIENTO = {"I": 1.00, "II": 1.00, "III": 1.15, "IV": 1.15}
 NO_VERIFICA_VIENTO = (
-    "Viento: solo Método 2 de edificios bajos (Fig. B.6.5-7, cubierta plana θ = 0); sin casos torsionales (nota 5), "
-    "zonas de borde E en ambos extremos a la vez (conservador), zona de cada panel por su centroide; sin componentes y "
-    "revestimientos de la cubierta ni anclajes de cubiertas livianas. Empuje de tierras, cargas de construcción y "
+    "Viento: solo Método 2. Edificios bajos con la Fig. B.6.5-7 (cubierta plana θ = 0), sin sus casos torsionales "
+    "(nota 5), zonas de borde E en ambos extremos a la vez (conservador), zona de cada panel por su centroide; sin componentes y "
+    "revestimientos de la cubierta ni anclajes de cubiertas livianas. Demás alturas: método general con los casos 1–4 "
+    "de la Fig. B.6.5-6, sin la excentricidad e_R de estructuras flexibles (B.6.5-19). Empuje de tierras, cargas de construcción y "
     "cargas verticales sísmicas (A.3.6.13).")
 
 
@@ -456,12 +457,49 @@ def _casos_viento(p, m: Modelo, sis: Optional[dict] = None):
     return casos, info
 
 
+EXC_VIENTO = 0.15          # Fig. B.6.5-6: e = ±0,15·B, medida desde el centro geométrico de la cara
+F_CASO2, F_CASO4 = 0.75, 0.563
+
+
+def _casos_viento_parciales(fx, fy, lx, ly):
+    """Casos 2–4 de la Fig. B.6.5-6 (B.6.5.12.3) con las fuerzas por nivel del caso 1 (barlovento + sotavento, ya
+    integradas en el ancho): caso 2, 0,75·F con M_T = 0,75·F·e por eje; caso 3, 0,75·Fx con 0,75·Fy a la vez; caso 4,
+    0,563·Fx y 0,563·Fy con M_T = 0,563(Fx·ex + Fy·ey). e = ±0,15·B, B = ancho normal al viento (Bx = ly, By = lx). El
+    nodo maestro está en el centro geométrico de la planta, así que M_T se aplica allí. Se recorren todos los signos de
+    fuerza y de excentricidad. HIPÓTESIS: (1) solo cargas laterales (la figura es en planta, presiones de muros); la
+    succión de cubierta queda en los casos 1. (2) También en estructura flexible se usa e = 0,15·B: B.6.5-19 con e_R = 0
+    da e ≤ e_Q, y e_R (centro de cortante frente a centro de masa) no se calcula."""
+    ex, ey = EXC_VIENTO * ly, EXC_VIENTO * lx
+    casos = []
+
+    def caso(nom, fn):
+        maes = {f"P{k}": fn(a, b) for k, (a, b) in enumerate(zip(fx, fy), 1)}
+        casos.append((nom, _p3.Caso3D(nom, maestros=maes, uniformes={}), {}))
+
+    for sg in (1, -1):
+        for se in (1, -1):
+            s_, e_ = "+" if sg > 0 else "-", "+" if se > 0 else "-"
+            caso(f"W2x{s_},e{e_}", lambda a, b, sg=sg, se=se: (F_CASO2 * sg * a, 0.0, se * F_CASO2 * a * ex))
+            caso(f"W2y{s_},e{e_}", lambda a, b, sg=sg, se=se: (0.0, F_CASO2 * sg * b, se * F_CASO2 * b * ey))
+    for sx in (1, -1):
+        for sy in (1, -1):
+            sxy = f"x{'+' if sx > 0 else '-'}y{'+' if sy > 0 else '-'}"
+            caso(f"W3{sxy}", lambda a, b, sx=sx, sy=sy: (F_CASO2 * sx * a, F_CASO2 * sy * b, 0.0))
+            for gx in (1, -1):
+                for gy in (1, -1):
+                    caso(f"W4{sxy},ex{'+' if gx > 0 else '-'}ey{'+' if gy > 0 else '-'}",
+                         lambda a, b, sx=sx, sy=sy, gx=gx, gy=gy: (F_CASO4 * sx * a, F_CASO4 * sy * b,
+                                                                   F_CASO4 * (gx * a * ex + gy * b * ey)))
+    return casos
+
+
 def _casos_viento_general(p, m: Modelo, sis: Optional[dict]):
     """Casos W del SPRFV de cualquier altura (B.6.5.12.2.1, #242): p = q·G·Cp − qi·GCpi. Muros: barlovento qz·G·0,8
     (Kz caso 2, integrado en la altura aferente) y sotavento qh·G·Cp(L/B), aplicados en el centro del diafragma (la
     presión interna se cancela en la resultante lateral). G rígido o Gf flexible con n1 = 1/T_modelo de la dirección
     (B.6.5.8). Cubierta plana: qh·(G·Cp(distancia al borde de barlovento) − ±GCpi) repartida por líneas a 45°.
-    Sin los casos 2–4 de carga parcial y torsional (Fig. B.6.5-6). Mismo formato de salida que _casos_viento."""
+    Además, los casos 2–4 de la Fig. B.6.5-6 (B.6.5.12.3, #322) sobre el SPRFV lateral; ver _casos_viento_parciales.
+    Mismo formato de salida que _casos_viento."""
     v = p.viento
     h = float(sum(p.alturas_piso_m))
     lx, ly = m.xs[-1], m.ys[-1]
@@ -497,6 +535,8 @@ def _casos_viento_general(p, m: Modelo, sis: Optional[dict]):
             nom = f"W{dirn}{'+' if sg > 0 else '-'},GCpi{'+' if si > 0 else '-'}"
             casos.append((nom, _p3.Caso3D(nom, maestros=maes, uniformes=unif), ws))
     rx, ry = por_dir["x"], por_dir["y"]
+    succion = max(max(w.values()) for _, _, w in casos) if techo else 0.0
+    casos += _casos_viento_parciales(rx["fuerzas_kn"], ry["fuerzas_kn"], lx, ly)
     info = {"evaluado": True, "metodo": "general", "V_m_s": v.v_m_s, "exposicion": v.exposicion,
             "Kz": _b6.kz(h, v.exposicion, caso=2), "Kzt": v.kzt, "Kd": _b6.KD_EDIFICIOS, "I": imp, "qh_kpa": rx["qh_kpa"],
             "GCpi": gcpi, "h_m": h, "amortiguamiento": v.amortiguamiento,
@@ -504,7 +544,7 @@ def _casos_viento_general(p, m: Modelo, sis: Optional[dict]):
             "Cp_muros": {"x": rx["Cp"], "y": ry["Cp"]},
             "fuerzas_kn": {"x": rx["fuerzas_kn"], "y": ry["fuerzas_kn"]},
             "cortante_basal_kn": {"x": rx["cortante_basal_kn"], "y": ry["cortante_basal_kn"]},
-            "succion_max_vigas_kn_m": max(max(w.values()) for _, _, w in casos) if techo else 0.0}
+            "succion_max_vigas_kn_m": succion, "casos_fig_b656": (1, 2, 3, 4), "excentricidad_rel": EXC_VIENTO}
     return casos, info
 
 
@@ -964,7 +1004,7 @@ def memoria(inf: InformeEdificio3D, m: Modelo, nombres_comb: list[str]):
             (L(concepto="Viento sobre el sistema principal",
                valor=f"método general (cualquier altura): Cp muros X {vw['Cp_muros']['x'][0]:g}/{vw['Cp_muros']['x'][1]:.2f}, "
                f"Y {vw['Cp_muros']['y'][0]:g}/{vw['Cp_muros']['y'][1]:.2f}; G X {vw['G']['x']:.3f} ({vw['rafaga']['x']}), "
-               f"Y {vw['G']['y']:.3f} ({vw['rafaga']['y']}); GCpi = ±{vw['GCpi']:g}; ±X y ±Y sin casos torsionales; "
+               f"Y {vw['G']['y']:.3f} ({vw['rafaga']['y']}); GCpi = ±{vw['GCpi']:g}; ±X y ±Y (caso 1) más casos 2–4; "
                f"succión de cubierta en vigas hasta {vw['succion_max_vigas_kn_m']:.2f} kN/m",
                referencia="B.6.5.12.2.1, Fig. B.6.5-3, B.6.5.8", estado="NSR-10 (leído)")
              if vw.get("metodo") == "general" else
@@ -974,6 +1014,15 @@ def memoria(inf: InformeEdificio3D, m: Modelo, nombres_comb: list[str]):
             L(concepto="Combinaciones con viento", valor="1.2D+1.0L+1.6W; 0.9D+1.6W; 1.2D+1.6L+0.8W (L de cubierta como Lr)",
               referencia="B.2.4-4, B.2.4-6, B.2.4-3", estado="NSR-10 (leído)"),
         ]
+        if vw.get("metodo") == "general":
+            cargas.append(L(concepto="Casos de carga de viento (Fig. B.6.5-6)",
+                            valor="1: presión completa por eje; 2: 0,75·P con M_T = 0,75·F·e; 3: 0,75·P en X y Y a la vez; "
+                                  "4: 0,563·P en X y Y con M_T = 0,563(Fx·ex + Fy·ey); e = ±0,15·B; todos los signos",
+                            referencia="B.6.5.12.3", estado="NSR-10 (leído)"))
+            cargas.append(L(concepto="Alcance de los casos 2–4",
+                            valor="solo cargas laterales (succión de cubierta en el caso 1); e = 0,15·B también si la "
+                                  "estructura es flexible (B.6.5-19 con e_R = 0 da e ≤ e_Q; e_R no se calcula)",
+                            referencia="B.6.5.12.3, B.6.5-19", estado="HIPÓTESIS"))
         if vw.get("metodo") == "general" and "flexible" in vw["rafaga"].values():
             cargas.append(L(concepto="Amortiguamiento para Gf (n1 < 1 Hz)", valor=vw["amortiguamiento"],
                             referencia="B.6.5.8.2 (NSR-10 no fija β)", estado="HIPÓTESIS"))

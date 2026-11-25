@@ -90,7 +90,7 @@ def test_edificio_alto_usa_el_metodo_general():                       # #242: h 
     p = alto()
     m = de.construir_modelo(p)
     casos, info = de._casos_viento(p, m)
-    assert info["evaluado"] and info["metodo"] == "general" and len(casos) == 8
+    assert info["evaluado"] and info["metodo"] == "general" and len(casos) == 8 + 8 + 4 + 16
     r = de._b6.fuerzas_por_nivel(36.0, "D", (3.0,) * 4, 10.0, 10.0)
     _n, caso, _w = casos[0]
     assert [caso.maestros[f"P{k}"][0] for k in range(1, 5)] == pytest.approx(r["fuerzas_kn"])
@@ -168,3 +168,28 @@ def test_advierte_si_falta_viento_en_edificio_alto_de_zona_baja():     # #321 (c
     p = proyecto(alturas_piso_m=(3.0,) * n, columnas_mm=(400,) * n, vigas_mm=((300, 450),) * n)
     assert de.ADVERTENCIA_VIENTO_ALTO in de.disenar_edificio(p).advertencias
     assert de.ADVERTENCIA_VIENTO_ALTO not in de.disenar_edificio(proyecto()).advertencias
+
+
+def test_casos_torsionales_fig_b656_a_mano():                         # #322: M_T = 0,75·F·0,15·B por nivel
+    p = alto()                                                        # planta 10 × 10 m, 4 niveles
+    m = de.construir_modelo(p)
+    casos, _info = de._casos_viento(p, m)
+    por_nombre = {n: c for n, c, _w in casos}
+    f1 = [por_nombre["Wx+,GCpi+"].maestros[f"P{k}"][0] for k in range(1, 5)]
+    c2 = por_nombre["W2x+,e+"].maestros
+    for k, f in enumerate(f1, 1):
+        fx, fy, mz = c2[f"P{k}"]
+        assert fx == pytest.approx(0.75 * f) and fy == 0.0 and mz == pytest.approx(0.75 * f * 0.15 * 10.0)
+    fy1 = [por_nombre["Wy+,GCpi+"].maestros[f"P{k}"][1] for k in range(1, 5)]
+    c4 = por_nombre["W4x+y-,ex+ey-"].maestros["P2"]
+    assert c4 == pytest.approx((0.563 * f1[1], -0.563 * fy1[1], 0.563 * (f1[1] * 1.5 - fy1[1] * 1.5)))
+    c3 = por_nombre["W3x-y+"].maestros["P4"]
+    assert c3 == pytest.approx((-0.75 * f1[3], 0.75 * fy1[3], 0.0))
+    assert all(not w for n, _c, w in casos if n.startswith(("W2", "W3", "W4")))   # sin cubierta (HIPÓTESIS)
+
+
+def test_casos_torsionales_aparecen_en_la_memoria():
+    p = alto()
+    r = de.disenar_edificio(p)
+    txt = " ".join(str(l.concepto) + " " + str(l.valor) for l in r.memoria.cargas)
+    assert "Fig. B.6.5-6" in txt and "0,563" in txt and "e_R no se calcula" in txt
