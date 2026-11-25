@@ -211,3 +211,82 @@ def levantamiento_cubierta(q_h: float, theta_deg: float, luz_m: float, alero_m: 
     rd_b = reaccion_barlovento(muerta)
     rd_s = total(muerta) - rd_b
     return Levantamiento(factor_w * rw_b - factor_d * rd_b, factor_w * rw_s - factor_d * rd_s, rw_b, rd_b)
+
+
+# ---------------------------------------------------------------- edificios de cualquier altura (#242)
+# Tabla B.6.5-2, constantes para el factor de ráfaga: (b̄, ᾱ, c, ℓ [m], ε̄, z_min [m])
+RAFAGA = {"B": (0.45, 1 / 4.0, 0.30, 97.5, 1 / 3.0, 9.0),
+          "C": (0.65, 1 / 6.5, 0.20, 152.4, 1 / 5.0, 4.5),
+          "D": (0.80, 1 / 9.0, 0.15, 198.1, 1 / 8.0, 2.0)}
+G_Q = G_V = 3.4
+
+
+def cp_muros(L_sobre_B: float) -> tuple[float, float, float]:
+    """(barlovento, sotavento, laterales) de la Fig. B.6.5-3; sotavento interpolado en L/B (0–1: −0,5; 2: −0,3; ≥4: −0,2).
+    L = dimensión paralela al viento, B = perpendicular."""
+    if L_sobre_B <= 0:
+        raise ValueError("L/B positiva")
+    r = L_sobre_B
+    sot = -0.5 if r <= 1 else (-0.5 + 0.2 * (r - 1) if r <= 2 else (-0.3 + 0.05 * (r - 2) if r <= 4 else -0.2))
+    return 0.8, sot, -0.7
+
+
+def _iz_lz(h: float, exposicion: str) -> tuple[float, float, float]:
+    _b, _a, c, ell, eps, zmin = RAFAGA[exposicion]
+    z = max(0.6 * h, zmin)
+    return z, c * (10.0 / z) ** (1 / 6), ell * (z / 10.0) ** eps
+
+
+def factor_rafaga(h: float, B: float, L: float, exposicion: str, v_m_s: float, n1_hz: float | None = None,
+                  amortiguamiento: float = 0.02) -> dict:
+    """Factor de efecto ráfaga (B.6.5.8). Rígido (n1 ≥ 1 Hz o sin n1): G de B.6.5-2. Flexible (n1 < 1 Hz): Gf de
+    B.6.5-6 con R de B.6.5-8 a B.6.5-11. B y L como en B.6.3 (B perpendicular al viento). Devuelve el detalle."""
+    if min(h, B, L, v_m_s) <= 0 or exposicion not in RAFAGA:
+        raise ValueError("h, B, L y V positivos; exposición B, C o D")
+    z, iz, lz = _iz_lz(h, exposicion)
+    q = math.sqrt(1.0 / (1.0 + 0.63 * ((B + h) / lz) ** 0.63))
+    out = {"z_m": z, "Iz": iz, "Lz_m": lz, "Q": q}
+    g_rig = 0.925 * (1 + 1.7 * G_Q * iz * q) / (1 + 1.7 * G_V * iz)
+    if n1_hz is None or n1_hz >= 1.0:
+        return out | {"tipo": "rígida", "G": g_rig}
+    if not 0 < amortiguamiento < 1:
+        raise ValueError("amortiguamiento como fracción del crítico (p. ej. 0,02)")
+    bbar, abar = RAFAGA[exposicion][0], RAFAGA[exposicion][1]
+    vz = bbar * (z / 10.0) ** abar * v_m_s
+    n1 = n1_hz
+    N1 = n1 * lz / vz
+    rn = 7.47 * N1 / (1 + 10.3 * N1) ** (5 / 3)
+
+    def r_l(eta):
+        return 1.0 if eta <= 0 else 1 / eta - (1 - math.exp(-2 * eta)) / (2 * eta * eta)
+
+    rh, rb, rl = r_l(4.6 * n1 * h / vz), r_l(4.6 * n1 * B / vz), r_l(15.4 * n1 * L / vz)
+    r = math.sqrt(rn * rh * rb * (0.53 + 0.47 * rl) / amortiguamiento)
+    lg = math.log(3600 * n1)
+    g_r = math.sqrt(2 * lg) + 0.577 / math.sqrt(2 * lg)
+    gf = 0.925 * (1 + 1.7 * iz * math.sqrt(G_Q ** 2 * q ** 2 + g_r ** 2 * r ** 2)) / (1 + 1.7 * G_V * iz)
+    return out | {"tipo": "flexible", "G": gf, "G_rigida": g_rig, "Vz_m_s": vz, "N1": n1 * lz / vz, "Rn": rn,
+                  "Rh": rh, "RB": rb, "RL": rl, "R": r, "gR": g_r}
+
+
+def fuerzas_por_nivel(v_m_s: float, exposicion: str, alturas_piso_m, B: float, L: float, *, kzt: float = 1.0,
+                      importancia: float = 1.0, n1_hz: float | None = None, amortiguamiento: float = 0.02) -> dict:
+    """Fuerza lateral del SPRFV por nivel (kN) con B.6.5-15, edificio cerrado (GCpi se cancela en la resultante):
+    barlovento qz·G·0,8 integrado en la altura aferente del nivel (Kz caso 2) + sotavento qh·G·|Cp|. Sin casos
+    torsionales ni de carga parcial (Fig. B.6.5-6)."""
+    alts = list(alturas_piso_m)
+    n = len(alts)
+    h = float(sum(alts))
+    g = factor_rafaga(h, B, L, exposicion, v_m_s, n1_hz, amortiguamiento)
+    cw, cl, _ = cp_muros(L / B)
+    qh = qz(v_m_s, kz(h, exposicion, caso=2), kzt, KD_EDIFICIOS, importancia) / 1000.0
+    cotas = [0.0] + [sum(alts[:i + 1]) for i in range(n)]
+    fuerzas = []
+    for nv in range(1, n + 1):
+        z0 = (cotas[nv - 1] + cotas[nv]) / 2
+        z1 = (cotas[nv] + cotas[nv + 1]) / 2 if nv < n else cotas[nv]
+        zs = [z0 + (z1 - z0) * (k + 0.5) / 20 for k in range(20)]
+        barl = sum(qz(v_m_s, kz(z, exposicion, caso=2), kzt, KD_EDIFICIOS, importancia) / 1000.0 for z in zs) / 20
+        fuerzas.append((barl * g["G"] * cw - qh * g["G"] * cl) * B * (z1 - z0))
+    return {"fuerzas_kn": fuerzas, "cortante_basal_kn": sum(fuerzas), "qh_kpa": qh, "G": g["G"], "rafaga": g,
+            "Cp": (cw, cl)}

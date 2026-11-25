@@ -95,3 +95,43 @@ def test_interior_levanta_menos_que_borde():
     b = b6.levantamiento_cubierta(1000.0, 20.0, 8.0, 0.6, 400.0)
     i = b6.levantamiento_cubierta(1000.0, 20.0, 8.0, 0.6, 400.0, borde=False)
     assert i.reaccion_barlovento_n_m < b.reaccion_barlovento_n_m
+
+
+# ---------------------------------------------------------------- edificios altos (#242)
+def test_cp_sotavento_interpolado():
+    assert b6.cp_muros(0.5) == (0.8, -0.5, -0.7)
+    assert b6.cp_muros(1.5)[1] == pytest.approx(-0.4)
+    assert b6.cp_muros(3.0)[1] == pytest.approx(-0.25)
+    assert b6.cp_muros(6.0)[1] == -0.2
+
+
+def test_rafaga_rigida_a_mano():
+    # h = 30 m, B = L = 20 m, exposición C: z = 18 m; Iz = 0,20·(10/18)^(1/6); Lz = 152,4·(18/10)^(1/5)
+    g = b6.factor_rafaga(30.0, 20.0, 20.0, "C", 30.0)
+    iz = 0.20 * (10 / 18) ** (1 / 6)
+    lz = 152.4 * (18 / 10) ** 0.2
+    q = (1 / (1 + 0.63 * ((20 + 30) / lz) ** 0.63)) ** 0.5
+    assert g["tipo"] == "rígida" and g["G"] == pytest.approx(0.925 * (1 + 1.7 * 3.4 * iz * q) / (1 + 1.7 * 3.4 * iz))
+    assert 0.8 < g["G"] < 0.9
+
+
+def test_rafaga_flexible_crece_al_bajar_n1_y_el_amortiguamiento():
+    a = b6.factor_rafaga(40.0, 20.0, 20.0, "C", 30.0, n1_hz=0.8)
+    b = b6.factor_rafaga(40.0, 20.0, 20.0, "C", 30.0, n1_hz=0.4)
+    c = b6.factor_rafaga(40.0, 20.0, 20.0, "C", 30.0, n1_hz=0.4, amortiguamiento=0.01)
+    assert a["tipo"] == "flexible" and a["G"] < b["G"] < c["G"]
+    assert b6.factor_rafaga(40.0, 20.0, 20.0, "C", 30.0, n1_hz=1.2)["tipo"] == "rígida"
+
+
+def test_fuerzas_por_nivel_crecen_con_la_altura_y_suman():
+    r = b6.fuerzas_por_nivel(30.0, "C", (3.0,) * 10, 20.0, 20.0)
+    f = r["fuerzas_kn"]
+    assert all(b > a for a, b in zip(f[:-2], f[1:-1]))          # barlovento crece con z (el último nivel tiene media altura)
+    assert r["cortante_basal_kn"] == pytest.approx(sum(f))
+    # cota: con qz = qh en toda la altura, V ≤ qh·G·(0,8+0,5)·B·(H − h1/2)
+    assert r["cortante_basal_kn"] <= r["qh_kpa"] * r["G"] * 1.3 * 20.0 * 28.5 + 1e-9
+
+
+def test_superlinealidad_del_viento_con_h():
+    v = [b6.fuerzas_por_nivel(30.0, "C", (3.0,) * n, 20.0, 20.0)["cortante_basal_kn"] for n in (4, 8, 16)]
+    assert v[1] / v[0] > 2.0 and v[2] / v[1] > 2.0
