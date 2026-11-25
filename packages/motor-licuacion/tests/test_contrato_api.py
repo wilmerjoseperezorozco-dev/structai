@@ -115,3 +115,11 @@ def test_entradas_obligatorias_y_rangos():
             _sol(**kw)
     with pytest.raises(ValueError, match="magnitud"):
         licuacion_spt_contrato(_sol(mw=4.0))
+
+
+def test_declara_los_limites_medidos_en_328():
+    """#328: la memoria lleva la sensibilidad medida, en especial el punto débil con finos ≥ 35 %."""
+    from src.contrato_api import LIMITES_MEDIDOS_328
+    r = licuacion_spt_contrato(_sol())
+    assert LIMITES_MEDIDOS_328 in r.supuestos
+    assert "56 %" in LIMITES_MEDIDOS_328 and "finos ≥ 35 %" in LIMITES_MEDIDOS_328 and "no validación independiente" in LIMITES_MEDIDOS_328

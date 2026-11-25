@@ -21,7 +21,6 @@ import sys
 from pathlib import Path
 
 import numpy as np
-import xlrd
 from scipy.stats import norm
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -70,6 +69,7 @@ def _evento(s: str) -> str:
 
 
 def leer(ruta: str) -> list[dict]:
+    import xlrd  # solo para leer el .xls; las pruebas no lo necesitan
     hoja = xlrd.open_workbook(ruta).sheet_by_index(0)
     col = {str(c.value).strip(): i for i, c in enumerate(hoja.row(0))}
     casos = []

@@ -25,6 +25,13 @@ _REF = "NSR-10 Título H"
 _GAMMA_MAX = 30.0
 _SIGMA_REF_KPA = 100.0         # presión de referencia del CRR: por encima, Kσ < 1 y su omisión es no conservadora
 _LPI_RUIDO = 1e-6
+# #328 fase 1: medición contra 206 casos SPT reales de Cetin et al. (2018), no independiente (casos de calibración)
+LIMITES_MEDIDOS_328 = (
+    "Desempeño medido (#328, 206 casos SPT de Cetin et al. 2018; coherencia, no validación independiente): "
+    "detecta 85 % de las licuaciones observadas (IC95 73–92 %) con especificidad 83 %; con finos ≥ 35 % detecta "
+    "solo 56 % (9 de 16) y con Mw < 7 detecta 77 %. Kσ no se pudo medir (solo 3 casos con σ'v > 150 kPa). "
+    "Un FS ≥ 1 no descarta licuación en esos dominios."
+)
 
 
 class EstratoSPT(BaseModel):
@@ -160,6 +167,7 @@ def licuacion_spt_contrato(s: SolicitudLicuacionSPT) -> ResultadoMotor:
         "Los estratos no evaluados (secos, finos plásticos, N ≥ 30, fuera de dominio) aportan 0 al LPI: con finos plásticos saturados el LPI es una cota inferior.",
         "LPI de Iwasaki et al. (1978) hasta 20 m: ninguno 0 · bajo (0, 5] · alto (5, 15] · muy alto > 15. Mide potencial en superficie, no daño.",
         "No incluye asentamiento post-licuación ni desplazamiento lateral, ni CPT.",
+        LIMITES_MEDIDOS_328,
     ]
     if s.nivel_freatico_m is None:
         supuestos.append("Sin nivel freático declarado: ningún estrato se considera saturado y no se evalúa licuación.")
