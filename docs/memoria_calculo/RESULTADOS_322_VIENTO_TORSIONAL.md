@@ -31,7 +31,7 @@
 - Solo cargas laterales. La succión de cubierta no se combina con los casos 2–4 (HIPÓTESIS declarada).
 - e = 0,15·B también en estructuras flexibles; no se calcula e_R (B.6.5-19).
 - El nodo maestro está en el centro geométrico de la planta.
-- **Sigue pendiente:** los casos torsionales de **edificios bajos** (Fig. B.6.5-7, nota 5), parte 2 de #322. Siguen declarados como no verificados en la memoria.
+- Los casos torsionales de edificios bajos (Fig. B.6.5-7, nota 5) se resolvieron en la parte 2, más abajo.
 - La misma población de #242, con una pregunta distinta. No es una validación contra la realidad: mide la sensibilidad del diseño a una obligación de la norma.
 
 ---

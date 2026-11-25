@@ -227,3 +227,16 @@ def test_un_nivel_bajo_9_m_no_lleva_casos_torsionales():               # excepci
     p = proyecto(alturas_piso_m=(4.0,), columnas_mm=(300,), vigas_mm=((300, 400),), viento=VIENTO)
     casos, info = de._casos_viento(p, de.construir_modelo(p))
     assert len(casos) == 8 and not info["torsion_bajos"]
+
+
+def test_periodo_gf_cu_ta_usa_el_periodo_aproximado():                # opción de medición de #323
+    from dataclasses import replace
+    p = alto(n=12)
+    sis = {"x": {"T_modelo_s": 2.0}, "y": {"T_modelo_s": 2.0}, "CuTa_s": 1.0}
+    m = de.construir_modelo(p)
+    _c, i_mod = de._casos_viento(p, m, sis)
+    _c, i_cut = de._casos_viento(replace(p, viento=replace(VIENTO, periodo_gf="cu_ta")), m, sis)
+    r = de._b6.factor_rafaga(36.0, 10.0, 10.0, "D", 36.0, n1_hz=1.0, amortiguamiento=0.02)
+    assert i_cut["G"]["x"] == pytest.approx(r["G"]) and i_mod["G"]["x"] > i_cut["G"]["x"]
+    with pytest.raises(ValueError):
+        de.VientoB6(v_m_s=36.0, periodo_gf="otro")

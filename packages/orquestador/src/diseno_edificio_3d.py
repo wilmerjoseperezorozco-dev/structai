@@ -93,12 +93,15 @@ class VientoB6:
     cerramiento: str = "cerrado"       # B.6.5.9 → GCpi (Fig. B.6.5-2)
     amortiguamiento: float = 0.02      # β para Gf (B.6.5.8.2) si n1 < 1 Hz: HIPÓTESIS declarada (NSR-10 no lo fija)
     casos_parciales: bool = True       # casos 2–4 de la Fig. B.6.5-6 (B.6.5.12.3, obligatorios); False solo para medir (#322)
+    periodo_gf: str = "modelo"         # n1 para Gf: "modelo" (1/T del modelo fisurado) o "cu_ta" (1/(Cu·Ta)); #323 mide la diferencia
 
     def __post_init__(self):
         if self.v_m_s <= 0 or self.kzt <= 0:
             raise ValueError("V y Kzt deben ser positivos")
         if not 0 < self.amortiguamiento < 0.2:
             raise ValueError("amortiguamiento como fracción del crítico (0 < β < 0,2)")
+        if self.periodo_gf not in ("modelo", "cu_ta"):
+            raise ValueError("periodo_gf: 'modelo' o 'cu_ta'")
         if self.exposicion not in _b6.EXPOSICION:
             raise ValueError("exposición: B, C o D")
         if self.cerramiento not in _b6.GCPI:
@@ -542,7 +545,7 @@ def _casos_viento_general(p, m: Modelo, sis: Optional[dict]):
     casos, por_dir = [], {}
     for dirn, sg in (("x", 1), ("x", -1), ("y", 1), ("y", -1)):
         largo, ancho = (lx, ly) if dirn == "x" else (ly, lx)
-        t_mod = sis[dirn]["T_modelo_s"] if sis else None
+        t_mod = (sis["CuTa_s"] if v.periodo_gf == "cu_ta" else sis[dirn]["T_modelo_s"]) if sis else None
         r = _b6.fuerzas_por_nivel(v.v_m_s, v.exposicion, p.alturas_piso_m, ancho, largo, kzt=v.kzt, importancia=imp,
                                   n1_hz=(1.0 / t_mod) if t_mod else None, amortiguamiento=v.amortiguamiento)
         por_dir[dirn] = r
@@ -572,7 +575,7 @@ def _casos_viento_general(p, m: Modelo, sis: Optional[dict]):
         casos += _casos_viento_parciales(rx["fuerzas_kn"], ry["fuerzas_kn"], lx, ly)
     info = {"evaluado": True, "metodo": "general", "V_m_s": v.v_m_s, "exposicion": v.exposicion,
             "Kz": _b6.kz(h, v.exposicion, caso=2), "Kzt": v.kzt, "Kd": _b6.KD_EDIFICIOS, "I": imp, "qh_kpa": rx["qh_kpa"],
-            "GCpi": gcpi, "h_m": h, "amortiguamiento": v.amortiguamiento,
+            "GCpi": gcpi, "h_m": h, "amortiguamiento": v.amortiguamiento, "periodo_gf": v.periodo_gf,
             "G": {"x": rx["G"], "y": ry["G"]}, "rafaga": {"x": rx["rafaga"]["tipo"], "y": ry["rafaga"]["tipo"]},
             "Cp_muros": {"x": rx["Cp"], "y": ry["Cp"]},
             "fuerzas_kn": {"x": rx["fuerzas_kn"], "y": ry["fuerzas_kn"]},
@@ -1062,6 +1065,9 @@ def memoria(inf: InformeEdificio3D, m: Modelo, nombres_comb: list[str]):
                                   "estructura es flexible (B.6.5-19 con e_R = 0 da e ≤ e_Q; e_R no se calcula)",
                             referencia="B.6.5.12.3, B.6.5-19", estado="HIPÓTESIS"))
         if vw.get("metodo") == "general" and "flexible" in vw["rafaga"].values():
+            if vw.get("periodo_gf") == "cu_ta":
+                cargas.append(L(concepto="Periodo para Gf", valor="T = Cu·Ta (no el del modelo)", referencia="A.4.2.1, B.6.5.8.2",
+                                estado="HIPÓTESIS"))
             cargas.append(L(concepto="Amortiguamiento para Gf (n1 < 1 Hz)", valor=vw["amortiguamiento"],
                             referencia="B.6.5.8.2 (NSR-10 no fija β)", estado="HIPÓTESIS"))
     elif vw:
