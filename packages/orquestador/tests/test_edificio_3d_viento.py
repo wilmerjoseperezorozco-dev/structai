@@ -240,3 +240,11 @@ def test_periodo_gf_cu_ta_usa_el_periodo_aproximado():                # opción 
     assert i_cut["G"]["x"] == pytest.approx(r["G"]) and i_mod["G"]["x"] > i_cut["G"]["x"]
     with pytest.raises(ValueError):
         de.VientoB6(v_m_s=36.0, periodo_gf="otro")
+
+
+def test_advierte_la_sensibilidad_de_gf_a_beta_solo_si_es_flexible():  # #323, regla D1
+    flex = de.disenar_edificio(alto(n=14))
+    rig = de.disenar_edificio(alto())
+    assert flex.viento["rafaga"]["x"] == "flexible" or flex.viento["rafaga"]["y"] == "flexible"
+    assert any("#323" in a and "β = 0,02," in a for a in flex.advertencias)
+    assert not any("#323" in a for a in rig.advertencias)

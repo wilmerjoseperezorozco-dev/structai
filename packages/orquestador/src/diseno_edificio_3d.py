@@ -402,6 +402,11 @@ ADVERTENCIA_VIENTO_ALTO = ("Viento no evaluado en un edificio de más de 20 m en
                            "viento B.6 cambió el refuerzo del 9 % de estos edificios con V = 36 m/s y exposición D, y el 4 % "
                            "dejó de cumplir. Declare VientoB6 con la V de la Fig. B.6.4-1 del sitio (#320, #321).")
 
+ADVERTENCIA_GF_BETA = ("Gf de estructura flexible depende del amortiguamiento β, que la NSR-10 no fija (aquí β = {beta}, "
+                       "HIPÓTESIS). Sensibilidad medida en #323 (272 pórticos de zona baja, V = 36 m/s, exposición D): con "
+                       "β = 0,01 en lugar de 0,02, ρ = 1,6W/E sube 4,9 % (mediana) y cambia el refuerzo del 10,7 % de los "
+                       "edificios (29/272); 3 más dejan de cumplir. Justifique β para el sistema estructural del proyecto.")
+
 
 def _casos_viento(p, m: Modelo, sis: Optional[dict] = None):
     """Casos W de B.6 (Método 2, edificios bajos, Fig. B.6.5-7 con θ = 0 por cubierta plana): viento en ±X y ±Y, cada
@@ -868,6 +873,8 @@ def disenar_edificio(p: ProyectoEdificio3D) -> InformeEdificio3D:
         inf.advertencias.append(ADVERTENCIA_VIENTO_ALTO)             # #321 opción (c), fase 1
     if p.viento is not None:                                         # B.6 (#292)
         cw, inf.viento = _casos_viento(p, m, sis)
+        if inf.viento.get("metodo") == "general" and "flexible" in inf.viento["rafaga"].values():
+            inf.advertencias.append(ADVERTENCIA_GF_BETA.format(beta=f"{p.viento.amortiguamiento:g}".replace(".", ",")))   # #323, regla D1
         if cw:
             i_w, ne = F.shape[0], len(m.portico.elementos)
             Fw = []
