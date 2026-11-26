@@ -45,3 +45,10 @@
 - q_adm por estrato declarado, no por sitio.
 - 11 edificios y un solo escenario de viento (W36D).
 - **No diseña cimentaciones reales.**
+
+## Nota posterior (#333, 2026-11-26)
+
+- **La fila de 100 kPa no es el costo de una solución construible.** Las zapatas aisladas no caben, y en #333 la losa rígida tampoco resultó factible en ninguno de los 11: la presión bruta es de 101–145 kPa. Con ese suelo hacen falta pilotes o una losa compensada.
+- **Con 200 kPa, la zapata rectangular resuelve los 5 edificios que no cabían.** La razón cimentación / superestructura pasa de 16,8 % a 18,6 %.
+
+Ver `RESULTADOS_333_H5_H6.md`.
