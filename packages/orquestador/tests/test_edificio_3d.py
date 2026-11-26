@@ -183,3 +183,11 @@ def test_optimizador_devuelve_el_mas_barato_que_cumple():
     menor = dataclasses.replace(p, columnas_mm=tuple(max(300.0, c - 50) for c in p.columnas_mm))
     if menor.columnas_mm != p.columnas_mm and menor.columnas_mm[-1] >= p.vigas_mm[0][0]:
         assert not de.disenar_edificio(menor).cumple
+
+
+def test_optimizador_con_h_de_viga_fija_solo_recorre_esa_h():
+    from src import optimizar_edificio_3d as op
+    base = proyecto(alturas_piso_m=(3.0,) * 3, columnas_mm=(1,) * 3, vigas_mm=((1, 1),) * 3, aa=0.10, av=0.10, capacidad="DMI")
+    r = op.optimizar(base, alturas_viga=(500,))
+    assert {c["h"] for c in r.candidatos} == {500}
+    assert r.mejor is None or all(h == 500 for _b, h in r.mejor.proyecto.vigas_mm)
