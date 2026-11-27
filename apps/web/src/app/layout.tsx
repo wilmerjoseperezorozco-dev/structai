@@ -1,19 +1,28 @@
 import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import Script from "next/script";
-import { Inter, JetBrains_Mono, Fraunces } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+// Fuentes versionadas en src/app/fonts (subconjunto latino, de @fontsource 5.3.0,
+// licencia SIL OFL 1.1: ver fonts/LICENSE-*.txt). Antes se bajaban de Google
+// Fonts durante el build y el CI fallaba a ratos en next/font (#289, #293, #343).
+const inter = localFont({
+  src: [
+    { path: "./fonts/inter-latin-400-normal.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/inter-latin-500-normal.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/inter-latin-600-normal.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/inter-latin-700-normal.woff2", weight: "700", style: "normal" },
+  ],
   variable: "--font-sans",
   display: "swap",
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400", "600"],
+const jetbrainsMono = localFont({
+  src: [
+    { path: "./fonts/jetbrains-mono-latin-400-normal.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/jetbrains-mono-latin-600-normal.woff2", weight: "600", style: "normal" },
+  ],
   variable: "--font-mono",
   display: "swap",
 });
@@ -21,9 +30,11 @@ const jetbrainsMono = JetBrains_Mono({
 // Serif editorial para el titular de la landing (hero) — carácter
 // institucional, en contraste deliberado con Inter (cuerpo) y JetBrains
 // Mono (datos/citas). No se usa en el resto de la app.
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  weight: ["500", "600"],
+const fraunces = localFont({
+  src: [
+    { path: "./fonts/fraunces-latin-500-normal.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/fraunces-latin-600-normal.woff2", weight: "600", style: "normal" },
+  ],
   variable: "--font-display",
   display: "swap",
 });
