@@ -9,7 +9,8 @@ YA PORTADO en packages/motor-*/src/ — fórmulas, tablas de referencia y
 citas normativas que ya existen y están verificadas en el motor de cálculo,
 no contenido inventado ni un documento normativo aparte.
 
-Carga GeoPot, Vías y Gerencia. AquAI usa scripts/ingesta/ras2000/ingest_ras2000.py, que
+Carga GeoPot, Vías y Gerencia, y los motores de chunks_motores_nuevos.py (geotecnia, pilotes,
+acero frío, incendios). AquAI usa scripts/ingesta/ras2000/ingest_ras2000.py, que
 extrae texto oficial real (Resolución 1096 de 2000) en vez de chunks
 redactados a mano.
 
@@ -31,7 +32,7 @@ from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8")
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[3]          # raíz del repo (scripts/ingesta/motores/este_archivo)
 
 from dotenv import load_dotenv
 load_dotenv(ROOT / "apps" / "api" / ".env")
@@ -641,7 +642,10 @@ GERENCIA_CHUNKS: list[dict] = [
 
 
 TABLA = "motor_chunks"
-MOTORES = {"geopot": GEOPOT_CHUNKS, "vias": VIAS_CHUNKS, "gerencia": GERENCIA_CHUNKS}
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from chunks_motores_nuevos import MOTORES_NUEVOS  # noqa: E402  (geotecnia, pilotes, acero frío, incendios)
+
+MOTORES = {"geopot": GEOPOT_CHUNKS, "vias": VIAS_CHUNKS, "gerencia": GERENCIA_CHUNKS, **MOTORES_NUEVOS}
 _PAGINA = 1000
 _LOTE_BORRADO = 200
 
