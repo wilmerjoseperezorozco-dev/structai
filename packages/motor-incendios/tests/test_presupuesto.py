@@ -49,6 +49,27 @@ def test_cantidades_de_soportes_bombas_tanque_y_declaradas():
         pr.cantidades(RES.tramos, 2, sop)
 
 
+def test_accesorios_y_uniones_por_topologia():
+    # Alimentación → 5 m de 1¼" → te → dos ramales de 3 m de 1" a rociadores. Tubo comercial de 6 m.
+    q = _dict(pr.accesorios_red(RES.tramos, (0, 0, 0), [(5, 3, 0), (5, -3, 0)], 6.0))
+    assert q[("te", "1-1/4in")] == 1 and q[("conexion_alimentacion", "1-1/4in")] == 1
+    assert q[("salida_rociador", "1in")] == 2
+    assert q[("acople", "1-1/4in")] == 2 and q[("acople", "1in")] == 4          # te: 1 + 2; alimentación: 1; salidas: 2
+    assert q[("torneado_extremo", "1-1/4in")] == 2 and q[("torneado_extremo", "1in")] == 4   # 1 tubo por tramo
+
+
+def test_tramo_largo_lleva_acoples_intermedios_y_codo_y_reduccion():
+    t13 = h.TramoH((0, 0, 0), (13, 0, 0), T32, 13.0)
+    tc = h.TramoH((13, 0, 0), (13, 2, 0), T32, 2.0)                       # gira: codo
+    tr = h.TramoH((13, 2, 0), (13, 4, 0), T25, 2.0)                       # colineal, otro diámetro: reducción
+    q = _dict(pr.accesorios_red([t13, tc, tr], (0, 0, 0), [(13, 4, 0)], 6.0))
+    assert q[("torneado_extremo", "1-1/4in")] == 2 * 3 + 2                 # 13 m = 3 tubos; 2 m = 1 tubo
+    assert q[("codo90", "1-1/4in")] == 1 and q[("reduccion", "1-1/4inx1in")] == 1
+    assert q[("acople", "1-1/4in")] == 2 + 1 + 2 + 1                       # intermedios 2, alim 1, codo 2, reducción 1
+    with pytest.raises(ValueError):
+        pr.accesorios_red([t13], (0, 0, 0), [], 0.0)
+
+
 def test_presupuesto_determinista_a_mano():
     p = pr.presupuestar(pr.cantidades(RES.tramos, 2), PRECIOS, 100.0, SIN, n=200)
     assert p.total_moda == pytest.approx(5 * 45000 + 6 * 30000 + 2 * 20000 + 2 * 50000)   # 545 000

@@ -6,7 +6,7 @@ EXTERNO al repositorio. Uso:
 El edificio, la demanda y todos los criterios son ILUSTRATIVOS. No salen de NFPA, de un fabricante ni de un proyecto
 real. El ejemplo muestra el flujo y la cobertura de precios: no es un diseño. Los diámetros interiores y las masas de
 la tubería A795 calibre 10 son datos físicos del catálogo (ASME B36.10); se declaran aquí.
-Corre dos escenarios para la unidad dudosa del precio de la tubería: "por m", como dice la fuente, y "por tubo de 6 m".
+Unidades de la fuente: "tubo_6m" (precio del tubo de 6 m, confirmado por Wilmer el 2026-11-26) se convierte a "m".
 """
 import json
 import os
@@ -34,6 +34,10 @@ def main(ruta_precios: str, ruta_salida: str) -> None:
         crudo = json.load(f)["precios"]
     base = {}
     for fam, dn, u, v, fuente in crudo:
+        if u == "tubo_6m":
+            u, v, fuente = "m", v / 6.0, fuente + " (precio de tubo de 6 m / 6)"
+        if fam == "te_lateral":                                  # la fuente no distingue te lateral de te de paso
+            fam = "te"
         base[(fam, dn) if dn else (fam,)] = (u, v, fuente)
 
     # F2–F4: un piso de 4 × 3 vanos de 5 m, con rociadores y trazado.
@@ -78,20 +82,20 @@ def main(ruta_precios: str, ruta_salida: str) -> None:
     decl = [pr.Cantidad(("gabinete",), "und", 2, "declarado"), pr.Cantidad(("siamesa",), "und", 1, "declarado"),
             pr.Cantidad(("valvula_control_alarma",), "und", 1, "declarado"), pr.Cantidad(("extintor",), "und", 4, "declarado")]
     cants = pr.cantidades(res.tramos, len(dist.puntos), sops, cuarto, tanque, anclajes_por_riostra=2,
-                          anclajes_por_colgador=1, declaradas=decl)
-    inc = {"tubo": (1.03, 1.05, 1.10), "codo90": (1.0, 1.0, 1.05), "te_lateral": (1.0, 1.0, 1.05), "tanque_m3": (1.0, 1.0, 1.0)}
+                          anclajes_por_colgador=1, declaradas=decl,
+                          topologia={"alimentacion": alim, "rociadores": dist.puntos, "longitud_tubo_m": 6.0})
+    fam = {c.clave[0] for c in cants}
+    inc = {f: (1.0, 1.0, 1.05) for f in fam}                     # accesorios y equipos: hasta +5 % por desperdicio
+    inc.update(tubo=(1.03, 1.05, 1.10), tanque_m3=(1.0, 1.0, 1.0))
     salida = {"area_m2": area, "rociadores": len(dist.puntos), "operan": len(operan), "q_total_lpm": qd, "p_bomba_kpa": pd,
               "tanque_m3": tanque.volumen_bruto_m3, "cuarto_m2": cuarto.area_m2, "escenarios": {}}
-    for nombre, div in (("tubo_por_m", 1.0), ("tubo_por_6m", 6.0)):
-        precios = {}
-        for k, (u, v, fuente) in base.items():
-            v2 = v / div if k[0] == "tubo" else v
-            precios[k] = pr.PrecioItem(u, 0.85 * v2, v2, 1.25 * v2, fuente + " (±: −15 %/+25 % declarado)")
-        pres = pr.presupuestar(cants, precios, area, inc, n=5000)
-        salida["escenarios"][nombre] = {
-            "parcial": pres.parcial, "cobertura_partidas": pres.cobertura_partidas,
-            "sin_precio": [list(c.clave) for c in pres.sin_precio], "por_m2": pres.por_m2(),
-            "participacion": [[list(k), s] for k, s in pres.participacion()[:5]]}
+    precios = {k: pr.PrecioItem(u, 0.85 * v, v, 1.25 * v, fuente + " (rango −15 %/+25 % declarado)")
+               for k, (u, v, fuente) in base.items()}
+    pres = pr.presupuestar(cants, precios, area, inc, n=5000)
+    salida["escenarios"]["referencia"] = {
+        "parcial": pres.parcial, "cobertura_partidas": pres.cobertura_partidas,
+        "sin_precio": [list(c.clave) for c in pres.sin_precio], "por_m2": pres.por_m2(),
+        "participacion": [[list(k), s] for k, s in pres.participacion()[:5]]}
     with open(ruta_salida, "w", encoding="utf-8") as f:
         json.dump(salida, f, ensure_ascii=False, indent=1)
     for n, e in salida["escenarios"].items():

@@ -54,9 +54,11 @@ class PrecioItem:
 
 def cantidades(tramos_h: list, n_rociadores: int, soportes: list = (), cuarto=None, tanque=None,
                anclajes_por_riostra: Optional[int] = None, anclajes_por_colgador: Optional[int] = None,
-               declaradas: list = ()) -> list[Cantidad]:
+               declaradas: list = (), topologia: Optional[dict] = None) -> list[Cantidad]:
     """Cantidades a partir de los tramos de F5/F6 (hidraulica.TramoH), los soportes de F8, el cuarto y el tanque de
-    F7. Las tees se asignan al diámetro del ramal que sale (el de su tramo aguas abajo)."""
+    F7. Accesorios: si se da `topologia` = {alimentacion, rociadores, longitud_tubo_m}, se cuentan por la red con
+    acoples y torneado de extremos (accesorios_red). Si no, se usan los de F5, que omiten las tees de paso y las uniones.
+    En el conteo de F5, cada tee lleva el diámetro del ramal que sale (el de su tramo aguas abajo)."""
     acc: dict = {}
 
     def sumar(clave, unidad, q, origen):
@@ -65,8 +67,13 @@ def cantidades(tramos_h: list, n_rociadores: int, soportes: list = (), cuarto=No
 
     for t in tramos_h:
         sumar(("tubo", t.tuberia.dn), "m", t.largo_m, "F5/F6 tramos")
-        for a in t.accesorios:
-            sumar((a, t.tuberia.dn), "und", 1, "F5 accesorios")
+        if topologia is None:
+            for a in t.accesorios:
+                sumar((a, t.tuberia.dn), "und", 1, "F5 accesorios")
+    if topologia is not None:
+        for c in accesorios_red(tramos_h, topologia["alimentacion"], topologia["rociadores"],
+                                topologia["longitud_tubo_m"]):
+            sumar(c.clave, c.unidad, c.cantidad, c.origen)
     sumar(("rociador",), "und", n_rociadores, "F3")
     if soportes:
         if anclajes_por_riostra is None or anclajes_por_colgador is None:
@@ -84,6 +91,65 @@ def cantidades(tramos_h: list, n_rociadores: int, soportes: list = (), cuarto=No
         sumar(("tanque_m3",), "m3", tanque.volumen_bruto_m3, "F7")
     out = [Cantidad(c, u, q, o) for (c, u, o), q in acc.items() if q > 0]
     return out + list(declaradas)
+
+
+def accesorios_red(tramos_h: list, alimentacion: tuple, rociadores: list, longitud_tubo_m: float) -> list[Cantidad]:
+    """Accesorios y uniones contados por la topología de la red: lo que se compra e instala, no solo lo que suma
+    pérdidas en F5 (las tees de paso no tienen longitud equivalente, pero sí se compran).
+    Por nodo, según los tramos que llegan:
+      - 1 tramo: si es rociador, salida de rociador; si es la alimentación, conexión a la alimentación;
+      - 2 tramos: con cambio de dirección, codo; colineales de distinto diámetro, reducción;
+      - 3 tramos: te; 4 tramos: cruz (con el diámetro mayor que llega).
+      - Un rociador en un nodo de paso (2 o más tramos) suma una salida de rociador.
+    Cada extremo de un accesorio lleva un acople del diámetro del tramo que llega. Cada tramo se arma con
+    ceil(L / longitud_tubo) tubos: lleva acoples intermedios entre ellos, y cada tubo tiene 2 extremos que se preparan
+    en el torno (ranurado o roscado). La longitud comercial del tubo es un dato declarado."""
+    if longitud_tubo_m <= 0:
+        raise ValueError("declare la longitud comercial del tubo")
+    ady: dict = {}
+    for t in tramos_h:
+        for n, otro in ((t.a, t.b), (t.b, t.a)):
+            ady.setdefault(n, []).append((otro, t.tuberia))
+    roc = set(rociadores)
+    acc: dict = {}
+
+    def sumar(clave, q=1):
+        acc[clave] = acc.get(clave, 0) + q
+
+    def d_(a, b):
+        return tuple((bi > ai) - (bi < ai) for ai, bi in zip(a, b))
+
+    for n, vec in ady.items():
+        grado = len(vec)
+        dn_mayor = max(vec, key=lambda v: v[1].d_int_m)[1].dn
+        pieza = None
+        if grado == 1:
+            if n == alimentacion:
+                pieza = ("conexion_alimentacion", dn_mayor)
+            elif n in roc:
+                pieza = ("salida_rociador", dn_mayor)
+        elif grado == 2:
+            (o1, t1), (o2, t2) = vec
+            if d_(n, o1) != tuple(-x for x in d_(n, o2)):
+                pieza = ("codo90", dn_mayor)
+            elif t1.dn != t2.dn:
+                pieza = ("reduccion", f"{t1.dn}x{t2.dn}" if t1.d_int_m >= t2.d_int_m else f"{t2.dn}x{t1.dn}")
+        elif grado == 3:
+            pieza = ("te", dn_mayor)
+        else:
+            pieza = ("cruz", dn_mayor)
+        if pieza:
+            sumar(pieza)
+            for _, tub in vec:
+                sumar(("acople", tub.dn))
+        if grado >= 2 and n in roc:
+            sumar(("salida_rociador", dn_mayor))
+    for t in tramos_h:
+        piezas = max(1, math.ceil(t.largo_m / longitud_tubo_m - 1e-9))
+        if piezas > 1:
+            sumar(("acople", t.tuberia.dn), piezas - 1)
+        sumar(("torneado_extremo", t.tuberia.dn), 2 * piezas)
+    return [Cantidad(k, "und", q, "topología de la red") for k, q in sorted(acc.items())]
 
 
 def _tri(rng: random.Random, lo: float, moda: float, hi: float) -> float:
