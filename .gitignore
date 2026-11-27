@@ -84,6 +84,15 @@ data/laboratorio_concreto/_cache/
 
 data/transporte/_cache/
 
+# Datos de terceros (APU de colegas, permiso de uso para StructAI, no para publicar)
+scripts/presupuesto/_privado/
+
+# Claves locales de seudonimización (SECOP)
+scripts/ingesta/*/_privado/
+
+# Salidas derivadas de ingestas (regenerables, pesadas)
+scripts/ingesta/*/salida/
+
 # Instantánea del corpus RAG para la búsqueda en memoria (scripts/rag/construir_indice_local.py): lleva el texto de
 # las normas, que no va a un repositorio público. SÍ viaja en la imagen: ver .gcloudignore.
 apps/api/datos_indice/
