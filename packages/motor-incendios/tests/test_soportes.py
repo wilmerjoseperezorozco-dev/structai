@@ -86,6 +86,14 @@ def test_tubo_delgado_solo_colgadores_y_anclaje_no_ductil_rechazado():
         sp.arriostrar(tr, {frozenset(tr[0]): t1}, S, CR, "no_ductil", CAP, CAP)
 
 
+def test_exento_conserva_los_colgadores_por_gravedad():
+    s0 = sp.Sismo(0.05, 1.0, 1.0, 0.125, 9.0, "baja", "II", "DMI")
+    tr = [((0, 0, 3.0), (12, 0, 3.0))]
+    (s1,) = sp.arriostrar(tr, {frozenset(tr[0]): T4}, s0, CR, "expansion", CAP, CAP)
+    assert (s1.n_lateral, s1.n_colgadores) == (0, 4) and "A.9.1.3" in s1.observaciones[0]
+    assert s1.t_colgador_kn == pytest.approx(1.4 * s1.w_kn_m * 3)
+
+
 def test_anclaje_de_bomba_en_sotano():
     a = sp.anclar_equipo(10.0, 0.5, 0.6, 2, -4.0, S, "ductil", CAP)
     assert a.fp_kn == pytest.approx(1.25)                                           # Aa·I/2 gobierna (ap = 1, Rp = 6)

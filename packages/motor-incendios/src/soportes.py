@@ -202,11 +202,12 @@ def arriostrar(tramos: list, tuberias: dict, s: Sismo, c: CriteriosSoporte, clas
                grado_declarado: Optional[str] = None) -> list[Soporte]:
     """Riostras y colgadores de cada tramo horizontal. tuberias: {frozenset((a, b)): Tuberia}. hx se mide desde
     z_base_m (base de la estructura) hasta el punto de soporte (losa superior del tramo: se toma la cota del tubo)."""
-    if exento(s):
-        return []
-    rp, obs = rp_admisible(s, "tuberia_incendio", clase_anclaje, grado_declarado)
-    if rp is None:
-        raise ValueError(f"anclaje no admisible: {obs}")
+    sin_sismo = exento(s)                       # A.9.1.3: sin riostras; los colgadores siguen por gravedad (1,4D)
+    rp = None
+    if not sin_sismo:
+        rp, obs = rp_admisible(s, "tuberia_incendio", clase_anclaje, grado_declarado)
+        if rp is None:
+            raise ValueError(f"anclaje no admisible: {obs}")
     ap = AP["tuberia_incendio"]
     th = math.radians(c.angulo_riostra_desde_vertical_deg)
     phin_r, phiv_r = resistencia_diseno(cap_riostra, s)
@@ -222,9 +223,16 @@ def arriostrar(tramos: list, tuberias: dict, s: Sismo, c: CriteriosSoporte, clas
             raise ValueError(f"falta la masa por metro de {tub.dn}")
         w = (masa + 1000.0 * math.pi * tub.d_int_m ** 2 / 4) * G / 1000.0  # kN/m, tubería llena
         hx = a[2] - z_base_m
-        k = coef_fp(s, hx, ap, rp)
         n_col = max(1, math.ceil(L / c.s_colgador_max_m - 1e-9))
         wt = w * L / n_col
+        if sin_sismo:
+            sp = Soporte((a, b), hx, w, 0.0, 0, 0, n_col, 0.0, 0.0, (0.0, 0.0), 1.4 * wt, 0.0)   # B.2.4-1
+            sp.observaciones.append("exento de diseño sísmico (A.9.1.3): solo colgadores por carga gravitacional")
+            ok_c = sp.t_colgador_kn <= phin_c
+            sp.verificacion = (True, 0.0, ok_c, sp.t_colgador_kn / phin_c)
+            out.append(sp)
+            continue
+        k = coef_fp(s, hx, ap, rp)
         t_col = max(1.4 * wt, 1.2 * wt + wt / 3)                            # B.2.4-1 y B.2.4-5 con Ev = W/3
         fvb = ax(s, hx) * (1.33 * ap) / rp * wt
         sp = Soporte((a, b), hx, w, k, 0, 0, n_col, 0.0, 0.0, (0.0, 0.0), t_col, fvb)
