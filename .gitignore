@@ -41,6 +41,7 @@ Thumbs.db
 
 # ── Normativa fuente cruda (privada, no redistribuible) ───────────
 packages/construdata/normativa_raw/
+scripts/_normas_ensayo_raw_drive_dump/
 scripts/ingesta/*/raw/
 scripts/ingesta/sgsst_raw/
 scripts/ingesta/ras_audit/
@@ -82,6 +83,15 @@ data/precios_elementos/indices_icoced.csv
 data/laboratorio_concreto/_cache/
 
 data/transporte/_cache/
+
+# Datos de terceros (APU de colegas, permiso de uso para StructAI, no para publicar)
+scripts/presupuesto/_privado/
+
+# Claves locales de seudonimización (SECOP)
+scripts/ingesta/*/_privado/
+
+# Salidas derivadas de ingestas (regenerables, pesadas)
+scripts/ingesta/*/salida/
 
 # Instantánea del corpus RAG para la búsqueda en memoria (scripts/rag/construir_indice_local.py): lleva el texto de
 # las normas, que no va a un repositorio público. SÍ viaja en la imagen: ver .gcloudignore.

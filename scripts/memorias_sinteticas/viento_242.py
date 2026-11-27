@@ -140,31 +140,6 @@ def _pendiente_loglog(x, y):
     return float(np.polyfit(np.log(x), np.log(y), 1)[0])
 
 
-def cubierta_liviana_tabla() -> dict:
-    """H-A4 (determinista): fracción de combinaciones región × exposición × zona con levantamiento neto
-    1,6·|p| > 0,9·D en la correa (θ = 5°, h = 6 m, luz 5 m → área efectiva L²/3, GCpi +0,18), por peso D."""
-    sys.path.insert(0, str(RAIZ / "packages" / "orquestador"))
-    from src import diseno_edificio_3d as de
-    b6 = de._b6
-    from motor_viento import cubierta_liviana as cl
-    out = {}
-    for peso in (0.15, 0.30, 0.50):
-        filas = []
-        for reg, v in b6.V_REGION.items():
-            for e in ("B", "C", "D"):
-                qh = b6.qz(v, b6.kz(6.0, e), 1.0, b6.KD_EDIFICIOS, 1.0) / 1000
-                for z in ("1", "2", "3"):
-                    p = cl.succion(qh, z, 25 / 3, 5.0, b6.GCPI["cerrado"])
-                    filas.append({"region": reg, "exp": e, "zona": z, "p_kpa": p, "razon_succion_D": abs(p) / peso,
-                                  "neto": 1.6 * abs(p) > 0.9 * peso})
-        k = sum(f["neto"] for f in filas)
-        sin = [f"{f['region']}-{f['exp']}-{f['zona']}" for f in filas if not f["neto"]]
-        out[f"D={peso}"] = {"n": len(filas), "k_neto": k, "frac": k / len(filas), "sin_levantamiento": sin,
-                            "frac_neto_si_succion>5D": (sum(f["neto"] for f in filas if f["razon_succion_D"] > 5) /
-                                                        max(1, sum(f["razon_succion_D"] > 5 for f in filas)))}
-    return out
-
-
 def resumir(filas: list[dict]) -> dict:
     por = {b: {f["id"]: f for f in filas if f["brazo"] == b} for b in BRAZOS}
     out = {"prerregistro": "docs/memoria_calculo/PRERREGISTRO_242_VIENTO_ALTURA.md"}
@@ -220,7 +195,8 @@ def resumir(filas: list[dict]) -> dict:
     ic = w["H-A3_deriva"]["ic95"]
     out["H-A3_veredicto"] = ("CONFIRMADA (viento gobierna deriva con T > 1,5 s)" if ic[0] > 0.5 else
                              "REFUTADA" if ic[1] < 0.5 else "NO CONCLUYENTE")
-    out["H-A4_cubierta_liviana"] = cubierta_liviana_tabla()
+    # H-A4 (cubierta liviana) se mueve con el módulo cubierta_liviana a su propio PR, mientras se valida:
+    # ver scripts/memorias_sinteticas/viento_242_ha4.py en esa rama. Sus resultados ya medidos siguen en RESULTADOS_242.
     return out
 
 

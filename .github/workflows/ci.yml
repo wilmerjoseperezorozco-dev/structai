@@ -162,11 +162,13 @@ jobs:
           cache-dependency-path: apps/web/package-lock.json
       - run: npm install -g npm@11
       - run: npm ci
+      # Dependabot corre sin los secretos del repositorio: el build solo necesita valores con forma válida para
+      # prerenderizar (no se conecta a nada), así que en sus PR se usan valores de relleno. En los demás, los reales.
       - run: npm run build
         env:
-          NEXT_PUBLIC_SUPABASE_URL:      ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          NEXT_PUBLIC_API_URL:           ${{ secrets.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_SUPABASE_URL:      ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://ci-sin-secretos.supabase.co' }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'ci-sin-secretos' }}
+          NEXT_PUBLIC_API_URL:           ${{ secrets.NEXT_PUBLIC_API_URL || 'http://localhost:8000' }}
 
   # ── 4. Tests Python — motores con cobertura real ────────────
   # Cada paquete corre en SU PROPIO working-directory: todos tienen una
@@ -193,7 +195,7 @@ jobs:
         # solo. Su test de validación real contra un PDF de NSR-10 se
         # auto-salta en CI (@pytest.mark.skipif) porque ese PDF es fuente
         # gitignored, no viaja con el checkout.
-        paquete: [motor-apu, motor-deformacion, motor-aquai, motor-geopot, motor-vulnerabilidad-vivienda, motor-vias, motor-gerencia, motor-estructural, motor-acero-frio, motor-topovia, motor-analisis, motor-geotecnia, motor-licuacion, motor-exploracion, motor-redes, motor-concreto, orquestador, contrato-motor, dag-proyecto, eval-stats, rag-audit-kit, cartografia, yolo]
+        paquete: [motor-apu, motor-deformacion, motor-aquai, motor-geopot, motor-vulnerabilidad-vivienda, motor-vias, motor-gerencia, motor-estructural, motor-acero-frio, motor-topovia, motor-analisis, motor-geotecnia, motor-licuacion, motor-exploracion, motor-pilotes, motor-incendios, motor-redes, motor-concreto, orquestador, contrato-motor, dag-proyecto, eval-stats, rag-audit-kit, cartografia, yolo]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v7
@@ -259,6 +261,8 @@ jobs:
   test-cobertura-ingesta:
     name: 📐 Cobertura de ingesta (regresión)
     runs-on: ubuntu-latest
+    # Lee el Supabase real: sin secretos (PR de Dependabot) no hay nada que medir. Un bump no cambia la ingesta.
+    if: github.actor != 'dependabot[bot]'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v7
@@ -313,7 +317,13 @@ jobs:
       # Ahora las corre solo el proceso nocturno local con Ollama
       # (STRUCTAI_LLM_LOCAL, ver apps/api/tests/conftest.py); el modelo local
       # nunca va a producción. El resto de las pruebas de la API sigue aquí.
+      # En los PR de Dependabot (sin secretos) se conserva la instalación de arriba, que es la que detecta conflictos
+      # de versiones, más una revisión de dependencias rotas; las pruebas que necesitan Supabase y la API corren en master.
+      - name: Revisar dependencias instaladas (PR de Dependabot)
+        if: github.actor == 'dependabot[bot]'
+        run: pip check
       - name: Correr pytest (sin las pruebas que llaman a un LLM)
+        if: github.actor != 'dependabot[bot]'
         working-directory: apps/api
         run: pytest -v -m "not llm"
         env:

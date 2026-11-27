@@ -381,3 +381,337 @@ Mejora del límite de la sección 11: "la cercanía geográfica no garantiza con
 - **Descriptivo:** tasa de eventos por cuartil del índice; AUC por región natural (solo reporta si hay ≥ 30 municipios y ambos resultados en Y1); sensibilidad excluyendo 2022 (año con 3-4 veces los eventos normales); sensibilidad excluyendo municipios con población > 500 mil.
 - **Qué NO se concluirá:** que el mapa del SGC es «correcto» o «incorrecto»; solo si ordena los municipios como los eventos reportados.
 - **Limitaciones declaradas de antemano:** la UNGRD mide reportes, no eventos (sesgo hacia municipios grandes o con mayor capacidad); análisis municipal, no por punto (falacia ecológica; un municipio con 5 % del área en amenaza alta puede tener todos sus eventos ahí); el mapa del SGC es un modelo posiblemente alimentado con pendiente; seis años de eventos con el 2022 atípico; el panel cubre 21 departamentos, no todo el país; no se corrige por autocorrelación espacial más allá del bootstrap por departamento.
+
+
+## 27. H3 (#273): índice de riesgo de socavación y continuidad vial. Definido ANTES de leer el resultado (2026-11-18)
+
+**Pregunta:** un índice fijo, construido solo con información anterior a 2023, ¿ordena a los municipios según los puentes averiados por eventos hídricos en 2023-2024? ¿Aporta algo más que el historial de daños?
+
+- **Unidad:** los 1.000 municipios de 21 departamentos de `v1_panel.csv` que tienen DEM y centroide DIVIPOLA.
+- **Conteo previo** (`--conteo`, sin leer 2023-2024):
+  - 961 municipios tienen una estación IDEAM con GEV estable a ≤ 50 km;
+  - hay 445 estaciones útiles;
+  - 181 municipios tuvieron puentes averiados por eventos hídricos en 2019-2022;
+  - correlaciones entre componentes: H–T 0,00, H–S 0,13 y T–S 0,32.
+- **Eventos hídricos:** `INUNDACION`, `CRECIENTE SUBITA` y `AVENIDA TORRENCIAL` de la UNGRD.
+- **Resultado:** Y = 1 si el municipio tuvo ≥ 1 puente vehicular averiado por eventos hídricos en 2023-2024. Y2 = esos puentes por 100 km².
+  - **Regla de potencia:** si hay menos de 30 positivos, se suman los puentes peatonales. Se reporta cuál salida se usó.
+- **Índice fijo**, sin ajuste ni pesos estimados. Es la media de los rangos percentiles de tres componentes:
+  - **H:** log(1 + puentes vehiculares averiados por eventos hídricos en 2019-2022);
+  - **T:** Q10/Q2 de la GEV (§21) de la estación IDEAM más cercana con |ξ| ≤ 0,5. Si no hay estación a ≤ 50 km se imputa el rango neutro 0,5;
+  - **S:** pendiente p90 del DEM municipal.
+- **Confirmatorios** (IC95 % por bootstrap de bloques por departamento, 2.000 réplicas, semilla 273):
+  - **C1:** AUC(índice → Y) con IC que excluya 0,5. Umbral de "útil": AUC puntual ≥ 0,65 (arbitrario, el mismo del §26).
+  - **C2 (valor añadido):** AUC(índice) − AUC(H solo) > 0, con IC que excluya 0. Si falla: "el historial basta; la hidrología y el relieve no agregan".
+  - **C3:** ρ parcial(índice, Y2 | log población, P_A) > 0, con IC que excluya 0. Si falla: "lo que ordena es el reporte, no el peligro".
+- **Descriptivo:**
+  - AUC de cada componente;
+  - sensibilidad solo con municipios con estación a ≤ 50 km;
+  - AUC por región (si hay ≥ 30 municipios y ambos valores de Y);
+  - **AUC de Aa (NSR-10 A-4) para Y**, como enlace con H5. Lo esperado es cercano a 0,5, porque el sismo no es el mecanismo.
+- **Qué NO se concluirá:**
+  - que los puentes fallaron por socavación local, porque la UNGRD no registra el mecanismo;
+  - que el índice sirve para diseñar un puente: es para priorizar.
+- **Limitaciones declaradas:**
+  - la UNGRD mide reportes y no inventaria puentes (no hay denominador de puentes expuestos);
+  - Q10/Q2 es de la estación más cercana, no de la cuenca del puente;
+  - el máximo IDEAM es horario y no el pico instantáneo (§21);
+  - solo son dos años de resultado;
+  - 2022 (La Niña) está dentro del período del predictor;
+  - el panel cubre 21 departamentos.
+- **Lo que ya vi antes de este protocolo:** el total nacional de puentes averiados por tipo de evento 2019-2024 (71 % hídricos). No vi ningún resultado por municipio en 2023-2024.
+
+
+## 28. H5 (#273): asimetría entre la amenaza sísmica normativa y el daño estructural empírico. Definido ANTES de calcular el índice de daño (2026-11-18)
+
+**Pregunta:** el Aa de la NSR-10 (Apéndice A-4), ¿ordena a los municipios según el daño estructural que reporta la UNGRD en 2019-2024 una vez descontados el relieve, la población y la capacidad de reporte?
+
+- **Unidad:** los 994 municipios del panel de H3 que tienen Aa en la tabla A-4.
+- **Conteo previo** (`--conteo`, sin calcular el daño):
+  - por zona: Alta 495, Intermedia 401 y Baja 98;
+  - Aa entre 0,05 y 0,50, mediana 0,20;
+  - **ρ(Aa, pendiente p90) = 0,53.** Esto confirma la confusión que sugirió H3 (AUC de Aa 0,61) y justifica controlar la pendiente.
+- **Índice de daño D**, fijo y sin ajuste. Es la media de los rangos percentiles de tres componentes:
+  - **V:** viviendas destruidas + averiadas por 100 mil habitantes;
+  - **R:** vías averiadas por 100 km²;
+  - **P:** puentes vehiculares + peatonales averiados por 100 km².
+
+  Usa todos los eventos de la UNGRD 2019-2024.
+- **Mecanismos de evento:**
+  - hídrico: inundación, creciente súbita y avenida torrencial;
+  - remoción en masa;
+  - sísmico: todo evento que contenga "SISMO" o "TERREMOTO";
+  - otros.
+- **Confirmatorios** (IC95 % por bootstrap de bloques por departamento, 2.000 réplicas, semilla 2735):
+  - **A1 (principal):** ρ parcial(Aa, D | log población, P_A, pendiente p90). El veredicto depende de dónde quede el IC:
+
+    | Si el IC95… | Veredicto |
+    |---|---|
+    | queda dentro de (−0,20; 0,20) | **ASIMETRÍA** |
+    | queda por encima de 0,20 | **ALINEADAS** |
+    | queda por debajo de −0,20 | **INVERSA** |
+    | en otro caso | **NO CONCLUYENTE** |
+
+    El umbral de 0,20 lo fijo yo, es arbitrario y queda declarado así.
+  - **A2:** fracción del daño total (viviendas + vías + puentes) por mecanismo, con IC.
+- **Descriptivo:**
+  - A0: ρ bruto(Aa, D);
+  - A3: tabla de zona NSR-10 contra el tercil de D, con los casos "zona Alta con daño bajo" y "zona Baja con daño alto";
+  - ρ bruto de cada componente con Aa;
+  - ρ parcial por región (si hay ≥ 30 municipios).
+- **Lectura fijada de antemano:**
+  - La NSR-10 zonifica una amenaza de baja frecuencia (sismo con período de retorno de 475 años). Seis años de reportes no pueden medirla.
+  - Una ASIMETRÍA significa que **la normativa sísmica no captura el riesgo dominante contemporáneo**. **No** significa que la zonificación sísmica esté equivocada, ni que deba cambiarse.
+  - Un resultado ALINEADAS podría venir de confusión residual: por ejemplo, de la región andina o de la densidad de vías.
+- **Limitaciones declaradas:**
+  - la UNGRD mide reportes y no inventaria lo expuesto;
+  - las viviendas se normalizan por población, no por el número de viviendas;
+  - el período 2019-2024 no tuvo un sismo destructivo mayor en el panel, así que el mecanismo sísmico será pequeño casi por construcción;
+  - el análisis es municipal (falacia ecológica);
+  - el panel cubre 21 departamentos;
+  - el Aa toma pocos valores distintos (empates en los rangos).
+- **Lo que ya vi:**
+  - el total nacional de puentes averiados por tipo de evento (71 % hídricos);
+  - el AUC de Aa para los puentes 2023-2024 de H3 (0,61).
+
+  No vi el índice D ni su relación con el Aa.
+
+## 29. H4 (#273): subestimación del inventario de movimientos en masa al consultar por cabecera municipal. Definido ANTES de contar SIMMA en la malla (2026-11-18)
+
+**Pregunta:** si un sitio se consulta por su coordenada GPS (radio de 15 km alrededor del punto) en vez de por la cabecera de su municipio, ¿cambia de forma material el número de movimientos en masa inventariados por el SGC (SIMMA) que se le asignan? ¿Y en qué fracción del territorio la consulta por cabecera **subestima**?
+
+- **Datos:**
+  - SIMMA, `Inventario_de_movimientos_en_masa/FeatureServer/0`: 6.826 puntos, **sin fecha ni magnitud**;
+  - polígonos municipales ANH/IGAC (`ANH_ENTIDADES_TERRIT/MapServer/1`, simplificados a 0,0003°);
+  - cabeceras DIVIPOLA;
+  - UNGRD 2019-2024 (eventos que contienen "MASA").
+- **Unidad:** los 1.000 municipios del panel de H3 (21 departamentos).
+- **Conteo previo** (`--conteo`, solo geometría, sin SIMMA):
+  - los 1.000 tienen polígono y malla de ≥ 5 nodos (1 con malla de 1 km);
+  - 129.603 nodos (≈ 518.000 km², cuadra con el área del panel, 516.700 km²);
+  - nodos por municipio p10/p50/p90: 18 / 63 / 284;
+  - distancia mediana nodo-cabecera p10/p50/p90: 4,0 / 7,9 / 20,3 km.
+- **Método, fijo:**
+  - malla regular de 2 km dentro de cada polígono (1 km si quedan < 5 nodos); cada nodo es "un sitio consultado por GPS" y pesa lo mismo (equivale a área);
+  - N(g) = puntos SIMMA a ≤ 15 km del nodo; N(c) = lo mismo desde la cabecera;
+  - CV municipal = desviación estándar / media de N(g) (definido si la media > 0);
+  - un nodo está **subestimado** si N(g) ≥ 2 · máx(N(c), 1), y **sobreestimado** si N(c) > 0 y N(g) ≤ N(c)/2.
+- **Confirmatorios** (IC95 % por bootstrap de bloques por departamento, 2.000 réplicas, semilla 2736):
+  - **C1:** mediana del CV municipal. **HETEROGÉNEO** si el IC queda por encima de 0,30; **HOMOGÉNEO** si queda por debajo; si no, NO CONCLUYENTE.
+  - **C2 (principal):** fracción del área (nodos) subestimada, entre los municipios con algún SIMMA cerca de la malla o de la cabecera. **SUBESTIMACIÓN MATERIAL** si el IC queda por encima de 0,10; **DESPRECIABLE** si queda por debajo de 0,05; si no, NO CONCLUYENTE.
+  - Los umbrales 0,30 y 0,10 los fijo yo; son arbitrarios y quedan declarados.
+- **Secundario S1** (el "frente al historial de emergencias"): ρ de Spearman entre los eventos UNGRD de movimiento en masa 2019-2024 del municipio y N(c), la media de N(g) y el máximo de N(g); diferencia ρ(media) − ρ(cabecera) con IC; ρ(CV, UNGRD).
+- **Descriptivo:** fracción sobreestimada; municipios con N(c) = 0 que tienen SIMMA en parte de su territorio; percentiles del CV; razón máximo/cabecera; por región y por tercil de pendiente p90; los 10 municipios más subestimados.
+- **Sensibilidad:** radio de 5 km.
+- **Lectura fijada de antemano:**
+  - Un resultado HETEROGÉNEO / SUBESTIMACIÓN MATERIAL muestra que **la cabecera no representa el inventario de su municipio**: dos lotes del mismo municipio pueden tener contextos de ladera muy distintos, y la consulta por cabecera los iguala.
+  - **No** demuestra que el GPS **prediga** mejor los eventos futuros: SIMMA no tiene fecha, así que no hay prueba temporal. Eso queda pendiente hasta tener un inventario fechado.
+  - S1 es municipal: la UNGRD reporta por municipio, no por punto. Que la media de la malla se asocie más que la cabecera con la UNGRD es coherente con la hipótesis, pero en parte es por construcción (ambas son agregados municipales).
+- **Limitaciones declaradas:**
+  - SIMMA tiene sesgo de acceso y de cartografía: hay más puntos donde se ha estudiado, no necesariamente donde hay más amenaza;
+  - un radio de 15 km suaviza y **reduce** la heterogeneidad (es conservador para C1 y C2); a 5 km se verá más;
+  - los nodos cerca del borde cuentan SIMMA de municipios vecinos (es lo que vería un usuario con GPS);
+  - la malla trata igual zonas habitadas y despobladas;
+  - polígonos simplificados.
+- **Lo que ya vi:** el número total de puntos SIMMA (6.826) y la geometría de la malla. No he contado SIMMA alrededor de ningún nodo ni de ninguna cabecera en este análisis. Del trabajo anterior conozco que la capa de amenaza SIMMA 1:25k cubre solo 59 municipios (§ otro inventario, no este).
+
+## 30. H2 (#273): nivel freático somero inferido por proximidad hidrológica, sin perforar. Definido ANTES de cruzar niveles con predictores (2026-11-18)
+
+**Pregunta:** ¿predice un índice construido con datos públicos (relieve del DEM, altura sobre la estación de caudal IDEAM más cercana e IGAC) dónde el nivel freático está a ≤ 2 m, medido en pozos y aljibes?
+
+- **Resultado medido:** nivel estático de los inventarios de puntos de agua del SGC (CC BY 4.0).
+  - Se eliminaron del caché los campos con datos personales (nombres, teléfonos, fotos, observaciones).
+  - Se usan solo pozos y aljibes. Manantiales y agua superficial quedan fuera.
+  - **Campo de nivel, por regla fija según su nombre:**
+
+    | Capa | Campo |
+    |---|---|
+    | Guaviare | `Nivel_E` |
+    | Meta | `I_Nivel` (si no hay, `V_Nivel`) |
+    | Inírida | mediana de `NE_Seco`, `NE_hum` y `NE_interm` |
+
+  - Valores ≤ 0 o mayores de 200 m se tratan como faltantes.
+  - **Casanare** (`PROFUNDI_4`) tiene un nombre ambiguo: solo entra como sensibilidad. **Quindío** (campos ambiguos) y **Santurbán** (sin nivel) quedan fuera.
+- **Lo que ya vi:**
+  - las distribuciones marginales de los campos candidatos, para identificar cuál es el nivel (por ejemplo, la mediana de `I_Nivel` en Meta es 2,1 m);
+  - la muestra elegible (`--conteo`).
+
+  **No he cruzado el nivel con ningún predictor.**
+- **Muestra principal:** 453 puntos con nivel (Meta 302, Guaviare 76, Inírida 75; 259 pozos y 194 aljibes) en 27 bloques de 0,1° y 6 municipios. Con Casanare: 947 puntos.
+- **Predictores, fijos:**
+  - **S:** cota DEM del punto (Copernicus GLO-90) menos la cota mínima a ≤ 1 km (3 km en sensibilidad). Es un sustituto de la altura sobre el drenaje.
+  - **E:** cota DEM menos la altitud de la estación de caudal IDEAM más cercana (≤ 30 km; mediana de distancia 10 km).
+  - **G:** IGAC del municipio: media de la fracción con drenaje deficiente (imperfecto, pobre o muy pobre) y la fracción inundable (cortas, largas o muy largas).
+  - **Índice** = media de los rangos percentiles de (−S, −E, G). Si falta un dato, entra el rango neutro 0,5.
+  - El caudal o nivel **actual** de la estación no entra: los pozos se midieron en fechas distintas y no hay serie temporal en StructAI.
+- **Confirmatorios** (IC95 % por bootstrap de bloques de 0,1°, 2.000 réplicas, semilla 2732):
+  - **C1 (principal):** AUC del índice para "nivel ≤ 2 m".
+
+    | Si el IC95… | Veredicto |
+    |---|---|
+    | queda por encima de 0,60 | **ÚTIL** |
+    | queda por debajo de 0,55 | **NO ÚTIL** |
+    | en otro caso | **NO CONCLUYENTE** |
+
+  - **C2:** ΔAUC (índice − solo S). Si el IC queda por encima de 0, la cadena completa agrega información al relieve.
+- **Secundario:**
+  - AUC de cada componente (S, S a 3 km, E, G);
+  - ρ de Spearman del índice con la profundidad;
+  - AUC por tipo (pozo, aljibe) y por capa;
+  - regla de alarma "índice en el tercio superior": sensibilidad y valor predictivo positivo.
+  - **Sensibilidad:** umbrales de 1 m y 3 m, y con Casanare.
+- **Lectura fijada de antemano:**
+  - Un resultado ÚTIL justifica una **alarma temprana** de "posible nivel freático somero: verificar con piezómetro o apique" en `/sitio`. **No** sustituye la medición.
+  - **G casi no varía dentro de la muestra:** el 92 % de los puntos está en tres municipios (Puerto López, San José del Guaviare e Inírida). Su AUC mide sobre todo diferencias entre regiones, no la capacidad del IGAC a nivel de punto. El AUC dentro de cada capa descuenta ese efecto.
+- **Limitaciones declaradas:**
+  - fechas y estaciones de medición distintas (el nivel varía entre seco y húmedo);
+  - los aljibes existen donde el agua es somera (sesgo de selección): por eso se reporta por tipo;
+  - regiones de llanura (Meta, Guaviare, Guainía), no Andes ni Caribe: no se puede generalizar;
+  - S solo se calcula dentro de la tesela del punto (efecto de borde);
+  - la estación más cercana puede estar en otro río;
+  - el DEM de 90 m es superficie, no terreno (vegetación);
+  - pocos bloques espaciales.
+
+## 31. H2b (#273): validación fuera de muestra de la regla de relieve de H2. Definido ANTES de evaluarla (2026-11-18)
+
+**Motivo:** en H2 el relieve local solo discriminó mejor que el índice (AUC 0,77), pero eso se vio **después** del análisis. Antes de usarlo en `/sitio` hay que probarlo en datos que no participaron en H2.
+
+- **Regla, fijada solo con el entrenamiento de H2** (Meta, Guaviare e Inírida; 453 puntos):
+  - **S ≤ 6,5 m → alarma** de nivel freático somero. S es la cota del DEM menos la cota mínima a ≤ 1 km.
+  - El umbral es el de Youden en el entrenamiento: sensibilidad 0,74 y especificidad 0,70.
+- **Validación principal: Casanare** (campo `PROFUNDI_4`).
+  - Se confirmó como nivel del agua porque va después del método de medición del nivel (cinta métrica, sonda eléctrica, estimado) y es menor que la profundidad del aljibe en el 100 % y que la del pozo en el 98 %.
+  - **Contaminación parcial declarada:** en H2 vi el AUC del *índice* en Casanare (0,69) y el AUC agregado con Casanare. No he visto el AUC del relieve solo en Casanare ni la regla aplicada allí.
+- **Validación secundaria: Quindío** (campo `Profundi_4`, mismo criterio de consistencia; región andina). Nunca vista.
+  - Por las distribuciones marginales, los niveles allí son profundos (p10 ≈ 4 m), así que se evalúa con un umbral de 5 m. A 2 m se reporta solo como descriptivo.
+- **Criterio** (bootstrap de bloques de 0,1°, 2.000 réplicas, semilla 27321):
+
+  | Si… | Veredicto |
+  |---|---|
+  | el IC95 del AUC del relieve queda por encima de 0,60 **y** el IC95 del VPP de la regla por encima de la prevalencia | **VALIDADA** |
+  | el IC95 del AUC queda por debajo de 0,55 | **NO VALIDADA** |
+  | en otro caso | **NO CONCLUYENTE** |
+
+- **Se reporta también:** sensibilidad, especificidad, fracción de puntos con alarma, ρ(S, profundidad) y resultados por tipo de punto (pozo, aljibe).
+- **Lectura fijada:**
+  - VALIDADA en Casanare permite usar la regla como **alarma orientativa** en llanuras.
+  - Quindío dice si sirve fuera de la llanura. Si allí falla, la alarma se limita a relieve plano (llanuras y valles aluviales) y se declara así en `/sitio`.
+
+## 32. H6 (#273): vías principales en terreno bajo (HAND) frente a vías averiadas por eventos hídricos. Definido ANTES de cruzar exposición con daño vial (2026-11-18)
+
+**Por qué así:** la versión "viviendas en zonas bajas" ya se probó en V1 (§§ V1, 2026-11-08) y no se confirmó fuera del Caribe. Lo nuevo es el resultado: **vías averiadas** de la UNGRD. Ese campo no se usó en V1 (`RESULTADOS_VIAS_HAND.md` decía "no hay validación contra daños").
+
+- **Unidad:** 729 municipios del panel con ≥ 5 km de vía principal (Andina 452, Caribe 159, Pacífica 100, Orinoquía 18; 21 departamentos).
+- **Predictor:** `expo_vial` de V1, la fracción de los km de vía troncal, primaria o secundaria (OSM, 2026-11-08) con HAND < 10 m (red de 5 km²).
+- **Resultado:** vías averiadas en eventos hídricos (inundación, creciente súbita, avenida torrencial), UNGRD, por 100 km de vía principal, en log1p.
+  - y1 cubre 2019-2024 y y2 cubre 2023-2024.
+  - La unidad de `vias_averiadas` es la que reporta la UNGRD (conteo), no km.
+- **Conteo previo** (sin cruzar con el daño):
+  - expo_vial: p10/p50/p90 = 0,02 / 0,24 / 0,76; mediana Caribe 0,56 y Andina 0,17.
+  - ρ(expo_vial, pendiente) = −0,49.
+  - **ρ(expo_vial, índice H3) = −0,38:** las vías bajas están en municipios llanos, y el índice H3 pesa la pendiente.
+- **Confirmatorios** (IC95 % por bootstrap de bloques por departamento, 2.000 réplicas, semilla 2766):
+  - **C1:** ρ parcial(expo_vial, y1 | log población, P_A, log km de vía, pendiente p90).
+
+    | Si… | Veredicto |
+    |---|---|
+    | el IC queda por encima de 0 y ρ ≥ 0,10 | **CONFIRMADA** |
+    | el IC queda por debajo de 0,10 | **REFUTADA** |
+    | en otro caso | **NO CONCLUYENTE** |
+
+  - **C2 (más allá de H3, temporal):** ρ parcial(expo_vial, y2 | índice H3 con historial 2019-2022, log población, P_A, log km de vía). **AGREGA** si el IC queda por encima de 0.
+- **Secundario:**
+  - ρ bruto;
+  - AUC para "alguna vía averiada por evento hídrico en 2023-2024", de expo_vial, del índice H3 y de la combinación de ambos;
+  - control negativo: incendios forestales (se espera ρ ≈ 0);
+  - ρ parcial por región (n ≥ 30) y por tercil de pendiente.
+- **Lectura fijada de antemano:**
+  - CONFIRMADA o AGREGA justifica mostrar en `/sitio`, para obras viales, la fracción del corredor en terreno bajo junto al índice H3. Este último está hecho para puentes y pesa la pendiente; el daño vial en llanura podría ser otro mecanismo (inundación lenta frente a creciente torrencial).
+  - REFUTADA, junto con V1, indica que el HAND municipal de 90 m no ordena el daño reportado. La información útil sería entonces local (punto o corredor), no municipal.
+- **Limitaciones declaradas:**
+  - la UNGRD reporta y no inventaria; `vias_averiadas` no distingue tipo ni longitud de vía, e incluye vías terciarias que no están en el predictor;
+  - OSM es voluntario;
+  - el HAND de 90 m no ve terraplenes;
+  - análisis municipal;
+  - Orinoquía con 18 municipios.
+
+## §33. H8: relieve en la cabecera municipal o redondeado frente al lote (fijado el 2026-11-18, antes del análisis)
+
+**Pregunta.** La alarma de relieve validada en H2b (S ≤ 6,5 m, con S = cota DEM − mínima a ≤ 1 km) se calcula en el pozo. Pero `/sitio`:
+- por la regla de privacidad, guarda como máximo la coordenada redondeada a 0,01°;
+- muchas veces solo conoce el municipio (DIVIPOLA).
+
+¿Cuánto discrimina la alarma si se calcula en la coordenada redondeada (`r001`) o en la cabecera DIVIPOLA?
+
+**Datos.**
+- Pozos y aljibes con nivel medido del SGC, CC BY 4.0, los mismos de H2 y H2b:
+  - llanura: Meta, Guaviare, Inírida y Casanare;
+  - Quindío, que se reporta aparte.
+- DEM Copernicus GLO-90 y coordenadas DIVIPOLA de `h3_insumos.json`.
+
+**Conteo previo** (`--conteo`, sin niveles):
+- 1.190 puntos con S en las 3 ubicaciones: llanura 932 y Quindío 258, en 17 municipios. 15 puntos se pierden por el borde de tesela al redondear.
+- Distancia del punto a la cabecera: mediana 12,7 km (p10 2,1; p90 34,4).
+- Concordancia de la alarma en llanura: 0,80 entre lote y r001, y **0,41 entre lote y cabecera**.
+- En Quindío la alarma casi no se activa (1 %), así que su resultado es solo descriptivo.
+
+**Resultado.** Nivel somero: ≤ 2 m en llanura y ≤ 5 m en Quindío, los mismos umbrales de H2b.
+
+**Medidas (llanura).**
+- **C1 (redondeo).** ΔAUC = AUC(lote) − AUC(r001), con IC95 bootstrap por bloque de 0,1° (semilla 2788).
+  - EQUIVALENTE si el límite superior < 0,05.
+  - PIERDE si el límite inferior > 0.
+  - Si no, NO CONCLUYENTE.
+- **C2 (cabecera).** ΔAUC = AUC(lote) − AUC(cabecera).
+  - BASTA si el límite superior < 0,05.
+  - NO BASTA si el límite inferior > 0,05, o si el IC de AUC(cabecera) queda por debajo de 0,60.
+  - Si no, NO CONCLUYENTE.
+- **Descriptivo:** sensibilidad, especificidad, VPP y fracción de alarma en cada ubicación, y AUC según la distancia a la cabecera (≤ 5 km y > 5 km).
+
+**Lectura fijada.**
+- Si C1 es EQUIVALENTE, `/sitio` puede trabajar con 0,01° sin perder la alarma.
+- Si C2 es NO BASTA, la alarma **no** se muestra con solo el municipio. `/sitio` debe pedir el punto del lote (opt-in, redondeado) o decir que la alarma no aplica.
+
+**Limitaciones.**
+- La S de la cabecera es constante dentro del municipio. Con 17 municipios, el tamaño efectivo para C2 es pequeño.
+- Los bloques de 0,1° no coinciden con los municipios.
+
+## §34. H2c: definición objetiva de "llanura" para la alarma de relieve (fijado el 2026-11-18, antes del análisis)
+
+**Pregunta.** H2b validó la alarma (S ≤ 6,5 m) en llanura (Casanare), pero no en zona andina (Quindío). `/sitio` necesita decidir, solo con el DEM y en el lote, cuándo aplica la alarma, sin usar el departamento ni la región.
+
+**Definición, tomada de la literatura y sin ajustarla con estos datos.** Clases de relieve de Hammond (1964), en una vecindad circular de 5 km de radio (Hammond usaba una ventana de unos 9,6 km de lado). Un punto es **llanura** si cumple las dos condiciones:
+- más del 80 % de la vecindad tiene pendiente < 8 %;
+- el relieve local (máximo − mínimo) es < 90 m, que corresponde a "flat plains" más "smooth plains".
+
+La pendiente se calcula con el DEM Copernicus GLO-90.
+
+**Conteo previo** (`--conteo`, sin niveles):
+- 1.011 puntos tienen la vecindad completa. Se excluyen 194 por el borde de la tesela DEM, sobre todo en Meta.
+- Fracción clasificada como llanura por capa:
+
+  | Capa | Llanura |
+  |---|---|
+  | Casanare | 0,85 |
+  | Guaviare | 0,74 |
+  | Inírida | 1,00 |
+  | Meta | 0,99 |
+  | Quindío | 0,00 |
+
+- En total, 669 puntos son llanura y 342 no. Los "no llanura" son los 258 de Quindío más 84 de piedemonte o serranía en la Orinoquía.
+
+**Medidas.** El nivel somero es ≤ 2 m, o ≤ 5 m en Quindío, como en H2b. El bootstrap es por bloque de 0,1° (semilla 2734).
+- **C1 (la alarma funciona dentro de la llanura objetiva).** VÁLIDA si el límite inferior del IC95 del AUC de S es mayor que 0,60. NO VÁLIDA si el límite superior es menor que 0,55.
+- **C2 (la compuerta separa dónde funciona).** ΔAUC = AUC dentro − AUC fuera. ÚTIL si el límite inferior del IC95 es mayor que 0.
+- **Descriptivo:**
+  - por capa;
+  - en particular, Casanare dentro frente a fuera. Esta comparación aísla el efecto de la compuerta dentro de una misma región; C2 mezcla compuerta con región, porque "fuera" es sobre todo Quindío.
+
+**Lectura fijada.**
+- Si C1 es VÁLIDA, `/sitio` usa la compuerta de Hammond: la alarma solo se muestra si el lote es llanura.
+- Fuera de la llanura, `/sitio` dice "la alarma de relieve no aplica en este terreno; mida el nivel".
+- Si C2 no es ÚTIL, la compuerta se mantiene igual por principio, porque fuera de la llanura no hay evidencia de que la alarma funcione. Se declara.
+
+**Limitaciones.**
+- Los niveles provienen solo de la Orinoquía y de Quindío. Las llanuras del Caribe (depresión momposina), del Magdalena y del Pacífico quedan **sin validar**: la compuerta las clasificaría como llanura, pero eso es una extrapolación.
+- El DSM incluye el dosel del bosque, que puede inflar el relieve local en zonas selváticas.

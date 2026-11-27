@@ -40,6 +40,10 @@ def disenar_pavimento(req: PavimentosRequest) -> dict:
         modulo_subrasante=req.modulo_subrasante, ip_subrasante=req.ip_subrasante,
         temperatura_media=req.temperatura_media, espesor_subbase=req.espesor_subbase,
         espesor_base=req.espesor_base, modulo_subbase=req.modulo_subbase, modulo_base=req.modulo_base,
+        espesor_rodadura=req.espesor_rodadura, modulo_reaccion_k=req.modulo_reaccion_k,
+        modulo_rotura_concreto=req.modulo_rotura_concreto, modulo_elastico_concreto=req.modulo_elastico_concreto,
+        coeficiente_transferencia_j=req.coeficiente_transferencia_j, coeficiente_drenaje_cd=req.coeficiente_drenaje_cd,
+        confiabilidad=req.confiabilidad, serviciabilidad_final=req.serviciabilidad_final,
     )
     return dataclasses.asdict(disenador.disenar(params))
 

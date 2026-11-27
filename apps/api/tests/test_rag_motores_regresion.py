@@ -176,9 +176,11 @@ CASOS_VIAS = [
     ),
     pytest.param(
         "vias",
-        "Cual es el factor por el que se divide el numero estructural SN para estimar el espesor de la losa de concreto en un pavimento rigido?",
-        ["0.39", "0,39"],
-        id="vias-espesor-losa-factor-039",
+        # #106: la conversión SN/0,39 no tenía fuente; el motor usa la ecuación AASHTO-93 de rígidos.
+        # Requiere el chunk de pavimento rígido actualizado en motor_chunks (ver scripts/ingesta/motores/actualizar_chunks_pavimento_106.py).
+        "Con que ecuacion calcula el motor de vias el espesor de la losa de concreto de un pavimento rigido y que dos entradas exige?",
+        ["aashto-93", "aashto 93", "aashto 1993", "aashto-1993"],
+        id="vias-espesor-losa-ecuacion-aashto93",
     ),
 ]
 

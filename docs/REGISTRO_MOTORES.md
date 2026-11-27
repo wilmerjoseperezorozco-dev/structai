@@ -10,12 +10,14 @@ Generado por `scripts/inventario/registro_motores.py`; no editar a mano. Criteri
 
 | Motor (router) | Paquete | 1 | 2 | 3 | 4 | Pruebas paquete / router | CI | Endpoints |
 |---|---|---|---|---|---|---|---|---|
+| `acero_frio` | `motor-acero-frio` | ? | ? | sí | ? | 72 / 9 | sí | POST /acero-frio/perfil-c/propiedades, POST /acero-frio/perfil-c/flexion, POST /acero-frio/perfil-c/viga, POST /acero-frio/perfil-c/compresion, POST /acero-frio/perfil-c/tension, POST /acero-frio/perfil-c/flexocompresion, POST /acero-frio/perfil-c/flexotension, POST /acero-frio/perfil-c/arrugamiento |
 | `analisis` | `motor-analisis` | ? | ? | sí | ? | 57 / 3 | sí | POST /analisis/portico |
 | `aquai` | `motor-aquai` | ? | ? | no | sí | 89 / 5 | sí | POST /aquai/poblacion, POST /aquai/caudales, POST /aquai/hidraulica, POST /aquai/hidrologia, POST /aquai/verificar/res0330, GET /aquai/hidrologia/estaciones-ideam, GET /aquai/hidrologia/precipitacion-ideam, GET /aquai/hidrologia/caudal-ideam, POST /aquai/hidraulica/manning, POST /aquai/hidraulica/ariete, POST /aquai/hidraulica/bombeo, POST /aquai/saneamiento/ptap, POST /aquai/saneamiento/ptar, POST /aquai/saneamiento/lagunas, POST /aquai/tarifas/calcular, POST /aquai/sui/reporte, POST /aquai/reporte/memoria |
 | `concreto` | `motor-concreto` | ? | ? | sí | ? | 287 / 5 | sí | POST /concreto/zapata, POST /concreto/talud |
-| `geotecnia` | `motor-geotecnia` | sí | sí | sí | sí | 88 / 5 | sí | POST /geotecnia/asentamiento, POST /geotecnia/portante |
+| `geotecnia` | `motor-geotecnia` | sí | sí | sí | sí | 109 / 8 | sí | POST /geotecnia/asentamiento, POST /geotecnia/portante, POST /geotecnia/asentamiento-total, POST /geotecnia/diferencial, POST /geotecnia/multicapa, POST /geotecnia/asentamiento-montecarlo, POST /geotecnia/portante-excentrica |
 | `licuacion` | `motor-licuacion` | ? | ? | sí | sí | 53 / 7 | sí | POST /licuacion/spt |
-| `orquestador_api` | `orquestador` | ? | ? | sí | ? | 111 / 9 | sí | POST /orquestador/portico-integral, POST /orquestador/portico-pareto |
+| `orquestador_api` | `orquestador` | ? | ? | sí | ? | 143 / 9 | sí | POST /orquestador/portico-integral, POST /orquestador/portico-pareto |
+| `pilotes` | `motor-pilotes` | ? | ? | sí | ? | 46 / 5 | sí | POST /pilotes/capacidad, POST /pilotes/asentamiento |
 | `redes` | `motor-redes` | sí | sí | sí | sí | 105 / 11 | sí | POST /redes/permanente, POST /redes/periodo, POST /redes/ariete |
 
 El conteo de pruebas son funciones `test_*`; una prueba parametrizada cuenta una vez.

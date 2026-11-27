@@ -39,6 +39,7 @@ La regla prerregistrada da: **el viento debe evaluarse por defecto en los edific
 **Notas sobre H-A4:**
 - La condición "succión neta > 5D" no ocurre en ninguna combinación con D ≥ 0,30 para la correa (área efectiva de 8,3 m²). La tabla se calculó con ese área; las fijaciones (área de 1 m² o menos) y los aleros tienen succiones mayores.
 - Es demanda: los anclajes siguen **SIN VALIDAR** (#319).
+- El módulo `cubierta_liviana` y el cálculo de H-A4 salieron de master el 2026-11-26 y quedaron en un PR aparte (**próximamente**) hasta que pase la validación de la regla de zona. Los números de arriba se midieron con ese módulo.
 
 ## Lectura física
 

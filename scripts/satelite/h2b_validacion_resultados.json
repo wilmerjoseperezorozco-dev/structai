@@ -1,0 +1,150 @@
+{
+ "protocolo": "PROTOCOLO_ANALISIS.md §31",
+ "regla": "relieve local (1 km) <= 6.5 m",
+ "casanare_2m": {
+  "n": 494,
+  "n_someros": 369,
+  "prevalencia": 0.7469635627530364,
+  "n_bloques": 24,
+  "auc_relieve": {
+   "valor": 0.7355447154471545,
+   "ic95": [
+    0.6501826864491659,
+    0.8145189728139003
+   ]
+  },
+  "regla": {
+   "sensibilidad": 0.7696476964769647,
+   "especificidad": 0.568,
+   "vpp": 0.8402366863905325,
+   "vpp_ic95": [
+    0.7862759216589862,
+    0.889503565463189
+   ],
+   "fraccion_alarma": 0.6842105263157895
+  },
+  "spearman_relieve_profundidad": 0.35993713437970426,
+  "por_tipo": {
+   "pozo": {
+    "n": 233,
+    "someros": 163,
+    "auc_relieve": 0.7564855390008765
+   },
+   "aljibe": {
+    "n": 261,
+    "someros": 206,
+    "auc_relieve": 0.7798764342453662
+   }
+  },
+  "veredicto": "VALIDADA"
+ },
+ "casanare_3m": {
+  "n": 494,
+  "n_someros": 442,
+  "prevalencia": 0.8947368421052632,
+  "n_bloques": 24,
+  "auc_relieve": {
+   "valor": 0.8477854159415246,
+   "ic95": [
+    0.7326840439446485,
+    0.9247992903775684
+   ]
+  },
+  "regla": {
+   "sensibilidad": 0.7375565610859729,
+   "especificidad": 0.7692307692307693,
+   "vpp": 0.9644970414201184,
+   "vpp_ic95": [
+    0.9422229196063698,
+    0.9859164820382972
+   ],
+   "fraccion_alarma": 0.6842105263157895
+  },
+  "spearman_relieve_profundidad": 0.35993713437970426,
+  "por_tipo": {
+   "pozo": {
+    "n": 233,
+    "someros": 204,
+    "auc_relieve": 0.8730561189993239
+   },
+   "aljibe": {
+    "n": 261,
+    "someros": 238,
+    "auc_relieve": 0.8533065400073073
+   }
+  }
+ },
+ "quindio_2m": {
+  "n": 258,
+  "n_someros": 12,
+  "prevalencia": 0.046511627906976744,
+  "n_bloques": 12,
+  "auc_relieve": {
+   "valor": 0.5704607046070461,
+   "ic95": [
+    0.1680815696248524,
+    0.8105534268363216
+   ]
+  },
+  "regla": {
+   "sensibilidad": 0.16666666666666666,
+   "especificidad": 1.0,
+   "vpp": 1.0,
+   "vpp_ic95": [
+    1.0,
+    1.0
+   ],
+   "fraccion_alarma": 0.007751937984496124
+  },
+  "spearman_relieve_profundidad": 0.06156114739193882,
+  "por_tipo": {
+   "pozo": {
+    "n": 19,
+    "someros": 1,
+    "auc_relieve": 1.0
+   },
+   "aljibe": {
+    "n": 239,
+    "someros": 11,
+    "auc_relieve": 0.5390749601275917
+   }
+  }
+ },
+ "quindio_5m": {
+  "n": 258,
+  "n_someros": 35,
+  "prevalencia": 0.13565891472868216,
+  "n_bloques": 12,
+  "auc_relieve": {
+   "valor": 0.5221012171684818,
+   "ic95": [
+    0.3504289879487649,
+    0.7421884919252446
+   ]
+  },
+  "regla": {
+   "sensibilidad": 0.05714285714285714,
+   "especificidad": 1.0,
+   "vpp": 1.0,
+   "vpp_ic95": [
+    1.0,
+    1.0
+   ],
+   "fraccion_alarma": 0.007751937984496124
+  },
+  "spearman_relieve_profundidad": 0.06156114739193882,
+  "por_tipo": {
+   "pozo": {
+    "n": 19,
+    "someros": 3,
+    "auc_relieve": 0.5833333333333334
+   },
+   "aljibe": {
+    "n": 239,
+    "someros": 32,
+    "auc_relieve": 0.5209088164251208
+   }
+  },
+  "veredicto": "NO CONCLUYENTE"
+ }
+}
