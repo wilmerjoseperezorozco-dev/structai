@@ -139,19 +139,23 @@ def segmento(p0: tuple, p1: tuple, diametro_m: float, id: str = "") -> Caja:
     return Caja(lo[0] - r, lo[1] - r, lo[2] - r, hi[0] + r, hi[1] + r, hi[2] + r, "tuberia", id)
 
 
+def _acumulado(luces) -> list[float]:
+    v = [0.0]
+    for l in luces:
+        v.append(v[-1] + l)
+    return v
+
+
+def ejes(p) -> tuple[list[float], list[float], list[float]]:
+    """Coordenadas de los ejes x, y y de los niveles z de un modelo de pórticos."""
+    return _acumulado(p.luces_x_m), _acumulado(p.luces_y_m), _acumulado(p.alturas_piso_m)
+
+
 def desde_porticos(p, espesor_losa_m: float) -> Edificio:
     """Edificio a partir de un modelo de pórticos con campos luces_x_m, luces_y_m, alturas_piso_m, columnas_mm (lado de la
     columna cuadrada por piso) y vigas_mm ((b, h) por nivel), p. ej. orquestador.ProyectoEdificio3D. El espesor de losa
     es un dato declarado (el modelo de pórticos no lo tiene)."""
-    xs = [0.0]
-    for l in p.luces_x_m:
-        xs.append(xs[-1] + l)
-    ys = [0.0]
-    for l in p.luces_y_m:
-        ys.append(ys[-1] + l)
-    zs = [0.0]
-    for h in p.alturas_piso_m:
-        zs.append(zs[-1] + h)
+    xs, ys, zs = ejes(p)
     obs: list[Caja] = []
     pisos: list[Piso] = []
     for k in range(len(p.alturas_piso_m)):
