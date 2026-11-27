@@ -85,3 +85,31 @@ Confirma también que los subgrupos de cada bloque (C-1, C-2, E, …) quedaron b
 1. "Más de N pisos o H m de altura, lo que sea mayor": el motor lo aplica como pisos > N **o** altura > H (la lectura más exigente).
 2. Para A, F y P, la categoría sale de la Tabla J.3.3-2 (J.3.3.2), aunque J.3.3.1 los liste en una categoría fija. Lo mismo para R-1 con la Tabla J.3.3-1.
 3. En los límites exactos de área se usa la fila más exigente.
+
+## F8: Título A.9, B.2.4 y Apéndice C-D (soportes y anclajes)
+
+Los valores están en `packages/motor-incendios/src/soportes.py`. Los cotejé con el PDF oficial el 2026-11-26:
+- Título A: páginas A-89 a A-95; la Tabla A.9.6-1 está en la página 138 del PDF.
+- Apéndice C-D: C-D.3.3 y C-D.7.
+
+| Numeral | Transcrito | ✔ |
+|---|---|---|
+| A.9.4-1 | Fp = (ax·ap/Rp)·g·Mp ≥ (Aa·I/2)·g·Mp | |
+| A.9.4-2 | ax = As + (Sa − As)·hx/heq (hx ≤ heq); ax = Sa·hx/heq (hx ≥ heq); heq ≈ 0,75 hn | |
+| A.9.4.8 | en la base o por debajo de ella: ax = Aa·I | |
+| A.9.4.4 | vertical adicional ±W/3 sin amplificar | |
+| A.9.4.9 | Rp = 6 especiales/dúctiles (embebido/d > 8, sin expansión ni tiros); 1,5 no dúctiles; 0,5 húmedos | |
+| A.9.1.3 | exentos los grupos I y II en zona baja | |
+| Tabla A.9.2-1 | IV y III superior; II bueno; I bajo | |
+| Tabla A.9.6-1 | tubería contra incendio ap 2,5: dúctil / no dúctil / no dúctil | |
+| Tabla A.9.6-1 | bombas hidráulicas (equipo en general) ap 1,0: dúctil / no dúctil / no requerido | |
+| Tabla A.9.6-1, nota (d) | exime solo a "otros sistemas de tuberías", no a la red contra incendio | |
+| B.2.4-1, -5, -7 | 1,4D; 1,2D + 1,0E + 1,0L; 0,9D + 1,0E | |
+| C-D.3.3.3 | concreto 0,75φNn y 0,75φVn en DMO y DES | |
+| C-D.3.3.6 | 0,4 × resistencia de C-D.3.3.3 | |
+| C-D.7 | umbrales 0,2φ; N/φN + V/φV ≤ 1,2 | |
+
+**Interpretaciones para revisar:**
+4. **As = Aa·Fa·I.** Es la ordenada en T = 0 de la figura A.2.6-1 (2,5·Aa·Fa·I·0,4). No encontré en el texto una ecuación explícita de As.
+5. **Componente vertical.** La nota (b) de la Tabla A.9.6-1 sube el ap vertical un 33 %, mientras que A.9.4.4 da W/3 sin amplificar. El motor usa A.9.4.4 e informa aparte el valor que daría la nota (b).
+6. **El agua dentro del tubo se toma como carga muerta D**, no como F (fluidos).
