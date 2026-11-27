@@ -171,3 +171,20 @@ def test_secciones_repetidas_abortan_antes_de_escribir():
 def test_secciones_del_script_son_unicas_en_cada_motor():
     for chunks in imc.MOTORES.values():
         imc.secciones_del_script(chunks)
+
+
+def test_motores_nuevos_registrados_con_secciones_unicas_y_campos_completos():
+    from chunks_motores_nuevos import MOTORES_NUEVOS, VIENTO_CHUNKS
+    assert {"geotecnia", "pilotes", "acero_frio", "incendios"} <= set(imc.MOTORES)
+    assert "viento" not in imc.MOTORES                       # se registra cuando el PR #331 esté en master
+    for motor, chunks in {**MOTORES_NUEVOS, "viento": VIENTO_CHUNKS}.items():
+        imc.secciones_del_script(chunks)                     # falla si hay secciones repetidas
+        assert any("alcance" in c["seccion"] for c in chunks), motor
+        for c in chunks:
+            assert set(c) == {"seccion", "titulo", "norma_ref", "contenido"}, (motor, c["seccion"])
+            assert all(c[k].strip() for k in c), (motor, c["seccion"])
+            assert len(c["contenido"]) < 2000, (motor, c["seccion"])
+
+
+def test_raiz_del_repo_apunta_al_env_de_la_api():
+    assert (imc.ROOT / "apps" / "api").is_dir()
