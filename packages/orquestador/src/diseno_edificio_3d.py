@@ -49,15 +49,24 @@ GAMMA_CONCRETO = 24.0                 # kN/m³ (B.3, concreto reforzado)
 Q_MAX = 1.0 / 3.0                     # δs ≤ 1,5 (C.10.10.7)
 ORTOGONAL = 0.30                      # A.3.6.3
 CASOS = ("D", "L", "Ex+e", "Ex-e", "Ey+e", "Ey-e")
+N_CASOS_BASE = len(CASOS)
+# Deflexiones (C.9.5; números verificados en el corpus nsr10_chunks, 2026-11-20)
+FR_COEF = 0.62                        # fr = 0,62·λ·√f'c (C.9-10), concreto de peso normal
+XI_LARGO_PLAZO = 2.0                  # ξ para 5 años o más (C.9.5.2.5)
+ES_MPA = 200_000.0
+PSI_SOSTENIDA = 0.25                  # HIPÓTESIS: fracción de L que actúa de forma sostenida (vivienda/oficinas)
+LIM_L_ENTREPISO, LIM_L_CUBIERTA = 360.0, 180.0          # Tabla C.9.5(b): inmediata por L
+LIM_FRAGIL, LIM_NO_FRAGIL = 480.0, 240.0                # Tabla C.9.5(b): después de unir elementos no estructurales
+H_MIN_AMBOS_CONT, H_MIN_UN_EXTREMO = 21.0, 18.5          # Tabla C.9.5(a), vigas (informativa: no aplica con divisiones frágiles)
 
 NO_VERIFICA = (
     "Nudos viga-columna (C.21.7): cortante en el nudo y anclaje de barras.",
     "Losas, escaleras, cimentación, muros y elementos no estructurales.",
     "Viento (Título B.6), empuje de tierras, cargas de construcción y cargas verticales sísmicas (A.3.6.13).",
-    "Patrones alternados de carga viva: la carga viva se aplica completa en todos los vanos.",
+    "Carga viva alternada combinada con sismo: los patrones de C.8.11.2 se aplican solo en 1.2D+1.6L.",
     "Efectos P-Δ explícitos: solo se evalúa Qi (A.6.2.3) y la magnificación δs de C.10.10.7.",
     "Empalmes, longitudes de desarrollo y despiece real (las cantidades subestiman el acero entre 5 y 15 %).",
-    "Deflexiones de vigas por cargas de servicio (C.9.5).",
+    "Deflexiones con aleta de losa, contraflecha o secuencia constructiva: se usa la sección rectangular (conservador).",
     "Irregularidades en planta y altura (A.3.3) más allá de la torsional: se usa φa = φp = φr = 1,0.",
     "Flexión biaxial con superficie de interacción exacta: se usa el contorno lineal (conservador).",
 )
@@ -83,6 +92,11 @@ class ProyectoEdificio3D:
     nombre: str = "Edificio de pórticos"
     uso: str = "residencial"
     divipola: Optional[str] = None                     # código de municipio; nunca coordenadas
+    divisiones_fragiles: bool = True                   # mampostería ligada a las vigas → límite ℓ/480 (Tabla C.9.5(b))
+    # Criterio StructAI (#292), NO de la NSR-10: φRn ≥ U_gravedad / u_max. None = valor por defecto adoptado con el
+    # experimento prerregistrado 292-A: 0,90 solo en vigas en zona baja (Aa y Av ≤ 0,10); 1,0 (sin margen) en el resto.
+    u_max_gravedad: Optional[float] = None
+    margen_en: str = "vigas"                           # "vigas" (adoptado, 292-A) o "todo" (vigas y columnas; NO ADOPTAR)
 
     def __post_init__(self):
         n = len(self.alturas_piso_m)
@@ -97,6 +111,20 @@ class ProyectoEdificio3D:
                 raise ValueError("Secciones positivas")
         if self.capacidad not in ("DES", "DMO", "DMI"):
             raise ValueError("capacidad: DES, DMO o DMI")
+        if self.margen_en not in ("todo", "vigas"):
+            raise ValueError("margen_en: 'todo' o 'vigas'")
+        if self.u_max_gravedad is None:
+            object.__setattr__(self, "u_max_gravedad", u_max_recomendado(self))
+        if not 0.5 <= self.u_max_gravedad <= 1.0:
+            raise ValueError("u_max_gravedad entre 0,5 y 1,0 (1,0 = límite de la NSR-10, sin margen)")
+
+
+U_MAX_ZONA_BAJA = 0.90       # adoptado 2026-11-21 (RESULTADOS_292A_MARGEN_VIGAS.md), solo en vigas
+
+
+def u_max_recomendado(p) -> float:
+    """Margen de utilización bajo gravedad de #292: zona de amenaza sísmica baja (Aa y Av ≤ 0,10, A.2.3)."""
+    return U_MAX_ZONA_BAJA if p.aa <= 0.10 and p.av <= 0.10 else 1.0
 
 
 @dataclass
@@ -249,6 +277,47 @@ def _resolver_casos(p, m: Modelo, sis: dict, ax: dict) -> np.ndarray:
     return np.array([[r.f_extremos[k] for k in range(ne)] for r in res]), res
 
 
+def _patrones_viva(m: Modelo) -> list[tuple[str, frozenset]]:
+    """Disposición de la carga viva de C.8.11.2, por viga (con su carga tributaria) y alternando por nivel (C.8.11.1):
+    (b) vanos alternados (2 patrones complementarios) y (a) pares de vanos adyacentes (4 desfases). Devuelve
+    (nombre, vigas cargadas)."""
+    vigas = [(k, t) for k, t in enumerate(m.meta) if t[0] in ("vx", "vy")]
+    pos = lambda t: t[2] if t[0] == "vx" else t[3]  # noqa: E731  posición de la viga a lo largo de su eje
+    pats = [(f"alternados {r}", frozenset(k for k, t in vigas if (pos(t) + t[1]) % 2 == r)) for r in (0, 1)]
+    pats += [(f"adyacentes {s}", frozenset(k for k, t in vigas if ((pos(t) + s) // 2 + t[1]) % 2 == 0)) for s in range(4)]
+    vistos, out = set(), []
+    for nom, s in pats:                                              # con pocos vanos algunos patrones coinciden
+        if s and s not in vistos:
+            vistos.add(s)
+            out.append((nom, s))
+    return out
+
+
+def _resolver_patrones(m: Modelo, pats) -> np.ndarray:
+    """F[p, elemento, 12] de la carga viva en cada patrón."""
+    ne = len(m.portico.elementos)
+    out = []
+    for nom, s in pats:
+        r = m.portico.resolver(_p3.Caso3D(f"L {nom}", uniformes={k: m.cargas_l[k] for k in s}))
+        out.append([r.f_extremos[k] for k in range(ne)])
+    return np.array(out).reshape(len(pats), ne, 12)
+
+
+def _extender_combinaciones(nombres, C, es_e, pats):
+    """Agrega 1.2D + 1.6·L_patrón por patrón (C.8.11.2) como casos 6.. de la matriz."""
+    npat = len(pats)
+    Cx = np.hstack([C, np.zeros((len(C), npat))])
+    filas = []
+    for i, (nom, _s) in enumerate(pats):
+        f = np.zeros(N_CASOS_BASE + npat)
+        f[0], f[N_CASOS_BASE + i] = 1.2, 1.6
+        filas.append(f)
+    if filas:
+        Cx = np.vstack([Cx, filas])
+    return (list(nombres) + [f"1.2D+1.6L[{nom}]" for nom, _ in pats], Cx,
+            np.concatenate([es_e, np.zeros(npat, dtype=bool)]))
+
+
 def combinaciones() -> tuple[list[str], np.ndarray, np.ndarray]:
     """Matriz C (K × 6 casos) de B.2.4.2 con E = E_dir,±e ± 0,3·E_perp,±e (A.3.6.3). Devuelve (nombres, C, es_sismo)."""
     nombres, filas = ["1.4D", "1.2D+1.6L"], [[1.4, 0, 0, 0, 0, 0], [1.2, 1.6, 0, 0, 0, 0]]
@@ -271,18 +340,28 @@ def combinaciones() -> tuple[list[str], np.ndarray, np.ndarray]:
 
 
 # ---------------------------------------------------------------------------------------------------- vigas
-def _demanda_vigas(p, m: Modelo, F, C, nivel: int):
+def _q_casos(k, wD, wL, ncasos, pats) -> np.ndarray:
+    """Carga distribuida local y por caso (y local = vertical hacia arriba): D, L, sismo (0) y patrones de L."""
+    q = np.zeros(ncasos)
+    q[0], q[1] = -wD, -wL
+    for i, (_nom, s) in enumerate(pats):
+        q[N_CASOS_BASE + i] = -wL if k in s else 0.0
+    return q
+
+
+def _demanda_vigas(p, m: Modelo, F, C, nivel: int, pats=()):
     piso = nivel - 1
     c = p.columnas_mm[piso] / 1000
     h = p.vigas_mm[piso][1] / 1000
     vigas = [k for k, t in enumerate(m.meta) if t[0] in ("vx", "vy") and t[1] == nivel]
     m_neg = m_pos_ap = m_pos_vano = v_max = v_grav = v_centro = w_grav = 0.0
     ln_min = math.inf
-    grav = np.array([1.2, 1.0, 0, 0, 0, 0])
+    grav = np.zeros(len(F))
+    grav[0], grav[1] = 1.2, 1.0
     for k in vigas:
         L = m.portico.longitud(m.portico.elementos[k])
         wD, wL = m.w_viga[k]
-        q = np.array([-wD, -wL, 0, 0, 0, 0])                         # carga local y (y local = vertical hacia arriba)
+        q = _q_casos(k, wD, wL, len(F), pats)
         xf = (c / 2, L - c / 2)
         x2h = (min(c / 2 + 2 * h, L / 2), max(L - c / 2 - 2 * h, L / 2))
         xin = np.linspace(c / 2, L - c / 2, 21)[1:-1]
@@ -320,6 +399,83 @@ def _mn_viga(d, mat, rec) -> tuple[float, float]:
 
 
 # ---------------------------------------------------------------------------------------------------- columnas
+def _ie(Ma, Ig, Icr, Mcr) -> float:
+    """Inercia efectiva (C.9-8), ≤ Ig."""
+    if Ma <= Mcr:
+        return Ig
+    r = (Mcr / Ma) ** 3
+    return min(Ig, r * Ig + (1 - r) * Icr)
+
+
+def _icr(b, d, dp, As, Asp, n) -> float:
+    """Inercia fisurada transformada de sección rectangular doblemente reforzada (m⁴; entradas en m y m²)."""
+    a2, a1, a0 = b / 2, (n - 1) * Asp + n * As, -((n - 1) * Asp * dp + n * As * d)
+    c = (-a1 + math.sqrt(a1 * a1 - 4 * a2 * a0)) / (2 * a2)
+    return b * c**3 / 3 + (n - 1) * Asp * (c - dp) ** 2 + n * As * (d - c) ** 2
+
+
+def _flecha_rel(Mx, xs, L, EI) -> float:
+    """Flecha en el centro relativa a la cuerda: δ = ∫ M·m̄ / EI, m̄ = momento por carga unitaria en L/2 (biapoyada).
+    M positivo = flexión que tracciona abajo; δ positiva hacia abajo."""
+    mb = np.where(xs <= L / 2, xs / 2, (L - xs) / 2)
+    y = Mx * mb
+    return float(np.sum((y[1:] + y[:-1]) * np.diff(xs)) / 2 / EI)    # trapecios (numpy 1.x y 2.x)
+
+
+def _deflexiones(p, m: Modelo, F, vigas, d, nivel: int, pats, mat):
+    """Deflexiones de servicio de las vigas del nivel con el refuerzo d (C.9.5.2): Ie de C.9-8 en el centro de la luz
+    (C.9.5.2.4), largo plazo con λΔ = ξ/(1+50ρ') (C.9.5.2.5) y límites de la Tabla C.9.5(b). Devuelve las
+    verificaciones de la viga que gobierna."""
+    rec = p.recubrimiento_mm
+    dd = _dv._d(d.h, d.dia, d.estribo_dia, rec) / 1000
+    a = _vg.AREA_MM2[d.dia] / 1e6
+    b, h = d.b / 1000, d.h / 1000
+    As, Asp, dp = d.n_inf * a, d.n_sup * a, h - dd
+    ec = 4700 * math.sqrt(mat.fc) * 1000.0                            # kN/m²
+    n = ES_MPA / (4700 * math.sqrt(mat.fc))
+    Ig, Icr = b * h**3 / 12, _icr(b, dd, dp, As, Asp, n)
+    Mcr = FR_COEF * math.sqrt(mat.fc) * 1000.0 * Ig / (h / 2)
+    rho_p = Asp / (b * dd)
+    lam = XI_LARGO_PLAZO / (1 + 50 * rho_p)
+    cubierta = nivel == len(p.alturas_piso_m)
+    lim_L = LIM_L_CUBIERTA if cubierta else LIM_L_ENTREPISO
+    lim_t = LIM_FRAGIL if p.divisiones_fragiles else LIM_NO_FRAGIL
+    peor = None
+    for k in vigas:
+        L = m.portico.longitud(m.portico.elementos[k])
+        wD, wL = m.w_viga[k]
+        xs = np.linspace(0.0, L, 41)
+        q = _q_casos(k, wD, wL, len(F), pats)
+        Mc = -F[:, k, 5][:, None] + F[:, k, 1][:, None] * xs[None, :] + q[:, None] * xs[None, :] ** 2 / 2
+        MD = Mc[0]
+        MLs = [Mc[1]] + [Mc[N_CASOS_BASE + i] for i in range(len(pats)) if k in pats[i][1]]
+        ML = max(MLs, key=lambda x: float(x[len(xs) // 2]))              # disposición con mayor momento en el centro
+        mid = len(xs) // 2
+        Ma_D, Ma_DL = max(float(MD[mid]), 0.0), max(float(MD[mid] + ML[mid]), 0.0)
+        dD = _flecha_rel(MD, xs, L, ec * _ie(Ma_D, Ig, Icr, Mcr))
+        dDL = _flecha_rel(MD + ML, xs, L, ec * _ie(Ma_DL, Ig, Icr, Mcr))
+        dL = max(dDL - dD, 0.0)
+        d_t = lam * (dD + PSI_SOSTENIDA * dL) + dL
+        r = max(dL / (L / lim_L), d_t / (L / lim_t))
+        if peor is None or r > peor[0]:
+            peor = (r, L, dL, d_t)
+    if peor is None:
+        return []
+    _, L, dL, d_t = peor
+    ln = L - p.columnas_mm[nivel - 1] / 1000
+    nota_a = (f"h = {d.h:g} mm; Tabla C.9.5(a) daría ℓ/{H_MIN_AMBOS_CONT:g} = {1000 * ln / H_MIN_AMBOS_CONT:.0f} mm (ambos extremos "
+              f"continuos), pero no aplica con divisiones frágiles (C.9.5.2.1): se calcula la deflexión")
+    hip = (f"Ie en el centro (C.9.5.2.4), sección rectangular sin aleta; λΔ = {lam:.2f} con ρ' de {d.n_sup} barras superiores; "
+           f"carga sostenida D + {PSI_SOSTENIDA:g}·L (HIPÓTESIS); disposición de L de C.8.11.2 con mayor momento en el centro; ℓ = {L:.2f} m entre ejes")
+    return [
+        _vg.Verificacion(f"Deflexión inmediata por L ≤ ℓ/{lim_L:g} ({'cubierta' if cubierta else 'entrepiso'})", 1000 * dL,
+                         1000 * L / lim_L, "mm", dL <= L / lim_L, "C.9.5.2.2, Tabla C.9.5(b)", nota_a),
+        _vg.Verificacion(f"Deflexión después de unir elementos no estructurales ≤ ℓ/{lim_t:g} "
+                         f"({'frágiles' if p.divisiones_fragiles else 'no frágiles'})", 1000 * d_t, 1000 * L / lim_t, "mm",
+                         d_t <= L / lim_t, "C.9.5.2.5, Tabla C.9.5(b)", hip),
+    ]
+
+
 def _k_jackson_moreland(psi_a: float, psi_b: float) -> float:
     psi_m = 0.5 * (psi_a + psi_b)
     k = (20 - psi_m) / 20 * math.sqrt(1 + psi_m) if psi_m < 2 else 0.9 * math.sqrt(1 + psi_m)
@@ -355,7 +511,8 @@ def _demanda_columnas(p, m: Modelo, F, C, es_e, res, piso: int, mat, sis: dict):
     Fc = F[:, cols, :]                                               # (6, nc, 12)
     P = np.einsum("kc,cn->kn", C, Fc[:, :, 0])                       # (K, nc), compresión +
     Cg, Ce = C.copy(), C.copy()
-    Cg[:, 2:], Ce[:, :2] = 0.0, 0.0
+    Cg[:, 2:N_CASOS_BASE] = 0.0                                     # gravedad: D, L y patrones de L
+    Ce[:, :2], Ce[:, N_CASOS_BASE:] = 0.0, 0.0                       # sismo
     # Qi del entrepiso con los casos de diseño (C.10.10.7): Q = ΣPu·Δo / (Vus·lc)
     grav = 1.2 * Fc[0, :, 0].sum() + 1.0 * Fc[1, :, 0].sum()
     q = 0.0
@@ -431,6 +588,15 @@ def disenar_edificio(p: ProyectoEdificio3D) -> InformeEdificio3D:
         inf.advertencias.append(f"Qi máx = {der['Qi_max']:.3f} > 0,10: A.6.2.3 exige considerar P-Δ (HE6: ocurre en edificios altos con Aa ≤ 0,15)")
     F, res = _resolver_casos(p, m, sis, der["Ax"])
     nombres, C, es_e = combinaciones()
+    pats = _patrones_viva(m)                                         # C.8.11.2
+    F = np.concatenate([F, _resolver_patrones(m, pats)]) if pats else F
+    nombres, C, es_e = _extender_combinaciones(nombres, C, es_e, pats)
+    C_vigas = C
+    if p.u_max_gravedad < 1.0:                                       # margen solo donde gobierna la gravedad (#292)
+        C_vigas = C.copy()
+        C_vigas[~es_e] /= p.u_max_gravedad
+        if p.margen_en == "todo":
+            C = C_vigas
     mat = _vg.Materiales(fc=p.fc_mpa, fy=p.fy_mpa, fyt=p.fy_mpa)
     rec = p.recubrimiento_mm
     n = len(p.alturas_piso_m)
@@ -439,11 +605,21 @@ def disenar_edificio(p: ProyectoEdificio3D) -> InformeEdificio3D:
     for nivel in range(1, n + 1):
         b, h = p.vigas_mm[nivel - 1]
         c = p.columnas_mm[nivel - 1]
-        dem, vigas = _demanda_vigas(p, m, F, C, nivel)
-        cand = _dv.disenar(b, h, dem, p.capacidad, mat, recubrimiento=rec, columna_c1=c, columna_c2=c)
+        dem, vigas = _demanda_vigas(p, m, F, C_vigas, nivel, pats)
+        cand0 = _dv.disenar(b, h, dem, p.capacidad, mat, recubrimiento=rec, columna_c1=c, columna_c2=c)
+        cand = []
+        for d in cand0:                                              # C.9.5: el refuerzo cambia Icr, se filtra por candidato
+            vd = _deflexiones(p, m, F, vigas, d, nivel, pats, mat)
+            if all(v.cumple for v in vd):
+                cand.append(dataclasses.replace(d, verificaciones=tuple(d.verificaciones) + tuple(vd)))
         fila = {"nivel": nivel, "b": b, "h": h, "n": len(vigas), "demanda": dataclasses.asdict(dem), "diseno": None}
-        if not cand:
+        if not cand0:
             inf.fallas.append(f"Vigas del nivel {nivel} ({b:g}×{h:g} mm): ningún refuerzo cumple C.21 / C.10 / C.11")
+        elif not cand:
+            vd = _deflexiones(p, m, F, vigas, cand0[0], nivel, pats, mat)
+            peor = max(vd, key=lambda v: v.demanda / v.capacidad)
+            inf.fallas.append(f"Vigas del nivel {nivel} ({b:g}×{h:g} mm): deflexión {peor.demanda:.1f} mm > "
+                              f"{peor.capacidad:.1f} mm (C.9.5); aumente la altura de la viga")
         else:
             qs = [(_cc.costo_co2(_cantidades_vigas(p, m, d, vigas, c), p.fc_mpa)[0], i) for i, d in enumerate(cand)]
             d = cand[min(qs)[1]]
@@ -544,6 +720,18 @@ def memoria(inf: InformeEdificio3D, m: Modelo, nombres_comb: list[str]):
         L(concepto="Reparto de la losa a las vigas", valor="líneas de rotura a 45°, uniforme equivalente con la misma resultante", estado="HIPÓTESIS"),
         L(concepto="Peso sísmico total W (D + peso propio)", valor=s["W_kn"], unidad="kN", referencia="A.4.2", estado="CALCULADO"),
         L(concepto="Combinaciones", valor=f"{len(nombres_comb)}: 1.4D; 1.2D+1.6L; 1.2D+1.0L±E; 0.9D±E", referencia="B.2.4.2", estado="NSR-10 (leído)"),
+        L(concepto="Disposición de la carga viva",
+          valor=f"{sum('[' in c and c.startswith('1.2D+1.6L[') for c in nombres_comb)} patrones (vanos alternados y adyacentes, "
+                "por viga, alternando por nivel) en 1.2D+1.6L", referencia="C.8.11.1, C.8.11.2", estado="NSR-10 (leído)"),
+        L(concepto="Deflexiones de servicio",
+          valor=f"Ie (C.9-8), λΔ = ξ/(1+50ρ') con ξ = {XI_LARGO_PLAZO:g}; L sostenida = {PSI_SOSTENIDA:g}·L; "
+                f"divisiones {'frágiles (ℓ/480)' if p.divisiones_fragiles else 'no frágiles (ℓ/240)'}",
+          referencia="C.9.5.2, Tabla C.9.5(b)", estado="HIPÓTESIS"),
+        L(concepto="Margen de utilización bajo gravedad (criterio StructAI, no exigido por la NSR-10)",
+          valor="sin margen (límite de la NSR-10)" if p.u_max_gravedad >= 1.0 else
+          f"combinaciones de gravedad divididas por u_máx = {p.u_max_gravedad:g} (φRn ≥ U/{p.u_max_gravedad:g}) en "
+          f"{'vigas y columnas' if p.margen_en == 'todo' else 'vigas (columnas sin margen)'}",
+          referencia="#292", estado="HIPÓTESIS"),
         L(concepto="Efectos ortogonales", valor="E = 100 % en una dirección + 30 % en la perpendicular", referencia="A.3.6.3", estado="NSR-10 (leído)"),
         L(concepto="Torsión accidental", valor="±5 % de la dimensión perpendicular, amplificada por Ax", referencia="A.3.6.7.1, A.3.6-2", estado="NSR-10 (leído)"),
     ]
