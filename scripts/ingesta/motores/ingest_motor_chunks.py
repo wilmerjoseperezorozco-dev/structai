@@ -643,7 +643,7 @@ GERENCIA_CHUNKS: list[dict] = [
 
 TABLA = "motor_chunks"
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from chunks_motores_nuevos import MOTORES_NUEVOS  # noqa: E402  (geotecnia, pilotes, acero frío, incendios)
+from chunks_motores_nuevos import MOTORES_NUEVOS  # noqa: E402  (geotecnia, pilotes, acero frío, incendios, viento)
 
 MOTORES = {"geopot": GEOPOT_CHUNKS, "vias": VIAS_CHUNKS, "gerencia": GERENCIA_CHUNKS, **MOTORES_NUEVOS}
 _PAGINA = 1000
