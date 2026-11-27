@@ -2,7 +2,7 @@
 
 Generado por `scripts/inventario/matriz_coherencia.py` desde [coherencia_motores.json](coherencia_motores.json); no editar a mano. Dos nodos se conectan cuando una magnitud que produce uno (con su unidad) es una que consume el otro. **Coherente no significa probado**: solo las cadenas de la sección «Cadenas probadas» tienen una prueba que las ejecuta.
 
-- Motores implementados: 19; con declaración completa: 11; **pendientes de declarar: 8** (`motor-vias`, `motor-gerencia`, `motor-vulnerabilidad-vivienda`, `motor-estructural`, `motor-exploracion`, `motor-deformacion`, `motor-acero-frio`, `motor-topovia`). Lo no declarado no genera conexiones: no se infiere nada.
+- Motores implementados: 20; con declaración completa: 11; **pendientes de declarar: 9** (`motor-vias`, `motor-gerencia`, `motor-incendios`, `motor-vulnerabilidad-vivienda`, `motor-estructural`, `motor-exploracion`, `motor-deformacion`, `motor-acero-frio`, `motor-topovia`). Lo no declarado no genera conexiones: no se infiere nada.
 - Motores futuros (planificados o bloqueados): 5. Nunca se cuentan como funcionando.
 - Magnitudes del vocabulario: 51, cada una con unidad y dominio físico.
 
@@ -86,6 +86,7 @@ Vía: **endpoint** = ambos lados son campos del contrato HTTP; **adaptador** = e
 | `motor-geopot` | motor | implementado | completa | 1 | 2 | no |
 | `motor-geotecnia` | motor | implementado | completa | 7 | 5 | no |
 | `motor-gerencia` | motor | implementado | **?** pendiente | 0 | 0 | no |
+| `motor-incendios` | motor | implementado | **?** pendiente | 0 | 0 | no |
 | `motor-licuacion` | motor | implementado | completa | 4 | 2 | no |
 | `motor-pilotes` | motor | implementado | completa | 7 | 4 | no |
 | `motor-redes` | motor | implementado | completa | 1 | 4 | no |

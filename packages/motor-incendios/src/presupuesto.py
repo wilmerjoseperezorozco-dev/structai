@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import math
 import random
+from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -59,11 +60,10 @@ def cantidades(tramos_h: list, n_rociadores: int, soportes: list = (), cuarto=No
     F7. Accesorios: si se da `topologia` = {alimentacion, rociadores, longitud_tubo_m}, se cuentan por la red con
     acoples y torneado de extremos (accesorios_red). Si no, se usan los de F5, que omiten las tees de paso y las uniones.
     En el conteo de F5, cada tee lleva el diámetro del ramal que sale (el de su tramo aguas abajo)."""
-    acc: dict = {}
+    acc: dict = defaultdict(float)
 
     def sumar(clave, unidad, q, origen):
-        k = (clave, unidad, origen)
-        acc[k] = acc.get(k, 0.0) + q
+        acc[(clave, unidad, origen)] += q
 
     for t in tramos_h:
         sumar(("tubo", t.tuberia.dn), "m", t.largo_m, "F5/F6 tramos")
@@ -111,10 +111,10 @@ def accesorios_red(tramos_h: list, alimentacion: tuple, rociadores: list, longit
         for n, otro in ((t.a, t.b), (t.b, t.a)):
             ady.setdefault(n, []).append((otro, t.tuberia))
     roc = set(rociadores)
-    acc: dict = {}
+    acc: dict = defaultdict(int)
 
     def sumar(clave, q=1):
-        acc[clave] = acc.get(clave, 0) + q
+        acc[clave] += q
 
     def d_(a, b):
         return tuple((bi > ai) - (bi < ai) for ai, bi in zip(a, b))

@@ -26,6 +26,7 @@ equilibrio por ramales con factor K equivalente (no hace falta: la solución es 
 from __future__ import annotations
 
 import math
+from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Optional, Union
 
@@ -165,7 +166,7 @@ def calcular(tramos: list, alimentacion: tuple, operan: list, demanda: Demanda,
     comun = [[sorted(ci & cj) for cj in caminos] for ci in caminos]
 
     def bajar(p0: float, q_roc: dict) -> dict:
-        q_sal = {n: q_roc.get(n, 0.0) for n in ady}
+        q_sal = {n: (q_roc[n] if n in q_roc else 0.0) for n in ady}   # nodo sin rociador: no extrae caudal
         for t in reversed(th):                                 # caudales: de las hojas hacia la raíz (exacto en árbol)
             t.q_lpm = q_sal[t.b] + sum(x.q_lpm for x in hijos.get(t.b, ()))
         p = {alimentacion: p0}
@@ -241,14 +242,14 @@ def verificar(res: Resultado, demanda: Demanda, v_max_m_s: Optional[float] = Non
     for n, P, Q in res.rociadores:
         if P < demanda.p_requerida_kpa - tol:
             err.append(f"rociador {n}: {P:.2f} kPa < requerida {demanda.p_requerida_kpa:.2f}")
-    sale: dict = {}
+    sale: dict = defaultdict(float)
     entra: dict = {}
     for t in res.tramos:
-        sale[t.a] = sale.get(t.a, 0.0) + t.q_lpm
+        sale[t.a] += t.q_lpm
         entra[t.b] = t.q_lpm
-    qroc = {n: Q for n, _, Q in res.rociadores}
+    qroc = defaultdict(float, {n: Q for n, _, Q in res.rociadores})
     for n, qin in entra.items():
-        if abs(qin - sale.get(n, 0.0) - qroc.get(n, 0.0)) > tol:
+        if abs(qin - sale[n] - qroc[n]) > tol:
             err.append(f"balance de caudal no cierra en {n}")
     p = {res.tramos[0].a: res.p_alimentacion_kpa}
     for t in res.tramos:
