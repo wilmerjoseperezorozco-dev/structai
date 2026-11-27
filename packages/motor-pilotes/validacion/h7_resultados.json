@@ -1,0 +1,1511 @@
+{
+ "prerregistro": "validacion/PRERREGISTRO_H7_NIVEL_FREATICO.md",
+ "n_pilotes": 30,
+ "referencia_exploracion_cop": 9737680,
+ "todos": {
+  "n_puntos": 947,
+  "n_bloques": 51,
+  "agregados": {
+   "p_deficit_90_optimista": 0.4632674611555287,
+   "p_deficit_80_optimista": 0.349600241363705,
+   "p_deficit_90_alarma": 0.15552873736611855,
+   "sobrecosto_conservadora_vs_piezometro": 0.036407963605004624,
+   "voi_vs_conservadora_cop": 25965172.00954142,
+   "voi_vs_alarma_cop": -1177669.0899833962
+  },
+  "ic95": {
+   "p_deficit_90_optimista": [
+    0.4230587494093558,
+    0.49785247432306257
+   ],
+   "p_deficit_80_optimista": [
+    0.3079814921920185,
+    0.3869948445035756
+   ],
+   "p_deficit_90_alarma": [
+    0.11640211640211641,
+    0.19716760621476695
+   ],
+   "sobrecosto_conservadora_vs_piezometro": [
+    0.03078542834459291,
+    0.04287581891280736
+   ],
+   "voi_vs_conservadora_cop": [
+    22176908.240958847,
+    30109979.000756215
+   ],
+   "voi_vs_alarma_cop": [
+    -6600379.16886196,
+    3452323.938699357
+   ]
+  },
+  "escenarios": [
+   {
+    "perfil": "arena",
+    "pilote": "in_situ_d050",
+    "q_kn": 300,
+    "optimista": {
+     "E_L": 5.75,
+     "costo": 140178157.5,
+     "p_deficit_90": 0.7180570221752904,
+     "p_deficit_80": 0.31045406546990495
+    },
+    "conservadora": {
+     "E_L": 7.5,
+     "costo": 182841075.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 6.781151003167898,
+     "costo": 165316391.8875396,
+     "p_deficit_90": 0.191129883843717,
+     "p_deficit_80": 0.06441393875395987
+    },
+    "piezometro": {
+     "E_L": 6.551478352692714,
+     "costo": 159717245.97940865,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 5.75,
+    "L_nf0": 7.5,
+    "voi_vs_conservadora": 23123829.02059135,
+    "voi_vs_alarma": 5599145.908130944
+   },
+   {
+    "perfil": "arena",
+    "pilote": "in_situ_d050",
+    "q_kn": 600,
+    "optimista": {
+     "E_L": 8.5,
+     "costo": 207219885.0,
+     "p_deficit_90": 0.795142555438226,
+     "p_deficit_80": 0.6388595564941922
+    },
+    "conservadora": {
+     "E_L": 11.25,
+     "costo": 274261612.5,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 10.120380147835268,
+     "costo": 246722824.75184795,
+     "p_deficit_90": 0.235480464625132,
+     "p_deficit_80": 0.16156282998944033
+    },
+    "piezometro": {
+     "E_L": 9.925290390707497,
+     "costo": 241966768.62988386,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 8.5,
+    "L_nf0": 11.25,
+    "voi_vs_conservadora": 32294843.870116144,
+    "voi_vs_alarma": 4756056.121964097
+   },
+   {
+    "perfil": "arena",
+    "pilote": "in_situ_d050",
+    "q_kn": 1000,
+    "optimista": {
+     "E_L": 11.25,
+     "costo": 274261612.5,
+     "p_deficit_90": 0.8627243928194298,
+     "p_deficit_80": 0.7581837381203802
+    },
+    "conservadora": {
+     "E_L": 15.75,
+     "costo": 383966257.5,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 13.901531151003168,
+     "costo": 338902786.63938755,
+     "p_deficit_90": 0.28722280887011614,
+     "p_deficit_80": 0.2122492080253432
+    },
+    "piezometro": {
+     "E_L": 13.898363252375924,
+     "costo": 338825557.0406547,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 11.25,
+    "L_nf0": 15.75,
+    "voi_vs_conservadora": 45140700.45934528,
+    "voi_vs_alarma": 77229.5987328291
+   },
+   {
+    "perfil": "arena",
+    "pilote": "prefabricado_d050",
+    "q_kn": 300,
+    "optimista": {
+     "E_L": 9.0,
+     "costo": 107396010.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "conservadora": {
+     "E_L": 7.75,
+     "costo": 92479897.5,
+     "p_deficit_90": 0.1795142555438226,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 8.263463569165786,
+     "costo": 98607001.78986272,
+     "p_deficit_90": 0.023231256599788808,
+     "p_deficit_80": 0.0
+    },
+    "piezometro": {
+     "E_L": 8.215945089757128,
+     "costo": 98039969.00211193,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 9.0,
+    "L_nf0": 7.75,
+    "voi_vs_conservadora": -5560071.502111927,
+    "voi_vs_alarma": 567032.7877507955
+   },
+   {
+    "perfil": "arena",
+    "pilote": "prefabricado_d050",
+    "q_kn": 600,
+    "optimista": {
+     "E_L": 19.0,
+     "costo": 226724910.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "conservadora": {
+     "E_L": 15.0,
+     "costo": 178993350.0,
+     "p_deficit_90": 0.1795142555438226,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 16.643083421330516,
+     "costo": 198600083.72756073,
+     "p_deficit_90": 0.023231256599788808,
+     "p_deficit_80": 0.0
+    },
+    "piezometro": {
+     "E_L": 16.464097148891234,
+     "costo": 196464260.22703272,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 19.0,
+    "L_nf0": 15.0,
+    "voi_vs_conservadora": -17470910.22703272,
+    "voi_vs_alarma": 2135823.5005280077
+   },
+   {
+    "perfil": "arena",
+    "pilote": "prefabricado_d050",
+    "q_kn": 1000,
+    "optimista": {
+     "E_L": 31.0,
+     "costo": 369919590.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "conservadora": {
+     "E_L": 25.0,
+     "costo": 298322250.0,
+     "p_deficit_90": 0.07391763463569166,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 27.464625131995778,
+     "costo": 327732350.5913411,
+     "p_deficit_90": 0.006335797254487857,
+     "p_deficit_80": 0.0
+    },
+    "piezometro": {
+     "E_L": 26.034582893347412,
+     "costo": 310667813.8621964,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 31.0,
+    "L_nf0": 25.0,
+    "voi_vs_conservadora": -12345563.862196386,
+    "voi_vs_alarma": 17064536.729144692
+   },
+   {
+    "perfil": "mixto",
+    "pilote": "in_situ_d050",
+    "q_kn": 300,
+    "optimista": {
+     "E_L": 8.75,
+     "costo": 213314587.5,
+     "p_deficit_90": 0.5110876451953538,
+     "p_deficit_80": 0.0
+    },
+    "conservadora": {
+     "E_L": 9.5,
+     "costo": 231598695.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 9.191921858500528,
+     "costo": 224088116.52323127,
+     "p_deficit_90": 0.11615628299894404,
+     "p_deficit_80": 0.0
+    },
+    "piezometro": {
+     "E_L": 9.255015839493137,
+     "costo": 225626272.69799367,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 8.75,
+    "L_nf0": 9.5,
+    "voi_vs_conservadora": 5972422.302006334,
+    "voi_vs_alarma": -1538156.174762398
+   },
+   {
+    "perfil": "mixto",
+    "pilote": "in_situ_d050",
+    "q_kn": 600,
+    "optimista": {
+     "E_L": 11.25,
+     "costo": 274261612.5,
+     "p_deficit_90": 0.8627243928194298,
+     "p_deficit_80": 0.7180570221752904
+    },
+    "conservadora": {
+     "E_L": 14.0,
+     "costo": 341303340.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 12.870380147835268,
+     "costo": 313764552.2518479,
+     "p_deficit_90": 0.28722280887011614,
+     "p_deficit_80": 0.191129883843717
+    },
+    "piezometro": {
+     "E_L": 12.980992608236537,
+     "costo": 316461152.40760297,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 11.25,
+    "L_nf0": 14.0,
+    "voi_vs_conservadora": 24842187.592397034,
+    "voi_vs_alarma": -2696600.155755043
+   },
+   {
+    "perfil": "mixto",
+    "pilote": "in_situ_d050",
+    "q_kn": 1000,
+    "optimista": {
+     "E_L": 14.0,
+     "costo": 341303340.0,
+     "p_deficit_90": 0.914466737064414,
+     "p_deficit_80": 0.8479408658922915
+    },
+    "conservadora": {
+     "E_L": 19.25,
+     "costo": 469292092.5,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 17.093453009503698,
+     "costo": 416718043.1626188,
+     "p_deficit_90": 0.33157338965153116,
+     "p_deficit_80": 0.27560718057022177
+    },
+    "piezometro": {
+     "E_L": 17.447729672650475,
+     "costo": 425354886.62090814,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 14.0,
+    "L_nf0": 19.25,
+    "voi_vs_conservadora": 43937205.87909186,
+    "voi_vs_alarma": -8636843.458289325
+   },
+   {
+    "perfil": "mixto",
+    "pilote": "in_situ_d100",
+    "q_kn": 1500,
+    "optimista": {
+     "E_L": 11.75,
+     "costo": 841415032.5,
+     "p_deficit_90": 0.8859556494192186,
+     "p_deficit_80": 0.7581837381203802
+    },
+    "conservadora": {
+     "E_L": 15.0,
+     "costo": 1074146850.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 13.664994720168954,
+     "costo": 978547402.2624077,
+     "p_deficit_90": 0.30623020063357975,
+     "p_deficit_80": 0.2122492080253432
+    },
+    "piezometro": {
+     "E_L": 13.846356916578669,
+     "costo": 991534711.061246,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 11.75,
+    "L_nf0": 15.0,
+    "voi_vs_conservadora": 82612138.93875396,
+    "voi_vs_alarma": -12987308.798838377
+   },
+   {
+    "perfil": "mixto",
+    "pilote": "in_situ_d100",
+    "q_kn": 3000,
+    "optimista": {
+     "E_L": 16.75,
+     "costo": 1199463982.5,
+     "p_deficit_90": 0.9355860612460402,
+     "p_deficit_80": 0.8627243928194298
+    },
+    "conservadora": {
+     "E_L": 24.25,
+     "costo": 1736537407.5,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 21.16921858500528,
+     "costo": 1515923297.3363252,
+     "p_deficit_90": 0.3526927138331573,
+     "p_deficit_80": 0.28722280887011614
+    },
+    "piezometro": {
+     "E_L": 21.87038014783527,
+     "costo": 1566133329.6066525,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 16.75,
+    "L_nf0": 24.25,
+    "voi_vs_conservadora": 170404077.8933475,
+    "voi_vs_alarma": -50210032.27032733
+   },
+   {
+    "perfil": "mixto",
+    "pilote": "prefabricado_d050",
+    "q_kn": 300,
+    "optimista": {
+     "E_L": 11.0,
+     "costo": 131261790.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "conservadora": {
+     "E_L": 10.0,
+     "costo": 119328900.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 10.410770855332629,
+     "costo": 124230583.43189017,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "piezometro": {
+     "E_L": 10.111140443505807,
+     "costo": 120655126.68690602,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 11.0,
+    "L_nf0": 10.0,
+    "voi_vs_conservadora": -1326226.6869060248,
+    "voi_vs_alarma": 3575456.74498415
+   },
+   {
+    "perfil": "mixto",
+    "pilote": "prefabricado_d050",
+    "q_kn": 600,
+    "optimista": {
+     "E_L": 21.0,
+     "costo": 250590690.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "conservadora": {
+     "E_L": 17.0,
+     "costo": 202859130.0,
+     "p_deficit_90": 0.09714889123548047,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 18.643083421330516,
+     "costo": 222465863.72756073,
+     "p_deficit_90": 0.008447729672650475,
+     "p_deficit_80": 0.0
+    },
+    "piezometro": {
+     "E_L": 18.037750791974656,
+     "costo": 215242496.04804647,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 21.0,
+    "L_nf0": 17.0,
+    "voi_vs_conservadora": -12383366.04804647,
+    "voi_vs_alarma": 7223367.679514259
+   },
+   {
+    "perfil": "mixto",
+    "pilote": "prefabricado_d050",
+    "q_kn": 1000,
+    "optimista": {
+     "E_L": 33.0,
+     "costo": 393785370.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "conservadora": {
+     "E_L": 26.0,
+     "costo": 310255140.0,
+     "p_deficit_90": 0.09714889123548047,
+     "p_deficit_80": 0.01583949313621964
+    },
+    "alarma": {
+     "E_L": 28.875395987328407,
+     "costo": 344566924.02323127,
+     "p_deficit_90": 0.008447729672650475,
+     "p_deficit_80": 0.005279831045406547
+    },
+    "piezometro": {
+     "E_L": 27.318109820485745,
+     "costo": 325983999.4957761,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 33.0,
+    "L_nf0": 26.0,
+    "voi_vs_conservadora": -15728859.495776117,
+    "voi_vs_alarma": 18582924.52745515
+   }
+  ]
+ },
+ "con_alarma": {
+  "n_puntos": 558,
+  "n_bloques": 41,
+  "agregados": {
+   "p_deficit_90_optimista": 0.5307219662058371,
+   "p_deficit_80_optimista": 0.42306707629288276,
+   "p_deficit_90_alarma": 0.008448540706605221,
+   "sobrecosto_conservadora_vs_piezometro": 0.026056428564017815,
+   "voi_vs_conservadora_cop": 18554535.501152072,
+   "voi_vs_alarma_cop": 18554535.501152072
+  },
+  "ic95": {
+   "p_deficit_90_optimista": [
+    0.5203145478374837,
+    0.5392408309823031
+   ],
+   "p_deficit_80_optimista": [
+    0.40541503384396155,
+    0.43562451910746347
+   ],
+   "p_deficit_90_alarma": [
+    0.004154382203162691,
+    0.012285012285012286
+   ],
+   "sobrecosto_conservadora_vs_piezometro": [
+    0.023492775951038627,
+    0.029303323236573142
+   ],
+   "voi_vs_conservadora_cop": [
+    17135109.111017834,
+    20418467.74403276
+   ],
+   "voi_vs_alarma_cop": [
+    17135109.111017834,
+    20418467.74403276
+   ]
+  },
+  "escenarios": [
+   {
+    "perfil": "arena",
+    "pilote": "in_situ_d050",
+    "q_kn": 300,
+    "optimista": {
+     "E_L": 5.75,
+     "costo": 140178157.5,
+     "p_deficit_90": 0.8942652329749103,
+     "p_deficit_80": 0.4175627240143369
+    },
+    "conservadora": {
+     "E_L": 7.5,
+     "costo": 182841075.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 7.5,
+     "costo": 182841075.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "piezometro": {
+     "E_L": 6.745967741935484,
+     "costo": 164458665.8467742,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 5.75,
+    "L_nf0": 7.5,
+    "voi_vs_conservadora": 18382409.15322581,
+    "voi_vs_alarma": 18382409.15322581
+   },
+   {
+    "perfil": "arena",
+    "pilote": "in_situ_d050",
+    "q_kn": 600,
+    "optimista": {
+     "E_L": 8.5,
+     "costo": 207219885.0,
+     "p_deficit_90": 0.9498207885304659,
+     "p_deficit_80": 0.8100358422939068
+    },
+    "conservadora": {
+     "E_L": 11.25,
+     "costo": 274261612.5,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 11.25,
+     "costo": 274261612.5,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "piezometro": {
+     "E_L": 10.242383512544803,
+     "costo": 249697121.59946236,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 8.5,
+    "L_nf0": 11.25,
+    "voi_vs_conservadora": 24564490.90053764,
+    "voi_vs_alarma": 24564490.90053764
+   },
+   {
+    "perfil": "arena",
+    "pilote": "in_situ_d050",
+    "q_kn": 1000,
+    "optimista": {
+     "E_L": 11.25,
+     "costo": 274261612.5,
+     "p_deficit_90": 0.9767025089605734,
+     "p_deficit_80": 0.9265232974910395
+    },
+    "conservadora": {
+     "E_L": 15.75,
+     "costo": 383966257.5,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 15.75,
+     "costo": 383966257.5,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "piezometro": {
+     "E_L": 14.379032258064516,
+     "costo": 350543695.4032258,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 11.25,
+    "L_nf0": 15.75,
+    "voi_vs_conservadora": 33422562.09677422,
+    "voi_vs_alarma": 33422562.09677422
+   },
+   {
+    "perfil": "arena",
+    "pilote": "prefabricado_d050",
+    "q_kn": 300,
+    "optimista": {
+     "E_L": 9.0,
+     "costo": 107396010.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "conservadora": {
+     "E_L": 7.75,
+     "costo": 92479897.5,
+     "p_deficit_90": 0.03942652329749104,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 7.75,
+     "costo": 92479897.5,
+     "p_deficit_90": 0.03942652329749104,
+     "p_deficit_80": 0.0
+    },
+    "piezometro": {
+     "E_L": 8.057347670250897,
+     "costo": 96147443.44086021,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 9.0,
+    "L_nf0": 7.75,
+    "voi_vs_conservadora": -3667545.940860212,
+    "voi_vs_alarma": -3667545.940860212
+   },
+   {
+    "perfil": "arena",
+    "pilote": "prefabricado_d050",
+    "q_kn": 600,
+    "optimista": {
+     "E_L": 19.0,
+     "costo": 226724910.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "conservadora": {
+     "E_L": 15.0,
+     "costo": 178993350.0,
+     "p_deficit_90": 0.03942652329749104,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 15.0,
+     "costo": 178993350.0,
+     "p_deficit_90": 0.03942652329749104,
+     "p_deficit_80": 0.0
+    },
+    "piezometro": {
+     "E_L": 16.17383512544803,
+     "costo": 193000595.43010753,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 19.0,
+    "L_nf0": 15.0,
+    "voi_vs_conservadora": -14007245.430107534,
+    "voi_vs_alarma": -14007245.430107534
+   },
+   {
+    "perfil": "arena",
+    "pilote": "prefabricado_d050",
+    "q_kn": 1000,
+    "optimista": {
+     "E_L": 31.0,
+     "costo": 369919590.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "conservadora": {
+     "E_L": 25.0,
+     "costo": 298322250.0,
+     "p_deficit_90": 0.010752688172043012,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 25.0,
+     "costo": 298322250.0,
+     "p_deficit_90": 0.010752688172043012,
+     "p_deficit_80": 0.0
+    },
+    "piezometro": {
+     "E_L": 25.61200716845878,
+     "costo": 305625264.22043014,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 31.0,
+    "L_nf0": 25.0,
+    "voi_vs_conservadora": -7303014.220430136,
+    "voi_vs_alarma": -7303014.220430136
+   },
+   {
+    "perfil": "mixto",
+    "pilote": "in_situ_d050",
+    "q_kn": 300,
+    "optimista": {
+     "E_L": 8.75,
+     "costo": 213314587.5,
+     "p_deficit_90": 0.6702508960573477,
+     "p_deficit_80": 0.0
+    },
+    "conservadora": {
+     "E_L": 9.5,
+     "costo": 231598695.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 9.5,
+     "costo": 231598695.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "piezometro": {
+     "E_L": 9.33915770609319,
+     "costo": 227677551.27688172,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 8.75,
+    "L_nf0": 9.5,
+    "voi_vs_conservadora": 3921143.7231182754,
+    "voi_vs_alarma": 3921143.7231182754
+   },
+   {
+    "perfil": "mixto",
+    "pilote": "in_situ_d050",
+    "q_kn": 600,
+    "optimista": {
+     "E_L": 11.25,
+     "costo": 274261612.5,
+     "p_deficit_90": 0.9767025089605734,
+     "p_deficit_80": 0.8942652329749103
+    },
+    "conservadora": {
+     "E_L": 14.0,
+     "costo": 341303340.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 14.0,
+     "costo": 341303340.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "piezometro": {
+     "E_L": 13.280017921146953,
+     "costo": 323751033.69623655,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 11.25,
+    "L_nf0": 14.0,
+    "voi_vs_conservadora": 17552306.30376345,
+    "voi_vs_alarma": 17552306.30376345
+   },
+   {
+    "perfil": "mixto",
+    "pilote": "in_situ_d050",
+    "q_kn": 1000,
+    "optimista": {
+     "E_L": 14.0,
+     "costo": 341303340.0,
+     "p_deficit_90": 0.989247311827957,
+     "p_deficit_80": 0.9713261648745519
+    },
+    "conservadora": {
+     "E_L": 19.25,
+     "costo": 469292092.5,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 19.25,
+     "costo": 469292092.5,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "piezometro": {
+     "E_L": 17.97983870967742,
+     "costo": 438327071.733871,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 14.0,
+    "L_nf0": 19.25,
+    "voi_vs_conservadora": 30965020.766129017,
+    "voi_vs_alarma": 30965020.766129017
+   },
+   {
+    "perfil": "mixto",
+    "pilote": "in_situ_d100",
+    "q_kn": 1500,
+    "optimista": {
+     "E_L": 11.75,
+     "costo": 841415032.5,
+     "p_deficit_90": 0.9838709677419355,
+     "p_deficit_80": 0.9265232974910395
+    },
+    "conservadora": {
+     "E_L": 15.0,
+     "costo": 1074146850.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 15.0,
+     "costo": 1074146850.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "piezometro": {
+     "E_L": 14.195340501792115,
+     "costo": 1016525352.3118279,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 11.75,
+    "L_nf0": 15.0,
+    "voi_vs_conservadora": 57621497.6881721,
+    "voi_vs_alarma": 57621497.6881721
+   },
+   {
+    "perfil": "mixto",
+    "pilote": "in_situ_d100",
+    "q_kn": 3000,
+    "optimista": {
+     "E_L": 16.75,
+     "costo": 1199463982.5,
+     "p_deficit_90": 0.989247311827957,
+     "p_deficit_80": 0.9767025089605734
+    },
+    "conservadora": {
+     "E_L": 24.25,
+     "costo": 1736537407.5,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 24.25,
+     "costo": 1736537407.5,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "piezometro": {
+     "E_L": 22.59767025089606,
+     "costo": 1618214421.155914,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 16.75,
+    "L_nf0": 24.25,
+    "voi_vs_conservadora": 118322986.34408593,
+    "voi_vs_alarma": 118322986.34408593
+   },
+   {
+    "perfil": "mixto",
+    "pilote": "prefabricado_d050",
+    "q_kn": 300,
+    "optimista": {
+     "E_L": 11.0,
+     "costo": 131261790.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "conservadora": {
+     "E_L": 10.0,
+     "costo": 119328900.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 10.0,
+     "costo": 119328900.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "piezometro": {
+     "E_L": 10.016129032258064,
+     "costo": 119521365.96774194,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 11.0,
+    "L_nf0": 10.0,
+    "voi_vs_conservadora": -192465.96774193645,
+    "voi_vs_alarma": -192465.96774193645
+   },
+   {
+    "perfil": "mixto",
+    "pilote": "prefabricado_d050",
+    "q_kn": 600,
+    "optimista": {
+     "E_L": 21.0,
+     "costo": 250590690.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "conservadora": {
+     "E_L": 17.0,
+     "costo": 202859130.0,
+     "p_deficit_90": 0.014336917562724014,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 17.0,
+     "costo": 202859130.0,
+     "p_deficit_90": 0.014336917562724014,
+     "p_deficit_80": 0.0
+    },
+    "piezometro": {
+     "E_L": 17.76478494623656,
+     "costo": 211985224.63709676,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 21.0,
+    "L_nf0": 17.0,
+    "voi_vs_conservadora": -9126094.637096763,
+    "voi_vs_alarma": -9126094.637096763
+   },
+   {
+    "perfil": "mixto",
+    "pilote": "prefabricado_d050",
+    "q_kn": 1000,
+    "optimista": {
+     "E_L": 33.0,
+     "costo": 393785370.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "conservadora": {
+     "E_L": 26.0,
+     "costo": 310255140.0,
+     "p_deficit_90": 0.014336917562724014,
+     "p_deficit_80": 0.008960573476702509
+    },
+    "alarma": {
+     "E_L": 26.0,
+     "costo": 310255140.0,
+     "p_deficit_90": 0.014336917562724014,
+     "p_deficit_80": 0.008960573476702509
+    },
+    "piezometro": {
+     "E_L": 26.89605734767025,
+     "costo": 320947693.76344085,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 33.0,
+    "L_nf0": 26.0,
+    "voi_vs_conservadora": -10692553.763440847,
+    "voi_vs_alarma": -10692553.763440847
+   }
+  ]
+ },
+ "sin_alarma": {
+  "n_puntos": 389,
+  "n_bloques": 39,
+  "agregados": {
+   "p_deficit_90_optimista": 0.366507528461256,
+   "p_deficit_80_optimista": 0.2442159383033419,
+   "p_deficit_90_alarma": 0.366507528461256,
+   "sobrecosto_conservadora_vs_piezometro": 0.05341004129236071,
+   "voi_vs_conservadora_cop": 36595339.54599706,
+   "voi_vs_alarma_cop": -29482476.704002943
+  },
+  "ic95": {
+   "p_deficit_90_optimista": [
+    0.2969387755102041,
+    0.4277950310559006
+   ],
+   "p_deficit_80_optimista": [
+    0.1864479930945188,
+    0.3044794188861985
+   ],
+   "p_deficit_90_alarma": [
+    0.2969387755102041,
+    0.4277950310559006
+   ],
+   "sobrecosto_conservadora_vs_piezometro": [
+    0.04358373585237681,
+    0.06324302164323362
+   ],
+   "voi_vs_conservadora_cop": [
+    30463067.428183235,
+    43062857.50255103
+   ],
+   "voi_vs_alarma_cop": [
+    -35614748.821816765,
+    -23014958.747448977
+   ]
+  },
+  "escenarios": [
+   {
+    "perfil": "arena",
+    "pilote": "in_situ_d050",
+    "q_kn": 300,
+    "optimista": {
+     "E_L": 5.75,
+     "costo": 140178157.5,
+     "p_deficit_90": 0.4652956298200514,
+     "p_deficit_80": 0.15681233933161953
+    },
+    "conservadora": {
+     "E_L": 7.5,
+     "costo": 182841075.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 5.75,
+     "costo": 140178157.5,
+     "p_deficit_90": 0.4652956298200514,
+     "p_deficit_80": 0.15681233933161953
+    },
+    "piezometro": {
+     "E_L": 6.272493573264781,
+     "costo": 152915929.04884318,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 5.75,
+    "L_nf0": 7.5,
+    "voi_vs_conservadora": 29925145.951156825,
+    "voi_vs_alarma": -12737771.548843175
+   },
+   {
+    "perfil": "arena",
+    "pilote": "in_situ_d050",
+    "q_kn": 600,
+    "optimista": {
+     "E_L": 8.5,
+     "costo": 207219885.0,
+     "p_deficit_90": 0.5732647814910026,
+     "p_deficit_80": 0.39331619537275064
+    },
+    "conservadora": {
+     "E_L": 11.25,
+     "costo": 274261612.5,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 8.5,
+     "costo": 207219885.0,
+     "p_deficit_90": 0.5732647814910026,
+     "p_deficit_80": 0.39331619537275064
+    },
+    "piezometro": {
+     "E_L": 9.47043701799486,
+     "costo": 230877984.67866325,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 8.5,
+    "L_nf0": 11.25,
+    "voi_vs_conservadora": 43383627.821336746,
+    "voi_vs_alarma": -23658099.678663254
+   },
+   {
+    "perfil": "arena",
+    "pilote": "in_situ_d050",
+    "q_kn": 1000,
+    "optimista": {
+     "E_L": 11.25,
+     "costo": 274261612.5,
+     "p_deficit_90": 0.699228791773779,
+     "p_deficit_80": 0.5167095115681234
+    },
+    "conservadora": {
+     "E_L": 15.75,
+     "costo": 383966257.5,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 11.25,
+     "costo": 274261612.5,
+     "p_deficit_90": 0.699228791773779,
+     "p_deficit_80": 0.5167095115681234
+    },
+    "piezometro": {
+     "E_L": 13.208868894601542,
+     "costo": 322016505.09640104,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 11.25,
+    "L_nf0": 15.75,
+    "voi_vs_conservadora": 61949752.403598964,
+    "voi_vs_alarma": -47754892.596401036
+   },
+   {
+    "perfil": "arena",
+    "pilote": "prefabricado_d050",
+    "q_kn": 300,
+    "optimista": {
+     "E_L": 9.0,
+     "costo": 107396010.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "conservadora": {
+     "E_L": 7.75,
+     "costo": 92479897.5,
+     "p_deficit_90": 0.38046272493573263,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 9.0,
+     "costo": 107396010.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "piezometro": {
+     "E_L": 8.44344473007712,
+     "costo": 100754697.18508998,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 9.0,
+    "L_nf0": 7.75,
+    "voi_vs_conservadora": -8274799.685089976,
+    "voi_vs_alarma": 6641312.814910024
+   },
+   {
+    "perfil": "arena",
+    "pilote": "prefabricado_d050",
+    "q_kn": 600,
+    "optimista": {
+     "E_L": 19.0,
+     "costo": 226724910.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "conservadora": {
+     "E_L": 15.0,
+     "costo": 178993350.0,
+     "p_deficit_90": 0.38046272493573263,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 19.0,
+     "costo": 226724910.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "piezometro": {
+     "E_L": 16.880462724935732,
+     "costo": 201432704.84575835,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 19.0,
+    "L_nf0": 15.0,
+    "voi_vs_conservadora": -22439354.84575835,
+    "voi_vs_alarma": 25292205.15424165
+   },
+   {
+    "perfil": "arena",
+    "pilote": "prefabricado_d050",
+    "q_kn": 1000,
+    "optimista": {
+     "E_L": 31.0,
+     "costo": 369919590.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "conservadora": {
+     "E_L": 25.0,
+     "costo": 298322250.0,
+     "p_deficit_90": 0.16452442159383032,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 31.0,
+     "costo": 369919590.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "piezometro": {
+     "E_L": 26.64074550128535,
+     "costo": 317901085.5848329,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 31.0,
+    "L_nf0": 25.0,
+    "voi_vs_conservadora": -19578835.584832907,
+    "voi_vs_alarma": 52018504.41516709
+   },
+   {
+    "perfil": "mixto",
+    "pilote": "in_situ_d050",
+    "q_kn": 300,
+    "optimista": {
+     "E_L": 8.75,
+     "costo": 213314587.5,
+     "p_deficit_90": 0.2827763496143959,
+     "p_deficit_80": 0.0
+    },
+    "conservadora": {
+     "E_L": 9.5,
+     "costo": 231598695.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 8.75,
+     "costo": 213314587.5,
+     "p_deficit_90": 0.2827763496143959,
+     "p_deficit_80": 0.0
+    },
+    "piezometro": {
+     "E_L": 9.134318766066839,
+     "costo": 222683821.67737788,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 8.75,
+    "L_nf0": 9.5,
+    "voi_vs_conservadora": 8914873.32262212,
+    "voi_vs_alarma": -9369234.17737788
+   },
+   {
+    "perfil": "mixto",
+    "pilote": "in_situ_d050",
+    "q_kn": 600,
+    "optimista": {
+     "E_L": 11.25,
+     "costo": 274261612.5,
+     "p_deficit_90": 0.699228791773779,
+     "p_deficit_80": 0.4652956298200514
+    },
+    "conservadora": {
+     "E_L": 14.0,
+     "costo": 341303340.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 11.25,
+     "costo": 274261612.5,
+     "p_deficit_90": 0.699228791773779,
+     "p_deficit_80": 0.4652956298200514
+    },
+    "piezometro": {
+     "E_L": 12.552056555269923,
+     "costo": 306004201.87017995,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 11.25,
+    "L_nf0": 14.0,
+    "voi_vs_conservadora": 35299138.12982005,
+    "voi_vs_alarma": -31742589.37017995
+   },
+   {
+    "perfil": "mixto",
+    "pilote": "in_situ_d050",
+    "q_kn": 1000,
+    "optimista": {
+     "E_L": 14.0,
+     "costo": 341303340.0,
+     "p_deficit_90": 0.8071979434447301,
+     "p_deficit_80": 0.6709511568123393
+    },
+    "conservadora": {
+     "E_L": 19.25,
+     "costo": 469292092.5,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 14.0,
+     "costo": 341303340.0,
+     "p_deficit_90": 0.8071979434447301,
+     "p_deficit_80": 0.6709511568123393
+    },
+    "piezometro": {
+     "E_L": 16.684447300771208,
+     "costo": 406746970.70051414,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 14.0,
+    "L_nf0": 19.25,
+    "voi_vs_conservadora": 62545121.79948586,
+    "voi_vs_alarma": -65443630.70051414
+   },
+   {
+    "perfil": "mixto",
+    "pilote": "in_situ_d100",
+    "q_kn": 1500,
+    "optimista": {
+     "E_L": 11.75,
+     "costo": 841415032.5,
+     "p_deficit_90": 0.7455012853470437,
+     "p_deficit_80": 0.5167095115681234
+    },
+    "conservadora": {
+     "E_L": 15.0,
+     "costo": 1074146850.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 11.75,
+     "costo": 841415032.5,
+     "p_deficit_90": 0.7455012853470437,
+     "p_deficit_80": 0.5167095115681234
+    },
+    "piezometro": {
+     "E_L": 13.345758354755784,
+     "costo": 955686953.1748072,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 11.75,
+    "L_nf0": 15.0,
+    "voi_vs_conservadora": 118459896.82519281,
+    "voi_vs_alarma": -114271920.67480719
+   },
+   {
+    "perfil": "mixto",
+    "pilote": "in_situ_d100",
+    "q_kn": 3000,
+    "optimista": {
+     "E_L": 16.75,
+     "costo": 1199463982.5,
+     "p_deficit_90": 0.8586118251928021,
+     "p_deficit_80": 0.699228791773779
+    },
+    "conservadora": {
+     "E_L": 24.25,
+     "costo": 1736537407.5,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 16.75,
+     "costo": 1199463982.5,
+     "p_deficit_90": 0.8586118251928021,
+     "p_deficit_80": 0.699228791773779
+    },
+    "piezometro": {
+     "E_L": 20.827120822622106,
+     "costo": 1491425748.4125965,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 16.75,
+    "L_nf0": 24.25,
+    "voi_vs_conservadora": 245111659.08740354,
+    "voi_vs_alarma": -291961765.91259646
+   },
+   {
+    "perfil": "mixto",
+    "pilote": "prefabricado_d050",
+    "q_kn": 300,
+    "optimista": {
+     "E_L": 11.0,
+     "costo": 131261790.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "conservadora": {
+     "E_L": 10.0,
+     "costo": 119328900.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 11.0,
+     "costo": 131261790.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "piezometro": {
+     "E_L": 10.247429305912597,
+     "costo": 122281446.69023137,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 11.0,
+    "L_nf0": 10.0,
+    "voi_vs_conservadora": -2952546.690231368,
+    "voi_vs_alarma": 8980343.309768632
+   },
+   {
+    "perfil": "mixto",
+    "pilote": "prefabricado_d050",
+    "q_kn": 600,
+    "optimista": {
+     "E_L": 21.0,
+     "costo": 250590690.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "conservadora": {
+     "E_L": 17.0,
+     "costo": 202859130.0,
+     "p_deficit_90": 0.2159383033419023,
+     "p_deficit_80": 0.0
+    },
+    "alarma": {
+     "E_L": 21.0,
+     "costo": 250590690.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "piezometro": {
+     "E_L": 18.4293059125964,
+     "costo": 219914880.23136246,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 21.0,
+    "L_nf0": 17.0,
+    "voi_vs_conservadora": -17055750.231362462,
+    "voi_vs_alarma": 30675809.768637538
+   },
+   {
+    "perfil": "mixto",
+    "pilote": "prefabricado_d050",
+    "q_kn": 1000,
+    "optimista": {
+     "E_L": 33.0,
+     "costo": 393785370.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "conservadora": {
+     "E_L": 26.0,
+     "costo": 310255140.0,
+     "p_deficit_90": 0.2159383033419023,
+     "p_deficit_80": 0.02570694087403599
+    },
+    "alarma": {
+     "E_L": 33.0,
+     "costo": 393785370.0,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "piezometro": {
+     "E_L": 27.923521850899743,
+     "costo": 333208314.65938306,
+     "p_deficit_90": 0.0,
+     "p_deficit_80": 0.0
+    },
+    "L_seco": 33.0,
+    "L_nf0": 26.0,
+    "voi_vs_conservadora": -22953174.65938306,
+    "voi_vs_alarma": 60577055.34061694
+   }
+  ]
+ }
+}

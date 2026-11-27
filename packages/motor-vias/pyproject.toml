@@ -9,6 +9,8 @@ description = "Diseño vial INVIAS: geometría, pavimentos AASHTO-93, mantenimie
 requires-python = ">=3.11"
 dependencies = [
     "pydantic>=2.9.2",
+    # scipy: brentq y minimize_scalar para despejar la losa de la ecuación AASHTO-93 de rígidos (#106)
+    "scipy>=1.11",
 ]
 
 [project.optional-dependencies]

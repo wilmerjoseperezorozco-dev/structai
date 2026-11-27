@@ -428,6 +428,7 @@ try:
     # ver sgc_amenaza_sismica.py / sgc_movimientos_masa.py — ninguno lanza).
     import sgc_amenaza_sismica
     import sgc_movimientos_masa
+    import sitio_territorial
     SGC_AVAILABLE = True
     log.info("✓ sgc_amenaza_sismica + sgc_movimientos_masa cargados")
 except Exception as e:
@@ -570,12 +571,28 @@ except Exception as e:
     log.warning(f"✗ motor-geotecnia no disponible: {e}")
 
 try:
+    from routers.pilotes import router as pilotes_router
+    PILOTES_AVAILABLE = True
+    log.info("✓ motor-pilotes cargado")
+except Exception as e:
+    PILOTES_AVAILABLE = False
+    log.warning(f"✗ motor-pilotes no disponible: {e}")
+
+try:
     from routers.licuacion import router as licuacion_router
     LICUACION_AVAILABLE = True
     log.info("✓ motor-licuacion cargado")
 except Exception as e:
     LICUACION_AVAILABLE = False
     log.warning(f"✗ motor-licuacion no disponible: {e}")
+
+try:
+    from routers.acero_frio import router as acero_frio_router
+    ACERO_FRIO_AVAILABLE = True
+    log.info("✓ motor-acero-frio cargado")
+except Exception as e:
+    ACERO_FRIO_AVAILABLE = False
+    log.warning(f"✗ motor-acero-frio no disponible: {e}")
 
 try:
     from routers.redes import router as redes_router
@@ -830,9 +847,15 @@ if ANALISIS_AVAILABLE:
 if GEOTECNIA_AVAILABLE:
     app.include_router(geotecnia_router)
     app.include_router(geotecnia_router, prefix="/v1")
+if PILOTES_AVAILABLE:
+    app.include_router(pilotes_router)
+    app.include_router(pilotes_router, prefix="/v1")
 if LICUACION_AVAILABLE:
     app.include_router(licuacion_router)
     app.include_router(licuacion_router, prefix="/v1")
+if ACERO_FRIO_AVAILABLE:
+    app.include_router(acero_frio_router)
+    app.include_router(acero_frio_router, prefix="/v1")
 if REDES_AVAILABLE:
     app.include_router(redes_router)
     app.include_router(redes_router, prefix="/v1")
@@ -2366,6 +2389,48 @@ def amenaza_sismica_municipio(request: Request, municipio: str):
     if lat is not None and lon is not None:
         resultado["movimientos_masa"] = sgc_movimientos_masa.consultar_movimientos_cercanos(lat, lon)
     return resultado
+
+
+# ── /sitio — ficha territorial y pre-diseño de la exploración geotécnica (#273) ──
+# POST con la coordenada en el cuerpo, no en la URL: la línea de acceso de uvicorn y
+# los registros de Cloud Run guardan la URL completa, y la ubicación es dato personal
+# (Ley 1581). El cliente debe redondear a 0,01° antes de enviar; el servidor redondea
+# otra vez antes de cualquier consulta externa y nunca la registra.
+
+class SitioRequest(BaseModel):
+    lat: float = Field(..., ge=-4.3, le=13.6, description="Latitud WGS84; se redondea a 0,01° (~1 km)")
+    lon: float = Field(..., ge=-82.0, le=-66.8, description="Longitud WGS84; se redondea a 0,01° (~1 km)")
+
+
+def _ficha_sitio_o_error(**kwargs):
+    if not SGC_AVAILABLE or _uso_sb is None:
+        raise HTTPException(status_code=503, detail="Base de datos no disponible")
+    try:
+        ficha = sitio_territorial.ficha_sitio(_uso_sb, **kwargs)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+    if ficha.get("municipio") is None or (ficha.get("punto") is None and ficha.get("sismo_nsr10") is None):
+        raise HTTPException(status_code=404, detail="No se encontró un municipio de Colombia para esa ubicación o código")
+    return ficha
+
+
+@app.post("/sitio", tags=["GeoPot"])
+@app.post("/v1/sitio", tags=["GeoPot"])
+@limiter.limit("20/minute")
+def sitio_por_coordenada(request: Request, body: SitioRequest):
+    """Ficha territorial de la ubicación (por ejemplo, el GPS del celular): municipio y amenaza sísmica (SGC y
+    NSR-10 A-4), suelos IGAC, emergencias UNGRD, vulnerabilidad Sisbén, estación IDEAM más cercana, movimientos en
+    masa cercanos y recomendaciones de exploración geotécnica. Orientativa: no reemplaza el estudio geotécnico."""
+    return _ficha_sitio_o_error(lat=body.lat, lon=body.lon)
+
+
+@app.get("/sitio", tags=["GeoPot"])
+@app.get("/v1/sitio", tags=["GeoPot"])
+@limiter.limit("20/minute")
+def sitio_por_municipio(request: Request, codigo_municipio: str):
+    """La misma ficha por código DIVIPOLA (5 dígitos), sin ubicación del usuario. Sin coordenada no se consultan la
+    estación IDEAM ni los movimientos en masa cercanos."""
+    return _ficha_sitio_o_error(codigo_municipio=codigo_municipio)
 
 
 # ── /noticias — noticias recientes de Colombia (desastres/regulatorio) ────────
