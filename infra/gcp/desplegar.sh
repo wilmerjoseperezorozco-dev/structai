@@ -16,7 +16,7 @@ SHA="$(git rev-parse --short HEAD)"
 
 if [ "${1:-}" != "--sin-pruebas" ]; then
   echo "[2/7] Pruebas locales previas"
-  (cd apps/api && SUPABASE_URL=http://localhost:54321 SUPABASE_JWT_SECRET=local python -m pytest tests/test_router_proyecto.py tests/test_router_orquestador.py tests/test_router_analisis.py tests/test_router_concreto.py tests/test_router_geotecnia.py tests/test_router_licuacion.py tests/test_router_redes.py -q) || { echo "Pruebas fallidas: no se despliega."; exit 1; }
+  (cd apps/api && SUPABASE_URL=http://localhost:54321 SUPABASE_JWT_SECRET=local python -m pytest tests/test_router_proyecto.py tests/test_router_orquestador.py tests/test_router_analisis.py tests/test_router_concreto.py tests/test_router_geotecnia.py tests/test_router_pilotes.py tests/test_router_licuacion.py tests/test_router_redes.py -q) || { echo "Pruebas fallidas: no se despliega."; exit 1; }
   (cd packages/motor-redes && python -m pytest tests -q) || { echo "Pruebas de motor-redes fallidas: no se despliega."; exit 1; }
   (cd packages/dag-proyecto && python -m pytest tests -q) || { echo "Pruebas del DAG fallidas: no se despliega."; exit 1; }
   (cd apps/api && SUPABASE_URL=http://localhost:54321 SUPABASE_JWT_SECRET=local python -m pytest tests/test_indice_local.py ../../infra/gcp/test_llamadas_reales.py -q) || { echo "Pruebas del índice RAG local fallidas: no se despliega."; exit 1; }
@@ -56,7 +56,7 @@ gcloud run deploy "$SERVICIO" --project "$PROJECT" --region "$REGION" --image "$
 URL_CAND="$(descr --format=json | python -c "import sys,json; t=[x for x in json.load(sys.stdin)['status']['traffic'] if x.get('tag')=='candidata']; print(t[0]['url'] if t else '')")"
 [ -n "$URL_CAND" ] || { echo "No se obtuvo la URL de la revisión candidata"; exit 1; }
 fallo=0
-for ruta in /health /proyecto/salud /orquestador/salud /analisis/salud /concreto/salud /geotecnia/salud /licuacion/salud /redes/salud; do
+for ruta in /health /proyecto/salud /orquestador/salud /analisis/salud /concreto/salud /geotecnia/salud /pilotes/salud /licuacion/salud /redes/salud; do
   code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 90 "$URL_CAND$ruta" || true)"
   echo "  $ruta -> ${code:-000}"; [ "${code:-000}" = "200" ] || fallo=1
 done

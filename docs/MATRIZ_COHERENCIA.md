@@ -2,7 +2,7 @@
 
 Generado por `scripts/inventario/matriz_coherencia.py` desde [coherencia_motores.json](coherencia_motores.json); no editar a mano. Dos nodos se conectan cuando una magnitud que produce uno (con su unidad) es una que consume el otro. **Coherente no significa probado**: solo las cadenas de la sección «Cadenas probadas» tienen una prueba que las ejecuta.
 
-- Motores implementados: 18; con declaración completa: 11; **pendientes de declarar: 7** (`motor-vias`, `motor-gerencia`, `motor-vulnerabilidad-vivienda`, `motor-estructural`, `motor-exploracion`, `motor-deformacion`, `motor-topovia`). Lo no declarado no genera conexiones: no se infiere nada.
+- Motores implementados: 19; con declaración completa: 12; **pendientes de declarar: 7** (`motor-vias`, `motor-gerencia`, `motor-vulnerabilidad-vivienda`, `motor-estructural`, `motor-exploracion`, `motor-deformacion`, `motor-topovia`). Lo no declarado no genera conexiones: no se infiere nada.
 - Motores futuros (planificados o bloqueados): 5. Nunca se cuentan como funcionando.
 - Magnitudes del vocabulario: 56, cada una con unidad y dominio físico.
 
@@ -12,9 +12,9 @@ Camino simple = sin repetir nodo. «Solo implementados» no incluye ningún moto
 
 | Nodos en la cadena | Solo implementados | Adicionales con motores futuros |
 |---|---|---|
-| 2 (pares) | 14 | 13 |
-| 3 (cadenas) | 16 | 19 |
-| 4 (cadenas) | 11 | 24 |
+| 2 (pares) | 18 | 13 |
+| 3 (cadenas) | 24 | 20 |
+| 4 (cadenas) | 21 | 29 |
 
 Probadas de extremo a extremo: **1**.
 
@@ -29,6 +29,7 @@ Vía: **endpoint** = ambos lados son campos del contrato HTTP; **adaptador** = e
 | Origen | Destino | Magnitudes | Vía |
 |---|---|---|---|
 | `motor-analisis` | `motor-concreto` | reaccion_vertical_kn | adaptador |
+| `motor-analisis` | `motor-pilotes` | reaccion_vertical_kn | endpoint |
 | `motor-analisis` | `motor-acero-frio` | momento_flector_knm | endpoint |
 | `orquestador` | `motor-analisis` | seccion_columna_mm, seccion_viga_mm | adaptador |
 | `orquestador` | `motor-concreto` | seccion_columna_mm | endpoint |
@@ -36,10 +37,13 @@ Vía: **endpoint** = ambos lados son campos del contrato HTTP; **adaptador** = e
 | `orquestador` | `optimizador-portico` | costo_directo_cop, deriva_relativa | paquete |
 | `motor-concreto` | `motor-geotecnia` | presion_contacto_kpa | adaptador |
 | `motor-concreto` | `optimizador-portico` | co2e_kg, costo_directo_cop, masa_acero_kg, razon_demanda_capacidad, volumen_concreto_m3 | paquete |
-| `motor-geotecnia` | `motor-concreto` | q_adm_kpa | endpoint |
+| `motor-geotecnia` | `motor-concreto` | asentamiento_admisible_mm, q_adm_kpa | endpoint |
 | `motor-geotecnia` | `optimizador-portico` | razon_demanda_capacidad | paquete |
 | `motor-apu` | `optimizador-portico` | costo_directo_cop | paquete |
 | `motor-geopot` | `orquestador` | coef_aceleracion_aa, coef_velocidad_av | paquete |
+| `motor-pilotes` | `motor-concreto` | asentamiento_admisible_mm | endpoint |
+| `motor-pilotes` | `motor-geotecnia` | asentamiento_mm | endpoint |
+| `motor-pilotes` | `optimizador-portico` | razon_demanda_capacidad | paquete |
 | `motor-acero-frio` | `optimizador-portico` | razon_demanda_capacidad | paquete |
 | `dato-factores-emision` | `motor-concreto` | factor_emision_kgco2e_kg | paquete |
 
@@ -63,9 +67,9 @@ Vía: **endpoint** = ambos lados son campos del contrato HTTP; **adaptador** = e
 
 ## Huecos
 
-**Magnitudes que algún nodo consume y ninguno produce** (las aporta el usuario o un estudio externo): `aceleracion_pico_g`, `angulo_friccion_deg`, `asentamiento_admisible_mm`, `carga_muerta_kn_m`, `carga_viva_kn_m`, `caudal_medio_m3_dia`, `cohesion_kpa`, `coliformes_fecales_nmp_100ml`, `dbo5_afluente_mg_l`, `estratos_arcilla`, `fuerza_axial_kn`, `fuerza_cortante_kn`, `geometria_portico`, `grupo_uso`, `magnitud_momento_mw`, `modulo_balasto_kn_m3`, `municipio_codigo_dane`, `nivel_freatico_m`, `perfil_c_formado_frio`, `perfil_spt`, `perfil_suelo_clase`, `peso_unitario_kn_m3`, `red_hidraulica`, `temperatura_agua_c`.
+**Magnitudes que algún nodo consume y ninguno produce** (las aporta el usuario o un estudio externo): `aceleracion_pico_g`, `angulo_friccion_deg`, `carga_muerta_kn_m`, `carga_viva_kn_m`, `caudal_medio_m3_dia`, `cohesion_kpa`, `coliformes_fecales_nmp_100ml`, `dbo5_afluente_mg_l`, `estratos_arcilla`, `fuerza_axial_kn`, `fuerza_cortante_kn`, `geometria_portico`, `grupo_uso`, `magnitud_momento_mw`, `modulo_balasto_kn_m3`, `municipio_codigo_dane`, `nivel_freatico_m`, `perfil_c_formado_frio`, `perfil_spt`, `perfil_suelo_clase`, `peso_unitario_kn_m3`, `red_hidraulica`, `temperatura_agua_c`.
 
-**Magnitudes que algún nodo produce y ninguno consume** (hoy salen de la cadena sin uso): `area_espejo_lagunas_m2`, `asentamiento_mm`, `capacidad_pilote_kn`, `caudal_m3s`, `cortante_basal_kn`, `dbo5_efluente_mg_l`, `factor_seguridad_talud`, `frontera_pareto`, `fs_licuacion_minimo`, `golpe_ariete_pico_m`, `lpi`, `presion_m`, `q_ult_kpa`, `resistencia_axial_kn`, `resistencia_flexion_knm`, `velocidad_ms`.
+**Magnitudes que algún nodo produce y ninguno consume** (hoy salen de la cadena sin uso): `area_espejo_lagunas_m2`, `capacidad_pilote_kn`, `caudal_m3s`, `cortante_basal_kn`, `dbo5_efluente_mg_l`, `factor_seguridad_talud`, `frontera_pareto`, `fs_licuacion_minimo`, `golpe_ariete_pico_m`, `lpi`, `presion_m`, `q_ult_kpa`, `resistencia_axial_kn`, `resistencia_flexion_knm`, `velocidad_ms`.
 
 ## Nodos
 
@@ -82,9 +86,10 @@ Vía: **endpoint** = ambos lados son campos del contrato HTTP; **adaptador** = e
 | `motor-estructural` | motor | implementado | **?** pendiente | 0 | 0 | no |
 | `motor-exploracion` | motor | implementado | **?** pendiente | 0 | 0 | no |
 | `motor-geopot` | motor | implementado | completa | 1 | 2 | no |
-| `motor-geotecnia` | motor | implementado | completa | 6 | 4 | no |
+| `motor-geotecnia` | motor | implementado | completa | 7 | 5 | no |
 | `motor-gerencia` | motor | implementado | **?** pendiente | 0 | 0 | no |
 | `motor-licuacion` | motor | implementado | completa | 4 | 2 | no |
+| `motor-pilotes` | motor | implementado | completa | 7 | 4 | no |
 | `motor-redes` | motor | implementado | completa | 1 | 4 | no |
 | `motor-topovia` | motor | implementado | **?** pendiente | 0 | 0 | no |
 | `motor-vias` | motor | implementado | **?** pendiente | 0 | 0 | no |
