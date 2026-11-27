@@ -1,0 +1,2498 @@
+{
+ "resumen": {
+  "preguntas": 138,
+  "comparadas": 138,
+  "identicas": 12,
+  "distintas": 126,
+  "errores": 0,
+  "tokens_groq_descomposicion": 47143,
+  "modelo": "openai/gpt-oss-120b",
+  "fecha": "2026-11-16 15:52"
+ },
+ "filas": [
+  {
+   "id": "nsr10:B-viento-no-es-sismo",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_B",
+   "pregunta": "El Titulo B trata directamente las fuerzas sismicas de diseño?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "bd864227093c593c"
+   ],
+   "hash_rpc": [
+    "8cb7a8e8f3b7a965"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9106,
+   "chars_prompt": 16434,
+   "error": null
+  },
+  {
+   "id": "nsr10:B-biblioteca-estanterias-7kNm2",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_B",
+   "pregunta": "Segun la tabla de carga viva de la NSR-10, cual es la carga viva para estanterias en una biblioteca?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "a2df09855e9c2a5d"
+   ],
+   "hash_rpc": [
+    "ecc53a0552fc624a"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9422,
+   "chars_prompt": 12780,
+   "error": null
+  },
+  {
+   "id": "nsr10:B-viento-minimo-040",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_B",
+   "pregunta": "Cual es la carga minima de diseño por viento en el SPRFV segun la NSR-10?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "cdd07f2f47726bf1"
+   ],
+   "hash_rpc": [
+    "4d2e56722ae738c2"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9035,
+   "chars_prompt": 13383,
+   "error": null
+  },
+  {
+   "id": "nsr10:A-4-sistemas-estructurales",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_A",
+   "pregunta": "Cuales son los 4 sistemas estructurales de resistencia sismica que reconoce la NSR-10?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "7b25e90f3bba38b4"
+   ],
+   "hash_rpc": [
+    "440becd8220dead5"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8827,
+   "chars_prompt": 13679,
+   "error": null
+  },
+  {
+   "id": "nsr10:A-ajuste-dinamico-80-90",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_A",
+   "pregunta": "En el analisis dinamico, el cortante dinamico total en la base no puede ser menor a que porcentaje del cortante de la fuerza horizontal equivalente, para estructuras regulares e irregulares?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "3fa3c34cc2d1f6f6"
+   ],
+   "hash_rpc": [
+    "d6b216660ee0ac4f"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.918,
+   "chars_prompt": 14422,
+   "error": null
+  },
+  {
+   "id": "nsr10:A-Aa-Av-Barranquilla",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_A",
+   "pregunta": "Cuales son los valores de Aa y Av para Barranquilla segun la NSR-10?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "848ea9e7375231e4"
+   ],
+   "hash_rpc": [
+    "51c1166ca16d3abb"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.789,
+   "chars_prompt": 16676,
+   "error": null
+  },
+  {
+   "id": "nsr10:A-deriva-maxima-1-porciento",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_A",
+   "pregunta": "Cual es la deriva maxima permitida como porcentaje de la altura de piso para una estructura de concreto reforzado?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "a1696dc12dc629a8"
+   ],
+   "hash_rpc": [
+    "119c97ad6a76a44e"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.7225,
+   "chars_prompt": 13529,
+   "error": null
+  },
+  {
+   "id": "nsr10:C-fc-minimo-general-17MPa",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_C",
+   "pregunta": "Cual es la resistencia minima a la compresion f'c que exige la NSR-10 para el concreto estructural?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "b1bac21ad13f1efe"
+   ],
+   "hash_rpc": [
+    "7fca903ea8f9aaf0"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8497,
+   "chars_prompt": 13803,
+   "error": null
+  },
+  {
+   "id": "nsr10:C-fc-minimo-DMO-DES-21MPa",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_C",
+   "pregunta": "Cual es la resistencia minima a la compresion del concreto para estructuras con capacidad de disipacion de energia especial DES o moderada DMO?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "4f668b0e4a8d9be2"
+   ],
+   "hash_rpc": [
+    "042fa6b8cd52140e"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9598,
+   "chars_prompt": 13595,
+   "error": null
+  },
+  {
+   "id": "nsr10:C-recubrimiento-contacto-suelo-75mm",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_C",
+   "pregunta": "Cual es el recubrimiento minimo cuando el concreto esta colocado contra el suelo y expuesto permanentemente a el?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "a68629bad3772af3"
+   ],
+   "hash_rpc": [
+    "5202e0821fdc63e8"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9199,
+   "chars_prompt": 18378,
+   "error": null
+  },
+  {
+   "id": "nsr10:C-factor-phi-traccion-090",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_C",
+   "pregunta": "Cuales son los factores de reduccion de resistencia phi para secciones controladas por traccion y para cortante?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "3afb61b3152c70dc"
+   ],
+   "hash_rpc": [
+    "bd5915ffb85ae182"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8816,
+   "chars_prompt": 15876,
+   "error": null
+  },
+  {
+   "id": "nsr10:C-ganchos-sismicos-135grados",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_C",
+   "pregunta": "Cual es el angulo de doblez de los ganchos sismicos en estribos de confinamiento para estructuras DMO y DES?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "c6ee99bdcb10756a"
+   ],
+   "hash_rpc": [
+    "1367011a1714d455"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.866,
+   "chars_prompt": 13582,
+   "error": null
+  },
+  {
+   "id": "nsr10:C-cuantia-maxima-flexion-DES-0025",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_C",
+   "pregunta": "Cual es la cuantia maxima de refuerzo a flexion permitida en vigas de porticos resistentes a momento con capacidad especial DES segun el Titulo C?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "337ab21af7d4afc9"
+   ],
+   "hash_rpc": [
+    "6087087cdf8996be"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8857,
+   "chars_prompt": 13753,
+   "error": null
+  },
+  {
+   "id": "nsr10:C-fyt-maximo-confinamiento-700MPa",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_C",
+   "pregunta": "Cual es el valor maximo de fyt que se puede usar para calcular la cuantia del refuerzo de confinamiento segun el Titulo C?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "358f07d9f26e8523"
+   ],
+   "hash_rpc": [
+    "aeb48f40e5a94518"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8398,
+   "chars_prompt": 12550,
+   "error": null
+  },
+  {
+   "id": "nsr10:C-diafragmas-espaciamiento-max-450mm",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_C",
+   "pregunta": "Cual es el espaciamiento maximo del refuerzo en diafragmas estructurales de concreto, excepto losas post-tensadas, segun el Titulo C?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "839195991d1c4e7f"
+   ],
+   "hash_rpc": [
+    "d66dd5893f5b07a1"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8622,
+   "chars_prompt": 20372,
+   "error": null
+  },
+  {
+   "id": "nsr10:D-supervision-tecnica-3000m2",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_D",
+   "pregunta": "A partir de que area construida es obligatoria la supervision tecnica en una estructura de mamposteria segun el Titulo D?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "a7c98b17f9097650"
+   ],
+   "hash_rpc": [
+    "f38068d7eeb87a4d"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.7916,
+   "chars_prompt": 13787,
+   "error": null
+  },
+  {
+   "id": "nsr10:D-mortero-relleno-minimo-125MPa",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_D",
+   "pregunta": "Cual es el valor minimo absoluto de resistencia a la compresion del mortero de relleno a los 28 dias segun el Titulo D, sin importar la resistencia de la mamposteria?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "8174019dd02ced0e"
+   ],
+   "hash_rpc": [
+    "4713e695a76c001a"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9929,
+   "chars_prompt": 12550,
+   "error": null
+  },
+  {
+   "id": "nsr10:D-celdas-verticales-max-65porciento",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_D",
+   "pregunta": "Que porcentaje maximo del area de la seccion transversal pueden ocupar las celdas verticales en una unidad de mamposteria de perforacion vertical segun el Titulo D?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "7263686c2b0da4e1"
+   ],
+   "hash_rpc": [
+    "724e266c219be4b6"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.7526,
+   "chars_prompt": 13706,
+   "error": null
+  },
+  {
+   "id": "nsr10:D-diametro-minimo-refuerzo-celdas-10mm",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_D",
+   "pregunta": "Cual es el diametro minimo de refuerzo permitido en celdas de mamposteria inyectadas con mortero segun el Titulo D?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "826bd217d490e7d4"
+   ],
+   "hash_rpc": [
+    "22770f66ebe6c1fe"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9669,
+   "chars_prompt": 13588,
+   "error": null
+  },
+  {
+   "id": "nsr10:D-espesor-minimo-no-reforzada-120mm",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_D",
+   "pregunta": "Cual es el espesor minimo nominal de un muro de mamposteria NO reforzada segun el Titulo D?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "8a3ef4926c9a66da"
+   ],
+   "hash_rpc": [
+    "8a3ef4926c9a66da"
+   ],
+   "identico": true,
+   "similitud_prompt": 1.0,
+   "chars_prompt": 13265,
+   "error": null
+  },
+  {
+   "id": "nsr10:D-no-reforzada-zona-baja-Aa-005",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_D",
+   "pregunta": "En que condicion de amenaza sismica se permite usar mamposteria no reforzada como sistema de resistencia sismica segun el Titulo D?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "c8a89634b16e8b3d"
+   ],
+   "hash_rpc": [
+    "380107d5efaaba5a"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9251,
+   "chars_prompt": 13879,
+   "error": null
+  },
+  {
+   "id": "nsr10:D-morteros-probetas-cubos-50mm",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_D",
+   "pregunta": "En que dimension de probetas se mide la resistencia a la compresion de los morteros de pega tipo H M S o N segun el Titulo D?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "54b42a3251988545"
+   ],
+   "hash_rpc": [
+    "a53137911dedd57d"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9292,
+   "chars_prompt": 13358,
+   "error": null
+  },
+  {
+   "id": "nsr10:E-mortero-pega-75MPa",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_E",
+   "pregunta": "Cual es la resistencia minima a compresion a los 28 dias del mortero de pega en mamposteria confinada segun el Titulo E?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "0fbf9e9ca1b91bc0"
+   ],
+   "hash_rpc": [
+    "099b2ca8d7951df9"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9664,
+   "chars_prompt": 12679,
+   "error": null
+  },
+  {
+   "id": "nsr10:E-espesor-muro-zona-alta-2pisos-110mm",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_E",
+   "pregunta": "Cual es el espesor minimo nominal de un muro estructural en zona sismica alta para una casa de dos pisos, primer nivel, segun el Titulo E?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "9966a022829267ca"
+   ],
+   "hash_rpc": [
+    "7568d738577c11cb"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.869,
+   "chars_prompt": 14301,
+   "error": null
+  },
+  {
+   "id": "nsr10:E-columnas-confinamiento-area-20000mm2",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_E",
+   "pregunta": "Cual es el area transversal minima de las columnas de confinamiento en mamposteria confinada segun el Titulo E?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "965a54afacbc7af9"
+   ],
+   "hash_rpc": [
+    "c5d14c2ec2d50a6f"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8998,
+   "chars_prompt": 14133,
+   "error": null
+  },
+  {
+   "id": "nsr10:G-m3-424-pies-tablares",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_G",
+   "pregunta": "Cuantos pies tablares tiene un metro cubico de madera segun el Titulo G?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "29ba672a038a8991"
+   ],
+   "hash_rpc": [
+    "8e4d3030128e30f8"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9624,
+   "chars_prompt": 13991,
+   "error": null
+  },
+  {
+   "id": "nsr10:G-humedad-madera-estructural-19-12porciento",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_G",
+   "pregunta": "Cual es el contenido de humedad maximo permitido para madera estructural en general, y para madera laminada, segun el Titulo G?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "9f176dad7e4001e7"
+   ],
+   "hash_rpc": [
+    "7e43b343834141b9"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9798,
+   "chars_prompt": 14607,
+   "error": null
+  },
+  {
+   "id": "nsr10:G-guadua-uniones-clavadas-prohibidas",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_G",
+   "pregunta": "Se permiten las uniones clavadas en elementos de guadua segun el Titulo G?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "059d112c14df1dfd"
+   ],
+   "hash_rpc": [
+    "5eb1071581aec3a2"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8555,
+   "chars_prompt": 13879,
+   "error": null
+  },
+  {
+   "id": "nsr10:G-guadua-humedad-cargas-admisibles-19porciento",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_G",
+   "pregunta": "Para que contenido de humedad maximo son representativas las cargas admisibles de conexiones de guadua de la tabla G.12.11-2 segun el Titulo G?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "84f99c11e0b3358c"
+   ],
+   "hash_rpc": [
+    "cf5151e5c304ab6d"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8905,
+   "chars_prompt": 14689,
+   "error": null
+  },
+  {
+   "id": "nsr10:A-deriva-mamposteria-cortante-05porciento",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_A_EXTRA",
+   "pregunta": "Cual es la deriva maxima permitida para mamposteria con falla predominante por cortante segun el Titulo A?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "b6243d8768f48741"
+   ],
+   "hash_rpc": [
+    "cca0a7e3c6c4f594"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8423,
+   "chars_prompt": 13539,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-DCCR-formula-Ru-phiRn",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_EXTRA",
+   "pregunta": "Cual es la ecuacion basica de diseño DCCR para estructuras de acero segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "c450602b342385cb"
+   ],
+   "hash_rpc": [
+    "cc5a88c715fef158"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9601,
+   "chars_prompt": 16586,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-PCD-limites-luz20m-peralte18m",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_EXTRA",
+   "pregunta": "Cuales son los limites de luz entre columnas y peralte total de la cercha en un Portico con Cercha Ductil (PCD) segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "04587de5a7d7d784"
+   ],
+   "hash_rpc": [
+    "3a72da9b1535a92d"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8446,
+   "chars_prompt": 14679,
+   "error": null
+  },
+  {
+   "id": "nsr10:J-hidrante-hospital-500m2-63Ls",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_J",
+   "pregunta": "Cual es el area de servicio y el caudal minimo requerido por hidrante para un hospital segun el Titulo J?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "5eda277f18ab87c9"
+   ],
+   "hash_rpc": [
+    "52698a057e6b2777"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8273,
+   "chars_prompt": 23551,
+   "error": null
+  },
+  {
+   "id": "nsr10:J-muro-cortafuego-categoria1-3horas",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_J",
+   "pregunta": "Cual es la resistencia al fuego minima en horas de un muro cortafuego en una edificacion de categoria de riesgo I segun el Titulo J?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "56a6ab605fb157eb"
+   ],
+   "hash_rpc": [
+    "688e23cbb69a3ad6"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9603,
+   "chars_prompt": 14309,
+   "error": null
+  },
+  {
+   "id": "nsr10:K-fuerza-apertura-puerta-250N",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_K",
+   "pregunta": "Cual es la fuerza maxima requerida para abrir completamente una puerta de salida segun el Titulo K?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "7c8fc295200f75f3"
+   ],
+   "hash_rpc": [
+    "6dc43cf130cd71be"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9238,
+   "chars_prompt": 15074,
+   "error": null
+  },
+  {
+   "id": "nsr10:K-iluminacion-emergencia-15horas",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_K",
+   "pregunta": "Por cuanto tiempo minimo debe permanecer en servicio el sistema de iluminacion de emergencia tras una falla del sistema principal segun el Titulo K?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "eedcea9aafb9e297"
+   ],
+   "hash_rpc": [
+    "257e4f8ba911cb6a"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9053,
+   "chars_prompt": 15299,
+   "error": null
+  },
+  {
+   "id": "nsr10:K-numero-salidas-501-1000-3salidas",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_K",
+   "pregunta": "Cuantas salidas minimas se requieren para una edificacion con carga de ocupacion entre 501 y 1000 personas segun el Titulo K?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "0f02e0bc6b9d7e08"
+   ],
+   "hash_rpc": [
+    "8c2beeb04bf9c254"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9467,
+   "chars_prompt": 14811,
+   "error": null
+  },
+  {
+   "id": "nsr10:H-experiencia-geotecnista-5anos",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_H",
+   "pregunta": "Cuantos años minimos de experiencia en diseño geotecnico de cimentaciones debe tener el profesional que dirige un estudio geotecnico segun el Titulo H?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "1b7b1aa6024a5f7e"
+   ],
+   "hash_rpc": [
+    "155f5920c34243b8"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.7586,
+   "chars_prompt": 25109,
+   "error": null
+  },
+  {
+   "id": "nsr10:H-sondeos-categoria-alta-25m-4sondeos",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_H",
+   "pregunta": "Cual es la profundidad minima y el numero minimo de sondeos para una unidad de construccion de categoria Alta (11 a 20 niveles) segun el Titulo H?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "1b83510c98813f52"
+   ],
+   "hash_rpc": [
+    "a6a587ae2ac532ad"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8241,
+   "chars_prompt": 17294,
+   "error": null
+  },
+  {
+   "id": "nsr10:H-categoria-media-4a10niveles",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_H",
+   "pregunta": "Entre cuantos niveles y que rango de cargas de servicio define el Titulo H la categoria Media de una unidad de construccion?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "c0e1503332ba3a2e"
+   ],
+   "hash_rpc": [
+    "4446236b52281c36"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9722,
+   "chars_prompt": 17123,
+   "error": null
+  },
+  {
+   "id": "nsr10:I-excepcion-titulo-E-15viviendas",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_I",
+   "pregunta": "Cual es la excepcion a la obligatoriedad de supervision tecnica para casas de uno y dos pisos del Titulo E, segun el Titulo I?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "518dd63208145c8f"
+   ],
+   "hash_rpc": [
+    "518dd63208145c8f"
+   ],
+   "identico": true,
+   "similitud_prompt": 1.0,
+   "chars_prompt": 14127,
+   "error": null
+  },
+  {
+   "id": "nsr10:I-registro-supervisor-5anos",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_I",
+   "pregunta": "Durante cuantos años minimo debe conservar el supervisor tecnico el registro escrito de sus labores segun el Titulo I?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "f6c350cd8c1b9756"
+   ],
+   "hash_rpc": [
+    "0db2c961c2292ca0"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9611,
+   "chars_prompt": 18168,
+   "error": null
+  },
+  {
+   "id": "nsr10:I-dos-grados-supervision-AB",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_I",
+   "pregunta": "Cuales son los dos grados de supervision tecnica que reconoce el Titulo I?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "5e1f51fd5e75b294"
+   ],
+   "hash_rpc": [
+    "b56e441a79a17c24"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9412,
+   "chars_prompt": 13651,
+   "error": null
+  },
+  {
+   "id": "nsr10:B-impacto-ascensores-100porciento",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_B_EXTRA",
+   "pregunta": "Cual es el porcentaje de incremento de carga viva por impacto para los soportes de elevadores o ascensores segun el Titulo B?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "49b286c46a224c48"
+   ],
+   "hash_rpc": [
+    "6bcb6527d52fe968"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8024,
+   "chars_prompt": 13468,
+   "error": null
+  },
+  {
+   "id": "nsr10:B-factor-rafaga-G085",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_B_EXTRA",
+   "pregunta": "Cual es el valor del factor de efecto rafaga G para estructuras rigidas segun el Titulo B?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "26cfdd1f8f6afbd7"
+   ],
+   "hash_rpc": [
+    "baa9f8f70ce4f83a"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.7113,
+   "chars_prompt": 19295,
+   "error": null
+  },
+  {
+   "id": "nsr10:NTC1500-instalaciones-prohibidas-ascensor",
+   "bateria": "nsr10",
+   "grupo": "CASOS_NTC_SGSST",
+   "pregunta": "Se pueden instalar las instalaciones hidraulicas y sanitarias en la caja del ascensor o el cuarto de maquinas segun la NTC 1500?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "93525f9161ddf23f"
+   ],
+   "hash_rpc": [
+    "f141e7a687d99e6d"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9315,
+   "chars_prompt": 12965,
+   "error": null
+  },
+  {
+   "id": "nsr10:NTC174-modulo-finura-23-31",
+   "bateria": "nsr10",
+   "grupo": "CASOS_NTC_SGSST",
+   "pregunta": "Entre que valores debe estar el modulo de finura del agregado fino para concreto segun la NTC 174?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "26ab89b9050282d8"
+   ],
+   "hash_rpc": [
+    "47633de4403515b0"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.908,
+   "chars_prompt": 13262,
+   "error": null
+  },
+  {
+   "id": "nsr10:NTC121-fraguado-inicial-45min",
+   "bateria": "nsr10",
+   "grupo": "CASOS_NTC_SGSST",
+   "pregunta": "Cual es el tiempo minimo de fraguado inicial del cemento Portland segun la NTC 121?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "584817cc4538ab11"
+   ],
+   "hash_rpc": [
+    "e20f67497e8f5dba"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9506,
+   "chars_prompt": 13058,
+   "error": null
+  },
+  {
+   "id": "nsr10:Decreto1072-multa-no-reportar-AT-1000SMMLV",
+   "bateria": "nsr10",
+   "grupo": "CASOS_NTC_SGSST",
+   "pregunta": "Cual es la multa maxima en SMMLV por no reportar un accidente de trabajo grave o mortal segun el Decreto 1072 de 2015?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "26de9086a9d37c05"
+   ],
+   "hash_rpc": [
+    "22b1e59ad5ad68e1"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.944,
+   "chars_prompt": 14754,
+   "error": null
+  },
+  {
+   "id": "nsr10:Decreto1072-fase3-empresa-grande-6meses",
+   "bateria": "nsr10",
+   "grupo": "CASOS_NTC_SGSST",
+   "pregunta": "En cuantos meses debe completar la Fase 3 de implementacion del SG-SST una empresa grande de mas de 200 trabajadores segun el Decreto 1072 de 2015?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "d4fdcf8662b03676"
+   ],
+   "hash_rpc": [
+    "a9914b70f300fb98"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8674,
+   "chars_prompt": 32212,
+   "error": null
+  },
+  {
+   "id": "nsr10:NTC174-terrones-arcilla-max-3porciento",
+   "bateria": "nsr10",
+   "grupo": "CASOS_NTC_SGSST",
+   "pregunta": "Cual es el porcentaje maximo de terrones de arcilla y particulas deleznables permitido en el agregado fino para concreto segun la NTC 174?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "f0c59a37216357b7"
+   ],
+   "hash_rpc": [
+    "f0c8e5bb8df6a99b"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9171,
+   "chars_prompt": 15052,
+   "error": null
+  },
+  {
+   "id": "nsr10:NTC121-expansion-autoclave-08porciento",
+   "bateria": "nsr10",
+   "grupo": "CASOS_NTC_SGSST",
+   "pregunta": "Cual es la expansion maxima en autoclave permitida para el cemento Portland segun la NTC 121?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "d2b00cfa27811663"
+   ],
+   "hash_rpc": [
+    "a4056aa2fac4692d"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9479,
+   "chars_prompt": 13678,
+   "error": null
+  },
+  {
+   "id": "nsr10:K-vidrio-templado-fragmenta-pequeños-pedazos",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_K_K4",
+   "pregunta": "Que le pasa al vidrio templado (fully tempered) cuando se rompe, segun el Titulo K?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "faa6cba1dd1a7bcd"
+   ],
+   "hash_rpc": [
+    "37dfa669f6009d7a"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9051,
+   "chars_prompt": 14351,
+   "error": null
+  },
+  {
+   "id": "nsr10:K-tragaluz-angulo-15grados",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_K_K4",
+   "pregunta": "A partir de que angulo respecto a la vertical se considera un vidrio como tragaluz o claraboya segun el Titulo K?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "d3c75bcc325ecb18"
+   ],
+   "hash_rpc": [
+    "d7fe110dd8075509"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9446,
+   "chars_prompt": 15432,
+   "error": null
+  },
+  {
+   "id": "nsr10:K-templado-vs-termoendurecido-compresion",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_K_K4",
+   "pregunta": "Cual es la diferencia entre vidrio templado y vidrio termoendurecido segun el Titulo K?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "48f4be108a8ad158"
+   ],
+   "hash_rpc": [
+    "f9d9b1dcc4d8a459"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9064,
+   "chars_prompt": 14840,
+   "error": null
+  },
+  {
+   "id": "nsr10:K-barandas-vidrio-factor-seguridad-4",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_K_K42",
+   "pregunta": "Cual es el factor de seguridad exigido para el diseño de barandas y pasamanos de vidrio segun el Titulo K?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "f686442aed9a7214"
+   ],
+   "hash_rpc": [
+    "b3f23a9cbf090622"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9643,
+   "chars_prompt": 14840,
+   "error": null
+  },
+  {
+   "id": "nsr10:K-vidrio-2mm-prohibido",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_K_K42",
+   "pregunta": "Se permite usar vidrios de 2 mm de espesor segun el Titulo K?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "904b23701088d3de"
+   ],
+   "hash_rpc": [
+    "ace86532cfb02446"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9028,
+   "chars_prompt": 14426,
+   "error": null
+  },
+  {
+   "id": "nsr10:K-esfuerzos-termicos-probabilidad-rotura-08porciento",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_K_K42",
+   "pregunta": "Cual es el limite recomendado de probabilidad de rotura aceptable por esfuerzos termicos en vidrio segun el Titulo K?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "793730e3f004947c"
+   ],
+   "hash_rpc": [
+    "31c6c66ac0c5d4af"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8797,
+   "chars_prompt": 15493,
+   "error": null
+  },
+  {
+   "id": "nsr10:K-vidrio-inclinado-mas-de-15grados",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_K_K42",
+   "pregunta": "A partir de que inclinacion respecto a la vertical se considera un sistema vidriado como inclinado (no vertical) segun el Titulo K?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "53c6e0cdc093a41a"
+   ],
+   "hash_rpc": [
+    "4aeea9fedecaafce"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8416,
+   "chars_prompt": 15002,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-analisis-racional-phi-miembros-080-conexiones-065",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F41",
+   "pregunta": "Cuales son los factores de resistencia phi minimos para miembros y para conexiones en un analisis racional de ingenieria de acero formado en frio segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "ab8d0852d4207a47"
+   ],
+   "hash_rpc": [
+    "b2c33d3e5701a776"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8987,
+   "chars_prompt": 17814,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-espesor-minimo-entregado-95porciento",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F41",
+   "pregunta": "Cual es el espesor minimo entregado permitido para acero formado en frio respecto al espesor de diseño segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "35ffeaf179c46516"
+   ],
+   "hash_rpc": [
+    "1c5ab7c91b5072e8"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8846,
+   "chars_prompt": 14954,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f41-alcance-espesor-maximo-254mm",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F41",
+   "pregunta": "Hasta que espesor de lamina, rollo, tira o barra aplica la especificacion de estructuras de acero con perfiles formados en frio del Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "6d979386bf7bf49a"
+   ],
+   "hash_rpc": [
+    "1b24d311321a4509"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.889,
+   "chars_prompt": 16226,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f42-max-wt-elemento-rigidizado-ambos-bordes-500",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F42",
+   "pregunta": "Cual es la maxima relacion ancho plano-espesor w/t para un elemento a compresion rigidizado con ambos bordes longitudinales conectados a otros elementos rigidizados segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "cf4404aba9a2e013"
+   ],
+   "hash_rpc": [
+    "c3bca91c502f94a5"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8266,
+   "chars_prompt": 14924,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f42-max-ht-almas-no-reforzadas-200",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F42",
+   "pregunta": "Cual es la relacion maxima altura-espesor h/t para almas no reforzadas de miembros en flexion de acero formado en frio segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "c9e162d4880eb356"
+   ],
+   "hash_rpc": [
+    "1f0e058d9fad35cd"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9248,
+   "chars_prompt": 14865,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f42-k-elemento-no-rigidizado-043",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F42",
+   "pregunta": "Que coeficiente de pandeo de placa k se usa para elementos NO rigidizados bajo compresion uniforme segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "0a9d69c61b484fba"
+   ],
+   "hash_rpc": [
+    "0a9d69c61b484fba"
+   ],
+   "identico": true,
+   "similitud_prompt": 1.0,
+   "chars_prompt": 14839,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f43-kv-almas-no-reforzadas-534",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F43",
+   "pregunta": "Cual es el coeficiente kv de pandeo al corte para almas no reforzadas de acero formado en frio segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "a47cb684caa73662"
+   ],
+   "hash_rpc": [
+    "77de28f0664ca899"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8291,
+   "chars_prompt": 14083,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f43-phi-tension-fluencia-seccion-bruta-090",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F43",
+   "pregunta": "Cual es el factor de resistencia phi para fluencia en la seccion bruta de un miembro en tension de acero formado en frio segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "a88f719d054ee6c1"
+   ],
+   "hash_rpc": [
+    "1428054ebd2aa290"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8996,
+   "chars_prompt": 16019,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f43-phi-tension-rotura-seccion-neta-075",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F43",
+   "pregunta": "Cual es el factor de resistencia phi para rotura en la seccion neta de un miembro en tension de acero formado en frio segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "6fb17ed9f88124a9"
+   ],
+   "hash_rpc": [
+    "a9764617a9fd6229"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8388,
+   "chars_prompt": 15015,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f44-espesor-entramados-livianos-0455-2997",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F44",
+   "pregunta": "Cual es el rango de espesor minimo especificado del acero base permitido para entramados livianos repetitivos de acero formado en frio segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "3c0532dfd8748682"
+   ],
+   "hash_rpc": [
+    "3c0532dfd8748682"
+   ],
+   "identico": true,
+   "similitud_prompt": 1.0,
+   "chars_prompt": 14845,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f44-pbr1-riostra-compresion-001pn",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F44",
+   "pregunta": "Cual es la resistencia nominal requerida de la riostra para restringir la traslacion lateral de un miembro sencillo en compresion axialmente cargado segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "2b707f4d0ef63b77"
+   ],
+   "hash_rpc": [
+    "d45a59ab0c7e268f"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8714,
+   "chars_prompt": 14624,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f45-tapon-diametro-efectivo-minimo-95mm",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F45",
+   "pregunta": "Cual es el diametro efectivo minimo de fusion permitido para una soldadura de tapon en conexiones de acero formado en frio segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "85b15a8cbb8c93d7"
+   ],
+   "hash_rpc": [
+    "4457c6d30ca0c6a9"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9257,
+   "chars_prompt": 14718,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f45-pernos-distancia-minima-3d",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F45",
+   "pregunta": "Cual es la distancia minima entre centros de perforaciones para pernos en conexiones de acero formado en frio segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "159d5c78d63cbce1"
+   ],
+   "hash_rpc": [
+    "ee75a789a517d489"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8771,
+   "chars_prompt": 17173,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f45-cierre-pnot-desgarramiento-tornillo-085",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F45_CIERRE",
+   "pregunta": "Como se calcula la resistencia nominal al desgarramiento del tornillo Pnot en conexiones atornilladas de acero formado en frio segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "70a87bdb09f5ad48"
+   ],
+   "hash_rpc": [
+    "276ab22e06f77492"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8609,
+   "chars_prompt": 14564,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f45-cierre-bloque-cortante-476mm",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F45_CIERRE",
+   "pregunta": "Que ecuaciones se usan para la rotura por bloque de cortante en conexiones de lamina delgada de acero segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "09733550dd0619ac"
+   ],
+   "hash_rpc": [
+    "aae60867d7b4f203"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8574,
+   "chars_prompt": 16304,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f45-cierre-conexiones-otros-materiales",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F45_CIERRE",
+   "pregunta": "Que requisitos aplican para las conexiones de acero formado en frio con componentes estructurales de otros materiales segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "244d5feff84addcf"
+   ],
+   "hash_rpc": [
+    "ba7deb9c459f64e3"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9769,
+   "chars_prompt": 14952,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f46-ntc3353-prueba-tension-seccion-completa",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F46",
+   "pregunta": "Que norma tecnica colombiana rige los procedimientos de la prueba a tension para determinar propiedades mecanicas de secciones completas de acero formado en frio segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "03802fd8033d15a8"
+   ],
+   "hash_rpc": [
+    "78c6b023ff24224a"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.751,
+   "chars_prompt": 14842,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f46-acero-virgen-cuatro-especimenes",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F46",
+   "pregunta": "Cuantos especimenes a tension minimo se deben tomar de cada rollo madre para establecer los valores representativos de acero virgen segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "0a90ce3246d3eb19"
+   ],
+   "hash_rpc": [
+    "c55e0833606b5371"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8953,
+   "chars_prompt": 14551,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f46-dccr-tres-especimenes-15pct",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F46",
+   "pregunta": "Cuantos especimenes identicos minimo se requieren en un ensayo de comportamiento estructural DCCR y cual es la desviacion maxima permitida respecto al promedio segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "6711d2bce6bfe900"
+   ],
+   "hash_rpc": [
+    "f54290bacd4fa14f"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8238,
+   "chars_prompt": 18414,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f47-recubrimiento-minimo-50mm",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F47",
+   "pregunta": "Cuantos milimetros de recubrimiento minimo de concreto se requieren sobre la cresta del tablero de acero de un sistema compuesto segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "100bc6106c6858b7"
+   ],
+   "hash_rpc": [
+    "889c84923736fa65"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.899,
+   "chars_prompt": 15488,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f47-espesor-minimo-071mm-calibre22",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F47",
+   "pregunta": "Cual es el espesor minimo de acero base aceptado para fabricacion del tablero metalico de trabajo en seccion compuesta segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "1c8ec63a85122b42"
+   ],
+   "hash_rpc": [
+    "3f924a9db9056560"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9293,
+   "chars_prompt": 15697,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f47-apuntalamiento-75pct-7dias",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F47",
+   "pregunta": "El apuntalamiento temporal de un tablero metalico debe permanecer instalado hasta que el concreto alcance que porcentaje de su resistencia y por cuantos dias minimo segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "5e7bf8169f030b0b"
+   ],
+   "hash_rpc": [
+    "d8b574c18d7e35a3"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9764,
+   "chars_prompt": 14782,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f48-espesor-046-300mm",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F48",
+   "pregunta": "Cual es el rango de espesor minimo del acero permitido para entramados de acero formado en frio segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "1b652fdbb9ee2efe"
+   ],
+   "hash_rpc": [
+    "1b652fdbb9ee2efe"
+   ],
+   "identico": true,
+   "similitud_prompt": 1.0,
+   "chars_prompt": 14979,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f48-perforaciones-espaciamiento-600mm",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F48",
+   "pregunta": "Cual es el espaciamiento minimo centro a centro requerido entre perforaciones de un miembro de entramado de acero formado en frio segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "9392519eace19164"
+   ],
+   "hash_rpc": [
+    "b13f875bec86835b"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8693,
+   "chars_prompt": 14889,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f48-carga-axial-tablero-yeso-258kn",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F48",
+   "pregunta": "Cual es la carga nominal axial maxima por paral cuando se usa tablero de yeso de 12.7mm con tornillo No 6 segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "252fefc9e1d151fd"
+   ],
+   "hash_rpc": [
+    "6312912f8f036391"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9364,
+   "chars_prompt": 19754,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f51-sistema-unidades-kgf",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F51",
+   "pregunta": "En el capitulo F.5 de estructuras de aluminio del Titulo F, en que sistema de unidades estan expresadas las fuerzas y los esfuerzos?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "9b565aeda25b80f4"
+   ],
+   "hash_rpc": [
+    "c227617998e326ff"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.888,
+   "chars_prompt": 14720,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f51-alcance-tipos-estructuras",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F51",
+   "pregunta": "Que tipos de estructuras cubren los requisitos de diseno del capitulo de estructuras de aluminio de la NSR-10?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "b135ea2ae16e8b5d"
+   ],
+   "hash_rpc": [
+    "7d4da00661963685"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8254,
+   "chars_prompt": 13196,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f52-6082-t6-esfuerzo-255kgf",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F52",
+   "pregunta": "Cual es el esfuerzo minimo de prueba del 0.2 por ciento en kgf por milimetro cuadrado para la aleacion de aluminio 6082 en condicion T6 extrusiones hasta 20mm segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "b2e1f9f8b84ef7f3"
+   ],
+   "hash_rpc": [
+    "c57ecd0e143948ce"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8717,
+   "chars_prompt": 15818,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f52-durabilidad-a-agua-salada-proteccion",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F52",
+   "pregunta": "Que nivel de proteccion contra la corrosion requiere el aluminio de durabilidad A sumergido en agua salada segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "78f302ad1aa1658d"
+   ],
+   "hash_rpc": [
+    "b75eda387a1db541"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8597,
+   "chars_prompt": 14316,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f53-deflexion-voladizo-L180",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F53",
+   "pregunta": "Cual es la deflexion limite recomendada para voladizos que soportan pisos en estructuras de aluminio segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "faedfac1eac3843c"
+   ],
+   "hash_rpc": [
+    "61947542c7af8e0c"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8541,
+   "chars_prompt": 14946,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f53-phi-union-soldada",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F53",
+   "pregunta": "Cual es el coeficiente de reduccion de capacidad phi para uniones soldadas en estructuras de aluminio segun el Titulo F?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "5766e78899d07f26"
+   ],
+   "hash_rpc": [
+    "f3f8272cf54d4043"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.894,
+   "chars_prompt": 14642,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f53-fatiga-crecimiento-grietas",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F53",
+   "pregunta": "En el diseno de estructuras de aluminio del Titulo F, cuando se revisa fatiga se deben considerar colapso total y crecimiento estable de grietas, cual es la tolerancia de dano?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "fb3bcc821b9a50ec"
+   ],
+   "hash_rpc": [
+    "219daed543ea8fb1"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9555,
+   "chars_prompt": 15344,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f541-2-esfuerzo-limite-po-6061-t6",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F54_1_2_3",
+   "pregunta": "Cual es el esfuerzo limite po para aluminio 6061-T6 en extrusion segun la NSR-10 Titulo F.5.4?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "f46961388604db56"
+   ],
+   "hash_rpc": [
+    "d97e03dbdc5f09cd"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.7317,
+   "chars_prompt": 14162,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f543-totalmente-compacta-pandeo-local",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F54_1_2_3",
+   "pregunta": "En estructuras de aluminio del Titulo F.5 de la NSR-10, que significa que en una seccion clasificada como totalmente compacta el pandeo local puede ignorarse?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "a7179896a83c78b1"
+   ],
+   "hash_rpc": [
+    "3e122b0065c9436e"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8612,
+   "chars_prompt": 14586,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f543-beta0-elementos-salientes-no-soldados",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F54_1_2_3",
+   "pregunta": "Cual es el valor limite de beta0 para elementos salientes de aluminio no soldados segun la tabla de valores limite de beta de la NSR-10 Titulo F.5?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "acb6f688ac3e5a57"
+   ],
+   "hash_rpc": [
+    "fe187f49893c58ec"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.7659,
+   "chars_prompt": 13674,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f544-kz-6061-t6",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F544",
+   "pregunta": "Segun la Tabla F.5.4.4-1 de coeficiente de ablandamiento kz de la NSR-10 Titulo F.5, cual es el valor de kz para la aleacion 6061 tratada en caliente T6 en extrusion o tuberia extruida?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "2ec07f200928fba3"
+   ],
+   "hash_rpc": [
+    "e6038e814a38f9dc"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9145,
+   "chars_prompt": 13874,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f544-tiempo-recuperacion-serie-7000",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F544",
+   "pregunta": "Cual es el tiempo de recuperacion en dias para aleaciones de aluminio de la serie 7000 despues de soldar antes de aplicar el coeficiente kz segun el Titulo F.5?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "8d86396d3a6878bb"
+   ],
+   "hash_rpc": [
+    "661de36c832f2e7a"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8581,
+   "chars_prompt": 19698,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f544-eta-un-camino-calor-tc25",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F544",
+   "pregunta": "En estructuras de aluminio del Titulo F.5, cual es el valor de eta cuando una union tiene un solo camino de calor valido y el espesor tc es menor o igual a 25mm?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "b5839870796c33c1"
+   ],
+   "hash_rpc": [
+    "02fb20382924c2ed"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9294,
+   "chars_prompt": 15069,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f545-espaciamiento-40epsilon-ry",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F545",
+   "pregunta": "Cual es el espaciamiento maximo de soporte lateral para poder ignorar el pandeo torsional lateral en vigas de aluminio del Titulo F.5?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "645b7b7bf2e684df"
+   ],
+   "hash_rpc": [
+    "f6d17d061e7a2cf2"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8566,
+   "chars_prompt": 13739,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f545-restricciones-laterales-3-porciento",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F545",
+   "pregunta": "Segun el Titulo F.5 de aluminio, cual es el porcentaje de la fuerza de compresion en la aleta que deben resistir las restricciones laterales de una viga?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "760d515409deb332"
+   ],
+   "hash_rpc": [
+    "d756b57ef1d58611"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8379,
+   "chars_prompt": 16621,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f545-vigas-ensambladas-f5541",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F545",
+   "pregunta": "En el Titulo F.5 de aluminio, que numeral se recomienda usar preferiblemente para disenar vigas ensambladas que tienen almas rigidizadas mas esbeltas?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "7ba7e1926d3e2bc6"
+   ],
+   "hash_rpc": [
+    "3d06ecdbf7685f35"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.896,
+   "chars_prompt": 13774,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f546-tirante-excentrico-06ao",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F546",
+   "pregunta": "Segun el Titulo F.5 de aluminio, cual es la reduccion de area que se resta para un componente unico conectado por un lado a una cartela en un tirante conectado excentricamente?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "e7e6bf5a69e6d005"
+   ],
+   "hash_rpc": [
+    "5e95a5c4b1f54300"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9109,
+   "chars_prompt": 16170,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f546-tres-tipos-conexion-excentrica",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F546",
+   "pregunta": "En estructuras de aluminio del Titulo F.5, cuales son los tres tipos de miembros a tension considerados como conectados excentricamente segun F.5.4.6.2?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "54f1d27bbfa979c6"
+   ],
+   "hash_rpc": [
+    "16baf35ecf8c1707"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8656,
+   "chars_prompt": 15834,
+   "error": null
+  },
+  {
+   "id": "nsr10:F-f546-prs-menor-fluencia-falla-local",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_F_F546",
+   "pregunta": "Segun el Titulo F.5 de aluminio, la resistencia a tension de diseno PRS de un miembro se toma como el menor de cuales dos valores?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "d8d17b4a3753f9e0"
+   ],
+   "hash_rpc": [
+    "770e73577eaa6e4c"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9501,
+   "chars_prompt": 14394,
+   "error": null
+  },
+  {
+   "id": "nsr10:H-asentamiento-maximo-aisladas-30cm",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_H_H4",
+   "pregunta": "Cual es el asentamiento maximo permitido a 20 anos para construcciones aisladas segun el Titulo H de la NSR-10?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "999334b026a9dc21"
+   ],
+   "hash_rpc": [
+    "94baafdf5e2b96bd"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8609,
+   "chars_prompt": 14451,
+   "error": null
+  },
+  {
+   "id": "nsr10:H-fsicp-carga-muerta-viva-normal-30",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_H_H4",
+   "pregunta": "Cuales son los factores de seguridad indirectos minimos para cimentaciones bajo carga muerta mas carga viva normal segun el Titulo H?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "891c261a0d632dc4"
+   ],
+   "hash_rpc": [
+    "6b08f90d83628f4b"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.7453,
+   "chars_prompt": 16098,
+   "error": null
+  },
+  {
+   "id": "nsr10:H-sobrecarga-minima-excavaciones-15kpa",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_H_H5",
+   "pregunta": "Cual es la sobrecarga uniforme minima a considerar en la via publica y zonas proximas a excavaciones temporales segun el Titulo H?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "0a4ab5f553add5cd"
+   ],
+   "hash_rpc": [
+    "4560721d51b7f30b"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.6818,
+   "chars_prompt": 24863,
+   "error": null
+  },
+  {
+   "id": "nsr10:H-cohesion-arcillas-30porciento-1mes",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_H_H5",
+   "pregunta": "En cuanto tiempo puede reducirse la cohesion de los materiales arcillosos en taludes de excavacion segun el Titulo H?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "a54d9d8c0bfcd7f9"
+   ],
+   "hash_rpc": [
+    "b4661ab886ce9e60"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9441,
+   "chars_prompt": 25059,
+   "error": null
+  },
+  {
+   "id": "nsr10:H-kst-amax-macizos-rocosos-100",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_H_H5",
+   "pregunta": "Cual es el valor minimo de KST sobre amax para macizos rocosos con RQD mayor a 50 por ciento segun el Titulo H?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "dd4c0a772d76ca47"
+   ],
+   "hash_rpc": [
+    "05d5c7522dfca380"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.7175,
+   "chars_prompt": 29127,
+   "error": null
+  },
+  {
+   "id": "nsr10:H-desplante-muro-gravedad-1m",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_H_H6",
+   "pregunta": "A que profundidad minima bajo la superficie del terreno debe desplantarse la base de un muro de gravedad segun el Titulo H?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "f0242f8ec155c38e"
+   ],
+   "hash_rpc": [
+    "1ab41e3bfb03bdd6"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9303,
+   "chars_prompt": 34559,
+   "error": null
+  },
+  {
+   "id": "nsr10:H-fs-deslizamiento-estatico-160",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_H_H6",
+   "pregunta": "Cual es el factor de seguridad minimo al deslizamiento en condicion estatica para estructuras de contencion segun el Titulo H?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "d497c12b5342c6af"
+   ],
+   "hash_rpc": [
+    "889db759a08bb29a"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9329,
+   "chars_prompt": 27985,
+   "error": null
+  },
+  {
+   "id": "nsr10:H-componente-vertical-25km",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_H_H7",
+   "pregunta": "A partir de que distancia epicentral se debe considerar el aporte de la componente vertical de la senal sismica segun el Titulo H?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "6fb3ef45ec6ab366"
+   ],
+   "hash_rpc": [
+    "ab406fd779f0008b"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8666,
+   "chars_prompt": 27389,
+   "error": null
+  },
+  {
+   "id": "nsr10:H-amplificacion-limite-04g",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_H_H7",
+   "pregunta": "Cual es el valor limite de aceleracion en roca para el cual resulta importante evaluar la amplificacion segun el Titulo H?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "4416d02f7fcfc985"
+   ],
+   "hash_rpc": [
+    "351c78cf30172f69"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9419,
+   "chars_prompt": 20692,
+   "error": null
+  },
+  {
+   "id": "nsr10:H-historias-movimiento-minimo-tres",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_H_H7",
+   "pregunta": "Cuantas historias de movimiento minimo se deben utilizar en los analisis de respuesta dinamica segun el Titulo H?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "59ca61424d3c30ff"
+   ],
+   "hash_rpc": [
+    "fc0101e0f0e0dcb9"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.846,
+   "chars_prompt": 24714,
+   "error": null
+  },
+  {
+   "id": "nsr10:H-plan-contingencia-3m",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_H_H8",
+   "pregunta": "A partir de que profundidad de excavacion se debe contar con un plan de contingencia segun el Titulo H?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "5d77c824fc35a7e1"
+   ],
+   "hash_rpc": [
+    "9986312b7b9e54e7"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8399,
+   "chars_prompt": 31679,
+   "error": null
+  },
+  {
+   "id": "nsr10:H-desviacion-verticalidad-pilote-3-100",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_H_H8",
+   "pregunta": "Cual es la desviacion maxima de verticalidad permitida para un pilote hincado con capacidad de carga por punta segun el Titulo H?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "63cd6f1a4cadc917"
+   ],
+   "hash_rpc": [
+    "a033eb625fff69f4"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8671,
+   "chars_prompt": 25852,
+   "error": null
+  },
+  {
+   "id": "nsr10:H-profundidad-raices-6m",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_H_H9",
+   "pregunta": "Cual es la profundidad maxima tipica hasta la que se desarrollan las raices de un arbol segun el Titulo H?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "c1d4e64767df8b0f"
+   ],
+   "hash_rpc": [
+    "53c1ba4ad64b9846"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.967,
+   "chars_prompt": 23846,
+   "error": null
+  },
+  {
+   "id": "nsr10:H-punto-marchitamiento-pf-42",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_H_H9",
+   "pregunta": "A que valor de pF equivale el punto de marchitamiento de las plantas segun el Titulo H?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "5ff5b53271bbea31"
+   ],
+   "hash_rpc": [
+    "fc1220b328a7c048"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8845,
+   "chars_prompt": 15440,
+   "error": null
+  },
+  {
+   "id": "nsr10:H-criterio-colapsabilidad-gamma-dcrit",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_H_H9",
+   "pregunta": "Cual es el criterio para que un suelo se considere colapsable segun la relacion gamma_d sobre gamma_dcrit del Titulo H?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "5e5f26537a396d9f"
+   ],
+   "hash_rpc": [
+    "82b775dc652e6358"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.798,
+   "chars_prompt": 20243,
+   "error": null
+  },
+  {
+   "id": "nsr10:H-suelo-dispersivo-sales-sodio-40-60",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_H_H9",
+   "pregunta": "A partir de que porcentaje de sales de sodio en el agua intersticial se considera una arcilla como suelo dispersivo segun el Titulo H?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "e157a7205bf84a77"
+   ],
+   "hash_rpc": [
+    "c299559d60cc9412"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9062,
+   "chars_prompt": 20514,
+   "error": null
+  },
+  {
+   "id": "nsr10:H-inclinacion-talud-rehabilitacion-18grados",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_H_H10",
+   "pregunta": "A partir de que inclinacion de talud se debe evaluar la estabilidad de laderas para rehabilitacion sismica segun el Titulo H?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "b62f29a4646438c2"
+   ],
+   "hash_rpc": [
+    "052f8dcf6c27a930"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9312,
+   "chars_prompt": 29869,
+   "error": null
+  },
+  {
+   "id": "nsr10:H-n160-minimo-licuacion-30golpes",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_H_H10",
+   "pregunta": "Cual es el N160 minimo para suelos no cohesivos bajo la tabla de agua para descartar amenaza de licuacion segun el Titulo H?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "50183dbbbc11adcd"
+   ],
+   "hash_rpc": [
+    "c56247dd2a97097f"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.713,
+   "chars_prompt": 29979,
+   "error": null
+  },
+  {
+   "id": "nsr10:A-phi-p-torsional-extrema-1bP-08",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_A_A33",
+   "pregunta": "Cual es el valor de phi_p para una irregularidad torsional extrema tipo 1bP segun la Tabla A.3-6 del Titulo A?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "cc7fc707f6ea95e1"
+   ],
+   "hash_rpc": [
+    "e866fc29afed4e68"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.855,
+   "chars_prompt": 13226,
+   "error": null
+  },
+  {
+   "id": "nsr10:A-piso-debil-extremo-5bA-65porciento",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_A_A33",
+   "pregunta": "Cuando se considera que una estructura tiene piso debil extremo tipo 5bA segun la Tabla A.3-7 del Titulo A?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "5d8c1a9f583bacce"
+   ],
+   "hash_rpc": [
+    "8eea3034c89f4a09"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9349,
+   "chars_prompt": 14711,
+   "error": null
+  },
+  {
+   "id": "nsr10:B-equipos-fijos-cargas-muertas",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_B_B33",
+   "pregunta": "Que se debe incluir dentro de las cargas muertas ademas de los elementos permanentes, segun el Titulo B?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "501ec83efe1e1432"
+   ],
+   "hash_rpc": [
+    "d50b6a4fb3979237"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9203,
+   "chars_prompt": 14608,
+   "error": null
+  },
+  {
+   "id": "nsr10:B-responsabilidad-verificar-pesos-obra",
+   "bateria": "nsr10",
+   "grupo": "CASOS_TITULO_B_B33",
+   "pregunta": "Quien es responsable de verificar en obra que los pesos reales de los materiales no superen los valores usados en el diseno, segun el Titulo B?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "c6329d4d675a41c3"
+   ],
+   "hash_rpc": [
+    "aae4921379b4e0b1"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8304,
+   "chars_prompt": 20371,
+   "error": null
+  },
+  {
+   "id": "motores:aquai-dotacion-neta-definicion",
+   "bateria": "motores",
+   "grupo": "CASOS_AQUAI",
+   "pregunta": "Que es la dotacion neta en un sistema de acueducto?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "79d234a133c12024"
+   ],
+   "hash_rpc": [
+    "6d2b2482dc7336a2"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.7953,
+   "chars_prompt": 12345,
+   "error": null
+  },
+  {
+   "id": "motores:aquai-dotacion-bruta-perdidas",
+   "bateria": "motores",
+   "grupo": "CASOS_AQUAI",
+   "pregunta": "De que depende el calculo de la dotacion bruta segun la Resolucion 0330 de 2017?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "ecafe3e4c1a8b0ce"
+   ],
+   "hash_rpc": [
+    "687bbc1a8c595989"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.5332,
+   "chars_prompt": 11393,
+   "error": null
+  },
+  {
+   "id": "motores:aquai-experiencia-profesional-5-anos",
+   "bateria": "motores",
+   "grupo": "CASOS_AQUAI",
+   "pregunta": "Cuantos años minimos de experiencia especifica debe tener el profesional responsable del diseño de un sistema de acueducto o alcantarillado segun la Resolucion 0330 de 2017?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "1abf6cf52da116e6"
+   ],
+   "hash_rpc": [
+    "1abf6cf52da116e6"
+   ],
+   "identico": true,
+   "similitud_prompt": 1.0,
+   "chars_prompt": 11576,
+   "error": null
+  },
+  {
+   "id": "motores:geopot-ip-limites-atterberg",
+   "bateria": "motores",
+   "grupo": "CASOS_GEOPOT",
+   "pregunta": "Como se calcula el indice de plasticidad IP a partir de los limites de Atterberg?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "e7bcdb725dfedfd6"
+   ],
+   "hash_rpc": [
+    "f8779147e94e96de"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.8317,
+   "chars_prompt": 8937,
+   "error": null
+  },
+  {
+   "id": "motores:geopot-ip-muy-alta-50",
+   "bateria": "motores",
+   "grupo": "CASOS_GEOPOT",
+   "pregunta": "Segun la clasificacion por indice de plasticidad, a partir de que valor de IP se considera plasticidad muy alta?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "abce94708928d8e6"
+   ],
+   "hash_rpc": [
+    "464388f0879016e2"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.7599,
+   "chars_prompt": 14147,
+   "error": null
+  },
+  {
+   "id": "motores:geopot-coeficiente-uniformidad-cu",
+   "bateria": "motores",
+   "grupo": "CASOS_GEOPOT",
+   "pregunta": "Como se calcula el coeficiente de uniformidad Cu en un analisis granulometrico de suelos?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "ecea931c75e4e940"
+   ],
+   "hash_rpc": [
+    "ecea931c75e4e940"
+   ],
+   "identico": true,
+   "similitud_prompt": 1.0,
+   "chars_prompt": 11015,
+   "error": null
+  },
+  {
+   "id": "motores:vias-radio-minimo-80kmh-8porciento",
+   "bateria": "motores",
+   "grupo": "CASOS_VIAS",
+   "pregunta": "Segun el Manual INVIAS 2008, cual es el radio minimo de curva horizontal para una velocidad de diseño de 80 km/h con peralte maximo del 8%?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "f26edca4aae307dd"
+   ],
+   "hash_rpc": [
+    "f26edca4aae307dd"
+   ],
+   "identico": true,
+   "similitud_prompt": 1.0,
+   "chars_prompt": 8609,
+   "error": null
+  },
+  {
+   "id": "motores:vias-sn-tabla-esals-cbr",
+   "bateria": "motores",
+   "grupo": "CASOS_VIAS",
+   "pregunta": "Que dos variables se usan para obtener el Numero Estructural SN requerido en el diseño de pavimento segun AASHTO 93 adaptado?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "b707ffa63d473e11"
+   ],
+   "hash_rpc": [
+    "b707ffa63d473e11"
+   ],
+   "identico": true,
+   "similitud_prompt": 1.0,
+   "chars_prompt": 14218,
+   "error": null
+  },
+  {
+   "id": "motores:vias-espesor-losa-factor-039",
+   "bateria": "motores",
+   "grupo": "CASOS_VIAS",
+   "pregunta": "Cual es el factor por el que se divide el numero estructural SN para estimar el espesor de la losa de concreto en un pavimento rigido?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "a4ef3bfc6f9f8b1f"
+   ],
+   "hash_rpc": [
+    "a4ef3bfc6f9f8b1f"
+   ],
+   "identico": true,
+   "similitud_prompt": 1.0,
+   "chars_prompt": 10431,
+   "error": null
+  },
+  {
+   "id": "motores:gerencia-cpi-formula-ev-ac",
+   "bateria": "motores",
+   "grupo": "CASOS_GERENCIA",
+   "pregunta": "Cual es la formula del CPI, el indice de desempeño de costo, en el analisis de valor ganado?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "39ce3eb9542ab7d6"
+   ],
+   "hash_rpc": [
+    "39ce3eb9542ab7d6"
+   ],
+   "identico": true,
+   "similitud_prompt": 1.0,
+   "chars_prompt": 6777,
+   "error": null
+  },
+  {
+   "id": "motores:gerencia-spi-formula-ev-pv",
+   "bateria": "motores",
+   "grupo": "CASOS_GERENCIA",
+   "pregunta": "Cual es la formula del SPI, el indice de desempeño de cronograma, en el analisis de valor ganado?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "2095660f88e0413c"
+   ],
+   "hash_rpc": [
+    "86a83ccabf9169fc"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.9166,
+   "chars_prompt": 6782,
+   "error": null
+  },
+  {
+   "id": "motores:gerencia-alerta-critica-cpi-090",
+   "bateria": "motores",
+   "grupo": "CASOS_GERENCIA",
+   "pregunta": "Por debajo de que valor de CPI se genera una alerta critica automatica por sobrecosto severo en el analisis de portafolio de proyectos?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "f7728b88c0db3935"
+   ],
+   "hash_rpc": [
+    "f7728b88c0db3935"
+   ],
+   "identico": true,
+   "similitud_prompt": 1.0,
+   "chars_prompt": 6901,
+   "error": null
+  },
+  {
+   "id": "motores:gerencia-score-compuesto-cpi-30porciento",
+   "bateria": "motores",
+   "grupo": "CASOS_GERENCIA",
+   "pregunta": "Que porcentaje de ponderacion tiene el CPI dentro del score compuesto de desempeño del proyecto?",
+   "llamadas_local": 1,
+   "llamadas_rpc": 1,
+   "hash_local": [
+    "478a7f7a5ddb3d99"
+   ],
+   "hash_rpc": [
+    "af38253c36d46a90"
+   ],
+   "identico": false,
+   "similitud_prompt": 0.7187,
+   "chars_prompt": 10075,
+   "error": null
+  }
+ ]
+}
