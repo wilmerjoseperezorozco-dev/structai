@@ -204,6 +204,7 @@
     {"id": "motor-vias", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
     {"id": "motor-gerencia", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
     {"id": "motor-incendios", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
+    {"id": "motor-viento", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
     {"id": "motor-vulnerabilidad-vivienda", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
     {"id": "motor-estructural", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},
     {"id": "motor-exploracion", "tipo": "motor", "estado": "implementado", "declaracion": "pendiente", "endpoints": [], "entradas": [], "salidas": []},

@@ -51,13 +51,14 @@ def _uso_deriva(p: de.ProyectoEdificio3D) -> float:
     return float(d["uso_max_limite"])
 
 
-def optimizar(base: de.ProyectoEdificio3D) -> ResultadoOptimizacion:
-    """`base` da geometría, cargas y sitio; sus secciones se ignoran."""
+def optimizar(base: de.ProyectoEdificio3D, alturas_viga: tuple = ALTURAS_VIGA) -> ResultadoOptimizacion:
+    """`base` da geometría, cargas y sitio; sus secciones se ignoran. `alturas_viga` restringe la rejilla de h (p. ej. una
+    sola h para comparar contra un diseño que solo crece en columnas, #333 H7)."""
     t0 = time.time()
     r = ResultadoOptimizacion(None)
     n = len(base.alturas_piso_m)
     mejor_costo = math.inf
-    for h in ALTURAS_VIGA:
+    for h in alturas_viga:
         for delta in REDUCCIONES:
             b = _secciones(n, 300.0, 0.0, h)[1][0][0]
             validas = [c for c in COLUMNAS if c >= b and c - delta >= b]

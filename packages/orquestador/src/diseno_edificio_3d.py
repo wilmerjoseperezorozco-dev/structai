@@ -42,6 +42,8 @@ _col = importlib.import_module("motor_concreto.columna")
 _cc = importlib.import_module("motor_concreto.cantidades_costo")
 _vg = importlib.import_module("motor_concreto.viga")
 _gp = modulo_cortante_basal()
+cargar_motor("motor-viento", "motor_viento")
+_b6 = importlib.import_module("motor_viento.b6")
 
 MOTOR = "orquestador.diseno_edificio_3d/0.1"
 FI_COL, FI_VIGA = 0.70, 0.35          # C.10.10.4.1 (inercias fisuradas)
@@ -72,6 +74,40 @@ NO_VERIFICA = (
 )
 
 
+# Viento (B.6, Método 2, edificios bajos; #292). Tabla B.6.5-1 por grupo de uso: la lectura literal da 0,87 al grupo I;
+# se usa 1,00 (HIPÓTESIS conservadora: el 0,87 corresponde a la categoría de bajo riesgo de ASCE 7, no a ocupación normal).
+IMPORTANCIA_VIENTO = {"I": 1.00, "II": 1.00, "III": 1.15, "IV": 1.15}
+NO_VERIFICA_VIENTO = (
+    "Viento: solo Método 2. Edificios bajos con la Fig. B.6.5-7 (cubierta plana θ = 0) y sus casos torsionales "
+    "(nota 5; el 25 % de las zonas T se aplica a la presión neta, también en la cubierta), zonas de borde E en ambos extremos a la vez (conservador), zona de cada panel por su centroide; sin componentes y "
+    "revestimientos de la cubierta ni anclajes de cubiertas livianas. Demás alturas: método general con los casos 1–4 "
+    "de la Fig. B.6.5-6, sin la excentricidad e_R de estructuras flexibles (B.6.5-19). Empuje de tierras, cargas de construcción y "
+    "cargas verticales sísmicas (A.3.6.13).")
+
+
+@dataclass(frozen=True)
+class VientoB6:
+    v_m_s: float                       # velocidad básica DECLARADA (Fig. B.6.4-1: regiones 17/22/28/33/36 m/s; especiales 28)
+    exposicion: str = "C"              # B.6.5.6
+    kzt: float = 1.0                   # factor topográfico (B.6.5.7), dato
+    cerramiento: str = "cerrado"       # B.6.5.9 → GCpi (Fig. B.6.5-2)
+    amortiguamiento: float = 0.02      # β para Gf (B.6.5.8.2) si n1 < 1 Hz: HIPÓTESIS declarada (NSR-10 no lo fija)
+    casos_parciales: bool = True       # casos 2–4 de la Fig. B.6.5-6 (B.6.5.12.3, obligatorios); False solo para medir (#322)
+    periodo_gf: str = "modelo"         # n1 para Gf: "modelo" (1/T del modelo fisurado) o "cu_ta" (1/(Cu·Ta)); #323 mide la diferencia
+
+    def __post_init__(self):
+        if self.v_m_s <= 0 or self.kzt <= 0:
+            raise ValueError("V y Kzt deben ser positivos")
+        if not 0 < self.amortiguamiento < 0.2:
+            raise ValueError("amortiguamiento como fracción del crítico (0 < β < 0,2)")
+        if self.periodo_gf not in ("modelo", "cu_ta"):
+            raise ValueError("periodo_gf: 'modelo' o 'cu_ta'")
+        if self.exposicion not in _b6.EXPOSICION:
+            raise ValueError("exposición: B, C o D")
+        if self.cerramiento not in _b6.GCPI:
+            raise ValueError(f"cerramiento: {tuple(_b6.GCPI)}")
+
+
 @dataclass(frozen=True)
 class ProyectoEdificio3D:
     luces_x_m: tuple[float, ...]
@@ -97,6 +133,10 @@ class ProyectoEdificio3D:
     # experimento prerregistrado 292-A: 0,90 solo en vigas en zona baja (Aa y Av ≤ 0,10); 1,0 (sin margen) en el resto.
     u_max_gravedad: Optional[float] = None
     margen_en: str = "vigas"                           # "vigas" (adoptado, 292-A) o "todo" (vigas y columnas; NO ADOPTAR)
+    viento: Optional[VientoB6] = None                  # None: viento no evaluado (queda en NO_VERIFICA)
+    # Cubierta liviana (#292): D y L del último nivel (sin vigas ni columnas). None = las mismas de los entrepisos.
+    carga_muerta_cubierta_kpa: Optional[float] = None
+    carga_viva_cubierta_kpa: Optional[float] = None
 
     def __post_init__(self):
         n = len(self.alturas_piso_m)
@@ -106,6 +146,8 @@ class ProyectoEdificio3D:
             raise ValueError("Se necesita al menos un vano positivo en cada dirección")
         if min(self.alturas_piso_m) <= 0 or self.carga_muerta_kpa < 0 or self.carga_viva_kpa < 0:
             raise ValueError("Alturas positivas y cargas no negativas")
+        if min(x for x in (self.carga_muerta_cubierta_kpa, self.carga_viva_cubierta_kpa, 0.0) if x is not None) < 0:
+            raise ValueError("Cargas de cubierta no negativas")
         for (b, h), c in zip(self.vigas_mm, self.columnas_mm):
             if min(b, h, c) <= 0:
                 raise ValueError("Secciones positivas")
@@ -120,6 +162,18 @@ class ProyectoEdificio3D:
 
 
 U_MAX_ZONA_BAJA = 0.90       # adoptado 2026-11-21 (RESULTADOS_292A_MARGEN_VIGAS.md), solo en vigas
+
+
+def cargas_nivel(p, nivel: int) -> tuple[float, float]:
+    """(D, L) en kN/m² sobre las vigas del nivel (1..n): la cubierta puede ser liviana."""
+    if nivel == len(p.alturas_piso_m):
+        return (p.carga_muerta_kpa if p.carga_muerta_cubierta_kpa is None else p.carga_muerta_cubierta_kpa,
+                p.carga_viva_kpa if p.carga_viva_cubierta_kpa is None else p.carga_viva_cubierta_kpa)
+    return p.carga_muerta_kpa, p.carga_viva_kpa
+
+
+def cubierta_liviana(p) -> bool:
+    return p.carga_muerta_cubierta_kpa is not None and p.carga_muerta_cubierta_kpa < p.carga_muerta_kpa
 
 
 def u_max_recomendado(p) -> float:
@@ -151,6 +205,7 @@ class InformeEdificio3D:
     fallas: list[str] = field(default_factory=list)
     advertencias: list[str] = field(default_factory=list)
     memoria: Optional[object] = None
+    viento: Optional[dict] = None
 
     @property
     def cumple(self) -> bool:
@@ -198,11 +253,12 @@ def construir_modelo(p: ProyectoEdificio3D) -> Modelo:
             b, h = (v / 1000 for v in p.vigas_mm[piso])
             Av, Ivf, Ivd, Jv = _rect(b, h)
             pp = GAMMA_CONCRETO * Av
+            qD, qL = cargas_nivel(p, nv)
             for j in range(len(ys)):
                 for i in range(len(xs) - 1):
                     a = p.luces_x_m[i]
                     area = sum(_area_45(a, p.luces_y_m[jj]) for jj in (j - 1, j) if 0 <= jj < len(p.luces_y_m))
-                    wD, wL = p.carga_muerta_kpa * area / a + pp, p.carga_viva_kpa * area / a
+                    wD, wL = qD * area / a + pp, qL * area / a
                     k = len(els)
                     els.append(_p3.Elemento3D(fila[(i, j)], fila[(i + 1, j)], ec, gc, Av, FI_VIGA * Ivd, FI_VIGA * Ivf, Jv))
                     meta.append(("vx", nv, i, j))
@@ -211,7 +267,7 @@ def construir_modelo(p: ProyectoEdificio3D) -> Modelo:
                 for j in range(len(ys) - 1):
                     a = p.luces_y_m[j]
                     area = sum(_area_45(a, p.luces_x_m[ii]) for ii in (i - 1, i) if 0 <= ii < len(p.luces_x_m))
-                    wD, wL = p.carga_muerta_kpa * area / a + pp, p.carga_viva_kpa * area / a
+                    wD, wL = qD * area / a + pp, qL * area / a
                     k = len(els)
                     els.append(_p3.Elemento3D(fila[(i, j)], fila[(i, j + 1)], ec, gc, Av, FI_VIGA * Ivd, FI_VIGA * Ivf, Jv))
                     meta.append(("vy", nv, i, j))
@@ -227,9 +283,10 @@ def construir_modelo(p: ProyectoEdificio3D) -> Modelo:
     for piso in range(n):
         b, h = (v / 1000 for v in p.vigas_mm[piso])
         col = lambda s: GAMMA_CONCRETO * (p.columnas_mm[s] / 1000) ** 2 * p.alturas_piso_m[s] * nnod  # noqa: E731
-        w = p.carga_muerta_kpa * area + GAMMA_CONCRETO * b * h * long_vigas + 0.5 * col(piso) + (0.5 * col(piso + 1) if piso + 1 < n else 0.0)
+        qD, qL = cargas_nivel(p, piso + 1)
+        w = qD * area + GAMMA_CONCRETO * b * h * long_vigas + 0.5 * col(piso) + (0.5 * col(piso + 1) if piso + 1 < n else 0.0)
         pesos.append(w)
-        pisos.append(_s3.Piso(f"P{piso + 1}", p.alturas_piso_m[piso], lx, ly, w + p.carga_viva_kpa * area))
+        pisos.append(_s3.Piso(f"P{piso + 1}", p.alturas_piso_m[piso], lx, ly, w + qL * area))
     mod = _p3.Portico3D(nodos, els, apoyos, dia)
     return Modelo(mod, xs, ys, meta, pisos, pesos, cd, cl, wv)
 
@@ -339,17 +396,230 @@ def combinaciones() -> tuple[list[str], np.ndarray, np.ndarray]:
     return nombres, C, np.abs(C[:, 2:]).sum(axis=1) > 0
 
 
+# ---------------------------------------------------------------------------------------------------- viento
+H_ADVERTENCIA_VIENTO = 20.0
+ADVERTENCIA_VIENTO_ALTO = ("Viento no evaluado en un edificio de más de 20 m en zona sísmica baja: en el corpus de #242 el "
+                           "viento B.6 cambió el refuerzo del 9 % de estos edificios con V = 36 m/s y exposición D, y el 4 % "
+                           "dejó de cumplir. Declare VientoB6 con la V de la Fig. B.6.4-1 del sitio (#320, #321).")
+
+ADVERTENCIA_GF_BETA = ("Gf de estructura flexible depende del amortiguamiento β, que la NSR-10 no fija (aquí β = {beta}, "
+                       "HIPÓTESIS). Sensibilidad medida en #323 (272 pórticos de zona baja, V = 36 m/s, exposición D): con "
+                       "β = 0,01 en lugar de 0,02, ρ = 1,6W/E sube 4,9 % (mediana) y cambia el refuerzo del 10,7 % de los "
+                       "edificios (29/272); 3 más dejan de cumplir. Justifique β para el sistema estructural del proyecto.")
+
+
+def _casos_viento(p, m: Modelo, sis: Optional[dict] = None):
+    """Casos W de B.6 (Método 2, edificios bajos, Fig. B.6.5-7 con θ = 0 por cubierta plana): viento en ±X y ±Y, cada
+    uno con GCpi = ±valor. Por caso: fuerza lateral por nivel (zonas 1−4 y 1E−4E sobre el ancho, altura aferente) en el
+    centro del diafragma y succión de la cubierta (zonas 2/3 y 2E/3E, nota 8) repartida a las vigas del último nivel por
+    líneas a 45°. Devuelve ([(nombre, Caso3D, {viga: w hacia arriba kN/m})], info)."""
+    v = p.viento
+    h = float(sum(p.alturas_piso_m))
+    lx, ly = m.xs[-1], m.ys[-1]
+    if h > 18.0 or h > min(lx, ly):
+        return _casos_viento_general(p, m, sis)
+    imp = IMPORTANCIA_VIENTO[p.grupo_uso]
+    kz = _b6.kz(h, v.exposicion, caso=1)
+    qh = _b6.qz(v.v_m_s, kz, v.kzt, _b6.KD_EDIFICIOS, imp) / 1000.0                # kN/m²
+    dmin = min(lx, ly)
+    a = max(min(0.1 * dmin, 0.4 * h), 0.04 * dmin, 1.0)
+    gcpi = _b6.GCPI[v.cerramiento]
+    n = len(p.alturas_piso_m)
+    techo = {k: t for k, t in enumerate(m.meta) if t[0] in ("vx", "vy") and t[1] == n}
+    f_int = _b6.gcpf("1", 0.0) - _b6.gcpf("4", 0.0)
+    f_bor = _b6.gcpf("1E", 0.0) - _b6.gcpf("4E", 0.0)
+    casos = []
+    torsion = v.casos_parciales and not (n == 1 and h <= 9.0)          # nota 5 (excepción: un nivel con h ≤ 9 m)
+    for dirn, sg in (("x", 1), ("x", -1), ("y", 1), ("y", -1)):
+        largo, ancho = (lx, ly) if dirn == "x" else (ly, lx)
+        lim2 = min(0.5 * largo, 2.5 * h)                             # nota 8 (θ = 0: altura del alero = h)
+        for esq in ((None, 0, 1) if torsion else (None,)):
+            # esq None: patrón básico con 2a en ambos extremos (HIPÓTESIS conservadora). esq 0/1: caso torsional de la
+            # nota 5 con la esquina de referencia en t = 0 o t = ancho: borde E solo junto a ella y zonas T (25 %) en la
+            # mitad lejana (u > B/2).
+            def u_de(t, esq=esq, ancho=ancho):
+                return t if esq == 0 else ancho - t
+
+            def zona(xc, yc, dirn=dirn, sg=sg, largo=largo, ancho=ancho, lim2=lim2, esq=esq, u_de=u_de):
+                s_, t = (xc, yc) if dirn == "x" else (yc, xc)
+                dist = s_ if sg > 0 else largo - s_
+                z = "2" if dist <= lim2 else "3"
+                if esq is None:
+                    return z + ("E" if (t <= 2 * a or t >= ancho - 2 * a) else ""), 1.0
+                u = u_de(t)
+                return (z + "E", 1.0) if u <= 2 * a else (z, F_TORSION_BAJOS if u > ancho / 2 else 1.0)
+
+            if esq is None:
+                be = min(4 * a, ancho)                               # 2a en cada extremo (HIPÓTESIS: ambos a la vez)
+                f_alt, mz_alt = qh * (f_bor * be + f_int * (ancho - be)), 0.0
+            else:
+                tramos = _tramos_torsion_bajos(ancho, a, f_bor, f_int)
+                f_alt = qh * sum(f * (u1 - u0) for u0, u1, f in tramos)
+                u_c = qh * sum(f * (u1 - u0) * (u0 + u1) / 2 for u0, u1, f in tramos) / f_alt
+                t_c = u_c if esq == 0 else ancho - u_c
+                # Mz de la resultante sg·f_alt aplicada en t_c, respecto al centro de la planta (nodo maestro)
+                mz_alt = sg * f_alt * (-(t_c - ancho / 2) if dirn == "x" else (t_c - ancho / 2))
+            maes = {}
+            for nv in range(1, n + 1):
+                ht = p.alturas_piso_m[nv - 1] / 2 + (p.alturas_piso_m[nv] / 2 if nv < n else 0.0)
+                fz = sg * f_alt * ht
+                maes[f"P{nv}"] = (fz, 0.0, mz_alt * ht) if dirn == "x" else (0.0, fz, mz_alt * ht)
+            for si in (1, -1):
+                def w_panel(ii, jj, si=si, zona=zona):
+                    xc, yc = (m.xs[ii] + m.xs[ii + 1]) / 2, (m.ys[jj] + m.ys[jj + 1]) / 2
+                    z, fac = zona(xc, yc)
+                    return -qh * fac * (_b6.gcpf(z, 0.0) - si * gcpi)   # + hacia arriba
+                ws, unif = {}, {}
+                for k, (tipo, _nv, i, j) in techo.items():
+                    if tipo == "vx":
+                        L = p.luces_x_m[i]
+                        w = sum(w_panel(i, jj) * _area_45(L, p.luces_y_m[jj]) for jj in (j - 1, j) if 0 <= jj < len(p.luces_y_m)) / L
+                    else:
+                        L = p.luces_y_m[j]
+                        w = sum(w_panel(ii, j) * _area_45(L, p.luces_x_m[ii]) for ii in (i - 1, i) if 0 <= ii < len(p.luces_x_m)) / L
+                    ws[k], unif[k] = w, (0.0, 0.0, w)
+                nom = f"W{dirn}{'+' if sg > 0 else '-'}{'' if esq is None else f',T{esq}'},GCpi{'+' if si > 0 else '-'}"
+                casos.append((nom, _p3.Caso3D(nom, maestros=maes, uniformes=unif), ws))
+    info = {"evaluado": True, "V_m_s": v.v_m_s, "exposicion": v.exposicion, "Kz": kz, "Kzt": v.kzt, "Kd": _b6.KD_EDIFICIOS,
+            "I": imp, "qh_kpa": qh, "a_m": a, "GCpi": gcpi, "h_m": h, "torsion_bajos": torsion,
+            "succion_max_vigas_kn_m": max(max(w.values()) for _, _, w in casos) if techo else 0.0}
+    return casos, info
+
+
+F_TORSION_BAJOS = 0.25    # Fig. B.6.5-7, nota 5: zonas 1T–4T al 25 % de la presión total de diseño
+
+
+def _tramos_torsion_bajos(ancho, a, f_bor, f_int):
+    """Tramos (u0, u1, coeficiente neto barlovento − sotavento) a lo ancho, medidos desde la esquina de referencia, para
+    los casos torsionales de la Fig. B.6.5-7: 1E−4E hasta 2a, 1−4 hasta B/2 y 0,25·(1T−4T) en la mitad lejana."""
+    e1 = min(2 * a, ancho)
+    m_ = max(ancho / 2, e1)
+    return [t for t in ((0.0, e1, f_bor), (e1, m_, f_int), (m_, ancho, F_TORSION_BAJOS * f_int)) if t[1] > t[0]]
+
+
+EXC_VIENTO = 0.15          # Fig. B.6.5-6: e = ±0,15·B, medida desde el centro geométrico de la cara
+F_CASO2, F_CASO4 = 0.75, 0.563
+
+
+def _casos_viento_parciales(fx, fy, lx, ly):
+    """Casos 2–4 de la Fig. B.6.5-6 (B.6.5.12.3) con las fuerzas por nivel del caso 1 (barlovento + sotavento, ya
+    integradas en el ancho): caso 2, 0,75·F con M_T = 0,75·F·e por eje; caso 3, 0,75·Fx con 0,75·Fy a la vez; caso 4,
+    0,563·Fx y 0,563·Fy con M_T = 0,563(Fx·ex + Fy·ey). e = ±0,15·B, B = ancho normal al viento (Bx = ly, By = lx). El
+    nodo maestro está en el centro geométrico de la planta, así que M_T se aplica allí. Se recorren todos los signos de
+    fuerza y de excentricidad. HIPÓTESIS: (1) solo cargas laterales (la figura es en planta, presiones de muros); la
+    succión de cubierta queda en los casos 1. (2) También en estructura flexible se usa e = 0,15·B: B.6.5-19 con e_R = 0
+    da e ≤ e_Q, y e_R (centro de cortante frente a centro de masa) no se calcula."""
+    ex, ey = EXC_VIENTO * ly, EXC_VIENTO * lx
+    casos = []
+
+    def caso(nom, fn):
+        maes = {f"P{k}": fn(a, b) for k, (a, b) in enumerate(zip(fx, fy), 1)}
+        casos.append((nom, _p3.Caso3D(nom, maestros=maes, uniformes={}), {}))
+
+    for sg in (1, -1):
+        for se in (1, -1):
+            s_, e_ = "+" if sg > 0 else "-", "+" if se > 0 else "-"
+            caso(f"W2x{s_},e{e_}", lambda a, b, sg=sg, se=se: (F_CASO2 * sg * a, 0.0, se * F_CASO2 * a * ex))
+            caso(f"W2y{s_},e{e_}", lambda a, b, sg=sg, se=se: (0.0, F_CASO2 * sg * b, se * F_CASO2 * b * ey))
+    for sx in (1, -1):
+        for sy in (1, -1):
+            sxy = f"x{'+' if sx > 0 else '-'}y{'+' if sy > 0 else '-'}"
+            caso(f"W3{sxy}", lambda a, b, sx=sx, sy=sy: (F_CASO2 * sx * a, F_CASO2 * sy * b, 0.0))
+            for gx in (1, -1):
+                for gy in (1, -1):
+                    caso(f"W4{sxy},ex{'+' if gx > 0 else '-'}ey{'+' if gy > 0 else '-'}",
+                         lambda a, b, sx=sx, sy=sy, gx=gx, gy=gy: (F_CASO4 * sx * a, F_CASO4 * sy * b,
+                                                                   F_CASO4 * (gx * a * ex + gy * b * ey)))
+    return casos
+
+
+def _casos_viento_general(p, m: Modelo, sis: Optional[dict]):
+    """Casos W del SPRFV de cualquier altura (B.6.5.12.2.1, #242): p = q·G·Cp − qi·GCpi. Muros: barlovento qz·G·0,8
+    (Kz caso 2, integrado en la altura aferente) y sotavento qh·G·Cp(L/B), aplicados en el centro del diafragma (la
+    presión interna se cancela en la resultante lateral). G rígido o Gf flexible con n1 = 1/T_modelo de la dirección
+    (B.6.5.8). Cubierta plana: qh·(G·Cp(distancia al borde de barlovento) − ±GCpi) repartida por líneas a 45°.
+    Además, los casos 2–4 de la Fig. B.6.5-6 (B.6.5.12.3, #322) sobre el SPRFV lateral; ver _casos_viento_parciales.
+    Mismo formato de salida que _casos_viento."""
+    v = p.viento
+    h = float(sum(p.alturas_piso_m))
+    lx, ly = m.xs[-1], m.ys[-1]
+    imp = IMPORTANCIA_VIENTO[p.grupo_uso]
+    gcpi = _b6.GCPI[v.cerramiento]
+    n = len(p.alturas_piso_m)
+    techo = {k: t for k, t in enumerate(m.meta) if t[0] in ("vx", "vy") and t[1] == n}
+    casos, por_dir = [], {}
+    for dirn, sg in (("x", 1), ("x", -1), ("y", 1), ("y", -1)):
+        largo, ancho = (lx, ly) if dirn == "x" else (ly, lx)
+        t_mod = (sis["CuTa_s"] if v.periodo_gf == "cu_ta" else sis[dirn]["T_modelo_s"]) if sis else None
+        r = _b6.fuerzas_por_nivel(v.v_m_s, v.exposicion, p.alturas_piso_m, ancho, largo, kzt=v.kzt, importancia=imp,
+                                  n1_hz=(1.0 / t_mod) if t_mod else None, amortiguamiento=v.amortiguamiento)
+        por_dir[dirn] = r
+        qh, g = r["qh_kpa"], r["G"]
+        maes = {f"P{nv}": ((sg * f, 0.0, 0.0) if dirn == "x" else (0.0, sg * f, 0.0))
+                for nv, f in enumerate(r["fuerzas_kn"], 1)}
+        for si in (1, -1):
+            def w_panel(ii, jj, si=si, dirn=dirn, sg=sg, largo=largo, qh=qh, g=g):
+                xc, yc = (m.xs[ii] + m.xs[ii + 1]) / 2, (m.ys[jj] + m.ys[jj + 1]) / 2
+                s_ = xc if dirn == "x" else yc
+                dist = s_ if sg > 0 else largo - s_
+                return -qh * (g * _b6.cp_cubierta_general(dist, h, largo) - si * gcpi)   # + hacia arriba
+            ws, unif = {}, {}
+            for k, (tipo, _nv, i, j) in techo.items():
+                if tipo == "vx":
+                    L = p.luces_x_m[i]
+                    w = sum(w_panel(i, jj) * _area_45(L, p.luces_y_m[jj]) for jj in (j - 1, j) if 0 <= jj < len(p.luces_y_m)) / L
+                else:
+                    L = p.luces_y_m[j]
+                    w = sum(w_panel(ii, j) * _area_45(L, p.luces_x_m[ii]) for ii in (i - 1, i) if 0 <= ii < len(p.luces_x_m)) / L
+                ws[k], unif[k] = w, (0.0, 0.0, w)
+            nom = f"W{dirn}{'+' if sg > 0 else '-'},GCpi{'+' if si > 0 else '-'}"
+            casos.append((nom, _p3.Caso3D(nom, maestros=maes, uniformes=unif), ws))
+    rx, ry = por_dir["x"], por_dir["y"]
+    succion = max(max(w.values()) for _, _, w in casos) if techo else 0.0
+    if v.casos_parciales:
+        casos += _casos_viento_parciales(rx["fuerzas_kn"], ry["fuerzas_kn"], lx, ly)
+    info = {"evaluado": True, "metodo": "general", "V_m_s": v.v_m_s, "exposicion": v.exposicion,
+            "Kz": _b6.kz(h, v.exposicion, caso=2), "Kzt": v.kzt, "Kd": _b6.KD_EDIFICIOS, "I": imp, "qh_kpa": rx["qh_kpa"],
+            "GCpi": gcpi, "h_m": h, "amortiguamiento": v.amortiguamiento, "periodo_gf": v.periodo_gf,
+            "G": {"x": rx["G"], "y": ry["G"]}, "rafaga": {"x": rx["rafaga"]["tipo"], "y": ry["rafaga"]["tipo"]},
+            "Cp_muros": {"x": rx["Cp"], "y": ry["Cp"]},
+            "fuerzas_kn": {"x": rx["fuerzas_kn"], "y": ry["fuerzas_kn"]},
+            "cortante_basal_kn": {"x": rx["cortante_basal_kn"], "y": ry["cortante_basal_kn"]},
+            "succion_max_vigas_kn_m": succion, "casos_fig_b656": (1, 2, 3, 4) if v.casos_parciales else (1,), "excentricidad_rel": EXC_VIENTO}
+    return casos, info
+
+
+def _extender_viento(nombres, C, es_e, nombres_w):
+    """B.2.4 con W: 1.2D+1.0L+1.6W (B.2.4-4), 0.9D+1.6W (B.2.4-6) y 1.2D+1.6L+0.8W (B.2.4-3, con L de cubierta en
+    lugar de Lr). Agrega una columna por caso W. Devuelve (nombres, C, es_e, es_w)."""
+    nw = len(nombres_w)
+    Cx = np.hstack([C, np.zeros((len(C), nw))])
+    filas, noms = [], []
+    for i, nw_ in enumerate(nombres_w):
+        for base, cD, cL, cW in (("1.2D+1.0L+1.6", 1.2, 1.0, 1.6), ("0.9D+1.6", 0.9, 0.0, 1.6), ("1.2D+1.6L+0.8", 1.2, 1.6, 0.8)):
+            f = np.zeros(C.shape[1] + nw)
+            f[0], f[1], f[C.shape[1] + i] = cD, cL, cW
+            filas.append(f)
+            noms.append(f"{base}[{nw_}]")
+    Cx = np.vstack([Cx, filas])
+    es_w = np.concatenate([np.zeros(len(C), dtype=bool), np.ones(len(filas), dtype=bool)])
+    return list(nombres) + noms, Cx, np.concatenate([es_e, np.zeros(len(filas), dtype=bool)]), es_w
+
+
 # ---------------------------------------------------------------------------------------------------- vigas
-def _q_casos(k, wD, wL, ncasos, pats) -> np.ndarray:
-    """Carga distribuida local y por caso (y local = vertical hacia arriba): D, L, sismo (0) y patrones de L."""
+def _q_casos(k, wD, wL, ncasos, pats, qw=None) -> np.ndarray:
+    """Carga distribuida local y por caso (y local = vertical hacia arriba): D, L, sismo (0), patrones de L y viento
+    (qw: columna del caso → {viga: w hacia arriba})."""
     q = np.zeros(ncasos)
     q[0], q[1] = -wD, -wL
     for i, (_nom, s) in enumerate(pats):
         q[N_CASOS_BASE + i] = -wL if k in s else 0.0
+    for col, w in (qw or {}).items():
+        q[col] = w.get(k, 0.0)
     return q
 
 
-def _demanda_vigas(p, m: Modelo, F, C, nivel: int, pats=()):
+def _demanda_vigas(p, m: Modelo, F, C, nivel: int, pats=(), qw=None, es_w=None):
     piso = nivel - 1
     c = p.columnas_mm[piso] / 1000
     h = p.vigas_mm[piso][1] / 1000
@@ -361,7 +631,7 @@ def _demanda_vigas(p, m: Modelo, F, C, nivel: int, pats=()):
     for k in vigas:
         L = m.portico.longitud(m.portico.elementos[k])
         wD, wL = m.w_viga[k]
-        q = _q_casos(k, wD, wL, len(F), pats)
+        q = _q_casos(k, wD, wL, len(F), pats, qw)
         xf = (c / 2, L - c / 2)
         x2h = (min(c / 2 + 2 * h, L / 2), max(L - c / 2 - 2 * h, L / 2))
         xin = np.linspace(c / 2, L - c / 2, 21)[1:-1]
@@ -371,6 +641,8 @@ def _demanda_vigas(p, m: Modelo, F, C, nivel: int, pats=()):
         Vc = Fi[:, 1][:, None] + q[:, None] * xs[None, :]
         M, V = C @ Mc, C @ Vc                                        # (K, npts)
         m_neg = max(m_neg, float(-M[:, :2].min()))
+        if es_w is not None and es_w.any():                          # levantamiento: tracción arriba en el vano, la toman
+            m_neg = max(m_neg, float(-M[es_w].min()))                # las barras superiores continuas (diseno_viga)
         m_pos_ap = max(m_pos_ap, float(M[:, :2].max()))
         m_pos_vano = max(m_pos_vano, float(M[:, 4:].max()))
         v_max = max(v_max, float(np.abs(V[:, :2]).max()))
@@ -504,15 +776,16 @@ def _klu(p, m: Modelo, piso: int) -> float:
     return peor
 
 
-def _demanda_columnas(p, m: Modelo, F, C, es_e, res, piso: int, mat, sis: dict):
+def _demanda_columnas(p, m: Modelo, F, C, es_e, res, piso: int, mat, sis: dict, i_w: Optional[int] = None):
     """DemandaColumna del piso (ambos ejes concatenados) y las demandas por eje para la flexión biaxial."""
     cols = [k for k, t in enumerate(m.meta) if t[0] == "col" and t[1] == piso]
     sup = {(t[2], t[3]): k for k, t in enumerate(m.meta) if t[0] == "col" and t[1] == piso + 1}
     Fc = F[:, cols, :]                                               # (6, nc, 12)
     P = np.einsum("kc,cn->kn", C, Fc[:, :, 0])                       # (K, nc), compresión +
+    i_w = C.shape[1] if i_w is None else i_w                         # columnas desde i_w: casos de viento
     Cg, Ce = C.copy(), C.copy()
-    Cg[:, 2:N_CASOS_BASE] = 0.0                                     # gravedad: D, L y patrones de L
-    Ce[:, :2], Ce[:, N_CASOS_BASE:] = 0.0, 0.0                       # sismo
+    Cg[:, 2:N_CASOS_BASE], Cg[:, i_w:] = 0.0, 0.0                    # gravedad: D, L y patrones de L
+    Ce[:, :2], Ce[:, N_CASOS_BASE:i_w] = 0.0, 0.0                    # con desplazamiento lateral: sismo y viento
     # Qi del entrepiso con los casos de diseño (C.10.10.7): Q = ΣPu·Δo / (Vus·lc)
     grav = 1.2 * Fc[0, :, 0].sum() + 1.0 * Fc[1, :, 0].sum()
     q = 0.0
@@ -584,6 +857,10 @@ def disenar_edificio(p: ProyectoEdificio3D) -> InformeEdificio3D:
                                      "cumple": der["cumple_deriva"], "por_piso": _derivas_piso(der, m)})
     if not der["cumple_deriva"]:
         inf.fallas.append(f"Deriva: usa el {100 * der['uso_max_limite']:.0f} % del límite (A.6.4); aumente secciones")
+    if cubierta_liviana(p):
+        inf.advertencias.append("Cubierta liviana: el modelo mantiene diafragma rígido en el último nivel (A.3.6.7.2); sin losa "
+                                "el diafragma es flexible y la distribución lateral real puede diferir. Las correas, el "
+                                "entramado y sus anclajes a las vigas no se verifican.")
     if der["Qi_max"] > _s3.Q_PDELTA:
         inf.advertencias.append(f"Qi máx = {der['Qi_max']:.3f} > 0,10: A.6.2.3 exige considerar P-Δ (HE6: ocurre en edificios altos con Aa ≤ 0,15)")
     F, res = _resolver_casos(p, m, sis, der["Ax"])
@@ -591,10 +868,28 @@ def disenar_edificio(p: ProyectoEdificio3D) -> InformeEdificio3D:
     pats = _patrones_viva(m)                                         # C.8.11.2
     F = np.concatenate([F, _resolver_patrones(m, pats)]) if pats else F
     nombres, C, es_e = _extender_combinaciones(nombres, C, es_e, pats)
+    es_w, qw, i_w = np.zeros(len(C), dtype=bool), {}, None
+    if p.viento is None and sum(p.alturas_piso_m) > H_ADVERTENCIA_VIENTO and p.aa <= 0.10 and p.av <= 0.10:
+        inf.advertencias.append(ADVERTENCIA_VIENTO_ALTO)             # #321 opción (c), fase 1
+    if p.viento is not None:                                         # B.6 (#292)
+        cw, inf.viento = _casos_viento(p, m, sis)
+        if inf.viento.get("metodo") == "general" and "flexible" in inf.viento["rafaga"].values():
+            inf.advertencias.append(ADVERTENCIA_GF_BETA.format(beta=f"{p.viento.amortiguamiento:g}".replace(".", ",")))   # #323, regla D1
+        if cw:
+            i_w, ne = F.shape[0], len(m.portico.elementos)
+            Fw = []
+            for _nom, caso, _w in cw:
+                r = m.portico.resolver(caso)
+                Fw.append([r.f_extremos[k] for k in range(ne)])
+            F = np.concatenate([F, np.array(Fw).reshape(len(cw), ne, 12)])
+            qw = {i_w + i: w for i, (_n, _c, w) in enumerate(cw)}
+            nombres, C, es_e, es_w = _extender_viento(nombres, C, es_e, [nm for nm, _c, _w in cw])
+        else:
+            inf.advertencias.append(inf.viento["motivo"])
     C_vigas = C
     if p.u_max_gravedad < 1.0:                                       # margen solo donde gobierna la gravedad (#292)
         C_vigas = C.copy()
-        C_vigas[~es_e] /= p.u_max_gravedad
+        C_vigas[~es_e & ~es_w] /= p.u_max_gravedad
         if p.margen_en == "todo":
             C = C_vigas
     mat = _vg.Materiales(fc=p.fc_mpa, fy=p.fy_mpa, fyt=p.fy_mpa)
@@ -605,7 +900,7 @@ def disenar_edificio(p: ProyectoEdificio3D) -> InformeEdificio3D:
     for nivel in range(1, n + 1):
         b, h = p.vigas_mm[nivel - 1]
         c = p.columnas_mm[nivel - 1]
-        dem, vigas = _demanda_vigas(p, m, F, C_vigas, nivel, pats)
+        dem, vigas = _demanda_vigas(p, m, F, C_vigas, nivel, pats, qw, es_w)
         cand0 = _dv.disenar(b, h, dem, p.capacidad, mat, recubrimiento=rec, columna_c1=c, columna_c2=c)
         cand = []
         for d in cand0:                                              # C.9.5: el refuerzo cambia Icr, se filtra por candidato
@@ -632,7 +927,7 @@ def disenar_edificio(p: ProyectoEdificio3D) -> InformeEdificio3D:
     for piso in range(n - 1, -1, -1):
         c = p.columnas_mm[piso]
         fila = {"piso": piso + 1, "c": c, "n": len(m.xs) * len(m.ys), "diseno": None}
-        dem, por_eje, q = _demanda_columnas(p, m, F, C, es_e, res, piso, mat, sis)
+        dem, por_eje, q = _demanda_columnas(p, m, F, C, es_e, res, piso, mat, sis, i_w)
         fila["Q"] = q
         if dem is None:
             inf.fallas.append(f"Columnas del piso {piso + 1}: Q = {q:.2f} > 1/3 (C.10.10.7): requiere análisis de segundo orden")
@@ -716,6 +1011,9 @@ def memoria(inf: InformeEdificio3D, m: Modelo, nombres_comb: list[str]):
     cargas = [
         L(concepto="Carga muerta sobre la losa (losa + acabados + muros)", valor=p.carga_muerta_kpa, unidad="kN/m²", referencia="B.3", estado="ENTRADA"),
         L(concepto="Carga viva", valor=p.carga_viva_kpa, unidad="kN/m²", referencia="Tabla B.4.2.1-1", estado="ENTRADA"),
+        *([L(concepto="Carga muerta / viva de la cubierta (último nivel)", valor=f"{cargas_nivel(p, n)[0]:g} / {cargas_nivel(p, n)[1]:g}",
+             unidad="kN/m²", referencia="B.3, Tabla B.4.2.1-2", estado="ENTRADA")]
+          if (p.carga_muerta_cubierta_kpa is not None or p.carga_viva_cubierta_kpa is not None) else []),
         L(concepto="Peso propio de vigas y columnas", valor=GAMMA_CONCRETO, unidad="kN/m³", referencia="B.3", estado="HIPÓTESIS"),
         L(concepto="Reparto de la losa a las vigas", valor="líneas de rotura a 45°, uniforme equivalente con la misma resultante", estado="HIPÓTESIS"),
         L(concepto="Peso sísmico total W (D + peso propio)", valor=s["W_kn"], unidad="kN", referencia="A.4.2", estado="CALCULADO"),
@@ -735,6 +1033,52 @@ def memoria(inf: InformeEdificio3D, m: Modelo, nombres_comb: list[str]):
         L(concepto="Efectos ortogonales", valor="E = 100 % en una dirección + 30 % en la perpendicular", referencia="A.3.6.3", estado="NSR-10 (leído)"),
         L(concepto="Torsión accidental", valor="±5 % de la dimensión perpendicular, amplificada por Ax", referencia="A.3.6.7.1, A.3.6-2", estado="NSR-10 (leído)"),
     ]
+    vw = inf.viento
+    if vw and vw.get("evaluado"):
+        cargas += [
+            L(concepto="Velocidad básica de viento V", valor=vw["V_m_s"], unidad="m/s", referencia="Fig. B.6.4-1 (declarada por el usuario)", estado="ENTRADA"),
+            L(concepto=f"Exposición / Kz (caso {2 if vw.get('metodo') == 'general' else 1}) / Kzt / Kd",
+              valor=f"{vw['exposicion']} / {vw['Kz']:.3f} / {vw['Kzt']:g} / {vw['Kd']:g}",
+              referencia="B.6.5.6, Tablas B.6.5-2, -3 y -4, B.6.5.7", estado="NSR-10 (leído)"),
+            L(concepto="Factor de importancia de viento I", valor=vw["I"], referencia="Tabla B.6.5-1",
+              estado="HIPÓTESIS" if p.grupo_uso == "I" else "NSR-10 (leído)"),
+            L(concepto="Presión por velocidad qh", valor=vw["qh_kpa"], unidad="kN/m²", ecuacion="qh = 0,613·Kz·Kzt·Kd·V²·I",
+              referencia="B.6.5-13", estado="CALCULADO"),
+            (L(concepto="Viento sobre el sistema principal",
+               valor=f"método general (cualquier altura): Cp muros X {vw['Cp_muros']['x'][0]:g}/{vw['Cp_muros']['x'][1]:.2f}, "
+               f"Y {vw['Cp_muros']['y'][0]:g}/{vw['Cp_muros']['y'][1]:.2f}; G X {vw['G']['x']:.3f} ({vw['rafaga']['x']}), "
+               f"Y {vw['G']['y']:.3f} ({vw['rafaga']['y']}); GCpi = ±{vw['GCpi']:g}; ±X y ±Y (caso 1) más casos 2–4; "
+               f"succión de cubierta en vigas hasta {vw['succion_max_vigas_kn_m']:.2f} kN/m",
+               referencia="B.6.5.12.2.1, Fig. B.6.5-3, B.6.5.8", estado="NSR-10 (leído)")
+             if vw.get("metodo") == "general" else
+             L(concepto="Viento sobre el sistema principal", valor=f"edificio bajo, GCpf de la Fig. B.6.5-7 (θ = 0), a = {vw['a_m']:.2f} m, "
+              f"GCpi = ±{vw['GCpi']:g}; ±X y ±Y"
+              f"{' más casos torsionales (nota 5: zonas T al 25 % en la mitad lejana de la esquina de referencia)' if vw.get('torsion_bajos') else ' sin casos torsionales (nota 5: excepción de un nivel con h ≤ 9 m)'}"
+              f"; succión de cubierta en vigas hasta {vw['succion_max_vigas_kn_m']:.2f} kN/m",
+              referencia="B.6.5.12.2.2, Fig. B.6.5-7, Fig. B.6.5-2", estado="NSR-10 (leído)")),
+            L(concepto="Combinaciones con viento", valor="1.2D+1.0L+1.6W; 0.9D+1.6W; 1.2D+1.6L+0.8W (L de cubierta como Lr)",
+              referencia="B.2.4-4, B.2.4-6, B.2.4-3", estado="NSR-10 (leído)"),
+        ]
+        if vw.get("metodo") == "general" and vw["casos_fig_b656"] == (1,):
+            cargas.append(L(concepto="Casos de carga de viento (Fig. B.6.5-6)", valor="solo caso 1 (medición; NO cumple B.6.5.12.3)",
+                            referencia="B.6.5.12.3", estado="HIPÓTESIS"))
+        elif vw.get("metodo") == "general":
+            cargas.append(L(concepto="Casos de carga de viento (Fig. B.6.5-6)",
+                            valor="1: presión completa por eje; 2: 0,75·P con M_T = 0,75·F·e; 3: 0,75·P en X y Y a la vez; "
+                                  "4: 0,563·P en X y Y con M_T = 0,563(Fx·ex + Fy·ey); e = ±0,15·B; todos los signos",
+                            referencia="B.6.5.12.3", estado="NSR-10 (leído)"))
+            cargas.append(L(concepto="Alcance de los casos 2–4",
+                            valor="solo cargas laterales (succión de cubierta en el caso 1); e = 0,15·B también si la "
+                                  "estructura es flexible (B.6.5-19 con e_R = 0 da e ≤ e_Q; e_R no se calcula)",
+                            referencia="B.6.5.12.3, B.6.5-19", estado="HIPÓTESIS"))
+        if vw.get("metodo") == "general" and "flexible" in vw["rafaga"].values():
+            if vw.get("periodo_gf") == "cu_ta":
+                cargas.append(L(concepto="Periodo para Gf", valor="T = Cu·Ta (no el del modelo)", referencia="A.4.2.1, B.6.5.8.2",
+                                estado="HIPÓTESIS"))
+            cargas.append(L(concepto="Amortiguamiento para Gf (n1 < 1 Hz)", valor=vw["amortiguamiento"],
+                            referencia="B.6.5.8.2 (NSR-10 no fija β)", estado="HIPÓTESIS"))
+    elif vw:
+        cargas.append(L(concepto="Viento", valor=vw["motivo"], referencia="B.6", estado="HIPÓTESIS"))
     model = [
         L(concepto="Modelo", valor=f"pórtico 3D, {len(m.portico.nodos)} nodos, {len(m.portico.elementos)} elementos, diafragma rígido por nivel",
           referencia="A.3.6.7.2, A.5.2.1.1", estado="HIPÓTESIS"),
@@ -799,5 +1143,5 @@ def memoria(inf: InformeEdificio3D, m: Modelo, nombres_comb: list[str]):
         motor=MOTOR, proyecto={"nombre": p.nombre, "tipologia": "porticos_concreto_3d", "uso": p.uso, "divipola": p.divipola,
                                "sistema": f"pórticos de concreto resistentes a momentos {p.capacidad}"},
         datos_entrada=entrada, cargas=cargas, modelacion=model, resultados_analisis=resultados, diseno=diseno, cantidades=cant,
-        no_verifica=list(NO_VERIFICA), advertencias=list(inf.advertencias) + [f"NO CUMPLE: {f}" for f in inf.fallas],
+        no_verifica=[NO_VERIFICA_VIENTO if (x.startswith("Viento") and vw and vw.get("evaluado")) else x for x in NO_VERIFICA], advertencias=list(inf.advertencias) + [f"NO CUMPLE: {f}" for f in inf.fallas],
         caracteristicas=caract)

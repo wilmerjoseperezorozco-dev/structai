@@ -16,7 +16,7 @@ Generado por `scripts/inventario/registro_motores.py`; no editar a mano. Criteri
 | `concreto` | `motor-concreto` | ? | ? | sí | ? | 287 / 5 | sí | POST /concreto/zapata, POST /concreto/talud |
 | `geotecnia` | `motor-geotecnia` | sí | sí | sí | sí | 109 / 8 | sí | POST /geotecnia/asentamiento, POST /geotecnia/portante, POST /geotecnia/asentamiento-total, POST /geotecnia/diferencial, POST /geotecnia/multicapa, POST /geotecnia/asentamiento-montecarlo, POST /geotecnia/portante-excentrica |
 | `licuacion` | `motor-licuacion` | ? | ? | sí | sí | 53 / 7 | sí | POST /licuacion/spt |
-| `orquestador_api` | `orquestador` | ? | ? | sí | ? | 111 / 9 | sí | POST /orquestador/portico-integral, POST /orquestador/portico-pareto |
+| `orquestador_api` | `orquestador` | ? | ? | sí | ? | 143 / 9 | sí | POST /orquestador/portico-integral, POST /orquestador/portico-pareto |
 | `pilotes` | `motor-pilotes` | ? | ? | sí | ? | 46 / 5 | sí | POST /pilotes/capacidad, POST /pilotes/asentamiento |
 | `redes` | `motor-redes` | sí | sí | sí | sí | 105 / 11 | sí | POST /redes/permanente, POST /redes/periodo, POST /redes/ariete |
 
