@@ -12,10 +12,11 @@ Datos del proyecto, sin valores por defecto:
   - qué rociadores operan (el área de diseño que eligió el diseñador).
 
 Método: la red de F4 es un árbol, así que el caudal de cada tramo es la suma exacta de lo que descargan los rociadores
-aguas abajo. Las descargas dependen de la presión, y se resuelven con iteración de punto fijo amortiguada: presiones,
-luego caudales de rociador, luego caudales de tramo y de nuevo presiones desde la alimentación. Encima, una bisección
-sobre la presión de alimentación hace que el rociador más exigido quede justo en su requisito
-max(P_min, (q_min/K)²); los demás quedan por encima.
+aguas abajo. Las descargas dependen de la presión y se resuelven por Newton con jacobiano analítico sobre las
+presiones de los rociadores que operan, con búsqueda lineal (J = I + A·diag(dh/dQ)·Aᵀ·diag(dQ/dP), donde A es la
+incidencia rociador–tramo). La iteración de punto fijo no convergía y se descartó. La presión de alimentación también es incógnita:
+el rociador gobernante queda fijado en su requisito max(P_min, (q_min/K)²). Si al resolver otro rociador queda por
+debajo, ese pasa a gobernar y se resuelve de nuevo.
 Accesorios: un cambio de dirección en un nodo de paso es un "codo90". Un ramal que sale girando de un nodo con 3 o
 más tramos es una "te_lateral". El tramo recto que atraviesa una te no suma longitud equivalente. La longitud
 equivalente se suma al tramo aguas abajo, con su diámetro.
@@ -27,6 +28,8 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass, field
 from typing import Optional, Union
+
+import numpy as np
 
 GAMMA_AGUA_KPA_M = 9.81
 
@@ -95,26 +98,6 @@ class Resultado:
     @property
     def v_max_m_s(self) -> float:
         return max(t.v_m_s for t in self.tramos)
-
-
-def _resolver_lineal(A: list, b: list) -> list:
-    """Eliminación de Gauss con pivoteo parcial (sistemas pequeños; sin dependencias)."""
-    n = len(b)
-    M = [row[:] + [b[i]] for i, row in enumerate(A)]
-    for c in range(n):
-        piv = max(range(c, n), key=lambda r: abs(M[r][c]))
-        if abs(M[piv][c]) < 1e-300:
-            raise RuntimeError("jacobiano singular")
-        M[c], M[piv] = M[piv], M[c]
-        for r in range(c + 1, n):
-            f = M[r][c] / M[c][c]
-            if f:
-                for k in range(c, n + 1):
-                    M[r][k] -= f * M[c][k]
-    x = [0.0] * n
-    for r in range(n - 1, -1, -1):
-        x[r] = (M[r][n] - sum(M[r][k] * x[k] for k in range(r + 1, n))) / M[r][r]
-    return x
 
 
 def _dir(a, b):
@@ -191,54 +174,57 @@ def calcular(tramos: list, alimentacion: tuple, operan: list, demanda: Demanda,
             p[t.b] = p[t.a] - t.dp_friccion_kpa - gamma * (t.b[2] - t.a[2])
         return p
 
-    def resolver(p0: float):
-        """Newton sobre las presiones de los rociadores que operan: F(P) = P − P'(P) = 0."""
-        P = [p0] * len(lista_ops)
+    A = np.zeros((len(lista_ops), len(th)))                    # incidencia rociador–tramo de su camino
+    for i, c in enumerate(caminos):
+        A[i, list(c)] = 1.0
+    preq = demanda.p_requerida_kpa
+    m = len(lista_ops)
 
-        def residuo(P):
-            p = bajar(p0, {n: demanda.caudal_lpm(Pi) for n, Pi in zip(lista_ops, P)})
-            return [Pi - p[n] for n, Pi in zip(lista_ops, P)], p
+    def residuo(x, g):
+        P, p0 = x[:m], x[m]
+        p = bajar(p0, {n: demanda.caudal_lpm(Pi) for n, Pi in zip(lista_ops, P)})
+        F = np.array([Pi - p[n] for n, Pi in zip(lista_ops, P)] + [P[g] - preq])
+        return F, p
 
-        F, p = residuo(P)
-        m = len(P)
+    def resolver(g: int, x):
+        """Newton sobre (P de los rociadores que operan, P de alimentación) con el rociador g fijado en su requisito."""
+        F, p = residuo(x, g)
         for it in range(1, max_iter + 1):
-            nF = max(abs(f) for f in F)
+            nF = float(np.max(np.abs(F)))
             if nF < tol_kpa:
-                return p, it
-            dh = [1.852 * t.dp_friccion_kpa / t.q_lpm if t.q_lpm > 0 else 0.0 for t in th]
-            dq = [demanda.k_lpm_bar05 / (200.0 * math.sqrt(max(Pj, 1e-9) / 100.0)) if Pj > 0 else 0.0 for Pj in P]
-            J = [[(1.0 if i == j else 0.0) + sum(dh[k] for k in comun[i][j]) * dq[j] for j in range(m)] for i in range(m)]
-            paso = _resolver_lineal(J, [-f for f in F])
+                return x, p, it
+            dh = np.array([1.852 * t.dp_friccion_kpa / t.q_lpm if t.q_lpm > 0 else 0.0 for t in th])
+            dq = np.array([demanda.k_lpm_bar05 / (200.0 * math.sqrt(Pj / 100.0)) if Pj > 1e-9 else 0.0 for Pj in x[:m]])
+            J = np.zeros((m + 1, m + 1))
+            J[:m, :m] = np.eye(m) + (A * dh) @ A.T * dq
+            J[:m, m] = -1.0
+            J[m, g] = 1.0
+            paso = np.linalg.solve(J, -F)
             a = 1.0
             while True:                                        # búsqueda lineal: el residuo debe bajar
-                Pn = [Pi + a * s for Pi, s in zip(P, paso)]
-                Fn, pn = residuo(Pn)
-                if max(abs(f) for f in Fn) < nF or a < 1e-6:
+                xn = x + a * paso
+                Fn, pn = residuo(xn, g)
+                if float(np.max(np.abs(Fn))) < nF or a < 1e-6:
                     break
                 a *= 0.5
-            P, F, p = Pn, Fn, pn
+            x, F, p = xn, Fn, pn
         raise RuntimeError(f"el cálculo hidráulico no convergió en {max_iter} iteraciones")
 
-    preq = demanda.p_requerida_kpa
-
-    def holgura(p0):
-        p, it = resolver(p0)
-        return min(p[n] for n in ops) - preq, p, it
-
-    lo, hi = preq, 2 * preq
-    while holgura(hi)[0] < 0:
-        lo, hi = hi, 2 * hi
-        if hi > 1e6:
-            raise RuntimeError("no hay presión de alimentación razonable que cumpla la demanda")
-    for _ in range(100):
-        mid = 0.5 * (lo + hi)
-        if holgura(mid)[0] < 0:
-            lo = mid
-        else:
-            hi = mid
-        if hi - lo < tol_kpa:
+    # Rociador gobernante inicial: el de camino más largo. Si al resolver otro queda por debajo, gobierna ese.
+    largo_camino = [sum(th[k].largo_m + th[k].largo_eq_m for k in c) for c in caminos]
+    g = int(np.argmax(largo_camino))
+    x = np.full(m + 1, preq)
+    it_total = 0
+    for _ in range(m + 1):
+        x, p, it = resolver(g, x)
+        it_total += it
+        k = int(np.argmin(x[:m]))
+        if x[k] >= preq - tol_kpa:
             break
-    _, p, it = holgura(hi)
+        g = k
+    else:
+        raise RuntimeError("no se encontró el rociador gobernante")
+    hi, it = float(x[m]), it_total
     for t in th:
         t.v_m_s = (t.q_lpm / 60000.0) / (math.pi * t.tuberia.d_int_m ** 2 / 4)
     roc = [(n, p[n], demanda.caudal_lpm(p[n])) for n in operan]
