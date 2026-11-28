@@ -174,10 +174,9 @@ def test_secciones_del_script_son_unicas_en_cada_motor():
 
 
 def test_motores_nuevos_registrados_con_secciones_unicas_y_campos_completos():
-    from chunks_motores_nuevos import MOTORES_NUEVOS, VIENTO_CHUNKS
-    assert {"geotecnia", "pilotes", "acero_frio", "incendios"} <= set(imc.MOTORES)
-    assert "viento" not in imc.MOTORES                       # se registra cuando el PR #331 esté en master
-    for motor, chunks in {**MOTORES_NUEVOS, "viento": VIENTO_CHUNKS}.items():
+    from chunks_motores_nuevos import MOTORES_NUEVOS
+    assert {"geotecnia", "pilotes", "acero_frio", "incendios", "viento"} <= set(imc.MOTORES)
+    for motor, chunks in MOTORES_NUEVOS.items():
         imc.secciones_del_script(chunks)                     # falla si hay secciones repetidas
         assert any("alcance" in c["seccion"] for c in chunks), motor
         for c in chunks:

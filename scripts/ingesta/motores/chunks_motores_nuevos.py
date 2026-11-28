@@ -448,8 +448,8 @@ INCENDIOS_CHUNKS: list[dict] = [
     },
 ]
 
-# ─── Viento — NSR-10 Título B.6 (#242, #292, #322, #323) — cargar después de mergear el PR #331 ──────────────────────
-# Fuente: packages/motor-viento/src/b6.py y packages/orquestador/src/diseno_edificio_3d.py (rama del #331)
+# ─── Viento — NSR-10 Título B.6 (#242, #292, #322, #323), en master desde el PR #331 ──────────────────────
+# Fuente: packages/motor-viento/src/b6.py y packages/orquestador/src/diseno_edificio_3d.py
 
 VIENTO_CHUNKS: list[dict] = [
     {
@@ -521,10 +521,10 @@ VIENTO_CHUNKS: list[dict] = [
     },
 ]
 
-# VIENTO_CHUNKS describe código que entra a master con el PR #331: se registra aquí cuando ese PR esté mergeado.
 MOTORES_NUEVOS = {
     "geotecnia": GEOTECNIA_CHUNKS,
     "pilotes": PILOTES_CHUNKS,
     "acero_frio": ACERO_FRIO_CHUNKS,
     "incendios": INCENDIOS_CHUNKS,
+    "viento": VIENTO_CHUNKS,
 }
