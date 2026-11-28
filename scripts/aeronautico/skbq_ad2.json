@@ -1,0 +1,54 @@
+{
+  "_fuente": "eAIP Colombia, AD 2 SKBQ (Barranquilla, Ernesto Cortissoz), AIRAC A 73-26, vigente desde el 2026-10-01 (eaip-colombia.atnaerocivil.gov.co), secciones AD 2.2, 2.10, 2.12 y 2.14. Se cotejó con el AMDT 67/24: las coordenadas, las elevaciones y las dimensiones no cambian. Solo cambia el rumbo: GEO 040/220 y MAG 048/228 (antes 041/221 y 047/227).",
+  "aerodromo": "SKBQ",
+  "arp": {
+    "lat_dms": "10°53'22.06\"N",
+    "lon_dms": "74°46'50.44\"W",
+    "lat": 10.889461,
+    "lon": -74.780678
+  },
+  "elevacion_aerodromo_m": 29,
+  "elevacion_aerodromo_ft": 95,
+  "pista": {
+    "designacion": "05/23",
+    "longitud_m": 3001,
+    "ancho_m": 45,
+    "franja_m": [
+      3121,
+      300
+    ],
+    "rumbo_geo_grados": {
+      "05": 40,
+      "23": 220
+    },
+    "umbrales": {
+      "05": {
+        "lat_dms": "10°52'45.31\"N",
+        "lon_dms": "74°47'23.06\"W",
+        "lat": 10.879253,
+        "lon": -74.789739,
+        "elev_ft": 95.0,
+        "elev_m": 28.96
+      },
+      "23": {
+        "lat_dms": "10°53'59.81\"N",
+        "lon_dms": "74°46'19.19\"W",
+        "lat": 10.899947,
+        "lon": -74.771997,
+        "elev_ft": 53.0,
+        "elev_m": 16.15
+      }
+    },
+    "zona_libre_obstaculos": "No (CWY: No)",
+    "zona_parada": "No (SWY: No)"
+  },
+  "clasificacion_para_rac14": {
+    "numero_clave": 4,
+    "_razon_clave": "Longitud de campo de referencia ≥ 1 800 m (LDA/TORA 3 001 m).",
+    "rwy_05": "precision_cat1_3_4 (ILS CAT I, ALS CAT1 900 m)",
+    "rwy_23": "no_precision_4 (VOR A/B, RNP)",
+    "despegue": "clave_3_4"
+  },
+  "obstaculos_ad_2_10": "El AD 2.10 remite al «Conjunto de datos AIP» de aerocivil.gov.co: «Obstáculos AMDT 72» (xlsx, publicado el 14-may-2026, vigente desde el 09-jul-2026). La descarga exige una verificación anti-robot y la hace Wilmer. Área 3: NIL.",
+  "_nota_altura": "La horizontal interna (45 m) y la cónica se miden desde la elevación del ARP (29 m). La aproximación y el despegue se miden desde la elevación del punto medio del umbral."
+}

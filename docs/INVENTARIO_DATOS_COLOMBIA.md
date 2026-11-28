@@ -94,3 +94,7 @@ Se verificó en vivo lo que dice la tabla de fuentes del informe previo. Lo que 
 | H-D | **ICOCIV frente al ENSO y a la lluvia** (¿suben los costos de obra civil en años de La Niña?), análogo a la hipótesis del precio de energía. | DANE ICOCIV + ONI + CHIRPS | Media; falta confirmar que la serie se pueda bajar en formato de datos. |
 | H-E | **Precio de bolsa y regímenes de aportes con la humedad del suelo del Caribe** (ya hay datos ESA CCI descargados) | XM + ESA CCI | Baja a media: el vínculo ya se evaluó con aportes hídricos y es indirecto. |
 | H-F | **Series convencionales largas del IDEAM (DHIME) para repetir la regionalización de crecientes y el sesgo de CHIRPS con más años.** | DHIME por lote | Alta si DHIME funciona, que resolvería el límite de «3 años» de los pluviómetros automáticos. Requiere probar la descarga. |
+
+## 8. Licencias verificadas (2026-11-28)
+
+La licencia, el formato, el tamaño y la frecuencia de cada fuente, y los hallazgos de licencia del SGC y de datos.gov.co (CC BY-SA 4.0), están en [INVENTARIO_DATOS_ABIERTOS_332.md](INVENTARIO_DATOS_ABIERTOS_332.md) (#332, fase 1).

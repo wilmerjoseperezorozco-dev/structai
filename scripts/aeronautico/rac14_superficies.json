@@ -1,0 +1,275 @@
+{
+  "_fuente": "RAC 14 «Regulación de diseño de aeródromos», Edición 01, Revisión 05 (06-oct-2025), UAEAC: Apéndice 1 a la RAC 14.310, Tabla D-1 (pistas para aproximaciones) y Tabla D-2 (pistas destinadas al despegue), ambas «aplicable hasta el 20 de noviembre de 2030». Desde el 21-nov-2030 rige el nuevo esquema de superficies (OFS/OES de la OACI), que este archivo NO cubre. Transcrito a mano el 2026-11-28 del PDF descargado por Wilmer.",
+  "_unidades": "Longitudes en m medidas horizontalmente; pendientes y divergencias en fracción (0.05 = 5 %). null = no aplica.",
+  "aterrizaje": {
+    "_columnas": {
+      "visual_1": "Aproximación visual, número de clave 1",
+      "visual_2": "Aproximación visual, clave 2",
+      "visual_3": "Aproximación visual, clave 3",
+      "visual_4": "Aproximación visual, clave 4",
+      "no_precision_1_2": "Aproximación que no es de precisión, clave 1 y 2",
+      "no_precision_3": "Aproximación que no es de precisión, clave 3",
+      "no_precision_4": "Aproximación que no es de precisión, clave 4",
+      "precision_cat1_1_2": "Aproximación de precisión categoría I, clave 1 y 2",
+      "precision_cat1_3_4": "Aproximación de precisión categoría I, clave 3 y 4",
+      "precision_cat2_cat3_3_4": "Aproximación de precisión categoría II o III, clave 3 y 4"
+    },
+    "conica": {
+      "pendiente": {
+        "visual_1": 0.05,
+        "visual_2": 0.05,
+        "visual_3": 0.05,
+        "visual_4": 0.05,
+        "no_precision_1_2": 0.05,
+        "no_precision_3": 0.05,
+        "no_precision_4": 0.05,
+        "precision_cat1_1_2": 0.05,
+        "precision_cat1_3_4": 0.05,
+        "precision_cat2_cat3_3_4": 0.05
+      },
+      "altura": {
+        "visual_1": 35,
+        "visual_2": 55,
+        "visual_3": 75,
+        "visual_4": 100,
+        "no_precision_1_2": 60,
+        "no_precision_3": 75,
+        "no_precision_4": 100,
+        "precision_cat1_1_2": 60,
+        "precision_cat1_3_4": 100,
+        "precision_cat2_cat3_3_4": 100
+      }
+    },
+    "horizontal_interna": {
+      "altura": {
+        "visual_1": 45,
+        "visual_2": 45,
+        "visual_3": 45,
+        "visual_4": 45,
+        "no_precision_1_2": 45,
+        "no_precision_3": 45,
+        "no_precision_4": 45,
+        "precision_cat1_1_2": 45,
+        "precision_cat1_3_4": 45,
+        "precision_cat2_cat3_3_4": 45
+      },
+      "radio": {
+        "visual_1": 2000,
+        "visual_2": 2500,
+        "visual_3": 4000,
+        "visual_4": 4000,
+        "no_precision_1_2": 3500,
+        "no_precision_3": 4000,
+        "no_precision_4": 4000,
+        "precision_cat1_1_2": 3500,
+        "precision_cat1_3_4": 4000,
+        "precision_cat2_cat3_3_4": 4000
+      }
+    },
+    "aproximacion_interna": {
+      "anchura": {
+        "precision_cat1_1_2": 90,
+        "precision_cat1_3_4": 120,
+        "precision_cat2_cat3_3_4": 120
+      },
+      "distancia_desde_umbral": {
+        "precision_cat1_1_2": 60,
+        "precision_cat1_3_4": 60,
+        "precision_cat2_cat3_3_4": 60
+      },
+      "longitud": {
+        "precision_cat1_1_2": 900,
+        "precision_cat1_3_4": 900,
+        "precision_cat2_cat3_3_4": 900
+      },
+      "pendiente": {
+        "precision_cat1_1_2": 0.025,
+        "precision_cat1_3_4": 0.02,
+        "precision_cat2_cat3_3_4": 0.02
+      },
+      "_nota": "Anchura 120 m: con letra de clave F se aumenta a 140 m, salvo aviones F con aviónica digital (nota e, CA 14.310 a)."
+    },
+    "aproximacion": {
+      "longitud_borde_interior": {
+        "visual_1": 60,
+        "visual_2": 80,
+        "visual_3": 150,
+        "visual_4": 150,
+        "no_precision_1_2": 140,
+        "no_precision_3": 280,
+        "no_precision_4": 280,
+        "precision_cat1_1_2": 140,
+        "precision_cat1_3_4": 280,
+        "precision_cat2_cat3_3_4": 280
+      },
+      "distancia_desde_umbral": {
+        "visual_1": 30,
+        "visual_2": 60,
+        "visual_3": 60,
+        "visual_4": 60,
+        "no_precision_1_2": 60,
+        "no_precision_3": 60,
+        "no_precision_4": 60,
+        "precision_cat1_1_2": 60,
+        "precision_cat1_3_4": 60,
+        "precision_cat2_cat3_3_4": 60
+      },
+      "divergencia_cada_lado": {
+        "visual_1": 0.1,
+        "visual_2": 0.1,
+        "visual_3": 0.1,
+        "visual_4": 0.1,
+        "no_precision_1_2": 0.15,
+        "no_precision_3": 0.15,
+        "no_precision_4": 0.15,
+        "precision_cat1_1_2": 0.15,
+        "precision_cat1_3_4": 0.15,
+        "precision_cat2_cat3_3_4": 0.15
+      },
+      "primera_seccion": {
+        "longitud": {
+          "visual_1": 1600,
+          "visual_2": 2500,
+          "visual_3": 3000,
+          "visual_4": 3000,
+          "no_precision_1_2": 2500,
+          "no_precision_3": 3000,
+          "no_precision_4": 3000,
+          "precision_cat1_1_2": 3000,
+          "precision_cat1_3_4": 3000,
+          "precision_cat2_cat3_3_4": 3000
+        },
+        "pendiente": {
+          "visual_1": 0.05,
+          "visual_2": 0.04,
+          "visual_3": 0.0333,
+          "visual_4": 0.025,
+          "no_precision_1_2": 0.0333,
+          "no_precision_3": 0.02,
+          "no_precision_4": 0.02,
+          "precision_cat1_1_2": 0.025,
+          "precision_cat1_3_4": 0.02,
+          "precision_cat2_cat3_3_4": 0.02
+        }
+      },
+      "segunda_seccion": {
+        "longitud": {
+          "no_precision_3": 3600,
+          "no_precision_4": 3600,
+          "precision_cat1_1_2": 12000,
+          "precision_cat1_3_4": 3600,
+          "precision_cat2_cat3_3_4": 3600
+        },
+        "pendiente": {
+          "no_precision_3": 0.025,
+          "no_precision_4": 0.025,
+          "precision_cat1_1_2": 0.03,
+          "precision_cat1_3_4": 0.025,
+          "precision_cat2_cat3_3_4": 0.025
+        },
+        "_nota": "3 600 m es longitud variable (nota b)."
+      },
+      "seccion_horizontal": {
+        "longitud": {
+          "no_precision_3": 8400,
+          "no_precision_4": 8400,
+          "precision_cat1_3_4": 8400,
+          "precision_cat2_cat3_3_4": 8400
+        },
+        "_nota": "8 400 m es longitud variable (nota b)."
+      },
+      "longitud_total": {
+        "no_precision_3": 15000,
+        "no_precision_4": 15000,
+        "precision_cat1_1_2": 15000,
+        "precision_cat1_3_4": 15000,
+        "precision_cat2_cat3_3_4": 15000
+      }
+    },
+    "transicion": {
+      "pendiente": {
+        "visual_1": 0.2,
+        "visual_2": 0.2,
+        "visual_3": 0.143,
+        "visual_4": 0.143,
+        "no_precision_1_2": 0.2,
+        "no_precision_3": 0.143,
+        "no_precision_4": 0.143,
+        "precision_cat1_1_2": 0.143,
+        "precision_cat1_3_4": 0.143,
+        "precision_cat2_cat3_3_4": 0.143
+      }
+    },
+    "transicion_interna": {
+      "pendiente": {
+        "precision_cat1_1_2": 0.4,
+        "precision_cat1_3_4": 0.333,
+        "precision_cat2_cat3_3_4": 0.333
+      }
+    },
+    "aterrizaje_interrumpido": {
+      "longitud_borde_interior": {
+        "precision_cat1_1_2": 90,
+        "precision_cat1_3_4": 120,
+        "precision_cat2_cat3_3_4": 120
+      },
+      "distancia_desde_umbral": {
+        "precision_cat1_1_2": "hasta el extremo de la franja",
+        "precision_cat1_3_4": 1800,
+        "precision_cat2_cat3_3_4": 1800
+      },
+      "divergencia_cada_lado": {
+        "precision_cat1_1_2": 0.1,
+        "precision_cat1_3_4": 0.1,
+        "precision_cat2_cat3_3_4": 0.1
+      },
+      "pendiente": {
+        "precision_cat1_1_2": 0.04,
+        "precision_cat1_3_4": 0.0333,
+        "precision_cat2_cat3_3_4": 0.0333
+      },
+      "_nota": "1 800 m o la distancia hasta el extremo de la pista, si es menor (nota d). Con letra de clave F, el ancho se aumenta a 140 m (nota e)."
+    }
+  },
+  "despegue": {
+    "_columnas": {
+      "clave_1": "Número de clave 1",
+      "clave_2": "Número de clave 2",
+      "clave_3_4": "Número de clave 3 o 4"
+    },
+    "ascenso_en_el_despegue": {
+      "longitud_borde_interior": {
+        "clave_1": 60,
+        "clave_2": 80,
+        "clave_3_4": 180
+      },
+      "distancia_desde_extremo_pista": {
+        "clave_1": 30,
+        "clave_2": 60,
+        "clave_3_4": 60
+      },
+      "divergencia_cada_lado": {
+        "clave_1": 0.1,
+        "clave_2": 0.1,
+        "clave_3_4": 0.125
+      },
+      "anchura_final": {
+        "clave_1": 380,
+        "clave_2": 580,
+        "clave_3_4": 1200
+      },
+      "longitud": {
+        "clave_1": 1600,
+        "clave_2": 2500,
+        "clave_3_4": 15000
+      },
+      "pendiente": {
+        "clave_1": 0.05,
+        "clave_2": 0.04,
+        "clave_3_4": 0.02
+      },
+      "_notas": "Anchura final 1 800 m (clave 3 o 4) cuando la derrota incluye cambios de rumbo > 15° en IMC o en VMC de noche. Comienza en el extremo de la zona libre de obstáculos si esta excede la distancia indicada. 14.3.4.2.26: si ningún objeto llega a la superficie de 2 %, preservar la superficie libre existente o una de 1,6 %."
+    }
+  },
+  "_cambios_vs_2017": "Frente al RAC 14 de 2017 (Tabla 4-1), la longitud del borde interior de la aproximación pasa de 150/300 m a 140/280 m en las pistas que no son de precisión y en las de precisión, y la anchura con letra de clave F pasa de 155 m a 140 m. La Tabla D-2 de despegue no cambia."
+}
