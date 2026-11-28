@@ -1,0 +1,92 @@
+{
+  "obstaculos": [
+    {
+      "fuente": "listado_AMDT72",
+      "id": "postes_cota",
+      "extremo": "umbral 23",
+      "distancia_m": 350.0,
+      "cota_m": 12.0,
+      "techo_m": 21.95,
+      "superficie": "aproximacion_b",
+      "exceso_m": -9.95,
+      "marcado": true,
+      "nota": "12 m leído como cota; iluminado"
+    },
+    {
+      "fuente": "listado_AMDT72",
+      "id": "postes_altura",
+      "extremo": "umbral 23",
+      "distancia_m": 350.0,
+      "cota_m": 28.15,
+      "techo_m": 21.95,
+      "superficie": "aproximacion_b",
+      "exceso_m": 6.2,
+      "marcado": true,
+      "nota": "12 m leído como altura sobre el umbral 23"
+    },
+    {
+      "fuente": "plano_tipo_A",
+      "id": "1_obstaculo_movil_SO",
+      "extremo": "umbral 05",
+      "distancia_m": 740.0,
+      "cota_m": 35.0,
+      "techo_m": 42.56,
+      "superficie": "aproximacion_a",
+      "exceso_m": -7.56,
+      "marcado": false,
+      "nota": "lectura visual"
+    },
+    {
+      "fuente": "plano_tipo_A",
+      "id": "2_NE",
+      "extremo": "umbral 23",
+      "distancia_m": 170.0,
+      "cota_m": 21.0,
+      "techo_m": 18.35,
+      "superficie": "aproximacion_b",
+      "exceso_m": 2.65,
+      "marcado": false,
+      "nota": "lectura visual; barra delgada"
+    },
+    {
+      "fuente": "plano_tipo_A",
+      "id": "3_muro_NE",
+      "extremo": "umbral 23",
+      "distancia_m": 350.0,
+      "cota_m": 2.0,
+      "techo_m": 21.95,
+      "superficie": "aproximacion_b",
+      "exceso_m": -19.95,
+      "marcado": false,
+      "nota": "lectura visual"
+    },
+    {
+      "fuente": "plano_tipo_A",
+      "id": "4_obstaculo_movil_NE",
+      "extremo": "umbral 23",
+      "distancia_m": 600.0,
+      "cota_m": 10.0,
+      "techo_m": 26.95,
+      "superficie": "aproximacion_b",
+      "exceso_m": -16.95,
+      "marcado": false,
+      "nota": "lectura visual; meseta de 380 a 620 m"
+    }
+  ],
+  "listado_preregistrado": {
+    "n": 2,
+    "n_sin_marca": 0,
+    "n_exceso_mayor_5m_sin_marca": 0,
+    "fraccion": null,
+    "max_exceso_m": 6.2,
+    "erronea": false
+  },
+  "plano_tipo_A_secundario": {
+    "n": 4,
+    "n_sin_marca": 4,
+    "n_exceso_mayor_5m_sin_marca": 0,
+    "fraccion": 0.0,
+    "max_exceso_m": 2.65,
+    "erronea": false
+  }
+}
