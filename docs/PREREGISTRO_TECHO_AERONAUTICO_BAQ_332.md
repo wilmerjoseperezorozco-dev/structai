@@ -72,3 +72,22 @@ Comercio, arts. 1823–1826) ni la licencia de construcción.
 - No se modelan las superficies nuevas de la OACI (desde 2030), ni las radioayudas, ni las superficies de protección
   de procedimientos (PANS-OPS), que pueden ser más restrictivas.
 - No se consideran los planes zonales ni los parciales (zonas «Especial»).
+
+## Enmienda 1 (2026-11-28, antes de cruzar el POT con el techo y antes de abrir el listado de obstáculos)
+
+1. **Puntos de control.**
+   - El texto decía «cruces de la cuadrícula del plano». Esos cruces son los mismos puntos con que se ajusta el plano,
+     así que no prueban nada.
+   - En su lugar se usan las **5 etiquetas de la cuadrícula geográfica** que el plano dibuja aparte (74°54', 74°51' y
+     74°48' O en el borde superior; 11°00' y 10°57' N en el borde izquierdo).
+   - Se proyectan con pyproj y se comparan con la posición que predice el ajuste. El umbral sigue en 30 m.
+   - Resultado: errores de −2,3, −3,7, −1,6, −4,9 y −7,3 m. **Pasa.** Las otras 15 etiquetas geográficas dan como
+     máximo 6,6 m.
+2. **Meridiano de origen.** El plano no imprime la longitud de origen. Se toma la de la cuadrícula urbana oficial de
+   Barranquilla (EPSG:6246, −74,8343313°), que comparte la latitud de origen y los falsos este y norte impresos.
+3. **Prueba del 2 %.**
+   - Se verifica sobre la **superficie de aproximación**, que es lo que dice el preregistro.
+   - El **techo** coincide con ella solo hasta que la aproximación alcanza la horizontal interna (74 m), unos 2,3 km
+     antes del umbral. Desde ahí manda la horizontal interna.
+   - Ninguna cifra del análisis cambia por esto.
+4. **Control de la pista.** Proyectada en la cuadrícula del U-16, la pista SKBQ mide 3 000,4 m (el AIP dice 3 001 m).
