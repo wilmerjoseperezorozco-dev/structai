@@ -85,14 +85,20 @@ def pytest_configure(config):
 
     def llamar_ollama(messages: list, max_tokens_groq: int = 700) -> str:
         _esperar_ollama(url)
-        r = httpx.post(f"{url}/api/chat", timeout=3600, json={
+        cuerpo = {
             "model": MODELO_LOCAL, "messages": messages, "stream": False,
             # num_ctx explícito: el valor por defecto de Ollama (2048) truncaría
             # en silencio el contexto del RAG. 16384 desde el hallazgo E3 (#172): con
             # 8192 los contextos > ~18.000 caracteres se recortaban a 4.098 tokens.
             "options": {"temperature": 0.1, "num_predict": max_tokens_groq,
                         "num_ctx": int(os.environ.get("STRUCTAI_NUM_CTX", "16384"))},
-        })
+        }
+        # Modelos con razonamiento (qwen3.5, por ejemplo): STRUCTAI_OLLAMA_THINK=false lo apaga para que el
+        # razonamiento no se coma num_predict. Sin la variable no se envía nada y queda el comportamiento por defecto.
+        pensar = os.environ.get("STRUCTAI_OLLAMA_THINK", "").strip().lower()
+        if pensar in ("true", "false"):
+            cuerpo["think"] = pensar == "true"
+        r = httpx.post(f"{url}/api/chat", timeout=3600, json=cuerpo)
         r.raise_for_status()
         return r.json()["message"]["content"]
 

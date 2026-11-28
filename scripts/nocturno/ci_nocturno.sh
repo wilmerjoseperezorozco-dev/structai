@@ -24,8 +24,10 @@ MODELO="${STRUCTAI_LLM_LOCAL:-qwen2.5:7b}"
 FECHA="$(date +%Y-%m-%d)"
 REG="$RAIZ/scripts/nocturno/registros"
 mkdir -p "$REG"
-LOG="$REG/$FECHA.log"
-RES="$REG/$FECHA.md"
+BASE="$FECHA"
+[ "$MODELO" = "qwen2.5:7b" ] || BASE="$FECHA-${MODELO//:/_}"   # otro modelo (E3b, #302) no pisa el registro de la noche
+LOG="$REG/$BASE.log"
+RES="$REG/$BASE.md"
 
 registrar() { echo "[$(date '+%F %T')] $*" | tee -a "$LOG"; }
 
@@ -58,7 +60,7 @@ registrar "inicio CI nocturno: modelo=$MODELO commit=$COMMIT ($(git -C "$RAIZ" l
 
 # pytest -m llm (el conftest mantiene WSL despierto, impide la suspensión y espera a Ollama)
 cd "$RAIZ/apps/api" || exit 1
-"$PY" -m pytest -m llm -q -rfE -p no:cacheprovider --junitxml="$REG/$FECHA-pytest-llm.xml" >> "$LOG" 2>&1
+"$PY" -m pytest -m llm -q -rfE -p no:cacheprovider --junitxml="$REG/$BASE-pytest-llm.xml" >> "$LOG" 2>&1
 CODIGO=$?
 RESUMEN="$(grep -aE '^=+ .* in [0-9.]+s' "$LOG" | tail -1)"
 registrar "pytest -m llm terminó con código $CODIGO: $RESUMEN"
