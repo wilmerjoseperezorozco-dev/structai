@@ -183,17 +183,23 @@ que filtrar por estación y periodo. La consulta se hace por API filtrada, nunca
 | Kzt / pendientes | Copernicus DEM (avisos) o SRTM (dominio público) | El DEM es de superficie: en ciudad sobreestima la cota del terreno |
 | Fallas de obra | UNGRD V2 `2343-nuqp` (CC BY 4.0) | — |
 
-## 5. Decisiones que quedan para Wilmer
+## 5. Decisiones de Wilmer (2026-11-28)
 
-1. **SGC:**
-   - ¿Pasamos Aa/Av al Apéndice A-4 de la NSR-10 y dejamos de leer `srvags` en producción?
-   - ¿Le escribimos al SGC pidiendo autorización para el SIMMA y el mapa de movimientos en masa? Yo redacto la carta y
-     la envías tú.
-2. **CC BY-SA:** ¿se acepta la regla «capas derivadas publicadas con CC BY-SA 4.0 + atribución»?
-3. **Aerocivil:** bajar desde el navegador el PDF del RAC 14 vigente y el AD 2 SKBQ vigente. Van a
-   `C:\Users\wilme\dev\descargas\aerocivil\`.
-4. **POT:** ¿pedimos por derecho de petición (Ley 1712) la capa de alturas y tratamientos del POT de Barranquilla
-   (Decreto 0212 de 2014)?
+1. **SGC: se siguen usando los datos ya integrados, sin carta.**
+   - Es una decisión consciente de Wilmer, con el riesgo de licencia documentado en el §1.1. Es una excepción a la regla
+     general de usar solo datos con licencia comercial.
+   - Mitigaciones que se mantienen:
+     - toda salida que use una capa del SGC cita «Servicio Geológico Colombiano» y el nombre de la capa;
+     - no se redistribuyen las capas crudas del SGC (ni descarga ni API pública con el dato tal cual);
+     - Aa y Av se contrastan con el Apéndice A-4 de la NSR-10, que es la fuente normativa.
+   - Si el SGC publica sus datos con licencia abierta en datos.gov.co (está en su plan de apertura 2023–2024), se migra a
+     esa fuente.
+2. **CC BY-SA: aceptada** la regla «capas derivadas publicadas con CC BY-SA 4.0 + atribución».
+3. **Aerocivil:** el RAC 14 vigente y el AD 2 SKBQ piden una verificación «no eres un robot» al descargar. Esa
+   verificación no la hace un agente: los baja Wilmer desde su navegador a `C:\Users\wilme\dev\descargas\aerocivil\`.
+4. **POT de Barranquilla: se extrae sin derecho de petición**, desde el texto oficial del Decreto 0212 de 2014 y sus
+   mapas anexos (U-4, U-14, U-15…), que son norma pública. Hoy barranquilla.gov.co responde 403 a accesos
+   automatizados, así que los PDF los baja Wilmer desde su navegador a `C:\Users\wilme\dev\descargas\pot_barranquilla\`.
 
 ## 6. No verificado (páginas que no cargaron)
 
